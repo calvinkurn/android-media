@@ -84,9 +84,9 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
             }
         }
         if (ecommerceMap.isEmpty()) {
-            putRegular(EventModel(event.toString(), action.toString(), category.toString(), label.toString()), map)
+            putRegular(EventModel(event.toString(), category.toString(), action.toString(), label.toString()), map)
         } else {
-            putEE(EventModel(event.toString(), action.toString(), category.toString(), label.toString()),
+            putEE(EventModel(event.toString(), category.toString(), action.toString(), label.toString()),
                     map,
                     ecommerceMap)
         }
@@ -95,10 +95,10 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
     override fun putEE(map: HashMap<String, Any>?, inputEnhanceECommerceMap: HashMap<String, Any>?) {
         if (map == null) return
         val event = map.get(Constant.EVENT) ?: return
-        val action = map.get(Constant.EVENT_ACTION) ?: return
         val category = map.get(Constant.EVENT_CATEGORY) ?: return
+        val action = map.get(Constant.EVENT_ACTION) ?: return
         val label = map.get(Constant.EVENT_LABEL) ?: return
-        val eventModel = EventModel(event.toString(), action.toString(), category.toString(), label.toString())
+        val eventModel = EventModel(event.toString(), category.toString(), action.toString(), label.toString())
         map.remove(Constant.EVENT)
         map.remove(Constant.EVENT_ACTION)
         map.remove(Constant.EVENT_CATEGORY)

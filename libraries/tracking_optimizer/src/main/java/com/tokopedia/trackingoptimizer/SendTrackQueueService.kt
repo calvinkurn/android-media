@@ -42,7 +42,6 @@ class SendTrackQueueService : Service(), CoroutineScope {
     }
 
     var screenName: String? = null
-    var needClearScreenName: Boolean = false
     val handler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, ex ->
             decreaseCounter()
@@ -51,6 +50,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
 
     companion object {
         var atomicInteger = AtomicInteger()
+        val doMergeScreenName = false
         const val TAG = "TrackQueueService"
         const val TAG_EE = "TrackQueueServiceEE"
         fun start(context: Context) {
@@ -93,6 +93,9 @@ class SendTrackQueueService : Service(), CoroutineScope {
                 } else {
                     trackingOptimizerRouter?.sendTrackDefaultAuth()
                 }
+                if (!doMergeScreenName) {
+                    sendScreenName()
+                }
                 deleteScreenNameJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
                     trackingRepository.deleteScreenName()
                 }
@@ -125,13 +128,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
                     sendTracking(it)
                 }
             }
-            // send screen name individually
-            if (!screenName.isNullOrEmpty()) {
-                trackingOptimizerRouter?.sendScreenName(screenName!!)
-                needClearScreenName = true
-                screenName = null
-            }
-            clearScreenNameIfNeeded()
+            sendScreenName()
             deleteScreenNameJob?.join()
             deleteEEFullJob.join()
             deleteEEJob.join()
@@ -143,6 +140,14 @@ class SendTrackQueueService : Service(), CoroutineScope {
         return Service.START_NOT_STICKY
     }
 
+    fun sendScreenName(){
+        // send screen name individually
+        if (!screenName.isNullOrEmpty()) {
+            trackingOptimizerRouter?.sendScreenName(screenName!!)
+            screenName = null
+        }
+    }
+
     fun decreaseCounter() {
         val value = atomicInteger.getAndDecrement()
         if (value < 0) {
@@ -150,18 +155,10 @@ class SendTrackQueueService : Service(), CoroutineScope {
         }
     }
 
-    fun clearScreenNameIfNeeded() {
-        if (needClearScreenName) {
-            trackingOptimizerRouter?.sendEventTracking(mutableMapOf<String, Any?>().apply { put(SCREEN_NAME, null) })
-            needClearScreenName = false
-        }
-    }
-
     fun sendTracking(it: TrackingDbModel) {
         if (trackingOptimizerRouter == null) {
             return
         }
-        clearScreenNameIfNeeded()
         var hasSent = false
         val map = mutableMapOf<String, Any?>()
         val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,
@@ -174,7 +171,6 @@ class SendTrackQueueService : Service(), CoroutineScope {
         if (!screenName.isNullOrEmpty()) {
             map.put(SCREEN_NAME, screenName)
             screenName = null
-            needClearScreenName = true
         }
         val customDimensionMap = HashMapJsonUtil.jsonToMap(it.customDimension)
         if (customDimensionMap != null && customDimensionMap.isNotEmpty()) {

@@ -77,7 +77,7 @@ public class ShopPageTrackingUser {
         this.trackingQueue = trackingQueue;
     }
 
-    private void sendScreenName(String screenName, CustomDimensionShopPage customDimensionShopPage) {
+    private void sendScreenName(Activity activity, String screenName, CustomDimensionShopPage customDimensionShopPage) {
         ScreenCustomModel screenCustomModel = new ScreenCustomModel(
                 customDimensionShopPage.shopId, customDimensionShopPage.shopType, SHOPPAGE, null);
         trackingQueue.putScreenName(screenName, screenCustomModel);
@@ -191,7 +191,7 @@ public class ShopPageTrackingUser {
     }
 
     public void sendScreenShopPage(Activity activity, CustomDimensionShopPage customDimensionShopPage) {
-        sendScreenName(joinDash(SHOPPAGE, customDimensionShopPage.shopId), customDimensionShopPage);
+        sendScreenName(activity, joinDash(SHOPPAGE, customDimensionShopPage.shopId), customDimensionShopPage);
     }
 
     public void clickManageShop(CustomDimensionShopPage customDimensionShopPage) {
