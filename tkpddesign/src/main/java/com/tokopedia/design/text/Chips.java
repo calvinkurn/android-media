@@ -27,7 +27,7 @@ public class Chips extends AppCompatTextView {
     }
 
     private void init() {
-        ViewGroup.MarginLayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
         int margin_default = (int) (getContext().getResources().getDimension(R.dimen.dp_16));
         int padding_top_bottom = (int) (getContext().getResources().getDimension(R.dimen.dp_8));
         params.height = (int) (getContext().getResources().getDimension(R.dimen.dp_40));
@@ -36,7 +36,7 @@ public class Chips extends AppCompatTextView {
         setBackgroundResource(R.drawable.bg_button_select_deselect);
         setPadding(margin_default, padding_top_bottom, margin_default, padding_top_bottom);
         setEllipsize(TextUtils.TruncateAt.MARQUEE);
-        setLayoutParams(params);
         setTextColor(getResources().getColor(R.color.black_56));
+        setLayoutParams(params);
     }
 }
