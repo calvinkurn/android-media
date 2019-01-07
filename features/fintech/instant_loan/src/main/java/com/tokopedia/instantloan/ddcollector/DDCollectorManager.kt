@@ -120,7 +120,9 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     }
 
     fun onRequestPermissionsResult(requestCode: Int,requiredPermissions: List<String>, permissions: Array<String>, grantResults: IntArray) {
-        mPermissionUtils!!.onRequestPermissionsResult(requestCode, requiredPermissions, permissions, grantResults)
+        if(mPermissionUtils != null) {
+            mPermissionUtils?.onRequestPermissionsResult(requestCode, requiredPermissions, permissions, grantResults)
+        }
     }
 
     override fun permissionGranted(requestCode: Int) {
