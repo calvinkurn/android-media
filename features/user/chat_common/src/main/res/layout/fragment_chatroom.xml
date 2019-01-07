@@ -191,6 +191,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/add_comment_area"
         android:layout_below="@id/header"
+        android:visibility="gone"
         android:layout_centerInParent="true" />
 
     <android.support.v7.widget.RecyclerView

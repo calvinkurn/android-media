@@ -49,6 +49,8 @@ interface ChatbotContract {
                              startTime: String,
                              opponentId: String)
 
+        fun sendReadEvent(messageId: String)
+
         fun destroyWebSocket()
 
     }

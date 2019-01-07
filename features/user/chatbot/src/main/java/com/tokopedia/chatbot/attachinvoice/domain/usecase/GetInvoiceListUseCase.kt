@@ -21,7 +21,7 @@ import java.util.HashMap
  * Created by Hendri on 21/03/18.
  */
 
-class AttachInvoicesUseCase @Inject
+class GetInvoiceListUseCase @Inject
 constructor(val resources: Resources,
             private val graphqlUseCase: GraphqlUseCase) {
 
@@ -47,11 +47,11 @@ constructor(val resources: Resources,
         fun createRequestParam(query: String, page: Int, messageId: Int): HashMap<String, Any> {
             val param = RequestParams.create()
             if (!TextUtils.isEmpty(query)) param.putString(KEYWORD_KEY, query)
-            param.putString(PAGE_KEY, page.toString())
             param.putString(MESSAGE_ID_KEY, messageId.toString())
-            param.putInt(LIMIT, DEFAULT_LIMIT)
             param.putBoolean(IS_SHOW_ALL, false)
             param.putString(START_TIME, SendableViewModel.generateStartTime())
+            param.putInt(PAGE_KEY, page)
+            param.putInt(LIMIT, DEFAULT_LIMIT)
             return param.parameters
         }
     }

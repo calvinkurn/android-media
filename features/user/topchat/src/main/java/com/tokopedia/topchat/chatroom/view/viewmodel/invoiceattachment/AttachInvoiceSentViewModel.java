@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactory;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.topchat.chatroom.view.viewmodel.DummyChatViewModel;

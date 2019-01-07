@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.domain;
 
-import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -15,17 +14,17 @@ import rx.Observable;
 
 public class ReplyMessageUseCase extends UseCase<ReplyActionData> {
 
-    private final ReplyRepository replyRepository;
+//    private final ReplyRepository replyRepository;
 
     @Inject
-    public ReplyMessageUseCase(ReplyRepository replyRepository) {
+    public ReplyMessageUseCase() {
         super();
-        this.replyRepository = replyRepository;
     }
 
     @Override
     public Observable<ReplyActionData> createObservable(RequestParams requestParams) {
-        return replyRepository.replyMessage(requestParams.getParameters());
+//        return replyRepository.replyMessage(requestParams.getParameters());
+        return null;
     }
 
     public static RequestParams generateParam(String messageId, String messageReply)

@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -21,6 +24,7 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -33,6 +37,8 @@ import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
+import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
+import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -90,8 +96,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return view
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
+        return ChatbotAdapter(ChatbotTypeFactoryImpl(this,
+                this, this, this,
+                this, this, this))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        super.viewState = ChatbotViewStateImpl(view, session, this,
+                (activity as BaseChatToolbarActivity).getToolbar(), adapter)
         super.viewState = ChatbotViewStateImpl(view, session, this, this,
                 this, this, this,
                 this, this, this, this, (activity as BaseChatToolbarActivity).getToolbar())
@@ -100,6 +114,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadInitialData() {
+        showLoading()
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
         presenter.connectWebSocket(messageId)
     }
@@ -107,26 +122,23 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             updateViewData(it)
-            setCanLoadMore(it)
+            renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
+            checkShowLoading(it.canLoadMore)
+            presenter.sendReadEvent(messageId)
         }
     }
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
-            setCanLoadMore(it)
-            getViewState().onSuccessLoadPrevious(it)
+            renderList(it.listChat, it.canLoadMore)
+            checkShowLoading(it.canLoadMore)
         }
     }
 
-    private fun setCanLoadMore(chatroomViewModel: ChatroomViewModel) {
-        if (chatroomViewModel.canLoadMore) {
-            enableLoadMore()
-        } else {
-            disableLoadMore()
-        }
+    fun checkShowLoading(canLoadMore: Boolean) {
+        if (canLoadMore) super.showLoading()
     }
-
 
     private fun onError(): (Throwable) -> Unit {
         return {
@@ -225,9 +237,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     Unit {
         return {
             (activity as Activity).run {
-                    (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
-                            onClickReasonRating(element.replyTimeNano.toString()))
-                }
+                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
+                        onClickReasonRating(element.replyTimeNano.toString()))
+            }
         }
     }
 
@@ -285,6 +297,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
      */
     override fun shouldHandleUrlManually(url: String): Boolean {
         return true
+    }
+
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
+        }
     }
 
     override fun onDestroy() {

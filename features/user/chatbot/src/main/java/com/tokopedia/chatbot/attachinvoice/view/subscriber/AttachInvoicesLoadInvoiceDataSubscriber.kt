@@ -1,19 +1,20 @@
 package com.tokopedia.chatbot.attachinvoice.view.subscriber
 
 
-import android.util.Log
-import com.tokopedia.chatbot.attachinvoice.domain.usecase.AttachInvoicesUseCase
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.chatbot.attachinvoice.domain.usecase.GetInvoiceListUseCase
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
 import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
+import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceListPojo
 import com.tokopedia.graphql.data.model.GraphqlResponse
-
 import rx.Subscriber
 
 /**
  * Created by Hendri on 22/03/18.
  */
 
-class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceContract.View) : Subscriber<GraphqlResponse>() {
+class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceContract.View)
+    : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -24,9 +25,47 @@ class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceCon
     }
 
     override fun onNext(response: GraphqlResponse) {
-        //TODO
-        Log.d("NIS", response.toString())
-//        view.addInvoicesToList(invoiceViewModels,
-//                invoiceViewModels.size >= AttachInvoicesUseCase.DEFAULT_LIMIT)
+
+        val graphqlErrorList = response.getError(GetInvoiceListPojo::class.java)
+        if (graphqlErrorList == null || graphqlErrorList.isEmpty()) {
+            routingOnNext(response)
+        } else if (!graphqlErrorList.isEmpty()
+                && graphqlErrorList[0] != null
+                && graphqlErrorList[0].message != null) {
+            onError(MessageErrorException(graphqlErrorList[0].message))
+        }
+
+    }
+
+    private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
+        return {
+            val pojo = graphqlResponse.getData<GetInvoiceListPojo>(GetInvoiceListPojo::class.java)
+            view.addInvoicesToList(mapToInvoiceList(pojo),
+                    pojo.getInvoiceList.size >= GetInvoiceListUseCase.DEFAULT_LIMIT)
+        }
+    }
+
+    private fun mapToInvoiceList(pojo: GetInvoiceListPojo?): List<InvoiceViewModel> {
+        val list = ArrayList<InvoiceViewModel>()
+        pojo?.run {
+            for (pojoItem in getInvoiceList) {
+                list.add(InvoiceViewModel(
+                        pojoItem.attributes.id.toLong(),
+                        pojoItem.typeId,
+                        pojoItem.attributes.statusId,
+                        pojoItem.attributes.paymentId,
+                        pojoItem.attributes.title,
+                        pojoItem.attributes.imageUrl,
+                        pojoItem.attributes.status,
+                        pojoItem.attributes.createTime,
+                        pojoItem.attributes.totalAmount,
+                        pojoItem.type,
+                        pojoItem.attributes.code,
+                        pojoItem.attributes.invoiceUrl
+
+                ))
+            }
+        }
+        return list
     }
 }

@@ -3,7 +3,8 @@ package com.tokopedia.chat_common
 import android.content.Context
 import android.text.format.DateFormat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
@@ -17,9 +18,8 @@ import java.util.*
 /**
  * @author by nisie on 23/11/18.
  */
-open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
-                           listChat: ArrayList<Visitable<*>>) :
-        BaseAdapter<BaseChatTypeFactoryImpl>(adapterTypeFactory, listChat) {
+open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
+        BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
     private val MILISECONDS: Long = 1000000
 

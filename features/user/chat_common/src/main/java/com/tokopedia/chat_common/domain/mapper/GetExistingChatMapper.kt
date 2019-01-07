@@ -112,7 +112,7 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
+        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>( chatItemPojoByDateByTime.attachment ?.attributes,
                 ImageUploadAttributes::class.java)
         return ImageUploadViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
