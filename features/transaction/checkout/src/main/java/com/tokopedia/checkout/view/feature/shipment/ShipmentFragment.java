@@ -1235,6 +1235,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData) {
+        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
+    }
+
+    @Override
     public void onRemovePromoCode() {
         shipmentPresenter.cancelAutoApplyCoupon();
     }

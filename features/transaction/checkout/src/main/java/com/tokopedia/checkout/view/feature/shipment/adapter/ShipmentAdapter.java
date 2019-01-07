@@ -590,6 +590,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                             requestData.getCheckoutRequestData());
                 }
+                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData);
                 return true;
             }
         }

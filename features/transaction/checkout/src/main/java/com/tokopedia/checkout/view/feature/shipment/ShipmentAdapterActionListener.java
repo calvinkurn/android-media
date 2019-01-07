@@ -39,6 +39,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> data, List<DataCheckoutRequest> checkoutRequest);
 
+    void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
+
     void onRemovePromoCode();
 
     void resetTotalPrice();
