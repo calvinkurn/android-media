@@ -2,6 +2,8 @@ package com.tokopedia.groupchat.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessageAssetPojo;
+import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
@@ -19,6 +21,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 
@@ -77,7 +81,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getExitMessage(),
                 convertChannelQuickReply(pojo.getChannel()),
                 pojo.getChannel().getVideoId(),
-                pojo.getChannel().getSettingGroupChat()
+                pojo.getChannel().getSettingGroupChat(),
+                convertOverlayModel(pojo.getChannel().getOverlayMessage())
         );
     }
 
@@ -265,5 +270,24 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         }
 
         return childViewModelList;
+    }
+
+    private OverlayViewModel convertOverlayModel(OverlayMessagePojo pojo) {
+        return new OverlayViewModel(
+                pojo.isCloseable(),
+                pojo.getStatus(),
+                convertInteruptViewModel(pojo.getAssets())
+        );
+    }
+
+    private InteruptViewModel convertInteruptViewModel(OverlayMessageAssetPojo pojo) {
+        return new InteruptViewModel(
+                pojo.getTitle(),
+                pojo.getDescription(),
+                pojo.getImageUrl(),
+                pojo.getImageLink(),
+                pojo.getBtnTitle(),
+                pojo.getBtnLink()
+        );
     }
 }
