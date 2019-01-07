@@ -163,6 +163,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
+
+        if (!GlobalConfig.DEBUG) {
+            new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+        }
     }
 
     private void createCustomSoundNotificationChannel() {
