@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -44,8 +45,9 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            private val chatRatingListener: ChatRatingListener,
                            private val chatActionListBubbleListener: ChatActionListBubbleListener,
                            private val quickReplyListener: QuickReplyListener,
+                           private val typingListener: TypingListener,
                            override val toolbar: Toolbar
-) : BaseChatViewStateImpl(view, toolbar), ChatbotViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener), ChatbotViewState {
 
 
     private lateinit var adapter: ChatbotAdapter

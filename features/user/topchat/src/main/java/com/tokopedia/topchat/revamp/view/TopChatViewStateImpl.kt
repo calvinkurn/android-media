@@ -25,8 +25,6 @@ import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
-import rx.functions.Action1
-import java.util.concurrent.TimeUnit
 /**
  * @author : Steven 29/11/18
  */
@@ -43,7 +41,7 @@ class TopChatViewStateImpl(
         private val templateListener: ChatRoomContract.View.TemplateChatListener,
         private val imagePickerListener: ImagePickerListener,
         toolbar: Toolbar
-) : BaseChatViewStateImpl(view, toolbar), TopChatViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
 
 
     private lateinit var adapter: TopChatRoomAdapter
@@ -52,6 +50,7 @@ class TopChatViewStateImpl(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     lateinit var templateAdapter: TemplateChatAdapter
     lateinit var templateChatTypeFactory: TemplateChatTypeFactory
+    var isUploading: Boolean = false
 
     init {
         initView()
@@ -66,17 +65,6 @@ class TopChatViewStateImpl(
                 scrollDownWhenInBottom()
             }
         }
-        replyIsTyping.subscribe(Action1 {
-            if (it) {
-                minimizeTools()
-                typingListener.onStartTyping()
-            }
-        })
-
-        replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                .subscribe {
-                    typingListener.onStopTyping()
-                }
 
         maximize.setOnClickListener { maximizeTools() }
 
@@ -100,7 +88,7 @@ class TopChatViewStateImpl(
         }
     }
 
-    private fun minimizeTools() {
+    fun minimizeTools() {
         maximize.visibility = View.VISIBLE
         pickerButton.visibility = View.GONE
         attachButton.visibility = View.GONE
@@ -112,7 +100,7 @@ class TopChatViewStateImpl(
         attachButton.visibility = View.VISIBLE
     }
 
-    private fun scrollDownWhenInBottom() {
+    fun scrollDownWhenInBottom() {
         if (checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
@@ -149,7 +137,6 @@ class TopChatViewStateImpl(
 
     fun addMessage(visitable: Visitable<*>) {
         getAdapter().addNewMessage(visitable)
-        scrollDownWhenInBottom()
     }
 
     fun setActionable(actionable: Boolean) {
@@ -199,5 +186,6 @@ class TopChatViewStateImpl(
                 .substring(index)))
         replyEditText.setSelection(message.length + text.substring(0, index).length + 1)
     }
+
 }
 

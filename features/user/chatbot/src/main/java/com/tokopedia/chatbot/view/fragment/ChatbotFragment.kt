@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -21,6 +20,7 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -50,7 +50,10 @@ import javax.inject.Inject
  * @author by nisie on 23/11/18.
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
-        AttachedInvoiceSelectionListener, QuickReplyListener, ChatActionListBubbleListener, ChatRatingListener {
+        AttachedInvoiceSelectionListener, QuickReplyListener, ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+    override fun onBackPressedEvent() {
+
+    }
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
 
@@ -91,7 +94,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         super.viewState = ChatbotViewStateImpl(view, session, this, this,
                 this, this, this,
-                this, this, this, (activity as BaseChatToolbarActivity).getToolbar())
+                this, this, this, this, (activity as BaseChatToolbarActivity).getToolbar())
         viewState.initView()
         loadInitialData()
     }
@@ -267,6 +270,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
             }
         }
+    }
+
+    override fun onStartTyping() {
+
+    }
+
+    override fun onStopTyping() {
+
     }
 
     /**

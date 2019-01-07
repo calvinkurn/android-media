@@ -43,6 +43,8 @@ yang ditemukan</string>
         Pesan</string>
     <string name="chat_yesterday_date">Kemarin</string>
     <string name="chat_today_date">Hari ini</string>
+    <string name="undersize_image">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
+    <string name="oversize_image">Ukuran gambar maksimal 15Mb</string>
 
     <!-- Chat Template -->
     <string name="add_template_chat_title">Tambah Template Pesan</string>

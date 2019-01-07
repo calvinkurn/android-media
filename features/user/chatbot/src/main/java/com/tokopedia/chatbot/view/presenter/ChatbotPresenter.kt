@@ -53,6 +53,10 @@ class ChatbotPresenter @Inject constructor(
         private val sendChatRatingUseCase: SendChatRatingUseCase,
         private val sendRatingReasonUseCase: SendRatingReasonUseCase)
     : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
+    override fun isUploading(): Boolean {
+        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
+    }
 
     private var mSubscription: CompositeSubscription
 

@@ -20,11 +20,12 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 /**
  * @author by nisie on 23/11/18.
  */
-open class BaseChatToolbarActivity : BaseChatActivity() {
+abstract class BaseChatToolbarActivity : BaseChatActivity() {
 
     companion object {
         public val PARAM_MESSAGE_ID = "message_id"
         public val PARAM_SENDER_ID = "sender_id"
+        private val TAG_FRAGMENT = "ChatToolbarActivity"
         val PARAM_HEADER = "header"
 
         /**
@@ -107,4 +108,14 @@ open class BaseChatToolbarActivity : BaseChatActivity() {
         return toolbar
     }
 
+    override fun getTagFragment(): String {
+        return TAG_FRAGMENT
+    }
+
+    override fun onBackPressed() {
+        supportFragmentManager.findFragmentByTag(tagFragment).let {
+            if (it is BaseChatFragment) it.onBackPressedEvent()
+            else super.onBackPressed()
+        }
+    }
 }
