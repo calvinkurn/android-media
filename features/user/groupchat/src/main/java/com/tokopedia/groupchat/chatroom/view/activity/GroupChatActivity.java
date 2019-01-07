@@ -1133,6 +1133,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null
                 &&viewModel.getChannelInfoViewModel().getOverlayViewModel().getStatus() != OVERLAY_STATUS_INACTIVE) {
             showOverlayDialog(viewModel.getChannelInfoViewModel().getOverlayViewModel());
+            viewModel.getChannelInfoViewModel().getOverlayViewModel().setStatus(0);
         } else if (canShowDialog) {
             channelInfoDialog.setContentView(
                     createBottomSheetView(
@@ -1679,15 +1680,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
-        overlayDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
-            analytics.eventClickCloseOverlayCloseButton(model.getChannelId());
-        });
+        overlayDialog = CloseableBottomSheetDialog.createInstance(this);
         View view = createOverlayView(model);
         overlayDialog.setCustomContentView(view, "", model.isCloseable());
         overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
-        if (showDialogDirectly) {
-            showOverlayDialogOnScreen();
-        }
         overlayDialog.setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
 
@@ -1698,6 +1694,12 @@ public class GroupChatActivity extends BaseSimpleActivity
                         .setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
+        overlayDialog.setOnDismissListener(dialogInterface -> {
+            analytics.eventClickCloseOverlayCloseButton(model.getChannelId());
+        });
+        if (showDialogDirectly) {
+            showOverlayDialogOnScreen();
+        }
         analytics.eventViewOverlay(model.getChannelId());
     }
 
@@ -1711,7 +1713,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
             ImageHandler.loadImageRounded2(this, (ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl());
             view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
-                startApplink(interuptViewModel.getImageLink());
+                if (!TextUtils.isEmpty(interuptViewModel.getImageLink())) {
+                    startApplink(interuptViewModel.getImageLink());
+                    closeOverlayDialog();
+                }
                 ArrayList<EEPromotion> list = new ArrayList<>();
                 list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
                         EEPromotion.NAME_GROUPCHAT,
@@ -1726,7 +1731,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                         viewModel.getChannelInfoViewModel().getAdsName(),
                         GroupChatAnalytics.ATTRIBUTE_BANNER,
                         list);
-                closeOverlayDialog();
             });
         } else
             ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
