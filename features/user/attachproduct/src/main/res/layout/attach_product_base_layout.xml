@@ -3,10 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_card_attach_product"
-    android:maxWidth="250dp"
     android:orientation="vertical"
     android:padding="@dimen/dp_8">
 
@@ -84,40 +83,40 @@
         tools:visibility="visible"
         />
 
-    <View
-        android:id="@+id/separator"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_1"
-        android:layout_alignLeft="@id/attach_product_chat_image_layout"
-        android:layout_alignRight="@id/name_layout"
-        android:layout_below="@id/attach_product_chat_image_layout"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/grey_300"
-        android:maxWidth="249dp"
-        android:visibility="gone"/>
+    <!--<View-->
+    <!--android:id="@+id/separator"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="@dimen/dp_1"-->
+    <!--android:layout_alignLeft="@id/attach_product_chat_image_layout"-->
+    <!--android:layout_alignRight="@id/name_layout"-->
+    <!--android:layout_below="@id/attach_product_chat_image_layout"-->
+    <!--android:layout_marginTop="@dimen/dp_8"-->
+    <!--android:background="@color/grey_300"-->
+    <!--android:maxWidth="249dp"-->
+    <!--android:visibility="gone"/>-->
 
-    <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/tv_buy"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/separator"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
-        android:text="@string/action_buy"
-        android:textAllCaps="false"
-        android:visibility="gone"
-        app:buttonCompatSize="medium"
-        app:buttonCompatType="primary"/>
+    <!--<com.tokopedia.design.component.ButtonCompat-->
+    <!--android:id="@+id/tv_buy"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="@dimen/dp_32"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_below="@id/separator"-->
+    <!--android:layout_marginEnd="@dimen/dp_12"-->
+    <!--android:layout_marginRight="@dimen/dp_12"-->
+    <!--android:text="@string/action_buy"-->
+    <!--android:textAllCaps="false"-->
+    <!--android:visibility="gone"-->
+    <!--app:buttonCompatSize="medium"-->
+    <!--app:buttonCompatType="primary"/>-->
 
     <ImageView
         android:id="@+id/ic_add_to_cart"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_below="@id/separator"
+        android:layout_below="@id/attach_product_chat_image_layout"
         android:layout_marginRight="@dimen/dp_10"
-        android:layout_toLeftOf="@+id/tv_buy"
         android:gravity="center"
         android:src="@drawable/ic_check"
         android:visibility="gone"/>
