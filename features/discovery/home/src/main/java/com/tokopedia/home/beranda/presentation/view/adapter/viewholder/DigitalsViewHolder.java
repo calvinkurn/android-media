@@ -27,18 +27,20 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     private FragmentManager fragmentManager;
     private HomeCategoryListener listener;
-    private WrapContentViewPager viewPager;
+    private WrapContentViewPager viewPagerChannel;
+    private WrapContentViewPager viewPagerWidget;
     private DigitalsHomePagerAdapter digitalsHomePagerAdapter;
+    private DigitalsHomePagerAdapter widgetHomePagerAdapter;
     private TextView titleTextView;
     private TextView seeMoreTextView;
     private static final String APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2";
-    private DigitalRecommendationUseCase digitalRecommendationUseCase;
 
 
     public DigitalsViewHolder(HomeCategoryListener listener, FragmentManager fragmentManager, View itemView) {
         super(itemView);
         this.listener = listener;
-        viewPager = itemView.findViewById(R.id.view_pager_widget);
+        viewPagerChannel = itemView.findViewById(R.id.view_pager_channel);
+        viewPagerWidget = itemView.findViewById(R.id.view_pager_widget);
         seeMoreTextView = itemView.findViewById(R.id.see_more);
         titleTextView = itemView.findViewById(R.id.title);
         this.fragmentManager = fragmentManager;
@@ -49,9 +51,10 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     public void bind(DigitalsViewModel element) {
         if (digitalsHomePagerAdapter == null) {
             digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalChannelFragment.Companion.newInstance(this));
-            viewPager.setAdapter(digitalsHomePagerAdapter);
+            viewPagerChannel.setAdapter(digitalsHomePagerAdapter);
         }
-        viewPager.setOffscreenPageLimit(1);
+        viewPagerWidget.setVisibility(View.GONE);
+        viewPagerChannel.setOffscreenPageLimit(1);
         digitalsHomePagerAdapter.notifyDataSetChanged();
 
         seeMoreTextView.setOnClickListener(new View.OnClickListener() {
@@ -65,9 +68,11 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     @Override
     public void changeToDigitalWidget() {
-        digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
-        viewPager.removeAllViews();
-        viewPager.setAdapter(digitalsHomePagerAdapter);
+        viewPagerChannel.setVisibility(View.GONE);
+        if (widgetHomePagerAdapter == null) {
+            widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
+        }
+        viewPagerWidget.setAdapter(widgetHomePagerAdapter);
     }
 
     @Override
