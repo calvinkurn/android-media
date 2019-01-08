@@ -402,9 +402,9 @@ public class ExploreFragment
         rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener());
         rvFilter.setAdapter(filterAdapter);
-        btnFilterMore.setOnClickListener(v->{
-
-        });
+//        btnFilterMore.setOnClickListener(v->{
+//
+//        });
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
