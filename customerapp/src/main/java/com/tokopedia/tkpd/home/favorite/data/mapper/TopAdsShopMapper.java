@@ -49,8 +49,8 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
         }
     }
 
-    private TopAdsShop mappingValidResponse(TopAdsHome.Data[] topAdsDataResponse) {
-        if (topAdsDataResponse != null && topAdsDataResponse.length > 0) {
+    private TopAdsShop mappingValidResponse(List<TopAdsHome.Data> topAdsDataResponse) {
+        if (topAdsDataResponse != null && topAdsDataResponse.size() > 0) {
             TopAdsShop favoriteShop = new TopAdsShop();
             favoriteShop.setDataValid(true);
             favoriteShop.setTopAdsShopItemList(mappingDataShopItem(topAdsDataResponse));
@@ -60,7 +60,7 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
         }
     }
 
-    private List<TopAdsShopItem> mappingDataShopItem(TopAdsHome.Data[] listShopItemResponse) {
+    private List<TopAdsShopItem> mappingDataShopItem(List<TopAdsHome.Data> listShopItemResponse) {
         ArrayList<TopAdsShopItem> topAdsShopItems = new ArrayList<>();
         for (TopAdsHome.Data dataResponse : listShopItemResponse) {
             TopAdsShopItem topAdsShopItem = new TopAdsShopItem();
