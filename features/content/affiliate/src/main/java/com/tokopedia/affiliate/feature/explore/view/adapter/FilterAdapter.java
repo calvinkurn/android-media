@@ -54,6 +54,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         holder.text.setText(filter.getName());
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
+        holder.cardView.setPadding(getPadding(16),0, getPadding(12),0);
+    }
+
+    private int getPadding(int padding) {
+        return (int)(padding *  context.getResources().getDisplayMetrics().density);
     }
 
     private void initViewListener(Holder holder, FilterViewModel filter) {

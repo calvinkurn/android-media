@@ -131,6 +131,7 @@ public class ExploreFragment
         rvFilter = view.findViewById(R.id.rv_filter);
         scrollToTopButton = view.findViewById(R.id.bottom_action_view);
         layoutFilter = view.findViewById(R.id.layout_filter);
+        btnFilterMore = view.findViewById(R.id.btn_filter_more);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
