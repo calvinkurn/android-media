@@ -1341,7 +1341,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (getView() != null && response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {
                     Data data = response.getValidateCheckoutCod().getData().getData();
-                    if (!TextUtils.isEmpty(data.getErrorMessage())) {
+                    if (TextUtils.isEmpty(data.getErrorMessage())) {
                         // go to cod confirmation page
                         getView().navigateToCodConfirmationPage(data);
                     } else {

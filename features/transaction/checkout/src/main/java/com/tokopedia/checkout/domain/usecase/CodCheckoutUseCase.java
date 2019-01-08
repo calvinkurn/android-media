@@ -3,8 +3,6 @@ package com.tokopedia.checkout.domain.usecase;
 import android.content.Context;
 import android.os.Build;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -13,9 +11,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.CodCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.security.PublicKey;
 import java.util.HashMap;
@@ -45,28 +40,16 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
 
     public GraphqlRequest getRequest(CheckoutRequest carts, boolean isOneClickShipment) {
         setFingerPrintParams();
-
         CodCheckoutRequest request = new CodCheckoutRequest(null, null,
                 mFingerPrintSupport, mFingerPrintPublicKey, carts, 0,
                 String.valueOf(isOneClickShipment));
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String param = gson.toJson(request);
-
-        String query = GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.checkout_cod_query
-        );
-
-        return new GraphqlRequest(query, CodResponse.class, getParam(param));
+        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.checkout_cod_query);
+        return new GraphqlRequest(query, CodResponse.class, getParam(request));
     }
 
-    private Map<String, Object> getParam(String json) {
+    private Map<String, Object> getParam(Object json) {
         Map<String, Object> params = new HashMap<>();
-        try {
-            params.put(PARAM_CHECKOUT_PARAMS, new JSONObject(json));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        params.put(PARAM_CHECKOUT_PARAMS, json);
         return params;
     }
 
