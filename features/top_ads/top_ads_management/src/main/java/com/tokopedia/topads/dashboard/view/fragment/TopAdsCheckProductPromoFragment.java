@@ -12,10 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -23,6 +20,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsCheckProductPromoView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsCheckProductPromoPresenter;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 
 import javax.inject.Inject;
 

@@ -69,6 +69,7 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
                     exploreQuery.getPagination() != null ?
                             exploreQuery.getPagination().getNextCursor() :
                             "",
+                    isSearch,
                     mappingSortFilter(query.getFilter())
             );
         }

@@ -95,6 +95,7 @@
 /features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
+/libraries/base_list_seller/            @tokopedia/minion-stuart
 /libraries/bottom_sheet_builder/        @tokopedia/minion-stuart
 /libraries/cache_api/                   @tokopedia/minion-stuart
 /libraries/image_picker/                @tokopedia/minion-stuart
@@ -120,6 +121,7 @@
 /features/fintech/instant_loan          @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
+/features/promo/tokopoints_notification @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
 

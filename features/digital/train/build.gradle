@@ -16,23 +16,21 @@ android {
     }
 }
 
-buildscript {
-    repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        mavenCentral()
-        jcenter()
-        maven { url 'https://hansel.io/maven' }
-    }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
-    }
-}
-
 project.ext {
     artifactId = 'train'
     groupId = 'com.tokopedia.train'
     versionName = "${tkpdTrainVersion}"
     artifactName ="tkpdtrain-release"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
 }
 
 dependencies {
@@ -44,6 +42,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.features.commonTravel)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -63,8 +62,6 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation 'org.powermock:powermock-module-junit4:1.7.3'
-    testImplementation 'org.powermock:powermock-api-mockito2:1.7.0'
 
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation project(rootProject.ext.libraries.core_legacy)

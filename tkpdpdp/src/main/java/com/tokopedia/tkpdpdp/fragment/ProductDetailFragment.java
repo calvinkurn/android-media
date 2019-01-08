@@ -2442,7 +2442,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
         enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
-        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
         String eventAction;
@@ -2565,6 +2565,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                                 String eventLabel) {
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartClickBayarOnAtcSuccess();
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(cartMap, eventLabel, eventAction);
+        checkoutAnalyticsAddToCart.flushEnhancedECommerceAddToCart();
     }
 
     @Override
@@ -2658,11 +2659,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onAddFavorite(int position, Data data) {
-
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
 
     }
 

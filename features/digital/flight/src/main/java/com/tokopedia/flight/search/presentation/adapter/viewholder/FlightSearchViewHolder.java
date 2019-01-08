@@ -162,7 +162,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         } else if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() == 1) {
             flightMultiAirlineView.setAirlineLogo(flightJourneyViewModel.getAirlineDataList().get(0).getLogo());
-            tvAirline.setText(flightJourneyViewModel.getAirlineDataList().get(0).getName());
+            tvAirline.setText(flightJourneyViewModel.getAirlineDataList().get(0).getShortName());
         }
     }
 

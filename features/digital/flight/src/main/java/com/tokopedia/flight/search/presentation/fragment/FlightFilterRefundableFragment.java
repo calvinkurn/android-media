@@ -84,8 +84,10 @@ public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<Ref
 
     @Override
     public void loadData(int page) {
-        List<RefundableStat> airlineStatList = listener.getFlightSearchStatisticModel().getRefundableTypeStatList();
-        renderList(airlineStatList);
+        if (listener != null && listener.getFlightSearchStatisticModel() != null) {
+            List<RefundableStat> airlineStatList = listener.getFlightSearchStatisticModel().getRefundableTypeStatList();
+            renderList(airlineStatList);
+        }
     }
 
     @Override

@@ -6,7 +6,7 @@ ext {
     buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.2.40"
+    kotlinVersion = "1.2.71"
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
@@ -123,14 +123,6 @@ ext {
             deeplinkDispatchProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkDispatchVersion}"
     ]
 
-    apolloDependencies = [
-            apolloPlugin        : "com.apollographql.apollo:gradle-plugin:$apolloVersion",
-            apolloAndroidSupport: "com.apollographql.apollo:apollo-android-support:$apolloVersion",
-            apolloRuntime       : "com.apollographql.apollo:apollo-runtime:$apolloVersion",
-            apolloRxSupport     : "com.apollographql.apollo:apollo-rx-support:$apolloVersion",
-            apolloRx2Support    : "com.apollographql.apollo:apollo-rx2-support:$apolloVersion",
-    ]
-
     miscDependencies = [
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
             facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
@@ -151,7 +143,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
