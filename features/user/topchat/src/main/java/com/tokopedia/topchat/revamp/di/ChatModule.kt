@@ -3,6 +3,8 @@ package com.tokopedia.topchat.revamp.di
 import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
+import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
@@ -23,6 +25,11 @@ import dagger.Provides
 @Module(includes = arrayOf(ImageUploaderModule::class))
 class ChatModule {
 
+    @ChatScope
+    @Provides
+    fun provideAnalyticTracker(@ApplicationContext context: Context): AnalyticTracker {
+        return (context as AbstractionRouter).analyticTracker
+    }
 
     @ChatScope
     @Provides
