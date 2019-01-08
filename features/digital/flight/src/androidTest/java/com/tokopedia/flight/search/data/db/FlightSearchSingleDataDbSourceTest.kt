@@ -3,7 +3,7 @@ package com.tokopedia.flight.search.data.db
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.data.db.util.createFlightJourneyTable
 import com.tokopedia.flight.search.data.db.util.createRoutes
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
@@ -104,7 +104,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(1))
@@ -134,7 +134,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -166,7 +166,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -213,7 +213,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -255,7 +255,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(3))
@@ -338,7 +338,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.CHEAPEST)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.CHEAPEST)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(3))

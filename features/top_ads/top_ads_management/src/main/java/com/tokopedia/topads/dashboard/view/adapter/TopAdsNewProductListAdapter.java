@@ -1,11 +1,10 @@
 package com.tokopedia.topads.dashboard.view.adapter;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsNewProductListViewHolder;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_4"
+    app:cardBackgroundColor="@color/cardview_light_background">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout android:id="@+id/progress_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_4"
+            android:gravity="center"
+            android:background="@color/green_1000">
+
+            <ProgressBar android:id="@+id/loading"
+                android:layout_width="@dimen/dp_18"
+                android:layout_height="@dimen/dp_18"
+                android:theme="@style/BMAlertDialogStyle"/>
+
+            <TextView style="@style/TextView.Micro.BlackSecondary"
+                android:id="@+id/message_progress"
+                tools:text="@string/app_name"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"/>
+
+        </LinearLayout>
+
+        <TextView style="@style/TextView.Small.BlackSecondary"
+            android:id="@+id/message"
+            android:layout_margin="@dimen/dp_16"
+            android:lineSpacingExtra="2sp"
+            tools:text="Dalam menyambut ulang tahun Tokopedia yang ke 9, Toko Modo Store akan ada kejutan mena… Selengkapnya"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/message_product"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_half"
+            android:background="@color/grey_300"/>
+
+        <TextView style="@style/TextView.Micro.BlackSecondary"
+            android:id="@+id/message_status"
+            android:layout_margin="@dimen/dp_16"
+            tools:text="Pesan dibaca: 14000 / 14150 "
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

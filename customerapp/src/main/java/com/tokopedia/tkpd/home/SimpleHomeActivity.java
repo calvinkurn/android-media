@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -156,19 +157,10 @@ public class SimpleHomeActivity extends TActivity
         invalidateOptionsMenu();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Bundle bundle = new Bundle();
-        super.onSaveInstanceState(bundle);
-        if (!TooLargeTool.isPotentialCrash(bundle)) {
-            outState.putAll(bundle);
-            simpleHome.saveDataBeforeRotate(outState);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     @Override

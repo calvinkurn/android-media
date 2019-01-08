@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.session)
+    implementation project(rootProject.ext.features.tokopointsNotification)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

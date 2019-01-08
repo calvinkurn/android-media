@@ -40,6 +40,8 @@ import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.util.SessionHandler;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -71,7 +73,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     TextView txtHiUser;
 
     @BindView(R2.id.txt_user_info)
-     TextView txtUserMessage;
+    TextView txtUserMessage;
 
     String msgId;
     @BindView(R2.id.pager_indicator)
@@ -217,14 +219,21 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
         ContactUsTracking.eventHomeHubungiKamiClick();
-        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), ContactUsURL.NAVIGATE_NEXT_URL, "Hubungi Kami"));
+        String encodedUrl;
+        try {
+            encodedUrl = URLEncoder.encode(ContactUsURL.NAVIGATE_NEXT_URL, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            encodedUrl = ContactUsURL.NAVIGATE_NEXT_URL;
+        }
+        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), encodedUrl, "Hubungi Kami"));
     }
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
         ContactUsTracking.eventChatBotOkClick();
-        startActivity(((ContactUsModuleRouter)(getContext().getApplicationContext()))
-                .getChatBotIntent(getContext(),msgId));
+        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext()))
+                .getChatBotIntent(getContext(), msgId));
     }
 
     @Override

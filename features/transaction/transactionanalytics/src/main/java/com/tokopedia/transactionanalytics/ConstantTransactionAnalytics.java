@@ -12,6 +12,7 @@ public interface ConstantTransactionAnalytics {
         String EVENT_LABEL = "eventLabel";
         String E_COMMERCE = "ecommerce";
         String PAYMENT_ID = "payment_id";
+        String CURRENT_SITE = "currentSite";
     }
 
 
@@ -253,5 +254,9 @@ public interface ConstantTransactionAnalytics {
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
         String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
+    }
+
+    interface CustomDimension {
+        String DIMENSION_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
     }
 }
