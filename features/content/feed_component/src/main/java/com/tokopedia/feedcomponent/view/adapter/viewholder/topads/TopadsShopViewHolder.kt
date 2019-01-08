@@ -8,6 +8,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.Recomm
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import kotlinx.android.synthetic.main.item_topads_shop.view.*
 
@@ -15,9 +18,9 @@ import kotlinx.android.synthetic.main.item_topads_shop.view.*
  * @author by milhamj on 08/01/19.
  */
 class TopadsShopViewHolder(v: View,
-                           private val itemClickListener: TopAdsItemClickListener,
+                           private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
                            private val cardTitleListener: CardTitleView.CardTitleListener)
-    : AbstractViewHolder<TopadsShopViewModel>(v) {
+    : AbstractViewHolder<TopadsShopViewModel>(v), TopAdsItemClickListener {
 
     private var cardAdapter: RecommendationCardAdapter? = null
 
@@ -33,7 +36,7 @@ class TopadsShopViewHolder(v: View,
         }
 
         itemView.topadsShop.bind(element.dataList)
-        itemView.topadsShop.setItemClickListener(itemClickListener)
+        itemView.topadsShop.setItemClickListener(this)
 
         itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
         itemView.cardTitle.listener = cardTitleListener
@@ -49,5 +52,25 @@ class TopadsShopViewHolder(v: View,
         if (cardAdapter?.list?.size ?: 0 > position) {
             cardAdapter?.notifyItemChanged(position)
         }
+    }
+
+    override fun onProductItemClicked(position: Int, product: Product) {
+    }
+
+    override fun onShopItemClicked(position: Int, shop: Shop) {
+        topadsShopListener.onShopItemClicked(adapterPosition, position, shop)
+    }
+
+    override fun onAddFavorite(position: Int, data: Data) {
+        topadsShopListener.onAddFavorite(adapterPosition, position, data)
+    }
+
+    override fun onAddWishList(position: Int, data: Data) {
+    }
+
+    interface TopadsShopListener {
+        fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop)
+
+        fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data)
     }
 }

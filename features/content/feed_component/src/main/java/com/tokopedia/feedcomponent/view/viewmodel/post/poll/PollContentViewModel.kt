@@ -5,11 +5,11 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 /**
  * @author by milhamj on 10/12/18.
  */
-data class PollViewModel (
+data class PollContentViewModel (
         val pollId: String = "",
-        val totalVoter: String = "",
-        val voted: Boolean = false,
-        val optionList: MutableList<PollOptionViewModel>,
+        var totalVoter: String = "",
+        var voted: Boolean = false,
+        val optionList: MutableList<PollContentOptionViewModel>,
         override var postId: Int = 0,
         override var positionInFeed: Int = 0
 ) : BasePostViewModel

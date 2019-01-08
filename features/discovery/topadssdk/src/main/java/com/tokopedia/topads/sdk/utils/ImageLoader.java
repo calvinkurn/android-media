@@ -140,7 +140,7 @@ public class ImageLoader {
         }
     }
 
-    private static Drawable getDrawable(Context context, int resId) {
+    public static Drawable getDrawable(Context context, int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             return context.getResources().getDrawable(
                     resId,

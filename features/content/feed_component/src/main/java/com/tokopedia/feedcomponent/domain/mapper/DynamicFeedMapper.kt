@@ -15,8 +15,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollOptionViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
@@ -182,8 +182,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         )
     }
 
-    private fun mapPostPoll(media: Media): PollViewModel {
-        val options: MutableList<PollOptionViewModel> = ArrayList()
+    private fun mapPostPoll(media: Media): PollContentViewModel {
+        val options: MutableList<PollContentOptionViewModel> = ArrayList()
 
         for (item in media.mediaItems) {
             val percentageNumber = try {
@@ -192,7 +192,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 0
             }
 
-            options.add(PollOptionViewModel(
+            options.add(PollContentOptionViewModel(
                     item.id,
                     item.text,
                     item.thumbnail,
@@ -203,7 +203,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
 
-        return PollViewModel(
+        return PollContentViewModel(
                 media.id,
                 media.text,
                 media.isVoted,
@@ -234,11 +234,11 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun checkIfPollOptionSelected(isVoted: Boolean, isSelected: Boolean): Int {
         return if (isVoted && isSelected) {
-            PollOptionViewModel.SELECTED
+            PollContentOptionViewModel.SELECTED
         } else if (isVoted) {
-            PollOptionViewModel.UNSELECTED
+            PollContentOptionViewModel.UNSELECTED
         } else {
-            PollOptionViewModel.DEFAULT
+            PollContentOptionViewModel.DEFAULT
         }
     }
 }

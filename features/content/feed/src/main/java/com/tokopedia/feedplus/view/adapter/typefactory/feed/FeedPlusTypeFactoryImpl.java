@@ -89,6 +89,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
     private final BannerAdapter.BannerItemListener bannerListener;
+    private final TopadsShopViewHolder.TopadsShopListener topadsShopListener;
     private final RecommendationCardAdapter.RecommendationCardListener recommendationCardListener;
     private final CardTitleView.CardTitleListener cardTitleListener;
     private final ImagePostViewHolder.ImagePostListener imagePostListener;
@@ -106,6 +107,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.pollingViewListener = context;
         this.dynamicPostListener = context;
         this.bannerListener = context;
+        this.topadsShopListener = context;
         this.recommendationCardListener = context;
         this.cardTitleListener = context;
         this.imagePostListener = context;
@@ -313,7 +315,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new BannerViewHolder(view, bannerListener, cardTitleListener);
         }
         else if (type == TopadsShopViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new TopadsShopViewHolder(view, topAdsItemClickListener, cardTitleListener);
+            viewHolder = new TopadsShopViewHolder(view, topadsShopListener, cardTitleListener);
         }
         else
             viewHolder = super.createViewHolder(view, type);

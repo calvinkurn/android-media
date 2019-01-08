@@ -38,9 +38,13 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAda
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -114,6 +118,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         DynamicPostViewHolder.DynamicPostListener,
         BannerAdapter.BannerItemListener,
         RecommendationCardAdapter.RecommendationCardListener,
+        TopadsShopViewHolder.TopadsShopListener,
         CardTitleView.CardTitleListener,
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
@@ -484,10 +489,32 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().get(0);
-        boolean currentStatus = data.isFavorit();
-        data.setFavorit(!currentStatus);
-        adapter.notifyItemChanged(adapterPosition);
+        if (adapter.getlist().get(adapterPosition) instanceof FeedTopAdsViewModel
+                && ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().size()
+                > 0) {
+
+            Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition))
+                    .getList()
+                    .get(0);
+            boolean currentStatus = data.isFavorit();
+            data.setFavorit(!currentStatus);
+            adapter.notifyItemChanged(adapterPosition);
+        }
+
+        if (adapter.getlist().get(adapterPosition) instanceof TopadsShopViewModel) {
+            Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition))
+                    .getList()
+                    .get(0);
+        }
+    }
+
+    @Override
+    public void updateFavoriteFromEmpty(String shopId) {
+        onRefresh();
+        analytics.eventFeedClickShop(getScreenName(),
+                shopId, FeedTrackingEventLabel.Click.
+                        TOP_ADS_FAVORITE);
+
     }
 
     @Override
@@ -793,15 +820,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 && !adapter.getlist().isEmpty()
                 && adapter.getlist().size() > 1
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
-    }
-
-    @Override
-    public void updateFavoriteFromEmpty(String shopId) {
-        onRefresh();
-        analytics.eventFeedClickShop(getScreenName(),
-                shopId, FeedTrackingEventLabel.Click.
-                        TOP_ADS_FAVORITE);
-
     }
 
     @Override
@@ -1300,6 +1318,36 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             adapter.notifyItemChanged(rowNumber);
         }
+
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
+            //TODO milhamj
+//            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
+//            for (BasePostViewModel basePostViewModel : model.getContentList()) {
+//                if (basePostViewModel instanceof PollContentViewModel) {
+//
+//                    PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
+//                    pollContentViewModel.setVoted(true);
+//                    pollContentViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
+//
+//                    for (int i = 0; i < pollContentViewModel.getOptionViewModels().size(); i++) {
+//                        PollOptionViewModel pollOptionViewModel
+//                                = pollContentViewModel.getOptionViewModels().get(i);
+//
+//                        pollOptionViewModel.setSelected(optionId.equals(pollOptionViewModel.getOptionId()) ?
+//                                PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
+//
+//                        String newPercentage
+//                                = voteStatisticDomainModel.getListOptions().get(i).getPercentage();
+//                        pollOptionViewModel.setPercentage(newPercentage);
+//                    }
+//                }
+//            }
+//
+//            adapter.notifyItemChanged(rowNumber);
+        }
+
+
     }
 
     @Override
@@ -1318,6 +1366,45 @@ public class FeedPlusFragment extends BaseDaggerFragment
             startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity(), url),
                     CREATE_POST);
         }
+    }
+
+    @Override
+    public void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition) {
+        if (adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
+            model.getHeader().getFollowCta().setFollow(
+                    !model.getHeader().getFollowCta().isFollow()
+            );
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW);
+        }
+
+        if (adapter.getlist().get(rowNumber) instanceof FeedRecommendationViewModel) {
+            FeedRecommendationViewModel model
+                    = (FeedRecommendationViewModel) adapter.getlist().get(rowNumber);
+            model.getCards().get(adapterPosition).getCta().setFollow(
+                    !model.getCards().get(adapterPosition).getCta().isFollow()
+            );
+            adapter.notifyItemChanged(rowNumber, adapterPosition);
+        }
+
+        if (adapter.getlist().get(rowNumber) instanceof TopadsShopViewModel) {
+            TopadsShopViewModel model
+                    = (TopadsShopViewModel) adapter.getlist().get(rowNumber);
+            model.getDataList().get(adapterPosition).setFavorit(
+                    !model.getDataList().get(adapterPosition).isFavorit()
+            );
+            adapter.notifyItemChanged(rowNumber, adapterPosition);
+        }
+    }
+
+    @Override
+    public void onErrorToggleFavoriteShop(String message, int rowNumber, int adapterPosition,
+                                          String shopId) {
+        ToasterError.make(getView(), message, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_try_again,
+                        v -> presenter.toggleFavoriteShop(rowNumber, adapterPosition, shopId)
+                )
+                .show();
     }
 
     @Override
@@ -1418,6 +1505,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onBannerItemClick(int position, @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
+    }
+
+    @Override
+    public void onShopItemClicked(int positionInFeed, int adapterPosition, @NotNull Shop shop) {
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(int positionInFeed, int adapterPosition, @NotNull Data data) {
+        presenter.toggleFavoriteShop(positionInFeed, adapterPosition, data.getShop().getId());
     }
 
     @Override

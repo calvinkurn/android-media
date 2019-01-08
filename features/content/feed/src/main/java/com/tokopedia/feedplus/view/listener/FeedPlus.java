@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
@@ -178,6 +179,11 @@ public interface FeedPlus {
         int getAdapterListSize();
 
         void onWhitelistClicked(String url);
+
+        void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition);
+
+        void onErrorToggleFavoriteShop(String message, int rowNumber, int adapterPosition,
+                                       String shopId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -185,6 +191,8 @@ public interface FeedPlus {
         void fetchFirstPage();
 
         void fetchNextPage();
+
+        void favoriteShop(final Data promotedShopViewModel, final int adapterPosition);
 
         void refreshPage();
 
@@ -207,5 +215,7 @@ public interface FeedPlus {
                 kolListener);
 
         void toggleFavoriteShop(int rowNumber, String shopId);
+
+        void toggleFavoriteShop(int rowNumber, int adapterPosition, String shopId);
     }
 }

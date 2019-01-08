@@ -3,7 +3,7 @@ package com.tokopedia.feedcomponent.view.viewmodel.post.poll
 /**
  * @author by milhamj on 12/12/18.
  */
-data class PollOptionViewModel(
+data class PollContentOptionViewModel(
         var optionId: String = "0",
         var option: String = "",
         var imageUrl: String = "",

@@ -131,6 +131,7 @@ public class FeedPlusPresenter
         getNextPageFeed();
     }
 
+    @Override
     public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
         String PARAM_SHOP_DOMAIN = "shop_domain";
         String PARAM_SRC = "src";
@@ -163,10 +164,12 @@ public class FeedPlusPresenter
                     stringBuilder.append(
                             MethodChecker.fromHtml(promotedShopViewModel.getShop().getName())
                     ).append(" ");
+
                     if (promotedShopViewModel.isFavorit()) {
                         stringBuilder.append(
                                 viewListener.getString(R.string.shop_success_unfollow)
                         );
+
                     } else {
                         stringBuilder.append(
                                 viewListener.getString(R.string.shop_success_follow)
@@ -253,6 +256,11 @@ public class FeedPlusPresenter
 
     @Override
     public void toggleFavoriteShop(int rowNumber, String shopId) {
+        toggleFavoriteShop(rowNumber, 0, shopId);
+    }
+
+    @Override
+    public void toggleFavoriteShop(int rowNumber, int adapterPosition, String shopId) {
         doFavoriteShopUseCase.execute(
                 ToggleFavouriteShopUseCase.createRequestParam(shopId),
                 new Subscriber<Boolean>() {

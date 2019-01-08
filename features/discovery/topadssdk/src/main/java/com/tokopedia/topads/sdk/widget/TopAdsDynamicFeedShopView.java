@@ -21,8 +21,6 @@ import java.util.List;
  */
 public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsClickListener {
 
-
-    private RecyclerView recommendationRv;
     private DynamicFeedShopAdapter adapter;
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
@@ -47,7 +45,7 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new DynamicFeedShopAdapter(this);
 
-        recommendationRv = findViewById(R.id.recommendationRv);
+        RecyclerView recommendationRv = findViewById(R.id.recommendationRv);
         recommendationRv.setAdapter(adapter);
     }
 

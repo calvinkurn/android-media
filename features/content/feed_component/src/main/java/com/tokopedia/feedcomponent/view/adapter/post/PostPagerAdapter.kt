@@ -13,7 +13,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapt
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
 
@@ -39,7 +39,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
         val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
             is ImagePostViewModel -> ImagePostViewHolder(imagePostListener) as BasePostViewHolder<BasePostViewModel>
             is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
-            is PollViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
+            is PollContentViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")

@@ -1,7 +1,5 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +32,6 @@ public class DynamicFeedShopAdapter
     private final LocalAdsClickListener itemClickListener;
 
     private List<Data> list = new ArrayList<>();
-    private int positionInFeed = 0;
 
     public DynamicFeedShopAdapter(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
@@ -65,13 +62,9 @@ public class DynamicFeedShopAdapter
         notifyDataSetChanged();
     }
 
-    public void setPositionInFeed(int positionInFeed) {
-        this.positionInFeed = positionInFeed;
-    }
-
     class DynamicFeedShopViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
-        private ImageView ivImageLeft, ivImageMiddle, ivImageRight, ivProfile;
+        private ImageView ivImageLeft, ivImageMiddle, ivImageRight, ivProfile, ivBadge;
         private TextView tvDescription, tvName;
         private ButtonCompat btnFollow;
         private ImageLoader imageLoader;
@@ -85,6 +78,7 @@ public class DynamicFeedShopAdapter
             this.ivImageMiddle = itemView.findViewById(R.id.ivImageMiddle);
             this.ivImageRight = itemView.findViewById(R.id.ivImageRight);
             this.ivProfile = itemView.findViewById(R.id.ivProfile);
+            this.ivBadge = itemView.findViewById(R.id.ivBadge);
             this.tvDescription = itemView.findViewById(R.id.tvDescription);
             this.tvName = itemView.findViewById(R.id.tvName);
             this.btnFollow = itemView.findViewById(R.id.btnFollow);
@@ -107,27 +101,21 @@ public class DynamicFeedShopAdapter
                 loadImageOrDefault(ivImageRight, imageProductList.get(2).getImageUrl());
             }
 
-
             Shop shop = data.getShop();
             imageLoader.loadImage(shop, ivProfile);
-            if (shop.isGoldShopBadge()) {
-                setShopBadge(R.drawable.ic_gold);
-            } else if (shop.isShop_is_official()) {
-                setShopBadge(R.drawable.ic_official);
-            } else {
-                tvName.setCompoundDrawables(null, null, null, null);
-            }
-
             tvName.setText(fromHtml(shop.getName()));
             tvDescription.setText(fromHtml(shop.getCity()));
+
+            bindFavorite(data);
+            bindBadge(shop);
         }
 
         private void initListener(Data data) {
             itemView.setOnClickListener(v ->
-                    itemClickListener.onShopItemClicked(positionInFeed, data)
+                    itemClickListener.onShopItemClicked(getAdapterPosition(), data)
             );
             btnFollow.setOnClickListener(v ->
-                    itemClickListener.onAddFavorite(positionInFeed, data)
+                    itemClickListener.onAddFavorite(getAdapterPosition(), data)
             );
         }
 
@@ -142,18 +130,6 @@ public class DynamicFeedShopAdapter
             }
         }
 
-        private void setShopBadge(int drawable) {
-            Resources resources = tvName.getContext().getResources();
-            Drawable shopBadge = resources.getDrawable(drawable);
-            shopBadge.setBounds(
-                    0,
-                    0,
-                    resources.getDimensionPixelOffset(R.dimen.feed_badge_size),
-                    resources.getDimensionPixelOffset(R.dimen.feed_badge_size)
-            );
-            tvName.setCompoundDrawables(shopBadge, null, null, null);
-        }
-
         private Spanned fromHtml(String string) {
             if (string == null) {
                 string = "";
@@ -166,6 +142,34 @@ public class DynamicFeedShopAdapter
                 result = Html.fromHtml(string);
             }
             return result;
+        }
+
+        private void bindFavorite(Data data) {
+            if (data.isFavorit()) {
+                btnFollow.setButtonCompatType(ButtonCompat.SECONDARY);
+                btnFollow.setText(btnFollow.getContext().getString(R.string.topads_following));
+            } else {
+                btnFollow.setButtonCompatType(ButtonCompat.PRIMARY);
+                btnFollow.setText(btnFollow.getContext().getString(R.string.topads_follow));
+            }
+        }
+
+        private void bindBadge(Shop shop) {
+            if (shop.isGoldShopBadge()) {
+                ivBadge.setVisibility(View.VISIBLE);
+                ivBadge.setImageDrawable(
+                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_gold)
+                );
+
+            } else if (shop.isShop_is_official()) {
+                ivBadge.setVisibility(View.VISIBLE);
+                ivBadge.setImageDrawable(
+                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_official)
+                );
+
+            } else {
+                ivBadge.setVisibility(View.GONE);
+            }
         }
     }
 }
