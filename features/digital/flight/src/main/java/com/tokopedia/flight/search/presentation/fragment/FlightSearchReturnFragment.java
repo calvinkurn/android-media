@@ -25,6 +25,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultVi
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchReturnPresenter;
+import com.tokopedia.common.travel.widget.DepartureTripLabelView;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     @Inject
     FlightSearchReturnPresenter flightSearchReturnPresenter;
 
-    private TextView departureHeaderLabel;
+    private DepartureTripLabelView departureHeaderLabel;
     private TextView airlineName;
     private TextView duration;
     private String selectedFlightDeparture;
