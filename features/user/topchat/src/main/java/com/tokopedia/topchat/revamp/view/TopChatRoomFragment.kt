@@ -19,7 +19,7 @@ import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.R
+import com.tokopedia.topchat.R
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.design.component.Dialog
