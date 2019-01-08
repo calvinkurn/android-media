@@ -69,6 +69,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     @Override
     public void changeToDigitalWidget() {
         viewPagerChannel.setVisibility(View.GONE);
+        viewPagerWidget.setVisibility(View.VISIBLE);
         if (widgetHomePagerAdapter == null) {
             widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
         }
