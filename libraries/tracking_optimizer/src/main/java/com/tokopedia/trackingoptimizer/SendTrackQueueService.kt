@@ -10,6 +10,7 @@ import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_ACTION
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_CATEGORY
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_LABEL
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.OPEN_SCREEN
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.SCREEN_NAME
 import com.tokopedia.trackingoptimizer.db.model.*
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
@@ -158,15 +159,17 @@ class SendTrackQueueService : Service(), CoroutineScope {
         val map = mutableMapOf<String, Any?>()
         val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,
                 object : TypeToken<EventModel>() {}.type)
-        map.put(EVENT, eventModel.event)
+        //merge with screen name
+        if (!screenName.isNullOrEmpty()) {
+            map.put(EVENT, OPEN_SCREEN)
+            map.put(SCREEN_NAME, screenName)
+            screenName = null
+        } else {
+            map.put(EVENT, eventModel.event)
+        }
         map.put(EVENT_CATEGORY, eventModel.category)
         map.put(EVENT_ACTION, eventModel.action)
         map.put(EVENT_LABEL, eventModel.label)
-        //merge with screen name
-        if (!screenName.isNullOrEmpty()) {
-            map.put(OPEN_SCREEN, screenName)
-            screenName = null
-        }
         val customDimensionMap = HashMapJsonUtil.jsonToMap(it.customDimension)
         if (customDimensionMap != null && customDimensionMap.isNotEmpty()) {
             map.putAll(customDimensionMap)
