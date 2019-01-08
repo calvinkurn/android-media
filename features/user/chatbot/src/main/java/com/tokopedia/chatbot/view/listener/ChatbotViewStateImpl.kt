@@ -52,7 +52,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.adapter = quickReplyAdapter
 
         pickerButton.setOnClickListener {
-            onAttachImageClicked
+            onAttachImageClicked()
         }
 
     }

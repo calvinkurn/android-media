@@ -93,7 +93,7 @@
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/tv_buy"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/separator"
@@ -109,10 +109,10 @@
 
     <ImageView
         android:id="@+id/ic_add_to_cart"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:layout_below="@id/separator"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_toLeftOf="@+id/tv_buy"
         android:gravity="center"
         android:src="@drawable/ic_check"

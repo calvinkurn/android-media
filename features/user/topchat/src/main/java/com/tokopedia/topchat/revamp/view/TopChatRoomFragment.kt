@@ -59,7 +59,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     @Inject
     lateinit var analytics: TopChatAnalytics
 
+    @Inject
     lateinit var session: UserSessionInterface
+
     private lateinit var alertDialog: Dialog
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 112
