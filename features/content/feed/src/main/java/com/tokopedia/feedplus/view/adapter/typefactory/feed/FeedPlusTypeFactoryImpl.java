@@ -15,10 +15,12 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
@@ -240,6 +242,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(@NotNull TopadsShopViewModel topadsShopViewModel) {
+        return TopadsShopViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -304,6 +311,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         }
         else if (type == BannerViewHolder.Companion.getLAYOUT()) {
             viewHolder = new BannerViewHolder(view, bannerListener, cardTitleListener);
+        }
+        else if (type == TopadsShopViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new TopadsShopViewHolder(view, topAdsItemClickListener, cardTitleListener);
         }
         else
             viewHolder = super.createViewHolder(view, type);

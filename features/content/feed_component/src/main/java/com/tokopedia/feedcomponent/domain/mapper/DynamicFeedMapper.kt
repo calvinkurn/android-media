@@ -20,6 +20,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.functions.Func1
 import javax.inject.Inject
@@ -38,6 +39,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val CONTENT_YOUTUBE = "youtube"
         private const val CONTENT_VOTE = "vote"
         private const val CONTENT_GRID = "productgrid"
+
+        private const val ACTIVITY_TOPADS = "topads"
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -54,8 +57,18 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
                 when (feed.type) {
                     TYPE_CARDBANNER -> posts.add(mapCardBanner(feed, templateData.template))
-                    TYPE_CARDRECOM -> posts.add(mapCardRecommendation(feed, templateData.template))
-                    TYPE_CARDPOST -> posts.add(mapCardPost(feed, templateData.template))
+                    TYPE_CARDRECOM -> {
+                        if (feed.activity != ACTIVITY_TOPADS) {
+                            posts.add(mapCardRecommendation(feed, templateData.template))
+                        } else {
+                            posts.add(mapTopadsShop(feed, templateData.template))
+                        }
+                    }
+                    TYPE_CARDPOST -> {
+                        if (feed.activity != ACTIVITY_TOPADS) {
+                            posts.add(mapCardPost(feed, templateData.template))
+                        }
+                    }
                 }
             }
 
@@ -88,6 +101,14 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return BannerViewModel(
                 bannerList,
                 feed.content.cardbanner.title,
+                template
+        )
+    }
+
+    private fun mapTopadsShop(feed: Feed, template: Template): TopadsShopViewModel {
+        return TopadsShopViewModel(
+                feed.content.cardRecommendation.title,
+                feed.tracking.topads,
                 template
         )
     }

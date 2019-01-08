@@ -16,6 +16,9 @@ data class Feed (
     @SerializedName("type")
     @Expose
     val type: String = "",
+    @SerializedName("activity")
+    @Expose
+    val activity: String = "",
     @SerializedName("content")
     @Expose
     val content: Content = Content(),
