@@ -249,6 +249,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         recyclerView.setAdapter(orderListAdapter);
         quickSingleFilterView.setListener(this);
         simpleSearchView.setListener(this);
+        simpleSearchView.setResetListener(this);
     }
 
     private void addRecyclerListener() {
@@ -455,7 +456,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderOrderStatus(List<QuickFilterItem> filterItems) {
-        quickSingleFilterView.setDefaultItem(filterItems.get(0));
+        quickSingleFilterView.setDefaultItem(null);
         quickSingleFilterView.renderFilter(filterItems);
     }
 
@@ -483,15 +484,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        Log.d("Naveen","String Submitted" + text);
         searchedString = text;
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        Log.d("Naveen","String Entered" + text);
         if (text.length() >= 3) {
             searchedString = text;
+            presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, 1, 1);
+        } else {
+            searchedString = "";
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, 1, 1);
         }
     }
@@ -499,7 +501,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onSearchReset() {
         searchedString = "";
-
     }
 }
 

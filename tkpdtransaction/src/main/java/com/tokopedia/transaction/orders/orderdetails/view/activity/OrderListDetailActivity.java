@@ -17,6 +17,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -53,7 +54,9 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
             if (category.contains(OrderCategory.DIGITAL)) {
                 return OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL);
-            } else if (category.contains("")) {
+            } else if (category.contains("MARKETPLACE")) {
+                return MarketPlaceDetailFragment.getInstance(orderId, OrderCategory.MARKETPLACE);
+            } else if(category.contains("")) {
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment);
             }
         }

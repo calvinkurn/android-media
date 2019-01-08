@@ -96,6 +96,36 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/product_info_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:visibility="gone"
+                android:text="@string/product_info_label"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
                 android:id="@+id/detail_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,6 +182,19 @@
                 android:text="@string/info_label"
                 android:textSize="@dimen/font_medium"
                 android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/info_payment_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:orientation="vertical" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/grey_300" />
 
             <LinearLayout
                 android:id="@+id/info_value"
@@ -160,6 +203,9 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:orientation="vertical" />
+
+
+
 
             <View
                 android:layout_width="match_parent"

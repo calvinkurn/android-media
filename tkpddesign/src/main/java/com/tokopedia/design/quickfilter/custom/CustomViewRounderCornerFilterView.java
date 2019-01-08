@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 
 public class CustomViewRounderCornerFilterView extends QuickSingleFilterView {
@@ -39,4 +40,12 @@ public class CustomViewRounderCornerFilterView extends QuickSingleFilterView {
     protected int getLayoutRes() {
         return R.layout.widget_rounded_corner_filter;
     }
+
+    protected String getDefaultSelectedFilterType(QuickFilterItem quickFilterItem) {
+        if (quickFilterItem.isSelected()) {
+            return quickFilterItem.getType();
+        }
+        return "0";
+    }
+
 }

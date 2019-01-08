@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -19,13 +22,17 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
@@ -40,23 +47,21 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.ProductItemAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
-import javax.inject.Inject;
-
-import com.tokopedia.transaction.orders.common.view.DoubleTextView;
+import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
-/**
- * Created by baghira on 09/05/18.
- */
-public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
+import javax.inject.Inject;
+
+public class MarketPlaceDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
@@ -83,6 +88,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView helpLabel;
     TextView primaryActionBtn;
     TextView secondaryActionBtn;
+    RecyclerView itemsRecyclerView;
+    TextView productInformationTitle;
+    LinearLayout paymentMethod;
     private boolean isSingleButton;
 
 
@@ -100,7 +108,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
         bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
-        Fragment fragment = new OrderListDetailFragment();
+        Fragment fragment = new MarketPlaceDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -126,6 +134,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         helpLabel = view.findViewById(R.id.help_label);
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
+        itemsRecyclerView = view.findViewById(R.id.rv_items);
+        productInformationTitle = view.findViewById(R.id.product_info_label);
+        paymentMethod = view.findViewById(R.id.info_payment_method);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -192,6 +203,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setDetail(Detail detail) {
+        detailLabel.setText("Detail Pengiriman");
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
@@ -220,6 +232,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setPricing(Pricing pricing) {
+        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+        doubleTextView.setTopText(pricing.label());
+        doubleTextView.setBottomText(pricing.value());
+        doubleTextView.setBottomTextSize(16);
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        infoValue.addView(doubleTextView);
     }
 
     @Override
@@ -229,8 +247,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
-        infoValue.addView(doubleTextView);
-
+        paymentMethod.addView(doubleTextView);
     }
 
     @Override
@@ -240,12 +257,52 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void showDropshipperInfo(DropShipper dropShipper) {
-
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 20, 0, 20);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dropshipper_info, null);
+        TextView dropShipperName = view.findViewById(R.id.dropShipper_name);
+        TextView dropShipperNumber = view.findViewById(R.id.dropShipper_phone);
+        if (dropShipper != null) {
+            if (!TextUtils.isEmpty(dropShipper.getDropShipperName())) {
+                dropShipperName.setText(dropShipper.getDropShipperName());
+            }
+            if (!TextUtils.isEmpty(dropShipper.getDropShipperPhone())) {
+                dropShipperNumber.setText(dropShipper.getDropShipperPhone());
+            }
+            view.setLayoutParams(params);
+            detailContent.addView(view);
+        }
     }
 
     @Override
     public void showDriverInfo(DriverDetails driverDetails) {
 
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 20, 0, 20);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.driver_info, null);
+        ImageView driverImage = view.findViewById(R.id.driver_img);
+        TextView driverName = view.findViewById(R.id.driver_name);
+        TextView driverNum = view.findViewById(R.id.driver_phone);
+        TextView driverlicense = view.findViewById(R.id.driver_license);
+        Button callDriver = view.findViewById(R.id.call_driver);
+
+        if (driverDetails != null) {
+            if (!TextUtils.isEmpty(driverDetails.getPhotoUrl())) {
+                ImageHandler.loadImageCircle2(getContext(), driverImage, driverDetails.getPhotoUrl());
+            }
+            if (!TextUtils.isEmpty(driverDetails.getDriverName())) {
+                driverName.setText(driverDetails.getDriverName());
+            }
+            if (!TextUtils.isEmpty(driverDetails.getDriverPhone())) {
+                driverNum.setText(driverDetails.getDriverPhone());
+                callDriver.setVisibility(View.VISIBLE);
+            }
+            if (!TextUtils.isEmpty(driverDetails.getLicenseNumber())) {
+                driverlicense.setText(driverDetails.getLicenseNumber());
+            }
+            view.setLayoutParams(params);
+            detailContent.addView(view);
+        }
     }
 
     @Override
@@ -365,7 +422,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setItems(List<Items> items) {
-
+        productInformationTitle.setVisibility(View.VISIBLE);
+        itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter));
     }
 
     @Override
@@ -386,5 +445,4 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setMainViewVisible(int visibility) {
         mainView.setVisibility(visibility);
     }
-
 }

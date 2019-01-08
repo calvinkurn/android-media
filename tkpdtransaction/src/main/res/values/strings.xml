@@ -263,6 +263,7 @@
     <string name="info_label">Informasi Pembayaran</string>
     <string name="lihat_detail">Lihat Detail</string>
     <string name="detail_label">Detail Pembelian</string>
+    <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>
     <string name="status">Status</string>
     <string name="top_btn_text">langannan</string>

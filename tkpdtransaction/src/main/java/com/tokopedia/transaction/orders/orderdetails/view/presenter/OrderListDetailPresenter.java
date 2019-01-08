@@ -13,7 +13,6 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
-import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
@@ -55,22 +54,31 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment) {
-        if(getView().getAppContext()==null)
+        if (getView().getAppContext() == null)
             return;
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(ORDER_CATEGORY, orderCategory);
-        variables.put(ORDER_ID, orderId);
-        variables.put(DETAIL, 1);
-        if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
-            variables.put(ACTION, 0);
-        } else {
-            variables.put(ACTION, 1);
-        }
-        variables.put(UPSTREAM, "");
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.orderdetails), DetailsData.class, variables);
+        GraphqlRequest graphqlRequest;
+        Map<String, Object> variables = new HashMap<>();
+        if (orderCategory.equalsIgnoreCase("marketplace")) {
+            variables.put("orderCategory", orderCategory);
+            variables.put(ORDER_ID, orderId);
+            graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                    R.raw.orderdetail_marketplace), DetailsData.class, variables);
+        } else {
+            variables.put(ORDER_CATEGORY, orderCategory);
+            variables.put(ORDER_ID, orderId);
+            variables.put(DETAIL, 1);
+            if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
+                variables.put(ACTION, 0);
+            } else {
+                variables.put(ACTION, 1);
+            }
+            variables.put(UPSTREAM, "");
+            graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                    R.raw.orderdetails), DetailsData.class, variables);
+        }
 
 
         orderDetailsUseCase.addRequest(graphqlRequest);
@@ -82,7 +90,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("error occured"+e);
+                CommonUtils.dumper("error occured" + e);
             }
 
             @Override
@@ -122,7 +130,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        CommonUtils.dumper("error occured"+e);
+                        CommonUtils.dumper("error occured" + e);
                     }
 
                     @Override
@@ -132,8 +140,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             ActionButtonList data = response.getData(ActionButtonList.class);
                             actionButtonList = data.getActionButtonList();
                             if (actionButtonList != null)
-                                if(flag) {
-                                view.setTapActionButton(position, actionButtonList);
+                                if (flag) {
+                                    view.setTapActionButton(position, actionButtonList);
                                 } else {
                                     view.setActionButton(position, actionButtonList);
                                 }
@@ -157,8 +165,19 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
         getView().setInvoice(details.invoice());
         getView().setOrderToken(details.orderToken());
-        for (Detail detail : details.detail()) {
-            getView().setDetail(detail);
+        for (int i = 0; i < details.detail().size(); i++) {
+            if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone()) && i == 2) {
+                //show dropShipper
+                getView().showDropshipperInfo(details.getDropShipper());
+
+            } else if (details.getDriverDetails() != null && i == 3) {
+                //show Driver information
+                getView().showDriverInfo(details.getDriverDetails());
+            }
+            getView().setDetail(details.detail().get(i));
+        }
+        if (details.getItems() != null && details.getItems().size() > 0) {
+            getView().setItems(details.getItems());
         }
         if (details.getItems() != null && details.getItems().size() > 0) {
             getView().setItems(details.getItems());
@@ -179,7 +198,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs());
+//        getView().setContactUs(details.contactUs());
 
         if (details.actionButtons().size() == 2) {
             ActionButton leftActionButton = details.actionButtons().get(0);

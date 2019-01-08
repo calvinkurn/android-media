@@ -58,7 +58,17 @@ public class OrderDetails {
     @Expose
     private List<Items> items;
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items) {
+    @SerializedName("driverDetails")
+    @Expose
+    private DriverDetails driverDetails;
+
+    @SerializedName("dropShipper")
+    @Expose
+    private DropShipper dropShipper;
+
+
+
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -73,7 +83,8 @@ public class OrderDetails {
         this.contactUs = contactUs;
         this.actionButtons = actionButtons;
         this.items = items;
-
+        this.driverDetails = driverDetails;
+        this.dropShipper = dropShipper;
     }
 
     public Status status() {
@@ -132,6 +143,14 @@ public class OrderDetails {
         return items;
     }
 
+    public DriverDetails getDriverDetails() {
+        return driverDetails;
+    }
+
+    public DropShipper getDropShipper() {
+        return dropShipper;
+    }
+
     @Override
     public String toString() {
         return "[OrderDetails:{"
@@ -148,7 +167,9 @@ public class OrderDetails {
                 + "paymentData="+paymentData +","
                 + "contactUs="+contactUs +","
                 + "actionButtons="+actionButtons + ","
-                + "items="+items
+                + "items="+items + ","
+                + "driverDetails="+driverDetails +","
+                + "dropShipper="+dropShipper
                 + "}]";
     }
 }

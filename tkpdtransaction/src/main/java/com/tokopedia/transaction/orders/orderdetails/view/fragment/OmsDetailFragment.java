@@ -30,6 +30,8 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
+import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
+import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
@@ -379,6 +381,16 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setButtonMargin() {
         isSingleButton = true;
+    }
+
+    @Override
+    public void showDropshipperInfo(DropShipper dropShipper) {
+
+    }
+
+    @Override
+    public void showDriverInfo(DriverDetails driverDetails) {
+
     }
 
     @Override

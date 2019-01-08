@@ -8,6 +8,8 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
+import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
+import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
@@ -64,6 +66,11 @@ public interface OrderListDetailContract {
         void setPayMethodInfo(PayMethod payMethod);
 
         void setButtonMargin();
+
+        void showDropshipperInfo(DropShipper dropShipper);
+
+        void showDriverInfo(DriverDetails driverDetails);
+
     }
 
     public interface Presenter extends CustomerPresenter<View>{
