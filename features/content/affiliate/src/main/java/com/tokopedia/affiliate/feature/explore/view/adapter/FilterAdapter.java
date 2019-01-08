@@ -24,6 +24,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     public interface OnFilterClickedListener {
         void onItemClicked(FilterViewModel filter);
+        void loadDataWithoutFilter();
     }
 
     private List<FilterViewModel> filterList = new ArrayList<>();
@@ -57,8 +58,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     private void initViewListener(Holder holder, FilterViewModel filter) {
         holder.cardView.setOnClickListener(v -> {
-            filterClickedListener.onItemClicked(filter);
-            enableCurrentItem(filter);
+            if (enableCurrentItem(filter)) {
+                filterClickedListener.onItemClicked(filter);
+            } else {
+                filterClickedListener.loadDataWithoutFilter();
+            }
         });
     }
 
@@ -67,11 +71,16 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 R.color.filter_background_active :
                 R.color.filter_background_inactive);
     }
-    private void enableCurrentItem(FilterViewModel filter) {
+    private boolean enableCurrentItem(FilterViewModel filter) {
         for (FilterViewModel item: filterList) {
-            item.setSelected(item.getName().equals(filter.getName()));
+            if (item.getName().equals(filter.getName()) && item.isSelected()) {
+                item.setSelected(false);
+                return false;
+            }
+            else item.setSelected(item.getName().equals(filter.getName()));
         }
         notifyDataSetChanged();
+        return true;
     }
 
     public List<FilterViewModel> getFilterList() {

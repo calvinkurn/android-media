@@ -412,7 +412,13 @@ public class ExploreFragment
             public void onItemClicked(FilterViewModel filter) {
 
             }
+
+            @Override
+            public void loadDataWithoutFilter() {
+                loadFirstData(false);
+            }
         };
+
     }
 
     @Override
