@@ -18,7 +18,6 @@ class TrackingEEFullDataSource(context: Context) :
 
     override fun put(event: EventModel, customDimension: HashMap<String, Any>?,
                      enhanceECommerceMap: HashMap<String, Any>?) {
-        Log.i(TAG, "$event ; $customDimension ; $enhanceECommerceMap")
         trackingDatabaseDao.insertSingle(
                 TrackingEEFullDbModel().apply {
                     this.event = GsonSingleton.instance.toJson(event)
@@ -30,7 +29,6 @@ class TrackingEEFullDataSource(context: Context) :
 
     fun put(event: String, customDimension: String,
             enhanceECommerceMapString: String) {
-        Log.i(TAG, "$event ; $customDimension ; $enhanceECommerceMapString")
         trackingDatabaseDao.insertSingle(
                 TrackingEEFullDbModel().apply {
                     this.event = event
@@ -42,7 +40,6 @@ class TrackingEEFullDataSource(context: Context) :
 
     fun put(event: String, customDimension: String,
             enhanceECommerceMap: HashMap<String, Any>?) {
-        Log.i(TAG, "$event ; $customDimension ; $enhanceECommerceMap")
         trackingDatabaseDao.insertSingle(
                 TrackingEEFullDbModel().apply {
                     this.event = event
@@ -53,12 +50,7 @@ class TrackingEEFullDataSource(context: Context) :
     }
 
     override fun put(model: TrackingEEFullDbModel) {
-        Log.i(TAG, "$model")
         trackingDatabaseDao.insertSingle(model)
-    }
-
-    companion object {
-        const val TAG = "TrackQueueEEDSFull"
     }
 
 }

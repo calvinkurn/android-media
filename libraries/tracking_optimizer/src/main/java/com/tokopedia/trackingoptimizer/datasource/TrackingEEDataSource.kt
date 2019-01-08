@@ -18,7 +18,6 @@ class TrackingEEDataSource(context: Context) :
 
     override fun put(event: EventModel, customDimension: HashMap<String, Any>?,
                      enhanceECommerceMap: HashMap<String, Any>?) {
-        Log.i(TAG, "$event ; $customDimension ; $enhanceECommerceMap")
         trackingDatabaseDao.insertSingle(
                 TrackingEEDbModel().apply {
                     this.key = event.key
@@ -30,14 +29,7 @@ class TrackingEEDataSource(context: Context) :
     }
 
     override fun put(model: TrackingEEDbModel) {
-        if (BuildConfig.DEBUG) {
-            Log.i(TAG, "$model")
-        }
         trackingDatabaseDao.insertSingle(model)
-    }
-
-    companion object {
-        const val TAG = "TrackQueueDSEE"
     }
 
 }

@@ -17,7 +17,6 @@ class TrackingRegularDataSource(context: Context) :
 
     override fun put(event: EventModel, customDimension: HashMap<String, Any>?,
                      enhanceECommerceMap: HashMap<String, Any>?) {
-        Log.i(TAG, "$event ; $customDimension")
         trackingDatabaseDao.insertSingle(
                 TrackingRegularDbModel().apply {
                     this.event = GsonSingleton.instance.toJson(event)
@@ -28,10 +27,6 @@ class TrackingRegularDataSource(context: Context) :
 
     override fun put(model: TrackingRegularDbModel) {
         trackingDatabaseDao.insertSingle(model)
-    }
-
-    companion object {
-        const val TAG = "TrackQueueDSReg"
     }
 
 }

@@ -51,8 +51,6 @@ class SendTrackQueueService : Service(), CoroutineScope {
     companion object {
         var atomicInteger = AtomicInteger()
         val doMergeScreenName = true
-        const val TAG = "TrackQueueService"
-        const val TAG_EE = "TrackQueueServiceEE"
         fun start(context: Context) {
             // allowing only 1 service at a time
             if (atomicInteger.get() < 1) {
@@ -73,7 +71,6 @@ class SendTrackQueueService : Service(), CoroutineScope {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         atomicInteger.getAndIncrement()
         launch {
-            Log.i(TAG, "Start")
             val screenNameDbModelList = trackingRepository.getAllScreenName()
 
             var deleteScreenNameJob: Job? = null
@@ -134,7 +131,6 @@ class SendTrackQueueService : Service(), CoroutineScope {
             deleteEEJob.join()
             deleteRegularJob.join()
             decreaseCounter()
-            Log.i(TAG, "End")
             stopSelf()
         }
         return Service.START_NOT_STICKY
@@ -185,13 +181,11 @@ class SendTrackQueueService : Service(), CoroutineScope {
             }
             if (enhanceECommerceMap != null && enhanceECommerceMap.isNotEmpty()) {
                 map.putAll(enhanceECommerceMap)
-                Log.i(TAG_EE, "${eventModel.event} size ${HashMapJsonUtil.findList(enhanceECommerceMap)?.size}")
                 trackingOptimizerRouter?.sendEnhanceECommerceTracking(map)
                 hasSent = true
             }
         }
         if (!hasSent) {
-            Log.i(TAG, "$map")
             trackingOptimizerRouter?.sendEventTracking(map)
         }
     }
