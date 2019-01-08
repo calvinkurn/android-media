@@ -26,6 +26,7 @@ import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilter
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheet;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
@@ -219,6 +220,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
         orderLabelList = arguments.getParcelable(ORDER_TAB_LIST);
+        selectedFilter = arguments.getString(OrderListContants.ORDER_FILTER_ID);
     }
 
     protected void initView(View view) {

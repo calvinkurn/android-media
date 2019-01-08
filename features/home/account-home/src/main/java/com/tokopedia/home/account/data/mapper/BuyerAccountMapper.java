@@ -313,7 +313,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_waiting_for_confirmation,
                 context.getString(R.string.label_menu_waiting_confirmation),
-                ApplinkConst.PURCHASE_CONFIRMED,
+                ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION,
                 isNotNull ? accountModel.getNotifications().getBuyerOrder().getConfirmed() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction));
@@ -322,7 +322,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_order_processed,
                 context.getString(R.string.label_menu_order_processed),
-                ApplinkConst.PURCHASE_PROCESSED,
+                ApplinkConst.MARKETPLACE_ORDER_PROCESSED,
                 isNotNull ? accountModel.getNotifications().getBuyerOrder().getProcessed() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)
@@ -332,7 +332,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipping),
-                ApplinkConst.PURCHASE_SHIPPED,
+                ApplinkConst.MARKETPLACE_SENT,
                 isNotNull ? accountModel.getNotifications().getBuyerOrder().getShipped() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)
@@ -342,7 +342,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_delivered),
-                ApplinkConst.PURCHASE_DELIVERED,
+                ApplinkConst.MARKETPLACE_DELIVERED,
                 isNotNull ? accountModel.getNotifications().getBuyerOrder().getArriveAtDestination() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)

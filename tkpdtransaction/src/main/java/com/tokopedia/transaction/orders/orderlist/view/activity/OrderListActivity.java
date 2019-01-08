@@ -66,7 +66,7 @@ public class OrderListActivity extends BaseSimpleActivity
                 .setData(uri.build())
                 .putExtras(bundle);
     }
-    @DeepLink(ApplinkConst.MARKETPLACE_ORDER)
+    @DeepLink({ApplinkConst.MARKETPLACE_ORDER,ApplinkConst.MARKETPLACE_ORDER_FILTER})
     public static Intent getMarketPlaceOrderListIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putString(ORDER_CATEGORY, OrderCategory.MARKETPLACE);
