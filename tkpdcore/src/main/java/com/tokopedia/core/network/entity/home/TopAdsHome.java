@@ -34,6 +34,7 @@ public class TopAdsHome {
         private Headline headline;
         @SerializedName("applinks")
         private String applinks;
+        public boolean isSelected;
 
         public String getId() {
             return id;
