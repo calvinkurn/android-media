@@ -18,8 +18,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,10 +140,6 @@ public class ChatRoomContract {
 
         boolean isChatBot();
 
-        void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply);
-
-        void showQuickReplyView(QuickReplyListViewModel model);
-
         void onInvoiceSelected(InvoiceLinkPojo selectedInvoice);
 
         void showSearchInvoiceScreen();
@@ -216,6 +210,5 @@ public class ChatRoomContract {
 
         void doFollowUnfollowToggle(String shopId);
 
-        void sendQuickReply(String messageId, QuickReplyViewModel quickReply, String startTime);
     }
 }
