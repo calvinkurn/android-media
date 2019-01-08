@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.viewpager.WrapContentViewPager;
+import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase;
 import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
 import com.tokopedia.digital.widget.view.fragment.DigitalWidgetFragment;
 import com.tokopedia.digital.widget.view.listener.DigitalChannelFragmentInteraction;
@@ -31,6 +32,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     private TextView titleTextView;
     private TextView seeMoreTextView;
     private static final String APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2";
+    private DigitalRecommendationUseCase digitalRecommendationUseCase;
 
 
     public DigitalsViewHolder(HomeCategoryListener listener, FragmentManager fragmentManager, View itemView) {
@@ -64,8 +66,8 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     @Override
     public void changeToDigitalWidget() {
         digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
+        viewPager.removeAllViews();
         viewPager.setAdapter(digitalsHomePagerAdapter);
-        digitalsHomePagerAdapter.notifyDataSetChanged();
     }
 
     @Override

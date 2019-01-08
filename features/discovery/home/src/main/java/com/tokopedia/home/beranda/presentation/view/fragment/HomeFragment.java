@@ -408,8 +408,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getChildFragmentManager(),
                 this,
                 this,
-                this,
-                digitalWidgetRepository
+                this
         );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
