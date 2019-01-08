@@ -155,20 +155,29 @@ public class DynamicFeedShopAdapter
         }
 
         private void bindBadge(Shop shop) {
+            ViewGroup.MarginLayoutParams layoutParams
+                    = (ViewGroup.MarginLayoutParams) tvName.getLayoutParams();
+
             if (shop.isGoldShopBadge()) {
                 ivBadge.setVisibility(View.VISIBLE);
                 ivBadge.setImageDrawable(
                         ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_gold)
                 );
+                layoutParams.leftMargin =
+                        (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);
 
             } else if (shop.isShop_is_official()) {
                 ivBadge.setVisibility(View.VISIBLE);
                 ivBadge.setImageDrawable(
                         ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_official)
                 );
+                layoutParams.leftMargin =
+                        (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);
 
             } else {
                 ivBadge.setVisibility(View.GONE);
+                layoutParams.leftMargin =
+                        (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_0);
             }
         }
     }

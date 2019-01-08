@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -14,10 +13,5 @@
     <com.tokopedia.topads.sdk.widget.TopAdsDynamicFeedShopView
         android:id="@+id/topadsShop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        android:layout_height="wrap_content"/>
 </LinearLayout>
