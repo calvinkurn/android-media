@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll
+package com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll
 
 import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
@@ -28,7 +28,7 @@ class PollAdapter(private val positionInFeed: Int, private val pollViewModel: Po
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poll_option, parent, false)
-        return PollAdapter.OptionViewHolder(view, positionInFeed, pollViewModel, listener)
+        return OptionViewHolder(view, positionInFeed, pollViewModel, listener)
     }
 
     override fun getItemCount() = optionList.size
@@ -61,7 +61,7 @@ class PollAdapter(private val positionInFeed: Int, private val pollViewModel: Po
                 itemView.shadowLayer.visible()
                 itemView.percent.visible()
                 itemView.percentLayout.visible()
-                itemView.progressBar.progress = element.percentageNumber
+                itemView.progressBar.progress = element.percentage
                 if (element.selected == PollContentOptionViewModel.SELECTED) {
                     itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
                 } else if (element.selected == PollContentOptionViewModel.UNSELECTED) {
@@ -70,7 +70,7 @@ class PollAdapter(private val positionInFeed: Int, private val pollViewModel: Po
             }
 
             itemView.option.text = element.option
-            itemView.percent.text = element.percentageText
+            itemView.percent.text = element.percentage.toString()
             ImageHandler.loadImageWithTarget(
                     itemView.imageView.context,
                     element.imageUrl,

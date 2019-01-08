@@ -271,12 +271,37 @@ public class FeedPlusPresenter
 
                     @Override
                     public void onError(Throwable e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
 
+                        if (!isViewAttached()) {
+                            return;
+                        }
+
+                        getView().onErrorToggleFavoriteShop(
+                                ErrorHandler.getErrorMessage(getView().getContext(), e),
+                                rowNumber,
+                                adapterPosition,
+                                shopId
+                        );
                     }
 
                     @Override
                     public void onNext(Boolean success) {
-
+                        if (success) {
+                            getView().onSuccessToggleFavoriteShop(rowNumber, adapterPosition);
+                        } else {
+                            getView().onErrorToggleFavoriteShop(
+                                    ErrorHandler.getErrorMessage(
+                                            getView().getContext(),
+                                            new RuntimeException()
+                                    ),
+                                    rowNumber,
+                                    adapterPosition,
+                                    shopId
+                            );
+                        }
                     }
                 }
         );

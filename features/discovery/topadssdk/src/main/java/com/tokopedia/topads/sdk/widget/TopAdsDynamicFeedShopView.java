@@ -53,6 +53,10 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
         adapter.setList(dataList);
     }
 
+    public void notifyItemChanged(int position) {
+        adapter.notifyItemChanged(position);
+    }
+
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }

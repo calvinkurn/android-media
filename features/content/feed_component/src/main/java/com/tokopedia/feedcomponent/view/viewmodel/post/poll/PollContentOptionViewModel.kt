@@ -8,8 +8,7 @@ data class PollContentOptionViewModel(
         var option: String = "",
         var imageUrl: String = "",
         var redirectLink: String = "",
-        var percentageText: String = "0",
-        var percentageNumber: Int = 0,
+        var percentage: Int = 0,
         var selected: Int = 0
 ) {
     companion object {

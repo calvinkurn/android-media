@@ -197,7 +197,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     item.text,
                     item.thumbnail,
                     item.applink,
-                    item.percentage,
                     percentageNumber,
                     checkIfPollOptionSelected(media.isVoted, item.isSelected)
             ))

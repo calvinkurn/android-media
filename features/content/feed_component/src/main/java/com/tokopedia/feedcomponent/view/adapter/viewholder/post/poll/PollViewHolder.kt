@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll
 
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import kotlinx.android.synthetic.main.item_post_poll.view.*
 

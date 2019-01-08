@@ -39,9 +39,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
@@ -1321,30 +1322,33 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         if (adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
-            //TODO milhamj
-//            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
-//            for (BasePostViewModel basePostViewModel : model.getContentList()) {
-//                if (basePostViewModel instanceof PollContentViewModel) {
-//
-//                    PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
-//                    pollContentViewModel.setVoted(true);
-//                    pollContentViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
-//
-//                    for (int i = 0; i < pollContentViewModel.getOptionViewModels().size(); i++) {
-//                        PollOptionViewModel pollOptionViewModel
-//                                = pollContentViewModel.getOptionViewModels().get(i);
-//
-//                        pollOptionViewModel.setSelected(optionId.equals(pollOptionViewModel.getOptionId()) ?
-//                                PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
-//
-//                        String newPercentage
-//                                = voteStatisticDomainModel.getListOptions().get(i).getPercentage();
-//                        pollOptionViewModel.setPercentage(newPercentage);
-//                    }
-//                }
-//            }
-//
-//            adapter.notifyItemChanged(rowNumber);
+            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
+            for (BasePostViewModel basePostViewModel : model.getContentList()) {
+                if (basePostViewModel instanceof PollContentViewModel) {
+                    PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
+                    pollContentViewModel.setVoted(true);
+                    pollContentViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
+
+                    for (int i = 0; i < pollContentViewModel.getOptionList().size(); i++) {
+                        PollContentOptionViewModel optionViewModel
+                                = pollContentViewModel.getOptionList().get(i);
+
+                        optionViewModel.setSelected(optionId.equals(optionViewModel.getOptionId()) ?
+                                PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
+
+                        int newPercentage = 0;
+                        try {
+                            newPercentage = Integer.valueOf(
+                                    voteStatisticDomainModel.getListOptions().get(i).getPercentage()
+                            );
+                        } catch (NumberFormatException|IndexOutOfBoundsException ignored) {
+                        }
+                        optionViewModel.setPercentage(newPercentage);
+                    }
+                }
+            }
+
+            adapter.notifyItemChanged(rowNumber);
         }
 
 

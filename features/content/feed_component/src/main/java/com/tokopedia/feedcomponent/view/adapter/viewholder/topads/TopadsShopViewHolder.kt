@@ -4,7 +4,6 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,8 +20,6 @@ class TopadsShopViewHolder(v: View,
                            private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
                            private val cardTitleListener: CardTitleView.CardTitleListener)
     : AbstractViewHolder<TopadsShopViewModel>(v), TopAdsItemClickListener {
-
-    private var cardAdapter: RecommendationCardAdapter? = null
 
     companion object {
         @LayoutRes
@@ -49,9 +46,7 @@ class TopadsShopViewHolder(v: View,
         }
 
         val position = payloads[0] as Int
-        if (cardAdapter?.list?.size ?: 0 > position) {
-            cardAdapter?.notifyItemChanged(position)
-        }
+        itemView.topadsShop.notifyItemChanged(position)
     }
 
     override fun onProductItemClicked(position: Int, product: Product) {
