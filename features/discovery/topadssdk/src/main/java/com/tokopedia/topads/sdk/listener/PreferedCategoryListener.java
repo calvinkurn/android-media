@@ -8,6 +8,6 @@ public interface PreferedCategoryListener {
 
     void onSuccessLoadPrefered(int randomCategoryId);
 
-    void onErrorLoadPrefed();
+    void onErrorLoadPrefered();
 
 }

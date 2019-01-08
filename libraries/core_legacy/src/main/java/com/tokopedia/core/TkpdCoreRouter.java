@@ -134,4 +134,6 @@ public interface TkpdCoreRouter {
     SessionHandler legacySessionHandler();
 
     GCMHandler legacyGCMHandler();
+
+    void refereshFcmTokenToCMNotif(String token);
 }

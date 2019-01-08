@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.useridentification.KycUrl;
+import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
@@ -224,7 +225,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             @Override
             public void onClick(View widget) {
                 analytics.eventClickTermsFinalFormPage();
-                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
             }
 
             @Override

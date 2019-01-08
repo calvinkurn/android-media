@@ -62,6 +62,8 @@ ext {
     promoCheckoutVersion = '2.22'
     tkpdUserIdentification = '2.22'
     tkpdUserIdentificationCommon = '2.22'
+    tkpdTravelVersion = '2.22'
+
 
     //SCOPE TRANSACTION
     groupIdTransaction = 'com.tokopedia.transaction'
@@ -121,8 +123,8 @@ ext {
             loginphone              : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister           : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon           : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
-            loyalty                     : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
-            loyaltyCommon               : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
+            loyalty                 : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            loyaltyCommon           : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
             mitraToppers            : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             payment                 : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             paymentSetting          : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
@@ -156,6 +158,7 @@ ext {
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon          : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
+            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -163,9 +166,9 @@ ext {
             nps                           : ":features:common:nps",
             developerOptions              : ":features:common:developer_options",
 
-            broadcastMessage            : ":features:communication:broadcast_message",
+            broadcastMessage              : ":features:communication:broadcast_message",
 //            broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
-            broadcastMessageCommon      : ":features:communication:broadcast_message_common",
+            broadcastMessageCommon        : ":features:communication:broadcast_message_common",
 
             feed                          : ":features:content:feed",
             explore                       : ":features:content:explore",
@@ -208,17 +211,12 @@ ext {
 //            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                  : ":features:logistic:logisticdata",
-//            logisticdata                : ":features:logistic:logisticdata_no_op",
             logisticanalytics             : ":features:logistic:logisticanalytics",
-//            logisticanalytics           : ":features:logistic:logisticanalytics_no_op",
             logisticinputreceiptshipment  : ":features:logistic:logisticinputreceiptshipment",
 //            logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment_no_op",
             logisticlistaddress           : ":features:logistic:logisticlistaddress",
-//            logisticlistaddress         : ":features:logistic:logisticlistaddress_no_op",
             logisticaddaddress            : ":features:logistic:logisticaddaddress",
-//            logisticaddaddress          : ":features:logistic:logisticaddaddress_no_op",
             logisticCommon                : ":features:logistic:logisticcommon",
-//            logisticCommon              : ":features:logistic:logisticcommon_no_op",
             tracking                      : ":features:logistic:tracking",
 //            tracking                    : ":features:logistic:tracking_no_op",
             logisticuploadawb             : ":features:logistic:logisticuploadawb",
@@ -226,7 +224,6 @@ ext {
             logisticgeolocation           : ":features:logistic:logisticgeolocation",
 //            logisticgeolocation         : ":features:logistic:logisticgeolocation_no_op",
             logisticdistrictrecommendation: ":features:logistic:district_recommendation",
-//            logisticdistrictrecommendation      : ":features:logistic:district_recommendation_no_op",
             logisticinsurance             : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
 
@@ -236,14 +233,14 @@ ext {
             goldMerchantResource          : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe         : ":features:merchant:gold_merchant_subscribe",
 //            goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe_no_op",
-            productDraftDatabase    : ":features:merchant:product_draft_database",
-            productManageItem       : ":features:merchant:product_manage_item",
-            productManageList       : ":features:merchant:product_manage_list",
-            productShare            : ":features:merchant:product_share",
-            reputation              : ":features:merchant:reputation",
-            reputationCommon        : ":features:merchant:reputation_common",
-            shopCommon              : ":features:merchant:shop_common",
-            shopOpen                : ":features:merchant:shop_open",
+            productDraftDatabase          : ":features:merchant:product_draft_database",
+            productManageItem             : ":features:merchant:product_manage_item",
+            productManageList             : ":features:merchant:product_manage_list",
+            productShare                  : ":features:merchant:product_share",
+            reputation                    : ":features:merchant:reputation",
+            reputationCommon              : ":features:merchant:reputation_common",
+            shopCommon                    : ":features:merchant:shop_common",
+            shopOpen                      : ":features:merchant:shop_open",
 //            shopOpen                    : ":features:merchant:shop_open_no_op",
             shopPage                      : ":features:merchant:shop_page",
 //            shopPage                    : ":features:merchant:shop_page_no_op",
@@ -263,12 +260,12 @@ ext {
 
             gallery                       : ":features:product:gallery",
 
-            gamification           : ":features:promo:gamification",
-            merchantVoucher        : ":features:promo:merchant_voucher",
-            tokopoints             : ":features:promo:tokopoints",
+            gamification                  : ":features:promo:gamification",
+            merchantVoucher               : ":features:promo:merchant_voucher",
+            tokopoints                    : ":features:promo:tokopoints",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
-            promoCheckout           : ":features:promo:promo_checkout",
-            promoCheckoutCommon     : ":features:promo:promo_checkout_common",
+            promoCheckout                 : ":features:promo:promo_checkout",
+            promoCheckoutCommon           : ":features:promo:promo_checkout_common",
 
             topAdsDashboard               : ":features:top_ads:top_ads_dashboard",
             //topAdsDashboard         : ":features:top_ads:top_ads_dashboard_no_op",
@@ -282,8 +279,8 @@ ext {
             transactionanalytics          : ":features:transaction:transactionanalytics",
             checkout                      : ":features:transaction:checkout",
             transactionInvoice            : ":features:transaction:transactioninvoice",
-            loyalty                     : ":features:promo:loyalty",
-            loyaltyCommon               : ":features:promo:loyalty_common",
+            loyalty                       : ":features:promo:loyalty",
+            loyaltyCommon                 : ":features:promo:loyalty_common",
 
             attachproduct                 : ":features:user:attachproduct",
             bankdb                        : ":features:user:bankdb",
@@ -297,6 +294,7 @@ ext {
             loginregister                 : ":features:user:loginregister",
             sessioncommon                 : ":features:user:sessioncommon",
             notifCenter                   : ":features:user:notifcenter",
+//            notifCenter                   : ":features:user:notifcenter_no_op",
             otp                           : ":features:user:otp",
             phoneVerification             : ":features:user:phoneverification",
             settingbank                   : ":features:user:settingbank",
@@ -315,6 +313,7 @@ ext {
             seller                        : ":tkpdseller",
             session                       : ":tkpdsession",
             transaction                   : ":tkpdtransaction",
-            transactioncommon             : ":tkpdtransaction-common"
+            transactioncommon             : ":tkpdtransaction-common",
+            commonTravel                  : ":features:digital:common_travel"
     ]
 }
