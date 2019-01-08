@@ -26,6 +26,9 @@ public class FilterViewModel implements Parcelable {
         this.isSelected = isSelected;
     }
 
+    public FilterViewModel() {
+    }
+
     public String getName() {
         return name;
     }

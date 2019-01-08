@@ -89,6 +89,7 @@ public class ExploreFragment
     private int oldScrollY = 0;
     private String firstCursor = "";
     private List<Visitable> tempFirstData = new ArrayList<>();
+    private SortFilterModel tempLocalSortFilterData = new SortFilterModel();
 
 
     private FrameLayout autoCompleteLayout;
@@ -326,6 +327,8 @@ public class ExploreFragment
     private void populateLocalDataToAdapter() {
         adapter.clearAllElements();
         adapter.addElement(getLocalFirstData());
+        filterAdapter.clearAllData();
+        filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
     }
 
     @Override
@@ -387,13 +390,16 @@ public class ExploreFragment
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
         populateExploreItem(itemList, cursor);
-        populateFilter(sortFilterModel.getFilterList());
-        if (!isSearch) saveFirstDataToLocal(itemList, cursor);
+        if (!isSearch) {
+            populateFilter(sortFilterModel.getFilterList());
+            saveFirstDataToLocal(itemList, cursor, sortFilterModel);
+        }
     }
 
-    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor) {
+    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, SortFilterModel sortFilterModel) {
         tempFirstData = itemList;
         this.firstCursor = firstCursor;
+        this.tempLocalSortFilterData = sortFilterModel;
     }
 
     private List<Visitable> getLocalFirstData() {

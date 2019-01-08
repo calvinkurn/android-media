@@ -110,4 +110,14 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
             cardView = itemView.findViewById(R.id.card_view);
         }
     }
+
+    public void clearAllData() {
+        filterList = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
+    public void addItem(List<FilterViewModel> filterList) {
+        this.filterList = filterList;
+        notifyDataSetChanged();[]
+    }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.explore.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,10 @@ public class SortFilterModel implements Parcelable {
 
     public SortFilterModel(List<FilterViewModel> filterList) {
         this.filterList = filterList;
+    }
+
+    public SortFilterModel() {
+        this.filterList = new ArrayList<>();
     }
 
     public List<FilterViewModel> getFilterList() {

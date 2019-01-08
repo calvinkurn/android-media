@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class ExploreParams {
     private String keyword;
-    private ArrayList<ExploreFilter> filter;
-    private ExploreSort sort;
+    private FilterViewModel filter;
+    private SortViewModel sort;
     private boolean isCanLoadMore;
     private String cursor;
     private boolean isLoading;
@@ -19,8 +19,8 @@ public class ExploreParams {
 
     public void resetParams() {
         keyword = "";
-        filter = new ArrayList<>();
-        sort = new ExploreSort("", false);
+        filter = new FilterViewModel();
+        sort = new SortViewModel();
         isCanLoadMore = true;
         cursor = "";
     }
@@ -28,6 +28,7 @@ public class ExploreParams {
     public void setFirstData() {
         isCanLoadMore = true;
         cursor = "";
+        resetFilterSort();
     }
 
     public void setSearchParam(String keyword) {
@@ -50,15 +51,28 @@ public class ExploreParams {
         setFirstData();
     }
 
+    public void setFilter(FilterViewModel filter) {
+        this.filter = filter;
+    }
+
+    public void setSort(SortViewModel sort) {
+        this.sort = sort;
+    }
+
     public String getKeyword() {
         return keyword;
     }
 
-    public ArrayList<ExploreFilter> getFilter() {
+    private void resetFilterSort() {
+        setSort(new SortViewModel());
+        setFilter(new FilterViewModel());
+    }
+
+    public FilterViewModel getFilter() {
         return filter;
     }
 
-    public ExploreSort getSort() {
+    public SortViewModel getSort() {
         return sort;
     }
 
