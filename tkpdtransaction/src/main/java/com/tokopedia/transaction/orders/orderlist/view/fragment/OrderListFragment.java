@@ -2,6 +2,7 @@ package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheet;
+import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -50,6 +52,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private static final String ORDER_CATEGORY = "orderCategory";
     private static final String ORDER_TAB_LIST = "TAB_LIST";
+    private static final int FILTER_DATE_REQUEST = 1;
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -235,11 +238,21 @@ public class OrderListFragment extends BaseDaggerFragment implements
         filterDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SaveDateBottomSheet saveDateBottomSheet = new SaveDateBottomSheet();
-                saveDateBottomSheet.show(getChildFragmentManager(), "");
+                startActivityForResult(SaveDateBottomSheetActivity.getInstance(getContext()),FILTER_DATE_REQUEST);
             }
         });
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK) {
+            if(requestCode == FILTER_DATE_REQUEST) {
+                String startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
+                String endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
+            }
+        }
     }
 
     protected void setViewListener() {
