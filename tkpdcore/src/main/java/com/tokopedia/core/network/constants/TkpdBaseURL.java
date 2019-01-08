@@ -628,7 +628,7 @@ public class TkpdBaseURL {
 
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
-        public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
+        public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.3/display/ads";
         public static final String URL_CHECK_PROMO = "v1/promo/check";
 
         public static final String PATH_GET_PDP_AFFILIATE_DATA = "affiliate/v1/pdp/affiliate_data";

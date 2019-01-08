@@ -49,7 +49,7 @@ public class HorizontalShopList extends RecyclerViewItem implements Parcelable {
         shopItem.isFav = Favorite.TOP_ADS_AD_SHOP_VALUE;// 5
         shopItem.id = data.shop.id;// 6
         shopItem.adKey = data.adRefKey;
-        shopItem.shopClickUrl = data.shopClickUrl;
+        shopItem.shopClickUrl = data.adClickUrl;
         return shopItem;
     }
 
