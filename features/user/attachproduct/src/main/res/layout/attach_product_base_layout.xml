@@ -86,13 +86,15 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_below="@id/attach_product_chat_image_layout"
         android:background="@color/grey_300"
+        android:maxWidth="254dp"
         android:visibility="gone"/>
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/tv_buy"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -104,7 +106,7 @@
         android:textSize="@dimen/sp_12"
         android:visibility="gone"
         android:textAllCaps="false"
-        app:buttonCompatSize="small"
+        app:buttonCompatSize="medium"
         app:buttonCompatType="primary"/>
 
     <ImageView

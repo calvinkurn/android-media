@@ -64,7 +64,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
 
-    val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 112
+    val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
 
     private lateinit var actionBox: View
 
@@ -212,13 +212,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onAttachProductClicked(): () -> Unit {
         return {
-            activity?.run {
-                val intent = TopChatInternalRouter.Companion.getAttachProductIntent(this,
+                val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
                         shopId.toString(),
                         "",
                         getUserSession().shopId == shopId.toString())
-                startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
-            }
+                startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
         }
     }
 
@@ -356,7 +354,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 }
             }
 
-            TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onProductAttachmentSelected(resultCode, data)
+            TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(resultCode, data)
         }
     }
 

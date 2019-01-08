@@ -256,7 +256,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
         return ImageUploadViewModel(
                 messageId,
-                arguments!!.getString(BaseChatToolbarActivity.PARAM_SENDER_ID),
+                opponentId,
                 (System.currentTimeMillis() / 1000).toString(),
                 imageUrl,
                 SendableViewModel.generateStartTime()
