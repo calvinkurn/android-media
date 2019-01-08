@@ -109,6 +109,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     private void setGCMId(String gcmID) {
         AppsFlyerLib.getInstance().setGCMProjectNumber(gcmID);
+        AppsFlyerLib.getInstance().setGCMProjectID(gcmID);
     }
 
     private void setAFLog(boolean login) {
