@@ -437,7 +437,7 @@ public class ExploreFragment
 
             @Override
             public void loadDataWithoutFilter() {
-                loadFirstData(false);
+                populateLocalDataToAdapter();
             }
         };
 
