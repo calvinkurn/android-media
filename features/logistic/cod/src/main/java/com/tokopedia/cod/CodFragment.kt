@@ -67,7 +67,7 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
         progressbar.visibility = View.GONE
     }
 
-    override fun showError(message: String) {
+    override fun showError(message: String?) {
         NetworkErrorHelper.showCloseSnackbar(activity, message)
     }
 

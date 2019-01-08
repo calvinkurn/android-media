@@ -1,0 +1,20 @@
+mutation{
+checkout_cod(){
+    header {
+      process_time
+      reason
+      error_code
+    }
+    data {
+      success
+      error
+      error_state
+      message
+      data {
+        payment_id
+        applink
+      }
+    }
+    status
+  }
+}

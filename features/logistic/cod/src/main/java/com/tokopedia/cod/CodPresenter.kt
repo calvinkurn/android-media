@@ -1,17 +1,39 @@
 package com.tokopedia.cod
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.cod.model.CodResponse
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.usecase.RequestParams
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
  * Created by fajarnuha on 17/12/18.
  */
-class CodPresenter @Inject constructor() : CodContract.Presenter {
+class CodPresenter @Inject constructor(val useCase: CodConfirmUseCase) : CodContract.Presenter {
 
     var mView: CodContract.View? = null
 
     override fun confirmPayment() {
-        val dumb = "tokopedia://thankyou/marketplace/cod?bill_amount=301.096&gateway_code=COD&gateway_logo=cod.png&gateway_name=Cash+On+Delivery&payment_detail=Total+Tagihan%2CRp+320.596%3BBiaya+Layanan%2CRp+2.500%3BPenggunaan+Voucher%2C-+Rp+22.000&shipping_duration=2-4+Hari.&shipping_logo=cod.png&total_amount=301.096&transaction_id=300922467"
-        mView?.navigateToThankYouPage(dumb)
+        mView?.showLoading()
+        useCase.clearRequest()
+        useCase.addRequest(useCase.getRequest())
+        useCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
+            override fun onNext(objects: GraphqlResponse) {
+                val response = objects.getData<CodResponse>(CodResponse::class.java)
+                response.data?.data?.thanksApplink?.let {
+                    mView?.navigateToThankYouPage(it)
+                }
+            }
+
+            override fun onCompleted() {
+                mView?.hideLoading()
+            }
+
+            override fun onError(e: Throwable?) {
+                mView?.showError(e?.message)
+            }
+        })
     }
 
     override fun attachView(view: CodContract.View) {

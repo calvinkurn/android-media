@@ -9,7 +9,7 @@ interface CodContract {
 
     interface View {
         fun initView()
-        fun showError(message: String)
+        fun showError(message: String?)
         fun showLoading()
         fun hideLoading()
         fun onPayClicked(view: android.view.View)
