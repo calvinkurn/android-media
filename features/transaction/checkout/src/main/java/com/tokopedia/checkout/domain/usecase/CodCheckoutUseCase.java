@@ -14,6 +14,9 @@ import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.CodCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +62,11 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
 
     private Map<String, Object> getParam(String json) {
         Map<String, Object> params = new HashMap<>();
-        params.put(PARAM_CHECKOUT_PARAMS, json);
+        try {
+            params.put(PARAM_CHECKOUT_PARAMS, new JSONObject(json));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return params;
     }
 
