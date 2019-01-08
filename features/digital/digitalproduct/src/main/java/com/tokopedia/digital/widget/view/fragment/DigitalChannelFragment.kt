@@ -199,4 +199,9 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
         }
     }
 
+    override fun onDestroy() {
+        digitalChannelPresenter.detachView()
+        super.onDestroy()
+    }
+
 }

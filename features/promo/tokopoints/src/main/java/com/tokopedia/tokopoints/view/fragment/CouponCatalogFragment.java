@@ -126,7 +126,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void onDestroy() {
         mPresenter.destroyView();
-        
+
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;

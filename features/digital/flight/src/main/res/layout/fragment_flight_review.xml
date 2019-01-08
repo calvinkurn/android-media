@@ -63,7 +63,7 @@
                         android:layout_weight="1"
                         android:text="@string/flight_booking_finish_transaction_label" />
 
-                    <com.tokopedia.flight.booking.widget.CountdownTimeView
+                    <com.tokopedia.common.travel.widget.CountdownTimeView
                         android:id="@+id/countdown_finish_transaction"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

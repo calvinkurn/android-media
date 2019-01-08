@@ -482,7 +482,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void startAttachProductActivity(String shopId, String shopName, boolean isSeller) {
         Intent intent = AttachProductActivity.createInstance(getActivity(), shopId, shopName,
-                isSeller);
+                isSeller, AttachProductActivity.SOURCE_TOPCHAT);
         startActivityForResult(intent, AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE);
     }
 

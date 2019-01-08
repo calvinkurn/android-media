@@ -77,6 +77,7 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -98,6 +99,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "beranda_trace";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+    private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -141,7 +143,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putBoolean(SCROLL_RECOMMEND_LIST,scrollToRecommendList);
+        args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -159,7 +161,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected void initInjector() {
-        if(getActivity() != null){
+        if (getActivity() != null) {
             BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
                     getActivity().getApplication()).getBaseAppComponent()).build();
             component.inject(this);
@@ -217,13 +219,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-        if(isUserLoggedIn()) {
-            if(getArguments() != null){
+        if (isUserLoggedIn()) {
+            if (getArguments() != null) {
                 scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
             }
         }
         presenter.attachView(this);
         presenter.setFeedListener(this);
+        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         return view;
     }
 
@@ -407,7 +410,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this,
                 digitalWidgetRepository
-                );
+        );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -658,7 +661,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
-        if(scrollToRecommendList) {
+        if (scrollToRecommendList) {
             presenter.fetchNextPageFeed();
         }
     }
@@ -832,7 +835,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
-        if(scrollToRecommendList) {
+        if (scrollToRecommendList) {
             scrollToRecommendList();
         }
 
@@ -930,7 +933,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void sendScreen() {
-        if(getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
             ((IHomeRouter) getActivity().getApplication()).sendIndexScreen(getActivity(), getScreenName());
         }
     }
@@ -1029,7 +1032,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void startDeeplinkShopInfo(String url) {
-        if(getActivity() != null){
+        if (getActivity() != null) {
             if ((getActivity()).getApplication() instanceof IHomeRouter) {
                 ((IHomeRouter) (getActivity()).getApplication())
                         .goToProductDetail(
@@ -1062,17 +1065,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return list;
     }
 
-    private boolean isUserLoggedIn(){
+    private boolean isUserLoggedIn() {
         return userSession.isLoggedIn();
     }
 
-    private String getUserShopId(){
+    private String getUserShopId() {
         return userSession.getShopId();
     }
 
     @Override
     public void onServerTimeReceived(long serverTimeUnix) {
-        if(serverTimeOffset == 0){
+        if (serverTimeOffset == 0) {
             long serverTimemillis = serverTimeUnix * ONE_SECOND;
             this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
         }
@@ -1086,5 +1089,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         setUserVisibleHint(!hidden);
+    }
+
+    private void fetchTokopointsNotification(String type) {
+        TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
     }
 }
