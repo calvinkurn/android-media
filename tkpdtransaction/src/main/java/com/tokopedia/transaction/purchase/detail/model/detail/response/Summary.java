@@ -33,6 +33,12 @@ public class Summary {
     @SerializedName("total_purchase_protection_fee")
     @Expose
     private String totalProtectionFee;
+    @SerializedName("is_order_cod")
+    @Expose
+    private Boolean isOrderCod;
+    @SerializedName("cod_fee")
+    @Expose
+    private String codFee;
 
 
     public String getItemsPrice() {
@@ -105,5 +111,21 @@ public class Summary {
 
     public void setTotalProtectionFee(String totalProtectionFee) {
         this.totalProtectionFee = totalProtectionFee;
+    }
+
+    public Boolean getOrderCod() {
+        return isOrderCod;
+    }
+
+    public void setOrderCod(Boolean orderCod) {
+        isOrderCod = orderCod;
+    }
+
+    public String getCodFee() {
+        return codFee;
+    }
+
+    public void setCodFee(String codFee) {
+        this.codFee = codFee;
     }
 }

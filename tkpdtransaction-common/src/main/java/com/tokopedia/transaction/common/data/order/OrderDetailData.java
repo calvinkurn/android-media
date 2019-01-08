@@ -90,6 +90,10 @@ public class OrderDetailData implements Parcelable {
 
     private String additionalFee;
 
+    private boolean isHavingCod;
+
+    private String codFee;
+
     private String totalPayment;
 
     private ButtonData buttonData;
@@ -585,6 +589,22 @@ public class OrderDetailData implements Parcelable {
 
     public void setLiveTrackingUrl(String liveTrackingUrl) {
         this.liveTrackingUrl = liveTrackingUrl;
+    }
+
+    public boolean isHavingCod() {
+        return isHavingCod;
+    }
+
+    public void setHavingCod(boolean havingCod) {
+        isHavingCod = havingCod;
+    }
+
+    public String getCodFee() {
+        return codFee;
+    }
+
+    public void setCodFee(String codFee) {
+        this.codFee = codFee;
     }
 
     @Override
