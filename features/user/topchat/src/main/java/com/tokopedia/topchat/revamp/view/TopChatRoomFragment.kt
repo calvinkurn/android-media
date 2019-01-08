@@ -163,7 +163,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        getViewState().addMessage(visitable)
+        super.onReceiveMessageEvent(visitable)
     }
 
     companion object {
