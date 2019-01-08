@@ -16,12 +16,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,18 +144,9 @@ public class ChatRoomContract {
 
         void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply);
 
-        void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable
-                modelToBeRemoved);
-
         void showQuickReplyView(QuickReplyListViewModel model);
 
         void onInvoiceSelected(InvoiceLinkPojo selectedInvoice);
-
-        void onClickRating(ChatRatingViewModel element, int rating);
-
-        void onSuccessSetRating(ChatRatingViewModel element);
-
-        void onErrorSetRating(String errorMessage);
 
         void showSearchInvoiceScreen();
 
@@ -214,8 +203,6 @@ public class ChatRoomContract {
 
 
         String getFileLocFromCamera();
-
-        void setChatRating(ChatRatingViewModel model, int userId, int rating);
 
         void getExistingChat();
 

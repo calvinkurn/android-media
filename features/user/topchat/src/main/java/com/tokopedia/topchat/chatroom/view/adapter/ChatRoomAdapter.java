@@ -21,7 +21,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TimeMachineChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TypingChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -368,12 +367,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             ((ImageUploadViewModel) list.get(position)).setRetry(true);
             notifyItemChanged(position);
         }
-    }
-
-    public void changeRating(ChatRatingViewModel model) {
-        int position = list.indexOf(model);
-        ((ChatRatingViewModel) list.get(position)).setRatingStatus(model.getRatingStatus());
-        notifyItemChanged(position);
     }
 
 

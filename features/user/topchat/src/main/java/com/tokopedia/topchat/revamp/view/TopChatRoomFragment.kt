@@ -31,6 +31,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
@@ -47,7 +48,7 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener, ImagePickerListener, ChatRoomContract.View.TemplateChatListener {
+        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter

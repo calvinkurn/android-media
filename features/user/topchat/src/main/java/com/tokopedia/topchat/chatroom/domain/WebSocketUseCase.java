@@ -89,24 +89,6 @@ public class WebSocketUseCase {
         ws.send(json.toString());
     }
 
-    public JsonObject getParamSendInvoiceAttachment(String messageId, InvoiceLinkPojo invoice, String
-            startTime) {
-        JsonObject json = new JsonObject();
-        json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
-
-        JsonObject data = new JsonObject();
-        InvoiceLinkAttributePojo invoiceAttribute = invoice.getAttributes();
-        data.addProperty("message_id", Integer.parseInt(messageId));
-        data.addProperty("message", invoiceAttribute.getCode());
-        data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", Integer.parseInt(WebSocketMapper.TYPE_INVOICE_SEND));
-
-        JsonElement payload = new GsonBuilder().create().toJsonTree(invoice,InvoiceLinkPojo.class);
-        data.add("payload", payload);
-        json.add("data", data);
-        return json;
-    }
-
     public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product, String startTime) {
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
@@ -177,38 +159,6 @@ public class WebSocketUseCase {
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING);
         JsonObject data = new JsonObject();
         data.addProperty("msg_id", Integer.valueOf(messageId));
-        json.add("data", data);
-        return json;
-    }
-
-    public JsonObject getParamSendQuickReply(String messageId, QuickReplyViewModel
-            quickReplyViewModel, String startTime) {
-
-        JsonObject json = new JsonObject();
-        json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
-
-        JsonObject data = new JsonObject();
-        data.addProperty("message_id", Integer.parseInt(messageId));
-        data.addProperty("message", quickReplyViewModel.getValue());
-        data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", Integer.parseInt(WebSocketMapper
-                .TYPE_QUICK_REPLY_SEND));
-
-        JsonObject payload = new JsonObject();
-
-        JsonObject selectedOption = new JsonObject();
-
-        JsonObject quickReplies = new JsonObject();
-        quickReplies.addProperty("text", quickReplyViewModel.getText());
-        quickReplies.addProperty("value", quickReplyViewModel.getValue());
-        quickReplies.addProperty("action", quickReplyViewModel.getAction());
-
-        selectedOption.add("quick_replies", quickReplies);
-
-        payload.add("selected_option", selectedOption);
-
-        data.add("payload", payload);
-
         json.add("data", data);
         return json;
     }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.TemplateChatViewHolder;
+import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 /**
@@ -14,9 +15,9 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 public class TemplateChatTypeFactoryImpl extends BaseAdapterTypeFactory implements TemplateChatTypeFactory{
 
-    ChatRoomContract.View.TemplateChatListener viewListener;
+    ChatTemplateListener viewListener;
 
-    public TemplateChatTypeFactoryImpl(ChatRoomContract.View.TemplateChatListener context) {
+    public TemplateChatTypeFactoryImpl(ChatTemplateListener context) {
         this.viewListener = context;
     }
 

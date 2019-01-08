@@ -16,16 +16,17 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncem
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
+import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
+
 /**
  * @author : Steven 29/11/18
  */
@@ -39,7 +40,7 @@ class TopChatViewStateImpl(
         private val productAttachmentListener: ProductAttachmentListener,
         private val typingListener: TypingListener,
         private val sendListener: SendButtonListener,
-        private val templateListener: ChatRoomContract.View.TemplateChatListener,
+        private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
         private val onAttachProductClicked: () -> Unit,
 
@@ -90,7 +91,7 @@ class TopChatViewStateImpl(
             imagePickerListener.pickImageToUpload()
         }
 
-        attachButton.setOnClickListener{
+        attachButton.setOnClickListener {
             onAttachProductClicked()
         }
     }
