@@ -5,8 +5,9 @@ import android.os.Parcelable
 
 import java.util.Date
 
-class HolidayDetail(var date: String? = null, var label: String? = null,
-                    var dateHoliday: Date? = null) : Parcelable {
+
+class HolidayDetail constructor(val date: String, val label: String,
+                    val dateHoliday: Date) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),

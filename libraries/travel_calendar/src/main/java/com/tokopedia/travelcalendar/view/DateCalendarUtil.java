@@ -25,4 +25,8 @@ public class DateCalendarUtil {
 
         return res;
     }
+
+    public static Calendar getCalendar() {
+        return Calendar.getInstance();
+    }
 }

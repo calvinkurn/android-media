@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.travelcalendar.data.entity.HolidayEntity
 import com.tokopedia.travelcalendar.data.entity.HolidayResultEntity
 import com.tokopedia.travelcalendar.domain.ITravelCalendarRepository
+import com.tokopedia.travelcalendar.view.DateCalendarUtil
 import com.tokopedia.travelcalendar.view.model.HolidayDetail
 import com.tokopedia.travelcalendar.view.model.HolidayResult
 import rx.Observable
+import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -49,14 +51,11 @@ class TravelCalendarRepository @Inject constructor(private val cacheManager: Cac
 
     private fun convertHolidayMapper(holidayResultEntities: List<HolidayResultEntity>): List<HolidayResult> {
         return holidayResultEntities.map {
-            val holidayResult = HolidayResult()
-            holidayResult.id = it.id
+            val dateHoliday = SimpleDateFormat("yyyy-MM-dd").parse(it.attributes.date)
+            val zeroTimeHolidayDate = DateCalendarUtil.getZeroTimeDate(dateHoliday)
+            val holidayDetail = HolidayDetail(it.attributes.date, it.attributes.label, zeroTimeHolidayDate)
 
-            val holidayDetail = HolidayDetail()
-            holidayDetail.date = it.attributes.date
-            holidayDetail.label = it.attributes.label
-
-            holidayResult.attributes = holidayDetail
+            val holidayResult = HolidayResult(it.id, holidayDetail)
             return@map holidayResult
         }
     }

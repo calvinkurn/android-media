@@ -14,6 +14,8 @@ import com.tokopedia.travelcalendar.view.adapter.GridCalendarAdapter;
 import com.tokopedia.travelcalendar.view.model.CellDate;
 import com.tokopedia.travelcalendar.view.model.HolidayResult;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -97,10 +99,16 @@ public class CalendarPickerView extends LinearLayout {
             cells.add(cellDate);
             mCal.add(Calendar.DAY_OF_MONTH, 1);
         }
-        adapter = new GridCalendarAdapter(cells, mCal, maxDateCal, minDateCal, holidayResultList);
-        adapter.setActionListener(new GridCalendarAdapter.ActionListener() {
+        adapter = new GridCalendarAdapter(cells, mCal, maxDateCal,
+                minDateCal, holidayResultList, getGridActionListener());
+        calendarGrid.setLayoutManager(new GridLayoutManager(getContext(), 7));
+        calendarGrid.setAdapter(adapter);
+    }
+
+    private GridCalendarAdapter.ActionListener getGridActionListener() {
+        return new GridCalendarAdapter.ActionListener() {
             @Override
-            public void onClickDate(CellDate cellDate) {
+            public void onClickDate(@NotNull CellDate cellDate) {
                 for (int i = 0; i < cells.size(); i++) {
                     if (cellDate.getDate() == cells.get(i).getDate()) {
                         cells.get(i).setSelected(true);
@@ -112,9 +120,7 @@ public class CalendarPickerView extends LinearLayout {
                 cellDateUser = cellDate;
                 actionListener.onDateClicked(cellDate);
             }
-        });
-        calendarGrid.setLayoutManager(new GridLayoutManager(getContext(), 7));
-        calendarGrid.setAdapter(adapter);
+        };
     }
 
     private void init(Context context) {

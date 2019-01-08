@@ -10,16 +10,13 @@ import android.view.View;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.travelcalendar.R;
-import com.tokopedia.travelcalendar.view.DateCalendarUtil;
 import com.tokopedia.travelcalendar.view.adapter.HolidayAdapter;
 import com.tokopedia.travelcalendar.view.model.HolidayResult;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
 
 /**
  * Created by nabillasabbaha on 26/12/18.
@@ -56,18 +53,11 @@ public class HolidayWidgetView extends BaseCustomView {
     public void setHolidayData(List<HolidayResult> holidayYearList, int month, int year) {
         currentHolidayList.clear();
         for (int i = 0; i < holidayYearList.size(); i++) {
-            try {
-                Date dateHoliday = new SimpleDateFormat("yyyy-MM-dd").parse(holidayYearList.get(i).getAttributes().getDate());
-                Date zeroTimeHolidayDate = DateCalendarUtil.getZeroTimeDate(dateHoliday);
-                Calendar calendarHoliday = currentCalendar;
-                calendarHoliday.setTime(zeroTimeHolidayDate);
-                holidayYearList.get(i).getAttributes().setDateHoliday(zeroTimeHolidayDate);
+            Calendar calendarHoliday = currentCalendar;
+            calendarHoliday.setTime(holidayYearList.get(i).getAttributes().getDateHoliday());
 
-                if (calendarHoliday.get(Calendar.MONTH) == month && calendarHoliday.get(Calendar.YEAR) == year) {
-                    currentHolidayList.add(holidayYearList.get(i));
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (calendarHoliday.get(Calendar.MONTH) == month && calendarHoliday.get(Calendar.YEAR) == year) {
+                currentHolidayList.add(holidayYearList.get(i));
             }
         }
 
@@ -75,8 +65,8 @@ public class HolidayWidgetView extends BaseCustomView {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewHoliday.setLayoutManager(linearLayoutManager);
 
-        holidayAdapter = new HolidayAdapter(new ArrayList<HolidayResult>());
-        holidayAdapter.addHoliday(currentHolidayList);
+        holidayAdapter = new HolidayAdapter(currentHolidayList);
+        holidayAdapter.notifyDataSetChanged();
         recyclerViewHoliday.setAdapter(holidayAdapter);
     }
 
