@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -400,11 +399,20 @@ public class ExploreFragment
     private void populateFilter(List<FilterViewModel> filterList) {
         layoutFilter.setVisibility(View.VISIBLE);
         rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        filterAdapter = new FilterAdapter(getActivity(), filterList);
+        filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener());
         rvFilter.setAdapter(filterAdapter);
         btnFilterMore.setOnClickListener(v->{
 
         });
+    }
+
+    private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
+        return new FilterAdapter.OnFilterClickedListener() {
+            @Override
+            public void onItemClicked(FilterViewModel filter) {
+
+            }
+        };
     }
 
     @Override
