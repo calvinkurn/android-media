@@ -13,31 +13,27 @@ import com.tokopedia.design.R;
 public class Chips extends AppCompatTextView {
     public Chips(Context context) {
         super(context);
-        init();
     }
 
     public Chips(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public Chips(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         init();
     }
 
     private void init() {
         ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         ViewGroup parent = (ViewGroup) getParent();
-        if(parent instanceof ConstraintLayout)
-            Log.d("erege","vreve");
+        if (parent instanceof ConstraintLayout)
+            Log.d("erege", "vreve");
         int margin_default = (int) (getContext().getResources().getDimension(R.dimen.dp_16));
         int padding_top_bottom = (int) (getContext().getResources().getDimension(R.dimen.dp_8));
         params.height = (int) (getContext().getResources().getDimension(R.dimen.dp_40));
