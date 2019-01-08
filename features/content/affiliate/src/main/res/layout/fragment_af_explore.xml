@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginRight="-8dp"
-            margi>
+            android:layout_marginLeft="@dimen/dp_8">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_filter"
