@@ -30,7 +30,7 @@ public class Chips extends AppCompatTextView {
     }
 
     private void init() {
-        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) this.getLayoutParams();//new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         ViewGroup parent = (ViewGroup) getParent();
         if (parent instanceof ConstraintLayout)
             Log.d("erege", "vreve");
