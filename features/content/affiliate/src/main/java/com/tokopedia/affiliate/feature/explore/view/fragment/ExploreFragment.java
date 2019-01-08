@@ -367,6 +367,14 @@ public class ExploreFragment
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+
+        searchView.addTextWatcherToSearch();
+        presenter.unsubscribeAutoComplete();
+        populateExploreItem(itemList, cursor);
+        populateFilter(sortFilterModel.getFilterList());
+    }
+
+    private void populateExploreItem(List<Visitable> itemList, String cursor) {
         if (itemList.size() == 0) {
             itemList = new ArrayList<>();
             itemList.add(emptyResultModel);
@@ -381,13 +389,10 @@ public class ExploreFragment
         adapter.addElement(itemList);
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
-        searchView.addTextWatcherToSearch();
-        presenter.unsubscribeAutoComplete();
-
     }
 
     private void populateFilter(List<FilterViewModel> filterList) {
-        rvFilter.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         filterAdapter = new FilterAdapter(getActivity(), filterList);
         rvFilter.setAdapter(filterAdapter);
     }
