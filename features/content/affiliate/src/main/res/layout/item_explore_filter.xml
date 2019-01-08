@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/dp_70"
+    android:layout_height="@dimen/dp_40"
     android:layout_marginBottom="@dimen/dp_5"
     android:layout_marginEnd="@dimen/dp_5"
     android:layout_marginRight="@dimen/dp_5">
@@ -23,7 +23,7 @@
             android:id="@+id/backgroundView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/interest_background_active"
+            android:background="@color/filter_background_active"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"/>

@@ -34,12 +34,14 @@ import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
+import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -75,19 +77,22 @@ public class ExploreFragment
 
     private static final int TIME_DEBOUNCE_MILIS = 500;
 
-    private RecyclerView rvExplore, rvAutoComplete;
+
+    private ExploreAdapter adapter;
+    private ExploreParams exploreParams;
+    private FilterAdapter filterAdapter;
+    private EmptyModel emptyResultModel;
+    private int oldScrollY = 0;
+
+    private FrameLayout autoCompleteLayout;
+    private AutoCompleteSearchAdapter autoCompleteAdapter;
+    private ImageView ivBack, ivBantuan;
+    private RecyclerView rvExplore, rvAutoComplete, rvFilter;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
-    private ExploreAdapter adapter;
-    private ImageView ivBack, ivBantuan;
-    private ExploreParams exploreParams;
-    private EmptyModel emptyResultModel;
-    private FrameLayout autoCompleteLayout;
-    private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
     private BottomActionView scrollToTopButton;
-    private int oldScrollY = 0;
 
     private boolean isCanDoAction;
 
@@ -120,6 +125,7 @@ public class ExploreFragment
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
+        rvFilter = view.findViewById(R.id.rv_filter);
         scrollToTopButton = view.findViewById(R.id.bottom_action_view);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
@@ -377,6 +383,13 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
+
+    }
+
+    private void populateFilter(List<FilterViewModel> filterList) {
+        rvFilter.setLayoutManager(new LinearLayoutManager(getActivity()));
+        filterAdapter = new FilterAdapter(getActivity(), filterList);
+        rvFilter.setAdapter(filterAdapter);
     }
 
     @Override
