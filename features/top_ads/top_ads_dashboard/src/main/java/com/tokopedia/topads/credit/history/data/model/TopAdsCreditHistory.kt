@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.data.model.credit_history
+package com.tokopedia.topads.credit.history.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

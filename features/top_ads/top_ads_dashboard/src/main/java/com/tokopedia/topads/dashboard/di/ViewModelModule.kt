@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.di
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
-import com.tokopedia.topads.dashboard.view.viewmodel.TopAdsCreditHistoryViewModel
+import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
 import com.tokopedia.topads.dashboard.view.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module

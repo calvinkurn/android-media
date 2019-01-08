@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.viewmodel
+package com.tokopedia.topads.credit.history.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -10,8 +10,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
-import com.tokopedia.topads.dashboard.data.model.credit_history.TopAdsCreditHistory
-import com.tokopedia.topads.dashboard.data.utils.extention.getRealData
+import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.*
 import java.text.SimpleDateFormat
@@ -42,7 +42,7 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_CREDIT_RESPONSE, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getRealData<TopAdsCreditHistory.CreditsResponse>()
+            }.getSuccessData<TopAdsCreditHistory.CreditsResponse>()
 
             if (data.response.errors.isEmpty())
                 creditsHistory.value = Success(data.response.dataHistory)

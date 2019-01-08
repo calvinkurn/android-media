@@ -42,7 +42,7 @@ open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlReposito
             if (graphqlQuery != null) {
                 val request = GraphqlRequest(graphqlQuery, tClass, requestParams)
                 mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(listOf(request).toString(),
-                        cacheStrategy.isSessionIncluded()))
+                        cacheStrategy.isSessionIncluded))
             }
         } catch (e: Exception) {
             e.printStackTrace()

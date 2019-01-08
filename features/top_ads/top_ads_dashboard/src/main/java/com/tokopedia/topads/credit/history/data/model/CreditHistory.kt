@@ -1,9 +1,9 @@
-package com.tokopedia.topads.dashboard.data.model.credit_history
+package com.tokopedia.topads.credit.history.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditHistoryTypeFactory
+import com.tokopedia.topads.credit.history.view.adapter.TopAdsCreditHistoryTypeFactory
 
 data class CreditHistory(
         @SerializedName("amount")

@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAddCreditFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
-import com.tokopedia.topads.dashboard.view.fragment.credit.TopAdsCreditHistoryFragment
+import com.tokopedia.topads.credit.history.view.fragment.TopAdsCreditHistoryFragment
 
 import dagger.Component
 

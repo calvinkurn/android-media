@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.fragment.credit
+package com.tokopedia.topads.credit.history.view.fragment
 
 import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.data.model.request.Fail
-import com.tokopedia.abstraction.common.data.model.request.Result
 import com.tokopedia.abstraction.common.data.model.request.Success
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
@@ -21,12 +20,12 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.credit_history.CreditHistory
-import com.tokopedia.topads.dashboard.data.model.credit_history.TopAdsCreditHistory
+import com.tokopedia.topads.credit.history.data.model.CreditHistory
+import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditHistoryTypeFactory
-import com.tokopedia.topads.dashboard.view.viewmodel.TopAdsCreditHistoryViewModel
+import com.tokopedia.topads.credit.history.view.adapter.TopAdsCreditHistoryTypeFactory
+import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
 import kotlinx.android.synthetic.main.partial_credit_history_header.*
 import java.util.*
 import javax.inject.Inject
@@ -82,6 +81,8 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         viewModel.creditsHistory.removeObservers(this)
         super.onDestroyView()
     }
+
+    override fun hasInitialSwipeRefresh() = true
 
     private fun onDateRangeChanged(dateRange: TopAdsDatePickerViewModel.DateRange?){
         if (dateRange == null) return
@@ -142,7 +143,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         }
     }
 
-    override fun getAdapterTypeFactory() =  TopAdsCreditHistoryTypeFactory()
+    override fun getAdapterTypeFactory() = TopAdsCreditHistoryTypeFactory()
 
     override fun onItemClicked(t: CreditHistory?) {
 
