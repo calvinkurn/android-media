@@ -114,7 +114,6 @@
         android:id="@+id/ic_add_to_cart"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_below="@id/separator"
         android:layout_below="@id/attach_product_chat_image_layout"
         android:layout_marginRight="@dimen/dp_10"
         android:gravity="center"
