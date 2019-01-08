@@ -30,9 +30,9 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
 
     private val displayMonthInt: Int
         get() {
-            var displayMonthInt = currentDate.get(Calendar.MONTH) - 1
+            var displayMonthInt = currentDate.get(Calendar.MONTH) - DEDUCTION_MONTH
             if (displayMonthInt < 0) {
-                displayMonthInt = 11
+                displayMonthInt = MAX_MONTH_IN_YEAR
             }
             return displayMonthInt
         }
@@ -130,5 +130,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
     companion object {
         private val DAY_DATE_FORMAT = "EEEE"
         private val SUNDAY = "Sunday"
+        private val MAX_MONTH_IN_YEAR = 11
+        private val DEDUCTION_MONTH = 1
     }
 }
