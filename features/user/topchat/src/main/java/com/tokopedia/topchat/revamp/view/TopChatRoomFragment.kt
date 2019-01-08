@@ -437,7 +437,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessAddToCart(): () -> Unit {
         return {
-            ToasterNormal.make(view, getString(R.string.add_to_cart), ToasterNormal.LENGTH_SHORT).show()
+            ToasterNormal.make(view, getString(R.string.success_add_to_cart), ToasterNormal
+                    .LENGTH_SHORT).show()
         }
     }
 

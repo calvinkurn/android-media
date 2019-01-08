@@ -78,5 +78,6 @@ yang ditemukan</string>
     <string name="delete_conversation">Hapus Percakapan</string>
     <string name="delete_chat_question">Hapus chat?</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
+
     <string name="success_add_to_cart">Berhasil menambahkan ke cart</string>
 </resources>
