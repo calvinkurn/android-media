@@ -23,8 +23,7 @@ public interface UploadImageContactUsParam {
             @Header("Authorization") String authorization,
             @Header("X-Method") String xMethod,
             @Part("user_id") RequestBody userId,
-            @
-                    Part("device_id") RequestBody deviceId,
+            @Part("device_id") RequestBody deviceId,
             @Part("hash") RequestBody hash,
             @Part("device_time") RequestBody deviceTime,
             @Part("fileToUpload\"; filename=\"image.jpg")  RequestBody imageFile,

@@ -65,6 +65,7 @@ public interface ApplinkConst {
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String TOPPICKS = "tokopedia://toppicks";
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
+
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
@@ -108,6 +109,7 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
+    String MARKETPLACE_ORDER = "tokopedia://belanja/order";
 
     String BUYER_INFO = "tokopedia://buyerinfo";
     String SELLER_INFO = "tokopedia://sellerinfo";
