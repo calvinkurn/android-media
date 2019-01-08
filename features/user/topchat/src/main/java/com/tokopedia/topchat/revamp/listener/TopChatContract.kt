@@ -30,6 +30,8 @@ interface TopChatContract {
 
         fun onErrorUploadImage(errorMessage: String)
 
+        fun showErrorWebSocket(b: Boolean)
+
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
     }
 
@@ -47,6 +49,8 @@ interface TopChatContract {
         )
 
         fun startUploadImages(it: ImageUploadViewModel)
+
+        fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
 
     }
 }

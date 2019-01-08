@@ -148,6 +148,7 @@ open class BaseChatViewStateImpl(
     private fun setLabel(labelText: String) {
         val ADMIN_TAG = "Administrator"
         val SELLER_TAG = "Penjual"
+        val OFFICIAL_TAG = "Official"
 
         val label = toolbar.findViewById<TextView>(R.id.label)
         label.text = labelText
@@ -161,17 +162,21 @@ open class BaseChatViewStateImpl(
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
             }
+            OFFICIAL_TAG -> {
+                label.setBackgroundResource(R.drawable.topchat_admin_label)
+                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+            }
             else -> label.visibility = View.GONE
         }
     }
 
-    private fun scrollDownWhenInBottom() {
+    open fun scrollDownWhenInBottom() {
         if (checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }
 
-    open fun scrollToBottom() {
+    fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -212,9 +217,10 @@ open class BaseChatViewStateImpl(
         replyEditText.setText("")
     }
 
-    protected fun showReplyBox() {
-        actionBox.visibility = View.VISIBLE
-        replyBox.visibility = View.VISIBLE
+    protected fun showReplyBox(replyable: Boolean) {
+        val visibilityState = if(replyable) View.VISIBLE else View.GONE
+        actionBox.visibility = visibilityState
+        replyBox.visibility = visibilityState
     }
 
 

@@ -29,7 +29,6 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
     private val logTag = "MainActRxWebSocket"
 
     init {
-
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
         tkpdAuthInterceptor?.let {
             builder.addInterceptor(it)
@@ -91,6 +90,11 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
         private val DEFAULT_MAX_RETRIES = 3
         private val DEFAULT_DELAY = 5000
         private var instance: RxWebSocketUtil? = null
+
+        @JvmOverloads
+        fun getInstance(): RxWebSocketUtil? {
+            return getInstance(null, null)
+        }
 
         @JvmOverloads
         fun getInstance(tkpdAuthInterceptor: TkpdAuthInterceptor?,

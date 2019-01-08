@@ -22,8 +22,9 @@ open class GetExistingChatMapper @Inject constructor() {
         val listChat = mappingListChat(pojo)
         val headerModel = mappingHeaderModel(pojo)
         val canLoadMore = pojo.chatReplies.hasNext
+        val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         listChat.reverse()
-        return ChatroomViewModel(listChat, headerModel, canLoadMore)
+        return ChatroomViewModel(listChat, headerModel, canLoadMore, isReplyable)
 
     }
 

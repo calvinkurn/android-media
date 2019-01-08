@@ -12,10 +12,15 @@ import rx.Observable
  */
 object RxWebSocket {
 
+
+    private fun getInstance(tkpdAuthInterceptor: TkpdAuthInterceptor?, fingerprintInterceptor: FingerprintInterceptor?): RxWebSocketUtil? {
+        return RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)
+    }
+
     operator fun get(url: String, accessToken: String, tkpdAuthInterceptor: TkpdAuthInterceptor?,
                      fingerprintInterceptor: FingerprintInterceptor?):
             Observable<WebSocketInfo>? {
-        return RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.getWebSocketInfo(url,
+        return getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.getWebSocketInfo(url,
                 accessToken)
     }
 
@@ -23,7 +28,7 @@ object RxWebSocket {
              tkpdAuthInterceptor: TkpdAuthInterceptor?,
              fingerprintInterceptor: FingerprintInterceptor?) {
         try {
-            RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
+            getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
         }catch(ignore : WebSocketException){
             //TODO HANDLE ERROR WEBSOCKET CLOSED
         }
@@ -33,9 +38,4 @@ object RxWebSocket {
              fingerprintInterceptor: FingerprintInterceptor) {
         send(json.toString(), tkpdAuthInterceptor, fingerprintInterceptor)
     }
-
-//    fun asyncSend(url: String, msg: String, groupChatToken: String) {
-//        RxWebSocketUtil.getInstance()?.asyncSend(url, msg, groupChatToken)
-//    }
-
 }

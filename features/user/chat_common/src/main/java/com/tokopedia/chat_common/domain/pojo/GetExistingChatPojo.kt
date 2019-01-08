@@ -21,7 +21,10 @@ data class ChatReplies(
         val list: List<ChatRepliesItem> = ArrayList(),
         @Expose
         @SerializedName("hasNext")
-        val hasNext: Boolean = false
+        val hasNext: Boolean = false,
+        @Expose
+        @SerializedName("textareaReply")
+        val textAreaReply: Int = 0
 )
 
 data class Contact(

@@ -49,7 +49,7 @@ abstract class WebSocketSubscriber : Subscriber<WebSocketInfo>() {
     }
 
     override fun onError(e: Throwable) {
-        e.printStackTrace()
+        onClose()
     }
 
 }

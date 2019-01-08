@@ -92,10 +92,6 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             ImageHandler.loadImageCircle2(this@BaseChatToolbarActivity, findViewById<ImageView>(R.id.user_avatar), it.image)
             (findViewById<TextView>(R.id.title)).text = it.name
             (findViewById<TextView>(R.id.label)).visibility = View.GONE
-            it.label?.let {
-                (findViewById<TextView>(R.id.label)).text = it
-                (findViewById<TextView>(R.id.label)).visibility = View.VISIBLE
-            }
             (findViewById<TextView>(R.id.subtitle)).visibility = View.GONE
         }
     }

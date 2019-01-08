@@ -52,8 +52,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
                 }
             }
 
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                if (showLog) {
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) { if (showLog) {
                     Log.e(logTag, t!!.toString() + webSocket.request().url().uri().path)
                 }
                 if (!subscriber.isUnsubscribed) {
