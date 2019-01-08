@@ -32,7 +32,7 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Bundle arg = new Bundle();
+        Bundle arg = listener.getBundle();
         String orderCategory = mOrderLabelList.get(position).getOrderCategory();
         OrderLabelList orderLabelList = mOrderLabelList.get(position);
         arg.putString(ORDER_CATEGORY, orderCategory);
@@ -53,5 +53,6 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
 
     public interface Listener {
         Context getAppContext();
+        Bundle getBundle();
     }
 }

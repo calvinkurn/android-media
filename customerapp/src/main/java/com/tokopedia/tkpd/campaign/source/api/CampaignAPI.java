@@ -29,7 +29,7 @@ public interface CampaignAPI {
     //TODO Audio_Campagin multipart handling
     @Multipart
     @POST(CampaignURL.SHAKE_CAMPAIGN)
-    Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaignAudio(@Part Map<String, RequestBody> param,@Part MultipartBody.Part  audioFile);
+    Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaignAudio(@PartMap Map<String, RequestBody> param,@Part MultipartBody.Part  audioFile);
 
     @GET(CampaignURL.SHAKE_CAMPAIGN)
     Observable<Response<DataResponse<CampaignResponseEntity>>> getCampaignForShake(@QueryMap Map<String, Object> param);
