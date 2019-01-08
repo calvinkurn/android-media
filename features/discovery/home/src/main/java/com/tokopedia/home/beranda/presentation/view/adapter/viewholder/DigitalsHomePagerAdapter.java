@@ -7,18 +7,24 @@ import android.view.ViewGroup;
 
 import com.tokopedia.design.viewpager.WrapContentViewPager;
 import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
+import com.tokopedia.digital.widget.view.fragment.DigitalWidgetFragment;
+import com.tokopedia.digital.widget.view.listener.DigitalChannelFragmentInteraction;
 
 public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
     private int currentPosition = -1;
     private static int DIGITAL_WIDGET_COUNT = 1;
+    FragmentManager fragmentManager;
+    private Fragment digitalFragment;
 
-    public DigitalsHomePagerAdapter(FragmentManager fm) {
+    public DigitalsHomePagerAdapter(FragmentManager fm, Fragment digitalFragment) {
         super(fm);
+        this.fragmentManager = fm;
+        this.digitalFragment = digitalFragment;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return new DigitalChannelFragment();
+        return digitalFragment;
     }
 
     @Override
@@ -38,4 +44,5 @@ public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return DIGITAL_WIDGET_COUNT;
     }
+
 }
