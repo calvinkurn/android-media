@@ -27,6 +27,12 @@ public class Chips extends AppCompatTextView {
 
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        init();
+    }
+
     private void init() {
         ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         ViewGroup parent = (ViewGroup) getParent();
