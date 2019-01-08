@@ -3,7 +3,7 @@ package com.tokopedia.trackingoptimizer
 import android.content.Context
 
 /**
- * Created by hendry on 04/01/19.
+ * put this interface in application level
  */
 interface TrackingOptimizerRouter {
     fun sendEventTracking(events: MutableMap<String, Any?>)

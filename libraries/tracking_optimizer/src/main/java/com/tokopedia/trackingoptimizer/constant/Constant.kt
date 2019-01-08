@@ -10,7 +10,7 @@ class Constant{
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
         const val ECOMMERCE = "ecommerce"
-        const val SCREEN_NAME = "screenName"
+        const val OPEN_SCREEN = "openScreen"
 
         val impressionEventList by lazy{
             listOf("productView", "promoView", "viewProduct")

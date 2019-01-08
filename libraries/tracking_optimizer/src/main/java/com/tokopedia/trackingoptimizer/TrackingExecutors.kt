@@ -5,7 +5,9 @@ import kotlinx.coroutines.experimental.asCoroutineDispatcher
 import java.util.concurrent.Executors
 
 /**
- * Created by hendry on 27/12/18.
+ * This is handler exclusively used in tracking optimizer library,
+ * to handle concurrency for read and write to tracking database.
+ * Do not use this executors elsewhere!
  */
 object TrackingExecutors{
 

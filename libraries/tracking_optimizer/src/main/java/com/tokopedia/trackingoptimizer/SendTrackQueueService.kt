@@ -4,13 +4,12 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_ACTION
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_CATEGORY
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_LABEL
-import com.tokopedia.trackingoptimizer.constant.Constant.Companion.SCREEN_NAME
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.OPEN_SCREEN
 import com.tokopedia.trackingoptimizer.db.model.*
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
@@ -165,7 +164,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
         map.put(EVENT_LABEL, eventModel.label)
         //merge with screen name
         if (!screenName.isNullOrEmpty()) {
-            map.put(SCREEN_NAME, screenName)
+            map.put(OPEN_SCREEN, screenName)
             screenName = null
         }
         val customDimensionMap = HashMapJsonUtil.jsonToMap(it.customDimension)
