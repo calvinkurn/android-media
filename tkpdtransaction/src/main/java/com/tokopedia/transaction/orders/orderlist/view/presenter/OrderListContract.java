@@ -48,6 +48,10 @@ public class OrderListContract {
         void showProgressBar();
 
         void hideProgressBar();
+
+        String getStartDate();
+
+        String getEndDate();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

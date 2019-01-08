@@ -13,7 +13,9 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
+import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
@@ -174,6 +176,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 //show Driver information
                 getView().showDriverInfo(details.getDriverDetails());
             }
+
+            //}
+//            else if (details.getDriverDetails() != null && i == 3) {
+//                //show Driver information
+//                getView().showDriverInfo(details.getDriverDetails());
+//            }
+            Detail detail = new Detail("No. Resi", "AA1234567890BBCC");
+            details.detail().set(3, detail);
             getView().setDetail(details.detail().get(i));
         }
         if (details.getItems() != null && details.getItems().size() > 0) {

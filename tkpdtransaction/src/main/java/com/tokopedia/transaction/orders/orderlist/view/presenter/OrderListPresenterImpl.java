@@ -46,8 +46,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             variables.put("Page", page);
             variables.put("PerPage", 10);
             variables.put("Search", getView().getSearchedString());
-            variables.put("StartDate", "");
-            variables.put("EndDate", "");
+            variables.put("StartDate", getView().getStartDate());
+            variables.put("EndDate", getView().getEndDate());
             variables.put("Sort", "");
             variables.put("OrderStatus", Integer.parseInt(getView().getSelectedFilter()));
             graphqlRequest = new

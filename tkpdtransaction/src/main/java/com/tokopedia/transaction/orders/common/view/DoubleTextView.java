@@ -1,7 +1,10 @@
 package com.tokopedia.transaction.orders.common.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -77,6 +80,12 @@ public class DoubleTextView extends LinearLayout {
         bottomTextView.setText(text);
     }
 
+    public void setBottomText(SpannableString spannableString) {
+        bottomTextView.setHighlightColor(Color.TRANSPARENT);
+        bottomTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        bottomTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
+    }
+
     @SuppressWarnings("unused")
     public void setBottomTextSize(float bottomTextSize) {
         this.bottomTextView.setTextSize(bottomTextSize);
@@ -99,4 +108,5 @@ public class DoubleTextView extends LinearLayout {
     public void setBottomGravity(int gravity) {
         this.bottomTextView.setGravity(gravity);
     }
+
 }

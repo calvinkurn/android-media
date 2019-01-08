@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -26,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -61,6 +64,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
@@ -92,6 +97,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     TextView productInformationTitle;
     LinearLayout paymentMethod;
     private boolean isSingleButton;
+    private ClipboardManager myClipboard;
+    private ClipData myClip;
 
 
     @Override
@@ -137,6 +144,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         itemsRecyclerView = view.findViewById(R.id.rv_items);
         productInformationTitle = view.findViewById(R.id.product_info_label);
         paymentMethod = view.findViewById(R.id.info_payment_method);
+        myClipboard = (ClipboardManager)getContext().getSystemService(CLIPBOARD_SERVICE);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -187,7 +195,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         }
         lihat.setOnClickListener(view -> {
             try {
-                startActivity(((UnifiedOrderListRouter)getActivity()
+                startActivity(((UnifiedOrderListRouter) getActivity()
                         .getApplication()).getWebviewActivityWithIntent(getContext(),
                         URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
             } catch (UnsupportedEncodingException e) {
@@ -204,9 +212,38 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Override
     public void setDetail(Detail detail) {
         detailLabel.setText("Detail Pengiriman");
+
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(detail.label());
-        doubleTextView.setBottomText(detail.value());
+        if (!detail.label().equalsIgnoreCase("No. Resi")) {
+            doubleTextView.setTopText(detail.label());
+            doubleTextView.setBottomText(detail.value());
+        } else {
+            doubleTextView.setTopText(detail.label());
+            String text = detail.value() + "\n\nSalin No. Resi";
+            SpannableString spannableString = new SpannableString(text);
+            int startIndexOfLink = text.indexOf("Salin");
+            spannableString.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        myClip = ClipData.newPlainText("text", detail.value());
+                        myClipboard.setPrimaryClip(myClip);
+                        Toast.makeText(getContext(), "Text Copied",
+                                Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                    ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                }
+            }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            doubleTextView.setBottomText(spannableString);
+        }
         detailContent.addView(doubleTextView);
     }
 
@@ -326,7 +363,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
             @Override
             public void onClick(View view) {
                 try {
-                    startActivity(((UnifiedOrderListRouter)getActivity()
+                    startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
                             URLEncoder.encode(contactUs.helpUrl(), ORDER_LIST_URL_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
@@ -350,7 +387,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Override
     public void setTopActionButton(ActionButton actionButton) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16),getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
@@ -402,7 +439,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
                 newUri = newUri.replace("idem_potency_key=", "");
                 RouteManager.route(getActivity(), newUri);
-            } else if (uri != null && !uri.equals("")){
+            } else if (uri != null && !uri.equals("")) {
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),

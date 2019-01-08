@@ -68,6 +68,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private int visibleThreshold = 2;
     private int lastVisibleItem;
     private Bundle savedState;
+    private String startDate = "01/01/2017";
+    private String endDate = "09/01/2018";
     private int orderId = 1;
 
     private String selectedFilter = "0";
@@ -249,8 +251,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK) {
             if(requestCode == FILTER_DATE_REQUEST) {
-                String startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
-                String endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
+                startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
+                endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
+                presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
             }
         }
     }
@@ -481,13 +484,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void showProgressBar() {
         mainContent.setVisibility(View.GONE);
-        progressLayout.setVisibility(View.VISIBLE);
+//        progressLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
         mainContent.setVisibility(View.VISIBLE);
-        progressLayout.setVisibility(View.GONE);
+//        progressLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public String getStartDate() {
+        return startDate;
+    }
+
+    @Override
+    public String getEndDate() {
+        return endDate;
     }
 
     @Override
