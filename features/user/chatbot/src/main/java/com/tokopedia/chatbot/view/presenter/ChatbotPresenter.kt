@@ -36,6 +36,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import okhttp3.Interceptor
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.subscriptions.CompositeSubscription
@@ -53,6 +54,7 @@ class ChatbotPresenter @Inject constructor(
         private val sendChatRatingUseCase: SendChatRatingUseCase,
         private val sendRatingReasonUseCase: SendRatingReasonUseCase)
     : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
+
     override fun isUploading(): Boolean {
         // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         return false
@@ -60,8 +62,11 @@ class ChatbotPresenter @Inject constructor(
 
     private var mSubscription: CompositeSubscription
 
+    private var listInterceptor: ArrayList<Interceptor>
+
     init {
         mSubscription = CompositeSubscription()
+        listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
     override fun connectWebSocket(messageId: String) {
@@ -120,17 +125,15 @@ class ChatbotPresenter @Inject constructor(
             }
 
         }
-
-        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken,
-                tkpdAuthInterceptor, fingerprintInterceptor]?.subscribe(subscriber)
+        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken, listInterceptor]
+                ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
     }
 
     override fun sendReadEvent(messageId: String) {
         RxWebSocket.send(SendWebsocketParam.getReadMessage(messageId),
-                tkpdAuthInterceptor,
-                fingerprintInterceptor)
+                listInterceptor)
     }
 
     override fun sendRating(messageId: String, rating: Int, timestamp: String,
@@ -152,8 +155,7 @@ class ChatbotPresenter @Inject constructor(
                                   startTime: String, opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendBubbleAction(messageId, selected,
                 startTime, opponentId),
-                tkpdAuthInterceptor,
-                fingerprintInterceptor)
+                listInterceptor)
     }
 
     override fun destroyWebSocket() {
@@ -202,14 +204,14 @@ class ChatbotPresenter @Inject constructor(
                                        startTime: String,
                                        opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendInvoice(messageId,
-                invoiceLinkPojo, startTime, opponentId), tkpdAuthInterceptor, fingerprintInterceptor)
+                invoiceLinkPojo, startTime, opponentId), listInterceptor)
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
                                 startTime: String,
                                 opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendQuickReply(messageId,
-                quickReply, startTime, opponentId), tkpdAuthInterceptor, fingerprintInterceptor)
+                quickReply, startTime, opponentId), listInterceptor)
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
@@ -220,8 +222,7 @@ class ChatbotPresenter @Inject constructor(
                                           startTime: String, opponentId: String) {
         RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
                 startTime, opponentId),
-                tkpdAuthInterceptor,
-                fingerprintInterceptor)
+                listInterceptor)
     }
 
     override fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String):

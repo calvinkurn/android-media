@@ -129,7 +129,7 @@ class TopChatRoomPresenter @Inject constructor(
 
         }
 
-        var rxWebSocket = RxWebSocket[webSocketUrl, userSession.accessToken, null, null]
+        var rxWebSocket = RxWebSocket[webSocketUrl, userSession.accessToken]
         val subscription = rxWebSocket?.subscribe(subscriber)
 
 
@@ -323,11 +323,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendMessageWebSocket(messageText: String) {
-        RxWebSocket.send(
-                msg = messageText,
-                tkpdAuthInterceptor = null,
-                fingerprintInterceptor = null
-        )
+        RxWebSocket.send(messageText, null)
     }
 
 
