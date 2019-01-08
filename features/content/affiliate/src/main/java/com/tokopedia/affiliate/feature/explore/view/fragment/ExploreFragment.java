@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -93,6 +95,8 @@ public class ExploreFragment
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty;
     private BottomActionView scrollToTopButton;
+    private LinearLayout layoutFilter;
+    private CardView btnFilterMore;
 
     private boolean isCanDoAction;
 
@@ -127,6 +131,7 @@ public class ExploreFragment
         layoutEmpty = view.findViewById(R.id.layout_empty);
         rvFilter = view.findViewById(R.id.rv_filter);
         scrollToTopButton = view.findViewById(R.id.bottom_action_view);
+        layoutFilter = view.findViewById(R.id.layout_filter);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -146,6 +151,7 @@ public class ExploreFragment
         dropKeyboard();
         initEmptyResultModel();
         autoCompleteLayout.setVisibility(View.GONE);
+        layoutFilter.setVisibility(View.GONE);
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         searchView.setListener(this);
@@ -392,9 +398,13 @@ public class ExploreFragment
     }
 
     private void populateFilter(List<FilterViewModel> filterList) {
+        layoutFilter.setVisibility(View.VISIBLE);
         rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         filterAdapter = new FilterAdapter(getActivity(), filterList);
         rvFilter.setAdapter(filterAdapter);
+        btnFilterMore.setOnClickListener(v->{
+
+        });
     }
 
     @Override
