@@ -222,7 +222,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
         orderLabelList = arguments.getParcelable(ORDER_TAB_LIST);
-        selectedFilter = arguments.getString(OrderListContants.ORDER_FILTER_ID);
+        if(arguments.getString(OrderListContants.ORDER_FILTER_ID) != null) {
+            selectedFilter = arguments.getString(OrderListContants.ORDER_FILTER_ID);
+        }
     }
 
     protected void initView(View view) {

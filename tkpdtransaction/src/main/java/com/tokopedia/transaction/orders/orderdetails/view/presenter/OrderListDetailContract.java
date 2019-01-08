@@ -71,6 +71,10 @@ public interface OrderListDetailContract {
 
         void showDriverInfo(DriverDetails driverDetails);
 
+        void showProgressBar();
+
+        void hideProgressBar();
+
     }
 
     public interface Presenter extends CustomerPresenter<View>{

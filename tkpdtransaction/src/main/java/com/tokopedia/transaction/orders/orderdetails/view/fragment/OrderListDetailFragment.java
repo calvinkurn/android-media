@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -83,6 +84,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView helpLabel;
     TextView primaryActionBtn;
     TextView secondaryActionBtn;
+    FrameLayout progressBarLayout;
     private boolean isSingleButton;
 
 
@@ -126,6 +128,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         helpLabel = view.findViewById(R.id.help_label);
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -249,6 +252,18 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void showProgressBar() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
@@ -342,8 +357,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             String newUri = uri;
             if (uri != null && uri.startsWith("tokopedia")) {
                 Uri url = Uri.parse(newUri);
-                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                newUri = newUri.replace("idem_potency_key=", "");
+
+                if (newUri.contains("idem_potency_key")) {
+                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                    newUri = newUri.replace("idem_potency_key=", "");
+                }
                 RouteManager.route(getActivity(), newUri);
             } else if (uri != null && !uri.equals("")){
                 try {

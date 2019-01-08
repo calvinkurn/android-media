@@ -1,8 +1,10 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -25,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -98,6 +101,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     LinearLayout paymentMethod;
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
+    CardView driverLayout, dropShipperLayout;
+    FrameLayout progressBarLayout;
     private ClipData myClip;
 
 
@@ -144,6 +149,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         itemsRecyclerView = view.findViewById(R.id.rv_items);
         productInformationTitle = view.findViewById(R.id.product_info_label);
         paymentMethod = view.findViewById(R.id.info_payment_method);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         myClipboard = (ClipboardManager)getContext().getSystemService(CLIPBOARD_SERVICE);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
@@ -299,24 +305,18 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dropshipper_info, null);
         TextView dropShipperName = view.findViewById(R.id.dropShipper_name);
         TextView dropShipperNumber = view.findViewById(R.id.dropShipper_phone);
-        if (dropShipper != null) {
-            if (!TextUtils.isEmpty(dropShipper.getDropShipperName())) {
-                dropShipperName.setText(dropShipper.getDropShipperName());
-            }
-            if (!TextUtils.isEmpty(dropShipper.getDropShipperPhone())) {
-                dropShipperNumber.setText(dropShipper.getDropShipperPhone());
-            }
-            view.setLayoutParams(params);
-            detailContent.addView(view);
-        }
+        dropShipperName.setText(dropShipper.getDropShipperName());
+        dropShipperNumber.setText(dropShipper.getDropShipperPhone());
+        view.setLayoutParams(params);
+        detailContent.addView(view);
     }
 
     @Override
     public void showDriverInfo(DriverDetails driverDetails) {
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 20, 0, 20);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.driver_info, null);
+        driverLayout = view.findViewById(R.id.driverLayout);
         ImageView driverImage = view.findViewById(R.id.driver_img);
         TextView driverName = view.findViewById(R.id.driver_name);
         TextView driverNum = view.findViewById(R.id.driver_phone);
@@ -326,19 +326,51 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         if (driverDetails != null) {
             if (!TextUtils.isEmpty(driverDetails.getPhotoUrl())) {
                 ImageHandler.loadImageCircle2(getContext(), driverImage, driverDetails.getPhotoUrl());
+                driverLayout.setVisibility(View.VISIBLE);
             }
             if (!TextUtils.isEmpty(driverDetails.getDriverName())) {
                 driverName.setText(driverDetails.getDriverName());
+                driverLayout.setVisibility(View.VISIBLE);
             }
             if (!TextUtils.isEmpty(driverDetails.getDriverPhone())) {
                 driverNum.setText(driverDetails.getDriverPhone());
+                driverLayout.setVisibility(View.VISIBLE);
                 callDriver.setVisibility(View.VISIBLE);
+                callDriver.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openDialCaller(driverDetails.getDriverPhone());
+                    }
+                });
             }
             if (!TextUtils.isEmpty(driverDetails.getLicenseNumber())) {
                 driverlicense.setText(driverDetails.getLicenseNumber());
+                driverLayout.setVisibility(View.VISIBLE);
             }
             view.setLayoutParams(params);
             detailContent.addView(view);
+        }
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
+    }
+
+    void openDialCaller(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -433,13 +465,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
         return view -> {
-            String newUri = uri;
-            if (uri != null && uri.startsWith("tokopedia")) {
-                Uri url = Uri.parse(newUri);
-                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                newUri = newUri.replace("idem_potency_key=", "");
-                RouteManager.route(getActivity(), newUri);
-            } else if (uri != null && !uri.equals("")) {
+//            String newUri = uri;
+//            if (uri != null && uri.startsWith("tokopedia")) {
+//                Uri url = Uri.parse(newUri);
+//                if (newUri.contains("idem_potency_key")) {
+//                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+//                    newUri = newUri.replace("idem_potency_key=", "");
+//                }
+//                RouteManager.route(getActivity(), newUri);
+//            } else
+                if (uri != null && !uri.equals("")) {
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),

@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -90,6 +91,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private TextView secondaryActionBtn;
     private RecyclerView recyclerView;
     LinearLayout paymentMethodInfo;
+    FrameLayout progressBarLayout;
     private boolean isSingleButton;
 
 
@@ -134,6 +136,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         recyclerView = view.findViewById(R.id.recycler_view);
         paymentMethodInfo = view.findViewById(R.id.info_payment);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         recyclerView.setNestedScrollingEnabled(false);
 
         initInjector();
@@ -391,6 +394,18 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void showDriverInfo(DriverDetails driverDetails) {
 
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
     }
 
     @Override

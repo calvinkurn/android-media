@@ -15,6 +15,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
+import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
@@ -59,6 +60,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (getView().getAppContext() == null)
             return;
 
+        getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
         if (orderCategory.equalsIgnoreCase("marketplace")) {
@@ -93,6 +95,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             @Override
             public void onError(Throwable e) {
                 CommonUtils.dumper("error occured" + e);
+                getView().hideProgressBar();
             }
 
             @Override
@@ -158,6 +161,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private void setDetailsData(OrderDetails details) {
+        getView().hideProgressBar();
         getView().setStatus(details.status());
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
             getView().setConditionalInfo(details.conditionalInfo());
@@ -168,69 +172,63 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setInvoice(details.invoice());
         getView().setOrderToken(details.orderToken());
         for (int i = 0; i < details.detail().size(); i++) {
-            if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone()) && i == 2) {
-                //show dropShipper
-                getView().showDropshipperInfo(details.getDropShipper());
+            if (i == 2) {
+                if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
+                    getView().showDropshipperInfo(details.getDropShipper());
+                }
+                else if (details.getDriverDetails() != null) {
+                    getView().showDriverInfo(details.getDriverDetails());
+                }
+            }
+//                Detail detail = new Detail("No. Resi", "AA1234567890BBCC");
+//                details.detail().set(3, detail);
+                getView().setDetail(details.detail().get(i));
+            }
+            if (details.getItems() != null && details.getItems().size() > 0) {
+                getView().setItems(details.getItems());
+            }
+            if (details.getItems() != null && details.getItems().size() > 0) {
+                getView().setItems(details.getItems());
+            }
+            if (details.additionalInfo().size() > 0) {
+                getView().setAdditionInfoVisibility(View.VISIBLE);
+            }
+            for (AdditionalInfo additionalInfo : details.additionalInfo()) {
 
-            } else if (details.getDriverDetails() != null && i == 3) {
-                //show Driver information
-                getView().showDriverInfo(details.getDriverDetails());
+                getView().setAdditionalInfo(additionalInfo);
+            }
+            for (PayMethod payMethod : details.getPayMethods()) {
+                if (!TextUtils.isEmpty(payMethod.getValue()))
+                    getView().setPayMethodInfo(payMethod);
             }
 
-            //}
-//            else if (details.getDriverDetails() != null && i == 3) {
-//                //show Driver information
-//                getView().showDriverInfo(details.getDriverDetails());
-//            }
-            Detail detail = new Detail("No. Resi", "AA1234567890BBCC");
-            details.detail().set(3, detail);
-            getView().setDetail(details.detail().get(i));
-        }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
-        }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
-        }
-        if (details.additionalInfo().size() > 0) {
-            getView().setAdditionInfoVisibility(View.VISIBLE);
-        }
-        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
-
-            getView().setAdditionalInfo(additionalInfo);
-        }
-        for (PayMethod payMethod : details.getPayMethods()) {
-            if (!TextUtils.isEmpty(payMethod.getValue()))
-                getView().setPayMethodInfo(payMethod);
-        }
-
-        for (Pricing pricing : details.pricing()) {
-            getView().setPricing(pricing);
-        }
-        getView().setPaymentData(details.paymentData());
+            for (Pricing pricing : details.pricing()) {
+                getView().setPricing(pricing);
+            }
+            getView().setPaymentData(details.paymentData());
 //        getView().setContactUs(details.contactUs());
 
-        if (details.actionButtons().size() == 2) {
-            ActionButton leftActionButton = details.actionButtons().get(0);
-            ActionButton rightActionButton = details.actionButtons().get(1);
-            getView().setTopActionButton(leftActionButton);
-            getView().setBottomActionButton(rightActionButton);
-        } else if (details.actionButtons().size() == 1) {
-            ActionButton actionButton = details.actionButtons().get(0);
-            getView().setButtonMargin();
-            if (actionButton.getLabel().equals(INVOICE)) {
-                getView().setBottomActionButton(actionButton);
-                getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
+            if (details.actionButtons().size() == 2) {
+                ActionButton leftActionButton = details.actionButtons().get(0);
+                ActionButton rightActionButton = details.actionButtons().get(1);
+                getView().setTopActionButton(leftActionButton);
+                getView().setBottomActionButton(rightActionButton);
+            } else if (details.actionButtons().size() == 1) {
+                ActionButton actionButton = details.actionButtons().get(0);
+                getView().setButtonMargin();
+                if (actionButton.getLabel().equals(INVOICE)) {
+                    getView().setBottomActionButton(actionButton);
+                    getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
+                } else {
+                    getView().setTopActionButton(actionButton);
+                    getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
+
+                }
             } else {
-                getView().setTopActionButton(actionButton);
-                getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
-
+                getView().setActionButtonsVisibility(View.GONE, View.GONE);
             }
-        } else {
-            getView().setActionButtonsVisibility(View.GONE, View.GONE);
+
+
+            getView().setMainViewVisible(View.VISIBLE);
         }
-
-
-        getView().setMainViewVisible(View.VISIBLE);
     }
-}

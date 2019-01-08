@@ -42,7 +42,7 @@
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_24"
             app:layout_constraintLeft_toRightOf="@+id/guideLine"
-            android:text="Idwan Wangsa"
+            tools:text="Idwan Wangsa"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:layout_marginBottom="@dimen/dp_24"
             app:layout_constraintLeft_toRightOf="@+id/guideLine"
             app:layout_constraintTop_toBottomOf="@+id/driver_name"
-            android:text="081234567890"
+            tools:text="081234567890"
             android:textSize="@dimen/sp_12" />
 
 
@@ -65,7 +65,7 @@
             android:layout_marginBottom="@dimen/dp_24"
             app:layout_constraintLeft_toRightOf="@+id/guideLine"
             app:layout_constraintTop_toBottomOf="@+id/driver_phone"
-            android:text="B 1408 TMB"
+            tools:text="B 1408 TMB"
             android:textSize="@dimen/sp_12" />
 
         <Button
