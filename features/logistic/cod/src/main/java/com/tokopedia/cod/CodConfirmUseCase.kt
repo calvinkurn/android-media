@@ -13,6 +13,11 @@ import javax.inject.Inject
  */
 class CodConfirmUseCase @Inject constructor(@ApplicationContext val context: Context): GraphqlUseCase() {
 
+    init {
+        clearRequest()
+        addRequest(getRequest())
+    }
+
     fun getRequest(): GraphqlRequest {
         val query = GraphqlHelper
                 .loadRawString(context.resources, R.raw.cod_confirmation_query)

@@ -1,6 +1,5 @@
 package com.tokopedia.cod
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cod.model.CodResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
@@ -16,8 +15,6 @@ class CodPresenter @Inject constructor(val useCase: CodConfirmUseCase) : CodCont
 
     override fun confirmPayment() {
         mView?.showLoading()
-        useCase.clearRequest()
-        useCase.addRequest(useCase.getRequest())
         useCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 val response = objects.getData<CodResponse>(CodResponse::class.java)
