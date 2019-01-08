@@ -30,10 +30,7 @@ public class Chips extends AppCompatTextView {
     }
 
     private void init() {
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) this.getLayoutParams();//new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        ViewGroup parent = (ViewGroup) getParent();
-        if (parent instanceof ConstraintLayout)
-            Log.d("erege", "vreve");
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) this.getLayoutParams();//new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         int margin_default = (int) (getContext().getResources().getDimension(R.dimen.dp_16));
         int padding_top_bottom = (int) (getContext().getResources().getDimension(R.dimen.dp_8));
         params.height = (int) (getContext().getResources().getDimension(R.dimen.dp_40));
