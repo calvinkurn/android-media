@@ -118,6 +118,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     public void addItem(List<FilterViewModel> filterList) {
         this.filterList = filterList;
-        notifyDataSetChanged();[]
+        notifyDataSetChanged();
     }
 }
