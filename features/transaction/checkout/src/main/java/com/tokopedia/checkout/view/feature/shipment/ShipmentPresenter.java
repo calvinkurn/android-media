@@ -1321,6 +1321,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         voucherCode : "",
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
+        getView().showLoading();
         codCheckoutUseCase.clearRequest();
         codCheckoutUseCase.addRequest(codCheckoutUseCase.getRequest(checkoutRequest, isOneClickShipment));
         codCheckoutUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -1337,6 +1338,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                getView().hideLoading();
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() != null && response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {
