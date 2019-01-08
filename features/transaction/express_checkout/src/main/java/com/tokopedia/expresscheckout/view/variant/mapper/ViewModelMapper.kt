@@ -34,9 +34,9 @@ class ViewModelMapper : DataMapper {
         if (atcResponseModel.atcDataModel?.userProfileModelDefaultModel != null) {
             dataList.add(convertToProfileViewModel(atcResponseModel))
         }
-        var checkoutVariantProductViewModel = convertToProductViewModel(atcResponseModel, variantViewModelList)
-        dataList.add(checkoutVariantProductViewModel)
-        dataList.add(convertToQuantityViewModel(atcResponseModel, checkoutVariantProductViewModel))
+        var productViewModel = convertToProductViewModel(atcResponseModel, variantViewModelList)
+        dataList.add(productViewModel)
+        dataList.add(convertToQuantityViewModel(atcResponseModel, productViewModel))
         if (variantViewModelList.isNotEmpty()) {
             dataList.addAll(variantViewModelList)
         }
@@ -49,11 +49,11 @@ class ViewModelMapper : DataMapper {
     }
 
     override fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteViewModel {
-        var checkoutVariantNoteViewModel = NoteViewModel()
-        checkoutVariantNoteViewModel.noteCharMax = atcResponseModel.atcDataModel?.maxCharNote ?: 144
-        checkoutVariantNoteViewModel.note = ""
+        var noteViewModel = NoteViewModel()
+        noteViewModel.noteCharMax = atcResponseModel.atcDataModel?.maxCharNote ?: 144
+        noteViewModel.note = ""
 
-        return checkoutVariantNoteViewModel
+        return noteViewModel
     }
 
     override fun convertToProductViewModel(atcResponseModel: AtcResponseModel,
@@ -216,82 +216,83 @@ class ViewModelMapper : DataMapper {
 
     override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
         val userProfileModel: UserProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
-        var checkoutVariantProfileViewModel = ProfileViewModel()
-        checkoutVariantProfileViewModel.addressTitle = userProfileModel?.receiverName ?: ""
-        checkoutVariantProfileViewModel.addressDetail = userProfileModel?.addressStreet ?: ""
-        checkoutVariantProfileViewModel.paymentOptionImageUrl = userProfileModel?.image ?: ""
-        checkoutVariantProfileViewModel.paymentDetail = userProfileModel?.gatewayCode ?: ""
+        var profileViewModel = ProfileViewModel()
+        profileViewModel.addressTitle = userProfileModel?.receiverName ?: ""
+        profileViewModel.addressDetail = userProfileModel?.addressStreet ?: ""
+        profileViewModel.paymentOptionImageUrl = userProfileModel?.image ?: ""
+        profileViewModel.paymentDetail = userProfileModel?.gatewayCode ?: ""
 
-        return checkoutVariantProfileViewModel
+        return profileViewModel
     }
 
     override fun convertToQuantityViewModel(atcResponseModel: AtcResponseModel,
                                             productViewModel: ProductViewModel): QuantityViewModel {
-        var checkoutVariantQuantityViewModel = QuantityViewModel()
+        var quantityViewModel = QuantityViewModel()
         var messagesModel = atcResponseModel.atcDataModel?.messagesModel
-        checkoutVariantQuantityViewModel.errorFieldBetween = messagesModel?.errorFieldBetween ?: ""
-        checkoutVariantQuantityViewModel.errorFieldMaxChar = messagesModel?.errorFieldMaxChar ?: ""
-        checkoutVariantQuantityViewModel.errorFieldRequired = messagesModel?.errorFieldRequired ?: ""
-        checkoutVariantQuantityViewModel.errorProductAvailableStock = messagesModel?.errorProductAvailableStock ?: ""
-        checkoutVariantQuantityViewModel.errorProductAvailableStockDetail = messagesModel?.errorProductAvailableStockDetail ?: ""
-        checkoutVariantQuantityViewModel.errorProductMaxQuantity = messagesModel?.errorProductMaxQuantity ?: ""
-        checkoutVariantQuantityViewModel.errorProductMinQuantity = messagesModel?.errorProductMinQuantity ?: ""
-        checkoutVariantQuantityViewModel.isStateError = false
+        quantityViewModel.errorFieldBetween = messagesModel?.errorFieldBetween ?: ""
+        quantityViewModel.errorFieldMaxChar = messagesModel?.errorFieldMaxChar ?: ""
+        quantityViewModel.errorFieldRequired = messagesModel?.errorFieldRequired ?: ""
+        quantityViewModel.errorProductAvailableStock = messagesModel?.errorProductAvailableStock ?: ""
+        quantityViewModel.errorProductAvailableStockDetail = messagesModel?.errorProductAvailableStockDetail ?: ""
+        quantityViewModel.errorProductMaxQuantity = messagesModel?.errorProductMaxQuantity ?: ""
+        quantityViewModel.errorProductMinQuantity = messagesModel?.errorProductMinQuantity ?: ""
+        quantityViewModel.isStateError = false
 
-        checkoutVariantQuantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity
-        checkoutVariantQuantityViewModel.minOrderQuantity = productViewModel.minOrderQuantity
-        checkoutVariantQuantityViewModel.orderQuantity = productViewModel.minOrderQuantity
-        checkoutVariantQuantityViewModel.stockWording = ""
+        quantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity
+        quantityViewModel.minOrderQuantity = productViewModel.minOrderQuantity
+        quantityViewModel.orderQuantity = productViewModel.minOrderQuantity
+        quantityViewModel.stockWording = ""
 
-        return checkoutVariantQuantityViewModel
+        return quantityViewModel
     }
 
     override fun convertToSummaryViewModel(atcResponseModel: AtcResponseModel): SummaryViewModel {
-        var checkoutVariantSummaryViewModel = SummaryViewModel(null)
+        var summaryViewModel = SummaryViewModel(null)
+        summaryViewModel.itemPrice = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice ?: 0
 
-        return checkoutVariantSummaryViewModel
+        return summaryViewModel
     }
 
     override fun convertToTypeVariantViewModel(variantModel: VariantModel, childrenModel: ArrayList<ChildModel>): TypeVariantViewModel {
-        var checkoutVariantTypeVariantViewModel = TypeVariantViewModel(null)
+        var typeVariantViewModel = TypeVariantViewModel(null)
 
-        var checkoutVariantOptionVariantViewModels = ArrayList<OptionVariantViewModel>()
+        var optionVariantViewModels = ArrayList<OptionVariantViewModel>()
         var optionModels = variantModel.optionModels
         if (optionModels != null) {
             for (optionModel: OptionModel in optionModels) {
-                checkoutVariantOptionVariantViewModels.add(
+                optionVariantViewModels.add(
                         convertToOptionVariantViewModel(optionModel, variantModel.productVariantId
                                 ?: 0, childrenModel)
                 )
             }
         }
-        checkoutVariantTypeVariantViewModel.variantId = variantModel.productVariantId ?: 0
-        checkoutVariantTypeVariantViewModel.variantOptions = checkoutVariantOptionVariantViewModels
-        checkoutVariantTypeVariantViewModel.variantName = variantModel.variantName ?: ""
+        typeVariantViewModel.variantId = variantModel.productVariantId ?: 0
+        typeVariantViewModel.variantOptions = optionVariantViewModels
+        typeVariantViewModel.variantName = variantModel.variantName ?: ""
 
-        return checkoutVariantTypeVariantViewModel
+        return typeVariantViewModel
     }
 
     override fun convertToOptionVariantViewModel(optionModel: OptionModel, variantId: Int, childrenModel: ArrayList<ChildModel>): OptionVariantViewModel {
-        var checkoutVariantOptionVariantViewModel = OptionVariantViewModel(null)
-        checkoutVariantOptionVariantViewModel.variantId = variantId
-        checkoutVariantOptionVariantViewModel.optionId = optionModel.id
-        checkoutVariantOptionVariantViewModel.variantHex = optionModel.hex ?: ""
-        checkoutVariantOptionVariantViewModel.variantName = optionModel.value ?: ""
+        var optionVariantViewModel = OptionVariantViewModel(null)
+        optionVariantViewModel.variantId = variantId
+        optionVariantViewModel.optionId = optionModel.id
+        optionVariantViewModel.variantHex = optionModel.hex ?: ""
+        optionVariantViewModel.variantName = optionModel.value ?: ""
 
         var hasAvailableChild = false
         for (childModel: ChildModel in childrenModel) {
-            if (childModel.isBuyable == true && childModel.optionIds?.contains(checkoutVariantOptionVariantViewModel.optionId) == true) {
+            if (childModel.isBuyable == true && childModel.optionIds?.contains(optionVariantViewModel.optionId) == true) {
                 hasAvailableChild = true
                 break
             }
         }
-        checkoutVariantOptionVariantViewModel.hasAvailableChild = hasAvailableChild
+        optionVariantViewModel.hasAvailableChild = hasAvailableChild
         if (!hasAvailableChild) {
-            checkoutVariantOptionVariantViewModel.currentState = checkoutVariantOptionVariantViewModel.STATE_NOT_AVAILABLE
+            optionVariantViewModel.currentState = optionVariantViewModel.STATE_NOT_AVAILABLE
         }
 
-        return checkoutVariantOptionVariantViewModel
+        return optionVariantViewModel
     }
 
     fun validateVariantCombination(productVariantDataModel: ProductVariantDataModel): Boolean {

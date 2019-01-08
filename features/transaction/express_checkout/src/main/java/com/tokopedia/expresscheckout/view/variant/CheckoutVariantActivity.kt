@@ -5,8 +5,7 @@ import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
-import com.tokopedia.transaction.common.data.expresscheckout.Constant.EXTRA_MESSAGES_ERROR
-import com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_ERROR
+import com.tokopedia.transaction.common.data.expresscheckout.Constant.*
 
 class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
@@ -31,6 +30,16 @@ class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentLis
         val intentResult = Intent()
         intentResult.putExtra(EXTRA_MESSAGES_ERROR, messages)
         setResult(RESULT_CODE_ERROR, intentResult)
+        finish()
+    }
+
+    override fun navigateToOcs() {
+        setResult(RESULT_CODE_NAVIGATE_TO_OCS)
+        finish()
+    }
+
+    override fun navigateToNcf() {
+        setResult(RESULT_CODE_NAVIGATE_TO_NCF)
         finish()
     }
 

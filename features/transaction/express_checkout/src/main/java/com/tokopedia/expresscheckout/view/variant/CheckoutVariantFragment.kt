@@ -295,6 +295,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         fragmentListener.finishWithResult(messages)
     }
 
+    override fun navigateToOcs() {
+        fragmentListener.navigateToOcs()
+    }
+
+    override fun navigateToNcf() {
+        fragmentListener.navigateToNcf()
+    }
+
     override fun showBottomsheetError(title: String, message: String, action: String) {
         errorBottomSheets.setError(title, message, action)
         if (errorBottomSheets.isVisible) {
@@ -308,6 +316,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         adapter.clearAllElements()
         adapter.addDataViewModel(arrayList)
         adapter.notifyDataSetChanged()
+    }
+
+    override fun setShippingError() {
+
+    }
+
+    override fun updateShippingData() {
+
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {

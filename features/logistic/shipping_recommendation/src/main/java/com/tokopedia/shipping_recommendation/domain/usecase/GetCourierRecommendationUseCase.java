@@ -1,10 +1,12 @@
 package com.tokopedia.shipping_recommendation.domain.usecase;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
@@ -38,13 +40,35 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     }
 
     public void execute(String query,
+                        ShippingParam shippingParam,
+                        int selectedServiceId,
+                        List<ShopShipment> shopShipments,
+                        Subscriber<ShippingRecommendationData> subscriber) {
+        query = getQueryWithParams(query, shopShipments, shippingParam);
+        executeQuery(query, null, selectedServiceId, shopShipments, subscriber);
+    }
+
+    public void execute(String query,
                         ShipmentDetailData shipmentDetailData,
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<ShippingRecommendationData> subscriber) {
-        clearRequest();
-        query = getQueryWithParams(query, shipmentDetailData);
+        ShippingParam shippingParam = getShippingParam(shipmentDetailData);
 
+        if (shipmentDetailData.getShipmentCartData() != null &&
+                shipmentDetailData.getShipmentCartData().getShopShipments() != null) {
+            query = getQueryWithParams(query, shipmentDetailData.getShipmentCartData().getShopShipments(), shippingParam);
+        } else {
+            query = getQueryWithParams(query, shopShipments, shippingParam);
+        }
+
+        executeQuery(query, shipmentDetailData, selectedServiceId, shopShipments, subscriber);
+    }
+
+    private void executeQuery(String query, ShipmentDetailData shipmentDetailData,
+                              int selectedServiceId, List<ShopShipment> shopShipments,
+                              Subscriber<ShippingRecommendationData> subscriber) {
+        clearRequest();
         GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 
         addRequest(request);
@@ -85,11 +109,32 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribe(subscriber);
     }
 
-    private String getQueryWithParams(String query, ShipmentDetailData shipmentDetailData) {
+    @NonNull
+    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData) {
+        ShippingParam shippingParam = new ShippingParam();
+        shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
+        shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
+        shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
+        shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
+        shippingParam.setDestinationDistrictId(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
+        shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+        shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+        shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+        shippingParam.setWeightInGrams(shipmentDetailData.getShipmentCartData().getWeight());
+        shippingParam.setShopId(shipmentDetailData.getShopId());
+        shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
+        shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
+        shippingParam.setInsurance(shipmentDetailData.getShipmentCartData().getInsurance());
+        shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
+        shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
+        shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
+        return shippingParam;
+    }
+
+    private String getQueryWithParams(String query, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
         StringBuilder queryStringBuilder = new StringBuilder(query);
 
         StringBuilder spidsStringBuilder = new StringBuilder();
-        List<ShopShipment> shopShipmentList = shipmentDetailData.getShipmentCartData().getShopShipments();
         for (int i = 0; i < shopShipmentList.size(); i++) {
             List<ShipProd> shipProdList = shopShipmentList.get(i).getShipProds();
             if (shipProdList != null) {
@@ -103,53 +148,47 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.SPIDS, spidsStringBuilder.toString());
 
         StringBuilder originStringBuilder = new StringBuilder();
-        originStringBuilder.append(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
-        if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getOriginPostalCode())) {
-            originStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
+        originStringBuilder.append(shippingParam.getOriginDistrictId());
+        if (!TextUtils.isEmpty(shippingParam.getOriginPostalCode())) {
+            originStringBuilder.append("|").append(shippingParam.getOriginPostalCode());
         } else {
             originStringBuilder.append("|").append("0");
         }
-        if (shipmentDetailData.getShipmentCartData().getOriginLatitude() != null) {
-            originStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getOriginLatitude());
+        if (shippingParam.getOriginLatitude() != null) {
+            originStringBuilder.append("|").append(shippingParam.getOriginLatitude());
         }
-        if (shipmentDetailData.getShipmentCartData().getOriginLongitude() != null) {
-            originStringBuilder.append(",")
-                    .append(shipmentDetailData.getShipmentCartData().getOriginLongitude());
+        if (shippingParam.getOriginLongitude() != null) {
+            originStringBuilder.append(",").append(shippingParam.getOriginLongitude());
         }
         queryStringBuilder = setParam(queryStringBuilder, Param.ORIGIN, originStringBuilder.toString());
 
         StringBuilder destinationStringBuilder = new StringBuilder();
-        destinationStringBuilder.append(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
-        if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getDestinationPostalCode())) {
-            destinationStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+        destinationStringBuilder.append(shippingParam.getDestinationDistrictId());
+        if (!TextUtils.isEmpty(shippingParam.getDestinationPostalCode())) {
+            destinationStringBuilder.append("|").append(shippingParam.getDestinationPostalCode());
         } else {
             originStringBuilder.append("|").append("0");
         }
-        if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() != null) {
-            destinationStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+        if (shippingParam.getDestinationLatitude() != null) {
+            destinationStringBuilder.append("|").append(shippingParam.getDestinationLatitude());
         }
-        if (shipmentDetailData.getShipmentCartData().getDestinationLongitude() != null) {
-            destinationStringBuilder.append(",")
-                    .append(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+        if (shippingParam.getDestinationLongitude() != null) {
+            destinationStringBuilder.append(",").append(shippingParam.getDestinationLongitude());
         }
         queryStringBuilder = setParam(queryStringBuilder, Param.DESTINATION, destinationStringBuilder.toString());
 
-        double weightInKilograms = shipmentDetailData.getShipmentCartData().getWeight() / KILOGRAM_DIVIDER;
+        double weightInKilograms = shippingParam.getWeightInGrams() / KILOGRAM_DIVIDER;
         queryStringBuilder = setParam(queryStringBuilder, Param.WEIGHT, String.valueOf(weightInKilograms));
 
-        queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shipmentDetailData.getShopId());
+        queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shippingParam.getShopId());
         queryStringBuilder = setParam(queryStringBuilder, Param.TYPE, Param.VALUE_ANDROID);
         queryStringBuilder = setParam(queryStringBuilder, Param.FROM, Param.VALUE_CLIENT);
-        queryStringBuilder = setParam(queryStringBuilder, Param.TOKEN, shipmentDetailData.getShipmentCartData().getToken());
-        queryStringBuilder = setParam(queryStringBuilder, Param.UT, shipmentDetailData.getShipmentCartData().getUt());
-        queryStringBuilder = setParam(queryStringBuilder, Param.INSURANCE, String.valueOf(shipmentDetailData.getShipmentCartData().getInsurance()));
-        queryStringBuilder = setParam(queryStringBuilder, Param.PRODUCT_INSURANCE, String.valueOf(shipmentDetailData.getShipmentCartData().getProductInsurance()));
-        queryStringBuilder = setParam(queryStringBuilder, Param.ORDER_VALUE, String.valueOf(shipmentDetailData.getShipmentCartData().getOrderValue()));
-        queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shipmentDetailData.getShipmentCartData().getCategoryIds());
+        queryStringBuilder = setParam(queryStringBuilder, Param.TOKEN, shippingParam.getToken());
+        queryStringBuilder = setParam(queryStringBuilder, Param.UT, shippingParam.getUt());
+        queryStringBuilder = setParam(queryStringBuilder, Param.INSURANCE, String.valueOf(shippingParam.getInsurance()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.PRODUCT_INSURANCE, String.valueOf(shippingParam.getProductInsurance()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.ORDER_VALUE, String.valueOf(shippingParam.getOrderValue()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shippingParam.getCategoryIds());
         queryStringBuilder = setParam(queryStringBuilder, Param.LANG, Param.VALUE_LANG_ID);
 
         return queryStringBuilder.toString();

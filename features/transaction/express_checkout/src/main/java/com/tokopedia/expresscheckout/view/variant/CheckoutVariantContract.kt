@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
 
 /**
@@ -27,6 +28,14 @@ interface CheckoutVariantContract {
 
         fun finishWithError(messages: String)
 
+        fun setShippingError()
+
+        fun updateShippingData()
+
+        fun navigateToOcs()
+
+        fun navigateToNcf()
+
         fun getActivityContext(): Context?
     }
 
@@ -34,8 +43,13 @@ interface CheckoutVariantContract {
 
         fun loadExpressCheckoutData(atcRequest: AtcRequest)
 
+        fun loadShippingRates(atcResponseModel: AtcResponseModel, itemPrice: Int, quantity: Int)
+
         fun checkout()
 
+        fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
+
+        fun prepareViewModel()
     }
 
 }

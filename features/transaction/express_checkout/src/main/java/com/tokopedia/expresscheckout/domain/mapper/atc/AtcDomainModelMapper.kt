@@ -17,8 +17,10 @@ class AtcDomainModelMapper : AtcDataMapper {
 
     override fun convertToDomainModel(atcResponse: AtcResponse): AtcResponseModel {
         var responseModel = AtcResponseModel()
+        if (atcResponse.header != null) {
+            responseModel.headerModel = getHeaderModel(atcResponse)
+        }
         responseModel.status = atcResponse.status
-        responseModel.headerModel = getHeaderModel(atcResponse)
         responseModel.atcDataModel = getDataModel(atcResponse)
         return responseModel
     }
@@ -103,7 +105,7 @@ class AtcDomainModelMapper : AtcDataMapper {
         var shopModel = getShopModel(groupShop)
         groupShopModel.shopModel = shopModel
 
-        var shopShipmentModels = ArrayList<ShopShipmentModel>()
+        var shopShipmentModels = ArrayList<com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment>()
         for (shopShiment: ShopShipment in groupShop.shopShipments) {
             shopShipmentModels.add(getShopShipmentModel(shopShiment))
         }
@@ -177,9 +179,7 @@ class AtcDomainModelMapper : AtcDataMapper {
         productModel.purchaseProtectionPlanDataModel = purchaseProtectionPlanDataModel;
 
         var productVariantDataModels = ArrayList<ProductVariantDataModel>()
-        for (productVariantData: ProductVariantData in product.productVariantData) {
-            productVariantDataModels.add(getProductVariantDataModel(productVariantData))
-        }
+        productVariantDataModels.add(getProductVariantDataModel(product.productVariantData))
         productModel.productVariantDataModels = productVariantDataModels
         return productModel
     }
@@ -242,31 +242,31 @@ class AtcDomainModelMapper : AtcDataMapper {
         return shopModel
     }
 
-    private fun getShopShipmentModel(shopShiment: ShopShipment): ShopShipmentModel {
-        var shopShipmentModel = ShopShipmentModel()
-        shopShipmentModel.isDropshipEnabled = shopShiment.isDropshipEnabled
-        shopShipmentModel.shipCode = shopShiment.shipCode
-        shopShipmentModel.shipId = shopShiment.shipId
-        shopShipmentModel.shipLogo = shopShiment.shipLogo
-        shopShipmentModel.shipName = shopShiment.shipName
+    private fun getShopShipmentModel(shopShiment: ShopShipment): com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment {
+        var shopShipment = com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment()
+        shopShipment.isDropshipEnabled = shopShiment.isDropshipEnabled == 1
+        shopShipment.shipCode = shopShiment.shipCode
+        shopShipment.shipId = shopShiment.shipId
+        shopShipment.shipLogo = shopShiment.shipLogo
+        shopShipment.shipName = shopShiment.shipName
 
-        var shipProdModels = ArrayList<ShipProdModel>()
+        var shipProds = ArrayList<com.tokopedia.shipping_recommendation.domain.shipping.ShipProd>()
         for (shipProd: ShipProd in shopShiment.shipProds) {
-            shipProdModels.add(getShipProdModel(shipProd))
+            shipProds.add(getShipProdModel(shipProd))
         }
-        shopShipmentModel.shipProdModels = shipProdModels
-        return shopShipmentModel
+        shopShipment.shipProds = shipProds
+        return shopShipment
     }
 
-    private fun getShipProdModel(shipProd: ShipProd): ShipProdModel {
-        var shipProdModel = ShipProdModel()
-        shipProdModel.additionalFee = shipProd.additionalFee
-        shipProdModel.minimumWeight = shipProd.minimumWeight
-        shipProdModel.shipGroupId = shipProd.shipGroupId
-        shipProdModel.shipProdName = shipProd.shipProdName
-        shipProdModel.shipProdId = shipProd.shipProdId
-        shipProdModel.shipGroupName = shipProd.shipGroupName
-        return shipProdModel
+    private fun getShipProdModel(shipProd: ShipProd): com.tokopedia.shipping_recommendation.domain.shipping.ShipProd {
+        var shipProd = com.tokopedia.shipping_recommendation.domain.shipping.ShipProd()
+        shipProd.additionalFee = shipProd.additionalFee
+        shipProd.minimumWeight = shipProd.minimumWeight
+        shipProd.shipGroupId = shipProd.shipGroupId
+        shipProd.shipProdName = shipProd.shipProdName
+        shipProd.shipProdId = shipProd.shipProdId
+        shipProd.shipGroupName = shipProd.shipGroupName
+        return shipProd
     }
 
     private fun getAutoApplyModel(atcResponse: AtcResponse): AutoApplyModel {

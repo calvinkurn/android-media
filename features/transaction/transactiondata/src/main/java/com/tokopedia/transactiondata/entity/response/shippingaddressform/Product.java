@@ -120,7 +120,7 @@ public class Product {
     private ProductPreorder productPreorder;
     @SerializedName("product_variants")
     @Expose
-    private ArrayList<ProductVariantData> productVariantData;
+    private ProductVariantData productVariantData;
 
     public String getProductCategory() {
         return productCategory;
@@ -262,7 +262,7 @@ public class Product {
         return purchaseProtectionPlanData;
     }
 
-    public ArrayList<ProductVariantData> getProductVariantData() {
+    public ProductVariantData getProductVariantData() {
         return productVariantData;
     }
 }

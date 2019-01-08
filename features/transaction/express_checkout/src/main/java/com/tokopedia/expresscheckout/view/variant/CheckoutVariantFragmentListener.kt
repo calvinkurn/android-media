@@ -8,4 +8,7 @@ interface CheckoutVariantFragmentListener {
 
     fun finishWithResult(messages: String)
 
+    fun navigateToOcs()
+
+    fun navigateToNcf()
 }

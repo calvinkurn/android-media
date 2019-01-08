@@ -270,7 +270,7 @@
                 "protection_link_url":"",
                 "protection_opt_in":false
               },
-              "product_variants":[
+              "product_variants":
                 {
                   "parent_id":15223034,
                   "default_child":15223035,
@@ -335,7 +335,6 @@
                   "is_enabled":false,
                   "stock":0
                 }
-              ]
             }
           ]
         }
