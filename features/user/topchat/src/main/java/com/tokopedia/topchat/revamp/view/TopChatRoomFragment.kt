@@ -389,7 +389,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 product.price,
                 product.productUrl,
                 product.productImageThumbnail,
-                SendableViewModel.generateStartTime())
+                SendableViewModel.generateStartTime(),
+                false)
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {

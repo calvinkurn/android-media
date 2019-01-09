@@ -10,20 +10,27 @@ import java.util.Date
  */
 class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
-    var productId: Int? = null
+    var productId: Int = 0
         private set
-    var productName: String? = null
+    var productName: String = ""
         private set
-    var productPrice: String? = null
+    var productPrice: String = ""
         private set
-    var dateTimeInMilis: Long? = null
+    var dateTimeInMilis: Long = 0
         private set
-    var productUrl: String? = null
+    var productUrl: String = ""
         private set
-    var productImage: String? = null
+    var productImage: String = ""
+        private set
+    var canShowFooter: Boolean = false
         private set
 
-    constructor(messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String, attachmentType: String, replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String) : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, startTime, isRead, isDummy, isSender, message) {}
+    constructor(messageId: String, fromUid: String, from: String,
+                fromRole: String, attachmentId: String, attachmentType: String,
+                replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
+                isSender: Boolean, message: String)
+            : super(messageId, fromUid, from, fromRole, attachmentId,
+            attachmentType, replyTime, startTime, isRead, isDummy, isSender, message) {}
 
     /**
      * Constructor for API response.
@@ -47,9 +54,11 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
                 from: String, fromRole: String,
                 attachmentId: String, attachmentType: String,
                 replyTime: String, isRead: Boolean,
-                productId: Int?, productName: String,
+                productId: Int, productName: String,
                 productPrice: String, productUrl: String,
-                productImage: String, isSender: Boolean, message: String) : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
+                productImage: String, isSender: Boolean, message: String,
+                canShowFooter : Boolean)
+            : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message) {
         this.productId = productId
         this.productName = productName
@@ -57,6 +66,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.dateTimeInMilis = java.lang.Long.parseLong(replyTime)
         this.productUrl = productUrl
         this.productImage = productImage
+        this.canShowFooter = canShowFooter
     }
 
     /**
@@ -80,10 +90,12 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
     constructor(messageId: String, fromUid: String,
                 from: String, fromRole: String,
                 attachmentId: String, attachmentType: String,
-                replyTime: String, productId: Int?,
+                replyTime: String, productId: Int,
                 productName: String, productPrice: String,
                 productUrl: String, productImage: String,
-                isSender: Boolean, message: String, startTime: String) : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
+                isSender: Boolean, message: String, startTime: String,
+                canShowFooter: Boolean)
+            : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             startTime, false, false, isSender, message) {
         this.productId = productId
         this.productName = productName
@@ -91,6 +103,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.dateTimeInMilis = java.lang.Long.parseLong(replyTime)
         this.productUrl = productUrl
         this.productImage = productImage
+        this.canShowFooter = canShowFooter
     }
 
     /**
@@ -104,9 +117,10 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
      * @param productImage product image url
      * @param startTime    send time to validate dummy mesages.
      */
-    constructor(loginID: String, productId: Int?, productName: String,
+    constructor(loginID: String, productId: Int, productName: String,
                 productPrice: String, productUrl: String,
-                productImage: String, startTime: String) : super("", loginID, "", "", "",
+                productImage: String, startTime: String, canShowFooter: Boolean) : super("",
+            loginID, "", "", "",
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SendableViewModel.SENDING_TEXT,
             startTime, false, true, true, productUrl) {
         this.productId = productId
@@ -115,6 +129,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.dateTimeInMilis = Date().time
         this.productUrl = productUrl
         this.productImage = productImage
+        this.canShowFooter = canShowFooter
     }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
