@@ -148,9 +148,9 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void setFooter(View productContainer, ProductAttachmentViewModel element) {
-        View separator = productContainer.findViewById(R.id.separator);
+//        View separator = productContainer.findViewById(R.id.separator);
         if (element.getCanShowFooter()) {
-            separator.setVisibility(View.VISIBLE);
+//            separator.setVisibility(View.VISIBLE);
 //            tvBuy.setVisibility(View.VISIBLE);
             ivATC.setVisibility(View.VISIBLE);
 //            tvBuy.setOnClickListener(v -> {
@@ -161,7 +161,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 viewListener.onClickATCFromProductAttachment(element);
             });
         } else {
-            separator.setVisibility(View.GONE);
+//            separator.setVisibility(View.GONE);
 //            tvBuy.setVisibility(View.GONE);
             ivATC.setVisibility(View.GONE);
         }
