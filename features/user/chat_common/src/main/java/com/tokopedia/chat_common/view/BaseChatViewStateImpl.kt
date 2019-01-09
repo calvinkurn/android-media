@@ -81,6 +81,7 @@ open class BaseChatViewStateImpl(
         })
 
         replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                .skip(1)
                 .subscribe {
                     typingListener.onStopTyping()
                     isTyping = false

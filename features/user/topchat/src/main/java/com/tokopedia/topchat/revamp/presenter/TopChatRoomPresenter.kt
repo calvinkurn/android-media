@@ -6,10 +6,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -27,6 +24,7 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
 import com.tokopedia.topchat.revamp.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.GetTemplateChatRoomUseCase
+import com.tokopedia.topchat.revamp.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
@@ -52,7 +50,8 @@ class TopChatRoomPresenter @Inject constructor(
         override var userSession: UserSessionInterface,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
-        private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase)
+        private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
+        private var replyChatUseCase: ReplyChatUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -68,7 +67,9 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun connectWebSocket(messageId: String) {
+        networkMode = WebsocketEvent.Mode.MODE_API
         thisMessageId = messageId
+        return
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
@@ -85,6 +86,7 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
+                networkMode = WebsocketEvent.Mode.MODE_WEBSOCKET
                 view.showErrorWebSocket(false)
                 readMessage()
             }
@@ -115,6 +117,7 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onReconnect")
                 }
+                networkMode = WebsocketEvent.Mode.MODE_API
                 view.showErrorWebSocket(true)
                 connectWebSocket(messageId)
             }
@@ -123,6 +126,7 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onClose")
                 }
+                networkMode = WebsocketEvent.Mode.MODE_API
                 destroyWebSocket()
                 view.showErrorWebSocket(true)
             }
@@ -151,9 +155,10 @@ class TopChatRoomPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                view.onReceiveMessageEvent(mapToVisitable(pojo))
+                var temp = mapToVisitable(pojo)
+                view.onReceiveMessageEvent(temp)
                 if (!pojo.isOpposite) {
-                    getDummyOnList(pojo)?.let {
+                    getDummyOnList(temp)?.let {
                         view.removeDummy(it)
                     }
                 } else {
@@ -216,7 +221,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(it: ImageUploadViewModel) {
-        if(validateImageAttachment(it.imageUrl)) {
+        if (validateImageAttachment(it.imageUrl)) {
             processDummyMessage(it)
             isUploading = true
             uploadImageUseCase.unsubscribe()
@@ -290,12 +295,13 @@ class TopChatRoomPresenter @Inject constructor(
     private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
         return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
     }
-    private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
+
+    private fun getDummyOnList(visitable: Visitable<*>): Visitable<*>? {
         dummyList.isNotEmpty().let {
             for (i in 0 until dummyList.size) {
                 var temp = (dummyList[i] as SendableViewModel)
-                if (temp.startTime == pojo.startTime
-                        && temp.messageId == pojo.msgId.toString()) {
+                if (temp.startTime == (visitable as SendableViewModel).startTime
+                        && temp.messageId == (visitable as SendableViewModel).messageId) {
                     return dummyList[i]
                 }
             }
@@ -308,31 +314,46 @@ class TopChatRoomPresenter @Inject constructor(
         return topChatRoomWebSocketMessageMapper.map(pojo)
     }
 
+    override fun clearEditText() {
+        view.clearEditText()
+    }
+
     override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
-        if (isValidReply(sendMessage)) {
-            view.clearEditText()
-//            view.disableAction()
-            processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-            sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime))
-            sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
-        }
+        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime))
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
+        processDummyMessage(dummyMessage)
+        replyChatUseCase.execute(ReplyChatUseCase.generateParam(messageId, sendMessage), object : Subscriber<ReplyChatViewModel>() {
+            override fun onNext(response: ReplyChatViewModel) {
+                if (response.isSuccessReplyChat) {
+                    view.onReceiveMessageEvent(response.chat)
+                    getDummyOnList(dummyMessage)?.let {
+                        view.removeDummy(it)
+                    }
+                }
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                view.showSnackbarError(ErrorHandler.getErrorMessage(view.context, e))
+            }
+
+        })
+    }
+
+    override fun showErrorSnackbar(stringId: Int) {
+        view.showSnackbarError(view.getStringResource(stringId))
     }
 
     private fun sendMessageWebSocket(messageText: String) {
         RxWebSocket.send(messageText, null)
-    }
-
-
-    private fun isValidReply(message: String): Boolean {
-        if (message.trim { it <= ' ' }.isEmpty()) {
-            view.showSnackbarError(view.getStringResource(R.string.error_empty_product))
-            return false
-        }
-        return true
     }
 
     override fun detachView() {

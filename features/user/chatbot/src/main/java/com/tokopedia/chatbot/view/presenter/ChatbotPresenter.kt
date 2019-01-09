@@ -131,6 +131,13 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
+    override fun clearEditText() {
+    }
+
+    override fun showErrorSnackbar(stringId: Int) {
+
+    }
+
     override fun sendReadEvent(messageId: String) {
         RxWebSocket.send(SendWebsocketParam.getReadMessage(messageId),
                 listInterceptor)

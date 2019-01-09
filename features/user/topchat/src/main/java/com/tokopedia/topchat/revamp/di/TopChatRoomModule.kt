@@ -2,9 +2,11 @@ package com.tokopedia.topchat.revamp.di
 
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
+import com.tokopedia.chat_common.domain.mapper.ReplyChatMapper
 import com.tokopedia.topchat.revamp.data.api.ChatRoomApi
 import com.tokopedia.topchat.revamp.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.revamp.domain.usecase.GetTemplateChatRoomUseCase
+import com.tokopedia.topchat.revamp.domain.usecase.ReplyChatUseCase
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -48,6 +50,12 @@ class TopChatRoomModule {
     @Provides
     internal fun provideGetTemplateChatUseCase(api: ChatRoomApi, mapper: GetTemplateChatRoomMapper): GetTemplateChatRoomUseCase {
         return GetTemplateChatRoomUseCase(api, mapper)
+    }
+
+    @TopChatRoomScope
+    @Provides
+    internal fun provideReplyChatUseCase(api: ChatRoomApi, mapper: ReplyChatMapper): ReplyChatUseCase {
+        return ReplyChatUseCase(api, mapper)
     }
 
     @TopChatRoomScope
