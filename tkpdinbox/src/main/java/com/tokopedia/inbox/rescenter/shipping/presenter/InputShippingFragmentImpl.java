@@ -437,9 +437,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
 
     private void resEditSubmit(EditAWBRequest editAWBRequest, ShippingParamsPostModel params) {
-        if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0)
-            editAWBRequest.setAttachmentCount(params.getAttachmentList().size());
-
         List<String> imageList = new ArrayList<>();
 
         Map<String, Object> variables = new HashMap<>();
