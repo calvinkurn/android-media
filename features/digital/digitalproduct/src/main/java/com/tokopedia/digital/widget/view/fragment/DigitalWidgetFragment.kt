@@ -3,7 +3,6 @@ package com.tokopedia.digital.widget.view.fragment
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.content.res.ResourcesCompat
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService
 import com.tokopedia.digital.common.data.source.CategoryListDataSource
 import com.tokopedia.digital.common.data.source.StatusDataSource
+import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
 import com.tokopedia.digital.widget.data.source.RecommendationListDataSource
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase
@@ -42,7 +42,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     private lateinit var digitalWidgetPresenter: DigitalWidgetPresenter
 
     private lateinit var tab_layout_widget: TabLayout
-    private lateinit var view_pager_widget: ViewPager
+    private lateinit var view_pager_widget: DigitalWrapContentViewPager
     private lateinit var container: LinearLayout
     private lateinit var pulsa_place_holders: RelativeLayout
     private lateinit var error_view: LinearLayout

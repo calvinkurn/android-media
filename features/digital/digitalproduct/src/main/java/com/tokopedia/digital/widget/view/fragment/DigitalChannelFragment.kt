@@ -61,7 +61,7 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
         }
     }
 
-    private lateinit var interaction: DigitalChannelFragmentInteraction
+    private var interaction: DigitalChannelFragmentInteraction? = null
 
     private fun setInteraction(interaction: DigitalChannelFragmentInteraction) {
         this.interaction = interaction
@@ -148,7 +148,7 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
     }
 
     override fun renderDigitalTitle(stringRes: Int) {
-        interaction.updateHeaderText(stringRes);
+        interaction?.updateHeaderText(stringRes);
     }
 
     override fun renderRecommendationList(recommendations: List<Recommendation>) {
@@ -159,7 +159,7 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
     }
 
     override fun fetchCategoryList() {
-        interaction.changeToDigitalWidget()
+        interaction?.changeToDigitalWidget()
     }
 
     override fun showError(resId: Int) {

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/dp_120"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -27,18 +26,8 @@
         <View
             android:id="@+id/dummy_view_2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="@dimen/dp_30"
             android:layout_below="@id/dummy_view_1"
-            android:layout_marginLeft="@dimen/keyline_1"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginRight="@dimen/keyline_1"
-            android:background="@color/grey_200" />
-
-        <View
-            android:id="@+id/dummy_view_3"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_20"
-            android:layout_below="@id/dummy_view_2"
             android:layout_marginLeft="@dimen/keyline_1"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginRight="@dimen/keyline_1"

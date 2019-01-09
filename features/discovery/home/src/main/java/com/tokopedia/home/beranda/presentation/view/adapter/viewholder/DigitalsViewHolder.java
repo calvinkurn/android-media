@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.viewpager.WrapContentViewPager;
-import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase;
 import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
 import com.tokopedia.digital.widget.view.fragment.DigitalWidgetFragment;
 import com.tokopedia.digital.widget.view.listener.DigitalChannelFragmentInteraction;
@@ -33,7 +32,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     private DigitalsHomePagerAdapter widgetHomePagerAdapter;
     private TextView titleTextView;
     private TextView seeMoreTextView;
-    private static boolean isDigitalWidget;
+    private boolean isDigitalWidget;
     private static final String APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2";
 
 
@@ -50,7 +49,6 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     @Override
     public void bind(DigitalsViewModel element) {
-
         if (isDigitalWidget) {
             viewPagerChannel.setVisibility(View.GONE);
             viewPagerWidget.setVisibility(View.VISIBLE);
@@ -58,6 +56,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
                 widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
                 viewPagerWidget.setAdapter(widgetHomePagerAdapter);
                 viewPagerWidget.setOffscreenPageLimit(1);
+                viewPagerWidget.measureCurrentView(viewPagerWidget.getChildAt(0));
             }
             viewPagerWidget.setCurrentItem(0);
             widgetHomePagerAdapter.notifyDataSetChanged();
@@ -91,6 +90,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         if (widgetHomePagerAdapter == null) {
             widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
             viewPagerWidget.setAdapter(widgetHomePagerAdapter);
+            viewPagerWidget.measureCurrentView(viewPagerWidget.getChildAt(0));
         }
     }
 

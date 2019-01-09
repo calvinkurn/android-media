@@ -6,9 +6,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 import com.tokopedia.design.viewpager.WrapContentViewPager;
-import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
-import com.tokopedia.digital.widget.view.fragment.DigitalWidgetFragment;
-import com.tokopedia.digital.widget.view.listener.DigitalChannelFragmentInteraction;
 
 public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
     private int currentPosition = -1;
@@ -32,10 +29,12 @@ public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
         super.setPrimaryItem(container, position, object);
         if (position != currentPosition) {
             Fragment fragment = (Fragment) object;
-            WrapContentViewPager pager = (WrapContentViewPager) container;
-            if (fragment != null && fragment.getView() != null) {
-                currentPosition = position;
-                pager.measureCurrentView(fragment.getView());
+            if (container instanceof WrapContentViewPager){
+                WrapContentViewPager pager = (WrapContentViewPager) container;
+                if (fragment != null && fragment.getView() != null) {
+                    currentPosition = position;
+                    pager.measureCurrentView(fragment.getView());
+                }
             }
         }
     }
