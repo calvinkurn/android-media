@@ -22,6 +22,7 @@ public class ShipmentNotifierViewHolder extends RecyclerView.ViewHolder {
 
     public ShipmentNotifierViewHolder(View itemView, ShipmentAdapterActionListener actionListener) {
         super(itemView);
+        mActionListener = actionListener;
         mText = itemView.findViewById(R.id.text_cod_description);
         mLinkText = itemView.findViewById(R.id.text_learn_more);
     }

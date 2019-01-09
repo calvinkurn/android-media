@@ -52,6 +52,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationMo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
+import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
@@ -156,6 +157,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
+    @Inject
+    CodAnalytics mTrackerCod;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
@@ -1812,6 +1815,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onNotifierClicked(String url) {
+        mTrackerCod.eventClickPelajariSelengkapnya();
         Intent intent = CheckoutWebViewActivity
                 .newInstance(getContext(), url, getString(R.string.manage_terms_and_conditions));
         startActivity(intent);
