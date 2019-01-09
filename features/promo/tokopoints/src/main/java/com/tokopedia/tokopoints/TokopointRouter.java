@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 public interface TokopointRouter {
     void openTokoPoint(Context context, String url);
 
-    void openWebView(Context context, String url, String title);
+    void openTokopointWebview(Context context, String url, String title);
 
     Intent getHomeIntent(Context context);
 
