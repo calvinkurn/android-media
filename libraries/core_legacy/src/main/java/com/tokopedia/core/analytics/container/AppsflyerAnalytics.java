@@ -10,28 +10,37 @@ import android.text.TextUtils;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * butuh userId
- */
-public class NewAppsflyerSuicide extends ContextAnalytics {
-    private static final String TAG = NewAppsflyerSuicide.class.getSimpleName();
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
+public class AppsflyerAnalytics extends ContextAnalytics {
+    private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
     private static boolean isAppsflyerCallbackHandled = false;
     public static final String APPSFLYER_KEY = "SdSopxGtYr9yK8QEjFVHXL";
     private static final String KEY_INSTALL_SOURCE = "install_source";
     public static final String GCM_PROJECT_NUMBER = "692092518182";
 
-    public NewAppsflyerSuicide(Context context) {
+    private static String deferredDeeplinkPath = "";
+
+    public AppsflyerAnalytics(Context context) {
         super(context);
     }
 
@@ -39,11 +48,11 @@ public class NewAppsflyerSuicide extends ContextAnalytics {
     public void initialize() {
         super.initialize();
 
-        /**
-         * TODO what if object that store from other application store here?
-         */
-        String userID = RouterUtils.getRouterFromContext(getContext())
-                .legacySessionHandler().getUserId();
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext())
+                .legacySessionHandler();
+
+        final String userID = sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000";
+
 
         CommonUtils.dumper("Appsflyer login userid " + userID);
 
@@ -60,7 +69,7 @@ public class NewAppsflyerSuicide extends ContextAnalytics {
 
                     if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
                         //open deeplink
-                        AppsflyerContainer.setDefferedDeeplinkPathIfExists(deeplink);
+                        setDefferedDeeplinkPathIfExists(deeplink);
                     }
                 } catch (ActivityNotFoundException ex) {
                     ex.printStackTrace();
@@ -111,12 +120,47 @@ public class NewAppsflyerSuicide extends ContextAnalytics {
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
         AppsFlyerLib.getInstance().setGCMProjectNumber(GCM_PROJECT_NUMBER);
-        Application context = (Application) getContext();
-        AppsFlyerLib.getInstance().startTracking(context, key);;
+        AppsFlyerLib.getInstance().startTracking(getContext(), key);
+    }
+
+    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+        CommonUtils.dumper(TAG + " Appsflyer send " + eventName + " " + eventValue);
+        AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
     }
 
     public void sendDeeplinkData(Activity activity) {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
+    }
+
+    public void getAdsID(final AppsflyerContainer.AFAdsIDCallback callback) {
+            AdvertisingIdClient.Info adInfo = null;
+            try {
+                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());
+                callback.onGetAFAdsID(adInfo.getId());
+                CommonUtils.dumper(TAG + " appsflyer succeded init ads ID " + adInfo.getId() + " " + adInfo.isLimitAdTrackingEnabled());
+            } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+                callback.onErrorAFAdsID();
+            }
+    }
+
+    public String getAdsIdDirect() {
+
+        AdvertisingIdClient.Info adInfo;
+        try {
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());
+            return adInfo.getId();
+        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String getUniqueId() {
+        return AppsFlyerLib.getInstance().getAppsFlyerUID(getContext());
     }
 
     public void setUserID(String userID) {
@@ -126,5 +170,13 @@ public class NewAppsflyerSuicide extends ContextAnalytics {
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
         AppsFlyerLib.getInstance().setAdditionalData(addData);
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
+    }
+
+    public static String getDefferedDeeplinkPathIfExists() {
+        return deferredDeeplinkPath;
+    }
+
+    public static void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
+        deferredDeeplinkPath = deeplinkPath;
     }
 }
