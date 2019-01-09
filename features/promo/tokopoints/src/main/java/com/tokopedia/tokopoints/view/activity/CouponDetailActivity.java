@@ -53,7 +53,7 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
         return intent;
     }
 
-    @DeepLink({ApplinkConstant.COUPON_DETAIL, ApplinkConstant.COUPON_DETAIL2, ApplinkConstant.COUPON_DETAIL3, ApplinkConstant.COUPON_DETAIL4})
+    @DeepLink({ApplinkConstant.COUPON_DETAIL3, ApplinkConstant.COUPON_DETAIL4})
     public static Intent getCouponDetail(Context context, Bundle extras) {
         return getCallingIntent(context, extras);
     }

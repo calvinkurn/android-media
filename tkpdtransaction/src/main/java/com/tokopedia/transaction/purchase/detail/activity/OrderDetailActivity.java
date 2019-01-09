@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
@@ -72,6 +73,7 @@ import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -831,6 +833,25 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void dismissProgressDialog() {
         smallProgressDialog.dismiss();
+    }
+
+    @Override
+    public void onSuccessBuyAgain(String message, OrderDetailData data) {
+        showSnackbar(message);
+        orderDetailAnalytics.sendAnalyticBuyAgain(data);
+    }
+
+    @Override
+    public boolean isToggleBuyAgainOn() {
+        if (getApplication() instanceof ITransactionOrderDetailRouter) {
+            return  ((ITransactionOrderDetailRouter) getApplication()).isToggleBuyAgainOn();
+        }
+        return true;
+    }
+
+    @Override
+    public void onErrorBuyAgain(Throwable e) {
+        showSnackbarWithCloseButton(ErrorHandler.getErrorMessage(this, e));
     }
 
     @Override

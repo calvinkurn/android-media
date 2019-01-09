@@ -69,6 +69,7 @@ public class CategoryModelHelper {
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
         productItem.setTopLabel(productModel.getTopLabel());
         productItem.setBottomLabel(productModel.getBottomLabel());
+        productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
         return productItem;
     }
 

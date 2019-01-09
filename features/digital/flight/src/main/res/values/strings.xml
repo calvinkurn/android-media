@@ -452,7 +452,7 @@
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
     <string name="flight_detail_facility_label">Fasilitas</string>
     <string name="flight_detail_facility_separator">:</string>
-    <string name="flight_cancellation_support_docs_description">Pembatalan tiket tidak dapat diproses jika foto identitas diri (KTP/SIM/Paspor) tidak sesuai dengan penumpang terkait</string>
+    <string name="flight_cancellation_support_docs_description">Harap unggah KTP/SIM (untuk penerbangan domestik) atau Paspor (untuk penerbangan internasional).</string>
     <string name="flight_change_search_content_button">Ganti Pencarian</string>
     <string name="flight_cancellation_less_than_6_hours_confirmation_dialog">OK</string>
     <string name="flight_search_best_pairing_tag">Best Pairing</string>
@@ -480,4 +480,5 @@
     <string name="flight_cancellation_auto_check_dialog_desc">Berdasarkan kebijakan maskapai, terdapat penumpang yang harus kami batalkan secara otomatis. Silakan periksa ulang daftar penumpang Anda.</string>
     <string name="flight_cancellation_auto_check_dialog_button">OK, Mengerti</string>
     <string name="flight_cancellation_reason_view_image_label">Lihat</string>
+    <string name="flight_bottom_sheet_tag">Flight Sort</string>
 </resources>
