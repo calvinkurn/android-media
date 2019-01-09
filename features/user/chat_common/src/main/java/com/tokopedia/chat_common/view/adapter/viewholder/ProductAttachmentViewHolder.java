@@ -60,8 +60,9 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     public void bind(ProductAttachmentViewModel element) {
         super.bind(element);
         prerequisiteUISetup(element);
-        setupChatBubbleAlignment(chatBalloon, element);
         setupProductUI(element, chatBalloon);
+        setupChatBubbleAlignment(chatBalloon, element);
+
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {
@@ -136,6 +137,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
         params.addRule(alignment);
+        params.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         view.setLayoutParams(params);
     }
 
@@ -165,8 +167,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 //            tvBuy.setVisibility(View.GONE);
             ivATC.setVisibility(View.GONE);
         }
-
-        view.requestLayout();
     }
 
 
