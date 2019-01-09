@@ -169,7 +169,7 @@ class TopChatRoomPresenter @Inject constructor(
     override fun getExistingChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit, ) {
+            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
                     GetChatSubscriber(onError, onSuccessGetExistingMessage))
