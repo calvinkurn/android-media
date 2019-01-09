@@ -191,7 +191,9 @@ ext {
             train                         : ":features:digital:train",
 
             home                          : ":features:discovery:home",
+            //home                          : ":features:discovery:home_no_op",
             recentview                    : ":features:discovery:recentview",
+            //recentview                    : ":features:discovery:recentview_no_op",
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
 
