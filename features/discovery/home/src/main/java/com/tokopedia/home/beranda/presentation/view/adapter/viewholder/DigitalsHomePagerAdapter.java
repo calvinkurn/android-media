@@ -30,14 +30,14 @@ public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        if (position != currentPosition) {
-            Fragment fragment = (Fragment) object;
-            WrapContentViewPager pager = (WrapContentViewPager) container;
-            if (fragment != null && fragment.getView() != null) {
-                currentPosition = position;
-                pager.measureCurrentView(fragment.getView());
-            }
-        }
+//        if (position != currentPosition) {
+//            Fragment fragment = (Fragment) object;
+//            WrapContentViewPager pager = (WrapContentViewPager) container;
+//            if (fragment != null && fragment.getView() != null) {
+//                currentPosition = position;
+//                pager.measureCurrentView(fragment.getView());
+//            }
+//        }
     }
 
     @Override
