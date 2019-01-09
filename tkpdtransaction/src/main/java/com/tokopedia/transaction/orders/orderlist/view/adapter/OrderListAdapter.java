@@ -167,6 +167,15 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
+    public void setItemCount(String itemCount) {
+        if (currentHolder.orderCategory.equalsIgnoreCase("belanja") || currentHolder.orderCategory.equalsIgnoreCase("marketplace")) {
+            currentHolder.itemCount.setVisibility(View.VISIBLE);
+            currentHolder.title.setVisibility(View.GONE);
+            currentHolder.itemCount.setText("(+" + itemCount + " " + "Produk Lainnya)");
+        }
+    }
+
+    @Override
     public void setTotal(String totalLabel, String totalValue, String textColor) {
         currentHolder.totalLabel.setText(totalLabel);
         currentHolder.total.setText(totalValue);
@@ -328,6 +337,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageView imgShopAvatar;
         TextView categoryName;
         TextView title;
+        TextView itemCount;
         ImageView paymentAvatar;
         TextView totalLabel;
         TextView total;
@@ -353,6 +363,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             imgShopAvatar = itemView.findViewById(R.id.shop_avatar);
             categoryName = itemView.findViewById(R.id.category_name);
             title = itemView.findViewById(R.id.title);
+            itemCount = itemView.findViewById(R.id.itemCount);
             paymentAvatar = itemView.findViewById(R.id.status_shop_avatar);
             totalLabel = itemView.findViewById(R.id.total_price_label);
             total = itemView.findViewById(R.id.total);
