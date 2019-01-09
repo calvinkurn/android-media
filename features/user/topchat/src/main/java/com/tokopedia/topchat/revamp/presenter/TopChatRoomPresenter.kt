@@ -25,7 +25,9 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.revamp.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
+import com.tokopedia.topchat.revamp.domain.subscriber.GetExistingMessageIdSubscriber
 import com.tokopedia.topchat.revamp.domain.usecase.GetChatUseCase
+import com.tokopedia.topchat.revamp.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
@@ -52,7 +54,8 @@ class TopChatRoomPresenter @Inject constructor(
         override var userSession: UserSessionInterface,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
-        private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase)
+        private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
+        private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -166,11 +169,22 @@ class TopChatRoomPresenter @Inject constructor(
     override fun getExistingChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccess: (ChatroomViewModel) -> Unit) {
+            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit, ) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
-                    GetChatSubscriber(onError, onSuccess))
+                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
         }
+    }
+
+    override fun getMessageId(toUserId: String,
+                              toShopId: String,
+                              source: String,
+                              onError: (Throwable) -> Unit,
+                              onSuccessGetMessageId: (String) -> Unit) {
+        getExistingMessageIdUseCase.execute(GetExistingMessageIdUseCase.generateParam(
+                toShopId, toUserId, source), GetExistingMessageIdSubscriber(
+                onError, onSuccessGetMessageId
+        ))
     }
 
 
@@ -353,7 +367,10 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
+        getChatUseCase.unsubscribe()
         uploadImageUseCase.unsubscribe()
+        getExistingMessageIdUseCase.unsubscribe()
+        getTemplateChatRoomUseCase.unsubscribe()
         super.detachView()
     }
 

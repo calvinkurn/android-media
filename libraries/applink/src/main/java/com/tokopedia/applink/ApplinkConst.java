@@ -228,5 +228,8 @@ public interface ApplinkConst {
         String OPPONENT_ROLE = "opponent_role";
         String SOURCE = "source";
 
+        String TO_USER_ID = "toUserId";
+        String TO_SHOP_ID = "toShopId";
+
     }
 }

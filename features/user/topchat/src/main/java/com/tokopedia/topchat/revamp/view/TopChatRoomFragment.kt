@@ -96,13 +96,31 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun loadInitialData() {
-        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
-        presenter.connectWebSocket(messageId)
+        if (messageId.isNotEmpty()) {
+            presenter.getExistingChat(messageId,
+                    onError(),
+                    onSuccessGetExistingChatFirstTime())
+            presenter.connectWebSocket(messageId)
+        } else {
+            presenter.getMessageId(toUserId.toString(),
+                    toShopId.toString(),
+                    source,
+                    onError(),
+                    onSuccessGetMessageId())
+        }
+    }
+
+    private fun onSuccessGetMessageId(): (String) -> Unit {
+        return {
+            this.messageId = it
+            loadInitialData()
+        }
     }
 
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
+            presenter.connectWebSocket(messageId)
             updateViewData(it)
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked())

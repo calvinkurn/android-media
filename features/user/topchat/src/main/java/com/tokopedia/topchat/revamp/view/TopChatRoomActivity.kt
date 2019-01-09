@@ -58,7 +58,8 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
                                shopName: String, source: String, avatar: String): Intent {
             val intent = getCallingIntent(context, "", shopName, LABEL_SELLER, toShopId, ROLE_SELLER,
                     MODE_DEFAULT_GET_CHAT, "", avatar)
-            intent.putExtra(PARAM_SOURCE, source)
+            intent.putExtra(ApplinkConst.Chat.SOURCE, source)
+            intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopId)
             return intent
         }
 
@@ -80,7 +81,8 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
                              avatar: String): Intent {
             val intent = getCallingIntent(context, "", userName, LABEL_USER, userId, ROLE_USER,
                     MODE_DEFAULT_GET_CHAT, "", avatar)
-            intent.putExtra(PARAM_SOURCE, source)
+            intent.putExtra(ApplinkConst.Chat.SOURCE, source)
+            intent.putExtra(ApplinkConst.Chat.TO_USER_ID, userId)
             return intent
         }
 

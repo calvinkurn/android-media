@@ -16,9 +16,9 @@ interface TopChatContract {
 
         fun developmentView()
 
-        fun addDummyMessage(visitable : Visitable<*>)
+        fun addDummyMessage(visitable: Visitable<*>)
 
-        fun removeDummy(visitable : Visitable<*>)
+        fun removeDummy(visitable: Visitable<*>)
 
         fun clearEditText()
 
@@ -50,7 +50,15 @@ interface TopChatContract {
         fun getExistingChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccess: (ChatroomViewModel) -> Unit
+                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit,
+                )
+
+        fun getMessageId(
+                toUserId: String,
+                toShopId: String,
+                source: String,
+                onError: (Throwable) -> Unit,
+                onSuccessGetMessageId: (String) -> Unit
         )
 
         fun startUploadImages(it: ImageUploadViewModel)
@@ -64,7 +72,7 @@ interface TopChatContract {
         fun isUploading(): Boolean
 
         fun sendProductAttachment(messageId: String, item: ResultProduct,
-                                  startTime: String, opponentId : String)
+                                  startTime: String, opponentId: String)
 
     }
 }
