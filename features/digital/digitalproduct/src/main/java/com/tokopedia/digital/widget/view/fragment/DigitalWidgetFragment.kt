@@ -76,7 +76,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        digitalWidgetPresenter.fetchDataRechargeCategory()
+//        digitalWidgetPresenter.fetchDataRechargeCategory()
     }
 
     override fun getScreenName(): String {

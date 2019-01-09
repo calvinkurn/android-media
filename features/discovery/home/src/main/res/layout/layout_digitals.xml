@@ -48,14 +48,12 @@
         android:id="@+id/view_pager_channel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_100"
         android:background="@color/white" />
 
     <com.tokopedia.design.viewpager.WrapContentViewPager
         android:id="@+id/view_pager_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_100"
         android:background="@color/white"
         android:visibility="gone" />
 </LinearLayout>
