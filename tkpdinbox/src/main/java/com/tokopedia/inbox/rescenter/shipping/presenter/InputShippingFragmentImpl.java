@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.journeyapps.barcodescanner.CaptureActivity;
@@ -50,13 +49,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dagger.Lazy;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_ATTACHMENT;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
@@ -478,10 +478,27 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
         if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0) {
             inputAWBRequest.setAttachmentCount(params.getAttachmentList().size());
-            getObservableUploadingFile(viewListener.getActivity(), params);
-            for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
-                imageList.add(attachment.imagePath);
-            inputAWBRequest.setPictures(imageList);
+            retrofit.getObservableGenerateHost(viewListener.getActivity(), params)
+                    .flatMap((Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>)
+                            shippingParamsPostModel -> getObservableUploadingFile(viewListener.getActivity(), params))
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<ShippingParamsPostModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(ShippingParamsPostModel shippingParamsPostModel) {
+                    for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
+                        imageList.add(attachment.imagePath);
+                    inputAWBRequest.setPictures(imageList);
+                }
+            });
         }
         variables.put("input", inputAWBRequest);
         GraphqlRequest graphqlRequest = new
@@ -529,10 +546,27 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
         if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0) {
             editAWBRequest.setAttachmentCount(params.getAttachmentList().size());
-            getObservableUploadingFile(viewListener.getActivity(), params);
-            for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
-                imageList.add(attachment.imagePath);
-            editAWBRequest.setPictures(imageList);
+            retrofit.getObservableGenerateHost(viewListener.getActivity(), params)
+                    .flatMap((Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>)
+                            shippingParamsPostModel -> getObservableUploadingFile(viewListener.getActivity(), params))
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<ShippingParamsPostModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(ShippingParamsPostModel shippingParamsPostModel) {
+                    for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
+                        imageList.add(attachment.imagePath);
+                    editAWBRequest.setPictures(imageList);
+                }
+            });
         }
         variables.put("input", editAWBRequest);
         GraphqlRequest graphqlRequest = new

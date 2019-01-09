@@ -8,6 +8,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 
+import rx.Observable;
+
 /**
  * Created by hangnadi on 12/14/16.
  */
@@ -19,13 +21,7 @@ public interface RetrofitInteractor {
 
     void unSubscribe();
 
-    void storeShippingService(@NonNull Context context,
-                              @NonNull ShippingParamsPostModel params,
-                              @NonNull PostShippingListener listener);
-
-    void editShippingService(@NonNull Context context,
-                             @NonNull ShippingParamsPostModel params,
-                             @NonNull PostShippingListener listener);
+    Observable<ShippingParamsPostModel> getObservableGenerateHost(Context context, ShippingParamsPostModel passData);
 
     interface GetKurirListener {
 
