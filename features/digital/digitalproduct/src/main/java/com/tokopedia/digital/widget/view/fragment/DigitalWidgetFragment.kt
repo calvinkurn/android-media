@@ -117,6 +117,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
             return
         }
 
+        pulsa_place_holders.visibility = View.GONE
         showDigitalWidget()
         tab_layout_widget.removeAllTabs()
         addChildTabLayout(rechargeCategory, newRechargePositions)
@@ -146,9 +147,6 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
         text_error_message.text = getString(resId)
     }
 
-    override fun renderErrorMessage() {
-    }
-
     private fun showDigitalWidget() {
         container.visibility = View.VISIBLE
         (tab_layout_widget.parent as LinearLayout).visibility = View.VISIBLE
@@ -156,7 +154,6 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
 
     private fun addChildTabLayout(rechargeCategory: List<Category>, newRechargePositions: MutableList<Int>) {
         for (i in rechargeCategory.indices) {
-            pulsa_place_holders.visibility = View.GONE
             val category = rechargeCategory[i]
             val tab = tab_layout_widget.newTab()
             tab.text = category.attributes.name

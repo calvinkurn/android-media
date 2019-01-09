@@ -47,7 +47,6 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
     private lateinit var recommendationAdapter: RecommendationAdapter
 
     private lateinit var pulsa_place_holders: RelativeLayout
-    private lateinit var digital_widget_fragment: FrameLayout
     private lateinit var recyclerview_recommendation: RecyclerView
     private lateinit var error_view: LinearLayout
     private lateinit var text_error_message: TextView
@@ -74,7 +73,6 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
         val rootview = inflater.inflate(R.layout.fragment_digital_channel, container, false)
 
         pulsa_place_holders = rootview.findViewById(R.id.pulsa_place_holders)
-        digital_widget_fragment = rootview.findViewById(R.id.digital_widget_fragment)
         recyclerview_recommendation = rootview.findViewById(R.id.recyclerview_recommendation)
         error_view = rootview.findViewById(R.id.error_view)
         text_error_message = rootview.findViewById(R.id.text_error_message)
@@ -82,7 +80,6 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
 
         button_try_again.setOnClickListener {
             error_view.visibility = View.GONE
-            digital_widget_fragment.visibility = View.GONE
             pulsa_place_holders.visibility = View.VISIBLE
 
             digitalChannelPresenter.getRecommendationList(5)
@@ -156,22 +153,17 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
 
     override fun renderRecommendationList(recommendations: List<Recommendation>) {
         pulsa_place_holders.visibility = View.GONE
-        digital_widget_fragment.visibility = View.GONE
         recyclerview_recommendation.visibility = View.VISIBLE
         this.recommendations.addAll(recommendations)
         recommendationAdapter.notifyDataSetChanged()
     }
 
     override fun fetchCategoryList() {
-        pulsa_place_holders.visibility = View.GONE
-        error_view.visibility = View.GONE
-        digital_widget_fragment.visibility = View.VISIBLE
         interaction.changeToDigitalWidget()
     }
 
     override fun showError(resId: Int) {
         pulsa_place_holders.visibility = View.GONE
-        digital_widget_fragment.visibility = View.GONE
         error_view.visibility = View.VISIBLE
         if (context != null) {
             text_error_message.text = getString(resId)

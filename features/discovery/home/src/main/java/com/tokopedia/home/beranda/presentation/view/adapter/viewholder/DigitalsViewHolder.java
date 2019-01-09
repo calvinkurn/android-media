@@ -33,6 +33,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     private DigitalsHomePagerAdapter widgetHomePagerAdapter;
     private TextView titleTextView;
     private TextView seeMoreTextView;
+    private static boolean isDigitalWidget;
     private static final String APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2";
 
 
@@ -49,13 +50,29 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     @Override
     public void bind(DigitalsViewModel element) {
-        if (digitalsHomePagerAdapter == null) {
-            digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalChannelFragment.Companion.newInstance(this));
-            viewPagerChannel.setAdapter(digitalsHomePagerAdapter);
+
+        if (isDigitalWidget) {
+            viewPagerChannel.setVisibility(View.GONE);
+            viewPagerWidget.setVisibility(View.VISIBLE);
+            if (widgetHomePagerAdapter == null) {
+                widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
+                viewPagerWidget.setAdapter(widgetHomePagerAdapter);
+                viewPagerWidget.setOffscreenPageLimit(1);
+            }
+            viewPagerWidget.setCurrentItem(0);
+            widgetHomePagerAdapter.notifyDataSetChanged();
+        } else {
+            if (digitalsHomePagerAdapter == null) {
+                digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalChannelFragment.Companion.newInstance(this));
+                viewPagerChannel.setAdapter(digitalsHomePagerAdapter);
+                viewPagerChannel.setOffscreenPageLimit(1);
+            }
+            viewPagerWidget.setVisibility(View.GONE);
+            viewPagerChannel.setVisibility(View.VISIBLE);
+            digitalsHomePagerAdapter.notifyDataSetChanged();
+            viewPagerChannel.setCurrentItem(0);
         }
-        viewPagerWidget.setVisibility(View.GONE);
-        viewPagerChannel.setOffscreenPageLimit(1);
-        digitalsHomePagerAdapter.notifyDataSetChanged();
+
 
         seeMoreTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,12 +85,13 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     @Override
     public void changeToDigitalWidget() {
+        isDigitalWidget = true;
         viewPagerChannel.setVisibility(View.GONE);
         viewPagerWidget.setVisibility(View.VISIBLE);
         if (widgetHomePagerAdapter == null) {
             widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
+            viewPagerWidget.setAdapter(widgetHomePagerAdapter);
         }
-        viewPagerWidget.setAdapter(widgetHomePagerAdapter);
     }
 
     @Override
