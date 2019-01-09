@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
@@ -147,7 +148,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             @Override
             public void onError(Throwable e) {
-                viewListener.showErrorMessage(e.getMessage());
+                viewListener.showErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
                 showLoading(false);
                 showMainPage(false);
             }
@@ -170,40 +171,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             }
         });
-//        retrofit.getShippingList(viewListener.getActivity(),
-//                generateGetShippingListParams(),
-//                new RetrofitInteractor.GetKurirListener() {
-//
-//                    @Override
-//                    public void onStart() {
-//                        showLoading(true);
-//                        showMainPage(false);
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(ResCenterKurir kurirList) {
-//                        storeCacheKurirList(kurirList);
-//                        renderInputShippingForm(kurirList);
-//                        renderPreviousShipping(kurirList);
-//                        showLoading(false);
-//                        showMainPage(true);
-//                    }
-//
-//                    @Override
-//                    public void onTimeOut(NetworkErrorHelper.RetryClickedListener listener) {
-//                        viewListener.showTimeOutMessage(listener);
-//                        showLoading(false);
-//                        showMainPage(false);
-//                    }
-//
-//                    @Override
-//                    public void onError(String message) {
-//                        Log.d(TAG, message);
-//                        viewListener.showErrorMessage(message);
-//                        showLoading(false);
-//                        showMainPage(false);
-//                    }
-//                });
     }
 
     private void renderPreviousShipping(ResCenterKurir shippingModel) {
@@ -328,7 +295,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             @Override
             public void onError(Throwable e) {
-                viewListener.toastErrorMessage(e.getMessage());
+                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
                 showLoading(false);
                 showMainPage(true);
             }
@@ -346,41 +313,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             }
         });
-
-//        retrofit.storeShippingService(viewListener.getActivity(),
-//                params,
-//                new RetrofitInteractor.PostShippingListener() {
-//
-//                    @Override
-//                    public void onStart() {
-//                        viewListener.dropKeyBoard();
-//                        showLoading(true);
-//                        showMainPage(false);
-//                    }
-//
-//                    @Override
-//                    public void onSuccess() {
-//                        clearAttachment();
-//                        viewListener.finishAsSuccessResult();
-//                        showLoading(false);
-//                        showMainPage(true);
-//                    }
-//
-//                    @Override
-//                    public void onTimeOut() {
-//                        viewListener.toastTimeOutMessage();
-//                        showLoading(false);
-//                        showMainPage(true);
-//                    }
-//
-//                    @Override
-//                    public void onError(String message) {
-//                        Log.d(TAG, message);
-//                        viewListener.toastErrorMessage(message);
-//                        showLoading(false);
-//                        showMainPage(true);
-//                    }
-//                });
     }
 
     private void doEditShippingService(ShippingParamsPostModel params) {
@@ -416,7 +348,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             @Override
             public void onError(Throwable e) {
-                viewListener.toastErrorMessage(e.getMessage());
+                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
                 showLoading(false);
                 showMainPage(true);
             }
@@ -434,41 +366,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             }
         });
-
-//        retrofit.editShippingService(viewListener.getActivity(),
-//                params,
-//                new RetrofitInteractor.PostShippingListener() {
-//
-//                    @Override
-//                    public void onStart() {
-//                        viewListener.dropKeyBoard();
-//                        showLoading(true);
-//                        showMainPage(false);
-//                    }
-//
-//                    @Override
-//                    public void onSuccess() {
-//                        clearAttachment();
-//                        viewListener.finishAsSuccessResult();
-//                        showLoading(false);
-//                        showMainPage(true);
-//                    }
-//
-//                    @Override
-//                    public void onTimeOut() {
-//                        viewListener.toastTimeOutMessage();
-//                        showLoading(false);
-//                        showMainPage(true);
-//                    }
-//
-//                    @Override
-//                    public void onError(String message) {
-//                        Log.d(TAG, message);
-//                        viewListener.toastErrorMessage(message);
-//                        showLoading(false);
-//                        showMainPage(true);
-//                    }
-//                });
     }
 
     private void resInputSubmit(InputAWBRequest inputAWBRequest, ShippingParamsPostModel params) {
@@ -489,7 +386,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
                 @Override
                 public void onError(Throwable e) {
-
+                    viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
+                    showLoading(false);
+                    showMainPage(true);
                 }
 
                 @Override
@@ -519,7 +418,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             @Override
             public void onError(Throwable e) {
-                viewListener.toastErrorMessage(e.getMessage());
+                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
                 showLoading(false);
                 showMainPage(true);
             }
@@ -557,7 +456,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
                 @Override
                 public void onError(Throwable e) {
-
+                    viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
+                    showLoading(false);
+                    showMainPage(true);
                 }
 
                 @Override
@@ -587,7 +488,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             @Override
             public void onError(Throwable e) {
-                viewListener.toastErrorMessage(e.getMessage());
+                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
                 showLoading(false);
                 showMainPage(true);
             }
