@@ -4,17 +4,11 @@ query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dat
     have_error
     have_next_page
     deposit_history_list {
-          deposit_id
-          saldo
           note
           amount
-          type_description
-          type
           class
           image
           create_time
-          withdrawal_date
-          withdrawal_status
           __typename
     }
     __typename

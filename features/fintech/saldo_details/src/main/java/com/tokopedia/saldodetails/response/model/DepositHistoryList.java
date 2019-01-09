@@ -8,23 +8,11 @@ import com.tokopedia.saldodetails.viewmodel.ParcelableViewModel;
 
 public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransactionFactory> {
 
-    @SerializedName("deposit_id")
-    private long depositId;
-
-    @SerializedName("saldo")
-    private long saldo;
-
     @SerializedName("note")
     private String note;
 
     @SerializedName("amount")
     private int amount;
-
-    @SerializedName("type_description")
-    private String typeDesc;
-
-    @SerializedName("type")
-    private int type;
 
     @SerializedName("class")
     private String transactionClass;
@@ -35,40 +23,21 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
     @SerializedName("create_time")
     private String createTime;
 
-    @SerializedName("withdrawal_date")
-    private String withdrawalDate;
-
-    @SerializedName("withdrawal_status")
-    private int withdrawStatus;
-
-
     protected DepositHistoryList(Parcel in) {
-        depositId = in.readLong();
-        saldo = in.readLong();
         note = in.readString();
         amount = in.readInt();
-        typeDesc = in.readString();
-        type = in.readInt();
         transactionClass = in.readString();
         imageURL = in.readString();
         createTime = in.readString();
-        withdrawalDate = in.readString();
-        withdrawStatus = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(depositId);
-        parcel.writeLong(saldo);
         parcel.writeString(note);
         parcel.writeInt(amount);
-        parcel.writeString(typeDesc);
-        parcel.writeInt(type);
         parcel.writeString(transactionClass);
         parcel.writeString(imageURL);
         parcel.writeString(createTime);
-        parcel.writeString(withdrawalDate);
-        parcel.writeInt(withdrawStatus);
     }
 
     public static final Creator<DepositHistoryList> CREATOR = new Creator<DepositHistoryList>() {
@@ -84,22 +53,6 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
     };
 
 
-    public long getDepositId() {
-        return depositId;
-    }
-
-    public void setDepositId(long depositId) {
-        this.depositId = depositId;
-    }
-
-    public long getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(long saldo) {
-        this.saldo = saldo;
-    }
-
     public String getNote() {
         return note;
     }
@@ -114,22 +67,6 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
 
     public void setAmount(int amount) {
         this.amount = amount;
-    }
-
-    public String getTypeDesc() {
-        return typeDesc;
-    }
-
-    public void setTypeDesc(String typeDesc) {
-        this.typeDesc = typeDesc;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public String getTransactionClass() {
@@ -154,22 +91,6 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    public String getWithdrawalDate() {
-        return withdrawalDate;
-    }
-
-    public void setWithdrawalDate(String withdrawalDate) {
-        this.withdrawalDate = withdrawalDate;
-    }
-
-    public int getWithdrawStatus() {
-        return withdrawStatus;
-    }
-
-    public void setWithdrawStatus(int withdrawStatus) {
-        this.withdrawStatus = withdrawStatus;
     }
 
     @Override
