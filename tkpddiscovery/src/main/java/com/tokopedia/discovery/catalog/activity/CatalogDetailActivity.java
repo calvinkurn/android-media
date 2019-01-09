@@ -9,13 +9,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;

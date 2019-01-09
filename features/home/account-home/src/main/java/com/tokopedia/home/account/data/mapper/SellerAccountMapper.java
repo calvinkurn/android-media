@@ -21,6 +21,7 @@ import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.LOAN;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
@@ -48,12 +50,17 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
     @Override
     public SellerViewModel call(GraphqlResponse graphqlResponse) {
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+        DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
+        DataDeposit dataDeposit = null;
+        if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()){
+            dataDeposit = dataDepositResponse.getDataResponse().getDataDeposit();
+        }
         SellerViewModel sellerViewModel;
         if (accountModel.getShopInfo() != null
                 && accountModel.getShopInfo().getInfo() != null
                 && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
                 && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1")) {
-            sellerViewModel = getSellerModel(context, accountModel);
+            sellerViewModel = getSellerModel(context, accountModel, dataDeposit);
             sellerViewModel.setSeller(true);
         } else {
             sellerViewModel = getEmptySellerModel();
@@ -63,7 +70,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
+    private SellerViewModel getSellerModel(Context context, AccountModel accountModel, DataDeposit dataDeposit) {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
@@ -73,7 +80,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         }
 
         if(accountModel.getShopInfo() != null && accountModel.getShopInfo().getInfo() != null) {
-            items.add(getShopInfoMenu(accountModel));
+            items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
@@ -149,10 +156,12 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         items.add(menuList);
 
         String mitraTopperMaxLoan = "";
+        String mitraTopperUrl = "";
         if (accountModel.getLePreapprove() != null &&
                 accountModel.getLePreapprove().getFieldData() != null &&
                 accountModel.getLePreapprove().getFieldData().getPreApp() != null) {
             mitraTopperMaxLoan = accountModel.getLePreapprove().getFieldData().getPreApp().getPartnerMaxLoan();
+            mitraTopperUrl = accountModel.getLePreapprove().getFieldData().getUrl();
         }
 
         try {
@@ -164,12 +173,15 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             }
         } catch (NumberFormatException e) { /*ignore*/ }
 
-        if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0")) {
+        if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0") && !mitraTopperUrl.isEmpty()) {
             InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
             infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
+            infoCardViewModel.setTitleTrack(PENJUAL);
+            infoCardViewModel.setSectionTrack(LOAN);
+            infoCardViewModel.setItemTrack(LOAN);
             infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
             infoCardViewModel.setSecondaryText(String.format("%s %s", context.getString(R.string.label_menu_loan), mitraTopperMaxLoan));
-            infoCardViewModel.setApplink(AccountConstants.Navigation.MITRA_TOPPERS);
+            infoCardViewModel.setApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, mitraTopperUrl));
             items.add(infoCardViewModel);
         }
 
@@ -220,13 +232,14 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private ShopCardViewModel getShopInfoMenu(AccountModel accountModel) {
+    private ShopCardViewModel getShopInfoMenu(AccountModel accountModel, DataDeposit dataDeposit) {
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+        shopCard.setDataDeposit(dataDeposit);
 
         if(accountModel.getDeposit() != null) {
             shopCard.setBalance(accountModel.getDeposit().getDepositFmt());

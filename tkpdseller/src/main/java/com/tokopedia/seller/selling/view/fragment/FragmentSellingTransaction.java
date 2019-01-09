@@ -33,7 +33,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -104,7 +104,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         initPresenter();
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.TRANSACTION);
-        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
+        ScreenTracking.screen(MainApplication.getAppContext(),AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
         super.setUserVisibleHint(isVisibleToUser);
     }
 

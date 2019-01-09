@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -148,7 +149,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
             }
 
             if (shop.isGoldShopBadge()) {
-                shopTitle.setText(spannedBadgeString(title, R.drawable.ic_gold));
+                shopTitle.setText(spannedBadgeString(title, GMConstant.getGMDrawableResource(context)));
             } else if (shop.isShop_is_official()) {
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_official));
             } else {

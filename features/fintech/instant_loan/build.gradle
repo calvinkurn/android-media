@@ -35,6 +35,8 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.multiDex
@@ -63,6 +65,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../../../publish_local.gradle'
