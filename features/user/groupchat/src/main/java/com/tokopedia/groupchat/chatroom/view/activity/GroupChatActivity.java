@@ -133,6 +133,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final String PARAM_CHAT = "chat";
     private static final String PARAM_VOTE = "vote";
     private static final String PARAM_INFO = "info";
+    private static final int TAB_CHAT = 1;
+    private static final int TAB_VOTE = 2;
+    private static final int TAB_INFO = 3;
     private static final int OVERLAY_STATUS_INACTIVE = 0;
 
     Dialog exitDialog;
@@ -279,10 +282,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                     .EXTRA_POSITION, -1));
             if (getIntent().getExtras().get(APPLINK_DATA) != null) {
                 int tabNumber = getIntent().getExtras().getString(APPLINK_DATA).equals(PARAM_CHAT) ?
-                        1 :
+                        TAB_CHAT :
                         getIntent().getExtras().getString(APPLINK_DATA).equals(PARAM_VOTE) ?
-                                2:
-                                3;
+                                TAB_VOTE:
+                                TAB_INFO;
                 initialFragment = tabNumber - 1;
             }
         } else {
