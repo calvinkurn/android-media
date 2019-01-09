@@ -1224,15 +1224,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onFinishChoosingShipment
-            (List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData,
-             List<DataCheckoutRequest> checkoutRequestData) {
+    public void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData) {
         shipmentPresenter.setPromoCodeCartShipmentRequestData(promoRequestData);
-        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
         if (shipmentAdapter.getPromoData() != null &&
                 shipmentAdapter.hasAppliedPromoCode()) {
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }
+    }
+
+    @Override
+    public void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData) {
+        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
     }
 
     @Override
