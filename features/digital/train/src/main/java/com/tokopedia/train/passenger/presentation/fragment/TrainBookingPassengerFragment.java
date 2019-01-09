@@ -130,8 +130,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         containerLayout = view.findViewById(R.id.container);
         progressBar = view.findViewById(R.id.progress_bar);
         trainBuyerRequest = new TrainBuyerRequest();
-        trainPassengerRequestList = new ArrayList<>();
         travelTrip = new TravelTrip();
+        trainPassengerRequestList = new ArrayList<>();
         return view;
     }
 
@@ -149,6 +149,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             initializedDataPassenger();
         } else {
             trainParamPassenger = savedInstanceState.getParcelable(TRAIN_PARAM_PASSENGER);
+            setCurrentListPassenger(trainParamPassenger.getTrainPassengerViewModelList());
             renderPassengers(trainParamPassenger.getTrainPassengerViewModelList());
         }
     }
