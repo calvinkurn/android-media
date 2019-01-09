@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -12,7 +11,6 @@ import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.DynamicLinkResponse;
-import com.tokopedia.tokopoints.view.model.PreValidateRedeemBase;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
@@ -22,7 +20,6 @@ import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -36,6 +33,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     private GraphqlUseCase mSaveCouponUseCase;
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
+    private int selectedItem = 0;
 
     @Inject
     public HomepagePresenter(GraphqlUseCase getTokoPointDetailUseCase,
@@ -310,33 +308,11 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         getView().showRedeemCouponDialog(cta, code, title);
     }
 
-    @Override
-    public void getPopupNotification() {
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_popup_notification),
-                TokoPointDetailEntity.class);
-        mRedeemCouponUseCase.clearRequest();
-        mRedeemCouponUseCase.addRequest(request);
-        mRedeemCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+    public int getPagerSelectedItem() {
+        return selectedItem;
+    }
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                //NA
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                TokoPointDetailEntity data = response.getData(TokoPointDetailEntity.class);
-                if (data != null
-                        && data.getTokoPoints() != null
-                        && data.getTokoPoints().getPopupNotif() != null) {
-                    getView().showPopupNotification(data.getTokoPoints().getPopupNotif());
-                }
-            }
-        });
+    public void setPagerSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
     }
 }

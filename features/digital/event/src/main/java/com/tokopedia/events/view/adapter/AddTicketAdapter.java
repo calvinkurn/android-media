@@ -140,7 +140,7 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     buttonLayout.setVisibility(View.VISIBLE);
                     setTvTicketNameColor(mContext.getResources().getColor(R.color.black_70));
                     setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_54));
-                    setTicketSalePriceColor(mContext.getResources().getColor(R.color.price_pdp));
+                    setTicketSalePriceColor(mContext.getResources().getColor(R.color.orange_red));
                 } else {
                     noSale();
                 }

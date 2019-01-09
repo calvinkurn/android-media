@@ -60,15 +60,15 @@ public class BasicDeviceData extends BaseCollector {
             basicInfoMap.put(IMEI, AppInfo.getDefaultAcceptLanguage(mContext));
 
             try {
-                basicInfoMap.put(LATITUDE, String.valueOf(mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude())); //TODO @lavekush-t impl require
+                basicInfoMap.put(LATITUDE, String.valueOf(mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude()));
             } catch (NullPointerException npe) {
-                basicInfoMap.put(LATITUDE, "0.0"); //TODO @lavekush-t impl require
+                basicInfoMap.put(LATITUDE, "0.0");
             }
 
             try {
-                basicInfoMap.put(LONGITUDE, String.valueOf(mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude())); //TODO @lavekush-t impl require
+                basicInfoMap.put(LONGITUDE, String.valueOf(mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude()));
             } catch (NullPointerException npe) {
-                basicInfoMap.put(LONGITUDE, "0.0"); //TODO @lavekush-t impl require
+                basicInfoMap.put(LONGITUDE, "0.0");
             }
 
             basicInfoMap.put(MODEL, DeviceInfo.getDeviceModelNumber(mContext));

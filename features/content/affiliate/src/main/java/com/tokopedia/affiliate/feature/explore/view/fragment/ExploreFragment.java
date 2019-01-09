@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -29,6 +30,7 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
+import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
@@ -63,6 +65,8 @@ public class ExploreFragment
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
     private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
+    private static final String KEY_DATA_FIRST_QUERY = "KEY_DATA_FIRST_QUERY";
+
     private static final int ITEM_COUNT = 10;
     private static final int IMAGE_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
@@ -74,7 +78,7 @@ public class ExploreFragment
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
-    private SearchInputView searchView;
+    private ExploreSearchView searchView;
     private ExploreAdapter adapter;
     private ImageView ivBack, ivBantuan;
     private ExploreParams exploreParams;
@@ -82,6 +86,8 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
+    private String firstCursor = "";
+    private List<Visitable> tempFirstData = new ArrayList<>();
 
     private boolean isCanDoAction;
 
@@ -210,11 +216,17 @@ public class ExploreFragment
         affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
     }
 
+    private void loadFirstData(boolean isPullToRefresh) {
+        if (!exploreParams.isLoading()) {
+            exploreParams.setLoading(true);
+            presenter.getFirstData(exploreParams, isPullToRefresh);
+        }
+    }
+
     @Override
     public void onRefresh() {
         exploreParams.setFirstData();
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, true);
+        loadFirstData(true);
     }
 
     private RecyclerView.OnScrollListener getScrollListener() {
@@ -222,6 +234,7 @@ public class ExploreFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                presenter.unsubscribeAutoComplete();
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
                 if (exploreParams.isCanLoadMore()
@@ -238,12 +251,12 @@ public class ExploreFragment
     @Override
     public void onSearchSubmitted(String text) {
         dropKeyboard();
+        searchView.removeSearchTextWatcher();
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
         exploreParams.setSearchParam(text);
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        loadFirstData(false);
     }
 
     @Override
@@ -255,7 +268,7 @@ public class ExploreFragment
         if (TextUtils.isEmpty(text)) {
             onSearchReset();
         } else {
-            autoCompleteLayout.setVisibility(View.VISIBLE);
+            if (autoCompleteAdapter != null) autoCompleteAdapter.clearAdapter();
             if (!isFromAutoComplete && !exploreParams.isLoading()) {
                 affiliateAnalytics.onSearchSubmitted(text);
                 presenter.getAutoComplete(text);
@@ -268,9 +281,14 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         dropKeyboard();
+        searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, true);
+        populateLocalDataToAdapter();
+    }
+
+    private void populateLocalDataToAdapter() {
+        adapter.clearAllElements();
+        adapter.addElement(getLocalFirstData());
     }
 
     @Override
@@ -325,7 +343,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch) {
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
@@ -343,6 +361,19 @@ public class ExploreFragment
         adapter.addElement(itemList);
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
+        searchView.addTextWatcherToSearch();
+        presenter.unsubscribeAutoComplete();
+        if (!isSearch) saveFirstDataToLocal(itemList, cursor);
+    }
+
+    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor) {
+        tempFirstData = itemList;
+        this.firstCursor = firstCursor;
+    }
+
+    private List<Visitable> getLocalFirstData() {
+        exploreParams.setCursorForLoadMore(this.firstCursor);
+        return tempFirstData;
     }
 
     @Override
@@ -355,9 +386,10 @@ public class ExploreFragment
                 error,
                 () -> {
                     layoutEmpty.setVisibility(View.GONE);
-                    presenter.getFirstData(exploreParams, false);
+                    loadFirstData(false);
                 }
         );
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override
@@ -371,6 +403,7 @@ public class ExploreFragment
         }
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override
@@ -380,12 +413,12 @@ public class ExploreFragment
 
     @Override
     public void onButtonEmptySearchClicked() {
+        presenter.unsubscribeAutoComplete();
         adapter.clearAllElements();
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        loadFirstData(false);
     }
 
     @Override
@@ -394,6 +427,7 @@ public class ExploreFragment
         adapter.clearAllElements();
         adapter.addElement(new ExploreEmptySearchViewModel());
         exploreParams.disableLoadMore();
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override

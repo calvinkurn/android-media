@@ -1,11 +1,12 @@
 package com.tokopedia.transaction.purchase.detail.presenter;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
-import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
@@ -91,6 +92,8 @@ public interface OrderDetailPresenter {
 
     void cancelReplacement(Context context, String orderId, int reasonCode, String reasonText);
 
+    void processBuyAgain(Resources resources,OrderDetailData data);
+
     void onDestroyed();
 
     String SHIPPING_REF_KEY = "shipping_ref";
@@ -137,4 +140,5 @@ public interface OrderDetailPresenter {
 
     String CONFIRM_SHIPPING_CONSTANT = "confirm";
 
+    boolean isToggleBuyAgainOn();
 }

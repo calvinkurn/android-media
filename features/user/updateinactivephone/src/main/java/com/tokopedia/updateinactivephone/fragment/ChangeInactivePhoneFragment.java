@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.updateinactivephone.R;
@@ -73,7 +74,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getActivity(),getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
     }
 
 

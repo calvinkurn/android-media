@@ -1,7 +1,7 @@
 package com.tokopedia.district_recommendation.domain.mapper;
 
-import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
 import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 
 import javax.inject.Inject;
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +71,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         containerLayout = findViewById(R.id.container_layout);
         filterButton = findViewById(R.id.button_filter);
 
+        resetBackStackFragment();
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,6 +156,11 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     @Override
     public void setTitleToolbar(String titleToolbar) {
         updateTitle(titleToolbar);
+    }
+
+    private void resetBackStackFragment() {
+        getSupportFragmentManager()
+                .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override
@@ -247,7 +254,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
-            overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+            overridePendingTransition(R.anim.travel_anim_stay,R.anim.travel_slide_out_up);
         }
     }
 

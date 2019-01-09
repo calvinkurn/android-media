@@ -41,6 +41,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.graphql)

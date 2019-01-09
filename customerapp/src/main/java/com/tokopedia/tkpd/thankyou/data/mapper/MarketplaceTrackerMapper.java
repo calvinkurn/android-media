@@ -15,6 +15,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,15 +34,16 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
     public static final String DEFAULT_SHOP_TYPE = "default";
-    
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
-
     private PaymentData paymentData;
+    private RequestParams requestParams;
+    private static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
 
-    public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes) {
+    public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes, RequestParams requestParams) {
         this.sessionHandler = sessionHandler;
         this.shopTypes = shopTypes;
+        this.requestParams = requestParams;
     }
 
     @Override
@@ -108,7 +110,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
-//        purchase.setCoupon(couponCode);
+        purchase.setCurrentSite(TOKOPEDIA_MARKETPLACE);
 
         for (Product product : getProductList(orderData)) {
             purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
@@ -162,7 +164,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         return "";
     }
-
+    
     private String getPaymentType(PaymentMethod paymentMethod) {
         if (paymentMethod != null && paymentMethod.getMethod() != null) {
             switch (paymentMethod.getMethod()) {

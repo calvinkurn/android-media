@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentFragmentListener;
@@ -18,8 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
@@ -105,24 +102,15 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
     @Override
     public void handleVideoResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
-                MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-                if (checkAttachmentValidation(item)) {
-                    onAddImageAttachment(item.getRealPath(), getTypeFile(item));
+            ArrayList<String> videoPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (videoPathList != null && videoPathList.size() > 0) {
+                String videoPath = videoPathList.get(0);
+                if (checkAttachmentValidation(videoPath)){
+                    onAddImageAttachment(videoPath, AttachmentViewModel.FILE_VIDEO);
                 }
-            } else {
+            }else{
                 onFailedAddAttachment();
             }
-        }
-    }
-
-    private int getTypeFile(MediaItem item) {
-        if (item.isVideo()) {
-            return AttachmentViewModel.FILE_VIDEO;
-        } else if (item.isImage()) {
-            return AttachmentViewModel.FILE_IMAGE;
-        } else {
-            return AttachmentViewModel.UNKNOWN;
         }
     }
 
@@ -142,12 +130,11 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
         mainView.updateView(attachment);
     }
 
-    private boolean checkAttachmentValidation(MediaItem item) {
+    private boolean checkAttachmentValidation(String realPath) {
         boolean isExtensionAllow = false;
         for (String extension : extensions) {
-            String path = item.getRealPath();
-            if (path != null && path.toLowerCase(Locale.US).endsWith(extension)) {
-                Log.d("hangnadi validation", "checkAttachmentValidation: " + extension + "\npath : " + path);
+            if (realPath != null && realPath.toLowerCase(Locale.US).endsWith(extension)) {
+                Log.d("hangnadi validation", "checkAttachmentValidation: " + extension + "\npath : " + realPath);
                 isExtensionAllow = true;
             }
         }
@@ -156,26 +143,10 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
             return false;
         }
 
-        if (item.isImage() && (item.height < 300 || item.width < 300)) {
-            mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_min_size));
-            return false;
-        }
-
-        if (item.isImage()) {
-            File file = new File(item.getRealPath());
-            long length = file.length() / 1024;
-            if (length >= 15000) {
-                mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_image));
-                return false;
-            }
-        }
-
         int countVideoAlreadyAdded = 0;
-        if (item.isVideo()) {
-            for (AttachmentViewModel model : mainView.getAttachmentListFromAdapter()) {
-                if (model.isVideo()) {
-                    countVideoAlreadyAdded++;
-                }
+        for (AttachmentViewModel model : mainView.getAttachmentListFromAdapter()) {
+            if (model.isVideo()) {
+                countVideoAlreadyAdded++;
             }
         }
         if (countVideoAlreadyAdded == MAXIMAL_VIDEO_CONTENT_ALLOW) {
@@ -183,13 +154,11 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
             return false;
         }
 
-        if (item.isVideo()) {
-            File file = new File(item.getRealPath());
-            long length = file.length() / 1024;
-            if (length >= 20000) {
-                mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_video));
-                return false;
-            }
+        File file = new File(realPath);
+        long length = file.length() / 1024;
+        if (length >= 20000) {
+            mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_video));
+            return false;
         }
 
         return true;

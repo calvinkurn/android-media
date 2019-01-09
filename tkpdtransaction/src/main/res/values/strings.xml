@@ -293,4 +293,5 @@
     <string name="barcode_label_two">(tap untuk perbesar)</string>
     <string name="barcode_image_content_description">Barcode Image</string>
     <string name="protection_count_label">Biaya Proteksi Gadget (%d barang)</string>
+    <string name="button_order_detail_buy_again">Beli Lagi</string>
 </resources>
