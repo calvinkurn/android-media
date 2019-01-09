@@ -2405,6 +2405,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
     }
 
+    @Override
+    public void openWebView(Context context, String url, String title) {
+        context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
+    }
+
     public Intent getPromoDetailIntent(Context context, String slug) {
         return PromoDetailActivity.getCallingIntent(context, slug);
     }
@@ -3562,4 +3567,3 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
     }
 }
-
