@@ -102,7 +102,7 @@
         android:visibility="gone"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="249dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
