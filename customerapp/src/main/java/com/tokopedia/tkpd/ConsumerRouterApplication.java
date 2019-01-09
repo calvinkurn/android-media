@@ -2406,7 +2406,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void openWebView(Context context, String url, String title) {
+    public void openTokopointWebview(Context context, String url, String title) {
         context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
     }
 
