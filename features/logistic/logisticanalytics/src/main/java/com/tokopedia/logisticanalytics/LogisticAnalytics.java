@@ -10,7 +10,7 @@ public abstract class LogisticAnalytics {
 
     private final AnalyticTracker analyticTracker;
 
-    LogisticAnalytics(AnalyticTracker analyticTracker) {
+    public LogisticAnalytics(AnalyticTracker analyticTracker) {
         this.analyticTracker = analyticTracker;
     }
 
