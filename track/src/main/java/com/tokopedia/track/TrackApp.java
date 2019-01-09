@@ -60,7 +60,7 @@ public class TrackApp {
     private static final Class<?>[] CONTEXT_ANALYTICS_CONSTRUCTOR_SIGNATURE =
             new Class[]{Context.class};
 
-    public volatile Context context;
+    private final Context context;
 
     private final AtomicBoolean deleted = new AtomicBoolean();
 
@@ -71,13 +71,6 @@ public class TrackApp {
      */
     private TrackApp(Context context){
         this.context = context;
-    }
-
-    /**
-     * remove when necessary
-     */
-    public TrackApp(){
-
     }
 
     /**
@@ -97,6 +90,17 @@ public class TrackApp {
                 );
             }
             return trackApp;
+        }
+    }
+
+    public static boolean deleteInstance(){
+        synchronized (LOCK2){
+            if(trackApp != null){
+                trackApp = null;
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 
@@ -199,7 +203,14 @@ public class TrackApp {
     }
 
     public void delete(){
-        // remove every instance of object hold in here
+        boolean valueChanged = deleted.compareAndSet(false /* expected */, true);
+        if (!valueChanged) {
+            return;
+        }
+
+        synchronized (LOCK) {
+            INSTANCES.clear();
+        }
     }
 
     public ContextAnalytics getValue(String TAG){
