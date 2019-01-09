@@ -17,5 +17,6 @@ data class AddressModel(
         var provinceName: String? = null,
         var phone: String? = null,
         var longitude: String? = null,
-        var latitude: String? = null
+        var latitude: String? = null,
+        var postalCode: String? = null
 )

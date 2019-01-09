@@ -44,5 +44,8 @@ data class Address(
         val longitude: String,
 
         @SerializedName("latitude")
-        val latitude: String
+        val latitude: String,
+
+        @SerializedName("postal_code")
+        val postalCode: String
 )

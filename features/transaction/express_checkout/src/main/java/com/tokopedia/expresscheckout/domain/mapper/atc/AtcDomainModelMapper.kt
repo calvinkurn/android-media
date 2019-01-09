@@ -272,14 +272,14 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getShipProdModel(shipProd: ShipProd): com.tokopedia.shipping_recommendation.domain.shipping.ShipProd {
-        var shipProd = com.tokopedia.shipping_recommendation.domain.shipping.ShipProd()
-        shipProd.additionalFee = shipProd.additionalFee
-        shipProd.minimumWeight = shipProd.minimumWeight
-        shipProd.shipGroupId = shipProd.shipGroupId
-        shipProd.shipProdName = shipProd.shipProdName
-        shipProd.shipProdId = shipProd.shipProdId
-        shipProd.shipGroupName = shipProd.shipGroupName
-        return shipProd
+        var shipProdModel = com.tokopedia.shipping_recommendation.domain.shipping.ShipProd()
+        shipProdModel.additionalFee = shipProd.additionalFee
+        shipProdModel.minimumWeight = shipProd.minimumWeight
+        shipProdModel.shipGroupId = shipProd.shipGroupId
+        shipProdModel.shipProdName = shipProd.shipProdName
+        shipProdModel.shipProdId = shipProd.shipProdId
+        shipProdModel.shipGroupName = shipProd.shipGroupName
+        return shipProdModel
     }
 
     private fun getAutoApplyModel(atcResponse: AtcResponse): AutoApplyModel {
@@ -338,6 +338,7 @@ class AtcDomainModelMapper : AtcDataMapper {
         addressModel.provinceId = address?.provinceId ?: 0
         addressModel.provinceName = address?.provinceName
         addressModel.receiverName = address?.receiverName
+        addressModel.postalCode = address?.postalCode
 
         return addressModel
     }

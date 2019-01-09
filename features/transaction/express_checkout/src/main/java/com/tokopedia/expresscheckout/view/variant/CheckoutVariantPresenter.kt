@@ -81,11 +81,11 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         shippingParam.originPostalCode = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.postalCode
         shippingParam.originLatitude = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.latitude
         shippingParam.originLongitude = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.longitude
-        shippingParam.destinationDistrictId = ""
-        shippingParam.destinationPostalCode = ""
-        shippingParam.destinationLatitude = ""
-        shippingParam.destinationLongitude = ""
-        shippingParam.weightInGrams = 1000.0
+        shippingParam.destinationDistrictId = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.addressModel?.districtId?.toString()
+        shippingParam.destinationPostalCode = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.addressModel?.postalCode
+        shippingParam.destinationLatitude = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.addressModel?.latitude
+        shippingParam.destinationLongitude = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.addressModel?.longitude
+        shippingParam.weightInGrams = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productWeight?.toDouble() ?: 0.0
         shippingParam.shopId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId.toString()
         shippingParam.token = atcResponseModel.atcDataModel?.keroToken
         shippingParam.ut = atcResponseModel.atcDataModel?.keroUnixTime.toString()

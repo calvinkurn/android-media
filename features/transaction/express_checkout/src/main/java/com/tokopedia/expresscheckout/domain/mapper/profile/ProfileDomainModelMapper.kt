@@ -68,6 +68,7 @@ class ProfileDomainModelMapper : ProfileDataMapper {
         addressModel.provinceId = address.provinceId
         addressModel.provinceName = address.provinceName
         addressModel.receiverName = address.receiverName
+        addressModel.postalCode = address.postalCode
 
         return addressModel
     }
