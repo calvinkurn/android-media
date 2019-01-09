@@ -38,7 +38,11 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SaldoDetailsPresenter.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
-            ((SaldoDepositFragment) getSupportFragmentManager().findFragmentByTag(TAG)).refresh();
+            if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+                finish();
+            } else {
+                ((SaldoDepositFragment) getSupportFragmentManager().findFragmentByTag(TAG)).refresh();
+            }
         }
         if (requestCode == REQUEST_CODE_LOGIN) {
             if (resultCode == RESULT_OK) {
