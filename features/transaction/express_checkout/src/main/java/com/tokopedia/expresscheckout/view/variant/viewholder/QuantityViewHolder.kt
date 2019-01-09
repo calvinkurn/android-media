@@ -22,7 +22,12 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
 
     override fun bind(element: QuantityViewModel?) {
         if (element != null) {
-            itemView.et_qty.setText(element.minOrderQuantity.toString())
+            if (element.orderQuantity == 0) {
+                itemView.et_qty.setText(element.minOrderQuantity.toString())
+            } else {
+                itemView.et_qty.setText(element.orderQuantity.toString())
+            }
+            itemView.et_qty.setSelection(itemView.et_qty.length())
             itemView.et_qty.addTextChangedListener(object : TextWatcher {
                 var previousQuantity: Int = element.orderQuantity
                 override fun afterTextChanged(s: Editable?) {
@@ -42,6 +47,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
                         element.orderQuantity = 0
                     }
                     if (newQuantity != previousQuantity) {
+                        itemView.et_qty.setSelection(itemView.et_qty.length())
                         previousQuantity = newQuantity
                         element.orderQuantity = newQuantity
                         commitQuantityChange(element)
@@ -50,9 +56,9 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
             })
 
             itemView.tv_quantity_stock_available.text = element.stockWording
-            if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-                listener.onNeedToNotifySingleItem(adapterPosition)
-            }
+//            if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
+//                listener.onChangeQuantity(element)
+//            }
 
             setupMinButton(element)
             setupPlusButton(element)
@@ -64,7 +70,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
             itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_enabled)
             itemView.btn_qty_min.setOnClickListener {
                 element.orderQuantity -= 1
-                commitQuantityChange(element)
+                itemView.et_qty.setText(element.orderQuantity.toString())
             }
         } else {
             itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_disabled)
@@ -77,7 +83,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
             itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_enabled)
             itemView.btn_qty_plus.setOnClickListener {
                 element.orderQuantity += 1
-                commitQuantityChange(element)
+                itemView.et_qty.setText(element.orderQuantity.toString())
             }
         } else {
             itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_disabled)
@@ -87,13 +93,9 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
 
     private fun commitQuantityChange(element: QuantityViewModel) {
         setupMinButton(element)
-        setupPlusButton(element
-        )
+        setupPlusButton(element)
         if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-            listener.onNeedToNotifySingleItem(adapterPosition)
-        } else {
-            itemView.et_qty.setText(element.orderQuantity.toString())
-            itemView.et_qty.setSelection(itemView.et_qty.length())
+            listener.onChangeQuantity(element)
         }
     }
 
@@ -104,7 +106,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
             error = element.errorProductMinQuantity.replace("{{value}}", "${element.minOrderQuantity}", false)
         } else if (element.orderQuantity > element.maxOrderQuantity) {
-            error = element.errorProductMinQuantity.replace("{{value}}", "${element.maxOrderQuantity}", false)
+            error = element.errorProductMaxQuantity.replace("{{value}}", "${element.maxOrderQuantity}", false)
         }
 
         if (error != null) {
@@ -115,9 +117,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
             itemView.tv_error_form_validation.text = error
             itemView.tv_error_form_validation.visibility = View.VISIBLE
         } else {
-            if (element.isStateError) {
-                needToUpdateView = true
-            }
+            needToUpdateView = true
             element.isStateError = false
             itemView.tv_error_form_validation.visibility = View.GONE
         }

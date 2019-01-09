@@ -18,7 +18,7 @@ data class AtcDataModel(
         var promoSuggestionModel: PromoSuggestionModel? = null,
         var autoapplyModel: AutoApplyModel? = null,
         var userProfileModelDefaultModel: UserProfileModel? = null,
-        var messagesModel: MessagesModel? = null,
+        var messagesModel: HashMap<String, String>? = null,
         var maxQuantity: Int = 0,
         var maxCharNote: Int = 0
 )

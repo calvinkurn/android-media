@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.subscriber
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcExpressGqlResponse
 import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
@@ -23,6 +24,7 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
+        view?.finishWithError(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
     }
 
     override fun onNext(objects: GraphqlResponse) {

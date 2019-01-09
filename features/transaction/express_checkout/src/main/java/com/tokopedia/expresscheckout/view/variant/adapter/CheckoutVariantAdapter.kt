@@ -46,6 +46,16 @@ class CheckoutVariantAdapter(adapterTypeFactory: CheckoutVariantAdapterTypeFacto
         return variantTypeViewModels
     }
 
+    fun getSummaryViewModel(): SummaryViewModel? {
+        for (visitable in visitables) {
+            if (visitable is SummaryViewModel) {
+                return visitable
+            }
+        }
+
+        return null
+    }
+
     fun getIndex(visitable: Visitable<*>): Int {
         return visitables.indexOf(visitable)
     }

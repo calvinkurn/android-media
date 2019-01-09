@@ -2,6 +2,7 @@ package com.tokopedia.expresscheckout.view.variant.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
@@ -70,8 +71,7 @@ class ViewModelMapper : DataMapper {
                 productViewModel.maxOrderQuantity = atcResponseModel.atcDataModel?.maxQuantity ?: 10000
             }
         }
-        productViewModel.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(productModel?.productPrice
-                ?: 0, false)
+        productViewModel.productPrice = productModel?.productPrice ?: 0
         var productChildList = ArrayList<ProductChild>()
         var hasSelectedDefaultVariant = false
         if (typeVariantViewModels.size > 0) {
@@ -82,7 +82,7 @@ class ViewModelMapper : DataMapper {
                     productChild.productId = childModel.productId
                     productChild.productName = childModel.name ?: ""
                     productChild.isAvailable = childModel.isBuyable ?: false
-                    productChild.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(childModel.price, false)
+                    productChild.productPrice = childModel.price
                     productChild.stockWording = childModel.stockWording ?: ""
                     productChild.minOrder = childModel.minOrder
                     productChild.maxOrder = childModel.maxOrder
@@ -229,13 +229,13 @@ class ViewModelMapper : DataMapper {
                                             productViewModel: ProductViewModel): QuantityViewModel {
         var quantityViewModel = QuantityViewModel()
         var messagesModel = atcResponseModel.atcDataModel?.messagesModel
-        quantityViewModel.errorFieldBetween = messagesModel?.errorFieldBetween ?: ""
-        quantityViewModel.errorFieldMaxChar = messagesModel?.errorFieldMaxChar ?: ""
-        quantityViewModel.errorFieldRequired = messagesModel?.errorFieldRequired ?: ""
-        quantityViewModel.errorProductAvailableStock = messagesModel?.errorProductAvailableStock ?: ""
-        quantityViewModel.errorProductAvailableStockDetail = messagesModel?.errorProductAvailableStockDetail ?: ""
-        quantityViewModel.errorProductMaxQuantity = messagesModel?.errorProductMaxQuantity ?: ""
-        quantityViewModel.errorProductMinQuantity = messagesModel?.errorProductMinQuantity ?: ""
+        quantityViewModel.errorFieldBetween = messagesModel?.get(Message.ERROR_FIELD_BETWEEN) ?: ""
+        quantityViewModel.errorFieldMaxChar = messagesModel?.get(Message.ERROR_FIELD_MAX_CHAR) ?: ""
+        quantityViewModel.errorFieldRequired = messagesModel?.get(Message.ERROR_FIELD_REQUIRED) ?: ""
+        quantityViewModel.errorProductAvailableStock = messagesModel?.get(Message.ERROR_PRODUCT_AVAILABLE_STOCK) ?: ""
+        quantityViewModel.errorProductAvailableStockDetail = messagesModel?.get(Message.ERROR_PRODUCT_AVAILABLE_STOCK_DETAIL) ?: ""
+        quantityViewModel.errorProductMaxQuantity = messagesModel?.get(Message.ERROR_PRODUCT_MAX_QUANTITY) ?: ""
+        quantityViewModel.errorProductMinQuantity = messagesModel?.get(Message.ERROR_PRODUCT_MIN_QUANTITY) ?: ""
         quantityViewModel.isStateError = false
 
         quantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity

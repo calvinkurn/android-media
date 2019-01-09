@@ -52,7 +52,7 @@ data class AtcData(
         val userProfileDefault: UserProfile?,
 
         @SerializedName("messages")
-        val messages: Messages?,
+        val messages: ArrayList<Message>?,
 
         @SerializedName("max_quantity")
         val maxQuantity: Int?,

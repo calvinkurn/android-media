@@ -169,6 +169,10 @@ mutation atcExpress($params: AtcExpressParams) {
       }
       max_quantity
       max_char_note
+      messages {
+        index
+        message
+      }
     }
   }
 }

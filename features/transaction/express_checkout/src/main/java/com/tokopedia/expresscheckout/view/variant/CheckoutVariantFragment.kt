@@ -16,13 +16,10 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import android.support.v7.widget.SimpleItemAnimator
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
 
 /**
@@ -99,11 +96,23 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onNeedToNotifySingleItem(position: Int) {
-        adapter.notifyItemChanged(position)
+        if (recyclerView.isComputingLayout) {
+            recyclerView.post {
+                adapter.notifyItemChanged(position)
+            }
+        } else {
+            adapter.notifyItemChanged(position)
+        }
     }
 
     override fun onNeedToNotifyAllItem() {
-        adapter.notifyDataSetChanged()
+        if (recyclerView.isComputingLayout) {
+            recyclerView.post {
+                adapter.notifyDataSetChanged()
+            }
+        } else {
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onClickEditProfile() {
@@ -133,44 +142,52 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
-        var checkoutVariantProductViewModel = adapter.getProductDataViewModel()
-        if (checkoutVariantProductViewModel != null && checkoutVariantProductViewModel.productChildrenList.isNotEmpty()) {
+        var productViewModel = adapter.getProductDataViewModel()
+        var summaryViewModel = adapter.getSummaryViewModel()
+        var quantityViewModel = adapter.getQuantityViewModel()
+
+        if (productViewModel != null && productViewModel.productChildrenList.isNotEmpty()) {
             var selectedKey = 0
-            for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
+            for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
                 if (key == selectedOptionViewModel.variantId && value != selectedOptionViewModel.optionId) {
                     selectedKey = key
                 }
             }
             if (selectedKey != 0) {
-                checkoutVariantProductViewModel.selectedVariantOptionsIdMap.put(selectedKey, selectedOptionViewModel.optionId)
+                productViewModel.selectedVariantOptionsIdMap.put(selectedKey, selectedOptionViewModel.optionId)
             }
 
             // Check is product child for selected variant is available
             var newSelectedProductChild: ProductChild? = null
-            for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+            for (productChild: ProductChild in productViewModel.productChildrenList) {
                 var matchOptionId = 0
-                for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
+                for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
                     if (value in productChild.optionsId) {
                         matchOptionId++
                     }
                 }
-                if (matchOptionId == checkoutVariantProductViewModel.selectedVariantOptionsIdMap.size) {
+                if (matchOptionId == productViewModel.selectedVariantOptionsIdMap.size) {
                     newSelectedProductChild = productChild
                     break
                 }
             }
 
             if (newSelectedProductChild != null) {
-                for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+                for (productChild: ProductChild in productViewModel.productChildrenList) {
                     productChild.isSelected = productChild.productId == newSelectedProductChild.productId
                 }
-                adapter.notifyItemChanged(adapter.getIndex(checkoutVariantProductViewModel))
+                onNeedToNotifySingleItem(adapter.getIndex(productViewModel))
+
+                if (summaryViewModel != null) {
+                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice) ?: 0
+                    onNeedToNotifySingleItem(adapter.getIndex(summaryViewModel))
+                }
 
                 var variantTypeViewModels = adapter.getVariantTypeViewModel()
                 for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
                     if (variantTypeViewModel.variantId == selectedOptionViewModel.variantId) {
                         variantTypeViewModel.variantSelectedValue = selectedOptionViewModel.variantName
-                        adapter.notifyItemChanged(adapter.getIndex(variantTypeViewModel))
+                        onNeedToNotifySingleItem(adapter.getIndex(variantTypeViewModel))
                         break
                     }
                 }
@@ -195,7 +212,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
                             // Look for available child
                             var hasAvailableChild = false
-                            for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+                            for (productChild: ProductChild in productViewModel.productChildrenList) {
                                 hasAvailableChild = checkChildAvailable(productChild, optionViewModel.optionId, selectedOptionViewModel.optionId, otherVariantSelectedOptionIds)
                                 if (hasAvailableChild) break
                             }
@@ -209,7 +226,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                 optionViewModel.currentState == optionViewModel.STATE_NOT_SELECTED
                             }
                         }
-                        adapter.notifyItemChanged(adapter.getIndex(variantTypeViewModel))
+                        onNeedToNotifySingleItem(adapter.getIndex(variantTypeViewModel))
                     }
                 }
             }
@@ -237,17 +254,31 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
+    override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
+        var productViewModel = adapter.getProductDataViewModel()
+        var summaryViewModel = adapter.getSummaryViewModel()
+
+        if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
+            for (productChild: ProductChild in productViewModel.productChildrenList) {
+                if (productChild.isSelected) {
+                    summaryViewModel?.itemPrice = productChild.productPrice * quantityViewModel.orderQuantity
+                    break
+                }
+            }
+        }
+
+        if (summaryViewModel != null) {
+            onNeedToNotifySingleItem(adapter.getIndex(summaryViewModel))
+        }
+
+        onNeedToNotifySingleItem(adapter.getIndex(quantityViewModel))
+    }
+
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
         var quantityViewModel = adapter.getQuantityViewModel()
         if (quantityViewModel != null) {
             quantityViewModel.stockWording = stockWording
-            if (recyclerView.isComputingLayout) {
-                recyclerView.post {
-                    adapter.notifyItemChanged(adapter.getIndex(quantityViewModel))
-                }
-            } else {
-                adapter.notifyItemChanged(adapter.getIndex(quantityViewModel))
-            }
+            onNeedToNotifySingleItem(adapter.getIndex(quantityViewModel))
         }
     }
 
@@ -258,13 +289,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onBindVariantUpdateProductViewModel() {
         val productViewModel = adapter.getProductDataViewModel()
         if (productViewModel != null) {
-            if (recyclerView.isComputingLayout) {
-                recyclerView.post {
-                    adapter.notifyItemChanged(adapter.getIndex(productViewModel))
-                }
-            } else {
-                adapter.notifyItemChanged(adapter.getIndex(productViewModel))
-            }
+            onNeedToNotifySingleItem(adapter.getIndex(productViewModel))
         }
     }
 

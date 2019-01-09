@@ -1,6 +1,7 @@
 package com.tokopedia.expresscheckout.domain.mapper.atc
 
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcResponse
+import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.HeaderModel
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.*
@@ -58,7 +59,12 @@ class AtcDomainModelMapper : AtcDataMapper {
         dataModel.maxCharNote = atcResponse.data.maxCharNote ?: 0
         dataModel.maxQuantity = atcResponse.data.maxQuantity ?: 0
 
-        var messagesModel = getMessagesModel(atcResponse)
+        var messagesModel = HashMap<String, String>()
+        if (atcResponse.data.messages != null) {
+            for (message: Message in atcResponse.data.messages) {
+                messagesModel.put(message.index, message.message)
+            }
+        }
         dataModel.messagesModel = messagesModel
 
         var promoSuggestionModel = getPromoSuggestionModel(atcResponse)
@@ -287,19 +293,6 @@ class AtcDomainModelMapper : AtcDataMapper {
         donationModel.nominal = atcResponse.data.donation?.nominal ?: 0
         donationModel.title = atcResponse.data.donation?.title
         return donationModel
-    }
-
-    private fun getMessagesModel(atcResponse: AtcResponse): MessagesModel {
-        var messagesModel = MessagesModel()
-        messagesModel.errorCheckoutPriceLimit = atcResponse.data.messages?.errorCheckoutPriceLimit
-        messagesModel.errorFieldBetween = atcResponse.data.messages?.errorFieldBetween
-        messagesModel.errorFieldMaxChar = atcResponse.data.messages?.errorFieldMaxChar
-        messagesModel.errorFieldRequired = atcResponse.data.messages?.errorFieldRequired
-        messagesModel.errorProductAvailableStock = atcResponse.data.messages?.errorProductAvailableStock
-        messagesModel.errorProductAvailableStockDetail = atcResponse.data.messages?.errorProductAvailableStockDetail
-        messagesModel.errorProductMaxQuantity = atcResponse.data.messages?.errorProductMaxQuantity
-        messagesModel.errorProductMinQuantity = atcResponse.data.messages?.errorProductMinQuantity
-        return messagesModel
     }
 
     private fun getPromoSuggestionModel(atcResponse: AtcResponse): PromoSuggestionModel {

@@ -11,7 +11,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 
 data class ProductViewModel(
         var productName: String,
-        var productPrice: String,
+        var productPrice: Int,
         var productImageUrl: String,
         var productChildrenList: ArrayList<ProductChild>,
         var selectedVariantOptionsIdMap: LinkedHashMap<Int, Int> = LinkedHashMap(),
@@ -21,7 +21,7 @@ data class ProductViewModel(
 
     constructor(parcel: Parcel? = null) : this(
             parcel?.readString() ?: "",
-            parcel?.readString() ?: "",
+            parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             arrayListOf<ProductChild>().apply {
                 parcel?.readList(this, ProductChild::class.java.classLoader)
@@ -39,7 +39,7 @@ data class ProductViewModel(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productName)
-        parcel.writeString(productPrice)
+        parcel.writeInt(productPrice)
         parcel.writeString(productImageUrl)
         parcel.writeList(productChildrenList)
         parcel.writeMap(selectedVariantOptionsIdMap)
