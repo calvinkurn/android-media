@@ -64,7 +64,7 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         }
     }
 
-    protected  void onHandleApplink(String applink){
+    protected void onHandleApplink(String applink){
         discoveryView.onHandleApplink(applink);
     }
 
