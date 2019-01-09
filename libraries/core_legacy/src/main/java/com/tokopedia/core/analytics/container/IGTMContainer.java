@@ -26,10 +26,6 @@ public interface IGTMContainer {
      */
     void loadContainer();
 
-    void loadContainer(String containerId, int defaultContainerResId);
-
-    void loadContainer(ResultCallback<ContainerHolder> callback);
-
     /**
      * Method for send open screen event
      *
@@ -108,8 +104,6 @@ public interface IGTMContainer {
 
     void pushUserId(String userId);
 
-    void sendButtonClick(String loginError, String login, String loginError1, String label);
-
     void eventClickHotlistProductFeatured(Hotlist hotlist);
 
     void eventImpressionHotlistProductFeatured(Hotlist hotlist);
@@ -130,10 +124,6 @@ public interface IGTMContainer {
 
     void eventPurchaseDigital(Purchase purchase);
 
-    GTMContainer eventAddToCartPurchase(Product product);
-
-    GTMContainer eventRemoveFromCartPurchase(Product product);
-
     void eventImpressionPromoList(List<Object> list, String promoName);
 
     void eventClickPromoListItem(List<Object> list, String promoName);
@@ -141,16 +131,4 @@ public interface IGTMContainer {
     void eventImpressionCategoryLifestyle(List<Object> list);
 
     void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
-
-    void enhanceClickSearchResultProduct(Object object,
-                                         String keyword,
-                                         String actionField,
-                                         String activeFilter);
-
-    void enhanceClickImageSearchResultProduct(Object object,
-                                              String actionField);
-
-    void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword);
-
-    void enhanceImpressionImageSearchResultProduct(List<Object> objects);
 }

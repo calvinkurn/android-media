@@ -16,8 +16,8 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.json.JSONObject;
 
-public class NewMoengageSuicide extends ContextAnalytics {
-    public NewMoengageSuicide(Context context) {
+public class MoengageAnalytics extends ContextAnalytics {
+    public MoengageAnalytics(Context context) {
         super(context);
     }
 

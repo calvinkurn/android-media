@@ -13,6 +13,7 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
@@ -54,6 +55,12 @@ public class Jordan {
         return new Jordan(application.getApplicationContext());
     }
 
+    /**
+     * latest release codes. {@link AppsflyerAnalytics#initialize()}
+     * @param userID
+     * @return
+     */
+    @Deprecated
     public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
         if(!(context instanceof Application)){
             return null;
