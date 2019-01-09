@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,7 +28,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     private FragmentManager fragmentManager;
     private HomeCategoryListener listener;
     private WrapContentViewPager viewPagerChannel;
-    private ViewPager viewPagerWidget;
+    private WrapContentViewPager viewPagerWidget;
     private DigitalsHomePagerAdapter digitalsHomePagerAdapter;
     private DigitalsHomePagerAdapter widgetHomePagerAdapter;
     private TextView titleTextView;
@@ -71,7 +70,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
             viewPagerWidget.setVisibility(View.GONE);
             viewPagerChannel.setVisibility(View.VISIBLE);
             digitalsHomePagerAdapter.notifyDataSetChanged();
-            viewPagerChannel.setCurrentItem(0);
+            viewPagerWidget.setCurrentItem(0);
         }
 
 
