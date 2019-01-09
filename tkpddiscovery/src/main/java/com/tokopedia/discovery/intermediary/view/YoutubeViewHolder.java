@@ -111,7 +111,9 @@ public class YoutubeViewHolder extends RelativeLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        youTubeThumbnailLoader.release();
+        if (youTubeThumbnailLoader != null){
+            youTubeThumbnailLoader.release();
+        }
     }
 
     public interface YouTubeThumbnailLoadInProcess {
