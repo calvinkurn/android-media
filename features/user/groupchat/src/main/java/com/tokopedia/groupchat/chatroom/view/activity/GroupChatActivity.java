@@ -278,9 +278,9 @@ public class GroupChatActivity extends BaseSimpleActivity
             viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
             if (getIntent().getExtras().get(APPLINK_DATA) != null) {
-                int tabNumber = getIntent().getExtras().getString(ApplinkConstant.PARAM_TAB).equals(PARAM_CHAT) ?
+                int tabNumber = getIntent().getExtras().getString(APPLINK_DATA).equals(PARAM_CHAT) ?
                         1 :
-                        getIntent().getExtras().getString(ApplinkConstant.PARAM_TAB).equals(PARAM_VOTE) ?
+                        getIntent().getExtras().getString(APPLINK_DATA).equals(PARAM_VOTE) ?
                                 2:
                                 3;
                 initialFragment = tabNumber - 1;
