@@ -15,8 +15,9 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        bundle.putString(PARAM_MESSAGE_ID, intent.getStringExtra(PARAM_MESSAGE_ID))
-        bundle.putString(PARAM_SENDER_ID, intent.getStringExtra(PARAM_SENDER_ID))
+        bundle.putString(ApplinkConst.Chat.MESSAGE_ID, intent.getStringExtra(ApplinkConst.Chat.MESSAGE_ID))
+        bundle.putString(ApplinkConst.Chat.OPPONENT_ID, intent.getStringExtra(ApplinkConst.Chat
+                .OPPONENT_ID))
         return TopChatRoomFragment.createInstance(bundle)
     }
 
@@ -39,8 +40,8 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
                              label: String, senderId: String, role: String, mode: Int,
                              keyword: String, image: String): Intent {
             val intent = Intent(context, TopChatRoomActivity::class.java)
-            intent.putExtra(PARAM_MESSAGE_ID, messageId)
-            intent.putExtra(PARAM_SENDER_ID, senderId)
+            intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+            intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, senderId)
             val model = ChatRoomHeaderViewModel()
             model.name = name
             model.label = label
@@ -49,7 +50,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             model.mode = mode
             model.keyword = keyword
             model.image = image
-            intent.putExtra(PARAM_HEADER, model)
+            intent.putExtra(ApplinkConst.Chat.PARAM_HEADER, model)
             return intent
         }
 
