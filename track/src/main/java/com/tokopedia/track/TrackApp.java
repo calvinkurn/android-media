@@ -1,16 +1,5 @@
 package com.tokopedia.track;
 
-// Treck.getInstance().registerImplementation("GTM", SuicideGTM.class)
-// mapOf("MOENGAGE", listOf(MOENGAGESuicide.class, "isExistingUser")
-
-// configuration
-// enable or not
-// Treck.getInstance().get("GTM").sendEvent(Map<String,Object>)
-// Treck.getInstance().get("MOENGAGE").get("isExistingUser")
-// Treck.getInstance().get("MOENGAGE").set("isExistingUser", Object)
-// Treck.getInstance().create(MOENGAGESuicide.class).saveAndBuild("MOENGAGE");
-// Treck.get("MOENGAGE").isExistingUser();
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.GuardedBy;
@@ -19,7 +8,6 @@ import android.support.v4.util.ArrayMap;
 import android.support.v4.util.Preconditions;
 
 //import com.google.android.gms.common.util.ProcessUtils;
-import com.tokopedia.track.components.GTMSuicide;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.lang.reflect.Constructor;
@@ -29,22 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * @Moengage
- * @Type("Moengage")
- * class MOENGAGESuicide{
- *
- *   public void isExistingUser(){}
- * }
- *
- @Type("GTM")
-  * class SuicideGTM{
-  *
-  *   public void sendEvent(Map<String,Object>){}
-  * }
- *
- * join with another config. RolloutManager.
- */
+
 public class TrackApp {
     private static final Object LOCK = new Object();
 
@@ -73,10 +46,7 @@ public class TrackApp {
         this.context = context;
     }
 
-    /**
-     * remove when necessary
-     */
-    public TrackApp(){
+    TrackApp(){
 
     }
 
