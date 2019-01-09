@@ -14,7 +14,6 @@ import java.util.Map;
  */
 public class CodAnalytics extends LogisticAnalytics {
 
-    @Inject
     public CodAnalytics(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
