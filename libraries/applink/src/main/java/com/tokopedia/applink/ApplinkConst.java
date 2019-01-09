@@ -231,5 +231,8 @@ public interface ApplinkConst {
         String TO_USER_ID = "toUserId";
         String TO_SHOP_ID = "toShopId";
 
+        String CUSTOM_MESSAGE = "customMessage";
+
+
     }
 }

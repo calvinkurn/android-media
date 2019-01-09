@@ -70,7 +70,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             val intent = getAskSellerIntent(context, toShopId, shopName, source,
                     avatar)
             val bundle = intent.extras
-            bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage)
+            bundle.putString(ApplinkConst.Chat.CUSTOM_MESSAGE, customMessage)
             intent.putExtras(bundle)
             return intent
         }
@@ -92,7 +92,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
                               avatar: String): Intent {
             val intent = getAskUserIntent(context, toUserId, customerName, source, avatar)
             val bundle = intent.extras
-            bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage)
+            bundle.putString(ApplinkConst.Chat.CUSTOM_MESSAGE, customMessage)
             intent.putExtras(bundle)
             return intent
         }

@@ -85,7 +85,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
-        customMessage = getParamString(ChatRoomActivity.PARAM_CUSTOM_MESSAGE, arguments, savedInstanceState)
+        customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
     }

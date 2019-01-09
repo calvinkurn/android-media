@@ -27,9 +27,6 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
         public val PARAM_SENDER_ID = "sender_id"
         private val TAG_FRAGMENT = "ChatToolbarActivity"
         val PARAM_HEADER = "header"
-        val PARAM_CUSTOM_MESSAGE = "customMessage"
-        val PARAM_SOURCE = "source"
-
         /**
          * To create intent with header already initialized.
          */
