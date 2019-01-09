@@ -86,6 +86,7 @@ class ProfileDomainModelMapper : ProfileDataMapper {
     fun getShipmentModel(shipment: Shipment): ShipmentModel {
         var shipmentModel = ShipmentModel()
         shipmentModel.serviceId = shipment.serviceId
+        shipmentModel.serviceDuration = shipment.serviceDuration
 
         return shipmentModel
     }

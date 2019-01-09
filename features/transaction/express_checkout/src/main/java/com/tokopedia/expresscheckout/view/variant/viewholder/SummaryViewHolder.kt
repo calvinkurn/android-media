@@ -25,6 +25,8 @@ class SummaryViewHolder(val view: View, val listener: CheckoutVariantActionListe
             itemView.tv_purchase_summary_service_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.servicePrice, false)
             itemView.tv_purchase_summary_insurance_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.insurancePrice, false)
             itemView.img_bt_insurance_info.setOnClickListener { listener.onClickInsuranceInfo(element.insuranceInfo) }
+
+            listener.onSummaryChanged(element)
         }
     }
 

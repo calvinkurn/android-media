@@ -5,5 +5,6 @@ package com.tokopedia.expresscheckout.domain.model.profile
  */
 
 data class ShipmentModel(
-        var serviceId: Int = 0
+        var serviceId: Int = 0,
+        var serviceDuration: String? = null
 )

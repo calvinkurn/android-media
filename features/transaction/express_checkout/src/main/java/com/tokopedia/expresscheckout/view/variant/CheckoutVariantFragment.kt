@@ -17,10 +17,12 @@ import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import android.support.v7.widget.SimpleItemAnimator
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
+import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -36,6 +38,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     lateinit var recyclerView: RecyclerView
     lateinit var errorBottomSheets: ErrorBottomsheets
     lateinit var fragmentListener: CheckoutVariantFragmentListener
+    lateinit var fragmentViewModel: FragmentViewModel
     var isDataLoaded = false
 
     companion object {
@@ -66,6 +69,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
         errorBottomSheets = ErrorBottomsheets()
         errorBottomSheets.actionListener = this
+
+        fragmentViewModel = FragmentViewModel()
 
         return view
     }
@@ -272,6 +277,13 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         onNeedToNotifySingleItem(adapter.getIndex(quantityViewModel))
+    }
+
+    override fun onSummaryChanged(summaryViewModel: SummaryViewModel) {
+        var totalPayment = summaryViewModel.itemPrice + summaryViewModel.shippingPrice + summaryViewModel.servicePrice
+        fragmentViewModel.totalPayment = totalPayment
+
+        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(fragmentViewModel.totalPayment ?: 0)
     }
 
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {

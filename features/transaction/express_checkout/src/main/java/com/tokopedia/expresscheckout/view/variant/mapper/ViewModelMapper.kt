@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
+import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 /**
@@ -215,12 +216,12 @@ class ViewModelMapper : DataMapper {
     }
 
     override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
-        val userProfileModel: UserProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
+        val userProfileModel: ProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
         var profileViewModel = ProfileViewModel()
-        profileViewModel.addressTitle = userProfileModel?.receiverName ?: ""
-        profileViewModel.addressDetail = userProfileModel?.addressStreet ?: ""
-        profileViewModel.paymentOptionImageUrl = userProfileModel?.image ?: ""
-        profileViewModel.paymentDetail = userProfileModel?.gatewayCode ?: ""
+        profileViewModel.addressTitle = userProfileModel?.addressModel?.receiverName ?: ""
+        profileViewModel.addressDetail = userProfileModel?.addressModel?.addressStreet ?: ""
+        profileViewModel.paymentOptionImageUrl = userProfileModel?.paymentModel?.image ?: ""
+        profileViewModel.paymentDetail = userProfileModel?.paymentModel?.gatewayCode ?: ""
 
         return profileViewModel
     }

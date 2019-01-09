@@ -151,21 +151,34 @@ mutation atcExpress($params: AtcExpressParams) {
         promo_id
       }
       user_profile_default {
-        profile_id
+        id
         status
-        address_id
-        receiver_name
-        address_street
-        district_name
-        city_name
-        province_name
-        phone_no
-        gateway_code
-        checkout_param
-        image
-        description
-        url
-        service_id
+        address {
+          address_id
+          address_name
+          receiver_name
+          address_street
+          district_id
+          district_name
+          city_id
+          city_name
+          province_id
+          province_name
+          phone
+          longitude
+          latitude
+          postal_code
+        }
+        payment {
+          gateway_code
+          image
+          description
+          url
+        }
+        shipment {
+          service_id
+          service_duration
+        }
       }
       max_quantity
       max_char_note

@@ -2,8 +2,15 @@ package com.tokopedia.expresscheckout.domain.mapper.atc
 
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcResponse
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
+import com.tokopedia.expresscheckout.data.entity.response.profile.Address
+import com.tokopedia.expresscheckout.data.entity.response.profile.Payment
+import com.tokopedia.expresscheckout.data.entity.response.profile.Shipment
 import com.tokopedia.expresscheckout.domain.model.HeaderModel
 import com.tokopedia.expresscheckout.domain.model.atc.*
+import com.tokopedia.expresscheckout.domain.model.profile.AddressModel
+import com.tokopedia.expresscheckout.domain.model.profile.PaymentModel
+import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
+import com.tokopedia.expresscheckout.domain.model.profile.ShipmentModel
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.*
 import com.tokopedia.transactiondata.entity.response.variantdata.Child
 import com.tokopedia.transactiondata.entity.response.variantdata.Option
@@ -305,24 +312,53 @@ class AtcDomainModelMapper : AtcDataMapper {
         return promoSuggestionModel
     }
 
-    private fun getUserProfileModel(atcResponse: AtcResponse): UserProfileModel {
-        var userProfileDefaultModel = UserProfileModel()
-        userProfileDefaultModel.addressId = atcResponse.data.userProfileDefault?.addressId
-        userProfileDefaultModel.addressStreet = atcResponse.data.userProfileDefault?.addressStreet
-        userProfileDefaultModel.checkoutParam = atcResponse.data.userProfileDefault?.checkoutParam
-        userProfileDefaultModel.cityName = atcResponse.data.userProfileDefault?.cityName
-        userProfileDefaultModel.code = atcResponse.data.userProfileDefault?.code
-        userProfileDefaultModel.description = atcResponse.data.userProfileDefault?.description
-        userProfileDefaultModel.districtName = atcResponse.data.userProfileDefault?.districtName
-        userProfileDefaultModel.gatewayCode = atcResponse.data.userProfileDefault?.gatewayCode
-        userProfileDefaultModel.image = atcResponse.data.userProfileDefault?.image
-        userProfileDefaultModel.message = atcResponse.data.userProfileDefault?.message
-        userProfileDefaultModel.phoneNo = atcResponse.data.userProfileDefault?.phoneNo
-        userProfileDefaultModel.provinceName = atcResponse.data.userProfileDefault?.provinceName
-        userProfileDefaultModel.receiverName = atcResponse.data.userProfileDefault?.receiverName
-        userProfileDefaultModel.serviceId = atcResponse.data.userProfileDefault?.serviceId
-        userProfileDefaultModel.url = atcResponse.data.userProfileDefault?.url
+    private fun getUserProfileModel(atcResponse: AtcResponse): ProfileModel {
+        var userProfileDefaultModel = ProfileModel()
+        userProfileDefaultModel.id = atcResponse.data.userProfileDefault?.id ?: 0
+        userProfileDefaultModel.status = atcResponse.data.userProfileDefault?.status ?: 0
+        userProfileDefaultModel.addressModel = getAddressModel(atcResponse.data.userProfileDefault?.address)
+        userProfileDefaultModel.shipmentModel = getShipmentModel(atcResponse.data.userProfileDefault?.shipment)
+        userProfileDefaultModel.paymentModel = getPaymentModel(atcResponse.data.userProfileDefault?.payment)
+
         return userProfileDefaultModel
+    }
+
+    private fun getAddressModel(address: Address?): AddressModel {
+        var addressModel = AddressModel()
+        addressModel.addressId = address?.addressId ?: 0
+        addressModel.addressName = address?.addressName
+        addressModel.addressStreet = address?.addressStreet
+        addressModel.cityId = address?.cityId ?: 0
+        addressModel.cityName = address?.cityName
+        addressModel.districtId = address?.districtId ?: 0
+        addressModel.districtName = address?.districtName
+        addressModel.latitude = address?.latitude
+        addressModel.longitude = address?.longitude
+        addressModel.phone = address?.phone
+        addressModel.provinceId = address?.provinceId ?: 0
+        addressModel.provinceName = address?.provinceName
+        addressModel.receiverName = address?.receiverName
+
+        return addressModel
+    }
+
+    private fun getPaymentModel(payment: Payment?): PaymentModel {
+        var paymentModel = PaymentModel()
+        paymentModel.checkoutParam = payment?.checkoutParam
+        paymentModel.description = payment?.description
+        paymentModel.gatewayCode = payment?.gatewayCode
+        paymentModel.image = payment?.image
+        paymentModel.url = payment?.url
+
+        return paymentModel
+    }
+
+    private fun getShipmentModel(shipment: Shipment?): ShipmentModel {
+        var shipmentModel = ShipmentModel()
+        shipmentModel.serviceId = shipment?.serviceId ?: 0
+        shipmentModel.serviceDuration = shipment?.serviceDuration
+
+        return shipmentModel
     }
 
     private fun getPurchaseProtectionPlanDataModel(product: Product): PurchaseProtectionPlanDataModel {

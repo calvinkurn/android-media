@@ -1,6 +1,7 @@
 package com.tokopedia.expresscheckout.data.entity.response.atc
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.expresscheckout.data.entity.response.profile.Profile
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply
 import com.tokopedia.transactiondata.entity.response.cartlist.Messages
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion
@@ -49,7 +50,7 @@ data class AtcData(
         val autoapply: AutoApply?,
 
         @SerializedName("user_profile_default")
-        val userProfileDefault: UserProfile?,
+        val userProfileDefault: Profile?,
 
         @SerializedName("messages")
         val messages: ArrayList<Message>?,

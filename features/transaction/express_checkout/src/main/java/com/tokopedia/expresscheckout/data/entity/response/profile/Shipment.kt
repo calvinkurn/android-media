@@ -8,5 +8,8 @@ import com.google.gson.annotations.SerializedName
 
 data class Shipment(
         @SerializedName("service_id")
-        val serviceId: Int
+        val serviceId: Int,
+
+        @SerializedName("service_duration")
+        val serviceDuration: String
 )

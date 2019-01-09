@@ -35,7 +35,7 @@ data class Address(
         val provinceId: Int,
 
         @SerializedName("province_name")
-        val provinceName: Int,
+        val provinceName: String,
 
         @SerializedName("phone")
         val phone: String,
