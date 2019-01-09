@@ -265,6 +265,7 @@ ext {
             merchantVoucher               : ":features:promo:merchant_voucher",
             tokopoints                    : ":features:promo:tokopoints",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
+            tokopointsNotification        : ":features:promo:tokopoints_notification",
             promoCheckout                 : ":features:promo:promo_checkout",
             promoCheckoutCommon           : ":features:promo:promo_checkout_common",
 
