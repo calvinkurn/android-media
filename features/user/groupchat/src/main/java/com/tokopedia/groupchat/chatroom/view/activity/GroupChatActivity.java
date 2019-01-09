@@ -130,6 +130,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final String APPLINK_CHAT = "?tab=chat";
     private static final String APPLINK_VOTE = "?tab=vote";
     private static final String APPLINK_INFO = "?tab=info";
+    private static final String PARAM_CHAT = "chat";
+    private static final String PARAM_VOTE = "vote";
+    private static final String PARAM_INFO = "info";
     private static final int OVERLAY_STATUS_INACTIVE = 0;
 
     Dialog exitDialog;
@@ -275,7 +278,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
             if (getIntent().getExtras().get(ApplinkConstant.PARAM_TAB) != null) {
-                initialFragment = Integer.parseInt(getIntent().getExtras().getString(ApplinkConstant.PARAM_TAB)) - 1;
+                int tabNumber = getIntent().getExtras().getString(ApplinkConstant.PARAM_TAB).equals(PARAM_CHAT) ?
+                        1 :
+                        getIntent().getExtras().getString(ApplinkConstant.PARAM_TAB).equals(PARAM_VOTE) ?
+                                2:
+                                3;
+                initialFragment = tabNumber - 1;
             }
         } else {
             Intent intent = new Intent();
