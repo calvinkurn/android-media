@@ -290,9 +290,11 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun sendUploadedImageToWebsocket(json: JsonObject) {
-        RxWebSocket.send(json,
-                tkpdAuthInterceptor,
-                fingerprintInterceptor)
+        val list = ArrayList<Interceptor>()
+        list.add(tkpdAuthInterceptor)
+        list.add(fingerprintInterceptor)
+
+        RxWebSocket.send(json, list)
     }
 
     private fun createRequestBody(content: String): RequestBody {

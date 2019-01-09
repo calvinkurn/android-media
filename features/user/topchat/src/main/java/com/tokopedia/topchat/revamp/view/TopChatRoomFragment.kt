@@ -17,15 +17,17 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.topchat.R
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -33,7 +35,8 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
@@ -69,6 +72,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     lateinit var session: UserSessionInterface
 
     private lateinit var alertDialog: Dialog
+    private lateinit var customMessage: String
 
     val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
 
@@ -81,6 +85,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
+        customMessage = getParamString(ChatRoomActivity.PARAM_CUSTOM_MESSAGE, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
     }
@@ -100,9 +105,30 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             updateViewData(it)
             renderList(it.listChat, it.canLoadMore)
-            getViewState().onSuccessLoadFirstTime(it)
+            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked())
             presenter.getTemplate()
         }
+    }
+
+    private fun onToolbarClicked(): () -> Unit {
+        return {
+
+            analytics.trackHeaderClicked()
+
+            if (opponentRole.toLowerCase() == ChatRoomHeaderViewModel.Companion.ROLE_USER) {
+                goToProfile(opponentId)
+            } else if (opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
+                goToShop(shopId)
+            }
+        }
+    }
+
+    private fun goToShop(shopId: Int) {
+        RouteManager.route(activity, ApplinkConst.SHOP.replace("{shop_id}", shopId.toString()))
+    }
+
+    private fun goToProfile(opponentId: String) {
+        RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", opponentId))
     }
 
     override fun showErrorWebSocket(b: Boolean) {
@@ -237,17 +263,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
             }
 
+            getViewState().onSetCustomMessage(customMessage)
+
             hideLoading()
         }
     }
 
     private fun onAttachProductClicked(): () -> Unit {
         return {
-                val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
-                        shopId.toString(),
-                        "",
-                        getUserSession().shopId == shopId.toString())
-                startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
+            val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
+                    shopId.toString(),
+                    "",
+                    getUserSession().shopId == shopId.toString())
+            startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
         }
     }
 

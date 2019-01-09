@@ -18,7 +18,6 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
-import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
@@ -41,7 +40,6 @@ class TopChatViewStateImpl(
 
         toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
-
 
 
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
@@ -86,6 +84,10 @@ class TopChatViewStateImpl(
         attachButton.setOnClickListener {
             onAttachProductClicked()
         }
+    }
+
+    override fun onSetCustomMessage(customMessage: String) {
+        replyEditText.setText(customMessage)
     }
 
     fun minimizeTools() {
@@ -137,10 +139,10 @@ class TopChatViewStateImpl(
         }
     }
 
-    fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel) {
+    fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         hideLoading()
         scrollToBottom()
-        updateHeader(viewModel)
+        updateHeader(viewModel, onToolbarClicked)
         showReplyBox(viewModel.replyable)
         showActionButtons()
         checkShowQuickReply(viewModel)
@@ -156,12 +158,12 @@ class TopChatViewStateImpl(
         notifier.visibility = View.VISIBLE
         val title = notifier.findViewById<TextView>(R.id.title)
         val action = notifier.findViewById<View>(R.id.action)
-        if(b) {
+        if (b) {
             title.setText(R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 
         } else {
-            if(isFirstTime) {
+            if (isFirstTime) {
                 isFirstTime = false
                 notifier.visibility = View.GONE
                 return

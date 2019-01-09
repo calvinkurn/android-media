@@ -208,6 +208,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.topchat.revamp.view.TopChatRoomActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -762,7 +763,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
+        return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
                 customSubject, customMessage, source, avatar);
     }
 
@@ -770,7 +771,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
 
-        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
+        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                 customSubject, customMessage, source, avatar);
 
     }
@@ -778,14 +779,14 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
-        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
+        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
 
     }
 
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
-        return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
+        return TopChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
     }
 
     @Override

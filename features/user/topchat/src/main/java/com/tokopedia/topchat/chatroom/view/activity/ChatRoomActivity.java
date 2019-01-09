@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
@@ -147,7 +146,6 @@ public class ChatRoomActivity extends BasePresenterActivity
         }
     }
 
-    @DeepLink(ApplinkConst.TOPCHAT)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent detailsIntent;
         extras.putBoolean(PARAM_WEBSOCKET, true);

@@ -33,6 +33,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.WebSocket
@@ -344,9 +345,9 @@ class TopChatRoomPresenter @Inject constructor(
                                        startTime: String, opponentId: String) {
         //TODO ADD INTERCEPTOR
         RxWebSocket.send(
-                SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime, opponentId),
-                tkpdAuthInterceptor = null,
-                fingerprintInterceptor = null
+                SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime,
+                        opponentId),
+                ArrayList<Interceptor>()
         )
     }
 

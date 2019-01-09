@@ -49,6 +49,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentName = ""
     protected var opponentRole = ""
     protected var shopId = 0
+    protected var source = ""
 
     override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
         return BaseChatTypeFactoryImpl(this,
@@ -92,9 +93,10 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         opponentId = getParamString(ApplinkConst.Chat.OPPONENT_ID, arguments, savedInstanceState)
         opponentName = getParamString(ApplinkConst.Chat.OPPONENT_NAME, arguments, savedInstanceState)
         opponentRole = getParamString(ApplinkConst.Chat.OPPONENT_ROLE, arguments, savedInstanceState)
+        source = getParamString(ApplinkConst.Chat.SOURCE, arguments, savedInstanceState)
     }
 
-    private fun getParamString(paramName: String, arguments: Bundle?,
+    open fun getParamString(paramName: String, arguments: Bundle?,
                                savedInstanceState: Bundle?): String {
         return when {
             savedInstanceState != null

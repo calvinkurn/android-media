@@ -55,6 +55,9 @@ data class ChatRoomHeaderViewModel(
 
     object Companion {
         const val MODE_DEFAULT_GET_CHAT: Int = 1
+        const val ROLE_USER: String = "user"
+        const val ROLE_SHOP: String = "shop owner"
+
 
     }
 

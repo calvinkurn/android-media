@@ -226,5 +226,7 @@ public interface ApplinkConst {
         String OPPONENT_ID = "opponent_id";
         String OPPONENT_NAME = "opponent_name";
         String OPPONENT_ROLE = "opponent_role";
+        String SOURCE = "source";
+
     }
 }

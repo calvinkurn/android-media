@@ -5,6 +5,9 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 interface TopChatViewState : BaseChatViewState {
 
     abstract fun showErrorWebSocket(b: Boolean)
+
+    fun onSetCustomMessage(customMessage: String)
+
 //    fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel)
 //
 //    fun onCheckToHideQuickReply(visitable: Visitable<*>)

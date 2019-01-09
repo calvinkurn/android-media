@@ -105,5 +105,15 @@ public class TopChatAnalytics {
         );
     }
 
+    public void trackHeaderClicked() {
+
+        analyticTracker.sendEventTracking(
+                Name.INBOX_CHAT,
+                "message room",
+                "click header - shop icon",
+                ""
+        );
+
+    }
 
 }
