@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
 
@@ -17,19 +18,17 @@ public class ShipmentNotifierViewHolder extends RecyclerView.ViewHolder {
 
     public static final int TYPE_VIEW_NOTIFIER_COD = R.layout.viewholder_general_notif_ticker;
     private TextView mText, mLinkText;
+    private ShipmentAdapterActionListener mActionListener;
 
-    public ShipmentNotifierViewHolder(View itemView) {
+    public ShipmentNotifierViewHolder(View itemView, ShipmentAdapterActionListener actionListener) {
         super(itemView);
         mText = itemView.findViewById(R.id.text_cod_description);
         mLinkText = itemView.findViewById(R.id.text_learn_more);
     }
 
     public void bind(ShipmentNotifierModel model) {
-        Context context = itemView.getContext();
         mText.setText(Html.fromHtml(model.getMessage()));
-        mLinkText.setOnClickListener(view ->
-                context.startActivity(CheckoutWebViewActivity.newInstance(context, model.getUrl(),
-                        context.getString(R.string.manage_terms_and_conditions))));
+        mLinkText.setOnClickListener(view -> mActionListener.onNotifierClicked(model.getUrl()));
     }
 
 }

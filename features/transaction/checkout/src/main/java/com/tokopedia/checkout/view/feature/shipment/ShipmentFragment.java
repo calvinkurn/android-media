@@ -1810,6 +1810,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         startActivity(intent);
     }
 
+    @Override
+    public void onNotifierClicked(String url) {
+        Intent intent = CheckoutWebViewActivity
+                .newInstance(getContext(), url, getString(R.string.manage_terms_and_conditions));
+        startActivity(intent);
+    }
+
     public int getResultCode() {
         if (shipmentPresenter.getCouponStateChanged()) {
             return ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED;

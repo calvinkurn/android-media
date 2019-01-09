@@ -133,7 +133,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
 
         if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
-            return new ShipmentNotifierViewHolder(view);
+            return new ShipmentNotifierViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             return new CartVoucherPromoViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
