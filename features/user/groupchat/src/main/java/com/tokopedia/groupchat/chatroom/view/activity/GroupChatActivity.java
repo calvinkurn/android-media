@@ -1157,6 +1157,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
+    @Override
+    public void disablwShowChannelInfoDialog() {
+        canShowDialog = false;
+    }
+
     private void setChannelInfoView(ChannelInfoViewModel channelInfoViewModel) {
         this.viewModel.setChannelInfo(channelInfoViewModel);
 

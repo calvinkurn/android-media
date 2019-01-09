@@ -36,6 +36,8 @@ public interface GroupChatContract {
 
         void showInfoDialog();
 
+        void disablwShowChannelInfoDialog();
+
         void updateSprintSaleData(SprintSaleAnnouncementViewModel messageItem);
 
         void handleVoteAnnouncement(VoteAnnouncementViewModel messageItem, String voteType);
