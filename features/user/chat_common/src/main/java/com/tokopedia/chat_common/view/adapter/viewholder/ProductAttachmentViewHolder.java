@@ -32,7 +32,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private TextView label;
     private TextView dot;
     private ImageView thumbnailsImage;
-//    private ButtonCompat tvBuy;
+    private ButtonCompat tvBuy;
     private ImageView ivATC;
 
     private Context context;
@@ -51,7 +51,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         dot = itemView.findViewById(R.id.dot);
         progressBarSendImage = itemView.findViewById(R.id.progress_bar);
         chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
-//        tvBuy = chatBalloon.findViewById(R.id.tv_buy);
+        tvBuy = chatBalloon.findViewById(R.id.tv_buy);
         ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
         this.viewListener = viewListener;
     }
@@ -150,21 +150,21 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void setFooter(View productContainer, ProductAttachmentViewModel element) {
-//        View separator = productContainer.findViewById(R.id.separator);
+        View separator = productContainer.findViewById(R.id.separator);
         if (element.getCanShowFooter()) {
-//            separator.setVisibility(View.VISIBLE);
-//            tvBuy.setVisibility(View.VISIBLE);
+            separator.setVisibility(View.VISIBLE);
+            tvBuy.setVisibility(View.VISIBLE);
             ivATC.setVisibility(View.VISIBLE);
-//            tvBuy.setOnClickListener(v -> {
-//                viewListener.onClickBuyFromProductAttachment(element);
-//            });
+            tvBuy.setOnClickListener(v -> {
+                viewListener.onClickBuyFromProductAttachment(element);
+            });
 
             ivATC.setOnClickListener(v -> {
                 viewListener.onClickATCFromProductAttachment(element);
             });
         } else {
-//            separator.setVisibility(View.GONE);
-//            tvBuy.setVisibility(View.GONE);
+            separator.setVisibility(View.GONE);
+            tvBuy.setVisibility(View.GONE);
             ivATC.setVisibility(View.GONE);
         }
     }
