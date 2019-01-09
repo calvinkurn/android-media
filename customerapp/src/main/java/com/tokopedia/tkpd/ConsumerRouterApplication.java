@@ -2407,7 +2407,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void openTokopointWebview(Context context, String url, String title) {
-        context.startActivity(TokoPointWebviewActivity.getIntent(context, url, title));
+        context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, url, title));
     }
 
     public Intent getPromoDetailIntent(Context context, String slug) {
