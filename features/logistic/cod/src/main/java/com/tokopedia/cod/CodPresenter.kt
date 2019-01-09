@@ -17,6 +17,7 @@ class CodPresenter @Inject constructor(val useCase: CodConfirmUseCase) : CodCont
         mView?.showLoading()
         useCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
+                mView?.hideLoading()
                 val response = objects.getData<CodResponse>(CodResponse::class.java)
                 response.data?.data?.thanksApplink?.let {
                     mView?.navigateToThankYouPage(it)
@@ -24,10 +25,11 @@ class CodPresenter @Inject constructor(val useCase: CodConfirmUseCase) : CodCont
             }
 
             override fun onCompleted() {
-                mView?.hideLoading()
+
             }
 
             override fun onError(e: Throwable?) {
+                mView?.hideLoading()
                 mView?.showError(e?.message)
             }
         })
