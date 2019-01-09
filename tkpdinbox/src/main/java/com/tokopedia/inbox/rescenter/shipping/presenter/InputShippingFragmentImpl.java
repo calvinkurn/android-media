@@ -378,7 +378,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             retrofit.getObservableGenerateHost(viewListener.getActivity(), params)
                     .flatMap((Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>)
                             shippingParamsPostModel -> getObservableUploadingFile(viewListener.getActivity(), params))
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<ShippingParamsPostModel>() {
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<ShippingParamsPostModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -448,7 +449,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             retrofit.getObservableGenerateHost(viewListener.getActivity(), params)
                     .flatMap((Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>)
                             shippingParamsPostModel -> getObservableUploadingFile(viewListener.getActivity(), params))
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<ShippingParamsPostModel>() {
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<ShippingParamsPostModel>() {
                 @Override
                 public void onCompleted() {
 
