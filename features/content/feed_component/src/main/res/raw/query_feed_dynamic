@@ -139,6 +139,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               isVoted
               totalVoter
               text
+              tags {
+                linkType
+              }
             }
             caption {
               text

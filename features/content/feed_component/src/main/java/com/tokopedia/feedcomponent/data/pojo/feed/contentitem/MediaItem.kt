@@ -6,42 +6,45 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-data class MediaItem (
-    @SerializedName("id")
-    @Expose
-    var id:String = "",
+data class MediaItem(
+        @SerializedName("id")
+        @Expose
+        var id: String = "",
 
-    @SerializedName("text")
-    @Expose
-    var text:String = "",
+        @SerializedName("text")
+        @Expose
+        var text: String = "",
 
-    @SerializedName("price")
-    @Expose
-    var price:String = "",
+        @SerializedName("price")
+        @Expose
+        var price: String = "",
 
-    @SerializedName("type")
-    @Expose
-    var type:String = "",
+        @SerializedName("type")
+        @Expose
+        var type: String = "",
 
-    @SerializedName("appLink")
-    @Expose
-    var applink:String = "",
+        @SerializedName("appLink")
+        @Expose
+        var applink: String = "",
 
-    @SerializedName("webLink")
-    @Expose
-    var weblink:String = "",
+        @SerializedName("webLink")
+        @Expose
+        var weblink: String = "",
 
-    @SerializedName("thumbnail")
-    @Expose
-    var thumbnail:String = "",
+        @SerializedName("thumbnail")
+        @Expose
+        var thumbnail: String = "",
 
-    @SerializedName("percentage")
-    val percentage: String = "",
+        @SerializedName("percentage")
+        val percentage: String = "",
 
-    @SerializedName("isSelected")
-    val isSelected: Boolean = false,
+        @SerializedName("isSelected")
+        val isSelected: Boolean = false,
 
-    @SerializedName("position")
-    @Expose
-    var position:List<Float> = ArrayList()
+        @SerializedName("position")
+        @Expose
+        var position: MutableList<Float> = ArrayList(),
+
+        @SerializedName("tags")
+        val tags: MutableList<Tag> = ArrayList()
 )
