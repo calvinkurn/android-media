@@ -44,6 +44,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private String productWishlistUrl;
     private int categoryID;
     private String categoryName;
+    private String categoryBreadcrumb;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -249,6 +250,14 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         this.categoryName = categoryName;
     }
 
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
+    }
+
     public ProductItem() {
     }
 
@@ -263,7 +272,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
                 "id", getProductID(),
                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
                 "brand", "none / other",
-                "category", "none / other",
+                "category", getCategoryBreadcrumb(),
                 "variant", "none / other",
                 "list", SearchTracking.getActionFieldString(getPageNumber()),
                 "position", Integer.toString(getPosition()),
@@ -283,6 +292,14 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         );
     }
 
+    public void setProductWishlistUrl(String productWishlistUrl) {
+        this.productWishlistUrl = productWishlistUrl;
+    }
+
+    public String getProductWishlistUrl() {
+        return productWishlistUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -290,81 +307,63 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productID);
-        dest.writeString(productName);
-        dest.writeString(imageUrl);
-        dest.writeString(imageUrl700);
-        dest.writeInt(rating);
-        dest.writeInt(countReview);
-        dest.writeInt(countCourier);
-        dest.writeString(price);
-        dest.writeString(priceRange);
-        dest.writeString(shopID);
-        dest.writeString(shopName);
-        dest.writeString(shopCity);
-        dest.writeByte((byte) (isGoldMerchant ? 0x01 : 0x00));
-        dest.writeByte((byte) (isWishlisted ? 0x01 : 0x00));
-        dest.writeByte((byte) (isWishlistButtonEnabled ? 0x01 : 0x00));
-        if (badgesList == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(badgesList);
-        }
-        if (labelList == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(labelList);
-        }
-        dest.writeInt(position);
-        dest.writeString(originalPrice);
-        dest.writeInt(discountPercentage);
-        dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
-        dest.writeString(topLabel);
-        dest.writeString(bottomLabel);
-        dest.writeString(productWishlistUrl);
-        dest.writeInt(categoryID);
-        dest.writeString(categoryName);
+        dest.writeString(this.productID);
+        dest.writeString(this.productName);
+        dest.writeString(this.imageUrl);
+        dest.writeString(this.imageUrl700);
+        dest.writeInt(this.rating);
+        dest.writeInt(this.countReview);
+        dest.writeInt(this.countCourier);
+        dest.writeString(this.price);
+        dest.writeString(this.priceRange);
+        dest.writeString(this.shopID);
+        dest.writeString(this.shopName);
+        dest.writeString(this.shopCity);
+        dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isWishlisted ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.badgesList);
+        dest.writeTypedList(this.labelList);
+        dest.writeInt(this.position);
+        dest.writeString(this.originalPrice);
+        dest.writeInt(this.discountPercentage);
+        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeString(this.topLabel);
+        dest.writeString(this.bottomLabel);
+        dest.writeString(this.productWishlistUrl);
+        dest.writeInt(this.categoryID);
+        dest.writeString(this.categoryName);
+        dest.writeString(this.categoryBreadcrumb);
     }
 
     protected ProductItem(Parcel in) {
-        productID = in.readString();
-        productName = in.readString();
-        imageUrl = in.readString();
-        imageUrl700 = in.readString();
-        rating = in.readInt();
-        countReview = in.readInt();
-        countCourier = in.readInt();
-        price = in.readString();
-        priceRange = in.readString();
-        shopID = in.readString();
-        shopName = in.readString();
-        shopCity = in.readString();
-        isGoldMerchant = in.readByte() != 0x00;
-        isWishlisted = in.readByte() != 0x00;
-        isWishlistButtonEnabled = in.readByte() != 0x00;
-        if (in.readByte() == 0x01) {
-            badgesList = new ArrayList<BadgeItem>();
-            in.readList(badgesList, BadgeItem.class.getClassLoader());
-        } else {
-            badgesList = null;
-        }
-        if (in.readByte() == 0x01) {
-            labelList = new ArrayList<LabelItem>();
-            in.readList(labelList, LabelItem.class.getClassLoader());
-        } else {
-            labelList = null;
-        }
-        position = in.readInt();
-        originalPrice = in.readString();
-        discountPercentage = in.readInt();
-        isOfficial = in.readByte() != 0x00;
-        topLabel = in.readString();
-        bottomLabel = in.readString();
-        productWishlistUrl = in.readString();
-        categoryID = in.readInt();
-        categoryName = in.readString();
+        this.productID = in.readString();
+        this.productName = in.readString();
+        this.imageUrl = in.readString();
+        this.imageUrl700 = in.readString();
+        this.rating = in.readInt();
+        this.countReview = in.readInt();
+        this.countCourier = in.readInt();
+        this.price = in.readString();
+        this.priceRange = in.readString();
+        this.shopID = in.readString();
+        this.shopName = in.readString();
+        this.shopCity = in.readString();
+        this.isGoldMerchant = in.readByte() != 0;
+        this.isWishlisted = in.readByte() != 0;
+        this.isWishlistButtonEnabled = in.readByte() != 0;
+        this.badgesList = in.createTypedArrayList(BadgeItem.CREATOR);
+        this.labelList = in.createTypedArrayList(LabelItem.CREATOR);
+        this.position = in.readInt();
+        this.originalPrice = in.readString();
+        this.discountPercentage = in.readInt();
+        this.isOfficial = in.readByte() != 0;
+        this.topLabel = in.readString();
+        this.bottomLabel = in.readString();
+        this.productWishlistUrl = in.readString();
+        this.categoryID = in.readInt();
+        this.categoryName = in.readString();
+        this.categoryBreadcrumb = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -378,12 +377,4 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
             return new ProductItem[size];
         }
     };
-
-    public void setProductWishlistUrl(String productWishlistUrl) {
-        this.productWishlistUrl = productWishlistUrl;
-    }
-
-    public String getProductWishlistUrl() {
-        return productWishlistUrl;
-    }
 }

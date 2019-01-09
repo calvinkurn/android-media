@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.travelcalendar.data.TravelCalendarRepository;
 import com.tokopedia.travelcalendar.domain.GetHolidayUseCase;
 import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
+import com.tokopedia.travelcalendar.domain.TravelCalendarProvider;
+import com.tokopedia.travelcalendar.domain.TravelCalendarScheduler;
 import com.tokopedia.travelcalendar.network.TravelCalendarApi;
 import com.tokopedia.travelcalendar.network.TravelCalendarAuthInterceptor;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
@@ -55,6 +57,11 @@ public class TravelCalendarModule {
     @Provides
     GetHolidayUseCase provideGetHolidayUseCase(TravelCalendarRepository travelCalendarRepository) {
         return new GetHolidayUseCase(travelCalendarRepository);
+    }
+
+    @Provides
+    TravelCalendarProvider provideTravelCalendarProvider() {
+        return new TravelCalendarScheduler();
     }
 
     @Provides

@@ -13,10 +13,12 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.TalkRouter
+import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
@@ -37,6 +39,9 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics : TalkAnalytics
 
     private lateinit var titles: Array<String>
 
@@ -89,7 +94,10 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
     }
 
     private fun initPagerAdapter() {
-        if (userSession.hasShop()) {
+        if (GlobalConfig.isSellerApp()) {
+            titles = arrayOf(getString(R.string.title_tab_talk_my_product))
+            tabLayout.visibility = View.GONE
+        } else if (userSession.hasShop()) {
             titles = arrayOf(getString(R.string.title_tab_talk_all),
                     getString(R.string.title_tab_talk_my_product),
                     getString(R.string.title_tab_talk_follow))
@@ -124,6 +132,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
+                analytics.trackSelectTab(tab.text.toString().toLowerCase())
                 setTabSelected(tab)
             }
         })

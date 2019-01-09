@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -64,6 +65,8 @@ public class ExploreFragment
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
     private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
+    private static final String KEY_DATA_FIRST_QUERY = "KEY_DATA_FIRST_QUERY";
+
     private static final int ITEM_COUNT = 10;
     private static final int IMAGE_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
@@ -83,6 +86,8 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
+    private String firstCursor = "";
+    private List<Visitable> tempFirstData = new ArrayList<>();
 
     private boolean isCanDoAction;
 
@@ -205,17 +210,17 @@ public class ExploreFragment
         return AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+    }
+
     private void loadFirstData(boolean isPullToRefresh) {
         if (!exploreParams.isLoading()) {
             exploreParams.setLoading(true);
             presenter.getFirstData(exploreParams, isPullToRefresh);
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
     }
 
     @Override
@@ -278,7 +283,12 @@ public class ExploreFragment
         dropKeyboard();
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
-        loadFirstData(true);
+        populateLocalDataToAdapter();
+    }
+
+    private void populateLocalDataToAdapter() {
+        adapter.clearAllElements();
+        adapter.addElement(getLocalFirstData());
     }
 
     @Override
@@ -333,7 +343,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch) {
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
@@ -353,6 +363,17 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
+        if (!isSearch) saveFirstDataToLocal(itemList, cursor);
+    }
+
+    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor) {
+        tempFirstData = itemList;
+        this.firstCursor = firstCursor;
+    }
+
+    private List<Visitable> getLocalFirstData() {
+        exploreParams.setCursorForLoadMore(this.firstCursor);
+        return tempFirstData;
     }
 
     @Override

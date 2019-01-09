@@ -1,7 +1,7 @@
 package com.tokopedia.train.search.domain;
 
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.train.common.domain.TrainRepository;
-import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -28,7 +28,7 @@ public class GetFilteredAndSortedScheduleUseCase extends UseCase<List<TrainSched
     @Override
     public Observable<List<TrainScheduleViewModel>> createObservable(RequestParams requestParams) {
         FilterParam filterParam = (FilterParam) requestParams.getObject(PARAM_FILTER);
-        int sortOptionId = requestParams.getInt(PARAM_SORT_OPTION_ID, TrainSortOption.NO_PREFERENCE);
+        int sortOptionId = requestParams.getInt(PARAM_SORT_OPTION_ID, TravelSortOption.NO_PREFERENCE);
         return trainRepository.getFilteredAndSortedSchedule(filterParam, sortOptionId);
     }
 

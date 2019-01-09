@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -46,6 +48,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     TouchViewPager viewPager;
     TabLayout tabLayout;
     View containerError;
+    Toolbar toolbar;
 
     private PromoPagerAdapter adapter;
 
@@ -129,6 +132,23 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
         containerError = findViewById(R.id.container_error);
+        toolbar = (Toolbar) findViewById(com.tokopedia.abstraction.R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(this.getTitle());
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected void setActionVar() {

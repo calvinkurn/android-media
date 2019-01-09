@@ -88,7 +88,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         airlineName = view.findViewById(R.id.airline_name);
         duration = view.findViewById(R.id.duration);
-        departureHeaderLabel = view.findViewById(R.id.tv_departure_header_card_label);
+        departureHeaderLabel = view.findViewById(R.id.departure_trip_label);
 
         flightSearchReturnPresenter.attachView(this);
 
@@ -145,7 +145,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
             airlineName.setText(getString(R.string.flight_label_multi_maskapai));
         } else if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() == 1) {
-            airlineName.setText(flightJourneyViewModel.getAirlineDataList().get(0).getName());
+            airlineName.setText(flightJourneyViewModel.getAirlineDataList().get(0).getShortName());
         }
         if (flightJourneyViewModel.getAddDayArrival() > 0) {
             duration.setText(String.format("| %s - %s (+%sh)", flightJourneyViewModel.getDepartureTime(),

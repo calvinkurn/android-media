@@ -40,8 +40,7 @@
             android:id="@+id/img_cross"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_back_white"
-            android:tint="@color/grey" />
+            android:src="@drawable/ic_arrow_back_black" />
 
         <TextView
             android:id="@+id/tv_head_title"

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view;
 
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.product.manage.item.common.util.ItemType;
 
 import java.util.List;
 

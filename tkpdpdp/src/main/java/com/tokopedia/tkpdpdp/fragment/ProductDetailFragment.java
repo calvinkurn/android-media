@@ -92,7 +92,6 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -105,7 +104,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -1048,65 +1046,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onDescriptionClicked(Intent intent) {
         intent.setClass(getActivityContext(), DescriptionActivityNew.class);
-        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
         startActivity(intent);
-    }
-
-    @Override
-    public void onDescriptionClicked(Intent intent, View textDescription, View videoView) {
-        intent.setClass(getActivityContext(), DescriptionActivityNew.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            List<Pair> pairList = new ArrayList<>();
-            if (textDescription.getVisibility() == View.VISIBLE){
-                pairList.add(Pair.create(textDescription, textDescription.getTransitionName()));
-            }
-            if (videoView.getVisibility() == View.VISIBLE){
-                pairList.add(Pair.create(videoView, videoView.getTransitionName()));
-            }
-
-            Pair[] pairs = new Pair[pairList.size()];
-            ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(getActivity(),
-                            pairList.toArray(pairs));
-            getActivity().overridePendingTransition(0,0);
-            startActivity(intent,options.toBundle());
-        } else {
-            getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
-            startActivity(intent);
-        }
+        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
     }
 
     @Override
     public void onProductInfoShortClicked(Intent intent){
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onProductInfoShortClicked(Intent intent, View preorderView, View minOrderView, View conditionView){
-        intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            List<Pair> pairList = new ArrayList<>();
-            if (preorderView.getVisibility() == View.VISIBLE){
-                pairList.add(Pair.create(preorderView, preorderView.getTransitionName()));
-            }
-            if (minOrderView.getVisibility() == View.VISIBLE){
-                pairList.add(Pair.create(minOrderView, minOrderView.getTransitionName()));
-            }
-            if (conditionView.getVisibility() == View.VISIBLE){
-                pairList.add(Pair.create(conditionView, conditionView.getTransitionName()));
-            }
-
-            Pair[] pairs = new Pair[pairList.size()];
-            ActivityOptions activityOptions = ActivityOptions
-                    .makeSceneTransitionAnimation(getActivity(), pairList.toArray(pairs));
-            getActivity().overridePendingTransition(0,0);
-            startActivity(intent,activityOptions.toBundle());
-        } else {
-            getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
-            startActivity(intent);
-        }
+        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
     }
 
     @Override
@@ -2135,7 +2083,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (menu != null && menu.size() > 2) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_dark));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_pdp_dark));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_dark_pdp));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
@@ -2153,7 +2101,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (menu != null && menu.size() > 1) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_light));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_light_pdp));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
@@ -2494,7 +2442,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
         enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
-        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
         String eventAction;
@@ -2617,6 +2565,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                                 String eventLabel) {
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartClickBayarOnAtcSuccess();
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(cartMap, eventLabel, eventAction);
+        checkoutAnalyticsAddToCart.flushEnhancedECommerceAddToCart();
     }
 
     @Override
@@ -2710,11 +2659,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onAddFavorite(int position, Data data) {
-
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
 
     }
 
