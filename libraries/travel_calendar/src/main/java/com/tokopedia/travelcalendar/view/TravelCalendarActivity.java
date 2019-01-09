@@ -65,7 +65,7 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
 
     @Override
     protected Fragment getNewFragment() {
-        return TravelCalendarFragment.newInstance(
+        return TravelCalendarFragment.Companion.newInstance(
                 (Date) getIntent().getSerializableExtra(EXTRA_INITAL_DATE),
                 (Date) getIntent().getSerializableExtra(EXTRA_MAX_DATE),
                 (Date) getIntent().getSerializableExtra(EXTRA_MIN_DATE),
