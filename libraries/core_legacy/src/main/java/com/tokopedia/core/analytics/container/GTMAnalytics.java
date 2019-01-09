@@ -8,31 +8,24 @@ import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.tagmanager.Container;
 import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.json.JSONObject;
@@ -42,58 +35,108 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@Deprecated
-public class GTMContainer implements IGTMContainer {
-
-    private static final String DEFAULT_CONTAINERID = "GTM-P32KTB";
-    private static final int DEFAULT_CONTAINER_RES_ID = R.raw.gtm_default;
-    private static final int EXPIRE_CONTAINER_TIME = 7200;
-    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
-    private static final int EXPIRE_CONTAINER_TIME_DEBUG = 900;
-
+/**
+ * formerly {@link GTMContainer}
+ */
+public class GTMAnalytics extends ContextAnalytics {
     private static final String IS_EXCEPTION_ENABLED = "is_exception_enabled";
     private static final String IS_USING_HTTP_2 = "is_using_http_2";
     private static final String STR_GTM_EXCEPTION_ENABLED = "GTM is exception enabled";
     public static final String CLIENT_ID = "client_id";
-    private static final String TAG = GTMContainer.class.getSimpleName();
+    private static final String TAG = GTMAnalytics.class.getSimpleName();
+    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
 
-    private Context context;
-    private SessionHandler sessionHandler;
+    // have status that describe pending.
 
-    public static GTMContainer newInstance(Context context) {
-        return new GTMContainer(context);
+    public GTMAnalytics(Context context) {
+        super(context);
     }
 
 
-    public GTMContainer(Context context) {
-        this.context = context;
-        this.sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
-    }
-
-    /**
-     * {@link GTMAnalytics#getTagManager()}
-     * @return
-     */
-    @Override
     public TagManager getTagManager() {
-        return TagManager.getInstance(context);
+        return TagManager.getInstance(getContext());
     }
 
-    /**
-     * {@link GTMAnalytics#getClientIDString()}
-     * @return
-     */
     @Override
+    public void initialize() {
+        super.initialize();
+        try {
+            Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+            TagManager tagManager = getTagManager();
+            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
+                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
+
+            pResult.setResultCallback(cHolder -> {
+                ContainerHolderSingleton.setContainerHolder(cHolder);
+                if (isAllowRefreshDefault(cHolder)) {
+                    Log.i("GTM TKPD", "Refreshed Container ");
+                    cHolder.refresh();
+                }
+
+                validateGTM(cHolder);
+            }, 2, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            eventError(getContext().getClass().toString(), e.toString());
+        }
+    }
+
     public String getClientIDString() {
         try {
-            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
-            String clientID = GoogleAnalytics.getInstance(context).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
-
-            return clientID;
+            Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+            return GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
         } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public void eventError(String screenName, String errorDesc) {
+        if (getString(IS_EXCEPTION_ENABLED).equals("true")) {
+            Log.d(TAG, "Sending Push Event Error");
+            pushEvent("trackException", DataLayer.mapOf(
+                    "screenName", screenName,
+                    "exception.description", errorDesc,
+                    "exception.isFatal", "true"));
+        } else {
+            Log.d(TAG, "Sending Push Event Error disabled");
+        }
+    }
+
+    public void sendScreen(String screenName) {
+        Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
+        pushEvent("openScreen", DataLayer.mapOf("screenName", screenName));
+    }
+
+    public void pushEvent(String eventName, Map<String, Object> values) {
+        Log.i("GAv4", "UA-9801603-15: Send Event");
+
+        log(getContext(), eventName, values);
+
+        getTagManager().getDataLayer().pushEvent(eventName, values);
+    }
+
+    private static void log(Context context, String eventName, Map<String, Object> values) {
+        String name = eventName == null ? (String) values.get("event") : eventName;
+        GtmLogger.getInstance().save(context, name, values);
+    }
+
+    private void validateGTM(ContainerHolder containerHolder) {
+        if (containerHolder.getStatus().isSuccess()) {
+            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + getString(IS_EXCEPTION_ENABLED));
+        } else {
+            Log.e("GTMContainer", "failure loading container");
+        }
+    }
+
+    public static Container getContainer() {
+        return ContainerHolderSingleton.getContainerHolder().getContainer();
+    }
+
+    public String getString(String key) {
+        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
+            return getContainer().getString(key);
+        }
+        return "";
     }
 
     private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
@@ -105,77 +148,23 @@ public class GTMContainer implements IGTMContainer {
         return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
 
-    private void validateGTM(ContainerHolder containerHolder) {
-        if (containerHolder.getStatus().isSuccess()) {
-            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED));
-        } else {
-            Log.e("GTMContainer", "failure loading container");
-        }
-    }
-
-    /**
-     * {@link ContextAnalytics#initialize()}
-     */
-    @Override
-    public void loadContainer() {
-        try {
-            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
-            TagManager tagManager = getTagManager();
-            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
-                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
-
-            pResult.setResultCallback(new ResultCallback<ContainerHolder>() {
-                @Override
-                public void onResult(ContainerHolder cHolder) {
-                    ContainerHolderSingleton.setContainerHolder(cHolder);
-                    if (isAllowRefreshDefault(cHolder)) {
-                        Log.i("GTM TKPD", "Refreshed Container ");
-                        cHolder.refresh();
-                        //setExpiryRefresh();
-                    }
-
-                    validateGTM(cHolder);
-                }
-            }, 2, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            TrackingUtils.eventError(context, context.getClass().toString(), e.toString());
-        }
-    }
-
-
-    /**
-     * {@link GTMAnalytics#sendScreen(String)}
-     * @return
-     */
-    @Override
-    public GTMContainer sendScreen(String screenName) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
-        GTMDataLayer.pushEvent(context,
-                "openScreen", DataLayer.mapOf("screenName", screenName));
-
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendCampaign(Campaign campaign) {
+    public GTMAnalytics sendCampaign(Campaign campaign) {
         Log.i("Tag Manager", "UA-9801603-15: Send Campaign Event");
-        GTMDataLayer.pushEvent(context, "campaignTrack", campaign.getCampaign());
+        pushEvent("campaignTrack", campaign.getCampaign());
         return this;
     }
 
-    @Override
-    public GTMContainer clearCampaign(Campaign campaign) {
+    public GTMAnalytics clearCampaign(Campaign campaign) {
         Log.i("Tag Manager", "UA-9801603-15: Clear Campaign Event " + campaign.getNullCampaignMap());
-        GTMDataLayer.pushGeneral(context, campaign.getNullCampaignMap());
+        pushGeneral(campaign.getNullCampaignMap());
         return this;
     }
 
-    @Override
-    public GTMContainer eventCheckout(Checkout checkout, String paymentId) {
+    public GTMAnalytics eventCheckout(Checkout checkout, String paymentId) {
         Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
         Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
 
-        GTMDataLayer.pushGeneral(context,
+        pushGeneral(
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
                         AppEventTracking.PAYMENT_ID, paymentId,
@@ -189,12 +178,16 @@ public class GTMContainer implements IGTMContainer {
         return this;
     }
 
-    @Override
-    public GTMContainer eventCheckout(Checkout checkout) {
+    /**
+     * look identical with {@link #eventCheckout(Checkout, String)}
+     * @param checkout
+     * @return
+     */
+    public GTMAnalytics eventCheckout(Checkout checkout) {
         Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
         Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
 
-        GTMDataLayer.pushGeneral(context,
+        pushGeneral(
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
                         AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
@@ -207,14 +200,15 @@ public class GTMContainer implements IGTMContainer {
         return this;
     }
 
-    @Override
     public void clearCheckoutDataLayer() {
-        GTMDataLayer.pushGeneral(context, DataLayer.mapOf("step", null, "products", null,
+        pushGeneral(DataLayer.mapOf("step", null, "products", null,
                 "currencyCode", null, "actionField", null, "ecommerce", null));
     }
 
-    @Override
-    public GTMContainer sendScreenAuthenticated(String screenName) {
+    public GTMAnalytics sendScreenAuthenticated(String screenName) {
+
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(sessionHandler.getLoginName());
         authEvent.setUserID(sessionHandler.getGTMLoginID());
@@ -230,8 +224,9 @@ public class GTMContainer implements IGTMContainer {
         return this;
     }
 
-    @Override
-    public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
+    public GTMAnalytics sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(sessionHandler.getLoginName());
         authEvent.setUserID(sessionHandler.getGTMLoginID());
@@ -248,9 +243,10 @@ public class GTMContainer implements IGTMContainer {
         return this;
     }
 
-    @Override
-    public GTMContainer eventAuthenticate(Authenticated authenticated) {
+    public GTMAnalytics eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
+
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
 
         authenticated.setAdsId(sessionHandler.getAdsId());
 
@@ -258,7 +254,7 @@ public class GTMContainer implements IGTMContainer {
 
 
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
-            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+            pushEvent( "authenticated", DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
@@ -270,7 +266,7 @@ public class GTMContainer implements IGTMContainer {
             ));
 
         } else {
-            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+            pushEvent( "authenticated", DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
@@ -286,145 +282,115 @@ public class GTMContainer implements IGTMContainer {
         return this;
     }
 
-    @Override
-    public GTMContainer eventAddtoCart(GTMCart cart) {
+    public GTMAnalytics eventAddtoCart(GTMCart cart) {
         Log.i("Tag Manager", "UA-9801603-15: Send impression Event");
         Log.i("Tag Manager", "UA-9801603-15: GAv4 MAP: " + cart.getCartMap().toString());
-        GTMDataLayer.pushEvent(context, "addToCart", DataLayer.mapOf("ecommerce", cart.getCartMap()));
+        pushEvent( "addToCart", DataLayer.mapOf("ecommerce", cart.getCartMap()));
         return this;
     }
 
-    @Override
-    public GTMContainer clearAddtoCartDataLayer(String act) {
-        GTMDataLayer.pushGeneral(context, DataLayer.mapOf("products", null,
+    public String eventHTTP() {
+        return getString(IS_USING_HTTP_2);
+    }
+
+    public GTMAnalytics clearAddtoCartDataLayer(String act) {
+        pushGeneral(DataLayer.mapOf("products", null,
                 "currencyCode", null, "addToCart", null, "ecommerce", null, act, null));
         return this;
     }
 
-    @Override
-    public String eventHTTP() {
-        return getString(GTMContainer.IS_USING_HTTP_2);
+    private void pushGeneral(Map<String, Object> values) {
+        Log.i("GAv4", "UA-9801603-15: Send General");
+
+        log(getContext(), null, values);
+        TagManager.getInstance(getContext()).getDataLayer().push(values);
     }
 
-    @Override
-    public String getString(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getString(key);
-        }
-        return "";
-    }
-
-
-    @Override
-    public void eventError(String screenName, String errorDesc) {
-        if (TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
-            Log.d(TAG, "Sending Push Event Error");
-            GTMDataLayer.pushEvent(context, "trackException", DataLayer.mapOf(
-                    "screenName", screenName,
-                    "exception.description", errorDesc,
-                    "exception.isFatal", "true"));
-        } else {
-            Log.d(TAG, "Sending Push Event Error disabled");
-        }
-    }
-
-    @Override
-    public void eventLogAnalytics(String screenName, String errorDesc) {
-        Log.d(TAG, "Sending Push Event Error");
-        GTMDataLayer.pushEvent(context, "trackException", DataLayer.mapOf(
-                "screenName", screenName,
-                "exception.description", errorDesc,
-                "exception.isFatal", "true"));
-    }
-
-    @Override
-    public GTMContainer eventDetail(ProductDetail detail) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Deatil Event");
-        Log.i("Tag Manager", "UA-9801603-15: GAv4 MAP: " + detail.getDetailMap().toString());
-        GTMDataLayer.pushGeneral(context, DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "detail", detail.getDetailMap()
-        )));
-
-        return this;
-    }
-
-    @Override
-    public void eventOnline(String uid) {
-        Log.d(TAG, "UA-9801603-15: Sending Push Event Online");
-        GTMDataLayer.pushEvent(context,
-                "onapps", DataLayer.mapOf("LoginId", uid));
-    }
-
-    @Override
-    public void eventNetworkError(String networkError) {
-        if (TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
-            Log.d(TAG, "Sending Push Event Network Error");
-            GTMDataLayer.pushEvent(context,
-                    "trackException", DataLayer.mapOf("exception.description", networkError, "exception.isFatal", true));
-        } else {
-            Log.d(TAG, "Sending Push Event Network Error Disabled");
-        }
-    }
-
-    @Override
-    public void eventTransaction(Purchase purchase) {
-        GTMDataLayer.pushGeneral(context, DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "purchase", purchase.getPurchase()
-        )));
-    }
-
-    @Override
-    public void clearTransactionDataLayer(Purchase purchase) {
-        purchase.clearPurchase();
-        GTMDataLayer.pushGeneral(context, DataLayer.mapOf("id", null, "affiliation", null,
-                "revenue", null, "shipping", null, "products", null,
-                "currencyCode", null, "actionField", null, "ecommerce", null));
-    }
-
-    @Override
-    public GTMContainer sendEvent(Map<String, Object> events) {
-        GTMDataLayer.pushGeneral(context, events);
-        return this;
-    }
-
-    @Override
     public void pushUserId(String userId) {
         Map<String, Object> maps = new HashMap<>();
         maps.put("user_id", userId);
         getTagManager().getDataLayer().push(maps);
     }
 
-    public static Container getContainer() {
-        return ContainerHolderSingleton.getContainerHolder().getContainer();
+    public void eventLogAnalytics(String screenName, String errorDesc) {
+        Log.d(TAG, "Sending Push Event Error");
+        pushEvent( "trackException", DataLayer.mapOf(
+                "screenName", screenName,
+                "exception.description", errorDesc,
+                "exception.isFatal", "true"));
     }
 
-    @Override
+    public GTMAnalytics eventDetail(ProductDetail detail) {
+        Log.i("Tag Manager", "UA-9801603-15: Send Deatil Event");
+        Log.i("Tag Manager", "UA-9801603-15: GAv4 MAP: " + detail.getDetailMap().toString());
+        pushGeneral( DataLayer.mapOf("ecommerce", DataLayer.mapOf(
+                "detail", detail.getDetailMap()
+        )));
+
+        return this;
+    }
+
+    public void eventOnline(String uid) {
+        Log.d(TAG, "UA-9801603-15: Sending Push Event Online");
+        pushEvent(
+                "onapps", DataLayer.mapOf("LoginId", uid));
+    }
+
+    public void eventTransaction(Purchase purchase) {
+        pushGeneral(DataLayer.mapOf("ecommerce", DataLayer.mapOf(
+                "purchase", purchase.getPurchase()
+        )));
+    }
+
+    public void clearTransactionDataLayer(Purchase purchase) {
+        purchase.clearPurchase();
+        pushGeneral(DataLayer.mapOf("id", null, "affiliation", null,
+                "revenue", null, "shipping", null, "products", null,
+                "currencyCode", null, "actionField", null, "ecommerce", null));
+    }
+
+    public GTMAnalytics sendEvent(Map<String, Object> events) {
+        pushGeneral(events);
+        return this;
+    }
+
+    public void event(String name, Map<String, Object> data) {
+        pushEvent( name, data);
+    }
+
+    public void eventNetworkError(String networkError) {
+        if (getString(IS_EXCEPTION_ENABLED).equals("true")) {
+            Log.d(TAG, "Sending Push Event Network Error");
+            pushEvent(
+                    "trackException", DataLayer.mapOf("exception.description", networkError, "exception.isFatal", true));
+        } else {
+            Log.d(TAG, "Sending Push Event Network Error Disabled");
+        }
+    }
+
     public boolean getBoolean(String key) {
         if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getBoolean(key);
+            return getContainer().getBoolean(key);
         }
         return false;
     }
 
-    @Override
     public long getLong(String key) {
         if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getLong(key);
+            return getContainer().getLong(key);
         }
         return -1;
     }
 
-    @Override
     public double getDouble(String key) {
         if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getDouble(key);
+            return getContainer().getDouble(key);
         }
         return -1;
     }
 
-    @Override
     public void eventClickHotlistProductFeatured(Hotlist hotlist) {
-        GTMDataLayer.pushGeneral(context,
+        pushGeneral(
                 DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
                         "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
                         "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
@@ -440,29 +406,9 @@ public class GTMContainer implements IGTMContainer {
                 ));
     }
 
-    @Override
-    public void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
-        GTMDataLayer.pushGeneral(context,
-                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "ecommerce", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "hotlist"),
-                                "impressions",
-                                DataLayer.listOf(
-                                        hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
-                        )
-                )
-        );
-    }
-
-    public void event(String name, Map<String, Object> data) {
-        GTMDataLayer.pushEvent(context, name, data);
-    }
-
-    @Override
     public void impressionHotlistTracking(String hotlistName, String promoName, String promoCode) {
         clearEventTracking();
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf(
                         "event", "clickHotlist",
                         "eventCategory", "hotlist page",
@@ -472,12 +418,9 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-
-    @Override
     public void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
         clearEventTracking();
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf(
                         "event", "clickHotlist",
                         "eventCategory", "hotlist page",
@@ -487,11 +430,9 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
     public void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
         clearEventTracking();
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf(
                         "event", "clickHotlist",
                         "eventCategory", "hotlist page",
@@ -501,12 +442,10 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
     public void eventImpressionPromoList(List<Object> list, String promoName) {
         clearEnhanceEcommerce();
 
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf(
                         "event", "promoView",
                         "eventCategory", "promo microsite - promo list",
@@ -524,12 +463,14 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
+    public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
+        pushGeneral(trackingData);
+    }
+
     public void eventClickPromoListItem(List<Object> list, String promoName) {
         clearEnhanceEcommerce();
 
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf(
                         "event", "promoView",
                         "eventCategory", "promo microsite - promo list",
@@ -547,27 +488,8 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    private void clearEventTracking() {
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", null,
-                        "eventCategory", null,
-                        "eventAction", null,
-                        "eventLabel", null
-                )
-        );
-    }
-
-    @Override
-    public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
-        GTMDataLayer.pushGeneral(context, trackingData);
-
-    }
-
-    @Override
     public void clearEnhanceEcommerce() {
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf("event", null,
                         "eventCategory", null,
                         "eventAction", null,
@@ -579,10 +501,18 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
+    private void clearEventTracking() {
+        pushGeneral(
+                DataLayer.mapOf("event", null,
+                        "eventCategory", null,
+                        "eventAction", null,
+                        "eventLabel", null
+                )
+        );
+    }
+
     public void eventPurchaseMarketplace(Purchase purchase) {
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                         AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
@@ -600,10 +530,8 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
     public void eventPurchaseDigital(Purchase purchase) {
-        GTMDataLayer.pushGeneral(
-                context,
+        pushGeneral(
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                         AppEventTracking.EVENT_CATEGORY, "purchase category digital",
@@ -623,8 +551,7 @@ public class GTMContainer implements IGTMContainer {
 
     public void eventImpressionCategoryLifestyle(List<Object> list) {
         clearEnhanceEcommerce();
-        GTMDataLayer.pushGeneral(
-                context, DataLayer.mapOf("event", "promoView",
+        pushGeneral( DataLayer.mapOf("event", "promoView",
                         "eventCategory", "category page",
                         "eventAction", "subcategory impression",
                         "eventLabel", "",
@@ -635,11 +562,10 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
     public void eventClickCategoryLifestyle(String categoryUrl, List<Object> list) {
         clearEnhanceEcommerce();
-        GTMDataLayer.pushGeneral(
-                context, DataLayer.mapOf("event", "promoClick",
+        pushGeneral(
+                DataLayer.mapOf("event", "promoClick",
                         "eventCategory", "category page",
                         "eventAction", "click subcategory",
                         "eventLabel", categoryUrl,
@@ -649,5 +575,23 @@ public class GTMContainer implements IGTMContainer {
                         "destinationURL", categoryUrl
                 )
         );
+    }
+
+    public void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
+        pushGeneral(
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "ecommerce", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "hotlist"),
+                                "impressions",
+                                DataLayer.listOf(
+                                        hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
+                        )
+                )
+        );
+    }
+
+    private static class GTMBody {
+        Map<String, Object> values;
+        String eventName;
     }
 }
