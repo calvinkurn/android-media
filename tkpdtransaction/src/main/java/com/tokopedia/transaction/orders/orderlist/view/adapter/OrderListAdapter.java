@@ -256,6 +256,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyItemRemoved(size);
     }
 
+    public void clearItemList() {
+        mOrderList.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (mOrderList == null || mOrderList.size() == 0) return 1;

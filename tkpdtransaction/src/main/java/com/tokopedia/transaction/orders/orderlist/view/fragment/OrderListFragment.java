@@ -60,7 +60,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     LinearLayout emptyLayout;
     OrderListAdapter orderListAdapter;
     LinearLayout filterDate;
-    FrameLayout progressLayout;
     RelativeLayout mainContent;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
@@ -69,8 +68,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private int visibleThreshold = 2;
     private int lastVisibleItem;
     private Bundle savedState;
-    private String startDate = "01/01/2017";
-    private String endDate = "09/01/2018";
+    private String startDate = "";
+    private String endDate = "";
     private int orderId = 1;
 
     private String selectedFilter = "0";
@@ -126,6 +125,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         setHasOptionsMenu(getOptionsMenuEnable());
         initialListener(activity);
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -222,7 +222,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
         orderLabelList = arguments.getParcelable(ORDER_TAB_LIST);
-        if(arguments.getString(OrderListContants.ORDER_FILTER_ID) != null) {
+        if (arguments.getString(OrderListContants.ORDER_FILTER_ID) != null) {
             selectedFilter = arguments.getString(OrderListContants.ORDER_FILTER_ID);
         }
     }
@@ -235,7 +235,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView = view.findViewById(R.id.simpleSearchView);
         simpleSearchView.setSearchHint("Cari produk atau invoice");
         filterDate = view.findViewById(R.id.filterDate);
-        progressLayout = view.findViewById(R.id.progress_bar_layout);
         mainContent = view.findViewById(R.id.mainContent);
         if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
             presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
@@ -244,7 +243,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         filterDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(SaveDateBottomSheetActivity.getInstance(getContext()),FILTER_DATE_REQUEST);
+                startActivityForResult(SaveDateBottomSheetActivity.getInstance(getContext()), FILTER_DATE_REQUEST);
             }
         });
 
@@ -253,10 +252,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK) {
-            if(requestCode == FILTER_DATE_REQUEST) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FILTER_DATE_REQUEST) {
                 startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
                 endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
+                refreshHandler.startRefresh();
                 presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
             }
         }
@@ -298,10 +298,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onRefresh(View view) {
         page_num = 1;
         isLoading = true;
-        progressLayout.setVisibility(View.VISIBLE);
+        emptyLayout.setVisibility(View.GONE);
         if (orderListAdapter.getItemCount() != 0) {
             mOrderDataList.clear();
-
+            orderListAdapter.clearItemList();
         }
         if (mOrderCategory.equalsIgnoreCase("Belanja") || mOrderCategory.equalsIgnoreCase("MARKETPLACE")) {
             quickSingleFilterView.setVisibility(View.VISIBLE);
@@ -317,7 +317,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         orderListAdapter.addItemAtLast(null);
         if (!isLoading) {
             isLoading = true;
-            progressLayout.setVisibility(View.VISIBLE);
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
         }
     }
@@ -325,7 +324,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void removeProgressBarView() {
         isLoading = false;
-        progressLayout.setVisibility(View.GONE);
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
         if (mOrderDataList != null && mOrderDataList.size() > 0) {
@@ -397,14 +395,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void showProcessGetData(String orderCategory) {
-        switch (orderCategory) {
-            case OrderCategory.DIGITAL:
-                if (!refreshHandler.isRefreshing()) {
-                    refreshHandler.setRefreshing(true);
-                    refreshHandler.setPullEnabled(false);
-                }
-                break;
+    public void showProcessGetData() {
+        if (!refreshHandler.isRefreshing()) {
+            refreshHandler.setRefreshing(true);
+            refreshHandler.setPullEnabled(false);
         }
     }
 
@@ -470,6 +464,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
+        refreshHandler.startRefresh();
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, 1, 1);
     }
 
@@ -483,18 +478,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public String getSearchedString() {
         return searchedString;
-    }
-
-    @Override
-    public void showProgressBar() {
-        mainContent.setVisibility(View.GONE);
-//        progressLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgressBar() {
-        mainContent.setVisibility(View.VISIBLE);
-//        progressLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -521,9 +504,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onSearchTextChanged(String text) {
         if (text.length() >= 3) {
             searchedString = text;
+            refreshHandler.startRefresh();
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, 1, 1);
         } else {
             searchedString = "";
+            refreshHandler.startRefresh();
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, 1, 1);
         }
     }

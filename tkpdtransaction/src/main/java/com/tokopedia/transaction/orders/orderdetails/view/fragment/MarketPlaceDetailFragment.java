@@ -223,7 +223,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         if (!detail.label().equalsIgnoreCase("No. Resi")) {
             doubleTextView.setTopText(detail.label());
             doubleTextView.setBottomText(detail.value());
-        } else {
+        } else if (detail.label().equalsIgnoreCase("Alamat Pengiriman")) {
+            doubleTextView.setTopText(detail.label());
+            doubleTextView.setBottomText(Html.fromHtml(detail.value()));
+        }
+        else {
             doubleTextView.setTopText(detail.label());
             String text = detail.value() + "\n\nSalin No. Resi";
             SpannableString spannableString = new SpannableString(text);

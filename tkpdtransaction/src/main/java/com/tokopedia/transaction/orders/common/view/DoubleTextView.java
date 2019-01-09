@@ -80,7 +80,7 @@ public class DoubleTextView extends LinearLayout {
         bottomTextView.setText(text);
     }
 
-    public void setBottomText(SpannableString spannableString) {
+    public void setBottomText(CharSequence spannableString) {
         bottomTextView.setHighlightColor(Color.TRANSPARENT);
         bottomTextView.setMovementMethod(LinkMovementMethod.getInstance());
         bottomTextView.setText(spannableString, TextView.BufferType.SPANNABLE);

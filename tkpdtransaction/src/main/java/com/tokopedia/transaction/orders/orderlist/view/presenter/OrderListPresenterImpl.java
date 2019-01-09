@@ -36,7 +36,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
         if (getView().getAppContext() == null)
             return;
-        getView().showProcessGetData(orderCategory);
+        getView().showProcessGetData();
 //        getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
