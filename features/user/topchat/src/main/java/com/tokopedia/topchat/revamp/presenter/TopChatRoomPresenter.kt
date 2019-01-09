@@ -84,6 +84,7 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
+                view.showErrorWebSocket(false)
                 readMessage()
             }
 
@@ -113,6 +114,8 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onReconnect")
                 }
+                view.showErrorWebSocket(true)
+                connectWebSocket(messageId)
             }
 
             override fun onClose() {
@@ -120,12 +123,13 @@ class TopChatRoomPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", "onClose")
                 }
                 destroyWebSocket()
-
+                view.showErrorWebSocket(true)
             }
 
         }
 
-        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken, null, null]?.subscribe(subscriber)
+        var rxWebSocket = RxWebSocket[webSocketUrl, userSession.accessToken]
+        val subscription = rxWebSocket?.subscribe(subscriber)
 
 
         mSubscription.add(subscription)
@@ -168,6 +172,18 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+
+    override fun loadPreviousChat(
+            messageId: String,
+            page: Int,
+            onError: (Throwable) -> Unit,
+            onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+    ) {
+        if (messageId.isNotEmpty()) {
+            getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page), GetChatSubscriber(onError, onSuccessGetPreviousChat))
+        }
+    }
+
     fun getTemplate() {
         getTemplateChatRoomUseCase.execute(object : Subscriber<GetTemplateViewModel>() {
             override fun onNext(t: GetTemplateViewModel?) {
@@ -203,11 +219,11 @@ class TopChatRoomPresenter @Inject constructor(
             processDummyMessage(it)
             isUploading = true
             uploadImageUseCase.unsubscribe()
-            var reqParam = HashMap<String, RequestBody>()
+            val reqParam = HashMap<String, RequestBody>()
             val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
-            reqParam.put("web_service", createRequestBody("1"))
-            reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
-            var params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
+            reqParam["web_service"] = createRequestBody("1")
+            reqParam["id"] = createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
+            val params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
             uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
                 override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
                     t.dataResultImageUpload.data?.run {
@@ -292,19 +308,6 @@ class TopChatRoomPresenter @Inject constructor(
         return topChatRoomWebSocketMessageMapper.map(pojo)
     }
 
-//    override fun sendMessage(messageId: String, messageText: String) {
-//        if (isValidReply(messageText)) {
-//            val startTime = SendableViewModel.generateStartTime()
-//            view.clearEditText()
-////            view.disableAction()
-//            processDummyMessage(messageText, startTime)
-////            when (networkMode) {
-////                MODE_WEBSOCKET ->
-//            sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(thisMessageId, messageText, startTime))
-////            }
-//        }
-//    }
-
     override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
         if (isValidReply(sendMessage)) {
             view.clearEditText()
@@ -320,13 +323,8 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendMessageWebSocket(messageText: String) {
-        //TODO ADD INTERCEPTOR
-
-        RxWebSocket.send(
-                msg = messageText,
-                tkpdAuthInterceptor = null,
-                fingerprintInterceptor = null
-        )
+        //TODO ADD TKPDAUTHINTERCEPTOR && FINGERPRINT
+        RxWebSocket.send(messageText, null)
     }
 
 
@@ -365,4 +363,5 @@ class TopChatRoomPresenter @Inject constructor(
     override fun stopTyping() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
     }
+
 }

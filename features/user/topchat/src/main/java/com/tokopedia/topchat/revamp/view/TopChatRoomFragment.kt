@@ -13,6 +13,9 @@ import android.widget.EditText
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -21,6 +24,7 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.topchat.R
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -38,6 +42,8 @@ import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import com.tokopedia.user.session.UserSessionInterface
@@ -79,6 +85,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         loadInitialData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.connectWebSocket(messageId)
+    }
+
     override fun loadInitialData() {
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
         presenter.connectWebSocket(messageId)
@@ -88,10 +99,26 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             updateViewData(it)
-            setCanLoadMore(it)
+            renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
             presenter.getTemplate()
         }
+    }
+
+    override fun showErrorWebSocket(b: Boolean) {
+        getViewState().showErrorWebSocket(b)
+    }
+
+
+    private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
+        return {
+            renderList(it.listChat, it.canLoadMore)
+            checkShowLoading(it.canLoadMore)
+        }
+    }
+
+    fun checkShowLoading(canLoadMore: Boolean) {
+        if (canLoadMore) super.showLoading()
     }
 
     private fun onError(): (Throwable) -> Unit {
@@ -178,22 +205,26 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun loadData(page: Int) {
-        return
+        presenter.loadPreviousChat(messageId, page, onError(), onSuccessGetPreviousChat())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chatroom, container, false)
     }
 
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
+        }
+    }
+
     fun initView(view: View?) {
         view?.let {
             super.viewState = TopChatViewStateImpl(
                     it,
-                    presenter,
-                    this,
-                    this,
-                    this,
-                    this,
                     this,
                     this,
                     this,
@@ -239,10 +270,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 //    override fun disableAction() {
 //        getViewState().setActionable(false)
 //    }
-//
-//    override fun showSnackbarError(string: Unit) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
+        return TopChatRoomAdapter(TopChatTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this))
+    }
 
     override fun addDummyMessage(visitable: Visitable<*>) {
         getViewState().addMessage(visitable)
@@ -298,6 +333,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onSendClicked(message: String, generateStartTime: String) {
         presenter.sendMessage(messageId, message, generateStartTime, "")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.destroyWebSocket()
     }
 
     override fun onDestroy() {

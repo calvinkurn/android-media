@@ -32,6 +32,8 @@ interface TopChatContract {
 
         fun onErrorUploadImage(errorMessage: String)
 
+        fun showErrorWebSocket(b: Boolean)
+
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
 
         fun onBackPressedEvent()
@@ -52,6 +54,8 @@ interface TopChatContract {
         )
 
         fun startUploadImages(it: ImageUploadViewModel)
+
+        fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
 
         fun addProductToCart(element: ProductAttachmentViewModel,
                              onError: (Throwable) -> Unit,

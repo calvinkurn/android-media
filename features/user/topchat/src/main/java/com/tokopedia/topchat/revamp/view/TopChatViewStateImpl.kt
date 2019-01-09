@@ -6,15 +6,12 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
@@ -23,9 +20,12 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
-import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
+
 
 /**
  * @author : Steven 29/11/18
@@ -33,12 +33,7 @@ import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 
 class TopChatViewStateImpl(
         @NonNull override val view: View,
-        presenter: TopChatRoomPresenter,
-        private val imageAnnouncementListener: ImageAnnouncementListener,
-        private val chatLinkHandlerListener: ChatLinkHandlerListener,
-        private val imageUploadListener: ImageUploadListener,
-        private val productAttachmentListener: ProductAttachmentListener,
-        private val typingListener: TypingListener,
+        typingListener: TypingListener,
         private val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
@@ -48,13 +43,14 @@ class TopChatViewStateImpl(
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
 
 
-    private lateinit var adapter: TopChatRoomAdapter
+
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     lateinit var templateAdapter: TemplateChatAdapter
     lateinit var templateChatTypeFactory: TemplateChatTypeFactory
     var isUploading: Boolean = false
+    var isFirstTime: Boolean = true
 
     init {
         initView()
@@ -76,10 +72,6 @@ class TopChatViewStateImpl(
             sendListener.onSendClicked(replyEditText.text.toString(),
                     SendableViewModel.generateStartTime())
         }
-
-        adapter = TopChatRoomAdapter(TopChatTypeFactoryImpl(imageAnnouncementListener
-                , chatLinkHandlerListener, imageUploadListener, productAttachmentListener), ArrayList())
-        setAdapter(adapter)
 
         templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(templateListener))
         templateRecyclerView.setHasFixedSize(true)
@@ -106,16 +98,6 @@ class TopChatViewStateImpl(
         maximize.visibility = View.GONE
         pickerButton.visibility = View.VISIBLE
         attachButton.visibility = View.VISIBLE
-    }
-
-    fun scrollDownWhenInBottom() {
-        if (checkLastCompletelyVisibleItemIsFirst()) {
-            scrollToBottom()
-        }
-    }
-
-    private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
-        return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
 
     fun developmentView() {
@@ -157,10 +139,9 @@ class TopChatViewStateImpl(
 
     fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel) {
         hideLoading()
-        getAdapter().addList(viewModel.listChat)
         scrollToBottom()
         updateHeader(viewModel)
-        showReplyBox()
+        showReplyBox(viewModel.replyable)
         showActionButtons()
         checkShowQuickReply(viewModel)
     }
@@ -171,6 +152,30 @@ class TopChatViewStateImpl(
         maximizeButton.visibility = View.GONE
     }
 
+    override fun showErrorWebSocket(b: Boolean) {
+        notifier.visibility = View.VISIBLE
+        val title = notifier.findViewById<TextView>(R.id.title)
+        val action = notifier.findViewById<View>(R.id.action)
+        if(b) {
+            title.setText(R.string.error_no_connection_retrying);
+            action.visibility = View.VISIBLE
+
+        } else {
+            if(isFirstTime) {
+                isFirstTime = false
+                notifier.visibility = View.GONE
+                return
+            }
+            title.setText(R.string.connected_websocket);
+            action.visibility = View.GONE
+            Observable.timer(1500, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        notifier.visibility = View.GONE
+                    }
+
+        }
+    }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
 //        if (chatroomViewModel.listChat.isNotEmpty()

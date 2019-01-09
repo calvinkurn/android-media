@@ -38,4 +38,9 @@
     <string name="exit_chat_body">Keluar dari Chat akan membatalkan pengiriman gambar yang sedang berlangsung.</string>
     <string name="exit_chat_yes">Keluar dari Chat</string>
     <string name="error_empty_product">Mohon diisi</string>
+
+    <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
+        menghubungkan…</string>
+    <string name="connected_websocket">"Terhubung!"</string>
+
 </resources>

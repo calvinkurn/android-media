@@ -1,8 +1,7 @@
 package com.tokopedia.websocket
 
 import com.google.gson.JsonObject
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import okhttp3.Interceptor
 import rx.Observable
 
 /**
@@ -12,34 +11,29 @@ import rx.Observable
  */
 object RxWebSocket {
 
-    operator fun get(url: String, accessToken: String, tkpdAuthInterceptor: TkpdAuthInterceptor?,
-                     fingerprintInterceptor: FingerprintInterceptor?):
+    private fun getInstance(interceptors: List<Interceptor>?): RxWebSocketUtil? {
+        return RxWebSocketUtil.getInstance(interceptors)
+    }
+
+    operator fun get(url: String, accessToken: String): Observable<WebSocketInfo>?{
+        return get(url, accessToken, null)
+    }
+
+    operator fun get(url: String, accessToken: String, interceptors: List<Interceptor>?):
             Observable<WebSocketInfo>? {
-        return RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.getWebSocketInfo(url,
+        return getInstance(interceptors)?.getWebSocketInfo(url,
                 accessToken)
     }
 
-    fun send(msg: String,
-             tkpdAuthInterceptor: TkpdAuthInterceptor?,
-             fingerprintInterceptor: FingerprintInterceptor?) {
-        //TODO MAKE NON NULL INTERCEPTOR
-
+    fun send(msg: String, interceptors: List<Interceptor>?) {
         try {
-            RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
+            getInstance(interceptors)?.send(msg)
         }catch(ignore : WebSocketException){
             //TODO HANDLE ERROR WEBSOCKET CLOSED
         }
     }
 
-    fun send(json: JsonObject, tkpdAuthInterceptor: TkpdAuthInterceptor?,
-             fingerprintInterceptor: FingerprintInterceptor?) {
-        //TODO MAKE NON NULL INTERCEPTOR
-
-        send(json.toString(), tkpdAuthInterceptor, fingerprintInterceptor)
+    fun send(json: JsonObject, interceptors: List<Interceptor>?) {
+        send(json.toString(), interceptors)
     }
-
-//    fun asyncSend(url: String, msg: String, groupChatToken: String) {
-//        RxWebSocketUtil.getInstance()?.asyncSend(url, msg, groupChatToken)
-//    }
-
 }

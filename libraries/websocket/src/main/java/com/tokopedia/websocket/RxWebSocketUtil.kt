@@ -1,8 +1,7 @@
 package com.tokopedia.websocket
 
 import android.util.Log
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.WebSocket
 import rx.Observable
@@ -15,11 +14,10 @@ import rx.schedulers.Schedulers
  * WebSocketUtil based on okhttp and RxJava
  * Core Feature : WebSocket will be auto reconnection onFailed.
  */
-class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthInterceptor?,
-                                                  fingerprintInterceptor: FingerprintInterceptor?,
-                                                  private val delay: Int,
-                                                  private val maxRetries: Int,
-                                                  private val pingInterval: Int) {
+class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
+                                          private val delay: Int,
+                                          private val maxRetries: Int,
+                                          private val pingInterval: Int) {
 
     private val client: OkHttpClient
 
@@ -29,13 +27,11 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
     private val logTag = "MainActRxWebSocket"
 
     init {
-
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-        tkpdAuthInterceptor?.let {
-            builder.addInterceptor(it)
-        }
-        fingerprintInterceptor?.let {
-            builder.addInterceptor(it)
+        interceptors?.let {
+            for (i in 0 until interceptors.size) {
+                builder.addInterceptor(interceptors[i])
+            }
         }
         client = builder.build()
     }
@@ -69,21 +65,9 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
         return observableMap
     }
 
-    fun getWebSocket(url: String, accessToken: String): Observable<WebSocket> {
-        return getWebSocketInfo(url, accessToken)!!
-                .map { webSocketInfo -> webSocketInfo.webSocket }
-    }
-
     fun send(msg: String) {
         val webSocket = webSocketMap
         webSocket?.send(msg) ?: throw WebSocketException("The WebSokcet not open")
-    }
-
-    fun asyncSend(url: String, msg: String, groupChatToken: String) {
-        getWebSocket(url, "")
-                .first()
-                .subscribe { webSocket -> webSocket.send(msg) }
-
     }
 
     companion object {
@@ -93,12 +77,10 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
         private var instance: RxWebSocketUtil? = null
 
         @JvmOverloads
-        fun getInstance(tkpdAuthInterceptor: TkpdAuthInterceptor?,
-                        fingerprintInterceptor: FingerprintInterceptor?, delay: Int =
+        fun getInstance(interceptors: List<Interceptor>?, delay: Int =
                                 DEFAULT_DELAY, maxRetries: Int = DEFAULT_MAX_RETRIES, pingInterval: Int = DEFAULT_PING): RxWebSocketUtil? {
             if (instance == null) {
-                instance = RxWebSocketUtil(tkpdAuthInterceptor, fingerprintInterceptor, delay,
-                        maxRetries, pingInterval)
+                instance = RxWebSocketUtil(interceptors, delay, maxRetries, pingInterval)
             }
             return instance
         }

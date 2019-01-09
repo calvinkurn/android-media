@@ -60,7 +60,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
         scrollToBottom()
         updateHeader(chatroomViewModel)
-        showReplyBox()
+        showReplyBox(chatroomViewModel.replyable)
         showActionButtons()
         checkShowQuickReply(chatroomViewModel)
     }
