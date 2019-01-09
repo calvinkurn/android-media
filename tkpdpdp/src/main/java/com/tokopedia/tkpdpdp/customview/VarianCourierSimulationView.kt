@@ -71,7 +71,7 @@ class VarianCourierSimulationView : BaseCustomView {
             showCourierRate(true)
             showShopLocationView(true)
             showShopDestination(true)
-
+          
             when(productDetailData!!.shopInfo.shopShipments != null){
                 true -> tv_courier_count.text = productDetailData!!.shopInfo.shopShipments.size.toString()
                 false -> tv_courier_count.text = "-"
