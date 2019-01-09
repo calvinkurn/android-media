@@ -9,10 +9,6 @@ import android.widget.TextView;
 
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author by Nabilla Sabbaha on 3/1/2017.
@@ -20,10 +16,8 @@ import butterknife.ButterKnife;
 
 public class ItemListCartView extends RelativeLayout {
 
-    @BindView(R2.id.label)
-    TextView label;
-    @BindView(R2.id.value)
-    TextView value;
+    private TextView label;
+    private TextView value;
 
     public ItemListCartView(Context context) {
         super(context);
@@ -42,7 +36,9 @@ public class ItemListCartView extends RelativeLayout {
 
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.item_list_checkout_digital_module, this, true);
-        ButterKnife.bind(this);
+
+        label = findViewById(R.id.label);
+        value = findViewById(R.id.value);
     }
 
     public void bindView(CartItemDigital cartItemDigital) {

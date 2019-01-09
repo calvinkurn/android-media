@@ -591,6 +591,6 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        // Do not put super, avoid crash transactionTooLarge
     }
 }

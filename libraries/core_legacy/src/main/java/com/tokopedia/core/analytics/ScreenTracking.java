@@ -113,4 +113,8 @@ public class ScreenTracking extends TrackingUtils {
                 AppScreen.SCREEN_PRODUCT_INFO, shopID, shopType, pageType, productId
         );
     }
+
+    public static void eventCustomScreen(Context context, String screenName, String shopID, String shopType, String pageType, String productId) {
+        getGTMEngine(context).sendScreenAuthenticatedOfficialStore(screenName, shopID, shopType, pageType, productId);
+    }
 }

@@ -113,10 +113,9 @@
                     android:paddingEnd="32dp"
                     android:paddingRight="32dp">
 
-                    <TextView
+                    <com.tokopedia.gm.resource.GMBadgeTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/title_shop_score_detail_gold_badge_info"
                         android:textSize="18sp" />
 
                     <TextView
@@ -125,7 +124,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:lineSpacingMultiplier="1.25"
-                        android:text="@string/description_shop_score_gold_badge_state"
                         android:textColor="@color/tkpd_grey_text" />
 
                     <TextView
@@ -147,8 +145,9 @@
 
                     <ImageView
                         android:id="@+id/image_view_gold_badge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_60"
+                        android:layout_height="@dimen/dp_60"
+                        android:adjustViewBounds="true"
                         app:srcCompat="@drawable/ic_gm_badge_not_qualified" />
 
                 </FrameLayout>

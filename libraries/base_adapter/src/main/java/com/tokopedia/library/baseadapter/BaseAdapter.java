@@ -364,6 +364,10 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
         return mCurrentPageIndex;
     }
 
+    public void setCurrentPageIndex(int currentPageIndex){
+        mCurrentPageIndex=currentPageIndex;
+    }
+
     protected final boolean isLoading() {
         return this.mIsLoading;
     }

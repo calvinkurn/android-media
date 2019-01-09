@@ -38,6 +38,7 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.libraries.baseListSeller)
 
     implementation rootProject.ext.networkDependencies.glide
 

@@ -27,7 +27,7 @@ public interface ExploreContract {
 
         void hideLoading();
 
-        void onSuccessGetFirstData(List<Visitable> itemList, String cursor);
+        void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch);
 
         void onErrorGetFirstData(String error);
 
@@ -74,5 +74,7 @@ public interface ExploreContract {
         void checkAffiliateQuota(String productId, String adId);
 
         void getAutoComplete(String keyword);
+
+        void unsubscribeAutoComplete();
     }
 }

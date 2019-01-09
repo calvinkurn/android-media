@@ -302,7 +302,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     }
 
     private void routeFromApplink(Uri applink) {
-        if (applink!= null) {
+        if (applink != null) {
             try {
                 TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
                 if (getApplicationContext() instanceof TkpdCoreRouter) {
@@ -310,12 +310,19 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                             HomeRouter.getHomeActivityInterfaceRouter(this)
                     );
                 }
-                taskStackBuilder.addNextIntent(
-                        ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString())
-                );
+                Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
+                if (getIntent() != null && getIntent().getExtras() != null)
+                    nextIntent.putExtras(getIntent().getExtras());
+                taskStackBuilder.addNextIntent(nextIntent);
                 taskStackBuilder.startActivities();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                return;
+            } catch (Exception ignored) {
+            }
+
+            try {
+                TaskStackBuilder taskStackBuilder = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getTaskStackBuilder(this, applink.toString());
+                taskStackBuilder.startActivities();
+            } catch (Exception ignored) {
             }
         }
     }

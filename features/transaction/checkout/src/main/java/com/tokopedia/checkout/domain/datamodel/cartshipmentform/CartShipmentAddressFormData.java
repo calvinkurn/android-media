@@ -185,4 +185,18 @@ public class CartShipmentAddressFormData implements Parcelable {
             return new CartShipmentAddressFormData[size];
         }
     };
+
+    public boolean isAvailablePurchaseProtection() {
+        for (GroupAddress address : groupAddress) {
+            for (GroupShop groupShop : address.getGroupShop()) {
+                for (Product product : groupShop.getProducts()) {
+                    if(product.getPurchaseProtectionPlanData() != null &&
+                            product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

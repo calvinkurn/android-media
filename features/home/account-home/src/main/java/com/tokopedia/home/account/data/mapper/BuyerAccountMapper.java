@@ -21,6 +21,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +117,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
             tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
-
+            tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
             if (accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.ACTIVE)) {
                 tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(accountModel.getVccUserStatus().getBody()), true));
             } else {
@@ -265,6 +266,16 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             infoCard.setTitleTrack(PEMBELI);
             infoCard.setSectionTrack(CLICK_CHALLENGE);
             infoCard.setNewTxtVisiblle(View.VISIBLE);
+            items.add(infoCard);
+        }
+
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_ACCOUNT_AFFILIATE, true)) {
+            InfoCardViewModel infoCard = new InfoCardViewModel();
+            infoCard.setIconRes(R.drawable.ic_byme_notif);
+            infoCard.setMainText(context.getString(R.string.title_menu_affiliate));
+            infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
+            infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
+            infoCard.setTitleTrack(PEMBELI);
             items.add(infoCard);
         }
 

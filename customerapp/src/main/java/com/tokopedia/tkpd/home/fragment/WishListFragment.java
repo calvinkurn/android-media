@@ -30,7 +30,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -54,8 +54,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,11 +146,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         intent.putExtra(AddFavoriteShopService.EXTRAS_SHOP_ID, shop.getId());
         intent.putExtra(AddFavoriteShopService.EXTRAS_AD_KEY, data.getAdRefKey());
         getActivity().startService(intent);
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
     }
 
     @Override
@@ -528,38 +521,15 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-
-                // column size default is one
-                int headerColumnSize = 1,
-                        footerColumnSize = 1,
-                        regularColumnSize = 1;
-
-                // check the orientation to determine landscape or portrait
-                switch (getResources().getConfiguration().orientation) {
-                    case Configuration.ORIENTATION_LANDSCAPE:
-                        headerColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN_HEADER;
-                        regularColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN;
-                        footerColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN_FOOTER;
-                        break;
-                    case Configuration.ORIENTATION_PORTRAIT:
-                        headerColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN_HEADER;
-                        regularColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN;
-                        footerColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN_FOOTER;
-                        break;
-                }
-
-                // set the value of footer, regular and header
                 if (position == wishList.getData().size()) {
-                    // header column
-                    return footerColumnSize;
-                } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
-                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
-                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_STATE) {
-                    // top ads span column
-                    return headerColumnSize;
+                    return 2;
+                } else if(position % 5 == 0 && adapter.getItemViewType(position) == TkpdState.RecyclerViewItem.TYPE_LIST
+                        || adapter.getItemViewType(position) == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
+                        || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_EMPTY_STATE
+                        || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST) {
+                    return 2;
                 } else {
-                    // regular one column
-                    return regularColumnSize;
+                    return 1;
                 }
             }
         };

@@ -15,6 +15,8 @@ import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
+import com.tokopedia.talk.common.util.BranchLinkHandlerListener
+import com.tokopedia.talk.common.util.BranchLinkHandlerMovementMethod
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import kotlinx.android.synthetic.main.product_talk_item.view.*
@@ -32,7 +34,7 @@ class ProductTalkThreadViewHolder(val v: View,
         AbstractViewHolder<TalkThreadViewModel>(v) {
 
 
-    interface TalkItemListener {
+    interface TalkItemListener : BranchLinkHandlerListener{
         fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String)
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
@@ -95,7 +97,7 @@ class ProductTalkThreadViewHolder(val v: View,
         userName.text = MethodChecker.fromHtml(element.headThread.name)
         content.text = MethodChecker.fromHtml(element.headThread.comment)
         timestamp.text = element.headThread.timestamp
-        content.movementMethod = SelectableSpannedMovementMethod()
+        content.movementMethod = BranchLinkHandlerMovementMethod(listener)
 
     }
 
