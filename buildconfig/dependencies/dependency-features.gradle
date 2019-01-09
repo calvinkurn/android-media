@@ -192,6 +192,7 @@ ext {
 
             home                          : ":features:discovery:home",
             recentview                    : ":features:discovery:recentview",
+            //recentview                    : ":features:discovery:recentview_no_op",
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
 
