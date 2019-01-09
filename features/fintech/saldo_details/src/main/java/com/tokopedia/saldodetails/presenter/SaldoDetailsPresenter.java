@@ -98,7 +98,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         Date date = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH, -30);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
         String startDate = dateFormat.format(cal.getTime());
         String endDate = dateFormat.format(date);
         getView().setStartDate(startDate);
