@@ -46,10 +46,6 @@ public class TrackApp {
         this.context = context;
     }
 
-    TrackApp(){
-
-    }
-
     /**
      *
      * @return
@@ -61,7 +57,6 @@ public class TrackApp {
                 throw new IllegalStateException(
                         "Default TrackApp is not initialized in this "
                         +"process "
-//                        + ProcessUtils.getMyProcessName()
                         + ". make sure to call "
                         + "TrackApp.initTrackApp(Context) first."
                 );
@@ -197,11 +192,6 @@ public class TrackApp {
         TypedValue<? extends ContextAnalytics> typedValue = INSTANCES.get(TAG);
         ContextAnalytics value = typedValue.value;
         return typedValue.type.cast(value);
-    }
-
-    public void addBatch(String TAG, String methodName){
-        // certain size
-        // timer
     }
 
     static class TypedValue<T> {
