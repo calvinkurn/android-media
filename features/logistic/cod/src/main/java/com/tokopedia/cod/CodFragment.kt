@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cod.di.DaggerCodComponent
+import com.tokopedia.logisticanalytics.CodAnalytics
 import com.tokopedia.transactiondata.entity.response.cod.Data
 import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
 import javax.inject.Inject
@@ -23,8 +24,8 @@ import javax.inject.Inject
  */
 class CodFragment : BaseDaggerFragment(), CodContract.View {
 
-    @Inject
-    lateinit var presenter: CodContract.Presenter
+    @Inject lateinit var presenter: CodContract.Presenter
+    @Inject lateinit var mTracker: CodAnalytics
 
     companion object {
 
@@ -85,6 +86,7 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
     }
 
     override fun onPayClicked(view: View) {
+        mTracker.eventClickBayarDiTempatCod()
         presenter.confirmPayment()
     }
 

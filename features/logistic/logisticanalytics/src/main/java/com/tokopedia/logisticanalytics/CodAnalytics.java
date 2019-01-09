@@ -86,7 +86,7 @@ public class CodAnalytics extends LogisticAnalytics {
         );
     }
 
-    public void eventClickBayarDiTempat(boolean ineligible) {
+    public void eventClickBayarDiTempatShipment(boolean ineligible) {
         String label;
         if (ineligible) label = "not success - ineligible";
         else label = "not success - incomplete";
@@ -130,7 +130,7 @@ public class CodAnalytics extends LogisticAnalytics {
         );
     }
 
-    public void eventClickBayarDiTempat() {
+    public void eventClickBayarDiTempatCod() {
         sendEventCategoryAction(
                 EventName.CLICK_COD,
                 EventCategory.CASH_ON_DELIVERY,

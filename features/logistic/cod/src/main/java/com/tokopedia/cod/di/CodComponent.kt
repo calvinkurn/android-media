@@ -1,6 +1,7 @@
 package com.tokopedia.cod.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.cod.CodActivity
 import com.tokopedia.cod.CodFragment
 import dagger.Component
 
@@ -11,4 +12,5 @@ import dagger.Component
 @Component(modules = arrayOf(CodModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface CodComponent {
     fun inject(fragment: CodFragment)
+    fun inject(activity: CodActivity)
 }
