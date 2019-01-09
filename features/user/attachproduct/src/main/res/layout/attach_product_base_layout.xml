@@ -104,8 +104,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:gravity="right"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_below="@id/separator"
@@ -131,7 +130,7 @@
             android:text="@string/action_buy"
             android:textAllCaps="false"
             android:visibility="gone"
-            app:buttonCompatSize="medium"
+            app:buttonCompatSize="small"
             app:buttonCompatType="transaction"/>
 
     </LinearLayout>
