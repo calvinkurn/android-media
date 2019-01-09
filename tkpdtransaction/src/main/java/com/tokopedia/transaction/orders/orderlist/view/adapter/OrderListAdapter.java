@@ -150,7 +150,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setDotMenuVisibility(int visibility) {
-        currentHolder.orderListBtnOverflow.setVisibility(visibility);
+        if (currentHolder.orderCategory.equalsIgnoreCase("belanja") || currentHolder.orderCategory.equalsIgnoreCase("marketplace")) {
+            currentHolder.orderListBtnOverflow.setVisibility(View.GONE);
+        } else {
+            currentHolder.orderListBtnOverflow.setVisibility(visibility);
+        }
     }
 
     @Override

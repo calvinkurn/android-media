@@ -179,7 +179,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
         menuGrid.setTitleTrack(PEMBELI);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
-        menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
+        menuGrid.setApplinkUrl(ApplinkConst.MARKETPLACE_ORDER);
 
         menuGrid.setItems(getBuyerOrderMenu(
             accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,

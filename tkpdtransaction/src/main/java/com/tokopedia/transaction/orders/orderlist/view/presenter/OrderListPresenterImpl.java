@@ -64,7 +64,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
         getOrderListUseCase = new GraphqlUseCase();
         getOrderListUseCase.clearRequest();
-        getOrderListUseCase.setRequest(graphqlRequest);
+        getOrderListUseCase.addRequest(graphqlRequest);
 
         getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override

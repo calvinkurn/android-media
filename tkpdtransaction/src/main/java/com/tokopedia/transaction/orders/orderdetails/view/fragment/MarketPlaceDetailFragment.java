@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
@@ -218,16 +219,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Override
     public void setDetail(Detail detail) {
         detailLabel.setText("Detail Pengiriman");
-
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         if (!detail.label().equalsIgnoreCase("No. Resi")) {
             doubleTextView.setTopText(detail.label());
             doubleTextView.setBottomText(detail.value());
-        } else if (detail.label().equalsIgnoreCase("Alamat Pengiriman")) {
-            doubleTextView.setTopText(detail.label());
-            doubleTextView.setBottomText(Html.fromHtml(detail.value()));
-        }
-        else {
+        } else {
             doubleTextView.setTopText(detail.label());
             String text = detail.value() + "\n\nSalin No. Resi";
             SpannableString spannableString = new SpannableString(text);
@@ -238,8 +234,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                     try {
                         myClip = ClipData.newPlainText("text", detail.value());
                         myClipboard.setPrimaryClip(myClip);
-                        Toast.makeText(getContext(), "Text Copied",
-                                Toast.LENGTH_SHORT).show();
+                        ToasterNormal.showClose(getActivity(), "Nomor Resi berhasil disalin");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

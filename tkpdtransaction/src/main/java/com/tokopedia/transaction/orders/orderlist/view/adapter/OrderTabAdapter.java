@@ -35,6 +35,7 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
         Bundle arg = listener.getBundle();
         String orderCategory = mOrderLabelList.get(position).getOrderCategory();
         OrderLabelList orderLabelList = mOrderLabelList.get(position);
+        arg.putParcelable(ORDER_TAB_LIST, orderLabelList);
         arg.putString(ORDER_CATEGORY, orderCategory);
         Fragment fragment = null;
         if(orderCategory.equals(OrderCategory.FLIGHTS) && listener.getAppContext() instanceof UnifiedOrderListRouter) {

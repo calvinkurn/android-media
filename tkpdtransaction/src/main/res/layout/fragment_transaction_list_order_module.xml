@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:focusable="true"
-    android:id="@+id/mainContent"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
@@ -24,39 +24,24 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/simpleSearchView"
         android:orientation="vertical"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
-    <LinearLayout
-        android:id="@+id/empty_view"
+    <include
+        android:id="@+id/empty_state_order_list"
+        layout="@layout/empty_state_normal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/quick_filter"
-        android:gravity="center|center_horizontal"
-        android:orientation="vertical"
-        tools:visibility="visible"
-        android:visibility="gone">
+        android:visibility="gone" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/empty_state_oms" />
+    <include
+        android:id="@+id/empty_state_marketplace"
+        layout="@layout/empty_state_marketplace"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/quick_filter"
+        android:visibility="gone" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/oops_message"
-            android:textSize="@dimen/sp_20"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/empty_list_message"
-            android:textSize="@dimen/sp_14" />
-    </LinearLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -88,9 +73,9 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/filter_button_white_bg"
         android:elevation="5dp"
+        android:orientation="horizontal"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:orientation="horizontal">
+        tools:visibility="visible">
 
         <ImageView
             android:layout_width="20dp"
