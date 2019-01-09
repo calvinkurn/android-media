@@ -1139,7 +1139,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void showInfoDialog() {
         if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null
-                &&viewModel.getChannelInfoViewModel().getOverlayViewModel().getStatus() != OVERLAY_STATUS_INACTIVE) {
+                && viewModel.getChannelInfoViewModel().getOverlayViewModel().getStatus() != OVERLAY_STATUS_INACTIVE) {
             showOverlayDialog(viewModel.getChannelInfoViewModel().getOverlayViewModel());
             viewModel.getChannelInfoViewModel().getOverlayViewModel().setStatus(0);
         } else if (canShowDialog) {
@@ -1155,11 +1155,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 canShowDialog = false;
             }
         }
-    }
-
-    @Override
-    public void disablwShowChannelInfoDialog() {
-        canShowDialog = false;
     }
 
     private void setChannelInfoView(ChannelInfoViewModel channelInfoViewModel) {

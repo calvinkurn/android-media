@@ -169,7 +169,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
         if (getActivity() instanceof GroupChatContract.View) {
-            ((GroupChatContract.View) getActivity()).disablwShowChannelInfoDialog();
+            ((GroupChatContract.View) getActivity()).showInfoDialog();
         }
     }
 

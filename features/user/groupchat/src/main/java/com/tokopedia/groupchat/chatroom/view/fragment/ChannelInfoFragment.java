@@ -166,7 +166,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         channelPartners = view.findViewById(R.id.channel_partners);
 
         if (getActivity() instanceof GroupChatContract.View) {
-            ((GroupChatContract.View) getActivity()).disablwShowChannelInfoDialog();
+            ((GroupChatContract.View) getActivity()).showInfoDialog();
         }
     }
 
