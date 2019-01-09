@@ -15,6 +15,7 @@ ext {
     tkpdUseCaseVersion = '2.23'
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
+    tkpdGraphViewVersion = '2.22'
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
@@ -63,6 +64,7 @@ ext {
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
-            cmnotification    :":libraries:cm_push_notifications"
+            cmnotification    :":libraries:cm_push_notifications",
+            graphView         :":libraries:graph_view"
     ]
 }
