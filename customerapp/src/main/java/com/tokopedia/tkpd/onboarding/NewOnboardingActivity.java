@@ -81,7 +81,7 @@ public class NewOnboardingActivity extends AppIntro {
         pager.setPageTransformer(false, new CustomAnimationPageTransformer());
 
         if(GlobalConfig.IS_PREINSTALL) {
-            TrackingUtils.sendInstallSourceEvent();
+            TrackingUtils.sendInstallSourceEvent(this);
         }
     }
 

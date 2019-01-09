@@ -648,10 +648,10 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine(context).sendEvent(builder.build(), eventName);
     }
 
-    public static void sendInstallSourceEvent() {
+    public static void sendInstallSourceEvent(Context context) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.PARTNER_SOURCE, "source_apk");
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.PARTNER_REFERRAL);
+        getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.PARTNER_REFERRAL);
     }
 }
 
