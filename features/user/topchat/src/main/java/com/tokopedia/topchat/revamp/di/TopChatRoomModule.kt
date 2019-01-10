@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
+import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.core.network.di.qualifier.InboxQualifier
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor
@@ -21,8 +22,8 @@ import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource
+import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper
 import com.tokopedia.topchat.common.chat.api.ChatApi
-import com.tokopedia.topchat.common.di.InboxChatScope
 import com.tokopedia.topchat.revamp.data.api.ChatRoomApi
 import com.tokopedia.topchat.revamp.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.revamp.domain.usecase.GetTemplateChatRoomUseCase
@@ -89,6 +90,12 @@ class TopChatRoomModule {
 
     @TopChatRoomScope
     @Provides
+    internal fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+        return ChuckInterceptor(context)
+    }
+
+    @TopChatRoomScope
+    @Provides
     internal fun provideOkHttpClient(@ApplicationContext context: Context,
                                      @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                                      errorResponseInterceptor: ErrorResponseInterceptor,
@@ -110,6 +117,15 @@ class TopChatRoomModule {
         return builder.build()
     }
 
+    @TopChatRoomScope
+    @InboxQualifier
+    @Provides
+    internal fun provideChatRetrofit(okHttpClient: OkHttpClient,
+                                     retrofitBuilder: Retrofit.Builder): Retrofit {
+        return retrofitBuilder.baseUrl(ChatUrl.TOPCHAT)
+                .client(okHttpClient)
+                .build()
+    }
 
     @TopChatRoomScope
     @Provides
@@ -118,13 +134,20 @@ class TopChatRoomModule {
     }
 
 
-    @InboxChatScope
+    @TopChatRoomScope
     @Provides
     internal fun provideMessageFactory(
             chatApi: ChatApi,
             getMessageMapper: GetMessageMapper,
             deleteMessageMapper: DeleteMessageMapper): MessageFactory {
         return MessageFactory(chatApi, getMessageMapper, deleteMessageMapper)
+    }
+
+    @TopChatRoomScope
+    @Provides
+    internal fun provideSendMessageSource(chatApi: ChatApi,
+                                          sendMessageMapper: SendMessageMapper): SendMessageSource {
+        return SendMessageSource(chatApi, sendMessageMapper)
     }
 
     @TopChatRoomScope
