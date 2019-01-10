@@ -33,6 +33,7 @@
     <string name="text_item_commission">Komisi</string>
     <string name="text_back_to_top">Kembali ke atas</string>
     <string name="text_button_apply">Terapkan</string>
+    <string name="text_title_filter">Filter</string>
 
     <!--ONBOARDING-->
     <string name="title_af_onboarding">Tokopedia By Me</string>
