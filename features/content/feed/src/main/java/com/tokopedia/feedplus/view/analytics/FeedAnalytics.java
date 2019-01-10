@@ -485,15 +485,17 @@ public class FeedAnalytics {
     }
 
     public void eventBannerClick(String templateType, String activityName,
-                                 String trackingType, String mediaType, String element,
-                                 String bannerUrl, int totalBanner,
-                                 int postId, int totalProduct, int position, int userId) {
+                                 String trackingType, String mediaType, String tagsType,
+                                 String bannerUrl, String element, int totalBanner,
+                                 int postId, int feedPosition, int bannerPosition,
+                                 int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         postId,
-                        FeedEnhancedTracking.Promotion.createContentNameBanner(),
-                        bannerUrl,
-                        position,
+                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
+                                singleOrMultiple(totalBanner),
+                        bannerUrl + DASH + bannerPosition,
+                        feedPosition,
                         String.valueOf(totalBanner),
                         0,
                         ""
@@ -501,8 +503,63 @@ public class FeedAnalytics {
         );
         analyticTracker.sendEnhancedEcommerce(
                 getEventEcommerceClick(
-                        ACTION_CLICK.toLowerCase() + " - " + templateType + " - "
-                                + activityName + " - " + trackingType + " - " + element,
+                        ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
+                                + activityName + DASH + trackingType + DASH + element,
+                        mediaType,
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventRecommendationImpression(String templateType, String activityName,
+                                              String trackingType, String mediaType,
+                                              String authorName, String authorType, int authorId,
+                                              int feedPosition, int cardPosition, int userId) {
+
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                        authorId,
+                        CONTENT_FEED + DASH + activityName + DASH + authorType,
+                        authorName + DASH + cardPosition,
+                        feedPosition,
+                        "",
+                        0,
+                        ""
+                )
+        );
+        analyticTracker.sendEnhancedEcommerce(
+                getEventEcommerceView(
+                        ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
+                                + activityName + DASH + trackingType,
+                        mediaType,
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventRecommendationClick(String templateType, String activityName,
+                                         String trackingType, String mediaType,
+                                         String authorName, String authorType, String element,
+                                         int authorId, int feedPosition, int cardPosition,
+                                         int userId) {
+
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                        authorId,
+                        CONTENT_FEED + DASH + activityName + DASH + authorType,
+                        authorName + DASH + cardPosition,
+                        feedPosition,
+                        "",
+                        0,
+                        ""
+                )
+        );
+        analyticTracker.sendEnhancedEcommerce(
+                getEventEcommerceClick(
+                        ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
+                                + activityName + DASH + trackingType + DASH + element,
                         mediaType,
                         promotionList,
                         userId

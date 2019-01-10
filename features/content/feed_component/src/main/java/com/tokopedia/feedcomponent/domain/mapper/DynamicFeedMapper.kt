@@ -22,6 +22,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.functions.Func1
@@ -126,10 +127,22 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapCardRecommendation(feed: Feed, template: Template): FeedRecommendationViewModel {
         val cards: MutableList<RecommendationCardViewModel> = ArrayList()
-        for (card in feed.content.cardRecommendation.items) {
+
+        feed.content.cardRecommendation.items.forEachIndexed { index, card ->
             val image1 = if (card.media.size > 0) card.media[0].thumbnail else ""
             val image2 = if (card.media.size > 1) card.media[1].thumbnail else ""
             val image3 = if (card.media.size > 2) card.media[2].thumbnail else ""
+
+            val trackingRecommendationModel = TrackingRecommendationModel(
+                    feed.type,
+                    feed.activity,
+                    feed.tracking.type,
+                    card.media.firstOrNull()?.type ?: "",
+                    card.header.avatarTitle,
+                    card.header.followCta.authorType,
+                    card.header.followCta.authorID.toIntOrNull() ?: 0,
+                    index
+            )
 
             cards.add(RecommendationCardViewModel(
                     image1,
@@ -141,7 +154,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     card.header.avatarDescription,
                     card.header.avatarApplink,
                     card.header.followCta,
-                    template.cardrecom.item
+                    template.cardrecom.item,
+                    trackingRecommendationModel
             ))
         }
 

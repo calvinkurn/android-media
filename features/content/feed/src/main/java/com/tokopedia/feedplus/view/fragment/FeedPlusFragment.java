@@ -50,6 +50,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionVie
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
@@ -1661,10 +1662,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 FeedRecommendationViewModel recommendationViewModel
                         = (FeedRecommendationViewModel) visitable;
 
-                for (RecommendationCardViewModel cardViewModel
-                        : recommendationViewModel.getCards()) {
+                for (RecommendationCardViewModel card : recommendationViewModel.getCards()) {
 
-
+                    TrackingRecommendationModel trackingRecommendationModel
+                            = card.getTrackingRecommendationModel();
+                    analytics.eventRecommendationImpression(
+                            trackingRecommendationModel.getTemplateType(),
+                            trackingRecommendationModel.getActivityName(),
+                            trackingRecommendationModel.getTrackingType(),
+                            trackingRecommendationModel.getMediaType(),
+                            trackingRecommendationModel.getAuthorName(),
+                            trackingRecommendationModel.getAuthorType(),
+                            trackingRecommendationModel.getAuthorId(),
+                            feedPosition,
+                            trackingRecommendationModel.getCardPosition(),
+                            userId
+                    );
                 }
             }
         }
