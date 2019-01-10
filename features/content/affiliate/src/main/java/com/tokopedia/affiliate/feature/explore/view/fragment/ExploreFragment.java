@@ -599,6 +599,7 @@ public class ExploreFragment
             if (requestCode == REQUEST_DETAIL_FILTER) {
                 List<FilterViewModel> theData = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 boolean test = theData.get(0).isSelected();
+                populateFilter(theData);
             }
         }
     }
