@@ -183,7 +183,7 @@ class ChatbotPresenter @Inject constructor(
                               onError: (Throwable) -> Unit,
                               onSuccess: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
-            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
+            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId, page),
                     GetExistingChatSubscriber(onError, onSuccess))
         }
     }
