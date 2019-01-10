@@ -195,7 +195,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         ResolutionResponse resolutionResponse = graphqlResponse.getData(token);
                         if (resolutionResponse.getErrorMessageJoined().isEmpty()) {
                             JsonObject jsonData = (JsonObject) resolutionResponse.getData();
-                            GenerateHostDataResponse hostDataResponse = new Gson().fromJson(jsonData.getAsJsonObject("get_resolution_upload_host").getAsJsonObject("data"), GenerateHostDataResponse.class);
+                            GenerateHostDataResponse hostDataResponse = new Gson().fromJson(jsonData.getAsJsonObject("get_resolution_upload_host").getAsJsonObject("data"), GenerateHostResponse.class);
                             GenerateHostResponse uploadHostData = hostDataResponse.getGenerateHostResponse();
                             passData.setServerID(uploadHostData.getServerId());
                             passData.setUploadHost(uploadHostData.getUploadHost());
