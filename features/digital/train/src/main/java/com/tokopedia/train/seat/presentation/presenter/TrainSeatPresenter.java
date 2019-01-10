@@ -335,6 +335,13 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                         request.setSeat(changeSeat.getRow() + changeSeat.getColumn());
                         request.setWagonCode(changeSeat.getWagonCode());
                         requests.add(request);
+                    } else {
+                        request = new ChangeSeatMapRequest();
+                        request.setBookCode(bookCode);
+                        request.setName(passenger.getName());
+                        request.setSeat(originSeat.getRow() + originSeat.getColumn());
+                        request.setWagonCode(originSeat.getWagonCode());
+                        requests.add(request);
                     }
                     break;
                 }
