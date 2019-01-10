@@ -30,6 +30,7 @@ import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource
 import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
+import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.topchat.revamp.data.api.ChatRoomApi
 import com.tokopedia.topchat.revamp.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.revamp.domain.pojo.TopChatImageUploadPojo
@@ -120,18 +121,28 @@ class ChatModule {
 
     @ChatScope
     @Provides
+    internal fun provideXUserIdInterceptor(@ApplicationContext context: Context,
+                                           networkRouter: NetworkRouter,
+                                           userSessionInterface: UserSessionInterface):
+            XUserIdInterceptor {
+        return XUserIdInterceptor(context, networkRouter, userSessionInterface)
+    }
+
+    @ChatScope
+    @Provides
     internal fun provideOkHttpClient(@ApplicationContext context: Context,
                                      @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                                      errorResponseInterceptor: ErrorResponseInterceptor,
                                      chuckInterceptor: ChuckInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
                                      networkRouter: NetworkRouter,
-                                     userSessionInterface: UserSessionInterface):
+                                     userSessionInterface: UserSessionInterface,
+                                     xUserIdInterceptor: XUserIdInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(FingerprintInterceptor(networkRouter, userSessionInterface))
                 .addInterceptor(CacheApiInterceptor())
-//                .addInterceptor(DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
+                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)

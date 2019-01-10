@@ -53,6 +53,7 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
+import com.tokopedia.topchat.common.network.XUserIdInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -220,6 +221,14 @@ public class InboxChatModule {
         return (NetworkRouter) context;
     }
 
+
+    @Provides
+    public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
+                                                        NetworkRouter networkRouter,
+                                                        UserSessionInterface userSessionInterface) {
+        return new XUserIdInterceptor(context, networkRouter, userSessionInterface);
+    }
+
     @InboxChatScope
     @Provides
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
@@ -228,11 +237,12 @@ public class InboxChatModule {
                                      ChuckInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      NetworkRouter networkRouter,
-                                     UserSessionInterface userSessionInterface) {
+                                     UserSessionInterface userSessionInterface,
+                                     XUserIdInterceptor xUserIdInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))
                 .addInterceptor(new CacheApiInterceptor())
-//                .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
+                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)

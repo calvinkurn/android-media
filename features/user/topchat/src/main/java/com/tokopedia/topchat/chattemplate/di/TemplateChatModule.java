@@ -17,7 +17,6 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
 import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
@@ -29,6 +28,7 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
+import com.tokopedia.topchat.common.network.XUserIdInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -83,6 +83,14 @@ public class TemplateChatModule {
         return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
     }
 
+    @Provides
+    public XUserIdInterceptor provideResponseInterceptor(@ApplicationContext Context context,
+                                                         NetworkRouter networkRouter,
+                                                         UserSessionInterface userSessionInterface) {
+        return new XUserIdInterceptor(context, networkRouter, userSessionInterface);
+    }
+
+
     @TemplateChatScope
     @Provides
     OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
@@ -90,11 +98,12 @@ public class TemplateChatModule {
                                      ChuckInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      NetworkRouter networkRouter,
-                                     UserSessionInterface userSessionInterface) {
+                                     UserSessionInterface userSessionInterface,
+                                     XUserIdInterceptor xUserIdInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))
                 .addInterceptor(new CacheApiInterceptor())
-//                .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
+                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
