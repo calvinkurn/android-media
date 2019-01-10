@@ -9,27 +9,27 @@ public class InputAWBRequest {
 
     @SerializedName("resolution_id")
     @Expose
-    private int resId;
+    int resId;
 
     @SerializedName("awb")
     @Expose
-    private String awbNum;
+    String awbNum;
 
     @SerializedName("courier_id")
     @Expose
-    private int courierId;
+    int courierId;
 
     @SerializedName("attachment_count")
     @Expose
-    private int attachmentCount;
+    int attachmentCount;
 
     @SerializedName("pictures")
     @Expose
-    private List<String> pictures;
+    List<String> pictures;
 
     @SerializedName("cache_key")
     @Expose
-    private String cacheKey;
+    String cacheKey;
 
     public int getResId() {
         return resId;

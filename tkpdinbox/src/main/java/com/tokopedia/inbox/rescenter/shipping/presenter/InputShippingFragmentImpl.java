@@ -42,9 +42,11 @@ import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 import com.tokopedia.inbox.rescenter.utils.UploadImageResCenter;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +67,7 @@ import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragm
 /**
  * Created by hangnadi on 12/13/16.
  */
-public class InputShippingFragmentImpl implements InputShippingFragmentPresenter {
+public class InputShippingFragmentImpl implements InputShippingFragmentPresenter, GraphQLResponseSubscriber.ResponseCallbacks {
 
     private static final String TAG = InputShippingFragmentPresenter.class.getSimpleName();
     private static final int REQUEST_CODE_SCAN_BARCODE = 19;
@@ -73,6 +75,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private final GlobalCacheManager cacheManager;
     private final RetrofitInteractor retrofit;
     private final InputShippingFragmentView viewListener;
+    private InputAWBRequest AWBRequest;
+    private ShippingParamsPostModel shippingParams;
 
     private boolean isShippingRefValid = false;
     private boolean isShippingSpinnerValid = false;
@@ -135,6 +139,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
                 R.raw.get_kurir_list), ResKurirListResponse.class);
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
 
         showLoading(true);
@@ -148,7 +153,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             @Override
             public void onError(Throwable e) {
-                viewListener.showErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
+                viewListener.showErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(), e));
                 showLoading(false);
                 showMainPage(false);
             }
@@ -235,11 +240,11 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onConfirrmButtonClick() {
-        ShippingParamsPostModel params = generatePostParams();
+        shippingParams = generatePostParams();
         if (isInstanceForEdit()) {
-            doEditShippingService(params);
+            doEditShippingService(shippingParams);
         } else {
-            doStoreShippingService(params);
+            doStoreShippingService(shippingParams);
         }
     }
 
@@ -272,51 +277,23 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         inputAWBRequest.setAwbNum(params.getShippingNumber());
         inputAWBRequest.setCourierId(Integer.parseInt(params.getShippingID()));
 
+        AWBRequest = inputAWBRequest;
+
         Map<String, Object> variables = new HashMap<>();
-        variables.put("input", inputAWBRequest);
+        variables.put("input", AWBRequest);
 
-
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.input_awb_request), InputAWBResponse.class, variables);
+        GraphqlRequest graphqlRequest = getGraphQLRequest(R.raw.input_awb_request, InputAWBResponse.class, variables);
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
 
+        showLoadingState();
 
-        viewListener.dropKeyBoard();
-        showLoading(true);
-        showMainPage(false);
+        GraphQLResponseSubscriber responseSubscriber = getResponseSubscriber(true);
 
-        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
-
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
-                showLoading(false);
-                showMainPage(true);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-
-                if (graphqlResponse != null) {
-                    InputAWBResponse inputAWBResponse = graphqlResponse.getData(InputAWBResponse.class);
-                    if (inputAWBResponse != null) {
-                        inputAWBRequest.setCacheKey(inputAWBResponse.getResInputValidationResponse().getCacheKey());
-                        resInputSubmit(inputAWBRequest, params);
-                    }
-                }
-
-            }
-        });
+        graphqlUseCase.execute(responseSubscriber);
     }
 
     private void doEditShippingService(ShippingParamsPostModel params) {
-
         if (!isValidToSubmit(params)) {
             return;
         }
@@ -324,183 +301,71 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         EditAWBRequest editAWBRequest = new EditAWBRequest();
         editAWBRequest.setResId(Integer.parseInt(params.getResolutionID()));
         editAWBRequest.setAwbNum(params.getShippingNumber());
+        editAWBRequest.setConversationId(Integer.parseInt(params.getConversationID()));
         editAWBRequest.setCourierId(Integer.parseInt(params.getShippingID()));
 
+        AWBRequest = editAWBRequest;
+
         Map<String, Object> variables = new HashMap<>();
+        variables.put("input", AWBRequest);
 
-
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.edit_awb_request), EditAWBResponse.class, variables);
+        GraphqlRequest graphqlRequest = getGraphQLRequest(R.raw.edit_awb_request, EditAWBResponse.class, variables);
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
 
-        variables.put("input", editAWBRequest);
-        viewListener.dropKeyBoard();
-        showLoading(true);
-        showMainPage(false);
+        showLoadingState();
 
-        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+        GraphQLResponseSubscriber responseSubscriber = getResponseSubscriber(true);
 
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
-                showLoading(false);
-                showMainPage(true);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-
-                if (graphqlResponse != null) {
-                    EditAWBResponse editAWBResponse = graphqlResponse.getData(EditAWBResponse.class);
-                    if (editAWBResponse != null) {
-                        editAWBRequest.setCacheKey(editAWBResponse.getResInputValidationResponse().getCacheKey());
-                        resEditSubmit(editAWBRequest, params);
-                    }
-                }
-
-            }
-        });
+        graphqlUseCase.execute(responseSubscriber);
     }
 
-    private void resInputSubmit(InputAWBRequest inputAWBRequest, ShippingParamsPostModel params) {
+    private void resAwbSubmit(InputAWBRequest awbRequest, ShippingParamsPostModel params) {
         List<String> imageList = new ArrayList<>();
-
         Map<String, Object> variables = new HashMap<>();
 
+        GraphqlRequest graphqlRequest;
+
+        if (isInstanceForEdit()) {
+            graphqlRequest = getGraphQLRequest(R.raw.edit_awb_request, EditAWBResponse.class, variables);
+        } else {
+            graphqlRequest = getGraphQLRequest(R.raw.input_awb_request, InputAWBResponse.class, variables);
+        }
+
+        GraphQLResponseSubscriber responseSubscriber = getResponseSubscriber(false);
+
         if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0) {
-            inputAWBRequest.setAttachmentCount(params.getAttachmentList().size());
+            awbRequest.setAttachmentCount(params.getAttachmentList().size());
+            showLoadingState();
+
             retrofit.getObservableGenerateHost(viewListener.getActivity(), params)
                     .flatMap((Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>)
                             shippingParamsPostModel -> getObservableUploadingFile(viewListener.getActivity(), params))
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<ShippingParamsPostModel>() {
+                    .flatMap(new Func1<ShippingParamsPostModel, Observable<InputAWBRequest>>() {
+                        @Override
+                        public Observable<InputAWBRequest> call(ShippingParamsPostModel shippingParamsPostModel) {
+                            for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
+                                imageList.add(attachment.imagePath);
+                            awbRequest.setPictures(imageList);
+                            return Observable.just(awbRequest);
+                        }
+                    }).flatMap(new Func1<InputAWBRequest, Observable<GraphqlResponse>>() {
                 @Override
-                public void onCompleted() {
-
+                public Observable<GraphqlResponse> call(InputAWBRequest awbRequest) {
+                    variables.put("input", awbRequest);
+                    graphqlUseCase.clearRequest();
+                    graphqlUseCase.addRequest(graphqlRequest);
+                    return graphqlUseCase.getExecuteObservable(RequestParams.EMPTY);
                 }
-
-                @Override
-                public void onError(Throwable e) {
-                    viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
-                    showLoading(false);
-                    showMainPage(true);
-                }
-
-                @Override
-                public void onNext(ShippingParamsPostModel shippingParamsPostModel) {
-                    for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
-                        imageList.add(attachment.imagePath);
-                    inputAWBRequest.setPictures(imageList);
-                }
-            });
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(responseSubscriber);
+        } else {
+            showLoadingState();
+            variables.put("input", awbRequest);
+            graphqlUseCase.clearRequest();
+            graphqlUseCase.addRequest(graphqlRequest);
+            graphqlUseCase.execute(responseSubscriber);
         }
-        variables.put("input", inputAWBRequest);
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.input_awb_request), InputAWBResponse.class, variables);
-        graphqlUseCase.addRequest(graphqlRequest);
-
-
-        viewListener.dropKeyBoard();
-        showLoading(true);
-        showMainPage(false);
-
-        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
-                showLoading(false);
-                showMainPage(true);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                clearAttachment();
-                viewListener.finishAsSuccessResult();
-                showLoading(false);
-                showMainPage(true);
-            }
-        });
-
-    }
-
-
-    private void resEditSubmit(EditAWBRequest editAWBRequest, ShippingParamsPostModel params) {
-        List<String> imageList = new ArrayList<>();
-
-        Map<String, Object> variables = new HashMap<>();
-
-        if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0) {
-            editAWBRequest.setAttachmentCount(params.getAttachmentList().size());
-            retrofit.getObservableGenerateHost(viewListener.getActivity(), params)
-                    .flatMap((Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>)
-                            shippingParamsPostModel -> getObservableUploadingFile(viewListener.getActivity(), params))
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<ShippingParamsPostModel>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
-                    showLoading(false);
-                    showMainPage(true);
-                }
-
-                @Override
-                public void onNext(ShippingParamsPostModel shippingParamsPostModel) {
-                    for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
-                        imageList.add(attachment.imagePath);
-                    editAWBRequest.setPictures(imageList);
-                }
-            });
-        }
-        variables.put("input", editAWBRequest);
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.edit_awb_request), InputAWBResponse.class, variables);
-        graphqlUseCase.addRequest(graphqlRequest);
-
-
-        viewListener.dropKeyBoard();
-        showLoading(true);
-        showMainPage(false);
-
-        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(),e));
-                showLoading(false);
-                showMainPage(true);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                clearAttachment();
-                viewListener.finishAsSuccessResult();
-                showLoading(false);
-                showMainPage(true);
-            }
-        });
-
     }
 
 
@@ -629,6 +494,12 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         }
     }
 
+    private void showLoadingState() {
+        viewListener.dropKeyBoard();
+        showLoading(true);
+        showMainPage(false);
+    }
+
     private boolean isValidToSubmit(ShippingParamsPostModel params) {
         viewListener.getErrorSpinner().setVisibility(View.GONE);
         viewListener.getShippingRefNum().setError(null);
@@ -675,5 +546,52 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         return (ResCenterKurir.Kurir) viewListener.getShippingSpinner().getItemAtPosition(
                 viewListener.getShippingSpinner().getSelectedItemPosition() - 1
         );
+    }
+
+    private GraphqlRequest getGraphQLRequest(int queryId, Type typeOfT, Map<String, Object> variables) {
+        return new GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
+                queryId), typeOfT, variables);
+    }
+
+    private GraphQLResponseSubscriber getResponseSubscriber(boolean isVerify) {
+        GraphQLResponseSubscriber responseSubscriber = new GraphQLResponseSubscriber();
+        responseSubscriber.setResponseCallbacks(this);
+        responseSubscriber.setVerifyCall(isVerify);
+        return responseSubscriber;
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(), e));
+        showLoading(false);
+        showMainPage(true);
+    }
+
+    @Override
+    public void onRequestVerified(GraphqlResponse graphqlResponse) {
+        if (graphqlResponse != null) {
+            String cacheKey = "";
+            if (isInstanceForEdit()) {
+                EditAWBResponse editAWBResponse = graphqlResponse.getData(EditAWBResponse.class);
+                if (editAWBResponse != null) {
+                    cacheKey = editAWBResponse.getResInputValidationResponse().getCacheKey();
+                }
+            } else {
+                InputAWBResponse inputAWBResponse = graphqlResponse.getData(InputAWBResponse.class);
+                if (inputAWBResponse != null) {
+                    cacheKey = inputAWBResponse.getResInputValidationResponse().getCacheKey();
+                }
+            }
+            AWBRequest.setCacheKey(cacheKey);
+            resAwbSubmit(AWBRequest, shippingParams);
+        }
+    }
+
+    @Override
+    public void onCreateEditTicket(GraphqlResponse graphqlResponse) {
+        clearAttachment();
+        viewListener.finishAsSuccessResult();
+        showLoading(false);
+        showMainPage(true);
     }
 }
