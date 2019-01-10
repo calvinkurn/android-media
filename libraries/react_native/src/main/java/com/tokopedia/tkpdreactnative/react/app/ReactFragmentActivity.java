@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.facebook.react.ReactApplication;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -27,6 +29,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
     public static final String DEEP_LINK_URI = "deep_link_uri";
+    private ProgressBar loaderBootingReact;
 
     @Override
     protected int getLayoutId() {
@@ -47,6 +50,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     @Override
     protected void initView() {
         actionSetToolbarTitle(getToolbarTitle());
+        loaderBootingReact = (ProgressBar) findViewById(R.id.rn_progressbar);
         T fragment = getReactNativeFragment();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
@@ -101,6 +105,16 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         if(!TextUtils.isEmpty(title)) {
             toolbar.setTitle(title);
         }
+    }
+
+    @Override
+    public void showLoaderReactPage() {
+        loaderBootingReact.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoaderReactPage() {
+        loaderBootingReact.setVisibility(View.GONE);
     }
 
     @Override

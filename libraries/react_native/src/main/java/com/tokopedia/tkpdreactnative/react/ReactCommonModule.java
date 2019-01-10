@@ -9,15 +9,19 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdreactnative.R;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 /**
  * @author ricoharisin .
@@ -42,6 +46,29 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         promise.resolve(remoteConfig.getString(RemoteConfigKey.IMAGE_HOST, "http://ecs7.tokopedia.net"));
     }
+
+    @ReactMethod
+    public void showBootingLoaderReactPage(Promise promise) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
+                    ((ReactNativeView) getCurrentActivity()).showLoaderReactPage();
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void hideBootingLoaderReactPage(Promise promise) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
+                    ((ReactNativeView) getCurrentActivity()).hideLoaderReactPage();
+                }
+            }
+        });
 
     @ReactMethod
     public void getAppVersionCode(Promise promise) {
@@ -81,6 +108,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
                     });
         }
     }
+
     @ReactMethod
     public void shareImageWithText(String imageLocalPath, String description, String websiteUrl){
         Uri imageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider",
