@@ -15,6 +15,8 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -88,13 +90,13 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void processCurrentSelected(FilterViewModel filter) {
-        if (filter.isSelected() && !containsInSelected(filter)) {
+        if (filter.isSelected() && !containsInCurrentSelected(filter)) {
             currentSelectedFilter.add(filter);
         } else
             removeItemFromSelected(filter);
     }
 
-    private boolean containsInSelected(FilterViewModel filter) {
+    private boolean containsInCurrentSelected(FilterViewModel filter) {
         for (FilterViewModel item : currentSelectedFilter) {
             if (item.getName().equals(filter.getName()))
                 return true;
@@ -156,10 +158,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private List<FilterViewModel> addRemainingItemNotCurrentlySelected() {
         List<FilterViewModel> sortedList = new ArrayList<>();
         for (FilterViewModel item : filterList) {
-            if (!containsInSelected(item)) {
+            if (!containsInCurrentSelected(item)) {
                 sortedList.add(item);
             }
         }
+        Collections.sort(sortedList, (item1, item2) -> Boolean.compare(item2.isSelected(), item1.isSelected()));
         return sortedList;
     }
 }
