@@ -27,6 +27,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.data.pojo.GenerateHostDataResponse;
+import com.tokopedia.inbox.common.data.pojo.GenerateHostResponse;
+import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
@@ -176,6 +179,36 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
             }
         });
+    }
+
+    private Observable<ShippingParamsPostModel> getObservableGeneratedHost(ShippingParamsPostModel passData) {
+        Type token = new TypeToken<ResolutionResponse<JsonObject>>() {
+        }.getType();
+        GraphqlRequest getUploadhostRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
+                R.raw.get_upload_host), token);
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(getUploadhostRequest);
+        return graphqlUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .concatMap((Func1<GraphqlResponse, Observable<ShippingParamsPostModel>>) graphqlResponse -> {
+                    if (graphqlResponse != null) {
+                        ResolutionResponse resolutionResponse = graphqlResponse.getData(token);
+                        if (resolutionResponse.getErrorMessageJoined().isEmpty()) {
+                            JsonObject jsonData = (JsonObject) resolutionResponse.getData();
+                            GenerateHostDataResponse hostDataResponse = new Gson().fromJson(jsonData.getAsJsonObject("get_resolution_upload_host").getAsJsonObject("data"), GenerateHostDataResponse.class);
+                            GenerateHostResponse uploadHostData = hostDataResponse.getGenerateHostResponse();
+                            passData.setServerID(uploadHostData.getServerId());
+                            passData.setUploadHost(uploadHostData.getUploadHost());
+                            passData.setUserId(uploadHostData.getUserId());
+                            passData.setToken(uploadHostData.getToken());
+                        } else {
+                            throw new RuntimeException(resolutionResponse.getErrorMessageJoined());
+                        }
+                    }
+                    return Observable.just(passData);
+
+                });
+
     }
 
     private void renderPreviousShipping(ResCenterKurir shippingModel) {
@@ -338,7 +371,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             awbRequest.setAttachmentCount(params.getAttachmentList().size());
             showLoadingState();
 
-            retrofit.getObservableGenerateHost(viewListener.getActivity(), params)
+            getObservableGeneratedHost(params)
                     .flatMap((Func1<ShippingParamsPostModel, Observable<ShippingParamsPostModel>>)
                             shippingParamsPostModel -> getObservableUploadingFile(viewListener.getActivity(), params))
                     .flatMap(new Func1<ShippingParamsPostModel, Observable<InputAWBRequest>>() {
@@ -369,7 +402,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
 
-    private Observable<ShippingParamsPostModel> getObservableUploadingFile(Context context, ShippingParamsPostModel passData) {
+    private Observable<ShippingParamsPostModel> getObservableUploadingFile(Context
+                                                                                   context, ShippingParamsPostModel passData) {
         return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<ShippingParamsPostModel, List<AttachmentResCenterVersion2DB>, ShippingParamsPostModel>() {
             @Override
             public ShippingParamsPostModel call(ShippingParamsPostModel inputModel, List<AttachmentResCenterVersion2DB> attachmentResCenterDBs) {
@@ -379,7 +413,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         });
     }
 
-    private Observable<List<AttachmentResCenterVersion2DB>> doUploadFile(final Context context, final ShippingParamsPostModel inputModel) {
+    private Observable<List<AttachmentResCenterVersion2DB>> doUploadFile(
+            final Context context, final ShippingParamsPostModel inputModel) {
         return Observable
                 .from(inputModel.getAttachmentList())
                 .flatMap(new Func1<AttachmentResCenterVersion2DB, Observable<AttachmentResCenterVersion2DB>>() {
@@ -548,7 +583,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         );
     }
 
-    private GraphqlRequest getGraphQLRequest(int queryId, Type typeOfT, Map<String, Object> variables) {
+    private GraphqlRequest getGraphQLRequest(int queryId, Type
+            typeOfT, Map<String, Object> variables) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
                 queryId), typeOfT, variables);
     }
