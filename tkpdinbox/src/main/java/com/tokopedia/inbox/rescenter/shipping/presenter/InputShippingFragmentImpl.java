@@ -574,12 +574,20 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             if (isInstanceForEdit()) {
                 EditAWBResponse editAWBResponse = graphqlResponse.getData(EditAWBResponse.class);
                 if (editAWBResponse != null) {
-                    cacheKey = editAWBResponse.getResInputValidationResponse().getCacheKey();
+                    List<String> messageError = editAWBResponse.getResInputValidationResponse().getMessageError();
+                    if (!messageError.isEmpty())
+                        throw new RuntimeException(messageError.get(0));
+                    else
+                        cacheKey = editAWBResponse.getResInputValidationResponse().getCacheKey();
                 }
             } else {
                 InputAWBResponse inputAWBResponse = graphqlResponse.getData(InputAWBResponse.class);
                 if (inputAWBResponse != null) {
-                    cacheKey = inputAWBResponse.getResInputValidationResponse().getCacheKey();
+                    List<String> messageError = inputAWBResponse.getResInputValidationResponse().getMessageError();
+                    if (!messageError.isEmpty())
+                        throw new RuntimeException(messageError.get(0));
+                    else
+                        cacheKey = inputAWBResponse.getResInputValidationResponse().getCacheKey();
                 }
             }
             AWBRequest.setCacheKey(cacheKey);
@@ -589,9 +597,24 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onCreateEditTicket(GraphqlResponse graphqlResponse) {
-        clearAttachment();
-        viewListener.finishAsSuccessResult();
-        showLoading(false);
-        showMainPage(true);
+        if (graphqlResponse != null) {
+            if (isInstanceForEdit()) {
+                EditAWBResponse editAWBResponse = graphqlResponse.getData(EditAWBResponse.class);
+                List<String> messageError = editAWBResponse.getResInputValidationResponse().getMessageError();
+                if (!messageError.isEmpty())
+                    throw new RuntimeException(messageError.get(0));
+            } else {
+                InputAWBResponse inputAWBResponse = graphqlResponse.getData(InputAWBResponse.class);
+                if (inputAWBResponse != null) {
+                    List<String> messageError = inputAWBResponse.getResInputValidationResponse().getMessageError();
+                    if (!messageError.isEmpty())
+                        throw new RuntimeException(messageError.get(0));
+                }
+            }
+            clearAttachment();
+            viewListener.finishAsSuccessResult();
+            showLoading(false);
+            showMainPage(true);
+        }
     }
 }
