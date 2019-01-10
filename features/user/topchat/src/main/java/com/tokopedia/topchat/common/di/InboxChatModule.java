@@ -225,8 +225,8 @@ public class InboxChatModule {
     @Provides
     public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
                                                         NetworkRouter networkRouter,
-                                                        UserSessionInterface userSessionInterface) {
-        return new XUserIdInterceptor(context, networkRouter, userSessionInterface);
+                                                        UserSession userSession) {
+        return new XUserIdInterceptor(context, networkRouter, userSession);
     }
 
     @InboxChatScope

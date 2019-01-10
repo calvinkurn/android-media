@@ -58,6 +58,13 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
+    UserSession provideUserSession(
+            @ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @TemplateChatScope
+    @Provides
     NetworkRouter provideNetworkRouter(
             @ApplicationContext Context context) {
         return (NetworkRouter) context;
@@ -85,9 +92,9 @@ public class TemplateChatModule {
 
     @Provides
     public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
-                                                         NetworkRouter networkRouter,
-                                                         UserSessionInterface userSessionInterface) {
-        return new XUserIdInterceptor(context, networkRouter, userSessionInterface);
+                                                        NetworkRouter networkRouter,
+                                                        UserSession userSession) {
+        return new XUserIdInterceptor(context, networkRouter, userSession);
     }
 
 

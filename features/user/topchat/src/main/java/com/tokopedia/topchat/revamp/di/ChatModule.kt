@@ -123,9 +123,9 @@ class ChatModule {
     @Provides
     internal fun provideXUserIdInterceptor(@ApplicationContext context: Context,
                                            networkRouter: NetworkRouter,
-                                           userSessionInterface: UserSessionInterface):
+                                           userSession: UserSession):
             XUserIdInterceptor {
-        return XUserIdInterceptor(context, networkRouter, userSessionInterface)
+        return XUserIdInterceptor(context, networkRouter, userSession)
     }
 
     @ChatScope
