@@ -340,6 +340,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     tempCod.getMessageInfo(),
                     tempCod.getMessageLink()
             ));
+            mTrackerCod.eventViewBayarDiTempat();
             tvSelectCodPayment.setVisibility(View.VISIBLE);
             tvSelectCodPayment.setOnClickListener(this::proceedCod);
         }

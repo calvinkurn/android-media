@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.checkout.R;
+import com.tokopedia.logisticanalytics.CodAnalytics;
 
 import org.xml.sax.XMLReader;
 
@@ -24,6 +26,7 @@ public class CodBottomSheetFragment extends BottomSheetDialogFragment {
     private String mTitle;
     private String mMessage;
     private static final String ARGUMENT_MESSAGE_HTML = "ARGUMENT_MESSAGE_HTML";
+    private CodAnalytics mTracker;
 
     public CodBottomSheetFragment() {
     }
@@ -40,6 +43,7 @@ public class CodBottomSheetFragment extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
+            mTracker = new CodAnalytics(((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker());
             mTitle = getActivity().getString(R.string.label_cod);
             if (getArguments() != null) {
                 mMessage = getArguments().getString(ARGUMENT_MESSAGE_HTML);
@@ -63,14 +67,18 @@ public class CodBottomSheetFragment extends BottomSheetDialogFragment {
         TextView textViewContent = view.findViewById(R.id.text_view_content);
         textViewContent.setText(Html.fromHtml(mMessage, null, new UlTagHandler()));
 
-        view.findViewById(R.id.button_bottom_sheet_cod).setOnClickListener(this::onCloseButtonClick);
+        view.findViewById(R.id.button_bottom_sheet_cod).setOnClickListener(view1 -> {
+            if (mTracker != null) mTracker.eventClickMengertiIneligible();
+            dismiss();
+        });
 
         View layoutTitle = view.findViewById(com.tokopedia.design.R.id.layout_title);
-        layoutTitle.setOnClickListener(this::onCloseButtonClick);
-    }
+        layoutTitle.setOnClickListener(view1 -> {
+            if (mTracker != null) mTracker.eventClickXIneligible();
+            dismiss();
+        });
 
-    private void onCloseButtonClick(View view) {
-        dismiss();
+        if (mTracker != null) mTracker.eventViewErrorIneligible();
     }
 
     private class UlTagHandler implements Html.TagHandler{
