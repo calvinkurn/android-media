@@ -62,6 +62,8 @@ ext {
     promoCheckoutVersion = '2.22'
     tkpdUserIdentification = '2.22'
     tkpdUserIdentificationCommon = '2.22'
+    tkpdTravelVersion = '2.22'
+
 
     //SCOPE TRANSACTION
     groupIdTransaction = 'com.tokopedia.transaction'
@@ -156,6 +158,7 @@ ext {
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon          : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
+            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -188,7 +191,9 @@ ext {
             train                         : ":features:digital:train",
 
             home                          : ":features:discovery:home",
+            //home                          : ":features:discovery:home_no_op",
             recentview                    : ":features:discovery:recentview",
+            //recentview                    : ":features:discovery:recentview_no_op",
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
 
@@ -309,6 +314,7 @@ ext {
             seller                        : ":tkpdseller",
             session                       : ":tkpdsession",
             transaction                   : ":tkpdtransaction",
-            transactioncommon             : ":tkpdtransaction-common"
+            transactioncommon             : ":tkpdtransaction-common",
+            commonTravel                  : ":features:digital:common_travel"
     ]
 }

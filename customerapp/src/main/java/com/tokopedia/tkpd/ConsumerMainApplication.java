@@ -49,6 +49,7 @@ import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
@@ -61,6 +62,8 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.notifications.common.CMNotificationUtils;
+import com.tokopedia.notifications.data.source.CMNotificationUrls;
 import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
@@ -86,6 +89,7 @@ import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpdpdp.ProductDetailUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.train.common.constant.TrainUrl;
@@ -292,6 +296,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FeedUrl.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         FeedUrl.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         FeedUrl.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
+        ChatroomUrl.GROUP_CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         LoginRegisterUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionCommonUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionCommonUrl.BASE_WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
@@ -307,6 +312,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.network.constant.TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         KycCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
+        CMNotificationUrls.CAMPAIGN_MANAGEMENT_DOMAIN = ConsumerAppBaseUrl.CAMPAIGN_MANAGEMENT_DOMAIN;
+        Config.TOPADS_BASE_URL = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
     }
 
 

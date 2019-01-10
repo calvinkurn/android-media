@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -51,7 +52,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.booking.widget.FlightInsuranceView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
@@ -65,8 +65,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -275,11 +275,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             expiredTransactionDate = (Date) savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE);
             priceViewModel = savedInstanceState.getParcelable(KEY_PARAM_EXTRA_PRICE);
             hideFullPageLoading();
-            if (flightBookingCartData != null) {
-                presenter.renderUi(flightBookingCartData, true);
-            } else {
-                presenter.initialize();
-            }
+            presenter.renderUi(flightBookingCartData, true);
         }
     }
 
@@ -688,7 +684,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         countdownFinishTransactionView.cancel();
         startActivityForResult(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel, priceViewModel.getComboKey()), REQUEST_CODE_REVIEW);
     }
-
 
 
     @Override

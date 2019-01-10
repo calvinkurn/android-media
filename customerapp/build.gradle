@@ -342,6 +342,7 @@ dependencies {
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.browse)
     implementation project(rootProject.ext.features.notifCenter)
+    implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -511,6 +512,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.challenges)
+    implementation project(rootProject.ext.libraries.cmnotification)
+
 }
 
 

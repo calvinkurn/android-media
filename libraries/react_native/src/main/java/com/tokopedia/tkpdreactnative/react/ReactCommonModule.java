@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.UiThreadUtil;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -68,6 +69,17 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
                 }
             }
         });
+
+    @ReactMethod
+    public void getAppVersionCode(Promise promise) {
+        int versionCode = GlobalConfig.VERSION_CODE;
+        promise.resolve(versionCode);
+    }
+
+    @ReactMethod
+    public void getAppVersionName(Promise promise) {
+        String versionName = GlobalConfig.VERSION_NAME;
+        promise.resolve(versionName);
     }
 
     @ReactMethod
