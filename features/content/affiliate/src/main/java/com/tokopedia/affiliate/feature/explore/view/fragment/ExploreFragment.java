@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +35,7 @@ import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
+import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
@@ -80,6 +82,7 @@ public class ExploreFragment
 
 
     private static final int TIME_DEBOUNCE_MILIS = 500;
+    public static final int REQUEST_DETAIL_FILTER = 1234;
 
 
     private ExploreAdapter adapter;
@@ -427,11 +430,13 @@ public class ExploreFragment
     private void populateFilter(List<FilterViewModel> filterList) {
         layoutFilter.setVisibility(View.VISIBLE);
         rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener());
+        filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener(), R.layout.item_explore_filter);
         rvFilter.setAdapter(filterAdapter);
-//        btnFilterMore.setOnClickListener(v->{
-//
-//        });
+        btnFilterMore.setOnClickListener(v->{
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getFilterList()));
+            startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
+        });
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
@@ -593,6 +598,17 @@ public class ExploreFragment
         searchView.getSearchTextView().setText(keyword);
         onSearchTextModified(keyword, true);
         autoCompleteAdapter.clearAdapter();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_DETAIL_FILTER) {
+                List<FilterViewModel> theData = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                boolean test = theData.get(0).isSelected();
+            }
+        }
     }
 
     @Override

@@ -30,8 +30,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private List<FilterViewModel> filterList = new ArrayList<>();
     private Context context;
     private OnFilterClickedListener filterClickedListener;
+    private int layout;
 
-    public FilterAdapter(Context context, List<FilterViewModel> filterList, OnFilterClickedListener onFilterClickedListener) {
+    public FilterAdapter(Context context, List<FilterViewModel> filterList, OnFilterClickedListener onFilterClickedListener, int layout) {
         this.filterList = filterList;
         this.context = context;
         this.filterClickedListener = onFilterClickedListener;
@@ -40,7 +41,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_explore_filter, parent, false));
+        return new Holder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
     }
 
     @Override
