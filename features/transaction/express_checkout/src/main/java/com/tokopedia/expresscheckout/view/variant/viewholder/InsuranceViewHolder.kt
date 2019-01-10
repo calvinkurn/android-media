@@ -8,6 +8,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceViewModel
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import kotlinx.android.synthetic.main.item_insurance_detail_product_page.view.*
 
 /**
@@ -22,17 +23,27 @@ class InsuranceViewHolder(val view: View, val listener: CheckoutVariantActionLis
 
     override fun bind(element: InsuranceViewModel?) {
         if (element != null) {
-            itemView.cb_insurance.isChecked = element.isInsuranceChecked
-            itemView.cb_insurance.setOnCheckedChangeListener { compoundButton: CompoundButton, isChecked: Boolean ->
-                run {
-                    itemView.cb_insurance.isChecked = isChecked
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        listener.onNeedToNotifySingleItem(adapterPosition)
+            if (element.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
+                itemView.cb_insurance.visibility = View.GONE
+                itemView.cb_insurance_disabled.isChecked = true
+                itemView.cb_insurance_disabled.visibility = View.VISIBLE
+                itemView.cb_insurance_disabled.isClickable = false
+            } else {
+                itemView.cb_insurance_disabled.visibility = View.GONE
+                itemView.cb_insurance.visibility = View.VISIBLE
+                itemView.cb_insurance.isChecked = element.isChecked
+                itemView.cb_insurance.setOnCheckedChangeListener { compoundButton: CompoundButton, isChecked: Boolean ->
+                    run {
+                        element.isChecked = isChecked
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            listener.onNeedToNotifySingleItem(adapterPosition)
+                        }
                     }
                 }
             }
             itemView.img_bt_insurance_info.setOnClickListener { listener.onClickInsuranceInfo(element.insuranceLongInfo) }
             itemView.tv_insurance_long_info.text = element.insuranceLongInfo
+            itemView.tv_insurance_short_info.text = element.insuranceShortInfo
             itemView.tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.insurancePrice, false)
         }
     }

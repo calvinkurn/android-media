@@ -36,12 +36,12 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
                         for (product: ProductData in shippingDurationViewModel.serviceData.products) {
                             if (product.isRecommend) {
-                                presenter.prepareViewModel()
+                                presenter.prepareViewModel(product)
                                 view?.updateShippingData(product)
                                 return
                             }
                         }
-                        presenter.prepareViewModel()
+                        presenter.prepareViewModel(shippingDurationViewModel.serviceData.products[0])
                         view?.updateShippingData(shippingDurationViewModel.serviceData.products[0])
                         return
                     }

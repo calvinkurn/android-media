@@ -6,6 +6,7 @@ import com.tokopedia.expresscheckout.domain.model.atc.ChildModel
 import com.tokopedia.expresscheckout.domain.model.atc.OptionModel
 import com.tokopedia.expresscheckout.domain.model.atc.VariantModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -13,7 +14,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 interface DataMapper {
 
-    fun convertToViewModels(atcResponseModel: AtcResponseModel): ArrayList<Visitable<*>>
+    fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData): ArrayList<Visitable<*>>
 
     fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteViewModel
 
@@ -31,5 +32,5 @@ interface DataMapper {
 
     fun convertToOptionVariantViewModel(optionModel: OptionModel, variantId: Int, childrenModel: ArrayList<ChildModel>): OptionVariantViewModel
 
-    fun convertToInsuranceViewModel(): InsuranceViewModel
+    fun convertToInsuranceViewModel(atcResponseModel: AtcResponseModel, productData: ProductData, summaryViewModel: SummaryViewModel): InsuranceViewModel
 }

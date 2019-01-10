@@ -50,7 +50,7 @@ interface CheckoutVariantContract {
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 
-        fun prepareViewModel()
+        fun prepareViewModel(productData: ProductData)
     }
 
 }

@@ -13,6 +13,7 @@ import com.tokopedia.expresscheckout.view.variant.subscriber.GetRatesSubscriber
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter
@@ -44,9 +45,9 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         this.atcResponseModel = atcResponseModel
     }
 
-    override fun prepareViewModel() {
+    override fun prepareViewModel(productData: ProductData) {
         viewModelMapper = ViewModelMapper()
-        view?.showData(viewModelMapper.convertToViewModels(atcResponseModel))
+        view?.showData(viewModelMapper.convertToViewModels(atcResponseModel, productData))
     }
 
     override fun loadExpressCheckoutData(atcRequest: AtcRequest) {

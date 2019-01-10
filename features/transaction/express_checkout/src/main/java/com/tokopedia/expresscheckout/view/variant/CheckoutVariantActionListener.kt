@@ -33,6 +33,6 @@ interface CheckoutVariantActionListener {
 
     fun onChangeQuantity(quantityViewModel: QuantityViewModel)
 
-    fun onSummaryChanged(summaryViewModel: SummaryViewModel)
+    fun onSummaryChanged(summaryViewModel: SummaryViewModel?)
 
 }

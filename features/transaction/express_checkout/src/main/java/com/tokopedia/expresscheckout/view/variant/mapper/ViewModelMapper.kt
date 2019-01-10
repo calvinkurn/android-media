@@ -6,6 +6,8 @@ import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -13,7 +15,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 class ViewModelMapper : DataMapper {
 
-    override fun convertToViewModels(atcResponseModel: AtcResponseModel): ArrayList<Visitable<*>> {
+    override fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData): ArrayList<Visitable<*>> {
         var dataList: ArrayList<Visitable<*>> = ArrayList()
 
         var variantViewModelList = ArrayList<TypeVariantViewModel>()
@@ -43,8 +45,12 @@ class ViewModelMapper : DataMapper {
             dataList.addAll(variantViewModelList)
         }
         dataList.add(convertToNoteViewModel(atcResponseModel))
+        var summaryViewModel = convertToSummaryViewModel(atcResponseModel)
+        if (productData.insurance.insuranceType != InsuranceConstant.INSURANCE_TYPE_NO) {
+            dataList.add(convertToInsuranceViewModel(atcResponseModel, productData, summaryViewModel))
+        }
         if (atcResponseModel.atcDataModel?.userProfileModelDefaultModel != null) {
-            dataList.add(convertToSummaryViewModel(atcResponseModel))
+            dataList.add(summaryViewModel)
         }
 
         return dataList
@@ -347,8 +353,20 @@ class ViewModelMapper : DataMapper {
         return false
     }
 
-    override fun convertToInsuranceViewModel(): InsuranceViewModel {
+    override fun convertToInsuranceViewModel(atcResponseModel: AtcResponseModel,
+                                             productData: ProductData,
+                                             summaryViewModel: SummaryViewModel): InsuranceViewModel {
         var insuranceViewModel = InsuranceViewModel()
+        insuranceViewModel.insuranceLongInfo = productData.insurance.insuranceUsedInfo
+        insuranceViewModel.insurancePrice = productData.insurance.insurancePrice
+        insuranceViewModel.insuranceShortInfo = "Transaksi ini tidak terlindungi asuransi"
+        insuranceViewModel.insuranceType = productData.insurance.insuranceType
+        insuranceViewModel.insuranceUsedDefault = productData.insurance.insuranceUsedDefault
+        insuranceViewModel.isChecked = productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+
+        summaryViewModel.shippingPrice = productData.price.price
+        summaryViewModel.insurancePrice = productData.insurance.insurancePrice
+        summaryViewModel.insuranceInfo = productData.insurance.insuranceUsedInfo
 
         return insuranceViewModel
     }

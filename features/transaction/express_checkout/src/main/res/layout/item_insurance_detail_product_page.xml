@@ -23,9 +23,15 @@
 
             <CheckBox
                 android:id="@+id/cb_insurance"
-                style="@style/TransactionCheckbox"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:theme="@style/TransactionCheckbox" />
+
+            <CheckBox
+                android:id="@+id/cb_insurance_disabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/TransactionCheckboxDisabled" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,7 +52,7 @@
                         android:textColor="#b3000000"
                         android:textSize="14sp"
                         android:textStyle="normal"
-                        tools:text="Asuransi Pengiriman" />
+                        android:text="Asuransi Pengiriman" />
 
                     <ImageView
                         android:id="@+id/img_bt_insurance_info"

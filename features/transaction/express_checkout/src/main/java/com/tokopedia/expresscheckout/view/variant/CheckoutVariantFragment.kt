@@ -275,13 +275,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
         if (summaryViewModel != null) {
             onNeedToNotifySingleItem(adapter.getIndex(summaryViewModel))
+            onSummaryChanged(summaryViewModel)
         }
 
         onNeedToNotifySingleItem(adapter.getIndex(quantityViewModel))
     }
 
-    override fun onSummaryChanged(summaryViewModel: SummaryViewModel) {
-        var totalPayment = summaryViewModel.itemPrice + summaryViewModel.shippingPrice + summaryViewModel.servicePrice + summaryViewModel.insurancePrice
+    override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
+        var totalPayment = summaryViewModel?.itemPrice?.plus(summaryViewModel.shippingPrice)?.plus(summaryViewModel.servicePrice)?.plus(summaryViewModel.insurancePrice)
         fragmentViewModel.totalPayment = totalPayment
 
         tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(fragmentViewModel.totalPayment
@@ -351,6 +352,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         adapter.clearAllElements()
         adapter.addDataViewModel(arrayList)
         adapter.notifyDataSetChanged()
+
+        onSummaryChanged(adapter.getSummaryViewModel())
     }
 
     override fun setShippingError() {

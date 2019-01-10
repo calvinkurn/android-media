@@ -50,6 +50,7 @@ class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantActionListe
             QuantityViewHolder.LAYOUT -> QuantityViewHolder(view, listener)
             SummaryViewHolder.LAYOUT -> SummaryViewHolder(view, listener)
             TypeVariantViewHolder.LAYOUT -> TypeVariantViewHolder(view, listener)
+            InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(view, listener)
             else -> super.createViewHolder(view, viewType)
         }
 
