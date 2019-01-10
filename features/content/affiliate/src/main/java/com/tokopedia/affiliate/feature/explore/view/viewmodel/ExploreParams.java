@@ -1,13 +1,14 @@
 package com.tokopedia.affiliate.feature.explore.view.viewmodel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by yfsx on 08/10/18.
  */
 public class ExploreParams {
     private String keyword;
-    private FilterViewModel filter;
+    private List<FilterViewModel> filters;
     private SortViewModel sort;
     private boolean isCanLoadMore;
     private String cursor;
@@ -19,7 +20,7 @@ public class ExploreParams {
 
     public void resetParams() {
         keyword = "";
-        filter = new FilterViewModel();
+        filters = new ArrayList<>();
         sort = new SortViewModel();
         isCanLoadMore = true;
         cursor = "";
@@ -51,9 +52,6 @@ public class ExploreParams {
         setFirstData();
     }
 
-    public void setFilter(FilterViewModel filter) {
-        this.filter = filter;
-    }
 
     public void setSort(SortViewModel sort) {
         this.sort = sort;
@@ -65,11 +63,15 @@ public class ExploreParams {
 
     private void resetFilterSort() {
         setSort(new SortViewModel());
-        setFilter(new FilterViewModel());
+        setFilters(new ArrayList<>());
     }
 
-    public FilterViewModel getFilter() {
-        return filter;
+    public List<FilterViewModel> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<FilterViewModel> filters) {
+        this.filters = filters;
     }
 
     public SortViewModel getSort() {

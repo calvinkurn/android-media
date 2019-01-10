@@ -61,12 +61,12 @@ public class ExploreUseCase extends GraphqlUseCase {
         if (!TextUtils.isEmpty(exploreParams.getCursor())) {
             params.putString(PARAM_CURSOR, exploreParams.getCursor());
         }
-        if (exploreParams.getFilter().size() != 0) {
-            params.putObject(PARAM_FILTER, exploreParams.getFilter());
+        if (exploreParams.getFilters().size() != 0) {
+            params.putObject(PARAM_FILTER, exploreParams.getFilters());
         }
-        if (!TextUtils.isEmpty(exploreParams.getSort().getKey())) {
-            params.putObject(PARAM_SORT, exploreParams.getSort());
-        }
+//        if (!TextUtils.isEmpty(exploreParams.getSort().getKey())) {
+//            params.putObject(PARAM_SORT, exploreParams.getSort());
+//        }
         return params;
     }
 }
