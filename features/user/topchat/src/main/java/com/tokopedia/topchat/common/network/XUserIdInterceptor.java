@@ -19,7 +19,7 @@ public class XUserIdInterceptor extends TkpdAuthInterceptor {
 
     public XUserIdInterceptor(@ApplicationContext Context context,
                               NetworkRouter networkRouter,
-                              UserSessionInterface userSessionInterface,) {
+                              UserSessionInterface userSessionInterface) {
         super(context, networkRouter, userSessionInterface);
     }
 
