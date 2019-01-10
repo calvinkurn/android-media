@@ -1,0 +1,55 @@
+mutation express_checkout($params: ExpressCheckoutParams) {
+  express_checkout(params: $params) {
+    header {
+      process_time
+      messages
+      reason
+      error_code
+    }
+    data {
+      success
+      error
+      error_state
+      message
+      data {
+        applink
+        callback_url
+        redirect_param
+        reflect {
+          merchant_code
+          profile_code
+          transaction_id
+          transaction_code
+          currency
+          amount
+          gateway_code
+          gateway_type
+          fee
+          additional_fee
+          user_defined_value
+          customer_email
+          state
+          expired_on
+          updated_on
+          payment_details {
+            name
+            amount
+          }
+          items {
+            id
+            name
+            quantity
+            price
+          }
+          valid_param
+          signature
+          tokocash_usage
+          pair_data
+          error_code
+          use_3dsecure
+        }
+      }
+    }
+    status
+  }
+}

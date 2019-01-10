@@ -28,6 +28,7 @@ import rx.Subscriber
 class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.View>(), CheckoutVariantContract.Presenter {
 
     private val getExpressCheckoutFormUseCase = GraphqlUseCase()
+    private val checkoutExpressUseCase = GraphqlUseCase()
     private lateinit var getCourierRecommendationUseCase: GetCourierRecommendationUseCase
     private lateinit var atcResponseModel: AtcResponseModel
     private lateinit var viewModelMapper: ViewModelMapper
@@ -38,6 +39,8 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
     override fun detachView() {
         getExpressCheckoutFormUseCase.unsubscribe()
+        getCourierRecommendationUseCase.unsubscribe()
+        checkoutExpressUseCase.unsubscribe()
         super.detachView()
     }
 
@@ -106,7 +109,8 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
     }
 
     override fun checkout() {
-
+        // Todo : show progress loading
+        // Todo : hit gql checkout
     }
 
 }
