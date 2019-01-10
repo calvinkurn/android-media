@@ -41,7 +41,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
-import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatRouter
