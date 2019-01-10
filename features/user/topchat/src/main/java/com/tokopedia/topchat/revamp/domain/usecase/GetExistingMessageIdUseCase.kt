@@ -20,7 +20,7 @@ class GetExistingMessageIdUseCase @Inject constructor(
 ) {
 
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_topchat_replies)
+        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_existing_message_id)
         val graphqlRequest = GraphqlRequest(query,
                 GetExistingMessageIdPojo::class.java, requestParams)
 
