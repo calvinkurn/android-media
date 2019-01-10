@@ -104,7 +104,7 @@ public class DynamicFeedShopAdapter
             Shop shop = data.getShop();
             imageLoader.loadCircle(shop, ivProfile);
             tvName.setText(fromHtml(shop.getName()));
-            tvDescription.setText(fromHtml(shop.getCity()));
+            tvDescription.setText(fromHtml(shop.getTagline()));
 
             bindFavorite(data);
             bindBadge(shop);
