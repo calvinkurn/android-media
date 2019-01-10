@@ -10,8 +10,10 @@ import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
@@ -84,17 +86,26 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapCardBanner(feed: Feed, template: Template): BannerViewModel {
         val bannerList: MutableList<BannerItemViewModel> = ArrayList()
-        for (media in feed.content.cardbanner.body.media) {
-            val id = try {
-                media.id.toInt()
-            } catch (e: NumberFormatException) {
-                0
-            }
+
+        feed.content.cardbanner.body.media.forEachIndexed { index, media ->
+            val id: Int = media.id.toIntOrNull() ?: 0
+            val trackBannerModel = TrackingBannerModel(
+                    feed.type,
+                    feed.activity,
+                    feed.tracking.type,
+                    media.type,
+                    media.mediaItems.firstOrNull()?.tags?.firstOrNull()?.linkType ?: "",
+                    media.appLink,
+                    feed.id,
+                    feed.content.cardbanner.body.media.size,
+                    index
+            )
 
             bannerList.add(BannerItemViewModel(
                     id,
                     media.thumbnail,
-                    media.appLink
+                    media.appLink,
+                    trackBannerModel
             ))
         }
 
@@ -143,6 +154,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapCardPost(feed: Feed, template: Template): DynamicPostViewModel {
         val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body)
+        val trackingPostModel = mapPostTracking(feed)
 
         return DynamicPostViewModel(
                 feed.id,
@@ -151,7 +163,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 feed.content.cardpost.footer,
                 feed.content.cardpost.body.caption,
                 contentList,
-                template
+                template,
+                trackingPostModel
         )
     }
 
@@ -169,6 +182,24 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
         return list
     }
+
+    private fun mapPostTracking(feed: Feed): TrackingPostModel {
+        val media = feed.content.cardpost.body.media.firstOrNull()
+        val mediaType = media?.type ?: ""
+        val tagsType = media?.mediaItems?.firstOrNull()?.tags?.firstOrNull()?.linkType ?: ""
+
+        return TrackingPostModel(
+                feed.type,
+                feed.activity,
+                feed.tracking.type,
+                mediaType,
+                tagsType,
+                feed.content.cardpost.footer.buttonCta.appLink,
+                feed.id,
+                feed.content.cardpost.body.media.size
+        )
+    }
+
 
     private fun mapPostImage(media: Media): ImagePostViewModel {
         return ImagePostViewModel(

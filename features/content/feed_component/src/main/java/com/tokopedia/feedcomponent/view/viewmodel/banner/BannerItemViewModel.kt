@@ -6,7 +6,8 @@ package com.tokopedia.feedcomponent.view.viewmodel.banner
  */
 
 data class BannerItemViewModel(
-        val activityId: Int,
-        val imageUrl: String,
-        val redirectUrl: String
+        val activityId: Int = 0,
+        val imageUrl: String = "",
+        val redirectUrl: String = "",
+        val trackingBannerModel: TrackingBannerModel = TrackingBannerModel()
 )

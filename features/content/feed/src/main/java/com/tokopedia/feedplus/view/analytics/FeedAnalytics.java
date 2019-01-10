@@ -4,16 +4,19 @@ import android.app.Activity;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_CLICK;
+import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_VIEW;
 import static com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel.SCREEN_UNIFY_HOME_FEED;
+import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED;
 
 /**
  * @author by nisie on 10/3/18.
@@ -27,6 +30,8 @@ public class FeedAnalytics {
     private static final String EVENT_ACTION = "eventAction";
     private static final String EVENT_LABEL = "eventLabel";
     private static final String EVENT_ECOMMERCE = "ecommerce";
+    private static final String KEY_USER_ID = "userId";
+    private static final String KEY_USER_ID_MOD = "userIdmodulo";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
 
     private static final String CATEGORY_R3_USER = "r3User";
@@ -35,7 +40,7 @@ public class FeedAnalytics {
 
     private static final String ACTION_IMPRESSION = "Impression";
     private static final String ACTION_VIEW = "View";
-    private static final Object ACTION_CLICK = "Click";
+    private static final String ACTION_CLICK = "Click";
     private static final String FEED_VIEW_ALL_KOL_RECOMMENDATION = "feed - view all kol recommendation";
     private static final String FEED_UNFOLLOW_KOL_RECOMMENDATION = "feed - unfollow kol recommendation";
     private static final String FEED_FOLLOW_KOL_RECOMMENDATION = "feed - follow kol recommendation";
@@ -52,6 +57,10 @@ public class FeedAnalytics {
     private static final String STATIC_VALUE_FEED_CLICK_CARD_ITEM = "feed - click card item";
     private static final String STATIC_FORMAT_ACTION_FIELD_FEED_PRODUCT = "/feed - product %d - %s";
     private static final String ACTION_CLICK_VIEW_ALL = "click view all";
+
+    private static final String DASH = " - ";
+    private static final String SINGLE = "single";
+    private static final String MULTIPLE = "multiple";
 
     private AnalyticTracker analyticTracker;
     private UserSessionInterface userSession;
@@ -356,6 +365,148 @@ public class FeedAnalytics {
                 CATEGORY_HOMEPAGE,
                 FEED_CLICK_KOL_RECOMMENDATION_PROFILE,
                 generateKolRecommendationEventLabel(kolCategory, kolName)
+        );
+    }
+
+    private Map<String, Object> getEventEcommerceView(String action, String label,
+                                                      List<FeedEnhancedTracking.Promotion> promotions,
+                                                      int userId) {
+        return DataLayer.mapOf(
+                EVENT_NAME, PROMO_VIEW,
+                EVENT_CATEGORY, CONTENT_FEED,
+                EVENT_ACTION, action,
+                EVENT_LABEL, label,
+                KEY_USER_ID, userId,
+                KEY_USER_ID_MOD, userId % 50,
+                EVENT_ECOMMERCE, FeedEnhancedTracking.Ecommerce.getEcommerceView(promotions)
+        );
+    }
+
+    private Map<String, Object> getEventEcommerceClick(String action,
+                                                       String label,
+                                                       List<FeedEnhancedTracking.Promotion> promotions,
+                                                       int userId) {
+        return DataLayer.mapOf(
+                EVENT_NAME, PROMO_CLICK,
+                EVENT_CATEGORY, CONTENT_FEED,
+                EVENT_ACTION, action,
+                EVENT_LABEL, label,
+                KEY_USER_ID, userId,
+                KEY_USER_ID_MOD, userId % 50,
+                EVENT_ECOMMERCE, FeedEnhancedTracking.Ecommerce.getEcommerceClick(promotions)
+        );
+    }
+
+    private String singleOrMultiple(int totalContent) {
+        if (totalContent == 1) return SINGLE;
+        else return MULTIPLE;
+    }
+
+    public void eventCardPostImpression(String templateType, String activityName,
+                                        String trackingType, String mediaType, String tagsType,
+                                        String redirectUrl,
+                                        int totalContent, int postId, int position, int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                        postId,
+                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
+                                singleOrMultiple(totalContent),
+                        redirectUrl,
+                        position,
+                        "",
+                        0,
+                        ""
+                )
+        );
+        analyticTracker.sendEnhancedEcommerce(
+                getEventEcommerceView(
+                        ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
+                                + activityName + DASH + trackingType,
+                        mediaType,
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventCardPostClick(String templateType, String activityName,
+                                   String trackingType, String mediaType, String tagsType,
+                                   String redirectUrl, String element, int totalContent,
+                                   int postId, int position, int contentPosition, int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                        postId,
+                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
+                                singleOrMultiple(totalContent),
+                        redirectUrl,
+                        position,
+                        "",
+                        0,
+                        ""
+                )
+        );
+        analyticTracker.sendEnhancedEcommerce(
+                getEventEcommerceClick(
+                        ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
+                                + activityName + DASH + trackingType + DASH + element,
+                        mediaType + DASH + String.valueOf(contentPosition),
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventBannerImpression(String templateType, String activityName,
+                                      String trackingType, String mediaType, String tagsType,
+                                      String bannerUrl, int totalBanner,
+                                      int postId, int feedPosition, int bannerPosition,
+                                      int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                        postId,
+                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
+                                singleOrMultiple(totalBanner),
+                        bannerUrl + DASH + bannerPosition,
+                        feedPosition,
+                        String.valueOf(totalBanner),
+                        0,
+                        ""
+                )
+        );
+        analyticTracker.sendEnhancedEcommerce(
+                getEventEcommerceView(
+                        ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
+                                + activityName + DASH + trackingType,
+                        mediaType,
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventBannerClick(String templateType, String activityName,
+                                 String trackingType, String mediaType, String element,
+                                 String bannerUrl, int totalBanner,
+                                 int postId, int totalProduct, int position, int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                        postId,
+                        FeedEnhancedTracking.Promotion.createContentNameBanner(),
+                        bannerUrl,
+                        position,
+                        String.valueOf(totalBanner),
+                        0,
+                        ""
+                )
+        );
+        analyticTracker.sendEnhancedEcommerce(
+                getEventEcommerceClick(
+                        ACTION_CLICK.toLowerCase() + " - " + templateType + " - "
+                                + activityName + " - " + trackingType + " - " + element,
+                        mediaType,
+                        promotionList,
+                        userId
+                )
         );
     }
 }

@@ -16,5 +16,6 @@ data class RecommendationCardViewModel(
         val description: String = "",
         val redirectUrl: String = "",
         val cta: FollowCta = FollowCta(),
-        val template: TemplateItem = TemplateItem()
+        val template: TemplateItem = TemplateItem(),
+        val trackingRecommendationModel: TrackingRecommendationModel = TrackingRecommendationModel()
 )

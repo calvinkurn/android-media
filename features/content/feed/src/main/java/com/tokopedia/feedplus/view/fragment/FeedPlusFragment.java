@@ -40,11 +40,16 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
@@ -520,6 +525,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        trackFeedImpression(listFeed);
+
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         adapter.setEndlessScrollListener();
@@ -527,6 +534,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
+        trackFeedImpression(listFeed);
+
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         adapter.unsetEndlessScrollListener();
@@ -608,6 +617,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeed(ArrayList<Visitable> listFeed) {
+        trackFeedImpression(listFeed);
+
         adapter.removeEmpty();
         int posStart = adapter.getItemCount();
         adapter.addList(listFeed);
@@ -1599,5 +1610,63 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGridOthersClick(@NotNull String redirectLink) {
         onGoToLink(redirectLink);
+    }
+
+    private void trackFeedImpression(ArrayList<Visitable> listFeed) {
+        for (int i = 0; i < listFeed.size(); i++) {
+            Visitable visitable = listFeed.get(i);
+            int feedPosition = adapter.getlist().size() + i;
+            int userId = 0;
+            try {
+                userId = Integer.valueOf(getUserSession().getUserId());
+            } catch (NumberFormatException ignored) {
+            }
+
+            if (visitable instanceof DynamicPostViewModel) {
+                DynamicPostViewModel postViewModel = (DynamicPostViewModel) visitable;
+                TrackingPostModel trackingPostModel = postViewModel.getTrackingPostModel();
+
+                analytics.eventCardPostImpression(
+                        trackingPostModel.getTemplateType(),
+                        trackingPostModel.getActivityName(),
+                        trackingPostModel.getTrackingType(),
+                        trackingPostModel.getMediaType(),
+                        trackingPostModel.getTagsType(),
+                        trackingPostModel.getRedirectUrl(),
+                        trackingPostModel.getTotalContent(),
+                        trackingPostModel.getPostId(),
+                        feedPosition,
+                        userId
+                );
+            } else if (visitable instanceof BannerViewModel) {
+                BannerViewModel bannerViewModel = (BannerViewModel) visitable;
+
+                for (BannerItemViewModel item : bannerViewModel.getItemViewModels()) {
+                    TrackingBannerModel trackingBannerModel = item.getTrackingBannerModel();
+                    analytics.eventBannerImpression(
+                            trackingBannerModel.getTemplateType(),
+                            trackingBannerModel.getActivityName(),
+                            trackingBannerModel.getTrackingType(),
+                            trackingBannerModel.getMediaType(),
+                            trackingBannerModel.getTagsType(),
+                            trackingBannerModel.getBannerUrl(),
+                            trackingBannerModel.getTotalBanner(),
+                            trackingBannerModel.getPostId(),
+                            feedPosition,
+                            trackingBannerModel.getBannerPosition(),
+                            userId
+                    );
+                }
+            } else if (visitable instanceof FeedRecommendationViewModel) {
+                FeedRecommendationViewModel recommendationViewModel
+                        = (FeedRecommendationViewModel) visitable;
+
+                for (RecommendationCardViewModel cardViewModel
+                        : recommendationViewModel.getCards()) {
+
+
+                }
+            }
+        }
     }
 }

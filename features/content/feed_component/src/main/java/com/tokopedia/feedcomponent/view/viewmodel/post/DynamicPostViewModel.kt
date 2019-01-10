@@ -18,7 +18,8 @@ data class DynamicPostViewModel(
         val footer: Footer = Footer(),
         val caption: Caption = Caption(),
         var contentList: MutableList<BasePostViewModel> = ArrayList(),
-        val template: Template = Template()
+        val template: Template = Template(),
+        val trackingPostModel: TrackingPostModel = TrackingPostModel()
 
 ) : Visitable<DynamicFeedTypeFactory> {
     
