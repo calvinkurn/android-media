@@ -41,7 +41,6 @@ import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
-import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
@@ -309,7 +308,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun initInjector() {
 
         if (activity != null && (activity as Activity).application != null) {
-            val chatComponent = DaggerTopChatRoomComponent.builder().baseAppComponent(
+            val chatComponent = DaggerChatComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
                     .build()
             chatComponent.inject(this)
