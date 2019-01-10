@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class FilterFragment extends BaseDaggerFragment {
 
-    private List<FilterViewModel> filterList;
+    private List<FilterViewModel> filterList = new ArrayList<>();
 
     private RecyclerView rvFilter;
     private ButtonCompat btnApply;

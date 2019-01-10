@@ -118,6 +118,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     @Override
     public int getItemCount() {
+        if (layout ==  R.layout.item_explore_filter && filterList.size() > 5) return 5;
         return filterList.size();
     }
 
