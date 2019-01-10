@@ -94,4 +94,5 @@
     <string name="label_credit_addition">Total Penambahan</string>
     <string name="label_credit_used">Total Terpakai</string>
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
+    <string name="top_ads_no_credit_history">Belum Ada Transaksi</string>
 </resources>

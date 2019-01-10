@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -15,7 +16,6 @@ import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
@@ -39,6 +39,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     lateinit var datePickerViewModel: TopAdsDatePickerViewModel
 
     companion object {
+        private const val MAX_RANGE_DATE = 30
         fun createInstance() = TopAdsCreditHistoryFragment()
     }
 
@@ -86,6 +87,8 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
     override fun hasInitialSwipeRefresh() = true
 
+    override fun getEmptyDataViewModel() = EmptyModel().apply { contentRes = R.string.top_ads_no_credit_history }
+
     private fun onDateRangeChanged(dateRange: TopAdsDatePickerViewModel.DateRange?){
         if (dateRange == null) return
 
@@ -109,7 +112,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         maxCalendar.set(Calendar.SECOND, 59)
 
         val minCalendar = Calendar.getInstance()
-        minCalendar.add(Calendar.YEAR, -1)
+        minCalendar.add(Calendar.MONTH, -6)
         minCalendar.set(Calendar.HOUR_OF_DAY, 0)
         minCalendar.set(Calendar.MINUTE, 0)
         minCalendar.set(Calendar.SECOND, 0)
@@ -122,7 +125,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
             putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, minCalendar.timeInMillis)
             putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, maxCalendar.timeInMillis)
-            putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, TopAdsCommonConstant.MAX_DATE_RANGE)
+            putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, MAX_RANGE_DATE)
 
             putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, TopAdsDatePeriodUtil.getPeriodRangeList(activity))
             putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, datePickerViewModel.lastSelectionDatePickerIndex)
