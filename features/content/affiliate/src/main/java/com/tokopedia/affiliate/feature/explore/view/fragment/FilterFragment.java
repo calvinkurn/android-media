@@ -85,7 +85,7 @@ public class FilterFragment extends BaseDaggerFragment {
             Bundle bundle = new Bundle();
             ArrayList<FilterViewModel> data = new ArrayList<>(adapter.getFilterListSelectedSorted());
             bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, data);
-            intent.putExtras(bundle);
+            result.putExtras(bundle);
             getActivity().setResult(Activity.RESULT_OK, result);
             getActivity().finish();
         });
