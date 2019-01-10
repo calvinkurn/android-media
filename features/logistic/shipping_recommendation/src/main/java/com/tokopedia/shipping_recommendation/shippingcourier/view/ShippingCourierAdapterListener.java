@@ -9,7 +9,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierView
 
 public interface ShippingCourierAdapterListener {
 
-    void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean hasCourierPromo, boolean isNeedPinpoint);
+    void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean isNeedPinpoint);
 
     boolean isToogleYearEndPromotionOn();
 

@@ -14,7 +14,7 @@ import java.util.List;
 public interface ShippingCourierBottomsheetListener {
 
     void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
-                          int cartPosition, boolean hasCourierPromo, boolean isPromoCourier, boolean isNeedPinpoint);
+                          int cartPosition, boolean isCod, boolean isPromoCourier, boolean isNeedPinpoint);
 
     void onCourierShipmentRecpmmendationCloseClicked();
 
