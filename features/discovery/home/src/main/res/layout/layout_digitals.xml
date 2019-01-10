@@ -47,13 +47,13 @@
     <com.tokopedia.design.viewpager.WrapContentViewPager
         android:id="@+id/view_pager_channel"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_128"
+        android:layout_height="@dimen/dp_120"
         android:background="@color/white" />
 
     <com.tokopedia.design.viewpager.WrapContentViewPager
         android:id="@+id/view_pager_widget"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_128"
+        android:layout_height="@dimen/dp_120"
         android:background="@color/white"
         android:visibility="gone" />
 </LinearLayout>
