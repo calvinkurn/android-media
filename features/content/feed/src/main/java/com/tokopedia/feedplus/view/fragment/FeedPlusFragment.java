@@ -1622,6 +1622,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                 menus.dismiss();
             });
+            menus.show();
         }
     }
 
