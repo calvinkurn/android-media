@@ -90,11 +90,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         loadInitialData()
     }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.connectWebSocket(messageId)
-    }
-
     override fun loadInitialData() {
         if (messageId.isNotEmpty()) {
             presenter.getExistingChat(messageId,
@@ -400,7 +395,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onPause() {
         super.onPause()
-        presenter.destroyWebSocket()
     }
 
     override fun onDestroy() {
