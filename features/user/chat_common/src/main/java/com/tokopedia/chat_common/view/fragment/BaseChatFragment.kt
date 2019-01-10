@@ -187,23 +187,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
-    override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
-        val strings: ArrayList<String> = ArrayList()
-        strings.add(imageUrl)
-
-        activity?.run {
-            val intent = RouteManager.getIntent(this, ApplinkConst.IMAGE_PREVIEW);
-            val bundle = Bundle()
-            bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_FILELOC, strings)
-            bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_IMAGE_DESC, ArrayList())
-            bundle.putInt(ApplinkConst.Query.IMAGE_PREVIEW_IMG_POSITION, 0)
-            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_TITLE, opponentName)
-            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_SUBTITLE, replyTime)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        }
-    }
-
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         val ROLE_SHOP = "shop"
 

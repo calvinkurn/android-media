@@ -39,6 +39,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
+import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
@@ -289,6 +290,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
             hideLoading()
         }
+    }
+
+    override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
+
+        context?.let {
+            val strings: ArrayList<String> = ArrayList()
+            strings.add(imageUrl)
+            val topChatRouter = (context as TopChatRouter)
+
+            topChatRouter.openImagePreviewFromChat(it, strings, ArrayList(),
+                    opponentName, replyTime)
+        }
+
     }
 
     private fun onAttachProductClicked(): () -> Unit {

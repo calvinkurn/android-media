@@ -26,6 +26,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chatbot.ChatbotRouter
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -34,7 +35,6 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleView
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
-import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
@@ -128,7 +128,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         true,
                         null,
                         null)
-                val intent = ImagePickerActivity.getIntent(getContext(), builder)
+                val intent = ImagePickerActivity.getIntent(it, builder)
                 startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
             }
         }
@@ -204,8 +204,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun showSearchInvoiceScreen() {
-        activity?.run {
-            val intent = ChatbotInternalRouter.Companion.getAttachInvoiceIntent(this,
+        activity?.let {
+            val intent = ChatbotInternalRouter.Companion.getAttachInvoiceIntent(it,
                     session.userId,
                     messageId.toInt())
             startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
@@ -216,6 +216,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                                      model: QuickReplyViewModel) {
 
         presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime(), opponentId)
+
+    }
+
+    override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
+
+        context?.let {
+
+            val strings: ArrayList<String> = ArrayList()
+            strings.add(imageUrl)
+            val chatbotRouter = (context as ChatbotRouter)
+
+            chatbotRouter.openImagePreviewFromChat(it, strings, ArrayList(),
+                    opponentName, replyTime)
+        }
+
 
     }
 
