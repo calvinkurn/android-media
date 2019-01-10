@@ -84,7 +84,7 @@ public class TemplateChatModule {
     }
 
     @Provides
-    public XUserIdInterceptor provideResponseInterceptor(@ApplicationContext Context context,
+    public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
                                                          NetworkRouter networkRouter,
                                                          UserSessionInterface userSessionInterface) {
         return new XUserIdInterceptor(context, networkRouter, userSessionInterface);
