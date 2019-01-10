@@ -319,7 +319,8 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     private List<ChangeSeatMapRequest> transformSeatRequest(String bookCode,
                                                             List<TrainSeatPassengerViewModel> originalPassenger,
-                                                            List<TrainSeatPassengerViewModel> passengers, boolean includeOriginalPassenger) {
+                                                            List<TrainSeatPassengerViewModel> passengers,
+                                                            boolean includeOriginalPassenger) {
         List<ChangeSeatMapRequest> requests = new ArrayList<>();
         ChangeSeatMapRequest request;
         for (TrainSeatPassengerViewModel passenger : originalPassenger) {
