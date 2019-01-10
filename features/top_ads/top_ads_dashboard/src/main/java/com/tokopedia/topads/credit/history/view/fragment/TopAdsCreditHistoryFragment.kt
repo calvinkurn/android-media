@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.data.model.request.Fail
-import com.tokopedia.abstraction.common.data.model.request.Success
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
@@ -26,6 +24,9 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.credit.history.view.adapter.TopAdsCreditHistoryTypeFactory
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_topads_credit_history.*
 import kotlinx.android.synthetic.main.partial_credit_history_header.*
 import java.util.*
 import javax.inject.Inject
@@ -74,6 +75,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         super.onViewCreated(view, savedInstanceState)
         getRecyclerView(view).addItemDecoration(DividerItemDecoration(activity))
         selected_date.setOnClickListener { onDateClicked() }
+        app_bar_layout.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
     }
 
     override fun onDestroyView() {

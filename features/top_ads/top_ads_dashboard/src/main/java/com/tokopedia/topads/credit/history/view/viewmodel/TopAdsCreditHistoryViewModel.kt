@@ -2,9 +2,6 @@ package com.tokopedia.topads.credit.history.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.tokopedia.abstraction.common.data.model.request.Fail
-import com.tokopedia.abstraction.common.data.model.request.Result
-import com.tokopedia.abstraction.common.data.model.request.Success
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -12,6 +9,9 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.*
 import java.text.SimpleDateFormat
