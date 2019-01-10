@@ -104,13 +104,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideAnalyticTracker(abstractionRouter: AbstractionRouter): AnalyticTracker {
-        return abstractionRouter.analyticTracker
-    }
-
-
-    @ChatScope
-    @Provides
     fun provideResponseInterceptor(): ErrorResponseInterceptor {
         return HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java)
     }
