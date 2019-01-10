@@ -328,7 +328,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         if (passData.getAdult() > 0) {
             passengerFmt = passData.getAdult() + " " + getView().getActivity().getString(R.string.kai_homepage_adult_passenger);
             if (passData.getInfant() > 0) {
-                passengerFmt += ", " + passData.getInfant() + " " + getView().getActivity().getString(R.string.kai_homepage_adult_infant);
+                passengerFmt += ", " + passData.getInfant() + " " + getView().getActivity().getString(R.string.kai_homepage_infant_passenger);
             }
         }
         return passengerFmt;
