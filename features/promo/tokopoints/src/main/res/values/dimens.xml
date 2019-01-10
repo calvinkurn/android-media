@@ -36,5 +36,6 @@
     <dimen name="height_submit_button">52dp</dimen>
     <dimen name="tp_height_line_separator">2dp</dimen>
     <dimen name="tp_height_bottom_membership_view">52dp</dimen>
+    <dimen name="tp_tnc_height">800dp</dimen>
 
 </resources>
