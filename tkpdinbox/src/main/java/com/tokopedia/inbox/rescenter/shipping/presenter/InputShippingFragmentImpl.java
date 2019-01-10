@@ -562,7 +562,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onError(Throwable e) {
-        viewListener.toastErrorMessage(ErrorHandler.getErrorMessage(viewListener.getActivity(), e));
+        viewListener.toastErrorMessage(e.getLocalizedMessage());
         showLoading(false);
         showMainPage(true);
     }
