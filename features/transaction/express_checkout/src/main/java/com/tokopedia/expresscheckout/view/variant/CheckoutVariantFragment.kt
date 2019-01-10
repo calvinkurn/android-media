@@ -21,6 +21,8 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 
@@ -29,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_detail_product_page.*
  */
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
-        CheckoutVariantContract.View, CheckoutVariantActionListener, ErrorBottomsheetsActionListener {
+        CheckoutVariantContract.View, CheckoutVariantActionListener {
 
     val contextView: Context get() = activity!!
     lateinit var list: List<Visitable<*>>
@@ -68,7 +70,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         (recyclerView.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
 
         errorBottomSheets = ErrorBottomsheets()
-        errorBottomSheets.actionListener = this
 
         fragmentViewModel = FragmentViewModel()
 
@@ -306,10 +307,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onActionButtonClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun getScreenName(): String? {
         return null
     }
@@ -364,12 +361,21 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun updateShippingData(courierName: String) {
+    override fun updateShippingData(productData: ProductData) {
         var profileViewModel = adapter.getProfileViewModel()
         if (profileViewModel != null) {
-            profileViewModel.isDurationError = false
-            profileViewModel.shippingCourier = courierName
-            onNeedToNotifySingleItem(adapter.getIndex(profileViewModel))
+            if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                showBottomsheetError("Tandai Lokasi Pengiriman", productData.error.errorMessage, "Tandai Lokasi")
+                errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+                    override fun onActionButtonClicked() {
+                        // Todo : intent to geolocation
+                    }
+                }
+            } else {
+                profileViewModel.isDurationError = false
+                profileViewModel.shippingCourier = productData.shipperName
+                onNeedToNotifySingleItem(adapter.getIndex(profileViewModel))
+            }
         }
     }
 

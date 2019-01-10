@@ -96,6 +96,8 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
         val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
         val serviceId = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.shipmentModel?.serviceId
+
+        view.showLoading()
         getCourierRecommendationUseCase.execute(
                 query, shippingParam, 0, shopShipmentModels,
                 GetRatesSubscriber(view, this, serviceId ?: 0)

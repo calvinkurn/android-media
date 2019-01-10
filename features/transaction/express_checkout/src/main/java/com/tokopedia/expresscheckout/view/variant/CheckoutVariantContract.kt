@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
 
 /**
@@ -30,7 +31,7 @@ interface CheckoutVariantContract {
 
         fun setShippingError()
 
-        fun updateShippingData(courierName: String)
+        fun updateShippingData(productData: ProductData)
 
         fun navigateToOcs()
 

@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.subscriber
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
@@ -22,6 +23,7 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideLoading()
+        view?.finishWithError(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
     }
 
     override fun onNext(ratesData: ShippingRecommendationData) {
@@ -34,12 +36,13 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
                         for (product: ProductData in shippingDurationViewModel.serviceData.products) {
                             if (product.isRecommend) {
-                                view?.updateShippingData(product.shipperName)
                                 presenter.prepareViewModel()
+                                view?.updateShippingData(product)
                                 return
                             }
                         }
-                        view?.updateShippingData(shippingDurationViewModel.serviceData.products[0].shipperName)
+                        presenter.prepareViewModel()
+                        view?.updateShippingData(shippingDurationViewModel.serviceData.products[0])
                         return
                     }
                 }
