@@ -17,7 +17,7 @@ class BannerViewHolder(v: View,
                        private var cardTitleListener: CardTitleView.CardTitleListener)
     : AbstractViewHolder<BannerViewModel>(v) {
 
-    private val adapter: BannerAdapter = BannerAdapter(listener)
+    private val adapter: BannerAdapter = BannerAdapter(adapterPosition, listener)
 
     override fun bind(element: BannerViewModel) {
         adapter.setData(element.itemViewModels)

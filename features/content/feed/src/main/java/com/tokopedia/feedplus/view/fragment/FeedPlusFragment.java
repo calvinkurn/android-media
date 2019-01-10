@@ -122,11 +122,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostListener.View.ViewHolder,
-        DynamicPostViewHolder.DynamicPostListener,
         BannerAdapter.BannerItemListener,
         RecommendationCardAdapter.RecommendationCardListener,
         TopadsShopViewHolder.TopadsShopListener,
         CardTitleView.CardTitleListener,
+        DynamicPostViewHolder.DynamicPostListener,
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
@@ -1458,14 +1458,43 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAvatarClick(@NotNull String redirectUrl) {
+    public void onBannerItemClick(int positionInFeed, int adapterPosition,
+                                  @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
+
+        if (adapter.getlist().get(positionInFeed) instanceof BannerViewModel) {
+            BannerViewModel model = (BannerViewModel) adapter.getlist().get(positionInFeed);
+            trackBannerClick(
+                    positionInFeed,
+                    adapterPosition,
+                    model.getItemViewModels().get(adapterPosition).getTrackingBannerModel(),
+                    FeedAnalytics.Element.IMAGE
+            );
+        }
     }
 
     @Override
-    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
-                                    boolean isFollow) {
+    public void onRecommendationAvatarClick(int positionInFeed, int adapterPosition,
+                                            @NotNull String redirectLink) {
+        onGoToLink(redirectLink);
 
+        if (adapter.getlist().get(positionInFeed) instanceof FeedRecommendationViewModel) {
+
+            FeedRecommendationViewModel model
+                    = (FeedRecommendationViewModel) adapter.getlist().get(positionInFeed);
+            trackRecommendationClick(
+                    positionInFeed,
+                    adapterPosition,
+                    model.getCards().get(adapterPosition).getTrackingRecommendationModel(),
+                    FeedAnalytics.Element.AVATAR
+            );
+        }
+    }
+
+    @Override
+    public void onRecommendationActionClick(int positionInFeed, int adapterPosition,
+                                            @NonNull String id, @NonNull String type,
+                                            boolean isFollow) {
         if (type.equals(FollowCta.AUTHOR_USER)) {
             int userIdInt = 0;
             try {
@@ -1474,53 +1503,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
             if (isFollow) {
-                onUnfollowKolClicked(positionInFeed, userIdInt);
+                onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
             } else {
-                onFollowKolClicked(positionInFeed, userIdInt);
+                onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
             }
 
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
             presenter.toggleFavoriteShop(positionInFeed, id);
         }
-    }
 
-    @Override
-    public void onMenuClick() {
+        if (adapter.getlist().get(positionInFeed) instanceof FeedRecommendationViewModel) {
 
-    }
-
-    @Override
-    public void onCaptionClick(@NotNull String redirectUrl) {
-        onGoToLink(redirectUrl);
-    }
-
-    @Override
-    public void onLikeClick(int position, int id, boolean isLiked) {
-        if (isLiked) {
-            onUnlikeKolClicked(position, id);
-        } else {
-            onLikeKolClicked(position, id);
+            FeedRecommendationViewModel model
+                    = (FeedRecommendationViewModel) adapter.getlist().get(positionInFeed);
+            trackRecommendationClick(
+                    positionInFeed,
+                    adapterPosition,
+                    model.getCards().get(adapterPosition).getTrackingRecommendationModel(),
+                    FeedAnalytics.Element.FOLLOW
+            );
         }
-    }
-
-    @Override
-    public void onCommentClick(int position, int id) {
-        onGoToKolComment(position, id);
-    }
-
-    @Override
-    public void onShareClick() {
-
-    }
-
-    @Override
-    public void onFooterActionClick() {
-
-    }
-
-    @Override
-    public void onBannerItemClick(int position, @NotNull String redirectUrl) {
-        onGoToLink(redirectUrl);
     }
 
     @Override
@@ -1550,41 +1552,23 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onImageClick(@NotNull String redirectLink) {
-        onGoToLink(redirectLink);
-    }
+    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
 
-    @Override
-    public void onYoutubeThumbnailClick(@NotNull String youtubeId) {
-        if (getContext() != null) {
-            RouteManager.route(
-                    getContext(),
-                    ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.AVATAR
             );
         }
     }
 
     @Override
-    public void onPollOptionClick(int positionInFeed, @NotNull String pollId,
-                                  @NotNull String optionId, boolean isVoted,
-                                  @NotNull String redirectLink) {
-
-        if (isVoted) {
-            onGoToLink(redirectLink);
-        } else {
-            onVoteOptionClicked(positionInFeed, pollId, optionId);
-        }
-    }
-
-    @Override
-    public void onRecommendationAvatarClick(@NotNull String redirectLink) {
-        onGoToLink(redirectLink);
-    }
-
-    @Override
-    public void onRecommendationActionClick(int positionInFeed, int adapterPosition,
-                                            @NonNull String id, @NonNull String type,
-                                            boolean isFollow) {
+    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
+                                    boolean isFollow) {
         if (type.equals(FollowCta.AUTHOR_USER)) {
             int userIdInt = 0;
             try {
@@ -1593,24 +1577,156 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
             if (isFollow) {
-                onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
+                onUnfollowKolClicked(positionInFeed, userIdInt);
             } else {
-                onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
+                onFollowKolClicked(positionInFeed, userIdInt);
             }
 
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
             presenter.toggleFavoriteShop(positionInFeed, id);
         }
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.FOLLOW
+            );
+        }
     }
 
     @Override
-    public void onGridItemClick(@NotNull String redirectLink) {
-        onGoToLink(redirectLink);
+    public void onMenuClick(int positionInFeed) {
+
     }
 
     @Override
-    public void onGridOthersClick(@NotNull String redirectLink) {
+    public void onCaptionClick(int positionInFeed, @NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+    }
+
+    @Override
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked) {
+        if (isLiked) {
+            onUnlikeKolClicked(positionInFeed, id);
+        } else {
+            onLikeKolClicked(positionInFeed, id);
+        }
+    }
+
+    @Override
+    public void onCommentClick(int positionInFeed, int id) {
+        onGoToKolComment(positionInFeed, id);
+    }
+
+    @Override
+    public void onShareClick(int positionInFeed) {
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.SHARE
+            );
+        }
+    }
+
+    @Override
+    public void onFooterActionClick(int positionInFeed, @NonNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.TAG
+            );
+        }
+    }
+
+
+    @Override
+    public void onImageClick(int positionInFeed, int contentPosition,
+                             @NotNull String redirectLink) {
         onGoToLink(redirectLink);
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.IMAGE
+            );
+        }
+    }
+
+    @Override
+    public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
+                                        @NotNull String youtubeId) {
+        if (getContext() != null) {
+            RouteManager.route(
+                    getContext(),
+                    ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
+            );
+        }
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.VIDEO
+            );
+        }
+    }
+
+    @Override
+    public void onPollOptionClick(int positionInFeed, int contentPosition, int option,
+                                  @NotNull String pollId, @NotNull String optionId, boolean isVoted,
+                                  @NotNull String redirectLink) {
+        if (isVoted) {
+            onGoToLink(redirectLink);
+        } else {
+            onVoteOptionClicked(positionInFeed, pollId, optionId);
+        }
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.OPTION + option
+            );
+        }
+    }
+
+    @Override
+    public void onGridItemClick(int positionInFeed, int contentPosition,
+                                @NotNull String redirectLink) {
+        onGoToLink(redirectLink);
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.getTrackingPostModel(),
+                    FeedAnalytics.Element.PRODUCT
+            );
+        }
     }
 
     private void trackFeedImpression(ArrayList<Visitable> listFeed) {
@@ -1681,5 +1797,83 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
             }
         }
+    }
+
+    private void trackCardPostClick(int positionInFeed, TrackingPostModel trackingPostModel,
+                                    String element) {
+        trackCardPostClick(positionInFeed, -1, trackingPostModel, element);
+    }
+
+    private void trackCardPostClick(int positionInFeed, int contentPosition, TrackingPostModel trackingPostModel,
+                                    String element) {
+        int userId = 0;
+        try {
+            userId = Integer.valueOf(getUserSession().getUserId());
+        } catch (NumberFormatException ignored) {
+        }
+
+        analytics.eventCardPostClick(
+                trackingPostModel.getTemplateType(),
+                trackingPostModel.getActivityName(),
+                trackingPostModel.getTrackingType(),
+                trackingPostModel.getMediaType(),
+                trackingPostModel.getTagsType(),
+                trackingPostModel.getRedirectUrl(),
+                element,
+                trackingPostModel.getTotalContent(),
+                trackingPostModel.getPostId(),
+                positionInFeed,
+                contentPosition != -1 ? String.valueOf(contentPosition) : "",
+                userId
+        );
+    }
+
+    private void trackRecommendationClick(int positionInFeed, int cardPosition,
+                                          TrackingRecommendationModel trackingRecommendationModel,
+                                          String element) {
+        int userId = 0;
+        try {
+            userId = Integer.valueOf(getUserSession().getUserId());
+        } catch (NumberFormatException ignored) {
+        }
+
+        analytics.eventRecommendationClick(
+                trackingRecommendationModel.getTemplateType(),
+                trackingRecommendationModel.getActivityName(),
+                trackingRecommendationModel.getTrackingType(),
+                trackingRecommendationModel.getMediaType(),
+                trackingRecommendationModel.getAuthorName(),
+                trackingRecommendationModel.getAuthorType(),
+                element,
+                trackingRecommendationModel.getAuthorId(),
+                positionInFeed,
+                cardPosition,
+                userId
+        );
+    }
+
+    private void trackBannerClick(int positionInFeed, int adapterPosition,
+                                  TrackingBannerModel trackingBannerModel,
+                                  String element) {
+        int userId = 0;
+        try {
+            userId = Integer.valueOf(getUserSession().getUserId());
+        } catch (NumberFormatException ignored) {
+        }
+
+        analytics.eventBannerClick(
+                trackingBannerModel.getTemplateType(),
+                trackingBannerModel.getActivityName(),
+                trackingBannerModel.getTrackingType(),
+                trackingBannerModel.getMediaType(),
+                trackingBannerModel.getTagsType(),
+                trackingBannerModel.getBannerUrl(),
+                element,
+                trackingBannerModel.getTotalBanner(),
+                trackingBannerModel.getPostId(),
+                positionInFeed,
+                adapterPosition,
+                userId
+        );
     }
 }

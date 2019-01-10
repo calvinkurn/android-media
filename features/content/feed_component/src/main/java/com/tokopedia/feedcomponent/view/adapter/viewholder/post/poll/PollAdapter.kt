@@ -20,7 +20,8 @@ import kotlinx.android.synthetic.main.item_poll_option.view.*
 /**
  * @author by milhamj on 12/12/18.
  */
-class PollAdapter(private val positionInFeed: Int, private val pollViewModel: PollContentViewModel,
+class PollAdapter(private val contentPosition: Int,
+                  private val pollViewModel: PollContentViewModel,
                   private val listener: PollOptionListener)
     : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
 
@@ -28,7 +29,7 @@ class PollAdapter(private val positionInFeed: Int, private val pollViewModel: Po
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poll_option, parent, false)
-        return OptionViewHolder(view, positionInFeed, pollViewModel, listener)
+        return OptionViewHolder(view, contentPosition, pollViewModel, listener)
     }
 
     override fun getItemCount() = optionList.size
@@ -44,7 +45,7 @@ class PollAdapter(private val positionInFeed: Int, private val pollViewModel: Po
     }
 
     class OptionViewHolder(v: View,
-                           private val rowNumber: Int,
+                           private val contentPosition: Int,
                            private val pollViewModel: PollContentViewModel,
                            private val listener: PollOptionListener?)
         : RecyclerView.ViewHolder(v) {
@@ -94,12 +95,20 @@ class PollAdapter(private val positionInFeed: Int, private val pollViewModel: Po
             )
 
             itemView.setOnClickListener {
-                listener?.onPollOptionClick(rowNumber, pollViewModel.pollId, element.optionId, pollViewModel.voted, element.redirectLink)
+                listener?.onPollOptionClick(
+                        pollViewModel.positionInFeed,
+                        contentPosition,
+                        adapterPosition + 1,
+                        pollViewModel.pollId,
+                        element.optionId,
+                        pollViewModel.voted,
+                        element.redirectLink
+                )
             }
         }
     }
 
     interface PollOptionListener {
-        fun onPollOptionClick(positionInFeed: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String)
+        fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String)
     }
 }

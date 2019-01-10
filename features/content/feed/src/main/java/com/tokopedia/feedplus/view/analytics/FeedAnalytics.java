@@ -71,6 +71,16 @@ public class FeedAnalytics {
         this.userSession = userSession;
     }
 
+    public interface Element {
+        String AVATAR = "avatar";
+        String IMAGE = "image";
+        String TAG = "tag";
+        String SHARE = "share";
+        String FOLLOW = "follow";
+        String OPTION = "option ";
+        String VIDEO = "video";
+        String PRODUCT = "product";
+    }
 
     public void trackScreen(Activity activity, String screenName) {
         analyticTracker.sendScreen(activity, screenName);
@@ -432,7 +442,7 @@ public class FeedAnalytics {
     public void eventCardPostClick(String templateType, String activityName,
                                    String trackingType, String mediaType, String tagsType,
                                    String redirectUrl, String element, int totalContent,
-                                   int postId, int position, int contentPosition, int userId) {
+                                   int postId, int position, String contentPosition, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         postId,
@@ -449,7 +459,7 @@ public class FeedAnalytics {
                 getEventEcommerceClick(
                         ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType + DASH + element,
-                        mediaType + DASH + String.valueOf(contentPosition),
+                        mediaType + DASH + contentPosition,
                         promotionList,
                         userId
                 )

@@ -39,7 +39,7 @@ class GridPostViewHolder(val gridItemListener: GridPostAdapter.GridItemListener)
         }
         itemView.gridList.layoutManager = layoutManager
 
-        val adapter = GridPostAdapter(element, gridItemListener)
+        val adapter = GridPostAdapter(pagerPosition, element, gridItemListener)
         itemView.gridList.adapter = adapter
     }
 }

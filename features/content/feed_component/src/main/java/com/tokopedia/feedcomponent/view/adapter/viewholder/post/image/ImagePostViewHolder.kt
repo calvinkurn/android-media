@@ -17,7 +17,7 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
 
     override fun bind(element: ImagePostViewModel) {
         itemView.image.setOnClickListener {
-            listener.onImageClick(element.redirectLink)
+            listener.onImageClick(element.positionInFeed, pagerPosition, element.redirectLink)
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -39,6 +39,6 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
     }
 
     interface ImagePostListener {
-        fun onImageClick(redirectLink: String)
+        fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
     }
 }

@@ -15,8 +15,8 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -111,14 +111,14 @@ class DynamicPostViewHolder(v: View,
 
             itemView.menu.shouldShowWithAction(template.report) {
                 itemView.menu.setOnClickListener {
-                    listener.onMenuClick()
+                    listener.onMenuClick(adapterPosition)
                 }
             }
         }
     }
 
     private fun onAvatarClick(redirectUrl: String) {
-        listener.onAvatarClick(redirectUrl)
+        listener.onAvatarClick(adapterPosition, redirectUrl)
     }
 
     private fun bindFollow(followCta: FollowCta) {
@@ -143,8 +143,7 @@ class DynamicPostViewHolder(v: View,
 
     private fun shouldShowHeader(template: TemplateHeader): Boolean {
         return template.avatar || template.avatarBadge || template.avatarDate
-                || template.avatarDescription || template.avatarTitle || template.followCta
-                || template.report
+                || template.avatarTitle || template.followCta || template.report
     }
 
     private fun bindCaption(caption: Caption, template: TemplateBody) {
@@ -160,7 +159,7 @@ class DynamicPostViewHolder(v: View,
                 itemView.caption.text = MethodChecker.fromHtml(captionText)
                 itemView.caption.setOnClickListener {
                     if (caption.appLink.isNotEmpty()) {
-                        listener.onCaptionClick(caption.appLink)
+                        listener.onCaptionClick(adapterPosition, caption.appLink)
                     } else {
                         itemView.caption.text = caption.text
                     }
@@ -193,7 +192,7 @@ class DynamicPostViewHolder(v: View,
                 itemView.shareSpace.gone()
                 itemView.footerAction.visible()
                 itemView.footerAction.text = footer.buttonCta.text
-                itemView.footerAction.setOnClickListener { listener.onFooterActionClick() }
+                itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
             } else {
                 itemView.shareSpace.visible()
                 itemView.footerAction.gone()
@@ -224,8 +223,8 @@ class DynamicPostViewHolder(v: View,
             if (template.share) {
                 itemView.shareIcon.visible()
                 itemView.shareText.visible()
-                itemView.shareIcon.setOnClickListener { listener.onShareClick() }
-                itemView.shareText.setOnClickListener { listener.onShareClick() }
+                itemView.shareIcon.setOnClickListener { listener.onShareClick(adapterPosition) }
+                itemView.shareText.setOnClickListener { listener.onShareClick(adapterPosition) }
             } else {
                 itemView.shareIcon.gone()
                 itemView.shareText.gone()
@@ -270,20 +269,20 @@ class DynamicPostViewHolder(v: View,
     }
 
     interface DynamicPostListener {
-        fun onAvatarClick(redirectUrl: String)
+        fun onAvatarClick(positionInFeed: Int, redirectUrl: String)
 
         fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
 
-        fun onMenuClick()
+        fun onMenuClick(positionInFeed: Int)
 
-        fun onCaptionClick(redirectUrl: String)
+        fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onLikeClick(position: Int, id: Int, isLiked: Boolean)
+        fun onLikeClick(positionInFeed: Int,  id: Int, isLiked: Boolean)
 
-        fun onCommentClick(position: Int, id: Int)
+        fun onCommentClick(positionInFeed: Int,  id: Int)
 
-        fun onShareClick()
+        fun onShareClick(positionInFeed: Int)
 
-        fun onFooterActionClick()
+        fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
     }
 }

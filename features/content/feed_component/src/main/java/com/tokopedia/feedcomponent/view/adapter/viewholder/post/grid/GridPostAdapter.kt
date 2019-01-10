@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.item_grid.view.*
 /**
  * @author by milhamj on 07/12/18.
  */
-class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
+class GridPostAdapter(private val contentPosition: Int,
+                      private val gridPostViewModel: GridPostViewModel,
                       private val listener: GridItemListener)
     : RecyclerView.Adapter<GridPostAdapter.GridItemViewHolder>() {
 
@@ -33,7 +34,7 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_grid, parent, false)
-        return GridItemViewHolder(view, listener)
+        return GridItemViewHolder(view, gridPostViewModel.positionInFeed, contentPosition, listener)
     }
 
     override fun getItemCount(): Int {
@@ -73,6 +74,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
     }
 
     class GridItemViewHolder(val v: View,
+                             private val positionInFeed: Int,
+                             private val contentPosition: Int,
                              private val listener: GridItemListener) : RecyclerView.ViewHolder(v) {
         fun bindImage(image: String) {
             itemView.productImage.loadImage(image)
@@ -86,7 +89,7 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
             itemView.text.text = item.price
 
             itemView.setOnClickListener {
-                listener.onGridItemClick(item.redirectLink)
+                listener.onGridItemClick(positionInFeed, contentPosition, item.redirectLink)
             }
         }
 
@@ -104,6 +107,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
 
             itemView.setOnClickListener {
                 listener.onGridItemClick(
+                        positionInFeed,
+                        contentPosition,
                         if (actionLink.isNotEmpty()) actionLink
                         else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
                 )
@@ -112,8 +117,6 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
     }
 
     interface GridItemListener {
-        fun onGridItemClick(redirectLink: String)
-
-        fun onGridOthersClick(redirectLink: String)
+        fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
     }
 }
