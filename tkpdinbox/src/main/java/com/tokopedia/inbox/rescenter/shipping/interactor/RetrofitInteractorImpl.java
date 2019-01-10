@@ -158,6 +158,8 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 if (generatedHost != null) {
                     passData.setServerID(String.valueOf(generatedHost.getServerId()));
                     passData.setUploadHost(generatedHost.getUploadHost());
+                    passData.setUserId(generatedHost.getUserId());
+                    passData.setToken(generatedHost.getToken());
                     return passData;
                 } else {
                     throw new RuntimeException("ERROR GENERATE HOST");
