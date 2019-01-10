@@ -1603,7 +1603,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             if (reportable) {
                 menusList.add(
                         new Menus.ItemMenus(
-                                getString(R.string.feed_delete),
+                                getString(R.string.feed_report),
                                 -1
                         )
                 );
@@ -1616,7 +1616,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 menus.dismiss();
             });
             menus.setOnItemMenuClickListener((itemMenus, pos) -> {
-                if (itemMenus.title.equals(getString(R.string.feed_delete))) {
+                if (itemMenus.title.equals(getString(R.string.feed_report))) {
                     goToContentReport(postId);
                 }
 

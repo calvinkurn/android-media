@@ -33,6 +33,7 @@
             android:id="@+id/authorImage"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
+            android:background="@drawable/bg_circle_gray_border"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -49,6 +49,7 @@
             android:id="@+id/ivProfile"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
+            android:background="@drawable/bg_circle_gray_border"
             app:layout_constraintBottom_toBottomOf="@+id/ivImage1"
             app:layout_constraintLeft_toLeftOf="@+id/btnFollow"
             app:layout_constraintRight_toRightOf="@+id/btnFollow"
