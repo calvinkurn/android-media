@@ -309,10 +309,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun initInjector() {
 
         if (activity != null && (activity as Activity).application != null) {
-            val chatRoomComponent = DaggerTopChatRoomComponent.builder().baseAppComponent(
+            val chatComponent = DaggerTopChatRoomComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
                     .build()
-            val chatComponent = DaggerChatComponent.builder().topChatRoomComponent(chatRoomComponent).build()
             chatComponent.inject(this)
             presenter.attachView(this)
         }

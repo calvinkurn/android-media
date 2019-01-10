@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.revamp.di
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topchat.revamp.view.TopChatRoomFragment
 import dagger.Component
 
@@ -10,7 +11,7 @@ import dagger.Component
 @ChatScope
 @Component(
         modules = arrayOf(ChatModule::class),
-        dependencies = arrayOf(TopChatRoomComponent::class)
+        dependencies = arrayOf(BaseAppComponent::class)
 )
 
 interface ChatComponent{
