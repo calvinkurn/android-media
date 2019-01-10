@@ -289,10 +289,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
 
-        context?.let {
+        activity?.let {
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
-            val topChatRouter = (context as TopChatRouter)
+            val topChatRouter = (it.applicationContext as TopChatRouter)
 
             topChatRouter.openImagePreviewFromChat(it, strings, ArrayList(),
                     opponentName, replyTime)

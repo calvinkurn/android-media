@@ -28,6 +28,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -243,7 +244,8 @@ public abstract class SellerRouterApplication extends MainApplication
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
         com.tokopedia.tkpdpdp.ProductDetailRouter,
-        MerchantVoucherModuleRouter, LoginRegisterRouter, TopAdsDashboardRouter, TopAdsManagementRouter, DigitalRouter {
+        MerchantVoucherModuleRouter, LoginRegisterRouter, TopAdsDashboardRouter,
+        TopAdsManagementRouter, DigitalRouter, ChatbotRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;

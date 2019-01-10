@@ -222,11 +222,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
 
-        context?.let {
+        activity?.let {
 
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
-            val chatbotRouter = (context as ChatbotRouter)
+            val chatbotRouter = (it.applicationContext as ChatbotRouter)
 
             chatbotRouter.openImagePreviewFromChat(it, strings, ArrayList(),
                     opponentName, replyTime)
