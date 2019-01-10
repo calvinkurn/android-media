@@ -505,10 +505,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         return lastItemPosition == visibleItem;
     }
 
-    private String checkNumber(int number) {
-        return number <= 9 ? "0" + number : String.valueOf(number);
-    }
-
     private int getStartYear(String date) {
         String year = date.substring(6, 10);
         return Integer.parseInt(year);
@@ -530,8 +526,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlDetailsResponse
-                                                   sellerDetails) {
+    public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         getView().showSaldoPrioritasFragment(sellerDetails);
     }
 
