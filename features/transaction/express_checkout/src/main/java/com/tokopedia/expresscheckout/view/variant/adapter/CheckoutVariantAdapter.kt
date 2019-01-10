@@ -15,6 +15,16 @@ class CheckoutVariantAdapter(adapterTypeFactory: CheckoutVariantAdapterTypeFacto
         visitables.addAll(visitableList)
     }
 
+    fun getProfileViewModel(): ProfileViewModel? {
+        for (visitable in visitables) {
+            if (visitable is ProfileViewModel) {
+                return visitable
+            }
+        }
+
+        return null
+    }
+
     fun getProductDataViewModel(): ProductViewModel? {
         for (visitable in visitables) {
             if (visitable is ProductViewModel) {

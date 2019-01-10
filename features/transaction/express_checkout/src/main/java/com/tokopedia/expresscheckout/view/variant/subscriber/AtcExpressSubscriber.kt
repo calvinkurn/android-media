@@ -43,7 +43,6 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
                 domainModelMapper = AtcDomainModelMapper()
                 atcResponseModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse.atcExpress)
                 presenter.setAtcResponseModel(atcResponseModel)
-                presenter.prepareViewModel()
                 val productModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
                 presenter.loadShippingRates(atcResponseModel, productModel?.productPrice
                         ?: 0, productModel?.productMinOrder ?: 0)

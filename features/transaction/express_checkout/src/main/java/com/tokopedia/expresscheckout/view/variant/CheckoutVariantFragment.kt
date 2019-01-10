@@ -280,10 +280,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel) {
-        var totalPayment = summaryViewModel.itemPrice + summaryViewModel.shippingPrice + summaryViewModel.servicePrice
+        var totalPayment = summaryViewModel.itemPrice + summaryViewModel.shippingPrice + summaryViewModel.servicePrice + summaryViewModel.insurancePrice
         fragmentViewModel.totalPayment = totalPayment
 
-        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(fragmentViewModel.totalPayment ?: 0)
+        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(fragmentViewModel.totalPayment
+                ?: 0)
     }
 
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
@@ -356,11 +357,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun setShippingError() {
-
+        var profileViewModel = adapter.getProfileViewModel()
+        if (profileViewModel != null) {
+            profileViewModel.isDurationError = true
+            onNeedToNotifySingleItem(adapter.getIndex(profileViewModel))
+        }
     }
 
-    override fun updateShippingData() {
-
+    override fun updateShippingData(courierName: String) {
+        var profileViewModel = adapter.getProfileViewModel()
+        if (profileViewModel != null) {
+            profileViewModel.isDurationError = false
+            profileViewModel.shippingCourier = courierName
+            onNeedToNotifySingleItem(adapter.getIndex(profileViewModel))
+        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {

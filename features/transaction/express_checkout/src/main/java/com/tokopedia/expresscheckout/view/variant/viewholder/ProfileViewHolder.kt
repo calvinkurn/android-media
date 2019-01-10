@@ -2,6 +2,7 @@ package com.tokopedia.expresscheckout.view.variant.viewholder
 
 import android.os.Build
 import android.text.Html
+import android.text.Spanned
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -22,25 +23,18 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
 
     override fun bind(element: ProfileViewModel?) {
         if (element != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                itemView.tv_profile_address_name.text =
-                        Html.fromHtml("<b>${element.addressTitle}</b> ${element.addressDetail}",
-                                Html.FROM_HTML_MODE_LEGACY).toString()
-            } else {
-                itemView.tv_profile_address_name.text =
-                        Html.fromHtml("<b>${element.addressTitle}</b> ${element.addressDetail}").toString()
-            }
+            itemView.tv_profile_address_name.text = getHtmlFormat("<b>${element.addressTitle}</b> ${element.addressDetail}")
 
             ImageHandler.loadImageRounded2(itemView.context, itemView.img_profile_payment_method, element.paymentOptionImageUrl)
             itemView.tv_profile_payment_detail.text = element.paymentDetail
-            itemView.img_bt_profile_edit.setOnClickListener { listener.onClickEditProfile() }
+            itemView.tv_change_profile.setOnClickListener { listener.onClickEditProfile() }
             itemView.img_bt_profile_show_more_shipping_duration.setOnClickListener { listener.onClickEditDuration() }
             if (!element.isDurationError) {
-                itemView.tv_profile_shipping_duration_value.text = element.shippingDuration
+                itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
                 itemView.tv_profile_shipping_duration_error.visibility = View.GONE
                 itemView.ll_profile_courier.visibility = View.VISIBLE
                 itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
-                itemView.tv_profile_shipping_courier.text = element.shippingCourier
+                itemView.tv_profile_shipping_courier.text = getHtmlFormat("Kurir <b>${element.shippingCourier}</b>")
             } else {
                 itemView.ll_profile_courier.visibility = View.GONE
                 itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE
@@ -54,8 +48,16 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
             } else {
                 itemView.v_profile_separator_bottom.visibility = View.GONE
                 itemView.ll_profile_default_checkbox_container.visibility = View.GONE
-                itemView.cb_profile_set_default.setOnClickListener {  }
+                itemView.cb_profile_set_default.setOnClickListener { }
             }
+        }
+    }
+
+    fun getHtmlFormat(text: String): Spanned {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            return Html.fromHtml(text)
         }
     }
 

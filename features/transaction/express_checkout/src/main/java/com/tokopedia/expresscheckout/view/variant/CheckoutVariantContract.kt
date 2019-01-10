@@ -30,7 +30,7 @@ interface CheckoutVariantContract {
 
         fun setShippingError()
 
-        fun updateShippingData()
+        fun updateShippingData(courierName: String)
 
         fun navigateToOcs()
 

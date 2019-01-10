@@ -218,10 +218,18 @@ class ViewModelMapper : DataMapper {
     override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
         val userProfileModel: ProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
         var profileViewModel = ProfileViewModel()
-        profileViewModel.addressTitle = userProfileModel?.addressModel?.receiverName ?: ""
+        profileViewModel.addressTitle = userProfileModel?.addressModel?.addressName ?: ""
         profileViewModel.addressDetail = userProfileModel?.addressModel?.addressStreet ?: ""
         profileViewModel.paymentOptionImageUrl = userProfileModel?.paymentModel?.image ?: ""
         profileViewModel.paymentDetail = userProfileModel?.paymentModel?.gatewayCode ?: ""
+        profileViewModel.shippingDuration = userProfileModel?.shipmentModel?.serviceDuration ?: ""
+        profileViewModel.isDefaultProfileCheckboxChecked = false
+        profileViewModel.isDurationError = false
+        profileViewModel.isEditable = false
+        profileViewModel.isSelected = false
+        profileViewModel.isShowDefaultProfileCheckBox = false
+        profileViewModel.isStateHasChangedProfile = false
+        profileViewModel.isStateHasRemovedProfile = false
 
         return profileViewModel
     }
