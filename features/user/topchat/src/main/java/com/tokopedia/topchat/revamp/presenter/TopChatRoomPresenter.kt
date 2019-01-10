@@ -21,9 +21,11 @@ import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.revamp.domain.pojo.TopChatImageUploadPojo
+import com.tokopedia.topchat.revamp.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
 import com.tokopedia.topchat.revamp.domain.subscriber.GetExistingMessageIdSubscriber
 import com.tokopedia.topchat.revamp.domain.usecase.GetChatUseCase
@@ -55,7 +57,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
-        private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase)
+        private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
+        private var deleteMessageListUseCase: DeleteMessageListUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -365,12 +368,26 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
+    override fun doFollowShop(shopId: Int, onError: (Throwable) -> Unit, onSuccessFollowShop: () -> Unit) {
+        //TODO ADD FOLLOW SHOP USE CASE
+    }
+
+    override fun doUnfollowShop(shopId: Int, onError: (Throwable) -> Unit, onSuccessUnfollowShop: () -> Unit) {
+        //TODO ADD UNFOLLOW SHOP USE CASE
+    }
+
+    override fun deleteChat(messageId: String, onError: (Throwable) -> Unit, onSuccessDeleteConversation: () -> Unit) {
+        deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId),
+                DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getChatUseCase.unsubscribe()
         uploadImageUseCase.unsubscribe()
         getExistingMessageIdUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
+        deleteMessageListUseCase.unsubscribe()
         super.detachView()
     }
 

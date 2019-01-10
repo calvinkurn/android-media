@@ -11,6 +11,8 @@ open class TopChatInternalRouter {
 
     object Companion {
 
+        const val CHAT_DELETED_RESULT_CODE = 111
+
         const val TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY = "SELECTED_INVOICE"
 
         fun getAttachProductIntent(context: Context, shopId: String, shopName: String,

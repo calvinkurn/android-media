@@ -1,24 +1,30 @@
 package com.tokopedia.topchat.revamp.view
 
 import android.support.annotation.NonNull
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.Window
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.design.component.Menus
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.revamp.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import rx.Observable
@@ -41,14 +47,16 @@ class TopChatViewStateImpl(
         toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
 
-
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
+    private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
+
     lateinit var templateAdapter: TemplateChatAdapter
     lateinit var templateChatTypeFactory: TemplateChatTypeFactory
     var isUploading: Boolean = false
     var isFirstTime: Boolean = true
+    var isShopFollowed: Boolean = false
 
     init {
         initView()
@@ -139,13 +147,92 @@ class TopChatViewStateImpl(
         }
     }
 
-    fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
+    fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
+                               onToolbarClicked: () -> Unit,
+                               headerMenuListener: HeaderMenuListener) {
         hideLoading()
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
+        setHeaderMenuButton(viewModel, headerMenuListener)
         showReplyBox(viewModel.replyable)
         showActionButtons()
         checkShowQuickReply(viewModel)
+    }
+
+    private fun setHeaderMenuButton(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener) {
+        headerMenuButton.visibility = View.VISIBLE
+        headerMenuButton.setOnClickListener { showHeaderMenuBottomSheet(chatroomViewModel, headerMenuListener) }
+    }
+
+    private fun showHeaderMenuBottomSheet(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener) {
+        val headerMenu = Menus(view.context)
+        val listMenu = ArrayList<Menus.ItemMenus>()
+
+        val title = toolbar.title
+        val viewProfileText = view.context.getString(R.string.view_profile_container_string, title)
+        listMenu.add(Menus.ItemMenus(viewProfileText, R.drawable.ic_people))
+
+        if (chatroomViewModel.headerModel.role
+                        .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
+            val profileText = if (isShopFollowed) {
+                view.context.getString(R.string.already_follow_store);
+            } else {
+                view.context.getString(R.string.follow_store);
+            }
+            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_add_grey))
+        }
+
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation),
+                R.drawable.ic_trash))
+
+        headerMenu.itemMenuList = listMenu
+        headerMenu.setActionText(view.context.getString(R.string.cancel_bottom_sheet))
+        headerMenu.setOnActionClickListener { headerMenu.dismiss() }
+        headerMenu.setOnItemMenuClickListener { itemMenus, pos ->
+            run {
+                when {
+                    itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
+                        showDeleteChatDialog(headerMenuListener)
+                    }
+                    itemMenus.title == view.context.getString(R.string.follow_store) -> {
+                        headerMenuListener.onFollowShop()
+                    }
+                    itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
+                        headerMenuListener.onUnfollowShop()
+                    }
+                    pos == 0 -> {
+                        headerMenuListener.onGoToDetailOpponentFromMenu()
+                    }
+                    else -> {
+                    }
+                }
+                headerMenu.dismiss()
+            }
+        }
+        headerMenu.show()
+
+    }
+
+    private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener) {
+        val myAlertDialog = AlertDialog.Builder(view.context)
+        myAlertDialog.setTitle(R.string.delete_chat_question)
+        myAlertDialog.setMessage(R.string.delete_chat_warning_message)
+        myAlertDialog.setPositiveButton(view.context.getString(R.string.delete)) { _, _ ->
+            run {
+                headerMenuListener.onDeleteConversation()
+            }
+        }
+
+        myAlertDialog.setNegativeButton(view.context.getString(R.string.delete)) { dialog, _ ->
+            run {
+                dialog.cancel()
+            }
+        }
+
+        val dialog = myAlertDialog.create()
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.show()
+
     }
 
     private fun showActionButtons() {

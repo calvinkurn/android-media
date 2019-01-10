@@ -36,7 +36,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
@@ -47,6 +46,7 @@ import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.revamp.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import com.tokopedia.user.session.UserSessionInterface
@@ -57,7 +57,7 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener {
+        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener, HeaderMenuListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -123,7 +123,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             presenter.connectWebSocket(messageId)
             updateViewData(it)
             renderList(it.listChat, it.canLoadMore)
-            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked())
+            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this)
             presenter.getTemplate()
         }
     }
@@ -133,11 +133,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
             analytics.trackHeaderClicked()
 
-            if (opponentRole.toLowerCase() == ChatRoomHeaderViewModel.Companion.ROLE_USER) {
-                goToProfile(opponentId)
-            } else if (opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
-                goToShop(shopId)
-            }
+            goToDetailOpponent()
+        }
+    }
+
+    private fun goToDetailOpponent() {
+        if (opponentRole.toLowerCase() == ChatRoomHeaderViewModel.Companion.ROLE_USER) {
+            goToProfile(opponentId)
+        } else if (opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
+            goToShop(shopId)
         }
     }
 
@@ -167,6 +171,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onError(): (Throwable) -> Unit {
         return {
+            hideLoading()
             showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
         }
     }
@@ -529,6 +534,53 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     .LENGTH_SHORT).show()
         }
     }
+
+    override fun onFollowShop() {
+        showLoading()
+        presenter.doFollowShop(shopId, onError(), onSuccessFollowShop())
+    }
+
+    private fun onSuccessFollowShop(): () -> Unit {
+        return {
+            hideLoading()
+            getViewState().isShopFollowed = true
+        }
+    }
+
+    override fun onDeleteConversation() {
+        showLoading()
+        presenter.deleteChat(messageId, onError(), onSuccessDeleteConversation())
+    }
+
+    private fun onSuccessDeleteConversation(): () -> Unit {
+        return {
+            hideLoading()
+            activity?.run {
+                val data = Intent()
+                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+                setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, data)
+                finish()
+            }
+        }
+    }
+
+    override fun onUnfollowShop() {
+        showLoading()
+        presenter.doUnfollowShop(shopId, onError(), onSuccessUnfollowShop())
+    }
+
+    private fun onSuccessUnfollowShop(): () -> Unit {
+        return {
+            hideLoading()
+            getViewState().isShopFollowed = false
+        }
+    }
+
+    override fun onGoToDetailOpponentFromMenu() {
+        analytics.trackGoToDetailFromMenu()
+        goToDetailOpponent()
+    }
+
 
     override fun onBackPressedEvent() {
         if (presenter.isUploading()) {

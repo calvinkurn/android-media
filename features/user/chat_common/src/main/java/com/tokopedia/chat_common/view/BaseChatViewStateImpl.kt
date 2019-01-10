@@ -176,7 +176,7 @@ open class BaseChatViewStateImpl(
     }
 
     open fun scrollDownWhenInBottom() {
-        if (checkLastCompletelyVisibleItemIsFirst()) {
+        if (!checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }

@@ -91,7 +91,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        UserIdentificationApplinkModule.class
+        UserIdentificationApplinkModule.classz
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {

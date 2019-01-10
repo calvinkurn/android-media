@@ -116,4 +116,13 @@ public class TopChatAnalytics {
 
     }
 
+    public void trackGoToDetailFromMenu() {
+        analyticTracker.sendEventTracking(
+                Name.INBOX_CHAT,
+                "message room",
+                "click header - three bullet",
+                "lihat profile"
+        );
+    }
+
 }
