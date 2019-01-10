@@ -11,6 +11,8 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYP
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
+import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
+import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
@@ -28,6 +30,7 @@ import com.tokopedia.topchat.revamp.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
@@ -46,10 +49,10 @@ import javax.inject.Inject
  */
 
 class TopChatRoomPresenter @Inject constructor(
-        var getChatUseCase: GetChatUseCase,
+        private var getChatUseCase: GetChatUseCase,
         override var userSession: UserSessionInterface,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
-        var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
+        private var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
         private var replyChatUseCase: ReplyChatUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
@@ -58,7 +61,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     private lateinit var webSocketUrl: String
     private var isUploading: Boolean = false
-    lateinit var dummyList: ArrayList<Visitable<*>>
+    private var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
 
     init {
@@ -158,9 +161,7 @@ class TopChatRoomPresenter @Inject constructor(
                 var temp = mapToVisitable(pojo)
                 view.onReceiveMessageEvent(temp)
                 if (!pojo.isOpposite) {
-                    getDummyOnList(temp)?.let {
-                        view.removeDummy(it)
-                    }
+                    checkDummyAndRemove(temp)
                 } else {
                     readMessage()
                 }
@@ -193,7 +194,7 @@ class TopChatRoomPresenter @Inject constructor(
     fun getTemplate() {
         getTemplateChatRoomUseCase.execute(object : Subscriber<GetTemplateViewModel>() {
             override fun onNext(t: GetTemplateViewModel?) {
-                var templateList = arrayListOf<Visitable<Any>>()
+                val templateList = arrayListOf<Visitable<Any>>()
                 t?.let {
                     if (t.isEnabled) {
                         t.listTemplate?.let {
@@ -226,15 +227,21 @@ class TopChatRoomPresenter @Inject constructor(
             isUploading = true
             uploadImageUseCase.unsubscribe()
             val reqParam = HashMap<String, RequestBody>()
-            val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
+            RequestBody.create(MediaType.parse("text/plain"), "1")
             reqParam["web_service"] = createRequestBody("1")
             reqParam["id"] = createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
             val params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
             uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
                 override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
                     t.dataResultImageUpload.data?.run {
-                        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
-                                this.picSrc, it.startTime))
+                        when(networkMode){
+                            MODE_API -> sendByApi(
+                                    ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
+                                    it
+                            )
+                            MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
+                                    this.picSrc, it.startTime))
+                        }
                     }
                     isUploading = false
                 }
@@ -246,7 +253,7 @@ class TopChatRoomPresenter @Inject constructor(
 
                 override fun onError(e: Throwable?) {
                     isUploading = false
-                    view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e))
+                    view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e), it)
                 }
 
             })
@@ -327,13 +334,15 @@ class TopChatRoomPresenter @Inject constructor(
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
         var dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
         processDummyMessage(dummyMessage)
-        replyChatUseCase.execute(ReplyChatUseCase.generateParam(messageId, sendMessage), object : Subscriber<ReplyChatViewModel>() {
+        sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
+    }
+
+    private fun sendByApi(requestParams: RequestParams, dummyMessage: Visitable<*>) {
+        replyChatUseCase.execute(requestParams, object : Subscriber<ReplyChatViewModel>() {
             override fun onNext(response: ReplyChatViewModel) {
                 if (response.isSuccessReplyChat) {
                     view.onReceiveMessageEvent(response.chat)
-                    getDummyOnList(dummyMessage)?.let {
-                        view.removeDummy(it)
-                    }
+                    checkDummyAndRemove(dummyMessage);
                 }
             }
 
@@ -346,6 +355,12 @@ class TopChatRoomPresenter @Inject constructor(
             }
 
         })
+    }
+
+    private fun checkDummyAndRemove(dummyMessage: Visitable<*>) {
+        getDummyOnList(dummyMessage)?.let {
+            view.removeDummy(it)
+        }
     }
 
     override fun showErrorSnackbar(stringId: Int) {

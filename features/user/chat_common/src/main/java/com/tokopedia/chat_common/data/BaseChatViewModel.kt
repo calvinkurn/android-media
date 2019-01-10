@@ -23,7 +23,7 @@ open class BaseChatViewModel
 (val messageId: String,
  var fromUid: String?,
  val from: String,
- val fromRole: String,
+ var fromRole: String,
  val attachmentId: String,
  val attachmentType: String,
  var replyTime: String?,

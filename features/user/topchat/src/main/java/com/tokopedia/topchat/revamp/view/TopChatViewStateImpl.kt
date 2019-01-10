@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
@@ -191,5 +192,8 @@ class TopChatViewStateImpl(
         replyEditText.setSelection(message.length + text.substring(0, index).length + 1)
     }
 
+    override fun showRetryUploadImages(it: ImageUploadViewModel, retry: Boolean) {
+        getAdapter().showRetryFor(it, retry)
+    }
 }
 

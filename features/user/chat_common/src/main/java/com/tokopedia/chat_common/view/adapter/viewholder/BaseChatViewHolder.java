@@ -37,9 +37,15 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         if (viewModel instanceof BaseChatViewModel) {
 
             BaseChatViewModel element = (BaseChatViewModel) viewModel;
+            try {
+                if(Long.parseLong(element.getReplyTime())/ MILISECONDS < 1230768000){
 
+                    element.setReplyTime(String.valueOf((Long.parseLong(element.getReplyTime())*MILISECONDS)));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             view.setOnClickListener(v -> KeyboardHandler.DropKeyboard(itemView.getContext(), view));
-
             setHeaderDate(element);
             setBottomHour(element);
         }
@@ -48,7 +54,6 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
     protected void setBottomHour(BaseChatViewModel element) {
         String hourTime;
-
         try {
             hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()) /
                     MILISECONDS);

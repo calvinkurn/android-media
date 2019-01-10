@@ -4,11 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -31,6 +35,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
@@ -161,7 +166,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onRetrySendImage(element: ImageUploadViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
+        bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, com.tokopedia.topchat.R.string.resend, null)
+        bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, com.tokopedia.topchat.R.string.delete, null)
+        var bottomSheetDialog = bottomSheetBuilder.expandOnStart(true).
+                setItemClickListener(BottomSheetItemClickListener {
+                    when(it.itemId){
+                        InboxMessageConstant.RESEND -> {
+                            presenter.startUploadImages(element)
+                            removeDummy(element)
+                        }
+                        InboxMessageConstant.DELETE -> {
+                            removeDummy(element)
+                        }
+                    }
+                }).createDialog().show()
     }
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
@@ -264,10 +283,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().removeDummy(visitable)
     }
 
-    override fun onErrorUploadImage(errorMessage: String) {
+    override fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel) {
         showSnackbarError(errorMessage)
+        getViewState().showRetryUploadImages(it, true)
     }
-
 
     override fun onSendButtonClicked() {
         val sendMessage = view?.findViewById<EditText>(R.id.new_comment)?.text.toString()
@@ -286,7 +305,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun showSnackbarError(stringResource: String) {
         if (view != null) {
-            ToasterError.make(view, stringResource).show()
+            ToasterError.make(view, stringResource, Snackbar.LENGTH_LONG).show()
         }
     }
 
