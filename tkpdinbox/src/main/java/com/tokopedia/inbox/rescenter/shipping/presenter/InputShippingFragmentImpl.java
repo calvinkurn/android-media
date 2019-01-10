@@ -182,27 +182,24 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     private Observable<ShippingParamsPostModel> getObservableGeneratedHost(ShippingParamsPostModel passData) {
-        Type token = new TypeToken<ResolutionResponse<JsonObject>>() {
-        }.getType();
         GraphqlRequest getUploadhostRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.get_upload_host), token);
+                R.raw.get_upload_host), JsonObject.class);
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(getUploadhostRequest);
         return graphqlUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .concatMap((Func1<GraphqlResponse, Observable<ShippingParamsPostModel>>) graphqlResponse -> {
                     if (graphqlResponse != null) {
-                        ResolutionResponse resolutionResponse = graphqlResponse.getData(token);
-                        if (resolutionResponse.getErrorMessageJoined().isEmpty()) {
-                            JsonObject jsonData = (JsonObject) resolutionResponse.getData();
-                            GenerateHostDataResponse hostDataResponse = new Gson().fromJson(jsonData.getAsJsonObject("get_resolution_upload_host").getAsJsonObject("data"), GenerateHostResponse.class);
+                        if (graphqlResponse.getError(JsonObject.class).isEmpty()) {
+                            JsonObject jsonData = graphqlResponse.getData(JsonObject.class);
+                            GenerateHostDataResponse hostDataResponse = new Gson().fromJson(jsonData.getAsJsonObject("get_resolution_upload_host").getAsJsonObject("data"), GenerateHostDataResponse.class);
                             GenerateHostResponse uploadHostData = hostDataResponse.getGenerateHostResponse();
                             passData.setServerID(uploadHostData.getServerId());
                             passData.setUploadHost(uploadHostData.getUploadHost());
                             passData.setUserId(uploadHostData.getUserId());
                             passData.setToken(uploadHostData.getToken());
                         } else {
-                            throw new RuntimeException(resolutionResponse.getErrorMessageJoined());
+                            throw new RuntimeException(graphqlResponse.getError(JsonObject.class).toString());
                         }
                     }
                     return Observable.just(passData);
