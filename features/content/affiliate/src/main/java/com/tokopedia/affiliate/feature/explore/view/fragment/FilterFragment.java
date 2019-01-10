@@ -81,26 +81,19 @@ public class FilterFragment extends BaseDaggerFragment {
 
     private void initViewListener() {
         btnApply.setOnClickListener(view -> {
-            Intent intent = new Intent();
+            Intent result = new Intent();
             Bundle bundle = new Bundle();
-            ArrayList<FilterViewModel> data = new ArrayList<>(adapter.getFilterList());
+            ArrayList<FilterViewModel> data = new ArrayList<>(adapter.getFilterListSelectedSorted());
             bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, data);
-            getActivity().setResult(Activity.RESULT_OK);
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, result);
             getActivity().finish();
         });
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickListener() {
-        return new FilterAdapter.OnFilterClickedListener() {
-            @Override
-            public void onItemClicked(FilterViewModel filter) {
+        return filters -> {
 
-            }
-
-            @Override
-            public void loadDataWithoutFilter() {
-
-            }
         };
     }
 

@@ -23,19 +23,21 @@ import java.util.List;
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     public interface OnFilterClickedListener {
-        void onItemClicked(FilterViewModel filter);
-        void loadDataWithoutFilter();
+        void onItemClicked(List<FilterViewModel> filters);
     }
 
-    private List<FilterViewModel> filterList = new ArrayList<>();
-    private Context context;
     private OnFilterClickedListener filterClickedListener;
+
+    private List<FilterViewModel> filterList = new ArrayList<>();
+    private List<FilterViewModel> currentSelectedFilter = new ArrayList<>();
+    private Context context;
     private int layout;
 
     public FilterAdapter(Context context, List<FilterViewModel> filterList, OnFilterClickedListener onFilterClickedListener, int layout) {
         this.filterList = filterList;
         this.context = context;
         this.filterClickedListener = onFilterClickedListener;
+        this.layout = layout;
     }
 
     @NonNull
@@ -55,7 +57,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         holder.text.setText(filter.getName());
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
-        holder.cardView.setPadding(getPadding(16),0, getPadding(12),0);
+        holder.cardView.setPadding(getPadding(16),0, getPadding(16),0);
     }
 
     private int getPadding(int padding) {
@@ -64,11 +66,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     private void initViewListener(Holder holder, FilterViewModel filter) {
         holder.cardView.setOnClickListener(v -> {
-            if (enableCurrentItem(filter)) {
-                filterClickedListener.onItemClicked(filter);
-            } else {
-                filterClickedListener.loadDataWithoutFilter();
-            }
+            enableCurrentItem(filter);
+            filterClickedListener.onItemClicked(filterList);
         });
     }
 
@@ -77,16 +76,40 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 R.color.filter_background_active :
                 R.color.filter_background_inactive);
     }
-    private boolean enableCurrentItem(FilterViewModel filter) {
+    private void enableCurrentItem(FilterViewModel filter) {
         for (FilterViewModel item: filterList) {
-            if (item.getName().equals(filter.getName()) && item.isSelected()) {
-                item.setSelected(false);
-                return false;
+            if (item.getName().equals(filter.getName())) {
+                item.setSelected(!item.isSelected());
+                processCurrentSelected(item);
+                break;
             }
-            else item.setSelected(item.getName().equals(filter.getName()));
         }
         notifyDataSetChanged();
-        return true;
+    }
+
+    private void processCurrentSelected(FilterViewModel filter) {
+        if (filter.isSelected() && !containsInSelected(filter)) {
+            currentSelectedFilter.add(filter);
+        } else
+            removeItemFromSelected(filter);
+    }
+
+    private boolean containsInSelected(FilterViewModel filter) {
+        for (FilterViewModel item : currentSelectedFilter) {
+            if (item.getName().equals(filter.getName()))
+                return true;
+        }
+        return false;
+    }
+
+    private void removeItemFromSelected(FilterViewModel filter) {
+        List<FilterViewModel> newItemList = new ArrayList<>();
+        for (FilterViewModel item : currentSelectedFilter) {
+            if (!item.getName().equals(filter.getName())) {
+                newItemList.add(item);
+            }
+        }
+        currentSelectedFilter = newItemList;
     }
 
     public List<FilterViewModel> getFilterList() {
@@ -120,5 +143,22 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     public void addItem(List<FilterViewModel> filterList) {
         this.filterList = filterList;
         notifyDataSetChanged();
+    }
+
+    public List<FilterViewModel> getFilterListSelectedSorted() {
+        List<FilterViewModel> sortedList = new ArrayList<>();
+        sortedList.addAll(currentSelectedFilter);
+        sortedList.addAll(addRemainingItemNotCurrentlySelected());
+        return sortedList;
+    }
+
+    private List<FilterViewModel> addRemainingItemNotCurrentlySelected() {
+        List<FilterViewModel> sortedList = new ArrayList<>();
+        for (FilterViewModel item : filterList) {
+            if (!containsInSelected(item)) {
+                sortedList.add(item);
+            }
+        }
+        return sortedList;
     }
 }

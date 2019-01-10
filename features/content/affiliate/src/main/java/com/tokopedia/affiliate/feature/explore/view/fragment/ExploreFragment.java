@@ -440,16 +440,8 @@ public class ExploreFragment
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
-        return new FilterAdapter.OnFilterClickedListener() {
-            @Override
-            public void onItemClicked(FilterViewModel filter) {
+        return filters -> {
 
-            }
-
-            @Override
-            public void loadDataWithoutFilter() {
-                populateLocalDataToAdapter();
-            }
         };
 
     }
