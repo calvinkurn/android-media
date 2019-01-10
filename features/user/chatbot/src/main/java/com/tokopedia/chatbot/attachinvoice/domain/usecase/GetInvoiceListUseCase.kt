@@ -9,6 +9,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.data.model.GetInvoicesResponsePojo
+import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceListPojo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 
@@ -28,7 +29,7 @@ constructor(val resources: Resources,
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_invoice_list)
         val graphqlRequest = GraphqlRequest(query,
-                GetInvoicesResponsePojo::class.java, requestParams)
+                GetInvoiceListPojo::class.java, requestParams)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

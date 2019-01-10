@@ -42,23 +42,6 @@ class ChatNetworkModule {
 
     @ChatScope
     @Provides
-    internal fun provideChatBotRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
-        if ((context is NetworkRouter).not()) {
-            throw IllegalStateException("Application must implement "
-                    .plus(NetworkRouter::class.java.simpleName)
-            )
-        }
-
-        return CommonNetwork.createRetrofit(
-                context,
-                CHATBOT_BASE_URL,
-                context as NetworkRouter,
-                userSession
-        )
-    }
-
-    @ChatScope
-    @Provides
     internal fun provideChatRetrofitJsDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
             throw IllegalStateException("Application must implement "

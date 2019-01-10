@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.domain.pojo.reply;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 
 import java.util.List;
 
@@ -38,10 +37,6 @@ public class AttachmentAttributes {
     @SerializedName("invoice_list")
     @Expose
     private AttachmentInvoiceList invoiceList;
-
-    @SerializedName("new_quick_replies")
-    @Expose
-    private List<QuickReplyPojo> quickReplies;
 
     public String getImageUrl() {
         return imageUrl;
@@ -110,10 +105,6 @@ public class AttachmentAttributes {
 
     public void setUrl2(String url2) {
         this.url2 = url2;
-    }
-
-    public List<QuickReplyPojo> getQuickReplies() {
-        return quickReplies;
     }
 
 }

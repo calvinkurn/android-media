@@ -61,7 +61,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
@@ -70,13 +70,6 @@ class ChatModule {
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
-
-    @ChatScope
-    @Provides
-    fun provideResource(@ApplicationContext context: Context): Resources {
-        return context.resources
-    }
-
 
     @Provides
     fun provideUploadImageUseCase(
@@ -87,8 +80,6 @@ class ChatModule {
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<TopChatImageUploadPojo> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, TopChatImageUploadPojo::class.java, imageUploaderUtils)
     }
-
-
 
     @ChatScope
     @Provides
