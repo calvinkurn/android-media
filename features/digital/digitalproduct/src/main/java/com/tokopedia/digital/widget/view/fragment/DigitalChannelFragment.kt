@@ -175,7 +175,9 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         pulsa_place_holders.visibility = View.GONE
         digital_widget_fragment.visibility = View.GONE
         error_view.visibility = View.VISIBLE
-        text_error_message.text = getString(resId)
+        if (context != null) {
+            text_error_message.text = getString(resId)
+        }
     }
 
     override fun onClickRecommendation(recommendation: Recommendation, position: Int) {
@@ -197,6 +199,11 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
                             eventLabel
                     )
         }
+    }
+
+    override fun onDestroy() {
+        digitalChannelPresenter.detachView()
+        super.onDestroy()
     }
 
 }

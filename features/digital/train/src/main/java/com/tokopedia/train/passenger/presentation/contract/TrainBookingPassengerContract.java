@@ -12,6 +12,7 @@ import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewMo
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -47,6 +48,8 @@ public interface TrainBookingPassengerContract {
 
         String getDestinationCity();
 
+        TrainScheduleRequest convertTripToRequestParam(TrainScheduleViewModel trainScheduleViewModel);
+
         void setCityRouteTripInfo(CardWithAction cardWithAction, String originCity, String destinationCity);
 
         Observable<ProfileBuyerInfo> getObservableProfileBuyerInfo();
@@ -67,8 +70,6 @@ public interface TrainBookingPassengerContract {
 
         void navigateToReview(TrainSoftbook trainSoftbook);
 
-        void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
-
         void showMessageErrorInSnackBar(int resId);
 
         RequestParams getTrainSoftBookingRequestParam();
@@ -87,9 +88,11 @@ public interface TrainBookingPassengerContract {
 
         void hideLoading();
 
-        void unCheckSameAsBuyerCheckbox();
-
         void showNavigateToSearchDialog(String message);
+
+        Date getDepartureDate();
+
+        void showUpperLowerBirthDate(String lowerBirthDate, String upperBirthDate);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -106,8 +109,9 @@ public interface TrainBookingPassengerContract {
 
         void onChooseSeatButtonClicked();
 
-        void wrapPassengerSameAsBuyer();
+        void onDestroyView();
 
-        void removePassengerSameAsBuyer();
+        void calculateUpperLowerBirthDate(int paxType);
+
     }
 }

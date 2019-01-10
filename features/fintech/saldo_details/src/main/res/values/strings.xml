@@ -10,4 +10,38 @@
     <string name="sp_btn_ok_disable">Ya,Saya Yakin</string>
     <string name="sp_disable_desc_long" >Selama fitur dinonaktifkan, Anda tidak akan menerima pencairan dana di awal.\nPengembalian dana untuk pelunasan Saldo Prioritas tetap berjalan.</string>
     <string name="saldo_status_updated_success">Status Prioritas Diperbarui</string>
+    <string name="sp_prompt_search">Cari</string>
+    <string name="sp_topup_saldo">Isi Saldo</string>
+    <string name="sp_title_withdraw">Tarik Saldo</string>
+    <string name="sp_title_remaining_tokopedia">Saldo Aktif</string>
+    <string name="sp_error_invalid_date">Tanggal tidak valid</string>
+    <string name="sp_error_no_amount_deposit">Maaf, Anda tidak memiliki saldo pada akun Anda saat ini.</string>
+    <string name="sp_error_no_password_yes">Buat kata sandi</string>
+    <string name="sp_error_deposit_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="sp_error_deposit_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk melakukan penarikan dana.</string>
+    <string name="sp_saldo_title">Saldo</string>
+    <string name="sp_title_nominal">Nominal</string>
+    <string name="no_saldo_transactions">Belum Ada Transaksi</string>
+    <string name="sp_positive_saldo_balance" >+ %s</string>
+    <string name="sp_negative_saldo_balance" >- %s</string>
+    <string name="sp_date_time_view" >%s WIB</string>
+    <string name="saldo_hold_balance_text" >Saldo Tertahan %s</string>
+    <string name="check_saldo_hold_balance_status">Cek Status</string>
+    <string name="sp_saldo_withdraw_warning_title">Informasi Penarikan Saldo</string>
+    <string name="sp_saldo_withdraw_warning_desc">Layanan pencairan dana bergantung pada jadwal proses kerja bank. Info lebih lanjut, silakan hubungi layanan nasabah bank.</string>
+    <string name="sp_saldo_withdraw_warning_positiv_button">Mengerti</string>
+    <string name="sp_goto_home">Belanja</string>
+    <string name="sp_empty_state_error">Terjadi Kesalahan, Mohon ulangi beberapa saat lagi</string>
+    <string name="sp_cancel">Tutup</string>
+    <string name="sp_title_max_day">Pemilihan tanggal mutasi transaksi maksimal 31 hari</string>
+    <string name="sp_end_date">Tanggal Akhir</string>
+    <string name="sp_start_date">Tanggal Awal</string>
+    <string name="sp_transaction_history_heading">Pilih Tanggal Riwayat Saldo</string>
+
+    <string name="sp_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
+    <string name="sp_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
+    <string name="sp_alert_not_verified_yet_positive">Verifikasi</string>
+    <string name="sp_alert_not_verified_yet_negative">Tidak</string>
+
+
 </resources>

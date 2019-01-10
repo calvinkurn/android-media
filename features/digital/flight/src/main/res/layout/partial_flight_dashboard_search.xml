@@ -15,14 +15,14 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_one_way_trip"
-            style="@style/ButtonRound"
+            style="@style/TravelButtonRound"
             android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
             android:text="@string/flight_search_one_way" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_round_trip"
-            style="@style/ButtonRound"
+            style="@style/TravelButtonRound"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginStart="@dimen/dp_5"
             android:text="@string/flight_search_return" />

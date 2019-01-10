@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.apollographql.android'
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -88,10 +87,6 @@ dependencies {
     annotationProcessor   rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.networkDependencies.glide
-
-    implementation rootProject.ext.apolloDependencies.apolloRxSupport
-    implementation rootProject.ext.apolloDependencies.apolloRuntime
-    implementation rootProject.ext.apolloDependencies.apolloAndroidSupport
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor   rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

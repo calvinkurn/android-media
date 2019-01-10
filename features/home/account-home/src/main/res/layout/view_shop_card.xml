@@ -55,7 +55,18 @@
             app:layout_constraintLeft_toRightOf="@+id/image_shop"
             app:layout_constraintStart_toEndOf="@+id/image_shop"
             app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
-            tools:text="Kelengkapan Profile 75%"/>
+            tools:text="Gagal Verifikasi"/>
+
+        <ImageView
+            android:id="@+id/shop_status_info_button"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
+            android:src="@drawable/ic_info_black"
+            app:layout_constraintTop_toTopOf="@+id/text_shop_verification_status"
+            app:layout_constraintBottom_toBottomOf="@+id/text_shop_verification_status"
+            app:layout_constraintLeft_toRightOf="@+id/text_shop_verification_status"/>
 
         <ImageView
             android:id="@+id/shop_reputation"

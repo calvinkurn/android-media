@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -496,13 +497,10 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Bundle bundle = new Bundle();
-        super.onSaveInstanceState(bundle);
-        if (!TooLargeTool.isPotentialCrash(bundle)) {
-            outState.putAll(bundle);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.attachproduct.R;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.attachproduct.di.DaggerAttachProductComponent;
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapter;
 import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
@@ -42,6 +43,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         AttachProductContract.View {
     private final static int MAX_CHECKED = 3;
     private static final String IS_SELLER = "isSeller";
+    private static final String SOURCE = "source";
     private Button sendButton;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -52,6 +54,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     protected AttachProductListAdapter adapter;
 
     private boolean isSeller = false;
+    private String source = "";
 
     public void setActivityContract(AttachProductContract.Activity activityContract) {
         this.activityContract = activityContract;
@@ -80,6 +83,12 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         } else if (getArguments() != null) {
             isSeller = getArguments().getBoolean(IS_SELLER, false);
         }
+
+        if (savedInstanceState != null) {
+            source = savedInstanceState.getString(SOURCE, "");
+        } else if (getArguments() != null) {
+            source = getArguments().getString(SOURCE, "");
+        }
     }
 
     @Nullable
@@ -104,9 +113,11 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         }
     }
 
-    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView, boolean isSeller) {
+    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView,
+                                                    boolean isSeller, String source) {
         Bundle args = new Bundle();
         args.putBoolean(IS_SELLER, isSeller);
+        args.putString(SOURCE, source);
         AttachProductFragment fragment = new AttachProductFragment();
         fragment.setActivityContract(checkedUIView);
         fragment.setArguments(args);
@@ -193,7 +204,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     public void updateListByCheck(boolean isChecked, int position) {
         adapter.itemChecked(isChecked, position);
         presenter.updateCheckedList(adapter.getCheckedDataList());
-        trackAction();
+        trackAction(source, adapter.getData().get(position).getProductId());
     }
 
     @Override
@@ -269,12 +280,20 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         activityContract.goToAddProduct(activityContract.getShopId());
     }
 
-    private void trackAction() {
+    private void trackAction(String source, int productId) {
+
         if ((getActivity().getApplicationContext() instanceof AbstractionRouter)) {
             AbstractionRouter abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-            abstractionRouter.getAnalyticTracker().sendEventTracking(
-                    AttachProductAnalytics.getEventCheckProduct().getEvent()
-            );
+            if(source.equals(AttachProductActivity.SOURCE_TALK)){
+                abstractionRouter.getAnalyticTracker().sendEventTracking(
+                        AttachProductAnalytics.getEventCheckProductTalk(productId).getEvent()
+                );
+            }else{
+                abstractionRouter.getAnalyticTracker().sendEventTracking(
+                        AttachProductAnalytics.getEventCheckProduct().getEvent()
+                );
+            }
+
         }
     }
 
