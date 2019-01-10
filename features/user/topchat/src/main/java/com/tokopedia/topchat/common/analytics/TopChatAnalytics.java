@@ -96,5 +96,33 @@ public class TopChatAnalytics {
         );
     }
 
+    public void trackSendProductAttachment() {
+        analyticTracker.sendEventTracking(
+                Name.CHAT_DETAIL,
+                TopChatAnalytics.Category.CHAT_DETAIL,
+                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
+                ""
+        );
+    }
+
+    public void trackHeaderClicked() {
+
+        analyticTracker.sendEventTracking(
+                Name.INBOX_CHAT,
+                "message room",
+                "click header - shop icon",
+                ""
+        );
+
+    }
+
+    public void trackGoToDetailFromMenu() {
+        analyticTracker.sendEventTracking(
+                Name.INBOX_CHAT,
+                "message room",
+                "click header - three bullet",
+                "lihat profile"
+        );
+    }
 
 }

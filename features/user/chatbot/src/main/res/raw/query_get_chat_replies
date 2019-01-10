@@ -1,5 +1,5 @@
-query get_chat_replies($msgId: Int!) {
-  chatReplies(msgId: $msgId) {
+query get_chat_replies($msgId: Int!, $page: Int!) {
+  chatReplies(msgId: $msgId, page: $page) {
     hasNext
     contacts {
       role
@@ -15,6 +15,7 @@ query get_chat_replies($msgId: Int!) {
         isOnline
       }
     }
+    textareaReply
     list {
       date
       chats {

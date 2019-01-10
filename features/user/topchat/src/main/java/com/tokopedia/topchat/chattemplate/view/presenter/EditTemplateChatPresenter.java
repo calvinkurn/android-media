@@ -26,17 +26,14 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
     private final EditTemplateUseCase editTemplateUseCase;
     private final CreateTemplateUseCase createTemplateUseCase;
     private final DeleteTemplateUseCase deleteTemplateUseCase;
-    private final ChatTemplateAnalytics analytics;
 
     @Inject
     EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase,
                               CreateTemplateUseCase createTemplateUseCase,
-                              DeleteTemplateUseCase deleteTemplateUseCase,
-                              ChatTemplateAnalytics analytics) {
+                              DeleteTemplateUseCase deleteTemplateUseCase) {
         this.editTemplateUseCase = editTemplateUseCase;
         this.createTemplateUseCase = createTemplateUseCase;
         this.deleteTemplateUseCase = deleteTemplateUseCase;
-        this.analytics = analytics;
     }
 
     @Override
@@ -73,7 +70,6 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                 @Override
                 public void onNext(EditTemplateViewModel editTemplateViewModel) {
                     if (editTemplateViewModel.isSuccess()) {
-                        analytics.eventClickTemplate();
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
                     } else {

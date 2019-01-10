@@ -48,6 +48,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentId = ""
     protected var opponentName = ""
     protected var opponentRole = ""
+    protected var shopId = 0
+
+    protected var toShopId = 0
+    protected var toUserId = 0
+    protected var source = ""
+
 
     override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
         return BaseChatTypeFactoryImpl(this,
@@ -91,10 +97,13 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         opponentId = getParamString(ApplinkConst.Chat.OPPONENT_ID, arguments, savedInstanceState)
         opponentName = getParamString(ApplinkConst.Chat.OPPONENT_NAME, arguments, savedInstanceState)
         opponentRole = getParamString(ApplinkConst.Chat.OPPONENT_ROLE, arguments, savedInstanceState)
+        source = getParamString(ApplinkConst.Chat.SOURCE, arguments, savedInstanceState)
+        toShopId = getParamInt(ApplinkConst.Chat.TO_SHOP_ID, arguments, savedInstanceState)
+        toUserId = getParamInt(ApplinkConst.Chat.TO_USER_ID, arguments, savedInstanceState)
     }
 
-    private fun getParamString(paramName: String, arguments: Bundle?,
-                               savedInstanceState: Bundle?): String {
+    open fun getParamString(paramName: String, arguments: Bundle?,
+                            savedInstanceState: Bundle?): String {
         return when {
             savedInstanceState != null
                     && savedInstanceState.getString(paramName, "").isNotEmpty()
@@ -104,6 +113,16 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             else -> ""
         }
     }
+
+    open fun getParamInt(paramName: String, arguments: Bundle?,
+                         savedInstanceState: Bundle?): Int {
+        return when {
+            savedInstanceState != null -> savedInstanceState.getInt(paramName, 0)
+            arguments != null -> arguments.getInt(paramName, 0)
+            else -> 0
+        }
+    }
+
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
         if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
@@ -168,23 +187,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
-    override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
-        val strings: ArrayList<String> = ArrayList()
-        strings.add(imageUrl)
-
-        activity?.run {
-            val intent = RouteManager.getIntent(this, ApplinkConst.IMAGE_PREVIEW);
-            val bundle = Bundle()
-            bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_FILELOC, strings)
-            bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_IMAGE_DESC, ArrayList())
-            bundle.putInt(ApplinkConst.Query.IMAGE_PREVIEW_IMG_POSITION, 0)
-            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_TITLE, opponentName)
-            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_SUBTITLE, replyTime)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        }
-    }
-
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         val ROLE_SHOP = "shop"
 
@@ -233,15 +235,23 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         viewState.onReceiveRead()
     }
 
+    override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
+        //Please override if you use
+    }
+
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+        //Please override if you use
+    }
+
     abstract fun onSendButtonClicked()
 
     abstract fun getUserSession(): UserSessionInterface
 
-    open fun updateViewData(it: ChatroomViewModel){
+    open fun updateViewData(it: ChatroomViewModel) {
         this.opponentId = it.headerModel.senderId
         this.opponentName = it.headerModel.name
         this.opponentRole = it.headerModel.role
+        this.shopId = it.headerModel.shopId
     }
 
-    abstract fun onBackPressedEvent()
 }

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener;
 import com.tokopedia.chat_common.R;
+import com.tokopedia.design.component.ButtonCompat;
 
 /**
  * @author by nisie on 5/14/18.
@@ -31,6 +32,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private TextView label;
     private TextView dot;
     private ImageView thumbnailsImage;
+    private ButtonCompat tvBuy;
+    private ImageView ivATC;
 
     private Context context;
     private ProductAttachmentListener viewListener;
@@ -48,6 +51,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         dot = itemView.findViewById(R.id.dot);
         progressBarSendImage = itemView.findViewById(R.id.progress_bar);
         chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
+        tvBuy = chatBalloon.findViewById(R.id.tv_buy);
+        ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
         this.viewListener = viewListener;
     }
 
@@ -55,8 +60,9 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     public void bind(ProductAttachmentViewModel element) {
         super.bind(element);
         prerequisiteUISetup(element);
-        setupChatBubbleAlignment(chatBalloon, element);
         setupProductUI(element, chatBalloon);
+        setupChatBubbleAlignment(chatBalloon, element);
+
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {
@@ -131,6 +137,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
         params.addRule(alignment);
+        params.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         view.setLayoutParams(params);
     }
 
@@ -139,7 +146,29 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 .getProductImage());
         setUIValue(productContainer, R.id.attach_product_chat_name, element.getProductName());
         setUIValue(productContainer, R.id.attach_product_chat_price, element.getProductPrice());
+        setFooter(productContainer, element);
     }
+
+    private void setFooter(View productContainer, ProductAttachmentViewModel element) {
+        View separator = productContainer.findViewById(R.id.separator);
+        if (element.getCanShowFooter()) {
+            separator.setVisibility(View.VISIBLE);
+            tvBuy.setVisibility(View.VISIBLE);
+            ivATC.setVisibility(View.VISIBLE);
+            tvBuy.setOnClickListener(v -> {
+                viewListener.onClickBuyFromProductAttachment(element);
+            });
+
+            ivATC.setOnClickListener(v -> {
+                viewListener.onClickATCFromProductAttachment(element);
+            });
+        } else {
+            separator.setVisibility(View.GONE);
+            tvBuy.setVisibility(View.GONE);
+            ivATC.setVisibility(View.GONE);
+        }
+    }
+
 
     private void setUIValue(View productContainer, int id, String value) {
         View destination = productContainer.findViewById(id);

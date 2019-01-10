@@ -95,8 +95,17 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.imageUrl,
                 !pojo.isOpposite,
                 pojo.message.censoredReply,
-                pojo.startTime
+                pojo.startTime,
+                canShowFooterProductAttachment(pojo.isOpposite,
+                        pojo.fromRole)
         )
+    }
+
+    private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
+        val ROLE_USER = "User"
+
+        return (!isOpposite && role.toLowerCase() == ROLE_USER.toLowerCase())
+                || (isOpposite && role.toLowerCase() != ROLE_USER.toLowerCase())
     }
 
     open fun convertToFallBackModel(pojo: ChatSocketPojo): Visitable<*> {

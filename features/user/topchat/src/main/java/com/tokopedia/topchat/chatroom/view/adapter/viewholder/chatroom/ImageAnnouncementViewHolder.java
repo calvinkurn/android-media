@@ -42,6 +42,7 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
             @Override
             public void onClick(View view) {
                 TrackingUtils.sendGTMEvent(
+                        view.getContext(),
                         new EventTracking(
                                 "clickInboxChat",
                                 "inbox-chat",

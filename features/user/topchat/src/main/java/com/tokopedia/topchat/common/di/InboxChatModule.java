@@ -16,14 +16,10 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.chat_common.network.ChatUrl;
-import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
-import com.tokopedia.core.network.di.qualifier.InboxQualifier;
-import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -53,14 +49,11 @@ import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
+import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
-import com.tokopedia.topchat.uploadimage.data.factory.ImageUploadFactory;
-import com.tokopedia.topchat.uploadimage.data.mapper.GenerateHostMapper;
-import com.tokopedia.topchat.uploadimage.data.mapper.UploadImageMapper;
-import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
-import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepositoryImpl;
+import com.tokopedia.topchat.common.network.XUserIdInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -217,55 +210,39 @@ public class InboxChatModule {
         return new SendMessageSource(chatApi, sendMessageMapper);
     }
 
-    @InboxChatScope
-    @Provides
-    ImageUploadRepository
-    provideImageUploadRepository(ImageUploadFactory imageUploadFactory) {
-        return new ImageUploadRepositoryImpl(imageUploadFactory);
-    }
-
-    @InboxChatScope
-    @Provides
-    ImageUploadFactory
-    provideImageUploadFactory(GenerateHostActService generateHostActService,
-                              UploadImageService uploadImageService,
-                              GenerateHostMapper generateHostMapper,
-                              UploadImageMapper uploadImageMapper) {
-        return new ImageUploadFactory(generateHostActService,
-                uploadImageService,
-                generateHostMapper,
-                uploadImageMapper);
-    }
-
-    @InboxChatScope
-    @Provides
-    GenerateHostActService
-    provideGenerateHostActService() {
-        return new GenerateHostActService();
-    }
-
-    @InboxChatScope
-    @Provides
-    UploadImageService
-    provideUploadImageService() {
-        return new UploadImageService();
-    }
 
     @Provides
     public ErrorResponseInterceptor provideResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
     }
 
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter) context;
+    }
+
+
+    @Provides
+    public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
+                                                        NetworkRouter networkRouter,
+                                                        UserSession userSession) {
+        return new XUserIdInterceptor(context, networkRouter, userSession);
+    }
+
     @InboxChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                     @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
                                      ChuckInterceptor chuckInterceptor,
-                                     HttpLoggingInterceptor httpLoggingInterceptor) {
+                                     HttpLoggingInterceptor httpLoggingInterceptor,
+                                     NetworkRouter networkRouter,
+                                     UserSessionInterface userSessionInterface,
+                                     XUserIdInterceptor xUserIdInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))
                 .addInterceptor(new CacheApiInterceptor())
-                .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
+                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)

@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 /**
@@ -19,11 +20,11 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
     @LayoutRes
     public static final int LAYOUT = R.layout.item_template_chat_layout;
 
-    ChatRoomContract.View.TemplateChatListener viewListener;
+    ChatTemplateListener viewListener;
     TextView textHolder;
     ImageView icon;
 
-    public TemplateChatViewHolder(View itemView, ChatRoomContract.View.TemplateChatListener viewListener) {
+    public TemplateChatViewHolder(View itemView, ChatTemplateListener viewListener) {
         super(itemView);
         textHolder = itemView.findViewById(R.id.text);
         icon = itemView.findViewById(R.id.setting);

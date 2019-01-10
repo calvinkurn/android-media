@@ -7,4 +7,6 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
  */
 interface ProductAttachmentListener {
     fun onProductClicked(element: ProductAttachmentViewModel)
+    fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel)
+    fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel)
 }

@@ -3,7 +3,7 @@ package com.tokopedia.flight.search.di;
 import dagger.Module;
 
 /**
- * Created by zulfikarrahman on 10/24/17.
+ * @author by furqan on 01/10/18.
  */
 
 @FlightSearchScope

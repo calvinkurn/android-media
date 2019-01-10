@@ -3,6 +3,9 @@ package com.tokopedia.chat_common.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 
+/**
+ * shopId always f
+ */
 data class ChatRoomHeaderViewModel(
         var name: String = "",
         var label: String = "",
@@ -12,7 +15,8 @@ data class ChatRoomHeaderViewModel(
         var keyword: String = "",
         var image: String = "",
         var lastTimeOnline : Long = 0,
-        var isOnline : Boolean = false) : Parcelable {
+        var isOnline : Boolean = false,
+        var shopId : Int = 0) : Parcelable {
 
     constructor(parcel: Parcel) : this() {
         name = parcel.readString()
@@ -51,6 +55,9 @@ data class ChatRoomHeaderViewModel(
 
     object Companion {
         const val MODE_DEFAULT_GET_CHAT: Int = 1
+        const val ROLE_USER: String = "user"
+        const val ROLE_SHOP: String = "shop owner"
+
 
     }
 

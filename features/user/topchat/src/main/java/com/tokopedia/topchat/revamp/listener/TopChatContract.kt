@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.revamp.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 
 /**
@@ -14,9 +16,9 @@ interface TopChatContract {
 
         fun developmentView()
 
-        fun addDummyMessage(visitable : Visitable<*>)
+        fun addDummyMessage(visitable: Visitable<*>)
 
-        fun removeDummy(visitable : Visitable<*>)
+        fun removeDummy(visitable: Visitable<*>)
 
         fun clearEditText()
 
@@ -33,6 +35,9 @@ interface TopChatContract {
         fun showErrorWebSocket(b: Boolean)
 
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
+
+        fun onBackPressedEvent()
+
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -45,12 +50,41 @@ interface TopChatContract {
         fun getExistingChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccess: (ChatroomViewModel) -> Unit
+                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit)
+
+        fun getMessageId(
+                toUserId: String,
+                toShopId: String,
+                source: String,
+                onError: (Throwable) -> Unit,
+                onSuccessGetMessageId: (String) -> Unit
         )
 
         fun startUploadImages(it: ImageUploadViewModel)
 
         fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
+
+        fun addProductToCart(element: ProductAttachmentViewModel,
+                             onError: (Throwable) -> Unit,
+                             onSuccess: () -> Unit)
+
+        fun isUploading(): Boolean
+
+        fun sendProductAttachment(messageId: String, item: ResultProduct,
+                                  startTime: String, opponentId: String)
+
+        fun doFollowShop(shopId: Int,
+                         onError: (Throwable) -> Unit,
+                         onSuccessFollowShop: () -> Unit)
+
+        fun doUnfollowShop(shopId: Int,
+                           onError: (Throwable) -> Unit,
+                           onSuccessUnfollowShop: () -> Unit)
+
+
+        fun deleteChat(messageId: String,
+                                onError: (Throwable) -> Unit,
+                                onSuccessDeleteConversation: () -> Unit)
 
     }
 }

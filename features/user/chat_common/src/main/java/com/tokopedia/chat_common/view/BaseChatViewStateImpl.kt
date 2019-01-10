@@ -29,8 +29,7 @@ open class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
         private val typingListener: TypingListener
-        ) :
-        BaseChatViewState {
+        ) : BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var mainLoading: ProgressBar
@@ -88,7 +87,7 @@ open class BaseChatViewStateImpl(
                 }
     }
 
-    override fun updateHeader(chatroomViewModel: ChatroomViewModel) {
+    override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         val title = toolbar.findViewById<TextView>(R.id.title)
         title.text = chatroomViewModel.headerModel.name
 
@@ -107,6 +106,9 @@ open class BaseChatViewStateImpl(
             onlineStatus.setImageResource(R.drawable.status_indicator_online)
         else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
+
+        toolbar.setOnClickListener { onToolbarClicked() }
+
 
     }
 
@@ -158,21 +160,24 @@ open class BaseChatViewStateImpl(
             SELLER_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
+                label.visibility = View.VISIBLE
             }
             ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.visibility = View.VISIBLE
             }
             OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.visibility = View.VISIBLE
             }
             else -> label.visibility = View.GONE
         }
     }
 
     open fun scrollDownWhenInBottom() {
-        if (checkLastCompletelyVisibleItemIsFirst()) {
+        if (!checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }

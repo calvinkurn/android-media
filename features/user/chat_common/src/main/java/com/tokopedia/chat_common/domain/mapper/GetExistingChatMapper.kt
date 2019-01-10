@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
+import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import javax.inject.Inject
 
@@ -47,7 +48,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 "",
                 interlocutor.thumbnail,
                 interlocutor.status.timestamp,
-                interlocutor.status.isOnline
+                interlocutor.status.isOnline,
+                interlocutor.shopId
         )
     }
 
@@ -90,7 +92,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
-        return when(chatItemPojoByDateByTime.attachment?.type.toString()){
+        return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             else -> convertToFallBackModel(chatItemPojoByDateByTime)
@@ -113,7 +115,7 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>( chatItemPojoByDateByTime.attachment ?.attributes,
+        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ImageUploadAttributes::class.java)
         return ImageUploadViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
@@ -124,7 +126,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 !chatItemPojoByDateByTime.isOpposite,
-                pojoAttribute.imageUrl ,
+                pojoAttribute.imageUrl,
                 pojoAttribute.thumbnail,
                 chatItemPojoByDateByTime.isRead,
                 chatItemPojoByDateByTime.msg
@@ -132,7 +134,10 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        //TODO product attribute
+
+        val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
+                ProductAttachmentAttributes::class.java)
+
         return ProductAttachmentViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -142,14 +147,23 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 chatItemPojoByDateByTime.isRead,
-                0,
-                "",
-                "",
-                "",
-                "",
+                pojoAttribute.productId,
+                pojoAttribute.productProfile.name,
+                pojoAttribute.productProfile.price,
+                pojoAttribute.productProfile.url,
+                pojoAttribute.productProfile.imageUrl,
                 !chatItemPojoByDateByTime.isOpposite,
-                chatItemPojoByDateByTime.msg
+                chatItemPojoByDateByTime.msg,
+                canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
+                        chatItemPojoByDateByTime.role)
         )
+    }
+
+    private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
+        val ROLE_USER = "User"
+
+        return (!isOpposite && role.toLowerCase() == ROLE_USER.toLowerCase())
+                || (isOpposite && role.toLowerCase() != ROLE_USER.toLowerCase())
     }
 
 

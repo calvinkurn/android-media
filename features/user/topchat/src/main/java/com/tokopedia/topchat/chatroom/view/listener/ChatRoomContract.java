@@ -9,18 +9,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
-import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +30,7 @@ public class ChatRoomContract {
 
         interface TemplateChatListener {
             void addTemplateString(String message);
+
             void goToSettingTemplate();
         }
 
@@ -44,7 +40,6 @@ public class ChatRoomContract {
 
         void displayReplyField(boolean b);
 
-        ChatRoomAdapter getAdapter();
 
         Context getContext();
 
@@ -143,21 +138,6 @@ public class ChatRoomContract {
 
         boolean isChatBot();
 
-        void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply);
-
-        void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable
-                modelToBeRemoved);
-
-        void showQuickReplyView(QuickReplyListViewModel model);
-
-        void onInvoiceSelected(InvoiceLinkPojo selectedInvoice);
-
-        void onClickRating(ChatRatingViewModel element, int rating);
-
-        void onSuccessSetRating(ChatRatingViewModel element);
-
-        void onErrorSetRating(String errorMessage);
-
         void showSearchInvoiceScreen();
 
         boolean shouldHandleUrlManually(String url);
@@ -183,6 +163,11 @@ public class ChatRoomContract {
         void toggleFollowSuccess();
 
         void finishActivity();
+
+        void onClickBuyFromProductAttachment(ProductAttachmentViewModel element);
+
+        void onClickATCFromProductAttachment(ProductAttachmentViewModel element);
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -209,8 +194,6 @@ public class ChatRoomContract {
 
         String getFileLocFromCamera();
 
-        void setChatRating(ChatRatingViewModel model, int userId, int rating);
-
         void getExistingChat();
 
         void sendReasonRating(String messageId, long replyTimeNano, String reason);
@@ -223,6 +206,5 @@ public class ChatRoomContract {
 
         void doFollowUnfollowToggle(String shopId);
 
-        void sendQuickReply(String messageId, QuickReplyViewModel quickReply, String startTime);
     }
 }

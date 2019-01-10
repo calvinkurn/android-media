@@ -23,31 +23,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 abstract class BaseChatToolbarActivity : BaseChatActivity() {
 
     companion object {
-        public val PARAM_MESSAGE_ID = "message_id"
-        public val PARAM_SENDER_ID = "sender_id"
         private val TAG_FRAGMENT = "ChatToolbarActivity"
-        val PARAM_HEADER = "header"
-
-        /**
-         * To create intent with header already initialized.
-         */
-        @JvmStatic
-        fun getCallingIntent(context: Context, messageId: String, name: String,
-                             label: String, senderId: String, role: String, mode: Int,
-                             keyword: String, image: String): Intent {
-            val intent = Intent(context, BaseChatToolbarActivity::class.java)
-            intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-            val model = ChatRoomHeaderViewModel()
-            model.name = name
-            model.label = label
-            model.senderId = senderId
-            model.role = role
-            model.mode = mode
-            model.keyword = keyword
-            model.image = image
-            intent.putExtra(PARAM_HEADER, model)
-            return intent
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +63,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
         }
 
 
-        intent.getParcelableExtra<ChatRoomHeaderViewModel>(PARAM_HEADER)?.let {
+        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
 
             ImageHandler.loadImageCircle2(this@BaseChatToolbarActivity, findViewById<ImageView>(R.id.user_avatar), it.image)
             (findViewById<TextView>(R.id.title)).text = it.name
@@ -106,12 +82,5 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
 
     override fun getTagFragment(): String {
         return TAG_FRAGMENT
-    }
-
-    override fun onBackPressed() {
-        supportFragmentManager.findFragmentByTag(tagFragment).let {
-            if (it is BaseChatFragment) it.onBackPressedEvent()
-            else super.onBackPressed()
-        }
     }
 }

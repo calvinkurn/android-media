@@ -5,18 +5,13 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TimeMachineChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TypingChatModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionSelectionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement
         .ImageDualAnnouncementViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.message.MessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -26,17 +21,9 @@ public interface ChatRoomTypeFactory {
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 
-    int type(AttachInvoiceSentViewModel attachInvoiceSentViewModel);
-
-    int type(AttachInvoiceSelectionViewModel attachInvoiceSelectionViewModel);
-
     // NEW VERSION
 
-    int type(QuickReplyListViewModel quickReplyListViewModel);
-
     int type(FallbackAttachmentViewModel fallbackAttachmentViewModel);
-
-    int type(ChatRatingViewModel chatRatingViewModel);
 
     int type(ProductAttachmentViewModel productAttachmentViewModel);
 
@@ -53,6 +40,5 @@ public interface ChatRoomTypeFactory {
 
     int type(ImageDualAnnouncementViewModel imageDualAnnouncementViewModel);
 
-    int type(ChatActionSelectionBubbleViewModel chatActionSelectionBubbleViewModel);
 
 }

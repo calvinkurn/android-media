@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.listener
 import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -27,6 +28,8 @@ interface ChatbotViewState : BaseChatViewState {
                             onClickReasonRating: (String) -> Unit)
 
     fun onClickReasonRating()
+
+    fun onImageUpload(it: ImageUploadViewModel)
 
 
 }

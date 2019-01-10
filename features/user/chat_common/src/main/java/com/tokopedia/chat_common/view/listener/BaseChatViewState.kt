@@ -16,7 +16,7 @@ interface BaseChatViewState {
 
     fun onReceiveMessageEvent(visitable: Visitable<*>)
 
-    fun updateHeader(chatroomViewModel: ChatroomViewModel)
+    fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit)
 
     fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
                          startTime: String)
@@ -26,4 +26,5 @@ interface BaseChatViewState {
     fun removeMessageOnReplyBox()
 
     fun onReceiveRead()
+
 }

@@ -22,7 +22,7 @@ import javax.inject.Named
 @Module
 class ChatNetworkModule {
 
-    @TopChatRoomScope
+    @ChatScope
     @Provides
     @Named("retrofit")
     internal fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
@@ -40,24 +40,7 @@ class ChatNetworkModule {
         )
     }
 
-    @TopChatRoomScope
-    @Provides
-    internal fun provideChatBotRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
-        if ((context is NetworkRouter).not()) {
-            throw IllegalStateException("Application must implement "
-                    .plus(NetworkRouter::class.java.simpleName)
-            )
-        }
-
-        return CommonNetwork.createRetrofit(
-                context,
-                CHATBOT_BASE_URL,
-                context as NetworkRouter,
-                userSession
-        )
-    }
-
-    @TopChatRoomScope
+    @ChatScope
     @Provides
     internal fun provideChatRetrofitJsDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
@@ -74,7 +57,7 @@ class ChatNetworkModule {
         )
     }
 
-    @TopChatRoomScope
+    @ChatScope
     @Provides
     internal fun provideWsRetrofitDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
@@ -91,7 +74,7 @@ class ChatNetworkModule {
         )
     }
 
-    @TopChatRoomScope
+    @ChatScope
     @Provides
     internal fun provideTomeRetrofitDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
@@ -109,13 +92,13 @@ class ChatNetworkModule {
     }
 
 
-    @TopChatRoomScope
+    @ChatScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
 
-    @TopChatRoomScope
+    @ChatScope
     @Provides
     internal fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources

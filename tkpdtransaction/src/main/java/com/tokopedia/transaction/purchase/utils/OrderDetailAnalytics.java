@@ -4,10 +4,15 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
-import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.*;
 
 import java.util.HashMap;
+
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_ACTION;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_CATEGORY;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_LABEL;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_CLICK_ORDER;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_SALES_SHIPPING;
 
 /**
  * Temporary class to provide analytics in tkpdtransaction

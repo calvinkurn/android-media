@@ -37,12 +37,10 @@ class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceCon
 
     }
 
-    private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
-        return {
-            val pojo = graphqlResponse.getData<GetInvoiceListPojo>(GetInvoiceListPojo::class.java)
-            view.addInvoicesToList(mapToInvoiceList(pojo),
-                    pojo.getInvoiceList.size >= GetInvoiceListUseCase.DEFAULT_LIMIT)
-        }
+    private fun routingOnNext(graphqlResponse: GraphqlResponse) {
+        val pojo = graphqlResponse.getData<GetInvoiceListPojo>(GetInvoiceListPojo::class.java)
+        view.addInvoicesToList(mapToInvoiceList(pojo),
+                pojo.getInvoiceList.size >= GetInvoiceListUseCase.DEFAULT_LIMIT)
     }
 
     private fun mapToInvoiceList(pojo: GetInvoiceListPojo?): List<InvoiceViewModel> {

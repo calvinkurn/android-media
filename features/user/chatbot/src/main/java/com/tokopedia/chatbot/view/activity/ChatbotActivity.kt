@@ -51,7 +51,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
             model.mode = mode
             model.keyword = keyword
             model.image = image
-            intent.putExtra(PARAM_HEADER, model)
+            intent.putExtra(ApplinkConst.Chat.PARAM_HEADER, model)
             return intent
         }
     }

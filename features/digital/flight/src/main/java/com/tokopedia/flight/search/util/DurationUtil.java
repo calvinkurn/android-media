@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.view.model.Duration;
+import com.tokopedia.flight.search.presentation.model.Duration;
 
 /**
  * Created by User on 11/17/2017.

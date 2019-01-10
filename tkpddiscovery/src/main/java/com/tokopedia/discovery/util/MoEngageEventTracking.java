@@ -3,6 +3,7 @@ package com.tokopedia.discovery.util;
 import android.content.Context;
 
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 
 public class MoEngageEventTracking {
 
@@ -20,7 +21,7 @@ public class MoEngageEventTracking {
         SUBCATEGORY_ID ="";
         PRODUCT_NAME = "";
         PRODUCT_ID = "";
-        TrackingUtils.sendMoEngageCategoryEvent(CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
+        TrackingUtils.sendMoEngageCategoryEvent(MainApplication.getAppContext(), CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
     }
 
     public static void sendSubCategory(String subCategoryId, String subCategoryName) {
@@ -28,12 +29,12 @@ public class MoEngageEventTracking {
         SUBCATEGORY = subCategoryName;
         PRODUCT_ID = "";
         PRODUCT_NAME = "";
-        TrackingUtils.sendMoEngageCategoryEvent(CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
+        TrackingUtils.sendMoEngageCategoryEvent(MainApplication.getAppContext(), CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
     }
 
     public static void sendProductCategory(String productId, String productName) {
         PRODUCT_ID = productId;
         PRODUCT_NAME = productName;
-        TrackingUtils.sendMoEngageCategoryEvent(CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
+        TrackingUtils.sendMoEngageCategoryEvent(MainApplication.getAppContext(), CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
     }
 }

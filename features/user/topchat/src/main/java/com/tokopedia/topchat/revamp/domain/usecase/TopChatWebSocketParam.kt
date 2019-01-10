@@ -2,6 +2,7 @@ package com.tokopedia.topchat.revamp.domain.usecase
 
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 
@@ -61,5 +62,9 @@ object TopChatWebSocketParam {
         data.addProperty("msg_id", Integer.valueOf(thisMessageId))
         json.add("data", data)
         return json.toString()
+    }
+
+    fun generateParamSendProductAttachment(messageId: String, startTime: String, item: ProductAttachmentViewModel): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

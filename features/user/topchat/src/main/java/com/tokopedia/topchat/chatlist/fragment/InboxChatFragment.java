@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.topchat.R;
@@ -48,6 +49,7 @@ import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
+import com.tokopedia.topchat.revamp.view.TopChatInternalRouter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -472,13 +474,12 @@ public class InboxChatFragment extends BaseDaggerFragment
                 adapter.updateListCache(model.getMessageId(), model.getMsg(), false,
                         presenter.getListCache());
             }
+        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
+                && resultCode == TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE
+                && data != null
+                && data.hasExtra(ApplinkConst.Chat.MESSAGE_ID)) {
+            presenter.refreshData();
         }
-        //TODO UNCOMMENT CHANGE RESULT CODE
-//        else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
-//                resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
-//                data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID)) {
-//            presenter.refreshData();
-//        }
 
         presenter.createWebSocket();
     }

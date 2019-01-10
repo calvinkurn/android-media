@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel;
 
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 
 /**
@@ -23,7 +22,6 @@ public class BaseChatViewModel {
     /**
      * Constructor for WebSocketResponse / API Response
      * {@link ChatWebSocketListenerImpl}
-     * {@link GetReplyListUseCase}
      *
      * @param messageId      messageId
      * @param fromUid        userId of sender
@@ -32,7 +30,7 @@ public class BaseChatViewModel {
      * @param attachmentId   attachment id
      * @param attachmentType attachment type. Please refer to
      *                       {@link WebSocketMapper} types
-     * @param replyTime replytime in unixtime
+     * @param replyTime      replytime in unixtime
      */
     public BaseChatViewModel(String messageId,
                              String fromUid,
@@ -97,7 +95,6 @@ public class BaseChatViewModel {
     }
 
     /**
-     * Set in {@link ChatRoomAdapter}
      *
      * @param showDate set true to show date in header of chat
      */
@@ -110,7 +107,6 @@ public class BaseChatViewModel {
     }
 
     /**
-     * Set in {@link ChatRoomAdapter}
      *
      * @param showTime set true to show time in chat
      */

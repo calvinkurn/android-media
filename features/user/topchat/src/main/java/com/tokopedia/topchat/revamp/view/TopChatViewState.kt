@@ -8,6 +8,9 @@ interface TopChatViewState : BaseChatViewState {
     abstract fun showErrorWebSocket(b: Boolean)
 
     abstract fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
+
+    fun onSetCustomMessage(customMessage: String)
+
 //    fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel)
 //
 //    fun onCheckToHideQuickReply(visitable: Visitable<*>)

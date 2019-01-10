@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
@@ -71,6 +72,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Inject
     EditTemplateChatPresenter presenter;
+
+    @Inject
+    ChatTemplateAnalytics analytics;
 
 
     @Override
@@ -243,6 +247,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
+        analytics.eventClickTemplate();
         Intent intent = new Intent();
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
         intent.putExtra(TemplateChatFragment.LIST_RESULT, s);
