@@ -38,7 +38,7 @@ public abstract class BaseTravelPassengerAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.context = parent.getContext();
         View view = LayoutInflater.from(context)
-                .inflate(getLayoutAdapter(), null);
+                .inflate(getLayoutAdapter(), parent, false);
         return getViewHolder(view);
     }
 
