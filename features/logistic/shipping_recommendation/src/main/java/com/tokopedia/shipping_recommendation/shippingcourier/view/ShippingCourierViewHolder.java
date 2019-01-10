@@ -67,7 +67,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                 tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
                 tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
                 tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
-                itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition, hasCourierPromo, true));
+                itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition, true));
             } else {
                 tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
                 tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.text_courier_error_red));
@@ -79,7 +79,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
             tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
             itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(
-                    shippingCourierViewModel, cartPosition, hasCourierPromo, false));
+                    shippingCourierViewModel, cartPosition, false));
         }
         imgCheck.setVisibility(shippingCourierViewModel.isSelected() ? View.VISIBLE : View.GONE);
     }

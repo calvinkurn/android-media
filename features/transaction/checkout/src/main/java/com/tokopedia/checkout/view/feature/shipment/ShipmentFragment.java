@@ -699,7 +699,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCheckPromoShipmentDataSuccess(PromoCodeCartShipmentData checkPromoCodeCartShipmentResult) {
         PromoData promoData = new PromoData.Builder()
                 .typePromo(checkPromoCodeCartShipmentResult.getDataVoucher().getIsCoupon() == PromoData.CREATOR.getVALUE_COUPON()
-                        ?PromoData.CREATOR.getTYPE_COUPON() :PromoData.CREATOR.getTYPE_VOUCHER() )
+                        ? PromoData.CREATOR.getTYPE_COUPON() : PromoData.CREATOR.getTYPE_VOUCHER())
                 .promoCode(checkPromoCodeCartShipmentResult.getDataVoucher().getPromoCode())
                 .description(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherPromoDesc())
                 .amount(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherAmount())
@@ -836,7 +836,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
-        if(shipmentAdapter.hasAppliedPromoCode()) {
+        if (shipmentAdapter.hasAppliedPromoCode()) {
             shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
         }
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
@@ -904,7 +904,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentDonationModel shipmentDonationModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_DONATION_DATA);
             shipmentPresenter.processReloadCheckoutPageFromMultipleAddress(
                     promoData, cartPromoSuggestion, recipientAddressModel, shipmentCartItemModels,
-                    shipmentCostModel, shipmentDonationModel,isOneClickShipment()
+                    shipmentCostModel, shipmentDonationModel, isOneClickShipment()
             );
         } else {
             shipmentSelectionStateDataHashSet.clear();
@@ -938,7 +938,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
-        if(resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             if (bundle != null) {
                 PromoData promoData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
@@ -1376,10 +1376,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickDetailPromo(PromoData data, int position) {
         trackingPromoCheckoutUtil.checkoutClickTicker(data.getDescription());
-        if(data.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
+        if (data.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(data.getPromoCodeSafe(),
                     true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        }else{
+        } else {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(data.getPromoCodeSafe(),
                     true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
@@ -1818,8 +1818,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onNotifierClicked(String url) {
         mTrackerCod.eventClickPelajariSelengkapnya();
-        Intent intent = CheckoutWebViewActivity
-                .newInstance(getContext(), url, getString(R.string.manage_terms_and_conditions));
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
+                getString(R.string.manage_terms_and_conditions),
+                CheckoutWebViewActivity.CALLER_CODE_COD);
         startActivity(intent);
     }
 
