@@ -497,7 +497,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
         return ImageUploadViewModel(
                 messageId,
-                arguments!!.getString(BaseChatToolbarActivity.Companion.PARAM_SENDER_ID),
+                arguments!!.getString(ApplinkConst.Chat.OPPONENT_ID),
                 (System.currentTimeMillis() / 1000).toString(),
                 imageUrl,
                 SendableViewModel.generateStartTime()
