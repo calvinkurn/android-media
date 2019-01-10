@@ -13,15 +13,12 @@ import kotlinx.android.synthetic.main.item_banner.view.*
  */
 
 class BannerViewHolder(v: View, 
-                       listener: BannerAdapter.BannerItemListener,
+                       private val listener: BannerAdapter.BannerItemListener,
                        private var cardTitleListener: CardTitleView.CardTitleListener)
     : AbstractViewHolder<BannerViewModel>(v) {
 
-    private val adapter: BannerAdapter = BannerAdapter(adapterPosition, listener)
-
     override fun bind(element: BannerViewModel) {
-        adapter.setData(element.itemViewModels)
-        itemView.bannerRv.adapter = adapter
+        itemView.bannerRv.adapter = BannerAdapter(element.itemViewModels, adapterPosition, listener)
 
         itemView.cardTitle.bind(element.title, element.template.cardbanner.title)
         itemView.cardTitle.listener = cardTitleListener

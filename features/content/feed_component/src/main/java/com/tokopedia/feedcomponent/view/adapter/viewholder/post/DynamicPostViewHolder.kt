@@ -90,7 +90,13 @@ class DynamicPostViewHolder(v: View,
     private fun bindHeader(postId: Int, header: Header, template: TemplateHeader) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
-                itemView.authorImage.loadImageCircle(header.avatar)
+                if (header.avatar.isNotEmpty()) {
+                    itemView.authorImage.loadImageCircle(header.avatar)
+                } else {
+                    itemView.authorImage.setImageDrawable(
+                            MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
+                    )
+                }
                 itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink) }
             }
 

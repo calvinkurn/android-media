@@ -59,17 +59,17 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 } ?: break
 
                 when (feed.type) {
-                    TYPE_CARDBANNER -> posts.add(mapCardBanner(feed, templateData.template))
+                    TYPE_CARDBANNER -> mapCardBanner(posts, feed, templateData.template)
                     TYPE_CARDRECOM -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
-                            posts.add(mapCardRecommendation(feed, templateData.template))
+                            mapCardRecommendation(posts, feed, templateData.template)
                         } else {
-                            posts.add(mapTopadsShop(feed, templateData.template))
+                            mapTopadsShop(posts, feed, templateData.template)
                         }
                     }
                     TYPE_CARDPOST -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
-                            posts.add(mapCardPost(feed, templateData.template))
+                            mapCardPost(posts, feed, templateData.template)
                         }
                     }
                 }
@@ -78,6 +78,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             lastCursor = it.feedv2.meta.lastCursor
             hasNext = it.feedv2.meta.hasNextPage && lastCursor.isNotEmpty()
         }
+
         return DynamicFeedDomainModel(
                 posts,
                 lastCursor,
@@ -85,7 +86,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         )
     }
 
-    private fun mapCardBanner(feed: Feed, template: Template): BannerViewModel {
+    private fun mapCardBanner(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
         val bannerList: MutableList<BannerItemViewModel> = ArrayList()
 
         feed.content.cardbanner.body.media.forEachIndexed { index, media ->
@@ -110,22 +111,30 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
 
-        return BannerViewModel(
-                bannerList,
-                feed.content.cardbanner.title,
-                template
+        if (bannerList.size > 0) {
+            posts.add(
+                    BannerViewModel(
+                            bannerList,
+                            feed.content.cardbanner.title,
+                            template
+                    )
+            )
+        }
+    }
+
+    private fun mapTopadsShop(posts: MutableList<Visitable<*>>, feed: Feed,
+                              template: Template) {
+        posts.add(
+                TopadsShopViewModel(
+                        feed.content.cardRecommendation.title,
+                        feed.tracking.topads,
+                        template
+                )
         )
     }
 
-    private fun mapTopadsShop(feed: Feed, template: Template): TopadsShopViewModel {
-        return TopadsShopViewModel(
-                feed.content.cardRecommendation.title,
-                feed.tracking.topads,
-                template
-        )
-    }
-
-    private fun mapCardRecommendation(feed: Feed, template: Template): FeedRecommendationViewModel {
+    private fun mapCardRecommendation(posts: MutableList<Visitable<*>>, feed: Feed,
+                                      template: Template) {
         val cards: MutableList<RecommendationCardViewModel> = ArrayList()
 
         feed.content.cardRecommendation.items.forEachIndexed { index, card ->
@@ -144,42 +153,65 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     index
             )
 
-            cards.add(RecommendationCardViewModel(
-                    image1,
-                    image2,
-                    image3,
-                    card.header.avatar,
-                    card.header.avatarBadgeImage,
-                    card.header.avatarTitle,
-                    card.header.avatarDescription,
-                    card.header.avatarApplink,
-                    card.header.followCta,
-                    template.cardrecom.item,
-                    trackingRecommendationModel
-            ))
+            if (card.header.avatarTitle.isNotEmpty()) {
+                cards.add(RecommendationCardViewModel(
+                        image1,
+                        image2,
+                        image3,
+                        card.header.avatar,
+                        card.header.avatarBadgeImage,
+                        card.header.avatarTitle,
+                        card.header.avatarDescription,
+                        card.header.avatarApplink,
+                        card.header.followCta,
+                        template.cardrecom.item,
+                        trackingRecommendationModel
+                ))
+            }
         }
 
-        return FeedRecommendationViewModel(
-                feed.content.cardRecommendation.title,
-                cards,
-                template
-        )
+        if (cards.size > 0) {
+            posts.add(
+                    FeedRecommendationViewModel(
+                            feed.content.cardRecommendation.title,
+                            cards,
+                            template
+                    )
+            )
+        }
     }
 
-    private fun mapCardPost(feed: Feed, template: Template): DynamicPostViewModel {
+    private fun mapCardPost(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
         val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body)
         val trackingPostModel = mapPostTracking(feed)
 
-        return DynamicPostViewModel(
-                feed.id,
-                feed.content.cardpost.title,
-                feed.content.cardpost.header,
-                feed.content.cardpost.footer,
-                feed.content.cardpost.body.caption,
-                contentList,
-                template,
-                trackingPostModel
-        )
+        if (shouldAddCardPost(feed, contentList)) {
+            posts.add(
+                    DynamicPostViewModel(
+                            feed.id,
+                            feed.content.cardpost.title,
+                            feed.content.cardpost.header,
+                            feed.content.cardpost.footer,
+                            feed.content.cardpost.body.caption,
+                            contentList,
+                            template,
+                            trackingPostModel
+                    )
+            )
+        }
+    }
+
+    private fun shouldAddCardPost(feed: Feed, contentList: MutableList<BasePostViewModel>): Boolean {
+        val isGridNotEmpty =
+                if (contentList.firstOrNull() is GridPostViewModel)
+                    (contentList.firstOrNull() as GridPostViewModel).itemList.size > 0
+                else
+                    true
+
+        return feed.content.cardpost.header.avatarTitle.isNotEmpty() &&
+                feed.content.cardpost.body.media.size > 0 &&
+                contentList.size > 0 &&
+                isGridNotEmpty
     }
 
     private fun mapPostContent(body: Body): MutableList<BasePostViewModel> {
