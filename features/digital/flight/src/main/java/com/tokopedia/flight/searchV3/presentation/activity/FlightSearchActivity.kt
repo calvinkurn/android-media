@@ -5,12 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import com.tokopedia.flight.R
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity
+import com.tokopedia.flight.common.constant.FlightFlowConstant
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity
-import com.tokopedia.flight.search.presentation.model.FlightAirportViewModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
@@ -30,6 +35,8 @@ class FlightSearchActivity : BaseFlightActivity(), FlightSearchFragment.OnFlight
     }
 
     override fun getNewFragment(): Fragment = FlightSearchFragment.newInstance(passDataViewModel)
+
+    override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH
 
     private fun initializeDataFromExtras() {
         passDataViewModel = intent.extras.getParcelable(EXTRA_PASS_DATA)
@@ -74,7 +81,30 @@ class FlightSearchActivity : BaseFlightActivity(), FlightSearchFragment.OnFlight
         updateTitle(title, subtitle)
     }
 
-    override fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_RETURN, REQUEST_CODE_BOOKING -> {
+                if (data != null) {
+                    when (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
+                        FlightFlowConstant.PRICE_CHANGE -> {
+                            if (fragment is FlightSearchFragment) {
+                                (fragment as FlightSearchFragment).flightSearchPresenter
+                                        .attachView(fragment as FlightSearchFragment)
+                                (fragment as FlightSearchFragment).searchFlightData()
+                            }
+                        }
+                        FlightFlowConstant.EXPIRED_JOURNEY -> {
+                            FlightFlowUtil.actionSetResultAndClose(this, intent,
+                                    FlightFlowConstant.EXPIRED_JOURNEY)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel) {
         passDataViewModel = flightSearchPassDataViewModel!!
         initializeToolbarData()
         setupSearchToolbar()
@@ -89,15 +119,6 @@ class FlightSearchActivity : BaseFlightActivity(), FlightSearchFragment.OnFlight
             startActivityForResult(FlightSearchReturnActivity
                     .getCallingIntent(this, passDataViewModel, selectedFlightID, isBestPairing, flightPriceViewModel),
                     REQUEST_CODE_RETURN)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_RETURN, REQUEST_CODE_BOOKING -> {
-
-            }
         }
     }
 

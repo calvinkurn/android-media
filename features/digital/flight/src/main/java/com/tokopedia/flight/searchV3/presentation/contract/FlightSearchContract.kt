@@ -1,11 +1,8 @@
 package com.tokopedia.flight.searchV3.presentation.contract
 
-import android.app.Activity
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 
 /**
@@ -15,9 +12,9 @@ interface FlightSearchContract {
 
     interface View: CustomerView {
 
-        fun getActivity(): Activity
+//        fun getActivity(): Activity
 
-        fun getFlightSearchPassData(): FlightSearchPassDataViewModel
+        fun getSearchPassData(): FlightSearchPassDataViewModel
 
         fun getFilterModel(): FlightFilterModel
 
@@ -35,7 +32,7 @@ interface FlightSearchContract {
 
         fun setUIMarkFilter()
 
-        fun setFlightSearchPassData(passDataViewModel: FlightSearchPassDataViewModel)
+        fun setSearchPassData(passDataViewModel: FlightSearchPassDataViewModel)
 
         fun setSelectedSortItem(sortItemId: Int)
 
@@ -78,6 +75,26 @@ interface FlightSearchContract {
     }
 
     interface Presenter {
+
+        fun setDelayHorizontalProgress()
+
+        fun resetCounterCall()
+
+        fun isDoneLoadData(): Boolean
+
+        fun onSeeDetailItemClicked(journeyViewModel: FlightJourneyViewModel, adapterPosition: Int)
+
+        fun onSearchItemClicked(journeyViewModel: FlightJourneyViewModel?, adapterPosition: Int?, selectedId: String?)
+
+        fun onSuccessDateChanged(year: Int, month: Int, dayOfMonth: Int)
+
+        fun getDetailDepartureFlight(journeyId: String)
+
+        fun fetchCombineData(passDataViewModel: FlightSearchPassDataViewModel)
+
+        fun fetchSearchData(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int?)
+
+        fun fetchSortAndFilter(@FlightSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean)
 
     }
 }
