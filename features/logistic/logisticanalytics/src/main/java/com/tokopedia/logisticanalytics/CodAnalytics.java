@@ -18,6 +18,14 @@ public class CodAnalytics extends LogisticAnalytics {
         super(analyticTracker);
     }
 
+    public void eventViewBayarDiTempat() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_BAYAR_DI_TEMPAT
+        );
+    }
+
     public void eventClickPelajariSelengkapnya() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,

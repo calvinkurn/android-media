@@ -13,6 +13,7 @@ public interface ConstantLogisticAnalytics {
     interface EventName {
         String CLICK_SHIPPING = "clickShipping";
         String VIEW_SHIPPING = "viewShipping";
+        String VIEW_COURIER = "viewCourier";
         String CLICK_COURIER = "clickCourier";
         String CLICK_COD = "clickCOD";
         String CHECKOUT = "checkout";
@@ -42,6 +43,7 @@ public interface ConstantLogisticAnalytics {
         String CLICK_MENGERTI_INELIGIBLE = "click button mengerti ineligible cod";
         String CLICK_BACK_ON_CONFIRMATION = "click back on payment confirmation page";
         String CLICK_BAYAR_DI_TEMPAT = "click button bayar di tempat";
+        String VIEW_BAYAR_DI_TEMPAT = "view button bayar di tempat";
     }
 
     interface EventLabel {
