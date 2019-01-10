@@ -93,28 +93,24 @@
     </string-array>
 
     <string-array name="top_ads_adding_option_title">
-        <item>Toko</item>
         <item>Produk</item>
         <!--<item>Headline</item>-->
         <item>Kata Kunci</item>
     </string-array>
 
     <string-array name="top_ads_adding_option_subtitle">
-        <item>Menambah jumlah pengunjung dan Favorit toko.</item>
         <item>Menjadikan produk tampil terdepan.</item>
        <!-- <item>Membuat toko dan produk lebih dikenal.</item>-->
         <item>Memperluas jangkauan Iklan sesuai pencarian.</item>
     </string-array>
 
     <string-array name="top_ads_adding_option_value">
-        <item>1</item>
         <item>3</item>
         <!--<item>4</item>-->
         <item>5</item>
     </string-array>
 
     <integer-array name="top_ads_adding_option_icon">
-        <item>@drawable/ic_top_ads_toko</item>
         <item>@drawable/ic_top_ads_produk</item>
         <!--<item>@drawable/ic_top_ads_headline</item>-->
         <item>@drawable/ic_top_ads_keyword</item>

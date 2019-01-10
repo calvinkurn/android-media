@@ -16,7 +16,7 @@
             android:id="@+id/label_view_statistics"
             style="@style/LabelLayout.TopAdsLabelView"
             android:layout_height="@dimen/dp_64"
-            app:lv_content="@string/topads_dashboard_default_statistics_value"
+            app:lv_content="@string/title_top_ads_store"
             app:lv_content_color="@color/tkpd_main_green"
             app:lv_image="@drawable/ic_top_ads_statistik"
             app:lv_title="@string/topads_dashboard_label_statistics"/>
