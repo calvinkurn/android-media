@@ -53,10 +53,9 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
             viewPagerChannel.setVisibility(View.GONE);
             viewPagerWidget.setVisibility(View.VISIBLE);
             if (widgetHomePagerAdapter == null) {
-                widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
+                widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalWidgetFragment.Companion.newInstance());
                 viewPagerWidget.setAdapter(widgetHomePagerAdapter);
                 viewPagerWidget.setOffscreenPageLimit(1);
-                viewPagerWidget.measureCurrentView(viewPagerWidget.getChildAt(0));
             }
             viewPagerWidget.setCurrentItem(0);
             widgetHomePagerAdapter.notifyDataSetChanged();
@@ -88,9 +87,8 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         viewPagerChannel.setVisibility(View.GONE);
         viewPagerWidget.setVisibility(View.VISIBLE);
         if (widgetHomePagerAdapter == null) {
-            widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, new DigitalWidgetFragment());
+            widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalWidgetFragment.Companion.newInstance());
             viewPagerWidget.setAdapter(widgetHomePagerAdapter);
-            viewPagerWidget.measureCurrentView(viewPagerWidget.getChildAt(0));
         }
     }
 

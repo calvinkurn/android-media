@@ -148,7 +148,7 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
     }
 
     override fun renderDigitalTitle(stringRes: Int) {
-        interaction?.updateHeaderText(stringRes);
+        interaction?.updateHeaderText(stringRes)
     }
 
     override fun renderRecommendationList(recommendations: List<Recommendation>) {

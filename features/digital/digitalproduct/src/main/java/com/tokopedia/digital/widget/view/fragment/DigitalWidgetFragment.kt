@@ -49,6 +49,14 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     private lateinit var text_error_message: TextView
     private lateinit var button_try_again: Button
 
+    companion object {
+
+        fun newInstance(): DigitalWidgetFragment {
+            val fragment = DigitalWidgetFragment()
+            return fragment
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootview = inflater.inflate(R.layout.fragment_digital_widget, container, false)
 
