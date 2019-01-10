@@ -616,6 +616,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getHeaderData(false);
         }
         loadEggData();
+        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
 
     private void resetFeedState() {
