@@ -14,7 +14,8 @@ class SummaryViewModel(
         var shippingPrice: Int,
         var servicePrice: Int,
         var insurancePrice: Int,
-        var insuranceInfo: String
+        var insuranceInfo: String,
+        var isUseInsurance: Boolean
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel?) : this(
@@ -22,7 +23,8 @@ class SummaryViewModel(
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
-            parcel?.readString() ?: "")
+            parcel?.readString() ?: "",
+            parcel?.readByte() != 0.toByte())
 
     override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -34,6 +36,7 @@ class SummaryViewModel(
         parcel.writeInt(servicePrice)
         parcel.writeInt(insurancePrice)
         parcel.writeString(insuranceInfo)
+        parcel.writeByte(if (isUseInsurance) 1 else 0)
     }
 
     override fun describeContents(): Int {

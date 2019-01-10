@@ -1,9 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant
 
-import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.QuantityViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.SummaryViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 /**
  * Created by Irfan Khoirul on 03/12/18.
@@ -35,4 +32,5 @@ interface CheckoutVariantActionListener {
 
     fun onSummaryChanged(summaryViewModel: SummaryViewModel?)
 
+    fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel)
 }

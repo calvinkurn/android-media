@@ -359,11 +359,13 @@ class ViewModelMapper : DataMapper {
         var insuranceViewModel = InsuranceViewModel()
         insuranceViewModel.insuranceLongInfo = productData.insurance.insuranceUsedInfo
         insuranceViewModel.insurancePrice = productData.insurance.insurancePrice
-        insuranceViewModel.insuranceShortInfo = "Transaksi ini tidak terlindungi asuransi"
         insuranceViewModel.insuranceType = productData.insurance.insuranceType
         insuranceViewModel.insuranceUsedDefault = productData.insurance.insuranceUsedDefault
-        insuranceViewModel.isChecked = productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES
+        insuranceViewModel.isChecked =
+                productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES ||
+                productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST
 
+        summaryViewModel.isUseInsurance = insuranceViewModel.isChecked
         summaryViewModel.shippingPrice = productData.price.price
         summaryViewModel.insurancePrice = productData.insurance.insurancePrice
         summaryViewModel.insuranceInfo = productData.insurance.insuranceUsedInfo

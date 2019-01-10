@@ -10,7 +10,6 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  */
 
 data class InsuranceViewModel(
-        var insuranceShortInfo: String,
         var insuranceLongInfo: String,
         var insurancePrice: Int,
         var insuranceType: Int,
@@ -19,7 +18,6 @@ data class InsuranceViewModel(
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
-            parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
@@ -32,7 +30,6 @@ data class InsuranceViewModel(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(insuranceShortInfo)
         parcel.writeString(insuranceLongInfo)
         parcel.writeInt(insurancePrice)
         parcel.writeInt(insuranceType)

@@ -23,9 +23,17 @@ class SummaryViewHolder(val view: View, val listener: CheckoutVariantActionListe
             itemView.tv_purchase_summary_item_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.itemPrice, false)
             itemView.tv_purchase_summary_shipping_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.shippingPrice, false)
             itemView.tv_purchase_summary_service_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.servicePrice, false)
-            itemView.tv_purchase_summary_insurance_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.insurancePrice, false)
-            itemView.img_bt_insurance_info.setOnClickListener { listener.onClickInsuranceInfo(element.insuranceInfo) }
-
+            if (element.isUseInsurance) {
+                itemView.tv_purchase_summary_insurance_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.insurancePrice, false)
+                itemView.img_bt_insurance_info.setOnClickListener { listener.onClickInsuranceInfo(element.insuranceInfo) }
+                itemView.tv_purchase_summary_insurance_price_label.visibility = View.VISIBLE
+                itemView.tv_purchase_summary_insurance_price_value.visibility = View.VISIBLE
+                itemView.img_bt_insurance_info.visibility = View.VISIBLE
+            } else {
+                itemView.tv_purchase_summary_insurance_price_label.visibility = View.GONE
+                itemView.tv_purchase_summary_insurance_price_value.visibility = View.GONE
+                itemView.img_bt_insurance_info.visibility = View.GONE
+            }
             listener.onSummaryChanged(element)
         }
     }

@@ -289,6 +289,22 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 ?: 0)
     }
 
+    override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
+        var summaryViewModel = adapter.getSummaryViewModel()
+        if (summaryViewModel != null) {
+            if (insuranceViewModel.isChecked) {
+                summaryViewModel.insurancePrice = insuranceViewModel.insurancePrice
+                summaryViewModel.isUseInsurance = true
+            } else {
+                summaryViewModel.insurancePrice = 0
+                summaryViewModel.isUseInsurance = false
+            }
+
+            onNeedToNotifySingleItem(adapter.getIndex(summaryViewModel))
+        }
+        onNeedToNotifySingleItem(adapter.getIndex(insuranceViewModel))
+    }
+
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
         var quantityViewModel = adapter.getQuantityViewModel()
         if (quantityViewModel != null) {
