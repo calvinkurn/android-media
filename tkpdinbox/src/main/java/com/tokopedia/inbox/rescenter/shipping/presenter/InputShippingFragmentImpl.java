@@ -23,6 +23,7 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -190,7 +191,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         return graphqlUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .concatMap((Func1<GraphqlResponse, Observable<ShippingParamsPostModel>>) graphqlResponse -> {
                     if (graphqlResponse != null) {
-                        if (graphqlResponse.getError(JsonObject.class).isEmpty()) {
+                        List<GraphqlError> errorList = graphqlResponse.getError(JsonObject.class);
+                        if (errorList == null || graphqlResponse.getError(JsonObject.class).isEmpty()) {
                             JsonObject jsonData = graphqlResponse.getData(JsonObject.class);
                             GenerateHostDataResponse hostDataResponse = new Gson().fromJson(jsonData.getAsJsonObject("get_resolution_upload_host").getAsJsonObject("data"), GenerateHostDataResponse.class);
                             GenerateHostResponse uploadHostData = hostDataResponse.getGenerateHostResponse();
