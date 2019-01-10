@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.revamp.di
 
 import android.content.Context
-import android.content.res.Resources
 import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
@@ -22,7 +21,6 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
@@ -53,6 +51,11 @@ import javax.inject.Named
 @Module(includes = arrayOf(ImageUploaderModule::class, ChatNetworkModule::class))
 class ChatModule {
 
+    private val NET_READ_TIMEOUT = 60
+    private val NET_WRITE_TIMEOUT = 60
+    private val NET_CONNECT_TIMEOUT = 60
+    private val NET_RETRY = 1
+
     @ChatScope
     @Provides
     fun provideAnalyticTracker(@ApplicationContext context: Context): AnalyticTracker {
@@ -79,6 +82,16 @@ class ChatModule {
             @ImageUploaderQualifier userSession: com.tokopedia.abstraction.common.data.model.session.UserSession,
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<TopChatImageUploadPojo> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, TopChatImageUploadPojo::class.java, imageUploaderUtils)
+    }
+
+    @ChatScope
+    @InboxQualifier
+    @Provides
+    internal fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
+        return OkHttpRetryPolicy(NET_READ_TIMEOUT,
+                NET_WRITE_TIMEOUT,
+                NET_CONNECT_TIMEOUT,
+                NET_RETRY)
     }
 
     @ChatScope
@@ -112,8 +125,8 @@ class ChatModule {
                                      errorResponseInterceptor: ErrorResponseInterceptor,
                                      chuckInterceptor: ChuckInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
-                                     networkRouter : NetworkRouter,
-                                     userSessionInterface: UserSessionInterface): 
+                                     networkRouter: NetworkRouter,
+                                     userSessionInterface: UserSessionInterface):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(FingerprintInterceptor(networkRouter, userSessionInterface))
