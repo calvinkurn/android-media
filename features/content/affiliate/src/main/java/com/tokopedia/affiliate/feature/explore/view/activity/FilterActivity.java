@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.affiliate.feature.explore.view.fragment.FilterFragment;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 
 import java.util.ArrayList;
@@ -26,6 +27,6 @@ public class FilterActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        return FilterFragment.getInstance(getIntent().getExtras());
     }
 }

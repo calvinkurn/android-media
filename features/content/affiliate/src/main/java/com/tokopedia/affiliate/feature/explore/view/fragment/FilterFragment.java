@@ -33,7 +33,7 @@ public class FilterFragment extends BaseDaggerFragment {
     private ButtonCompat btnApply;
     private FilterAdapter adapter;
 
-    public FilterFragment getInstance(Bundle bundle) {
+    public static FilterFragment getInstance(Bundle bundle) {
         FilterFragment fragment = new FilterFragment();
         fragment.setArguments(bundle);
         return fragment;
