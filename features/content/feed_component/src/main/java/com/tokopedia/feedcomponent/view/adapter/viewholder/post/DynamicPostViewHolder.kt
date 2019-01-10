@@ -56,7 +56,7 @@ class DynamicPostViewHolder(v: View,
         }
 
         bindTitle(element.title, element.template.cardpost.title)
-        bindHeader(element.header, element.template.cardpost.header)
+        bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body)
         bindContentList(element.id, element.contentList, element.template.cardpost.body)
         bindFooter(element.id, element.footer, element.template.cardpost.footer)
@@ -87,7 +87,7 @@ class DynamicPostViewHolder(v: View,
         return template.ctaLink || template.textBadge || template.ctaLink
     }
 
-    private fun bindHeader(header: Header, template: TemplateHeader) {
+    private fun bindHeader(postId: Int, header: Header, template: TemplateHeader) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 itemView.authorImage.loadImageCircle(header.avatar)
@@ -111,7 +111,7 @@ class DynamicPostViewHolder(v: View,
 
             itemView.menu.shouldShowWithAction(template.report) {
                 itemView.menu.setOnClickListener {
-                    listener.onMenuClick(adapterPosition)
+                    listener.onMenuClick(adapterPosition, postId, header.reportable, header.deletable, header.editable)
                 }
             }
         }
@@ -273,7 +273,7 @@ class DynamicPostViewHolder(v: View,
 
         fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
 
-        fun onMenuClick(positionInFeed: Int)
+        fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean)
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
 

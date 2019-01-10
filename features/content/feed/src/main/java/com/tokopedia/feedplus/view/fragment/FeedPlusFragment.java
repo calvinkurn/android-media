@@ -1035,11 +1035,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                         @Override
                         public void onReportClick() {
-                            Intent intent = ContentReportActivity.Companion.createIntent(
-                                    getContext(),
-                                    element.getContentId()
-                            );
-                            startActivityForResult(intent, OPEN_CONTENT_REPORT);
+                            goToContentReport(element.getContentId());
                         }
                     }
             );
@@ -1598,8 +1594,35 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onMenuClick(int positionInFeed) {
+    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable,
+                            boolean editable) {
+        if (getContext() != null) {
+            Menus menus = new Menus(getContext());
+            List<Menus.ItemMenus> menusList = new ArrayList<>();
 
+            if (reportable) {
+                menusList.add(
+                        new Menus.ItemMenus(
+                                getString(R.string.feed_delete),
+                                -1
+                        )
+                );
+            }
+
+            menus.setItemMenuList(menusList);
+            menus.setActionText(getString(R.string.feed_cancel));
+
+            menus.setOnActionClickListener(v -> {
+                menus.dismiss();
+            });
+            menus.setOnItemMenuClickListener((itemMenus, pos) -> {
+                if (itemMenus.title.equals(getString(R.string.feed_delete))) {
+                    goToContentReport(postId);
+                }
+
+                menus.dismiss();
+            });
+        }
     }
 
     @Override
@@ -1726,6 +1749,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     model.getTrackingPostModel(),
                     FeedAnalytics.Element.PRODUCT
             );
+        }
+    }
+
+    private void goToContentReport(int contentId) {
+        if (getContext() != null) {
+            Intent intent = ContentReportActivity.Companion.createIntent(
+                    getContext(),
+                    contentId
+            );
+            startActivityForResult(intent, OPEN_CONTENT_REPORT);
         }
     }
 
