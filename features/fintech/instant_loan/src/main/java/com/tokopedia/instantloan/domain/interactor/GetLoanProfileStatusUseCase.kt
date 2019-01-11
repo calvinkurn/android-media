@@ -11,8 +11,6 @@ import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PATH_USER_PROFILE_STATUS
 import com.tokopedia.usecase.RequestParams
-import java.util.*
-
 
 class GetLoanProfileStatusUseCase(interceptor: InstantLoanAuthInterceptor, context: Context) : RestRequestSupportInterceptorUseCase(interceptor, context) {
 
