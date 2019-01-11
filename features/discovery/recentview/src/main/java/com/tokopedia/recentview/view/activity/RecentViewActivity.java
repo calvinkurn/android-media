@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.view.fragment.RecentViewFragment;
 
 /**
@@ -19,10 +20,7 @@ public class RecentViewActivity extends BaseSimpleActivity {
 
     @DeepLink(ApplinkConst.RECENT_VIEW)
     public static Intent getRecentViewApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return newInstance(context)
-                .setData(uri.build())
-                .putExtras(extras);
+        return RecentViewInternalRouter.getRecentViewIntentFromDeeplink(context, extras);
     }
 
     public static Intent newInstance(Context context) {

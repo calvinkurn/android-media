@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
@@ -52,7 +53,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun onClickCancel() {
-        if(pageTracking == 1) {
+        if(pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickCancelPromoCoupon(codeCoupon)
         }else{
             trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
@@ -61,7 +62,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
-        if(pageTracking == 1) {
+        if(pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(dataVoucher.code?:"")
         }else{
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(dataVoucher.code?:"")
@@ -70,7 +71,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun onErrorValidatePromo(e: Throwable) {
-        if(pageTracking == 1) {
+        if(pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
         }else{
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()

@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -94,6 +96,10 @@ public class MainParentActivity extends BaseActivity implements
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
+    public static final String BROADCAST_ACCOUNT = "BROADCAST_ACCOUNT";
+    public static final String PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED = "PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED";
+    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE_FIRSTTIME = "KEY_AFFILIATE_FIRSTTIME";
 
     private static final String SHORTCUT_BELI_ID = "Beli";
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
@@ -121,6 +127,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
     private BroadcastReceiver newFeedClickedReceiver;
+    private BroadcastReceiver affiliateClickReceiver;
 
     private Handler handler = new Handler();
 
@@ -239,6 +246,7 @@ public class MainParentActivity extends BaseActivity implements
 
         initHockeyBroadcastReceiver();
         initNewFeedClickReceiver();
+        initAffiliateClickReceiver();
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -271,6 +279,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onPause();
         unregisterBroadcastHockeyApp();
         unRegisterNewFeedClickedReceiver();
+        unRegisterAccountAffiliateClickedReceiver();
     }
 
     @Override
@@ -392,6 +401,7 @@ public class MainParentActivity extends BaseActivity implements
 
         registerBroadcastHockeyApp();
         registerNewFeedClickedReceiver();
+        registerAccountAffiliateClickedReceiver();
 
         if(!((BaseMainApplication)getApplication()).checkAppSignature()){
             finish();
@@ -450,6 +460,11 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         } else {
             bottomNavigation.setNotification(0, FEED_MENU);
+        }
+
+        LocalCacheHandler buyerCache = new LocalCacheHandler(getContext().getApplicationContext(), KEY_PROFILE_BUYER);
+        if (buyerCache.getBoolean(KEY_AFFILIATE_FIRSTTIME, true)) {
+            bottomNavigation.setNotification(-1, ACCOUNT_MENU);
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
@@ -621,6 +636,27 @@ public class MainParentActivity extends BaseActivity implements
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
             }
 
+            // Note: applink/deeplink router already in DeeplinkHandlerActivity.
+            // Applink should not be passed to home because the analytics at home might be triggered.
+            // It is better to use TaskStackBuilder to build taskstack for home, rather than passwing to home directly.
+            // Below code is still maintained to ensure no deeplink/applink uri is lost
+            try {
+                Intent applinkIntent = new Intent(this, MainParentActivity.class);
+                applinkIntent.setData(Uri.parse(applink));
+                if (getIntent() != null && getIntent().getExtras() != null) {
+                    Intent newIntent = getIntent();
+                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+                    newIntent.removeExtra(DeepLink.REFERRER_URI);
+                    newIntent.removeExtra(DeepLink.URI);
+                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
+                    if (newIntent.getExtras() != null)
+                        applinkIntent.putExtras(newIntent.getExtras());
+                }
+                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
+            } catch (ActivityNotFoundException ex) {
+                ex.printStackTrace();
+            }
+
             presenter.setIsRecurringApplink(true);
         }
     }
@@ -667,6 +703,18 @@ public class MainParentActivity extends BaseActivity implements
         };
     }
 
+    private void initAffiliateClickReceiver() {
+        affiliateClickReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_ACCOUNT)) {
+                    boolean isRemoveNotif = intent.getBooleanExtra(PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED, false);
+                    if (isRemoveNotif) bottomNavigation.setNotification(0, ACCOUNT_MENU);
+                }
+            }
+        };
+    }
+
     private void registerNewFeedClickedReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BROADCAST_FEED);
@@ -676,6 +724,17 @@ public class MainParentActivity extends BaseActivity implements
     private void unRegisterNewFeedClickedReceiver() {
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
     }
+
+    private void registerAccountAffiliateClickedReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BROADCAST_ACCOUNT);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(affiliateClickReceiver, intentFilter);
+    }
+
+    private void unRegisterAccountAffiliateClickedReceiver() {
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(affiliateClickReceiver);
+    }
+
 
 
     @Override

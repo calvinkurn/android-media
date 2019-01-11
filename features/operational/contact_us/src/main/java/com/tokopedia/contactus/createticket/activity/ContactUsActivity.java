@@ -35,7 +35,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     public static final String PARAM_ORDER_ID = "PARAM_ORDER_ID";
     public static final String PARAM_INVOICE_ID = "PARAM_INVOICE_ID";
     public static final String PARAM_TAG = "PARAM_TAG";
-    public static final String PARAM_TOOLBAR_TITLE = "PARAM_TOOLBAR_TITLE";
+    public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
     private static final String CURRENT_FRAGMENT_BACKSTACK = "CURRENT_FRAGMENT_BACKSTACK";
     private static final String PARAM_BUNDLE = "PARAM_BUNDLE";
     String url;
@@ -62,7 +62,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
                 bundle.putAll(savedInstanceState.getBundle(PARAM_BUNDLE));
             }
 
-            url = savedInstanceState.getString(PARAM_URL, "");
+            url = savedInstanceState.getString(EXTRAS_PARAM_URL, "");
             if (!url.equals(""))
                 bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
 
@@ -117,8 +117,8 @@ public class ContactUsActivity extends BasePresenterActivity implements
     }
 
     private void setTitle() {
-        if (getIntent().getExtras() != null && getIntent().getStringExtra(PARAM_TOOLBAR_TITLE) != null) {
-            toolbar.setTitle(getIntent().getStringExtra(PARAM_TOOLBAR_TITLE));
+        if (getIntent().getExtras() != null && getIntent().getStringExtra(EXTRAS_PARAM_TOOLBAR_TITLE) != null) {
+            toolbar.setTitle(getIntent().getStringExtra(EXTRAS_PARAM_TOOLBAR_TITLE));
         } else if (getIntent().getExtras() == null || (
                 getIntent().getExtras() != null
                         && getIntent().getExtras()
@@ -152,7 +152,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
             transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
-            if (!getIntent().getBooleanExtra(ContactUsConstant.IS_CHAT_BOT, false)) {
+            if (!getIntent().getBooleanExtra(ContactUsConstant.EXTRAS_IS_CHAT_BOT, false)) {
                 transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
             }
             transaction.commit();
@@ -190,7 +190,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(CURRENT_FRAGMENT_BACKSTACK, getFragmentManager().findFragmentById(R.id.main_view).getTag());
-        outState.putString(PARAM_URL, url);
+        outState.putString(EXTRAS_PARAM_URL, url);
         outState.putBundle(PARAM_BUNDLE, bundleCreateTicket);
         super.onSaveInstanceState(outState);
     }

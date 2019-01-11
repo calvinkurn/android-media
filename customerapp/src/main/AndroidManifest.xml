@@ -102,6 +102,9 @@
                 <data
                     android:host="tokopedia.link"
                     android:scheme="https"/>
+                <data
+                    android:host="exclusive.tokopedia.net"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
         <activity
@@ -133,17 +136,7 @@
                     android:scheme="https"/>
 
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="exclusive.tokopedia.net"
-                    android:scheme="https"/>
-            </intent-filter>
-
+            
         </activity>
 
         <meta-data
@@ -292,6 +285,12 @@
 
         <activity
             android:name=".home.ReactNativeBrandListOsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity

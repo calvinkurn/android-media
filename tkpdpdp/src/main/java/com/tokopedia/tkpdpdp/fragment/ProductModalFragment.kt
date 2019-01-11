@@ -27,7 +27,7 @@ class ProductModalFragment : BaseDaggerFragment() {
 
     companion object {
 
-        private const val DEFAULT_MAXIMUM_STOCK_PICKER = 10000
+        private const val DEFAULT_MAXIMUM_STOCK_PICKER = 1000
 
         private const val ARGS_PRODUCT_VARIANT = "VARIANT_DATA"
         private const val ARGS_PRODUCT_DETAIL = "PRODUCT_DETAIL_DATA"

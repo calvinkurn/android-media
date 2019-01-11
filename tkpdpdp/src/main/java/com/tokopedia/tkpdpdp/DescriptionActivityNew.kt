@@ -99,7 +99,7 @@ class DescriptionActivityNew : AppCompatActivity(),
     private fun setUpByConfiguration(configuration: Configuration) {
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED)) {
-                val productId : String = intent.getParcelableExtra<Parcelable>(EXTRA_PRODUCT_ID).toString()
+                val productId : String = intent.getStringExtra(EXTRA_PRODUCT_ID) ?: ""
                 UnifyTracking.eventPDPOrientationChanged(this, productId)
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, java.lang.Boolean.TRUE)
                 localCacheHandler.applyEditor()
@@ -141,7 +141,7 @@ class DescriptionActivityNew : AppCompatActivity(),
         ImageHandler.loadImageAndCache(
                 img_product, intent.imgUrl
         )
-        tv_name.text = intent.name
+        tv_name.text = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(intent.name)
         tv_price.text = intent.price
         when (intent.isOfficialStore) {
             true -> iv_official.visibility = View.VISIBLE

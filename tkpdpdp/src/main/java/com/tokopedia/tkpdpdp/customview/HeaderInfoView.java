@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,6 +52,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private CountDownView countDownView;
     private Context context;
     private LinearLayout textOfficialStore;
+    private FrameLayout codDescription;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -81,6 +83,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         campaignStockAvailable = findViewById(R.id.sale_text_stock_available);
         textTimerTitle = findViewById(R.id.text_title_discount_timer);
         linearDiscountPrice = findViewById(R.id.linear_discount_price);
+        codDescription = findViewById(R.id.layout_cod_content);
         this.context = context;
     }
 
@@ -103,14 +106,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {
-            cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
-            cashbackTextView.setText(getContext().getString(R.string.value_cashback)
-                    .replace("X", data.getCashBack().getProductCashback()));
-            cashbackTextView.setBackgroundResource(R.drawable.pdp_cashback_bg);
-            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core2.R.color.tkpd_main_green));
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                cashbackTextView.setBackgroundTintList(tint);
-            }
+            cashbackTextView.setText(String.format(getResources().getString(R.string.value_cashback_pdp),
+                    data.getCashBack().getProductCashback()));
             cashbackTextView.setVisibility(VISIBLE);
         }
 
@@ -147,13 +144,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
         if (!TextUtils.isEmpty(productPass.getCashback())) {
             cashbackTextView.setText(productPass.getCashback());
-            cashbackTextView.setBackgroundResource(R.drawable.bg_cashback_label);
-            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core2.R.color.white));
-            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core2.R.color.tkpd_main_green));
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                cashbackTextView.setBackgroundTintList(tint);
-            }
-
             cashbackTextView.setVisibility(VISIBLE);
         }
         if(productPass.isOfficial()) {
@@ -184,6 +174,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
             showCountdownTimer(data);
         } else {
+            codDescription.setVisibility(data.getInfo().isCod() ? VISIBLE : GONE);
             linearDiscountTimerHolder.setVisibility(GONE);
             textDiscount.setVisibility(GONE);
             textOriginalPrice.setVisibility(GONE);
