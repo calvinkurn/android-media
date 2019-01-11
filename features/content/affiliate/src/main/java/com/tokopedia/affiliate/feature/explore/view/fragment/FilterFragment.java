@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.explore.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -83,7 +82,7 @@ public class FilterFragment extends BaseDaggerFragment {
         btnApply.setOnClickListener(view -> {
             Intent result = new Intent();
             Bundle bundle = new Bundle();
-            ArrayList<FilterViewModel> data = new ArrayList<>(adapter.getFilterListSelectedSorted());
+            ArrayList<FilterViewModel> data = new ArrayList<>(adapter.getFilterListCurrentSelectedSorted());
             bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, data);
             result.putExtras(bundle);
             getActivity().setResult(Activity.RESULT_OK, result);

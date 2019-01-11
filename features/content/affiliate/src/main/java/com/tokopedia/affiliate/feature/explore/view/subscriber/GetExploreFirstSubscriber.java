@@ -26,13 +26,18 @@ import rx.Subscriber;
  */
 public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
 
-    private ExploreContract.View mainView;
-    private boolean isSearch;
-    private ExploreParams exploreParams;
+    protected ExploreContract.View mainView;
+    protected boolean isSearch;
+    protected boolean isPullToRefresh;
+    protected ExploreParams exploreParams;
 
-    public GetExploreFirstSubscriber(ExploreContract.View mainView, boolean isSearch, ExploreParams exploreParams) {
+    public GetExploreFirstSubscriber(ExploreContract.View mainView,
+                                     boolean isSearch,
+                                     boolean isPullToRefresh,
+                                     ExploreParams exploreParams) {
         this.mainView = mainView;
         this.isSearch = isSearch;
+        this.isPullToRefresh = isPullToRefresh;
         this.exploreParams = exploreParams;
     }
 
@@ -62,16 +67,29 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
             mainView.onEmptySearchResult();
         } else {
             ExploreQuery exploreQuery = query.getExploreProduct();
-            mainView.onSuccessGetFirstData(
-                    exploreQuery.getProducts() != null ?
-                            mappingProducts(exploreQuery.getProducts(), mainView) :
-                            new ArrayList<>(),
-                    exploreQuery.getPagination() != null ?
-                            exploreQuery.getPagination().getNextCursor() :
-                            "",
-                    isSearch,
-                    mappingSortFilter(query.getFilter())
-            );
+            if (isFirstDataWithFilterSort(exploreParams)) {
+                mainView.onSuccessGetFilteredSortedFirstData(
+                        exploreQuery.getProducts() != null ?
+                                mappingProducts(exploreQuery.getProducts(), mainView) :
+                                new ArrayList<>(),
+                        exploreQuery.getPagination() != null ?
+                                exploreQuery.getPagination().getNextCursor() :
+                                "",
+                        isSearch,
+                        isPullToRefresh);
+            } else {
+                mainView.onSuccessGetFirstData(
+                        exploreQuery.getProducts() != null ?
+                                mappingProducts(exploreQuery.getProducts(), mainView) :
+                                new ArrayList<>(),
+                        exploreQuery.getPagination() != null ?
+                                exploreQuery.getPagination().getNextCursor() :
+                                "",
+                        isSearch,
+                        isPullToRefresh,
+                        mappingSortFilter(query.getFilter())
+                );
+            }
         }
     }
 
@@ -103,5 +121,9 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
             mainView.getAffiliateAnalytics().onProductImpression(pojo.getProductId());
         }
         return itemList;
+    }
+
+    private boolean isFirstDataWithFilterSort(ExploreParams exploreParams) {
+        return exploreParams.getFilters().size()!=0;
     }
 }

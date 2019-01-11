@@ -69,7 +69,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private void initViewListener(Holder holder, FilterViewModel filter) {
         holder.cardView.setOnClickListener(v -> {
             enableCurrentItem(filter);
-            filterClickedListener.onItemClicked(filterList);
+            filterClickedListener.onItemClicked(getOnlySelectedFilter());
         });
     }
 
@@ -79,7 +79,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 R.color.filter_background_inactive);
     }
     private void enableCurrentItem(FilterViewModel filter) {
-        for (FilterViewModel item: filterList) {
+        for (FilterViewModel item: getAllFilterList()) {
             if (item.getName().equals(filter.getName())) {
                 item.setSelected(!item.isSelected());
                 processCurrentSelected(item);
@@ -114,7 +114,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         currentSelectedFilter = newItemList;
     }
 
-    public List<FilterViewModel> getFilterList() {
+    public List<FilterViewModel> getAllFilterList() {
         return filterList;
     }
 
@@ -148,7 +148,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         notifyDataSetChanged();
     }
 
-    public List<FilterViewModel> getFilterListSelectedSorted() {
+    public List<FilterViewModel> getFilterListCurrentSelectedSorted() {
         List<FilterViewModel> sortedList = new ArrayList<>();
         sortedList.addAll(currentSelectedFilter);
         sortedList.addAll(addRemainingItemNotCurrentlySelected());
@@ -157,12 +157,22 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     private List<FilterViewModel> addRemainingItemNotCurrentlySelected() {
         List<FilterViewModel> sortedList = new ArrayList<>();
-        for (FilterViewModel item : filterList) {
+        for (FilterViewModel item : getAllFilterList()) {
             if (!containsInCurrentSelected(item)) {
                 sortedList.add(item);
             }
         }
         Collections.sort(sortedList, (item1, item2) -> Boolean.compare(item2.isSelected(), item1.isSelected()));
         return sortedList;
+    }
+
+    public List<FilterViewModel> getOnlySelectedFilter() {
+        List<FilterViewModel> items = new ArrayList<>();
+        for (FilterViewModel filter : getAllFilterList()) {
+            if (filter.isSelected()) {
+                items.add(filter);
+            }
+        }
+        return items;
     }
 }

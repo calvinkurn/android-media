@@ -29,7 +29,16 @@ public interface ExploreContract {
 
         void hideLoading();
 
-        void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch, SortFilterModel sortFilterModel);
+        void onSuccessGetFirstData(List<Visitable> itemList,
+                                   String cursor,
+                                   boolean isSearch,
+                                   boolean isPullToRefresh,
+                                   SortFilterModel sortFilterModel);
+
+        void onSuccessGetFilteredSortedFirstData(List<Visitable> itemList,
+                                   String cursor,
+                                   boolean isSearch,
+                                   boolean isPullToRefresh);
 
         void onErrorGetFirstData(String error);
 

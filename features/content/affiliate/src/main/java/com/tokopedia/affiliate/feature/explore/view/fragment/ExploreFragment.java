@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -386,17 +385,33 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch, SortFilterModel sortFilterModel) {
+    public void onSuccessGetFirstData(List<Visitable> itemList,
+                                      String cursor,
+                                      boolean isSearch,
+                                      boolean isPullToRefresh,
+                                      SortFilterModel sortFilterModel) {
+       populateFirstData(itemList, cursor);
+        if (!isSearch && !isPullToRefresh) {
+            populateFilter(sortFilterModel.getFilterList());
+            saveFirstDataToLocal(itemList, cursor, sortFilterModel);
+        }
+    }
+
+    @Override
+    public void onSuccessGetFilteredSortedFirstData(List<Visitable> itemList,
+                                                    String cursor,
+                                                    boolean isSearch,
+                                                    boolean isPullToRefresh) {
+        populateFirstData(itemList, cursor);
+    }
+
+    private void populateFirstData(List<Visitable> itemList, String cursor) {
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
         populateExploreItem(itemList, cursor);
-        if (!isSearch) {
-            populateFilter(sortFilterModel.getFilterList());
-            saveFirstDataToLocal(itemList, cursor, sortFilterModel);
-        }
     }
 
     private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, SortFilterModel sortFilterModel) {
@@ -434,14 +449,15 @@ public class ExploreFragment
         rvFilter.setAdapter(filterAdapter);
         btnFilterMore.setOnClickListener(v->{
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getFilterList()));
+            bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
             startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
         });
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
-
+            exploreParams.setFilters(filters);
+            presenter.getFirstData(exploreParams, false);
         };
 
     }
