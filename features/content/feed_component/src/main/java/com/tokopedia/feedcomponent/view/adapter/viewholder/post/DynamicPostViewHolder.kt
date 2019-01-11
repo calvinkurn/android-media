@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.support.annotation.LayoutRes
+import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -90,7 +91,7 @@ class DynamicPostViewHolder(v: View,
     private fun bindHeader(postId: Int, header: Header, template: TemplateHeader) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
-                if (header.avatar.isNotEmpty()) {
+                if (!TextUtils.isEmpty(header.avatar)) {
                     itemView.authorImage.loadImageCircle(header.avatar)
                 } else {
                     itemView.authorImage.setImageDrawable(
@@ -164,7 +165,7 @@ class DynamicPostViewHolder(v: View,
 
                 itemView.caption.text = MethodChecker.fromHtml(captionText)
                 itemView.caption.setOnClickListener {
-                    if (caption.appLink.isNotEmpty()) {
+                    if (!TextUtils.isEmpty(caption.appLink)) {
                         listener.onCaptionClick(adapterPosition, caption.appLink)
                     } else {
                         itemView.caption.text = caption.text
@@ -194,7 +195,7 @@ class DynamicPostViewHolder(v: View,
 
     private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
-            if (template.ctaLink && footer.buttonCta.text.isNotEmpty()) {
+            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text)) {
                 itemView.shareSpace.gone()
                 itemView.footerAction.visible()
                 itemView.footerAction.text = footer.buttonCta.text

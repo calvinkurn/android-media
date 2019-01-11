@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid
 
 import android.graphics.drawable.ColorDrawable
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -109,7 +110,7 @@ class GridPostAdapter(private val contentPosition: Int,
                 listener.onGridItemClick(
                         positionInFeed,
                         contentPosition,
-                        if (actionLink.isNotEmpty()) actionLink
+                        if (!TextUtils.isEmpty(actionLink)) actionLink
                         else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
                 )
             }

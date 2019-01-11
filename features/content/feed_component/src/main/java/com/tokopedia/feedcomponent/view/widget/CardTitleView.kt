@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
@@ -46,7 +47,8 @@ class CardTitleView : BaseCustomView {
                 text.text = title.text
                 text.setOnClickListener { onTextClick(title.action) }
             }
-            badge.shouldShowWithAction(template.textBadge && title.textBadge.isNotEmpty()) {
+            badge.shouldShowWithAction(template.textBadge
+                    && !TextUtils.isEmpty(title.textBadge)) {
                 badge.loadImage(title.textBadge)
                 badge.setOnClickListener { onTextClick(title.action) }
             }

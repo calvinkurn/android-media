@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
 
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,7 +83,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
 
         private fun setBadge(badgeUrl: String) {
             val layoutParams = itemView.tvName.layoutParams as ViewGroup.MarginLayoutParams
-            if (badgeUrl.isNotEmpty()) {
+            if (!TextUtils.isEmpty(badgeUrl)) {
                 itemView.ivBadge.visible()
                 itemView.ivBadge.loadImage(badgeUrl)
                 layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
@@ -103,7 +104,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
         }
 
         private fun loadImageOrDefault(imageView: ImageView, imageUrl: String) {
-            if (imageUrl.isNotEmpty()) {
+            if (!TextUtils.isEmpty(imageUrl)) {
                 imageView.loadImage(imageUrl)
             } else {
                 imageView.setBackgroundColor(
