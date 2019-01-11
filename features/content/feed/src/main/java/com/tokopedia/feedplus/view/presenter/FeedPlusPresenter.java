@@ -322,11 +322,6 @@ public class FeedPlusPresenter
             return;
         }
 
-//            getFirstPageFeedsCloudUseCase.execute(
-//                    getFirstPageFeedsCloudUseCase.getRefreshParam(userSession),
-//                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(),
-// analytics));
-
         getDynamicFeedFirstPageUseCase.execute(
                 GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
@@ -369,6 +364,7 @@ public class FeedPlusPresenter
 
                         if (hasFeed(model)) {
                             getView().updateCursor(model.getCursor());
+                            getView().setLastCursorOnFirstPage(model.getCursor());
 
                             if (model.getHasNext()) {
                                 getView().onSuccessGetFeedFirstPage(
@@ -384,8 +380,10 @@ public class FeedPlusPresenter
                         }
 
                         if (firstPageDomainModel.isInterestWhitelist()) {
-                            viewListener.showInterestPick();
+                            getView().showInterestPick();
                         }
+
+                        getView().sendMoEngageOpenFeedEvent();
                     }
                 }
         );
@@ -405,13 +403,6 @@ public class FeedPlusPresenter
         if (currentCursor == null) {
             return;
         }
-
-//        getFeedsUseCase.execute(
-//                getFeedsUseCase.getFeedPlusParam(
-//                        pagingHandler.getPage(),
-//                        userSession,
-//                        currentCursor),
-//                new GetFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
 
         getDynamicFeedUseCase.execute(
                 GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor),
