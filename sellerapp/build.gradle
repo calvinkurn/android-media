@@ -294,7 +294,6 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.productManageList)
-    implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.broadcastMessage)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.kol)
