@@ -74,6 +74,7 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
             topAdsShopItem.setShopImageCover(dataResponse.getHeadline().getShop().getImageShop().getCover());
             topAdsShopItem.setShopImageCoverEcs(dataResponse.getHeadline().getShop().getImageShop().getCoverEcs());
             topAdsShopItem.setShopImageUrl(dataResponse.getHeadline().getShop().getImageShop().getSUrl());
+            topAdsShopItem.setShopImageEcs(dataResponse.getHeadline().getShop().getImageShop().getSEcs());
             topAdsShopItems.add(topAdsShopItem);
         }
 
