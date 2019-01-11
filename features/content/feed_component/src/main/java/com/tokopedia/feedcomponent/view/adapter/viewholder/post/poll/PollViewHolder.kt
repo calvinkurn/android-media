@@ -11,6 +11,10 @@ import kotlinx.android.synthetic.main.item_post_poll.view.*
 class PollViewHolder(private val pollOptionListener: PollAdapter.PollOptionListener)
     : BasePostViewHolder<PollContentViewModel>() {
 
+    companion object {
+        private const val TOTAL_VOTER = "\${totalVoter}";
+    }
+
     override var layoutRes = R.layout.item_post_poll
 
     override fun bind(element: PollContentViewModel) {
@@ -18,6 +22,9 @@ class PollViewHolder(private val pollOptionListener: PollAdapter.PollOptionListe
         adapter.setList(element.optionList)
         itemView.optionRv.adapter = adapter
 
-        itemView.totalVoter.text = element.totalVoter
+        val totalVoterText = element.totalVoter.replace(
+                TOTAL_VOTER, element.totalVoterNumber.toString()
+        )
+        itemView.totalVoter.text = totalVoterText
     }
 }

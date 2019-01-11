@@ -282,6 +282,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return PollContentViewModel(
                 media.id,
                 media.text,
+                media.totalVoter,
                 media.isVoted,
                 options
         )

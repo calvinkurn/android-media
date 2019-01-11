@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 data class PollContentViewModel (
         val pollId: String = "",
         var totalVoter: String = "",
+        var totalVoterNumber: Int = 0,
         var voted: Boolean = false,
         val optionList: MutableList<PollContentOptionViewModel>,
         override var postId: Int = 0,
