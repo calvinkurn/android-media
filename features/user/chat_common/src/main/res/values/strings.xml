@@ -42,5 +42,11 @@
     <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
         menghubungkan…</string>
     <string name="connected_websocket">"Terhubung!"</string>
+    <string name="title_last_online">Terakhir online</string>
+    <string name="online">Online</string>
+    <string name="topchat_online_minutes_ago">Terakhir online %1$d menit yang lalu</string>
+    <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
+    <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
+    <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
 
 </resources>

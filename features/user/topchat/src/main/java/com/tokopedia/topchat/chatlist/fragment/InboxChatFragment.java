@@ -463,7 +463,8 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
+                && resultCode == Activity.RESULT_OK && data != null) {
             if (data.getExtras().getBoolean(InboxMessageConstant.MUST_REFRESH))
                 presenter.refreshData();
             else if (data.getExtras() != null &&

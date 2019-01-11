@@ -30,7 +30,7 @@ interface TopChatContract {
 
         fun onErrorGetTemplate()
 
-        fun onErrorUploadImage(errorMessage: String)
+        fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
 
         fun showErrorWebSocket(b: Boolean)
 

@@ -36,6 +36,20 @@ open class SendableViewModel
 
     init {
         this.startTime = startTime
+        this.fromRole = checkRole(fromRole)
+    }
+
+    private fun checkRole(fromRole: String): String {
+        val v = fromRole.toIntOrNull()
+        return when(v) {
+            null -> fromRole
+            else ->{
+               return when (v > listRole.size){
+                   true -> fromRole
+                   else -> listRole[v-1]
+               }
+            }
+        }
     }
 
     companion object {
@@ -43,6 +57,7 @@ open class SendableViewModel
         val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
         const val SENDING_TEXT = "Sedang mengirim ..."
+        val listRole = arrayListOf("Buyer", "Shop Owner", "Shop Admin", "Administrator")
 
         fun generateStartTime(): String {
             val date = SimpleDateFormat(

@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.presenter
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -46,17 +47,38 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
     abstract fun destroyWebSocket()
 
 
-    override fun sendMessage(messageId: String, sendMessage: String, startTime: String, opponentId:
-    String) {
-        if (networkMode == MODE_WEBSOCKET) {
-            sendMessageWithWebsocket(messageId, sendMessage, startTime, opponentId)
+    override fun sendMessage(
+            messageId: String,
+            sendMessage: String,
+            startTime: String,
+            opponentId: String
+    ) {
+        if (isValidReply(sendMessage)) {
+            clearEditText()
+            if (networkMode == MODE_WEBSOCKET) {
+                sendMessageWithWebsocket(messageId, sendMessage, startTime, opponentId)
+            } else {
+                sendMessageWithApi(messageId, sendMessage, startTime)
+            }
         } else {
-            sendMessageWithApi(messageId, sendMessage, startTime)
+            showErrorSnackbar((R.string.error_empty_product))
         }
+    }
+
+    private fun isValidReply(message: String): Boolean {
+        if (message.trim { it <= ' ' }.isEmpty()) {
+            return false
+        }
+        return true
     }
 
     abstract fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String)
 
     abstract fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String)
 
+    abstract fun showErrorSnackbar(stringId: Int)
+
+    abstract fun isUploading(): Boolean
+
+    abstract fun clearEditText()
 }

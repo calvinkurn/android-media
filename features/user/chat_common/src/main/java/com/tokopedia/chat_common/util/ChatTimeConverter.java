@@ -1,6 +1,9 @@
 package com.tokopedia.chat_common.util;
 
+import android.content.Context;
 import android.text.format.DateUtils;
+
+import com.tokopedia.chat_common.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,7 +24,7 @@ public class ChatTimeConverter {
         return calendar;
     }
 
-    public static String formatTimeStamp(long unixTime) {
+    public static String formatdiff(long unixTime) {
         Locale localeID = new Locale("in", "ID");
 
         Date postTime = new Date(unixTime);
@@ -85,6 +88,32 @@ public class ChatTimeConverter {
             SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMM yyyy, HH:mm", localeID);
             return sdfYear.format(postTime);
         }
+    }
+
+    public static String getRelativeDate(Context context, long unixTime) {
+        long diff = (Calendar.getInstance().getTimeInMillis() / 1000) - unixTime;
+        String status;
+        long minuteDivider = 60;
+        long hourDivider = minuteDivider * 60;
+        long dayDivider = hourDivider * 24;
+        long monthDivider = dayDivider * 30;
+        if ((diff / monthDivider) > 0) {
+            status = context.getString(R.string
+                    .topchat_online_months_ago, diff / monthDivider);
+        } else if ((diff / dayDivider) > 0) {
+            status = context.getString(R.string
+                    .topchat_online_days_ago, diff / dayDivider);
+        } else if ((diff / hourDivider) > 0) {
+            status = context.getString(R.string.topchat_online_hours_ago,
+                    diff / hourDivider);
+        } else {
+            long minutes = diff / minuteDivider;
+            if (minutes <= 0) minutes = 1;
+            status = context.getString(R.string
+                    .topchat_online_minutes_ago, minutes);
+        }
+        
+        return status;
     }
 
 }

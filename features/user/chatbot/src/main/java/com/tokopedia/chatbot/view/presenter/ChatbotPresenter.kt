@@ -66,6 +66,10 @@ class ChatbotPresenter @Inject constructor(
         private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>)
     : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
+    override fun isUploading(): Boolean {
+        return isUploading
+    }
+
     private var mSubscription: CompositeSubscription
     private var isUploading: Boolean = false
 
@@ -136,6 +140,13 @@ class ChatbotPresenter @Inject constructor(
                 ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
+    }
+
+    override fun clearEditText() {
+    }
+
+    override fun showErrorSnackbar(stringId: Int) {
+
     }
 
     override fun sendReadEvent(messageId: String) {

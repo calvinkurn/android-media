@@ -1,12 +1,18 @@
 package com.tokopedia.topchat.revamp.view
 
+import android.os.Parcelable
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 
 interface TopChatViewState : BaseChatViewState {
 
     abstract fun showErrorWebSocket(b: Boolean)
 
+    abstract fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
+
     fun onSetCustomMessage(customMessage: String)
+
+    fun getLastItem(): Parcelable?
 
 //    fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel)
 //

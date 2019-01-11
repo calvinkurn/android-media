@@ -7,24 +7,24 @@ import com.google.gson.annotations.SerializedName
  * Created by stevenfredian on 11/1/17.
  */
 
-class MessagePojo {
+data class MessagePojo(
 
     @SerializedName("censored_reply")
     @Expose
-    val censoredReply: String = ""
+    val censoredReply: String = "",
     @SerializedName("original_reply")
     @Expose
-    val originalReply: String = ""
+    val originalReply: String = "",
     @SerializedName("timestamp")
     @Expose
-    var timestamp: String = ""
+    var timestamp: String = "",
     @SerializedName("timestamp_fmt")
     @Expose
-    val timestampFmt: String = ""
+    val timestampFmt: String = "",
     @SerializedName("timestamp_unix_nano")
     @Expose
-    val timeStampUnixNano: String = ""
+    val timeStampUnixNano: String = "",
     @SerializedName("timestamp_unix")
     @Expose
     val timeStampUnix: String = ""
-}
+)

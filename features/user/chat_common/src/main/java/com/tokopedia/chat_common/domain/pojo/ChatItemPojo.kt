@@ -2,7 +2,6 @@ package com.tokopedia.chat_common.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 /**
  * @author : Steven 30/11/18
@@ -11,72 +10,71 @@ import java.util.*
 data class ChatItemPojo(
         @Expose
         @SerializedName("msg_id")
-        private var msgId: Int = 0,
+        var msgId: Int = 0,
         @Expose
         @SerializedName("user_id")
-        private var userId: Int = 0,
+        var userId: Int = 0,
         @Expose
         @SerializedName("reply_id")
-        private var replyId: Int = 0,
+        var replyId: Int = 0,
         @Expose
         @SerializedName("sender_id")
-        private var senderId: String? = null,
+        var senderId: String="",
         @Expose
-        @SerializedName("sender_name")
-        private var senderName: String? = null,
+        @SerializedName("from")
+        var senderName: String="",
         @Expose
         @SerializedName("role")
-        private var role: String? = null,
+        var role: String="",
         @Expose
         @SerializedName("msg")
-        private var msg: String? = null,
+        var msg: String="",
         @Expose
         @SerializedName("reply_time")
-        private var replyTime: String? = null,
+        var replyTime: String="",
         @Expose
         @SerializedName("reply_time_nano")
-        private var replyTimeNano: String? = null,
+        var replyTimeNano: String="",
         @Expose
         @SerializedName("fraud_status")
-        private var fraudStatus: Int = 0,
+        var fraudStatus: Int = 0,
         @Expose
         @SerializedName("read_time")
-        private var readTime: String? = null,
+        var readTime: String="",
         @Expose
         @SerializedName("attachment_id")
-        private var attachmentId: Int = 0,
+        var attachmentId: Int = 0,
         @Expose
         @SerializedName("attachment")
-//        private var attachment: AttachmentPojo? = null,
-        private var attachment: Objects? = null,
+        var attachment: AttachmentPojo? = null,
         @Expose
         @SerializedName("old_msg_id")
-        private var oldMsgId: Int = 0,
+        var oldMsgId: Int = 0,
         @Expose
         @SerializedName("message_is_read")
-        private var messageIsRead: Boolean = false,
+        var messageIsRead: Boolean = false,
         @Expose
         @SerializedName("is_opposite")
-        private var isOpposite: Boolean = false,
+        var isOpposite: Boolean = false,
 
         @Expose
         @SerializedName("is_highlight")
-        private var isHighlight: Boolean = false,
+        var isHighlight: Boolean = false,
 
         @Expose
         @SerializedName("old_msg_title")
-        private var oldMessageTitle: String? = null,
+        var oldMessageTitle: String="",
 
         @Expose
         @SerializedName("show_rating")
-        private var showRating: Boolean = false,
+        var showRating: Boolean = false,
 
         @Expose
         @SerializedName("rating_status")
 
-        private var ratingStatus: Int = 0,
+        var ratingStatus: Int = 0,
 
         @Expose
         @SerializedName("blast_id")
-        private val blastId: Int = 0
+        val blastId: Int = 0
 )

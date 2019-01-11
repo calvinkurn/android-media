@@ -59,10 +59,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
             prerequisiteUISetup(element);
             setupChatBubbleAlignment(chatBalloon, element);
 
-            if (element.isRetry()) {
-                setRetryView(element);
-            }
-
             view.setOnClickListener(view -> {
                 if (element.getImageUrl() != null && element.getReplyTime() != null) {
                     listener.onImageUploadClicked(element.getImageUrl(), element.getReplyTime());
@@ -79,6 +75,12 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
                 ImageHandler.loadImageWithListener(attachment, element.getImageUrl(),
                         new DynamicSizeImageRequestListener());
             }
+
+
+            if (element.isRetry()) {
+                setRetryView(element);
+            }
+
 
             setVisibility(attachment, View.VISIBLE);
 
