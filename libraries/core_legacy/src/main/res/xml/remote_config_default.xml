@@ -264,6 +264,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>main_app_enable_buy_again</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>sellerapp_enable_feed_shop_page</key>
         <value>true</value>
     </entry>

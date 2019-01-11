@@ -3,8 +3,8 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListNewAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
