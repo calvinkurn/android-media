@@ -21,7 +21,7 @@ open class TopChatInternalRouter {
         const val TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY = "SELECTED_INVOICE"
 
         fun getAttachProductIntent(context: Context, shopId: String, shopName: String,
-                                   isSeller: Boolean , source : String): Intent {
+                                   isSeller: Boolean): Intent {
             return AttachProductActivity.createInstance(context, shopId, shopName, isSeller,
                     AttachProductActivity.SOURCE_TOPCHAT)
         }
