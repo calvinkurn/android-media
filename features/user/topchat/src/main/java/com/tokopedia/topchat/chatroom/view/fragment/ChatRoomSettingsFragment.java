@@ -21,13 +21,13 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.di.DaggerChatRoomComponent;
@@ -67,7 +67,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            messageId = getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID);
+            messageId = getArguments().getString(ApplinkConst.Chat.MESSAGE_ID);
             this.chatSettingsResponse = getArguments().getParcelable(InboxChatConstant.CHATRESPONSEMODEL);
             isChatEnabled = getArguments().getBoolean(InboxChatConstant.CHAT_ENABLED, true);
             chatRole = getArguments().getString(InboxChatConstant.CHAT_ROLE);
