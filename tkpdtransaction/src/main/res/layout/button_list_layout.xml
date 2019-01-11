@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_5"
-    android:paddingTop="@dimen/dp_5"
     android:paddingEnd="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16">
+    android:paddingStart="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_5">
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/accept_order"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_accept_order"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/accept_order_patial"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_accept_order_partially"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
     <!--<Button
         android:id="@+id/change_courier"
@@ -43,141 +47,179 @@
         android:textAllCaps="false"
         android:textColor="@color/white" />-->
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/request_pickup"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_request_pickup"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/finish_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_finish"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/change_awb"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_change_awb"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/view_complaint_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_view_complaint"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/confirm_shipping"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_change_courier"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/order_detail_track_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_track"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/ask_seller_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_ask_seller"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/buy_again"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
+        android:text="@string/button_order_detail_buy_again"
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="transaction" />
+
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/ask_buyer_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/green_button_rounded_unify"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_ask_buyer"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/reject_order_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_reject_order"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="secondary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/reject_shipment_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_reject_shipment"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="secondary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/request_cancel_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_request_cancel"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="secondary" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/complaint"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_complaint"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="secondary" />
 
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/cancel_chance"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_10"
+        android:maxHeight="@dimen/dp_50"
         android:text="@string/button_order_detail_cancel_chance"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="secondary" />
 
 </LinearLayout>

@@ -198,6 +198,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
         }
         filterMenuList[pos].iconEnd = R.drawable.ic_check
         presenter.getInboxTalkWithFilter(filter, viewModel.screen)
+        analytics.trackClickFilter(filter)
         filterMenu.dismiss()
     }
 
@@ -216,6 +217,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     private fun showUnfollowTalkDialog(alertDialog: Dialog, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuUnfollow()
             talkDialog.createUnfollowTalkDialog(
                     this,
                     alertDialog,
@@ -229,6 +231,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuFollow()
             talkDialog.createFollowTalkDialog(
                     this,
                     alertDialog,
@@ -242,6 +245,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     private fun showDeleteTalkDialog(alertDialog: Dialog, shopId: String, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuDelete()
             talkDialog.createDeleteTalkDialog(
                     this,
                     alertDialog,
@@ -254,6 +258,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     }
 
     private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
+        analytics.trackClickOnMenuDelete()
 
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -471,6 +476,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+        analytics.trackClickReplyButton(talkId)
         goToDetailTalk(talkId, shopId, allowReply)
     }
 
@@ -507,12 +513,16 @@ open class InboxTalkFragment : BaseDaggerFragment(),
                     talkId)
             getString(R.string.menu_follow_talk) -> showFollowTalkDialog(alertDialog, talkId)
             getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(alertDialog, talkId)
-            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId, "")
+            getString(R.string.menu_report_talk) -> {
+                analytics.trackClickOnMenuReport()
+                goToReportTalk(talkId, shopId, productId, "")
+            }
         }
         bottomMenu.dismiss()
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
+
         context?.run {
             val listMenu = ArrayList<Menus.ItemMenus>()
             if (menu.allowReport) {
@@ -539,8 +549,10 @@ open class InboxTalkFragment : BaseDaggerFragment(),
                                          shopId: String, talkId: String, commentId: String,
                                          productId: String) {
         when (itemMenu.title) {
-            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId,
-                    commentId)
+            getString(R.string.menu_report_comment) -> {
+                analytics.trackClickOnMenuReport()
+                goToReportTalk(talkId, shopId, productId, commentId)
+            }
             getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
                     talkId, commentId)
         }
@@ -548,6 +560,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
+        analytics.trackClickProductFromAttachment()
         onGoToPdp(attachProduct.productId.toString())
     }
 
@@ -577,7 +590,12 @@ open class InboxTalkFragment : BaseDaggerFragment(),
         swipeToRefresh.isEnabled = true
     }
 
-    override fun onGoToPdp(productId: String) {
+    override fun onGoToPdpFromProductItemHeader(productId: String) {
+        analytics.trackClickProduct()
+        onGoToPdp(productId)
+    }
+
+    private fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
             this@InboxTalkFragment.startActivity(intent)
@@ -585,6 +603,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToUserProfile(userId: String) {
+        analytics.trackClickUserProfile()
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
             this@InboxTalkFragment.startActivity(intent)

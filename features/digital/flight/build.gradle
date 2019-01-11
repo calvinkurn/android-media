@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.features.commonTravel)
 
     implementation project(rootProject.ext.features.flightDbFlow)
 
