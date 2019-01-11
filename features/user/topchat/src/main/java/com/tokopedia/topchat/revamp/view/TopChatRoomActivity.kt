@@ -15,9 +15,9 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        bundle.putString(ApplinkConst.Chat.MESSAGE_ID, intent.getStringExtra(ApplinkConst.Chat.MESSAGE_ID))
-        bundle.putString(ApplinkConst.Chat.OPPONENT_ID, intent.getStringExtra(ApplinkConst.Chat
-                .OPPONENT_ID))
+        if (intent != null && intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
         return TopChatRoomFragment.createInstance(bundle)
     }
 

@@ -74,31 +74,28 @@ class SelectedInvoice : Parcelable {
         dest.writeInt(this.statusId)
     }
 
-    protected constructor(`in`: Parcel) {
-        this.invoiceId = `in`.readLong()
-        this.invoiceNo = `in`.readString()
-        this.invoiceTypeStr = `in`.readString()
-        this.invoiceType = `in`.readValue(Int::class.java.classLoader) as Int
-        this.topProductName = `in`.readString()
-        this.topProductImage = `in`.readString()
-        this.description = `in`.readString()
-        this.amount = `in`.readString()
-        this.date = `in`.readString()
-        this.invoiceUrl = `in`.readString()
-        this.status = `in`.readString()
-        this.statusId = `in`.readInt()
+    constructor(parcel: Parcel) {
+        this.invoiceId = parcel.readLong()
+        this.invoiceNo = parcel.readString()
+        this.invoiceTypeStr = parcel.readString()
+        this.invoiceType = parcel.readValue(Int::class.java.classLoader) as Int
+        this.topProductName = parcel.readString()
+        this.topProductImage = parcel.readString()
+        this.description = parcel.readString()
+        this.amount = parcel.readString()
+        this.date = parcel.readString()
+        this.invoiceUrl = parcel.readString()
+        this.status = parcel.readString()
+        this.statusId = parcel.readInt()
     }
 
-    companion object {
+    companion object CREATOR : Parcelable.Creator<SelectedInvoice> {
+        override fun createFromParcel(parcel: Parcel): SelectedInvoice {
+            return SelectedInvoice(parcel)
+        }
 
-        val CREATOR: Parcelable.Creator<SelectedInvoice> = object : Parcelable.Creator<SelectedInvoice> {
-            override fun createFromParcel(source: Parcel): SelectedInvoice {
-                return SelectedInvoice(source)
-            }
-
-            override fun newArray(size: Int): Array<SelectedInvoice?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<SelectedInvoice?> {
+            return arrayOfNulls(size)
         }
     }
 }
