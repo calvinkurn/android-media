@@ -395,9 +395,9 @@ public class ExploreFragment
                                       boolean isPullToRefresh,
                                       SortFilterModel sortFilterModel) {
        populateFirstData(itemList, cursor);
-        if (!isSearch && !isPullToRefresh) {
+        if (!isPullToRefresh) {
             populateFilter(sortFilterModel.getFilterList());
-            saveFirstDataToLocal(itemList, cursor, sortFilterModel);
+            if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
         }
     }
 
@@ -627,7 +627,7 @@ public class ExploreFragment
             if (requestCode == REQUEST_DETAIL_FILTER) {
                 List<FilterViewModel> theData = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(theData);
-                exploreParams.setFilters(theData);
+                exploreParams.setFilters(filterAdapter.getOnlySelectedFilter());
                 presenter.getFirstData(exploreParams, false);
             }
         }
