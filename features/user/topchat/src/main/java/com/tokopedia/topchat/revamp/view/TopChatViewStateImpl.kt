@@ -183,7 +183,7 @@ class TopChatViewStateImpl(
             } else {
                 view.context.getString(R.string.follow_store);
             }
-            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_add_grey))
+            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_plus_add))
         }
 
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation),
