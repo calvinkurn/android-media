@@ -447,7 +447,7 @@ public class ExploreFragment
     }
 
     private void populateFilter(List<FilterViewModel> filterList) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
+//        if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
             layoutFilter.setVisibility(View.VISIBLE);
             rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             if (filterAdapter == null) {
@@ -462,7 +462,7 @@ public class ExploreFragment
                 bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
                 startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
             });
-        }
+//        }
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
