@@ -161,5 +161,4 @@ public class Jordan {
     public static final String VALUE_ANDROID ="Android" ;
     public static final String VALUE_IDR ="IDR" ;
 
-
 }
