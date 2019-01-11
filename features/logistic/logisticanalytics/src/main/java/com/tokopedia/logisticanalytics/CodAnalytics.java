@@ -94,7 +94,7 @@ public class CodAnalytics extends LogisticAnalytics {
         );
     }
 
-    public void eventClickBayarDiTempatShipment(boolean ineligible) {
+    public void eventClickBayarDiTempatShipmentFailed(boolean ineligible) {
         String label;
         if (ineligible) label = "not success - ineligible";
         else label = "not success - incomplete";

@@ -37,6 +37,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
@@ -192,13 +193,15 @@ public class ShipmentModule {
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                                                         ShippingCourierConverter shippingCourierConverter,
                                                         IVoucherCouponMapper voucherCouponMapper,
-                                                        CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
+                                                        CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
+                                                        CodAnalytics codAnalytics) {
         return new ShipmentPresenter(checkPromoCodeFinalUseCase,
                 compositeSubscription, checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-                codCheckoutUseCase, shippingCourierConverter, voucherCouponMapper, shipmentAnalyticsActionListener, analyticsPurchaseProtection);
+                codCheckoutUseCase, shippingCourierConverter, voucherCouponMapper,
+                shipmentAnalyticsActionListener, analyticsPurchaseProtection, codAnalytics);
     }
 
     @Provides

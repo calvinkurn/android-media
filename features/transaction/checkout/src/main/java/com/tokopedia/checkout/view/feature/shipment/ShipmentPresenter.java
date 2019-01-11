@@ -42,6 +42,7 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -148,6 +149,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection;
+    private CodAnalytics mTrackerCod;
 
     @Inject
     public ShipmentPresenter(CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase,
@@ -167,7 +169,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ShippingCourierConverter shippingCourierConverter,
                              IVoucherCouponMapper voucherCouponMapper,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
-                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection
+                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
+                             CodAnalytics codAnalytics
     ) {
         this.checkPromoCodeFinalUseCase = checkPromoCodeFinalUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -187,6 +190,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.analyticsActionListener = shipmentAnalyticsActionListener;
         this.codCheckoutUseCase = codCheckoutUseCase;
         this.analyticsPurchaseProtection = analyticsPurchaseProtection;
+        this.mTrackerCod = codAnalytics;
     }
 
     @Override
@@ -1333,6 +1337,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }
 
@@ -1344,10 +1349,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         response.getValidateCheckoutCod().getData().getData() != null) {
                     Data data = response.getValidateCheckoutCod().getData().getData();
                     if (TextUtils.isEmpty(data.getErrorMessage())) {
-                        // go to cod confirmation page
+                        // validation succeeded, go to cod confirmation page
+                        if (checkoutRequest != null) mTrackerCod.eventEEClickButtonCod(
+                                generateCheckoutAnalyticsStep2DataLayer(checkoutRequest));
                         getView().navigateToCodConfirmationPage(data);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
+                        mTrackerCod.eventClickBayarDiTempatShipmentFailed(true);
                         getView().showBottomSheetError(data.getErrorMessage());
                     }
                 }
