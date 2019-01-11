@@ -448,7 +448,7 @@ public class FeedAnalytics {
                         postId,
                         CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
                                 singleOrMultiple(totalContent),
-                        redirectUrl,
+                        redirectUrl+ DASH + contentPosition,
                         position,
                         "",
                         0,
@@ -459,7 +459,7 @@ public class FeedAnalytics {
                 getEventEcommerceClick(
                         ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType + DASH + element,
-                        mediaType + DASH + contentPosition,
+                        mediaType,
                         promotionList,
                         userId
                 )
