@@ -29,6 +29,7 @@
 //import android.widget.ImageButton;
 //import android.widget.ImageView;
 //import android.widget.ProgressBar;
+//import android.widget.RelativeLayout;
 //import android.widget.TextView;
 //
 //import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
@@ -40,6 +41,7 @@
 //import com.tokopedia.abstraction.AbstractionRouter;
 //import com.tokopedia.abstraction.base.view.adapter.Visitable;
 //import com.tokopedia.abstraction.common.data.model.session.UserSession;
+//import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 //import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 //import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 //import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
@@ -55,7 +57,9 @@
 //import com.tokopedia.core.router.TkpdInboxRouter;
 //import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 //import com.tokopedia.core.util.GlobalConfig;
+//import com.tokopedia.core.util.SessionHandler;
 //import com.tokopedia.design.component.Menus;
+//import com.tokopedia.design.component.ToasterNormal;
 //import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 //import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 //import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -65,6 +69,7 @@
 //import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 //import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 //import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
+//import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 //import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
 //import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 //import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
@@ -72,6 +77,7 @@
 //import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 //import com.tokopedia.topchat.chatroom.view.activity.ChatMarketingThumbnailActivity;
 //import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
+//import com.tokopedia.topchat.chatroom.view.activity.ChatRoomSettingsActivity;
 //import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
 //import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 //import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactory;
@@ -80,6 +86,7 @@
 //import com.tokopedia.topchat.chatroom.view.adapter.ReasonAdapter;
 //import com.tokopedia.topchat.chatroom.view.customview.ReasonBottomSheet;
 //import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+//import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 //import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 //import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 //import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
@@ -102,11 +109,12 @@
 //import com.tokopedia.topchat.common.InboxChatConstant;
 //import com.tokopedia.topchat.common.InboxMessageConstant;
 //import com.tokopedia.topchat.common.TopChatRouter;
+//import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 //import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 //import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
 //import com.tokopedia.topchat.common.util.Events;
 //import com.tokopedia.topchat.common.util.ImageUploadHandlerChat;
-//import com.tokopedia.user.session.UserSessionInterface;
+//import com.tokopedia.topchat.common.util.Utils;
 //
 //import java.util.ArrayList;
 //import java.util.Arrays;
@@ -122,16 +130,18 @@
 //
 //import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.MESSAGE_ID;
 //import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARAM_WEBSOCKET;
+//import static com.tokopedia.topchat.chatroom.view.fragment.ChatRoomSettingsFragment.RESULT_CODE_CHAT_SETTINGS_DISABLED;
+//import static com.tokopedia.topchat.chatroom.view.fragment.ChatRoomSettingsFragment.RESULT_CODE_CHAT_SETTINGS_ENABLED;
 //
 ///**
 // * Created by stevenfredian on 9/19/17.
 // */
 //
 //public class ChatRoomFragment extends BaseDaggerFragment
-//        implements ChatRoomContract.View, InboxMessageConstant,
-//        InboxChatConstant, WebSocketInterface {
+//        implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 //
 //    private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+//    public static final int REQUEST_CODE_CHAT_SETTINGS = 2326;
 //    private static final int MAX_SIZE_IMAGE_PICKER = 5;
 //    public static final int CHAT_DELETED_RESULT_CODE = 101;
 //    public static final int CHAT_GO_TO_SHOP_DETAILS_REQUEST = 202;
@@ -153,7 +163,13 @@
 //    ChatRoomPresenter presenter;
 //
 //    @Inject
-//    UserSessionInterface userSession;
+//    ChatSettingsInterface.Presenter chatSettingsPresenter;
+//
+//    @Inject
+//    ChatSettingsAnalytics chatSettingsAnalytics;
+//
+//    @Inject
+//    SessionHandler sessionHandler;
 //
 //    private int networkType;
 //    private RecyclerView recyclerView;
@@ -188,12 +204,22 @@
 //    private int mode;
 //    private View notifier;
 //    private ImageButton headerMenuButton;
+//    private RelativeLayout sendMessageLayout;
+//    private RelativeLayout chatBlockLayout;
+//    private TextView enableChatTextView;
+//    private RelativeLayout mainContent;
 //
 //    private String title, avatarImage, lastOnline;
 //    private boolean isOnline = false;
 //
 //    private boolean uploading;
 //    private boolean isChatBot;
+//    private ChatSettingsResponse chatSettingsResponse;
+//    private boolean isChatEnabled;
+//    private String role = "";
+//    private String senderName = "";
+//    private boolean showChatSettingMenu = false;
+//    private TextView blockedText;
 //
 //    public static ChatRoomFragment createInstance(Bundle extras) {
 //        ChatRoomFragment fragment = new ChatRoomFragment();
@@ -214,6 +240,8 @@
 //        if (getArguments() != null) {
 //            title = getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME, "");
 //            avatarImage = getArguments().getString(InboxMessageConstant.PARAM_SENDER_IMAGE, "");
+//            role = getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "");
+//            senderName = getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME, "");
 //            boolean isChatBotArguments = getArguments().getString(TkpdInboxRouter.IS_CHAT_BOT,
 //                    "false").equals("true");
 //            isChatBot = (getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false) ||
@@ -234,6 +262,7 @@
 //        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams
 //                .SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 //        initVar();
+//        mainContent = getActivity().findViewById(R.id.main);
 //        toolbar = getActivity().findViewById(R.id.app_bar);
 //        mainHeader = toolbar.findViewById(R.id.main_header);
 //        mainHeader.setVisibility(View.INVISIBLE);
@@ -251,6 +280,16 @@
 //        notifier = rootView.findViewById(R.id.notifier);
 //        replyWatcher = Events.text(replyColumn);
 //        headerMenuButton = toolbar.findViewById(R.id.header_menu);
+//        sendMessageLayout = rootView.findViewById(R.id.send_message_layout);
+//        chatBlockLayout = rootView.findViewById(R.id.chat_blocked_layout);
+//        enableChatTextView = rootView.findViewById(R.id.enable_chat_textView);
+//        blockedText = rootView.findViewById(R.id.blocked_text);
+//        enableChatTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                presenter.onPersonalChatSettingChange(getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID), true);
+//            }
+//        });
 //        headerMenuButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -264,6 +303,20 @@
 //        prepareView();
 //        initListener();
 //        return rootView;
+//    }
+//
+//    @Override
+//    public void enableChatSettings() {
+//        isChatEnabled = true;
+//        sendMessageLayout.setVisibility(View.VISIBLE);
+//        chatBlockLayout.setVisibility(View.GONE);
+//        disableChatSettingst();
+//        chatSettingsAnalytics.sendEnableChatSettingTracking();
+//    }
+//
+//    @Override
+//    public String getQueryString(int id) {
+//        return GraphqlHelper.loadRawString(getResources(), id);
 //    }
 //
 //    private void prepareView() {
@@ -379,7 +432,7 @@
 //            public void onClick(View view) {
 //                replyColumn.clearFocus();
 //
-//                UnifyTracking.eventAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+//                UnifyTracking.eventAttachment(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
 //                        TopChatAnalytics.Action.CHAT_DETAIL_ATTACH,
 //                        TopChatAnalytics.Name.CHAT_DETAIL);
 //
@@ -395,7 +448,7 @@
 //        attachButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                UnifyTracking.eventInsertAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+//                UnifyTracking.eventInsertAttachment(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
 //                        TopChatAnalytics.Action.CHAT_DETAIL_INSERT,
 //                        TopChatAnalytics.Name.CHAT_DETAIL);
 //                presenter.getAttachProductDialog(
@@ -408,8 +461,7 @@
 //        });
 //    }
 //
-//    private View.OnClickListener generateSendCl
-// ickListener() {
+//    private View.OnClickListener generateSendClickListener() {
 //        return new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -418,7 +470,7 @@
 //                    templateRecyclerView.setVisibility(View.VISIBLE);
 //                }
 //                presenter.sendMessage(networkType);
-//                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
+//                UnifyTracking.sendChat(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
 //                        TopChatAnalytics.Action.CHAT_DETAIL_SEND,
 //                        TopChatAnalytics.Name.CHAT_DETAIL);
 //
@@ -430,7 +482,7 @@
 //    @Override
 //    public void startAttachProductActivity(String shopId, String shopName, boolean isSeller) {
 //        Intent intent = AttachProductActivity.createInstance(getActivity(), shopId, shopName,
-//                isSeller);
+//                isSeller, AttachProductActivity.SOURCE_TOPCHAT);
 //        startActivityForResult(intent, AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE);
 //    }
 //
@@ -457,7 +509,7 @@
 //            }
 //        }
 //
-//        UnifyTracking.eventClickTemplate(labelCategory,
+//        UnifyTracking.eventClickTemplate(getActivity(), labelCategory,
 //                TopChatAnalytics.Action.TEMPLATE_CHAT_CLICK,
 //                TopChatAnalytics.Name.INBOX_CHAT);
 //        String text = replyColumn.getText().toString();
@@ -682,29 +734,40 @@
 //                label.setVisibility(View.GONE);
 //            }
 //
-//            toolbar.setOnClickListener(new View.OnClickListener() {
+//            avatar.setOnClickListener(new View.OnClickListener() {
 //                @Override
-//                public void onClick(View v) {
-//                    String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
-//                    if (TextUtils.isEmpty(senderId)) {
-//                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
-//                    }
-//                    TrackingUtils.sendGTMEvent(
-//                            new EventTracking(
-//                                    "clickInboxChat",
-//                                    "message room",
-//                                    "click header - shop icon",
-//                                    ""
-//                            ).getEvent()
-//                    );
-//                    presenter.onGoToDetail(senderId,
-//                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
-//                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
+//                public void onClick(View view) {
+//                    openProfilePage();
 //                }
 //            });
-//
+//            user.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    openProfilePage();
+//                }
+//            });
 //            setOnlineDesc(lastOnline, isOnline);
 //        }
+//    }
+//
+//
+//    private void openProfilePage() {
+//        String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
+//        if (TextUtils.isEmpty(senderId)) {
+//            senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+//        }
+//        TrackingUtils.sendGTMEvent(
+//                getActivity(),
+//                new EventTracking(
+//                        "clickInboxChat",
+//                        "message room",
+//                        "click header - shop icon",
+//                        ""
+//                ).getEvent()
+//        );
+//        presenter.onGoToDetail(senderId,
+//                getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
+//                getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
 //    }
 //
 //    @Override
@@ -752,6 +815,7 @@
 //                @Override
 //                public void run() {
 //                    presenter.setResult(model);
+//                    presenter.initialChatSettings();
 //                }
 //            });
 //        }
@@ -908,7 +972,7 @@
 //        return new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                UnifyTracking.eventSendMessagePage();
+//                UnifyTracking.eventSendMessagePage(getActivity());
 //                presenter.initMessage(replyColumn.getText().toString(),
 //                        getArguments().getString(ChatRoomActivity.PARAM_SOURCE),
 //                        getArguments().getString(ChatRoomActivity.PARAM_SENDER_ID),
@@ -979,6 +1043,19 @@
 //            case ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST:
 //                presenter.getFollowStatus(getArguments().getString(ChatRoomActivity
 //                        .PARAM_SENDER_ID, ""));
+//            case REQUEST_CODE_CHAT_SETTINGS:
+//                if (resultCode == RESULT_CODE_CHAT_SETTINGS_ENABLED) {
+//                    sendMessageLayout.setVisibility(View.VISIBLE);
+//                    templateRecyclerView.setVisibility(View.VISIBLE);
+//                    chatBlockLayout.setVisibility(View.GONE);
+//                } else if (resultCode == RESULT_CODE_CHAT_SETTINGS_DISABLED) {
+//                    sendMessageLayout.setVisibility(View.GONE);
+//                    templateRecyclerView.setVisibility(View.GONE);
+//                    chatBlockLayout.setVisibility(View.VISIBLE);
+//                    setBlockedLayout();
+//                }
+//                presenter.initialChatSettings();
+//                break;
 //            default:
 //                break;
 //        }
@@ -1088,7 +1165,7 @@
 //    @Override
 //    public void showSearchInvoiceScreen() {
 //        String msgId = getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID);
-//        String userId = userSession.getUserId();
+//        String userId = SessionHandler.getLoginID(getContext());
 //        Intent intent = AttachInvoiceActivity.createInstance(getActivity(), userId
 //                , Integer.parseInt(msgId));
 //        startActivityForResult(intent, AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE);
@@ -1120,12 +1197,14 @@
 //
 //    @Override
 //    public boolean isMyMessage(int fromUid) {
-//        return String.valueOf(fromUid).equals(userSession.getUserId());
+//        return String.valueOf(fromUid).equals(SessionHandler.getLoginID(MainApplication
+//                .getAppContext()));
 //    }
 //
 //    @Override
 //    public boolean isMyMessage(String fromUid) {
-//        return fromUid.equals(userSession.getUserId());
+//        return fromUid.equals(SessionHandler.getLoginID(MainApplication
+//                .getAppContext()));
 //    }
 //
 //    @Deprecated
@@ -1149,7 +1228,7 @@
 //        InvoiceLinkAttributePojo invoiceLinkAttributePojo = selectedInvoice.getAttributes();
 //        return new AttachInvoiceSentViewModel(
 //                getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
-//                userSession.getName(),
+//                sessionHandler.getLoginName(),
 //                invoiceLinkAttributePojo.getTitle(),
 //                invoiceLinkAttributePojo.getDescription(),
 //                invoiceLinkAttributePojo.getImageUrl(),
@@ -1172,7 +1251,7 @@
 //
 //    private ProductAttachmentViewModel generateProductChatViewModel(ResultProduct product) {
 //        return new ProductAttachmentViewModel(
-//                userSession.getUserId(),
+//                sessionHandler.getLoginID(),
 //                product.getProductId(),
 //                product.getName(),
 //                product.getPrice(),
@@ -1190,7 +1269,7 @@
 //    }
 //
 //    public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts) {
-//        UnifyTracking.eventSendAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+//        UnifyTracking.eventSendAttachment(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
 //                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
 //                TopChatAnalytics.Name.CHAT_DETAIL);
 //
@@ -1235,8 +1314,8 @@
 //
 //        MessageViewModel dummyChat = new MessageViewModel(
 //                getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID),
-//                userSession.getUserId(),
-//                userSession.getName(),
+//                sessionHandler.getLoginID(),
+//                sessionHandler.getLoginName(),
 //                startTime,
 //                dummyText.length() != 0 ? dummyText : getReplyMessage()
 //        );
@@ -1566,13 +1645,14 @@
 //
 //        Menus headerMenu = new Menus(getContext());
 //        List<Menus.ItemMenus> listMenu = new ArrayList<>();
-//        String viewProfileText = getString(R.string.view_profile_container_string, title);
 //        String profileText = getString(R.string.follow_store);
 //        if (isFavorited) profileText = getString(R.string.already_follow_store);
 //
-//        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_set_profile));
-//        if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_add_grey));
+//        if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_chat_add_grey));
 //        listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
+//        if (showChatSettingMenu) {
+//            listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
+//        }
 //
 //        headerMenu.setItemMenuList(listMenu);
 //        headerMenu.setActionText(getString(R.string.cancel_bottom_sheet));
@@ -1593,6 +1673,7 @@
 //                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
 //                    }
 //                    TrackingUtils.sendGTMEvent(
+//                            getActivity(),
 //                            new EventTracking(
 //                                    "clickInboxChat",
 //                                    "message room",
@@ -1605,6 +1686,7 @@
 //                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
 //                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store))) {
 //                    TrackingUtils.sendGTMEvent(
+//                            getActivity(),
 //                            new EventTracking(
 //                                    "clickInboxChat",
 //                                    "message room",
@@ -1615,6 +1697,7 @@
 //                    presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
 //                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
 //                    TrackingUtils.sendGTMEvent(
+//                            getActivity(),
 //                            new EventTracking(
 //                                    "clickInboxChat",
 //                                    "message room",
@@ -1623,6 +1706,13 @@
 //                            ).getEvent()
 //                    );
 //                    presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+//                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
+//                    Intent intent = ChatRoomSettingsActivity.getIntent(getContext(),
+//                            getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID),
+//                            chatSettingsResponse,
+//                            isChatEnabled, role, senderName);
+//                    chatSettingsAnalytics.sendOpenChatSettingTacking();
+//                    startActivityForResult(intent, REQUEST_CODE_CHAT_SETTINGS);
 //                }
 //                headerMenu.dismiss();
 //            }
@@ -1685,5 +1775,59 @@
 //    @Override
 //    public void finishActivity() {
 //        getActivity().finish();
+//    }
+//
+//    @Override
+//    public void setInboxMessageVisibility(ChatSettingsResponse chatSettingsResponse, boolean isVisible) {
+//        this.chatSettingsResponse = chatSettingsResponse;
+//        if (isVisible) {
+//            sendMessageLayout.setVisibility(View.GONE);
+//            templateRecyclerView.setVisibility(View.GONE);
+//            chatBlockLayout.setVisibility(View.VISIBLE);
+//            setBlockedLayout();
+//        } else {
+//            sendMessageLayout.setVisibility(View.VISIBLE);
+//            templateRecyclerView.setVisibility(View.VISIBLE);
+//            chatBlockLayout.setVisibility(View.GONE);
+//        }
+//    }
+//
+//    @Override
+//    public View getRootView() {
+//        return mainContent;
+//    }
+//
+//    @Override
+//    public void shouldShowChatSettingsMenu(boolean showChatSettingMenu) {
+//        this.showChatSettingMenu = showChatSettingMenu;
+//    }
+//
+//    private void setBlockedLayout() {
+//        if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
+//            String category = "";
+//            if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
+//                category = InboxChatConstant.CHAT_PROMOTION;
+//               } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
+//                category = InboxChatConstant.CHAT_BOTH;
+//            } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
+//                category = InboxChatConstant.CHAT_PERSONAL;
+//            }
+//            blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), category, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+//        }
+//    }
+//
+//
+//    private void disableChatSettingst() {
+//        String category = "";
+//        if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
+//            if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
+//                category = InboxChatConstant.CHAT_PROMOTION;
+//            } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
+//                category = InboxChatConstant.CHAT_BOTH;
+//            } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
+//                category = InboxChatConstant.CHAT_PERSONAL;
+//            }
+//            ToasterNormal.show(getActivity(), String.format(getResources().getString(R.string.enable_chat_toast), category, senderName));
+//        }
 //    }
 //}

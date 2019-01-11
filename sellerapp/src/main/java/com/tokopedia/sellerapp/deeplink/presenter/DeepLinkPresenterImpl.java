@@ -22,10 +22,9 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
+import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -166,8 +165,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(campaign);
-        UnifyTracking.eventCampaign(campaignUri);
+        UnifyTracking.eventCampaign(context, campaign);
+        UnifyTracking.eventCampaign(context, campaignUri);
     }
 
     @Override
@@ -193,8 +192,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isExcludedUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_URL))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_URL).split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().endsWith(excludedString)) {
                     return true;
@@ -216,12 +215,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intentToLaunch.setData(uriData);
         } else if (TOPADS_VIEW_TYPE.equals(type)) {
             String adId = uriData.getQueryParameter(PARAM_AD_ID);
-            intentToLaunch = new Intent(context, TopAdsDetailProductActivity.class);
+            intentToLaunch = TopAdsManagementInternalRouter.getTopAdsDetailProductIntent(context);
             intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
             intentToLaunch.setData(uriData);
         } else if (TOPADS_CREATE_TYPE.equals(type)) {
             String itemId = uriData.getQueryParameter(PARAM_ITEM_ID);
-            intentToLaunch = new Intent(context, TopAdsGroupNewPromoActivity.class);
+            intentToLaunch = TopAdsManagementInternalRouter.getTopAdsGroupNewPromoIntent(context);
             intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
             intentToLaunch.setData(uriData);
         }
@@ -240,8 +239,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isExcludedHostUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST).split(","));
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_HOST))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_HOST).split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().startsWith(excludedString)) {
                     return true;

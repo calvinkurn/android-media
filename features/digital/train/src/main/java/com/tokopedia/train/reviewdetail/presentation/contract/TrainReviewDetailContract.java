@@ -42,6 +42,10 @@ public class TrainReviewDetailContract {
 
         void showCheckoutFailed(String message);
 
+        String getPassengerTypeAdult();
+
+        String getPassengerTypeChild();
+
     }
 
     public interface Presenter {

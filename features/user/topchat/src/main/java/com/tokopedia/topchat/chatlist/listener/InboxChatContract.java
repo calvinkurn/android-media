@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
@@ -90,6 +91,8 @@ public class InboxChatContract {
         void saveResult();
 
         void reloadNotifDrawer();
+
+        void handleBroadcastChatMetaData(TopChatBlastSellerMetaData topChatBlastSellerMetaData);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

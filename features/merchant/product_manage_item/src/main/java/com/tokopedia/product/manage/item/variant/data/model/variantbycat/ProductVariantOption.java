@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.product.manage.item.common.util.ItemIdType;
+import com.tokopedia.base.list.seller.common.util.ItemIdType;
 import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 
 /**

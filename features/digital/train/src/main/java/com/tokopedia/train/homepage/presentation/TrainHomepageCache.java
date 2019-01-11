@@ -89,7 +89,7 @@ public class TrainHomepageCache {
     }
 
     public TrainHomepageViewModel buildTrainHomepageViewModelFromCache() {
-        String originStationCode = sharedPrefs.getString(ORIGIN_STATION_CODE, "");
+        String originStationCode = sharedPrefs.getString(ORIGIN_STATION_CODE, DEFAULT_ORIGIN_STATION_CODE);
         String originCityName = sharedPrefs.getString(ORIGIN_CITY_NAME, DEFAULT_ORIGIN_CITY_NAME);
         String originIslandName = sharedPrefs.getString(ORIGIN_ISLAND_NAME, DEFAULT_ORIGIN_ISLAND_NAME);
         TrainStationAndCityViewModel originTrainStationAndCityViewModel;
@@ -100,7 +100,7 @@ public class TrainHomepageCache {
         } else {
             if (!TextUtils.isEmpty(originCityName)) {
                 originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                        null, originCityName, originIslandName
+                        "", originCityName, originIslandName
                 );
             } else {
                 originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
@@ -109,7 +109,7 @@ public class TrainHomepageCache {
             }
         }
 
-        String destinationStationCode = sharedPrefs.getString(DESTINATION_STATION_CODE, "");
+        String destinationStationCode = sharedPrefs.getString(DESTINATION_STATION_CODE, DEFAULT_DESTINATION_STATION_CODE);
         String destinationCityName = sharedPrefs.getString(DESTINATION_CITY_NAME, DEFAULT_DESTINATION_CITY_NAME);
         String destinationIslandName = sharedPrefs.getString(DESTINATION_ISLAND_NAME, DEFAULT_DESTINATION_ISLAND_NAME);
         TrainStationAndCityViewModel destinationTrainStationAndCityViewModel;
@@ -120,7 +120,7 @@ public class TrainHomepageCache {
         } else {
             if (!TextUtils.isEmpty(destinationCityName)) {
                 destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                        null, destinationCityName, destinationIslandName
+                        "", destinationCityName, destinationIslandName
                 );
             } else {
                 destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(

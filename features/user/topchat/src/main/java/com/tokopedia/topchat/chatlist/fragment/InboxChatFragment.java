@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chatlist.fragment;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -31,6 +34,12 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.text.TextDrawable;
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
@@ -87,6 +96,8 @@ public class InboxChatFragment extends BaseDaggerFragment
     ActionMode contextMenu;
     private InboxChatTypeFactory typeFactory;
     private View notifier;
+    private TextView sendBroadcast;
+    private ShowCaseDialog showCaseDialog;
 
     public static InboxChatFragment createInstance(String navigation) {
         InboxChatFragment fragment = new InboxChatFragment();
@@ -105,6 +116,12 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        GraphqlClient.init(context);
     }
 
     @Override
@@ -165,6 +182,17 @@ public class InboxChatFragment extends BaseDaggerFragment
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
+        sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
+        if (GlobalConfig.isSellerApp()){
+            sendBroadcast.setOnClickListener(v -> {
+                if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null){
+                    startActivity(((BroadcastMessageRouter) getActivity().getApplication()).getBroadcastMessageListIntent(getContext()));
+                }
+            });
+        } else {
+            sendBroadcast.setVisibility(View.GONE);
+        }
+        parentView.findViewById(R.id.tv_organize_action).setOnClickListener(v -> setOptionsMenu());
 
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
     }
@@ -265,6 +293,8 @@ public class InboxChatFragment extends BaseDaggerFragment
 
         searchLoading.setVisibility(View.VISIBLE);
         presenter.getMessage();
+        if (GlobalConfig.isSellerApp())
+            presenter.getBlastMetaData();
     }
 
     @Override
@@ -626,5 +656,40 @@ public class InboxChatFragment extends BaseDaggerFragment
 //        if (getActivity() instanceof InboxChatActivity) {
 //            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
 //        }
+    }
+
+    @Override
+    public void handleBroadcastChatMetaData(TopChatBlastSellerMetaData topChatBlastSellerMetaData) {
+        boolean isValidToCreateBroadcast = topChatBlastSellerMetaData.getStatus() == 1;
+        sendBroadcast.setVisibility(isValidToCreateBroadcast? View.VISIBLE : View.GONE);
+
+        if (isValidToCreateBroadcast)
+            checkNeedToShowCasing();
+    }
+
+    private void checkNeedToShowCasing() {
+        final String showcaseTag = getClass().getName()+".BroadcastMessage";
+        if (ShowCasePreference.hasShown(getActivity(), showcaseTag) || showCaseDialog != null){
+            return;
+        }
+
+        showCaseDialog = generateShowcaseDialog();
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+        showCaseList.add(new ShowCaseObject(sendBroadcast, getString(R.string.bm_title),
+                getString(R.string.bm_showcase_desc)));
+        showCaseDialog.show(getActivity(), showcaseTag, showCaseList);
+    }
+
+    private ShowCaseDialog generateShowcaseDialog() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .finishStringRes(R.string.title_understand)
+                .clickable(true)
+                .useArrow(true)
+                .build();
     }
 }

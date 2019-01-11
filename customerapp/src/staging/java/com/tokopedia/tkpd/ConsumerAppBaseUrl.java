@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd;
+    package com.tokopedia.tkpd;
 
 /**
  * Created by hangnadi on 1/24/17.
@@ -40,6 +40,7 @@ public class ConsumerAppBaseUrl {
     public static final String GALADRIEL = "https://galadriel-staging.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat-staging.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat-staging.tokopedia.com";
+    public static final String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat-staging.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_WALLET = "https://wallet-staging.tokopedia.id/";
     public static final String EVENT_DOMAIN = "https://booking-staging.tokopedia.com/";
@@ -61,4 +62,6 @@ public class ConsumerAppBaseUrl {
     public static final String LOGISTIC_BASE_DOMAIN = "https://gw-staging.tokopedia.com/";
     public static final String CART_BASE_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String TRANSACTION_BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
+    public static final String CAMPAIGN_MANAGEMENT_DOMAIN = "https://notifier-staging.tokopedia.com/imt/";
+
 }
