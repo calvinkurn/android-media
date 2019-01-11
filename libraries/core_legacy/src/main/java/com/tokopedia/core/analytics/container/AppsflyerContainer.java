@@ -60,6 +60,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
         initUninstallTracking(key);
         setAppsFlyerKey(key);
+        updateFCMToken(FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     @Override
@@ -74,7 +75,6 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     private void initUninstallTracking(String key) {
         AppsFlyerLib.getInstance().enableUninstallTracking(key);
-        updateFCMToken(FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     @Override
