@@ -21,7 +21,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
 
     override fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
         val chatroomViewModel = super.map(pojo)
-        if (!pojo.chatReplies.hasNext && pojo.chatReplies.showTimeMachine == 1) {
+        if (!pojo.chatReplies.hasNext) {
             chatroomViewModel.listChat.add(chatroomViewModel.listChat.size,
                     SecurityInfoViewModel(TopChatUrl.SECURITY_INFO_URL))
         }

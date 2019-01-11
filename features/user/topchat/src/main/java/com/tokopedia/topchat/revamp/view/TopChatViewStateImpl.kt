@@ -169,7 +169,7 @@ class TopChatViewStateImpl(
         val headerMenu = Menus(view.context)
         val listMenu = ArrayList<Menus.ItemMenus>()
 
-        if(chatroomViewModel.headerModel.role.toLowerCase()
+        if(!chatroomViewModel.headerModel.role.toLowerCase()
                         .contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)) {
             val title = toolbar.findViewById<TextView>(R.id.title)
             val viewProfileText = view.context.getString(R.string.view_profile_container_string, title)

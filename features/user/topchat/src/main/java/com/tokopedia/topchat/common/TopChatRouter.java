@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 
 /**
  * @author by nisie on 5/18/18.
  */
 public interface TopChatRouter {
+
+    String EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP = "SHOP_STATUS_FAVOURITE";
 
     Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot);
 

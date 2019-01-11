@@ -447,8 +447,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
-        //TODO
-//        presenter.getShopFollowingState()
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            getViewState().isShopFollowed = data.getBooleanExtra(TopChatRouter
+                    .EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP, false)
+        }
     }
 
     private fun onProductAttachmentSelected(data: Intent?) {

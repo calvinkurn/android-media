@@ -1,7 +1,6 @@
 query get_chat_replies($msgId: Int!, $page: Int!) {
   chatReplies(msgId: $msgId, page: $page) {
     hasNext
-    showTimeMachine
     textareaReply
     contacts {
       role
