@@ -83,9 +83,20 @@ public class ExploreUseCase extends GraphqlUseCase {
         for (FilterViewModel filter : filterList) {
             JsonObject object = new JsonObject();
             object.addProperty(PARAM_FILTER_KEY, PARAM_FILTER_KEY_DATA);
-            object.addProperty(PARAM_FILTER_VALUE, filter.getIds().toString());
+            object.addProperty(PARAM_FILTER_VALUE, appendIdValue(filter.getIds()));
             dataArray.add(object);
         }
         return dataArray;
+    }
+
+    private static String appendIdValue(List<Integer> idList) {
+        StringBuilder value = new StringBuilder();
+        for(int i = 0; i <idList.size(); i++) {
+            value.append(idList.get(i));
+            if (i != idList.size() - 1) {
+                value.append(",");
+            }
+        }
+        return value.toString();
     }
 }
