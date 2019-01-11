@@ -5,4 +5,5 @@ package com.tokopedia.groupchat.chatroom.data;
  */
 public class ChatroomUrl {
     public static final String DESKTOP_URL = "";
+    public static String GROUP_CHAT_WEBSOCKET_DOMAIN = "";
 }

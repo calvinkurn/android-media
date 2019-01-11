@@ -2,9 +2,8 @@ package com.tokopedia.gm.subscribe
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
-import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipActivity
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity
 
 object GMSubscribeInternalRouter {
 
