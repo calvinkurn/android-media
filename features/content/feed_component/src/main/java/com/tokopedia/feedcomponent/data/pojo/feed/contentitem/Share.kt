@@ -1,11 +1,17 @@
 package com.tokopedia.feedcomponent.data.pojo.feed.contentitem
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Share (
 
-    @SerializedName("text")
-    @Expose
-    var text: String = ""
+        @SerializedName("description")
+        val description: String = "",
+        @SerializedName("imageURL")
+        val imageURL: String = "",
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("url")
+        val url: String = ""
 )

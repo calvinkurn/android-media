@@ -167,6 +167,10 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             }
             share {
               text
+              url
+              title
+              imageURL
+              description
             }
           }
         }
@@ -297,6 +301,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             body {
               media
               caption
+              mediaGridButton
             }
             footer {
               like

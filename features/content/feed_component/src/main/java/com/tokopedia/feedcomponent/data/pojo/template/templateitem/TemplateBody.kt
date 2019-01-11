@@ -13,5 +13,8 @@ data class TemplateBody (
     val media: Boolean = false,
     @SerializedName("caption")
     @Expose
-    val caption: Boolean = false
+    val caption: Boolean = false,
+    @SerializedName("mediaGridButton")
+    @Expose
+    val mediaGridButton: Boolean = false
 )
