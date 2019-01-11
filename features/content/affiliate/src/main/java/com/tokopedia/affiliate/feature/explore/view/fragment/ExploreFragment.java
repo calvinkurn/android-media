@@ -467,7 +467,6 @@ public class ExploreFragment
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
-            exploreParams.resetParams();
             exploreParams.setFilters(filters);
             presenter.getFirstData(exploreParams, false);
         };
