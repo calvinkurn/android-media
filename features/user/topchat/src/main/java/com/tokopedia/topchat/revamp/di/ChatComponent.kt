@@ -14,7 +14,6 @@ import dagger.Component
         modules = arrayOf(ChatModule::class),
         dependencies = arrayOf(BaseAppComponent::class)
 )
-
 interface ChatComponent{
     fun inject(fragment: TopChatRoomFragment)
 }

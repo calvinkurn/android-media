@@ -257,7 +257,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onRetrySendImage(element: ImageUploadViewModel) {
-        var bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
+        val bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
         bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, com.tokopedia.topchat.R.string.resend, null)
         bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, com.tokopedia.topchat.R.string.delete, null)
         var bottomSheetDialog = bottomSheetBuilder.expandOnStart(true).
@@ -288,17 +288,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         super.onReceiveMessageEvent(visitable)
         getViewState().scrollDownWhenInBottom()
-    }
-
-    companion object {
-
-        private const val POST_ID = "{post_id}"
-        fun createInstance(bundle: Bundle): BaseChatFragment {
-            val fragment = TopChatRoomFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-
     }
 
     override fun loadData(page: Int) {
