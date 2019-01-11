@@ -155,7 +155,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     data.putExtra(TopChatInternalRouter.Companion.PARAM_MUST_REFRESH, true)
                 }
                 setResult(TopChatInternalRouter.Companion.CHAT_READ_RESULT_CODE, data)
-                finish()
             }
         }
     }
