@@ -583,14 +583,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        ProductItem productItem = new ProductItem();
-        productItem.setWishlisted(data.getProduct().isWishlist());
-        productItem.setProductID(data.getProduct().getId());
-        presenter.handleWishlistButtonClicked(productItem);
-    }
-
-    @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(item.getProductID());

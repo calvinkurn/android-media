@@ -61,4 +61,6 @@ public interface AccountItemListener {
     void onTickerClosed();
 
     void onTopAdsMenuClicked();
+
+    void onShopStatusInfoButtonClicked();
 }

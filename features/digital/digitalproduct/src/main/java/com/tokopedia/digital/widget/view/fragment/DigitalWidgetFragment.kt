@@ -221,4 +221,9 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
                 v)
     }
 
+    override fun onDestroy() {
+        digitalWidgetPresenter.detachView()
+        super.onDestroy()
+    }
+
 }
