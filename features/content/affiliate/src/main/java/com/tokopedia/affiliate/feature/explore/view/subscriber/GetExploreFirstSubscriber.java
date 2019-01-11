@@ -42,6 +42,8 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        if (mainView == null)
+            return;
         mainView.hideLoading();
         mainView.onErrorGetFirstData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
     }
@@ -62,7 +64,8 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
                             new ArrayList<>(),
                     exploreQuery.getPagination() != null ?
                             exploreQuery.getPagination().getNextCursor() :
-                            ""
+                            "",
+                    isSearch
             );
         }
     }

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -39,7 +40,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;

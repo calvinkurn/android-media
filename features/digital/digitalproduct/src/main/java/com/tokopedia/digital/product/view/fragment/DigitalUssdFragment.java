@@ -2,8 +2,6 @@ package com.tokopedia.digital.product.view.fragment;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -19,6 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -27,12 +30,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.view.compoundview.ProductPriceInfoView;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
@@ -40,54 +42,30 @@ import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
 import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView;
 import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
-import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.product.view.presenter.IUssdProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.UssdProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DigitalUssdFragment.ActionListener} interface
- * to handle interaction events.
- * Use the {@link DigitalUssdFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigitalPresenter>
         implements IUssdDigitalView, ProductAdditionalInfoView.ActionListener {
 
-
-    @BindView(R2.id.tv_balance)
-    TextView tvBalance;
-    @BindView(R2.id.tv_phone_number)
-    TextView tvPhoneNumber;
-    @BindView(R2.id.tv_operator_name)
-    TextView tv_operator_name;
-    @BindView(R2.id.holder_chooser_product)
-    LinearLayout holderChooserProduct;
-    @BindView(R2.id.holder_additional_info_product)
-    LinearLayout holderAdditionalInfoProduct;
-    @BindView(R2.id.holder_price_info_product)
-    LinearLayout holderPriceInfoProduct;
-    @BindView(R2.id.btn_buy_digital)
-    TextView btnBuyDigital;
-    @BindView(R2.id.cb_instant_checkout)
-    CheckBox cbInstantCheckout;
-    @BindView(R2.id.tv_unknown_number)
-    TextView tvUnknownNumber;
-    @BindView(R2.id.tooltip_instant_checkout)
-    ImageView tooltipInstantCheckout;
+    private TextView tvBalance;
+    private TextView tvPhoneNumber;
+    private TextView tvOperatorName;
+    private LinearLayout holderChooserProduct;
+    private LinearLayout holderAdditionalInfoProduct;
+    private LinearLayout holderPriceInfoProduct;
+    private TextView btnBuyDigital;
+    private CheckBox cbInstantCheckout;
+    private TextView tvUnknownNumber;
+    private ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
+
     private static final String ARG_PARAM_EXTRA_PULSA_BALANCE_DATA = "ARG_PARAM_EXTRA_PULSA_BALANCE_DATA";
     private static final String EXTRA_STATE_OPERATOR_DATA = "EXTRA_STATE_OPERATOR_DATA";
     private static final String EXTRA_STATE_CATEGORY_ID = "EXTRA_STATE_CATEGORY_ID";
@@ -110,12 +88,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     private List<Validation> validationList;
     private int selectedSimIndex = 0;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment DigitalUssdFragment.
-     */
     public static DigitalUssdFragment newInstance(PulsaBalance pulsaBalance, Operator selectedOperator,
                                                   List<Validation> validationListData, String categoryId,
                                                   String categoryName, int simPos, List<Operator> selectedOperatorList) {
@@ -157,7 +129,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         state.putInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, selectedSimIndex);
         state.putParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA,
                 (ArrayList<? extends Parcelable>) selectedOperatorList);
-
     }
 
     @Override
@@ -170,7 +141,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         this.validationList = savedState.getParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA);
         this.selectedSimIndex = getArguments().getInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, 0);
         this.selectedOperatorList = savedState.getParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA);
-
     }
 
     @Override
@@ -180,7 +150,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
     @Override
     protected void initialPresenter() {
-
         presenter = new UssdProductDigitalPresenter(this);
     }
 
@@ -207,6 +176,17 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
     @Override
     protected void initView(View view) {
+        tvBalance = view.findViewById(R.id.tv_balance);
+        tvPhoneNumber = view.findViewById(R.id.tv_phone_number);
+        tvOperatorName = view.findViewById(R.id.tv_operator_name);
+        holderChooserProduct = view.findViewById(R.id.holder_chooser_product);
+        holderAdditionalInfoProduct = view.findViewById(R.id.holder_additional_info_product);
+        holderPriceInfoProduct = view.findViewById(R.id.holder_price_info_product);
+        btnBuyDigital = view.findViewById(R.id.btn_buy_digital);
+        cbInstantCheckout = view.findViewById(R.id.cb_instant_checkout);
+        tvUnknownNumber = view.findViewById(R.id.tv_unknown_number);
+        tooltipInstantCheckout = view.findViewById(R.id.tooltip_instant_checkout);
+
         digitalProductChooserView = new DigitalProductChooserView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
@@ -227,7 +207,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         renderPriceInfoProduct();
         renderAdditionalInfoProduct();
         productAdditionalInfoView.setActionListener(this);
-        tv_operator_name.setText(selectedOperator.getName());
+        tvOperatorName.setText(selectedOperator.getName());
 
         tvBalance.setText(pulsaBalance.getPulsaBalance());
         tvPhoneNumber.setText(pulsaBalance.getMobileNumber());
@@ -236,7 +216,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
             @Override
             public void onClick(View v) {
                 showVerifyUssdOperatorDialogFragment(true);
-                UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_EDIT_NUMBER, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
+                UnifyTracking.eventUssd(getActivity(),AppEventTracking.Action.CLICK_USSD_EDIT_NUMBER, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
 
             }
         });
@@ -259,11 +239,9 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         clearHolder(holderPriceInfoProduct);
         productPriceInfoView.renderData(productSelected);
         holderPriceInfoProduct.addView(productPriceInfoView);
-
     }
 
     public void showVerifyUssdOperatorDialogFragment(boolean isEdit) {
-
         OperatorVerificationDialog dialog = OperatorVerificationDialog.newInstance(selectedOperator,
                 validationList, selectedSimIndex, isEdit, selectedOperatorList);
         dialog.setTargetFragment(this, OperatorVerificationDialog.REQUEST_CODE_DIGITAL_USSD_OPERATOR_MATCH);
@@ -284,7 +262,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                     showToastMessage(getActivity().getString(R.string.error_message_ussd_operator_not_matched));
                     tvUnknownNumber.setVisibility(View.VISIBLE);
                 }
-                UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_BUY_PULSA, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
+                UnifyTracking.eventUssd(getActivity(),AppEventTracking.Action.CLICK_USSD_BUY_PULSA, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
             }
         };
     }
@@ -345,7 +323,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
                     // presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
-            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
                 if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                     String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {
@@ -518,10 +496,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         startActivity(DigitalWebActivity.newInstance(getActivity(), url));
     }
 
-    public interface ActionListener {
-        void updateTitleToolbar(String title);
-    }
-
     private void setBottomSheetDialog() {
         BottomSheetView bottomSheetView;
         bottomSheetView = new BottomSheetView(context);
@@ -533,4 +507,9 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                 .build());
         bottomSheetView.show();
     }
+
+    public interface ActionListener {
+        void updateTitleToolbar(String title);
+    }
+
 }

@@ -1,22 +1,27 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.content.Context
+import android.support.annotation.StringRes
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
 
 /**
  * @author by milhamj on 30/11/18.
  */
 
-fun View.visible() {
+fun View.show() {
     this.visibility = View.VISIBLE
 }
 
-fun View.gone() {
+fun View.hide() {
     this.visibility = View.GONE
 }
 
@@ -26,16 +31,16 @@ fun View.invisible() {
 
 fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
     if (shouldShow) {
-        visible()
+        show()
         action()
     } else {
-        gone()
+        hide()
     }
 }
 
 fun View.showLoading() {
     try {
-        this.findViewById<View>(R.id.loadingView)!!.visible()
+        this.findViewById<View>(R.id.loadingView)!!.show()
     } catch (e: NullPointerException) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val params = LinearLayout.LayoutParams(
@@ -50,8 +55,54 @@ fun View.showLoading() {
 
 fun View.hideLoading() {
     try {
-        this.findViewById<View>(R.id.loadingView)!!.gone()
+        this.findViewById<View>(R.id.loadingView)!!.hide()
     } catch (e: NullPointerException) {
         e.debugTrace()
+    }
+}
+
+fun View.showErrorToaster(errorMessage: String) {
+    this.showErrorToaster(errorMessage, null as String?) { }
+}
+
+fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_try_again, action: () -> Unit) {
+    this.showErrorToaster(errorMessage, context.getString(actionMessage), action)
+}
+
+fun View.showErrorToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
+    val toaster = ToasterError.make(this, errorMessage, BaseToaster.LENGTH_LONG)
+    actionMessage?.let { message ->
+        toaster.setAction(message) {
+            action()
+        }
+    }
+    toaster.show()
+}
+
+fun View.showNormalToaster(errorMessage: String) {
+    this.showNormalToaster(errorMessage, null as String?) { }
+}
+
+fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
+    this.showNormalToaster(errorMessage, context.getString(actionMessage), action)
+}
+
+fun View.showNormalToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
+    val toaster = ToasterNormal.make(this, errorMessage, BaseToaster.LENGTH_LONG)
+    actionMessage?.let { message ->
+        toaster.setAction(message) {
+            action()
+        }
+    }
+    toaster.show()
+}
+
+fun View.showEmptyState(@StringRes errorMessage: Int, action: () -> Unit) {
+    this.showEmptyState(context.getString(errorMessage), action)
+}
+
+fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
+    NetworkErrorHelper.showEmptyState(this.context, this, errorMessage) {
+        action()
     }
 }

@@ -52,7 +52,7 @@ class DynamicPostViewHolder(v: View,
 
     override fun bind(element: DynamicPostViewModel?) {
         if (element == null) {
-            itemView.gone()
+            itemView.hide()
             return
         }
 
@@ -196,40 +196,40 @@ class DynamicPostViewHolder(v: View,
     private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text)) {
-                itemView.shareSpace.gone()
-                itemView.footerAction.visible()
+                itemView.shareSpace.hide()
+                itemView.footerAction.show()
                 itemView.footerAction.text = footer.buttonCta.text
                 itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
             } else {
-                itemView.shareSpace.visible()
-                itemView.footerAction.gone()
+                itemView.shareSpace.show()
+                itemView.footerAction.hide()
             }
 
             if (template.like) {
-                itemView.likeIcon.visible()
-                itemView.likeText.visible()
+                itemView.likeIcon.show()
+                itemView.likeText.show()
                 itemView.likeIcon.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 itemView.likeText.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 bindLike(footer.like)
             } else {
-                itemView.likeIcon.gone()
-                itemView.likeText.gone()
+                itemView.likeIcon.hide()
+                itemView.likeText.hide()
             }
 
             if (template.comment) {
-                itemView.commentIcon.visible()
-                itemView.commentText.visible()
+                itemView.commentIcon.show()
+                itemView.commentText.show()
                 itemView.commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 itemView.commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 bindComment(footer.comment)
             } else {
-                itemView.commentIcon.gone()
-                itemView.commentText.gone()
+                itemView.commentIcon.hide()
+                itemView.commentText.hide()
             }
 
             if (template.share) {
-                itemView.shareIcon.visible()
-                itemView.shareText.visible()
+                itemView.shareIcon.show()
+                itemView.shareText.show()
                 itemView.shareText.text = footer.share.text
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
@@ -253,8 +253,8 @@ class DynamicPostViewHolder(v: View,
                 }
 
             } else {
-                itemView.shareIcon.gone()
-                itemView.shareText.gone()
+                itemView.shareIcon.hide()
+                itemView.shareText.hide()
             }
         }
     }

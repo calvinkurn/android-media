@@ -26,52 +26,38 @@ buildscript {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.inbox)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.inbox)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.libraries.imagePicker)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    implementation rootProject.ext.supportLibDependencies.supportV4
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    implementation 'at.blogc:expandabletextview:1.0.5'
-    implementation project(path: rootProject.ext.libraries.applink)
-
-
-    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.viewDependencies.expandableTextview
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
     implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-    implementation rootProject.ext.supportLibDependencies.supportV13
-    implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-
-    implementation project(rootProject.ext.libraries.useCase)
-
-    implementation rootProject.ext.miscDependencies.multiDex
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    testImplementation rootProject.ext.testDependencies.junit
+    implementation project(rootProject.ext.libraries.core_legacy)
 }

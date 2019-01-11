@@ -40,7 +40,7 @@ public interface AccountItemListener {
     void onTokopediaPayLeftItemClicked(String label, String applink, TokopediaPayBSModel bsData,
                                        boolean isLinked, String walletType);
 
-    void onTokopediaPayRightItemClicked(String label, String applink, TokopediaPayBSModel bsData);
+    void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData);
 
     void onDepositClicked(ShopCardViewModel element);
 
@@ -53,4 +53,14 @@ public interface AccountItemListener {
     void onOpenShopClicked();
 
     void onLearnMoreSellerClicked();
+
+    void onKycLinkClicked(int verificationStatus);
+
+    void onTickerLinkClicked(String url);
+
+    void onTickerClosed();
+
+    void onTopAdsMenuClicked();
+
+    void onShopStatusInfoButtonClicked();
 }

@@ -1,17 +1,19 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.base.adapter.Visitable;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.domain.model.feed.DataFeedDomain;
+import com.tokopedia.home.beranda.domain.model.feed.FeedDomain;
+import com.tokopedia.home.beranda.domain.model.feed.FeedResult;
+import com.tokopedia.home.beranda.domain.model.feed.InspirationItemDomain;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
-import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
-import com.tokopedia.feedplus.domain.model.feed.DataFeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +35,12 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
     public static final String HOMEPAGE_ENHANCE_ANALYTIC = "HOMEPAGE_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private final LocalCacheHandler cache;
+    private final Context context;
 
-    public GetHomeFeedsSubscriber(HomeFeedListener viewListener, int page) {
+    public GetHomeFeedsSubscriber(Context context, HomeFeedListener viewListener, int page) {
         this.viewListener = viewListener;
         this.page = page;
+        this.context = context;
         this.cache = new LocalCacheHandler(viewListener.getActivity(), HOMEPAGE_ENHANCE_ANALYTIC);
     }
 
@@ -100,6 +104,7 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(inspirationViewModel);
 
                             HomePageTracking.eventEnhancedImpressionProductHomePage(
+                                    context,
                                     inspirationViewModel.getHomePageImpressionDataLayer()
                             );
 
@@ -151,7 +156,8 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getUrl(),
                 page,
                 recommendationDomain.getPriceInt(),
-                recommendationDomain.getRecommendationType()
+                recommendationDomain.getRecommendationType(),
+                recommendationDomain.getCategoryBreadcrumb()
         );
     }
 

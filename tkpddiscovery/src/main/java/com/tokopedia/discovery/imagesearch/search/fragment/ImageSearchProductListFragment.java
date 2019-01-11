@@ -536,7 +536,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),true, getQueryKey());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
@@ -550,7 +550,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),false, getQueryKey());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
@@ -580,14 +580,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onAddFavorite(int position, Data data) {
 
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
-        ProductItem productItem = new ProductItem();
-        productItem.setWishlisted(data.getProduct().isWishlist());
-        productItem.setProductID(data.getProduct().getId());
-        presenter.handleWishlistButtonClicked(productItem);
     }
 
     @Override

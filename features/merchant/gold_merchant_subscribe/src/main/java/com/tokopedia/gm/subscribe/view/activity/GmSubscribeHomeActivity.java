@@ -20,6 +20,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.common.constant.GMParamConstant;
 import com.tokopedia.gm.subscribe.R;
 import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragment;
 import com.tokopedia.gm.subscribe.view.fragment.GmHomeFragmentCallback;
@@ -36,6 +37,7 @@ public class GmSubscribeHomeActivity
 
     public static final int REQUEST_PRODUCT = 1;
     private FragmentManager fragmentManager;
+    public boolean isFromFeatured = false;
 
     @DeepLink(Constants.Applinks.SellerApp.GOLD_MERCHANT)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
@@ -81,6 +83,7 @@ public class GmSubscribeHomeActivity
     @Override
     protected void initVar() {
         fragmentManager = getFragmentManager();
+        isFromFeatured = getIntent().getBooleanExtra(GMParamConstant.PARAM_KEY_FROM_FEATURE, false);
     }
 
     @Override
@@ -91,7 +94,7 @@ public class GmSubscribeHomeActivity
     public void goToGMHome() {
         if (fragmentManager.findFragmentByTag(GmHomeFragment.TAG) == null) {
             inflateFragment(
-                    GmHomeFragment.createFragment(),
+                    GmHomeFragment.createFragment(isFromFeatured),
                     false,
                     GmHomeFragment.TAG);
         }

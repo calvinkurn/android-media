@@ -3,7 +3,7 @@ package com.tokopedia.seller.customadapter;
 import java.util.ArrayList;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 
 import android.app.Activity;

@@ -8,37 +8,17 @@
         <attr name="allow_input_manually" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="NumberPickerWithCounterView">
-        <attr name="npc_min_value" format="integer" />
-        <attr name="npc_max_value" format="integer" />
-        <attr name="npc_value" format="integer" />
-        <attr name="npc_enabled" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="SelectPassengerView">
-        <attr name="spv_title" format="string" />
-        <attr name="spv_subtitle" format="string" />
-        <attr name="spv_value" format="integer" />
-        <attr name="spv_icon" format="reference" />
-        <attr name="spv_min_value" format="integer" />
-        <attr name="spv_max_value" format="integer" />
-    </declare-styleable>
-
-    <declare-styleable name="CountdownTimeView">
-        <attr name="ctv_minute_title" format="string" />
-        <attr name="ctv_second_title" format="string" />
-        <attr name="ctv_hour_title" format="string" />
-    </declare-styleable>
-
     <string name="mister">Tuan</string>
     <string name="misiz">Nyonya</string>
     <string name="miss">Nona</string>
-    <string-array name="adult_spinner_titles">
+    <string-array name="flight_adult_spinner_titles">
+        <item>@string/flight_passenger_choose_salutation</item>
         <item>@string/mister</item>
         <item>@string/misiz</item>
         <item>@string/miss</item>
     </string-array>
-    <string-array name="child_infant_spinner_titles">
+    <string-array name="flight_child_infant_spinner_titles">
+        <item>@string/flight_passenger_choose_salutation</item>
         <item>@string/mister</item>
         <item>@string/miss</item>
     </string-array>

@@ -604,7 +604,6 @@ public class TkpdBaseURL {
         public static final String PATH_TOP_PICKS = "/hoth/toppicks/widget";
         public static final String PATH_HOTLIST_CATEGORY = "/hoth/hotlist/v1/category";
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
-        public static final String PATH_UNIVERSE_SEARCH_V5 = "/universe/v6";
         public static final String PATH_DELETE_SEARCH = "/universe/v1";
 
         public static final String PATH_SEARCH_V3_1 = "search/product/v3.1";
@@ -743,7 +742,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_SOLUTION = "ajax/solution/{id}";
         public static final String PATH_CREATE_STEP_1 = "ajax/create/step/1";
         public static final String PATH_CREATE_STEP_2 = "ajax/create/step/2";
-        public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
+        public static final String URL_HELP = WEB_DOMAIN + "help?utm_source=android";
         public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
     }
 

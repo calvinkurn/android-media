@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_poll_option.view.*
 
 /**
@@ -53,15 +53,15 @@ class PollAdapter(private val contentPosition: Int,
         fun bind(element: PollContentOptionViewModel) {
             val context = itemView.context
             if (element.selected == PollContentOptionViewModel.DEFAULT) {
-                itemView.shadowLayer.gone()
-                itemView.percent.gone()
-                itemView.percentLayout.gone()
+                itemView.shadowLayer.hide()
+                itemView.percent.hide()
+                itemView.percentLayout.hide()
                 itemView.progressBar.progress = 0
                 itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_default)
             } else {
-                itemView.shadowLayer.visible()
-                itemView.percent.visible()
-                itemView.percentLayout.visible()
+                itemView.shadowLayer.show()
+                itemView.percent.show()
+                itemView.percentLayout.show()
                 itemView.progressBar.progress = element.percentage
                 if (element.selected == PollContentOptionViewModel.SELECTED) {
                     itemView.progressBar.progressDrawable = MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)

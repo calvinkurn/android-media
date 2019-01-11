@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.train.common.TrainRouter;
+import com.tokopedia.train.common.domain.TrainProvider;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.common.util.TrainDateUtil;
@@ -45,4 +46,5 @@ public interface TrainComponent {
 
     void inject(TrainBaseActivity trainBaseActivity);
 
+    TrainProvider getTrainProvider();
 }

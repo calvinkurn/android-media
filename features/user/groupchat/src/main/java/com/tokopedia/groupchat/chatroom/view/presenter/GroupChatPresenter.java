@@ -59,7 +59,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     public void connectWebSocket(UserSession userSession, String channelId, String groupChatToken
             , SettingGroupChat settingGroupChat) {
-        String magicString = TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN;
+        String magicString = ChatroomUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         magicString = localCacheHandler.getString("ip_groupchat", magicString);
 
         this.webSocketUrlWithToken = (String.format("%s%s%s%s%s", magicString, ChatroomUrl
@@ -147,10 +147,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     private void connect(String userId, String deviceId, String accessToken
             , SettingGroupChat settingGroupChat, String groupChatToken) {
-        if (mSubscription != null && mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
 
-        }
+        destroyWebSocket();
 
         if (mSubscription == null || mSubscription.isUnsubscribed()) {
             mSubscription = new CompositeSubscription();
@@ -213,7 +211,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     showDummy("onClose", "logger close");
                 }
                 destroyWebSocket();
-                //TODO Why is this connecting again?
                 connect(userId, deviceId, accessToken, finalSettingGroupChat, groupChatToken);
             }
 
@@ -232,7 +229,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
                 , settingGroupChat.getPingInterval(), groupChatToken).subscribe(subscriber);
 
-
         mSubscription.add(subscription);
     }
 
@@ -250,8 +246,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     public void destroyWebSocket() {
-        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
+        if (mSubscription != null) {
+            mSubscription.clear();
         }
     }
 

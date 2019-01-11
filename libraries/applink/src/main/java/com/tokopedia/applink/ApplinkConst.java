@@ -7,6 +7,7 @@ package com.tokopedia.applink;
  */
 
 public interface ApplinkConst {
+    String APPLINK_CUSTOMER_SCHEME = "tokopedia";
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
@@ -23,12 +24,13 @@ public interface ApplinkConst {
     String RIDE_DETAIL = "tokopedia://ride/uber/{request_id}";
     String SHOP = "tokopedia://shop/{shop_id}";
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
-    String SHOP_TALK = "tokopedia://shop/{shop_id}Ω/talk";
+    String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
+    String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String CART = "tokopedia://cart";
@@ -52,6 +54,7 @@ public interface ApplinkConst {
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
+    String PROMO_DETAIL = "tokopedia://promo/{slug}";
     String DISCOVERY_CATEGORY = "tokopedia://category";
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
@@ -139,6 +142,7 @@ public interface ApplinkConst {
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
+    String SETTING_DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts/{type}";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
@@ -178,6 +182,9 @@ public interface ApplinkConst {
     String CREATE_PASSWORD = "tokopedia://createpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
+
+    String KYC = "tokopedia://kyc";
+    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

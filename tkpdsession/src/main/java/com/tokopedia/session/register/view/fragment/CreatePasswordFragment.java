@@ -28,6 +28,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -110,9 +111,9 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
         TrackingUtils.fragmentBasedAFEvent
-                (RegisterAnalytics.Screen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
+                (getActivity(), RegisterAnalytics.Screen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
     }
 
     @Override
@@ -332,14 +333,14 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     public void showErrorName(int resId) {
         vName.setError(getText(resId));
         vName.requestFocus();
-        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.FULLNAME);
+        UnifyTracking.eventRegisterError(getActivity(), AppEventTracking.EventLabel.FULLNAME);
     }
 
     @Override
     public void showErrorPassword(int resId) {
         vPassword.setError(getText(resId));
         vPassword.requestFocus();
-        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.PASSWORD);
+        UnifyTracking.eventRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
 
     }
 
@@ -347,7 +348,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     public void showErrorConfirmPassword(int resId) {
         vPasswordRetype.setError(getText(resId));
         vPasswordRetype.requestFocus();
-        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.PASSWORD_CONFIRMATION);
+        UnifyTracking.eventRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD_CONFIRMATION);
 
     }
 
@@ -355,14 +356,14 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     public void showErrorPhoneNumber(int resId) {
         vPhoneNumber.setError(getText(resId));
         vPhoneNumber.requestFocus();
-        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.HANDPHONE);
+        UnifyTracking.eventRegisterError(getActivity(), AppEventTracking.EventLabel.HANDPHONE);
     }
 
     @Override
     public void showErrorBday(int resId) {
         vBDay.setError(getText(resId));
         vBDay.requestFocus();
-        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.BIRTHDATE);
+        UnifyTracking.eventRegisterError(getActivity(), AppEventTracking.EventLabel.BIRTHDATE);
 
     }
 
@@ -370,7 +371,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     public void showErrorTOS() {
         vError.setVisibility(View.VISIBLE);
         vError.requestFocus();
-        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.TOS);
+        UnifyTracking.eventRegisterError(getActivity(), AppEventTracking.EventLabel.TOS);
     }
 
     @Override

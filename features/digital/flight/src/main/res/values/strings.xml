@@ -170,7 +170,7 @@
     <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
     <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
     <string name="flight_booking_passenger_first_name_empty_error">Nama depan harus diisi</string>
-    <string name="flight_bookingpassenger_title_error">Title Penumpang harus dipilih</string>
+    <string name="flight_bookingpassenger_title_error">Titel Penumpang harus dipilih</string>
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years">Umur penumpang dewasa harus lebih besar dari 12 tahun</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
@@ -358,39 +358,38 @@
     <string name="flight_search_discount_tag">HARGA KHUSUS</string>
     <string name="flight_search_filter_special_price">Harga Khusus</string>
     <string name="flight_label_show_detail_order">Lihat Order Detail</string>
-    <string name="activity_label_flight_cancellation">Pembatalan Pesanan</string>
+    <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
     <string name="flight_cancellation_subtitle_order_id" formatted="false">Order ID Tokopedia: %s</string>
     <string name="flight_cancellation_choose_to_cancel_hint">1. Pilih Penerbangan dan Penumpang</string>
     <string name="flight_cancellation_next_button">Selanjutnya</string>
     <string name="flight_cancellation_recommendation_to_contact_airlines_description">Tiket dengan jadwal penerbangan kurang dari 6 jam, hanya bisa dibatalkan melalui counter maskapai terkait.\n \nSilakan hubungi customer care maskapai disini.</string>
     <string name="flight_cancellation_recommendation_to_contact_airlines_description_mark">disini</string>
-    <string name="flight_cancellation_step_2_header_title">2. Input Alasan Pembatalan Tiket</string>
     <string name="flight_cancellation_step_3_header_title" formatted="false">%d. Detail Total Refund</string>
-    <string name="flight_cancellation_reason_label">Alasan Pembatalan Tiket</string>
-    <string name="flight_cancellation_support_docs_label">Bukti Identitas</string>
-    <string name="flight_cancellation_reason_hint_label">Isi alasan pembatalan</string>
+    <string name="flight_cancellation_reason_label">Alasan Pembatalan</string>
+    <string name="flight_cancellation_support_docs_label">Unggah Identitas Penumpang</string>
+    <string name="flight_cancellation_reason_hint_label">Pilih Alasan Pembatalan</string>
     <string name="flight_cancellation_attachment_description_label">(Dokumen penunjang dapat berupa surat, foto, atau dokumen yang menjadi alasan pembatalan pesanan). Ukuran Minimum  Lebar 300px dan Tinggi 100px.</string>
-    <string name="flight_cancellation_proof_reaseon_submit_button">Selanjutnya</string>
+    <string name="flight_cancellation_proof_reason_submit_button">Selanjutnya</string>
     <string name="flight_cancellation_attachment_required_error_message">Lampiran gambar belum diisi</string>
     <string name="flight_cancellation_attachment_more_than_max_error_message">Maksimal lampiran gambar %1$d</string>
     <string name="activity_label_flight_review_cancellation">Rincian Pembatalan Pesanan</string>
     <string name="flight_cancellation_refund_detail_toolbar_title">Pembatalan Pesanan</string>
-    <string name="flight_cancellation_review_description">Dengan menekan tombol di bawah, saya telah menyetujui Syarat dan Ketentuan Pembatalan Pesanan untuk tiket dengan nama di atas dan mengerti bahwa tiket yang telah diterbitkan oleh Tokopedia akan dibatalkan atas kehendak saya dan saya menyetujui bahwa pengajuan pembatalan pesanan tidak dapat dibatalkan.</string>
+    <string name="flight_cancellation_review_description"><![CDATA[Saya telah menyetujui <b>Syarat dan Ketentuan Pembatalan Pesanan</b> untuk tiket dengan nama di atas dan mengerti bahwa tiket yang telah diterbitkan oleh Tokopedia akan dibatalkan atas kehendak saya dan saya menyetujui bahwa pengajuan pembatalan pesanan tidak dapat dibatalkan.]]></string>
     <string name="flight_cancellation_review_button">Ajukan Pembatalan</string>
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
-    <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, seluruh dana pembayaran Anda akan <b>hangus</b> karena pihak maskapai tidak menyediakan fitur pengembalian dana.]]></string>
+    <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Dana dari tiket pesawat yang dibatalkan kemungkinan tidak dapat dikembalikan sesuai dengan ketentuan dari maskapai terkait.]]></string>
     <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
-    <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, dana pembayaran Anda <b>akan dikembalikan</b> sesuai dengan syarat dan ketentuan pihak maskapai penerbangan.]]></string>
+    <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan tiket pesawat, nominal dana yang dikembalikan akan disesuaikan dengan kebijakan maskapai.]]></string>
     <string name="flight_cancellation_should_choose_at_least_one_passenger_error">Harap pilih setidaknya satu penumpang untuk di batalkan.</string>
-    <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Pemesanan Telah Berhasil</string>
+    <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Pesanan Telah Diterima</string>
     <string name="flight_cancellation_review_dialog_non_refundable_success_description">Pembatalan pesanan Anda akan segera diproses.</string>
-    <string name="flight_cancellation_review_dialog_refundable_success_description">Pembatalan pesanan Anda akan segera diproses. Mohon tunggu konfirmasi dari pihak maskapai terkait untuk proses pengembalian dana pemesanan tiket pesawat Anda. Pengembalian dana Anda akan diproses dalam 7 hari kerja berikutnya.</string>
-    <string name="flight_label_additional_data">Data Penunjang</string>
+    <string name="flight_cancellation_review_dialog_refundable_success_description"><![CDATA[Pembatalan pesanan Anda akan segera diproses. Pengembalian dana akan membutuhkan waktu <b>7 hingga 30 hari kerja</b> sesuai dengan ketentuan yang berlaku.]]></string>
+    <string name="flight_label_additional_data">Data Pendukung</string>
     <string name="flight_cancellation_review_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_terms_and_condition_button_text">Selengkapnya</string>
     <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
-    <string name="flight_cancellation_terms_and_cancellation_text"><![CDATA[<p align=\'justify\'>Refund, pembatalan, penggantian jadwal, ketentuan boarding, bagasi yang diperbolehkan, pengembalian dana serta hal-hal lain yang berhubungan dengan penggunaan layanan transportasi pesawat merupakan kebijakan dan tanggung jawab dari maskapai dengan merujuk kepada Syarat dan Ketentuan yang ditetapkan oleh maskapai. Setelah kami menerima pembatalan tiket pesawat Anda dari mitra kami, jika metode pembayaran yang Anda pilih adalah metode kartu kredit maka pengembalian dana akan dilakukan ke limit kartu kredit Anda. Jika Anda menggunakan TokoCash untuk melakukan pembayaran tiket penerbangan Anda, dana tersebut akan dikembalikan ke saldo TokoCash. Jika Anda menggunakan metode pembayaran lain, dana akan dikembalikan ke saldo Tokopedia ataupun saldo TokoCash Anda berdasarkan ketersediaan Limit di akun TokoCash.</p>]]></string>
-    <string name="flight_cancellation_refund_description">Pengembalian dana dapat melalui TokoCash atau kartu kredit. Pelajari lebih lanjut.</string>
+    <string name="flight_cancellation_terms_and_cancellation_text"><![CDATA[<p align=\'justify\'>Refund, pembatalan, penggantian jadwal, ketentuan boarding, bagasi yang diperbolehkan, pengembalian dana serta hal-hal lain yang berhubungan dengan penggunaan layanan transportasi pesawat merupakan kebijakan dan tanggung jawab dari maskapai dengan merujuk kepada Syarat dan Ketentuan yang ditetapkan oleh maskapai.<br /><br />Setelah kami menerima pembatalan tiket pesawat Anda dari mitra kami, jika metode pembayaran yang Anda pilih adalah metode kartu kredit maka pengembalian dana akan dilakukan ke limit kartu kredit Anda. Jika Anda menggunakan OVO Points untuk melakukan pembayaran tiket penerbangan Anda, dana tersebut akan dikembalikan ke OVO Points. Jika Anda menggunakan metode pembayaran lain, dana akan dikembalikan ke Saldo Tokopedia.</p>]]></string>
+    <string name="flight_cancellation_refund_description">Pengembalian dana dapat melalui Saldo Tokopedia, OVO Points atau Kartu Kredit. Pelajari lebih lanjut.</string>
     <string name="flight_cancellation_min_dimension_error">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
     <string name="flight_cancellation_max_error">Ukuran gambar maksimal 15Mb</string>
     <string name="flight_cancellation_upload_attachment_title">Bagaimana Anda ingin mengatur gambar Anda ?</string>
@@ -402,7 +401,7 @@
         <item>Untuk pembayaran dengan kartu kredit</item>
     </string-array>
     <string-array name="flight_cancellation_refund_subtitle">
-        <item>pengembalian dana akan dikirim ke TokoCash Anda. Jika saldo TokoCash Anda telah melebihi nominal yang ditetapkan, sisa dana pengembalian akan dikirim ke Saldo Tokopedia.</item>
+        <item>pengembalian dana akan dikirim ke Saldo Tokopedia atau OVO Points Anda.</item>
         <item>pengembalian dana akan dikembalikan ke limit kartu kredit Anda dalam kurun waktu maksimum 14 hari kerja.</item>
     </string-array>
     <string name="flight_order_detail_cancellation_label">Detail Pembatalan</string>
@@ -412,7 +411,7 @@
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
     <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
-    <string name="flight_cancellation_estimate_refund_label">Estimate Refund</string>
+    <string name="flight_cancellation_estimate_refund_label">Estimasi Refund</string>
     <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
     <string name="flight_cancellation_ticket_status_in_progress" formatted="false">Terdapat %d proses pembatalan tiket.</string>
     <string name="flight_cancellation_ticket_status">Terdapat pembatalan pada tiket ini.</string>
@@ -431,6 +430,7 @@
     <string name="flight_insurance_additional_benefits_prefix" formatted="false">Termasuk %d Proteksi Lain</string>
     <string name="flight_insurance_learn_more_label"> Info Selengkapnya</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
+    <string name="flight_passenger_choose_salutation_title">Titel</string>
     <string name="flight_review_minus_discount_prefix">- %1$s</string>
     <string name="flight_passenger_passport_number_secondary_hint">Isi nomor passport</string>
     <string name="flight_passenger_passport_expiration_secondary_hint">Pilih tanggal</string>
@@ -452,7 +452,7 @@
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
     <string name="flight_detail_facility_label">Fasilitas</string>
     <string name="flight_detail_facility_separator">:</string>
-    <string name="flight_cancellation_support_docs_description">Harap unggah bukti identitas penumpang yang valid. Jika bukti identitas penumpang salah, pengembalian dana tidak akan diproses</string>
+    <string name="flight_cancellation_support_docs_description">Harap unggah KTP/SIM (untuk penerbangan domestik) atau Paspor (untuk penerbangan internasional).</string>
     <string name="flight_change_search_content_button">Ganti Pencarian</string>
     <string name="flight_cancellation_less_than_6_hours_confirmation_dialog">OK</string>
     <string name="flight_search_best_pairing_tag">Best Pairing</string>
@@ -467,4 +467,18 @@
     <string name="flight_search_choose_best_pairing_dialog_description"><![CDATA[Dengan memilih kombinasi Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
     <string name="flight_search_best_pairing_label">Lihat Penerbangan Best Pairing</string>
     <string name="flight_search_return_dialog_abort">Batal</string>
+    <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
+    <string name="flight_cancellation_upload_percentage_label">sedang diupload %s</string>
+    <string name="flight_cancellation_review_refund_to_email_detail">Estimasi refund akan dikirim ke e-mail Anda hingga 1 jam ke depan.</string>
+    <string name="flight_cancellation_review_no_refund_detail">Refund tidak tersedia pada penerbangan ini.</string>
+    <string name="flight_cancellation_data_penumpang_label">DATA PENUMPANG</string>
+    <string name="flight_cancellation_review_passenger_id_label">Identitas Penumpang</string>
+    <string name="flight_cancellation_asterisks">*</string>
+    <string name="flight_cancellation_estimate_note_cashback">Nilai estimasi refund yang Anda terima dapat berubah jika sebelumnya Anda menggunakan promo Cashback</string>
+    <string name="flight_cancellation_estimate_note_additional">Estimasi refund tidak termasuk biaya asuransi penerbangan, makanan, biaya bagasi, dan fasilitas lainnya.</string>
+    <string name="flight_cancellation_auto_check_dialog_title">Kebijakan Maskapai</string>
+    <string name="flight_cancellation_auto_check_dialog_desc">Berdasarkan kebijakan maskapai, terdapat penumpang yang harus kami batalkan secara otomatis. Silakan periksa ulang daftar penumpang Anda.</string>
+    <string name="flight_cancellation_auto_check_dialog_button">OK, Mengerti</string>
+    <string name="flight_cancellation_reason_view_image_label">Lihat</string>
+    <string name="flight_bottom_sheet_tag">Flight Sort</string>
 </resources>

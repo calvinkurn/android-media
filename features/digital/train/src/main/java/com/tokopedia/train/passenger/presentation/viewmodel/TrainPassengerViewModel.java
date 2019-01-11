@@ -8,6 +8,7 @@ import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerT
 
 public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBookingPassengerTypeFactory> {
 
+    private String idPassenger;
     private int salutationId;
     private int paxType;
     private String name;
@@ -15,13 +16,16 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
     private String birthdate;
     private String phone;
     private String headerTitle;
-    private int passengerId;
     private String salutationTitle;
+    private int travelId;
+    private int idLocal;
 
     public TrainPassengerViewModel() {
     }
 
+
     protected TrainPassengerViewModel(Parcel in) {
+        idPassenger = in.readString();
         salutationId = in.readInt();
         paxType = in.readInt();
         name = in.readString();
@@ -29,12 +33,14 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
         birthdate = in.readString();
         phone = in.readString();
         headerTitle = in.readString();
-        passengerId = in.readInt();
         salutationTitle = in.readString();
+        travelId = in.readInt();
+        idLocal = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(idPassenger);
         dest.writeInt(salutationId);
         dest.writeInt(paxType);
         dest.writeString(name);
@@ -42,8 +48,9 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
         dest.writeString(birthdate);
         dest.writeString(phone);
         dest.writeString(headerTitle);
-        dest.writeInt(passengerId);
         dest.writeString(salutationTitle);
+        dest.writeInt(travelId);
+        dest.writeInt(idLocal);
     }
 
     @Override
@@ -63,20 +70,20 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
         }
     };
 
+    public String getIdPassenger() {
+        return idPassenger;
+    }
+
+    public void setIdPassenger(String idPassenger) {
+        this.idPassenger = idPassenger;
+    }
+
     public String getSalutationTitle() {
         return salutationTitle;
     }
 
     public void setSalutationTitle(String salutationTitle) {
         this.salutationTitle = salutationTitle;
-    }
-
-    public int getPassengerId() {
-        return passengerId;
-    }
-
-    public void setPassengerId(int passengerId) {
-        this.passengerId = passengerId;
     }
 
     public String getHeaderTitle() {
@@ -135,6 +142,22 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
         this.phone = phone;
     }
 
+    public int getTravelId() {
+        return travelId;
+    }
+
+    public void setTravelId(int travelId) {
+        this.travelId = travelId;
+    }
+
+    public int getIdLocal() {
+        return idLocal;
+    }
+
+    public void setIdLocal(int idLocal) {
+        this.idLocal = idLocal;
+    }
+
     @Override
     public int type(TrainBookingPassengerTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -142,14 +165,14 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof TrainPassengerViewModel && ((TrainPassengerViewModel) obj).getPassengerId() == passengerId;
+        return obj instanceof TrainPassengerViewModel && ((TrainPassengerViewModel) obj).getIdLocal() == idLocal;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result *= prime * passengerId;
+        result *= prime * idLocal;
         return result;
     }
 }

@@ -11,9 +11,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_grid.view.*
 
 /**
@@ -84,7 +84,7 @@ class GridPostAdapter(private val contentPosition: Int,
 
         fun bindProduct(item: GridItemViewModel) {
             itemView.extraProduct.background = null
-            itemView.extraProduct.gone()
+            itemView.extraProduct.hide()
 
             itemView.text.setTextColor(MethodChecker.getColor(itemView.context, R.color.orange_red))
             itemView.text.text = item.price
@@ -100,7 +100,7 @@ class GridPostAdapter(private val contentPosition: Int,
             itemView.extraProduct.background = ColorDrawable(
                     MethodChecker.getColor(itemView.context, R.color.black_38)
             )
-            itemView.extraProduct.visible()
+            itemView.extraProduct.show()
             itemView.extraProduct.text = extra
 
             itemView.text.setTextColor(MethodChecker.getColor(itemView.context, R.color.black_54))

@@ -61,7 +61,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
             setBadge(element.badgeUrl)
 
             if (element.template.ctaLink) {
-                itemView.btnFollow.visible()
+                itemView.btnFollow.show()
                 setButtonUi(element.cta)
             } else {
                 itemView.btnFollow.invisible()
@@ -91,11 +91,11 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
         private fun setBadge(badgeUrl: String) {
             val layoutParams = itemView.tvName.layoutParams as ViewGroup.MarginLayoutParams
             if (!TextUtils.isEmpty(badgeUrl)) {
-                itemView.ivBadge.visible()
+                itemView.ivBadge.show()
                 itemView.ivBadge.loadImage(badgeUrl)
                 layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
             } else {
-                itemView.ivBadge.gone()
+                itemView.ivBadge.hide()
                 layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_0).toInt()
             }
         }

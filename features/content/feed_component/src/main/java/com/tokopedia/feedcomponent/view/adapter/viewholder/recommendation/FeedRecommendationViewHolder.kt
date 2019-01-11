@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import kotlinx.android.synthetic.main.item_feed_recommendation.view.*
 
 /**
@@ -26,7 +26,7 @@ class FeedRecommendationViewHolder(v: View,
 
     override fun bind(element: FeedRecommendationViewModel?) {
         if (element == null) {
-            itemView.gone()
+            itemView.hide()
             return
         }
 

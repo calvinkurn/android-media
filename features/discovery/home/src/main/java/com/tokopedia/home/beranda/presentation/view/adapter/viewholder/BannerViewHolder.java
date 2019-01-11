@@ -1,26 +1,18 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
-import com.tokopedia.loyalty.view.activity.PromoListActivity;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +22,7 @@ import java.util.List;
  */
 
 public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implements BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoAllClickListener {
+        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
@@ -39,6 +31,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     private final HomeCategoryListener listener;
     private final Context context;
     private List<BannerSlidesModel> slidesList;
+    private boolean hasSendBannerImpression = false;
 
     public BannerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -48,6 +41,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         bannerView.setOnPromoAllClickListener(this);
         bannerView.setOnPromoClickListener(this);
         bannerView.setOnPromoScrolledListener(this);
+        bannerView.setOnPromoLoadedListener(this);
     }
 
     @Override
@@ -80,45 +74,35 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoClick(int position) {
         Promotion promotion = getPromotion(position);
-        HomePageTracking.eventPromoClick(promotion);
+        HomePageTracking.eventPromoClick(context, promotion);
         listener.onPromoClick(position, slidesList.get(position),
                 String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
-        HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position), position);
+        HomeTrackingUtils.homeSlidingBannerClick(context, slidesList.get(position), position);
     }
 
     @Override
     public void onPromoScrolled(int position) {
         if (listener.isHomeFragment()) {
-            HomePageTracking.eventPromoImpression(getPromotion(position));
-            HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
+            HomeTrackingUtils.homeSlidingBannerImpression(context, slidesList.get(position), position);
             listener.onPromoScrolled(slidesList.get(position));
         }
     }
 
     @Override
     public void onPromoAllClick() {
-        HomePageTracking.eventClickViewAllPromo();
-        HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
+        listener.onPromoAllClick();
+    }
 
-        boolean remoteConfigEnable;
-        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
-        remoteConfigEnable = remoteConfig.getBoolean(
-                RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
-        );
-        if (remoteConfigEnable) {
-            context.startActivity(PromoListActivity.newInstance(
-                    context,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
-            ));
-        } else {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
-            intent.putExtra(BannerWebView.EXTRA_URL,
-                    TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
-            );
-            context.startActivity(intent);
-
+    @Override
+    public void onPromoLoaded() {
+        if (listener.isHomeFragment() && slidesList != null && slidesList.size() > 0 &&
+                !hasSendBannerImpression) {
+            List<Promotion> promotionList = new ArrayList<>();
+            for (int i = 0, sizei = slidesList.size(); i < sizei; i++) {
+                promotionList.add(getPromotion(i));
+            }
+            HomePageTracking.eventPromoImpression(context, promotionList);
+            hasSendBannerImpression = true;
         }
     }
 }

@@ -21,8 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
@@ -427,7 +427,7 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
 
     @Override
     public void setActivityResult() {
-        UnifyTracking.eventResolutionEditSolution();
+        UnifyTracking.eventResolutionEditSolution(getActivity());
         Intent intent = new Intent();
         getActivity().setResult(Activity.RESULT_OK, intent);
     }

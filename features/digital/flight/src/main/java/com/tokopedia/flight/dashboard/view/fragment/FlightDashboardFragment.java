@@ -52,8 +52,8 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.searchV2.presentation.activity.FlightSearchActivity;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.ArrayList;
@@ -362,8 +362,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderSingleTripView() {
-        oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
-        roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.setVisibility(View.GONE);
@@ -392,8 +390,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderRoundTripView() {
-        oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
-        roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
         returnDateTextInputView.setVisibility(View.VISIBLE);

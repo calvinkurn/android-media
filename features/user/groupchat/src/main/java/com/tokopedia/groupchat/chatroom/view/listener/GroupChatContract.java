@@ -55,6 +55,14 @@ public interface GroupChatContract {
         String generateAttributeApplink(String applink,
                                         String attributeBanner);
 
+        void startApplink(String applink);
+
+        void transitionToTabChat();
+
+        void transitionToTabVote();
+
+        void transitionToTabInfo();
+
         void vibratePhone();
 
         String getAttributionTracking(String attributePartnerLogo);

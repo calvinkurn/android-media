@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
@@ -28,7 +28,7 @@ class TopadsShopViewHolder(v: View,
 
     override fun bind(element: TopadsShopViewModel?) {
         if (element == null) {
-            itemView.gone()
+            itemView.hide()
             return
         }
 
@@ -58,9 +58,6 @@ class TopadsShopViewHolder(v: View,
 
     override fun onAddFavorite(position: Int, data: Data) {
         topadsShopListener.onAddFavorite(adapterPosition, position, data)
-    }
-
-    override fun onAddWishList(position: Int, data: Data) {
     }
 
     interface TopadsShopListener {

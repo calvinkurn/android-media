@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -109,6 +110,12 @@ public class SimpleHomeActivity extends TActivity
                 if (isFragmentCreated(WishListFragment.FRAGMENT_TAG)) {
                     Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is created !!!");
                     Fragment wishListFragment = WishListFragment.newInstance();
+                    if (getIntent().hasExtra(Constants.FROM_APP_SHORTCUTS)) {
+                        boolean isFromAppShortCut = getIntent().getBooleanExtra(WishListFragment.FROM_APP_SHORTCUTS, false);
+                        Bundle args = new Bundle();
+                        args.putBoolean(WishListFragment.FROM_APP_SHORTCUTS, isFromAppShortCut);
+                        wishListFragment.setArguments(args);
+                    }
                     moveToFragment(wishListFragment, true, WishListFragment.FRAGMENT_TAG);
                 } else {
                     Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is not created !!!");
@@ -150,19 +157,10 @@ public class SimpleHomeActivity extends TActivity
         invalidateOptionsMenu();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Bundle bundle = new Bundle();
-        super.onSaveInstanceState(bundle);
-        if (!TooLargeTool.isPotentialCrash(bundle)) {
-            outState.putAll(bundle);
-            simpleHome.saveDataBeforeRotate(outState);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     @Override

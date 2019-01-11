@@ -33,6 +33,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
@@ -59,6 +61,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
@@ -170,20 +174,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             @Override
             public void onClick(View v) {
                 scrollToBottom();
-            }
-        });
-        CloseableBottomSheetDialog channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
-
-                if (bottomSheet != null) {
-                    BottomSheetBehavior.from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
             }
         });
         login = view.findViewById(R.id.login);
@@ -310,7 +300,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         });
     }
 
-
     private void goToLogin() {
         startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
                 .getLoginIntent(getActivity()), REQUEST_LOGIN);
@@ -416,6 +405,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && sprintSaleViewModel.getSprintSaleType() != null
                 && !sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_FINISHED)) {
             trackViewSprintSaleComponent(sprintSaleViewModel);
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                    .getChannelInfoViewModel();
+            if (channelInfoViewModel != null) {
+                analytics.eventViewFlashSale(
+                        String.format("%s - %s", channelInfoViewModel.getChannelId(), sprintSaleViewModel.getCampaignName()));
+            }
             sprintSaleIconLayout.setVisibility(View.VISIBLE);
             setupSprintSaleIcon(sprintSaleViewModel);
         } else {
@@ -439,7 +434,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 pinnedMessageView.setOnClickListener(view -> {
                     if (channelInfoViewModel != null) {
                         analytics.eventClickAdminPinnedMessage(
-                                channelInfoViewModel.getChannelId());
+                                String.format("%s - %s", channelInfoViewModel.getChannelId(), pinnedMessage.getTitle()));
                     }
 
                     showPinnedMessageBottomSheet(pinnedMessage);
@@ -468,7 +463,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
         CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        View view = createContentView(pinnedMessage);
+        View view = createPinnedMessageView(pinnedMessage);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -488,7 +483,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         dialog.show();
     }
 
-    private View createContentView(final PinnedMessageViewModel pinnedMessage) {
+    private View createPinnedMessageView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
@@ -510,7 +505,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         view.findViewById(R.id.thumbnail).setVisibility(View.GONE);
         return view;
     }
-
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
@@ -590,8 +584,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && getActivity() instanceof GroupChatContract.View
                 && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
             analytics.eventClickQuickReply(
-                    ((GroupChatContract.View) getActivity()).
-                            getChannelInfoViewModel().getChannelId());
+                    String.format("%s - %s", ((GroupChatContract.View) getActivity()).
+                            getChannelInfoViewModel().getChannelId(), message));
         }
 
         String text = replyEditText.getText().toString();
@@ -758,7 +752,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
 
         if (messageItem instanceof ImageAnnouncementViewModel) {
-            analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel) messageItem);
+            analytics.eventViewBannerPushPromo(
+                    String.format("%s - %s"
+                            , ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelId()
+                            , ((ImageAnnouncementViewModel) messageItem).getRedirectUrl()));
         }
 
         if (!hideMessage) {
@@ -855,7 +852,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onImageAnnouncementClicked(String url) {
-        analytics.eventClickThumbnail(url);
+        analytics.eventClickThumbnail(String.format("%s - %s", ((GroupChatContract.View) getActivity()).
+                getChannelInfoViewModel().getChannelId(), url));
         if (!TextUtils.isEmpty(url)) {
             ((GroupChatModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
         }
@@ -864,7 +862,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onVoteComponentClicked(String type, String name) {
         if (getActivity() instanceof GroupChatActivity) {
-            ((GroupChatActivity) getActivity()).moveToVoteFragment();
+            ((GroupChatActivity) getActivity()).transitionToTabVote();
         }
         analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name);
     }
@@ -915,6 +913,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
                     , ((GroupChatContract.View) getActivity()).generateAttributeApplink
                             (productViewModel.getProductUrl(), GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                    .getChannelInfoViewModel();
+            if (channelInfoViewModel != null) {
+                analytics.eventClickFlashSale(
+                        String.format("%s - %s", channelInfoViewModel.getChannelId(),
+                                ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignName()));
+            }
         }
     }
 
@@ -952,6 +958,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     , ((GroupChatContract.View) getActivity()).generateAttributeApplink
                             (sprintSaleAnnouncementViewModel.getRedirectUrl(),
                                     GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                    .getChannelInfoViewModel();
+            if (channelInfoViewModel != null) {
+                analytics.eventClickFlashSale(
+                        String.format("%s - %s", channelInfoViewModel.getChannelId(),
+                                ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignName()));
+            }
         }
 
     }
@@ -984,6 +998,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         (sprintSaleViewModel.getRedirectUrl(),
                                 GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
 
+        ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                .getChannelInfoViewModel();
+        if (channelInfoViewModel != null) {
+            analytics.eventClickFlashSale(
+                    String.format("%s - %s", channelInfoViewModel.getChannelId(),
+                            ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignName()));
+        }
+
     }
 
     @Override
@@ -1009,7 +1031,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getTitle() != null) {
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
-            analytics.eventClickLoyaltyWidget(channelName);
+            analytics.eventClickLoyaltyWidget(((GroupChatActivity) getActivity()).getChannelInfoViewModel().getChannelId());
         }
     }
 
@@ -1029,6 +1051,5 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public List<Visitable> getList() {
         return adapter.getList();
     }
-
 
 }

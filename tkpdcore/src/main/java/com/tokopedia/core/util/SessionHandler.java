@@ -14,7 +14,8 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.common.dbManager.FeedDbManager;
@@ -82,6 +83,7 @@ public class SessionHandler {
     private static final String EMAIL = "EMAIL";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
+    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
     public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
 
     private Context context;
@@ -112,7 +114,7 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, user_id + "");
         editor.putBoolean(IS_LOGIN, isLogin);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
     }
 
     public static void clearUserData(Context context) {
@@ -162,6 +164,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
+        LocalCacheHandler.clearCache(context, KEY_PROFILE_BUYER);
         logoutInstagram(context);
         try {
             MethodChecker.removeAllCookies(context);
@@ -570,7 +573,7 @@ public class SessionHandler {
         editor.putString(SHOP_NAME, shopName);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         BranchSdkUtils.sendIdentityEvent(u_id);
@@ -596,8 +599,10 @@ public class SessionHandler {
     }
 
     public void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
-        TrackingUtils.eventMoEngageLogoutUser();
+        if(context != null) {
+            PasswordGenerator.clearTokenStorage(context);
+            TrackingUtils.eventMoEngageLogoutUser(context);
+        }
         clearUserData();
     }
 

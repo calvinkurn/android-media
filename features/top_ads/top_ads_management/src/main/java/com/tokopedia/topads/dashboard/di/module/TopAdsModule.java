@@ -26,7 +26,6 @@ import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
 import com.tokopedia.topads.dashboard.data.source.ShopInfoDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.ShopInfoCloud;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
-import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
@@ -143,11 +142,5 @@ public class TopAdsModule {
     @Provides
     public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }
-
-    @TopAdsScope
-    @Provides
-    public ShopApi provideShopApi(@ShopWsQualifier Retrofit retrofit){
-        return retrofit.create(ShopApi.class);
     }
 }

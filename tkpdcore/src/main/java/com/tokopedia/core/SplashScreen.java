@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import com.tokopedia.core2.R;
 
 
 /**
@@ -101,7 +102,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         handleBranchDefferedDeeplink();
     }
 
-    private void moveToHome() {
+    protected void moveToHome() {
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -212,39 +213,15 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             moveToHome();
         } else {
             try {
-                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID(this));
                 branch.initSession(new Branch.BranchReferralInitListener() {
                     @Override
                     public void onInitFinished(JSONObject referringParams, BranchError error) {
                         if (isFinishing()) {
                             return;
                         }
-
                         if (error == null) {
-                            try {
-                                BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
-
-                                String deeplink = referringParams.getString("$android_deeplink_path");
-                                if (deeplink == null) {
-                                    moveToHome();
-                                } else {
-                                    Uri uri;
-                                    if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
-                                        uri = Uri.parse(deeplink);
-                                    } else {
-                                        uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                                    }
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setData(uri);
-                                    startActivity(intent);
-                                    finish();
-
-                                }
-
-                            } catch (JSONException e) {
-                                moveToHome();
-
-                            }
+                            handlingInitBranchSession(referringParams);
                         } else {
                             moveToHome();
                         }
@@ -254,6 +231,29 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             } catch (Exception e) {
                 // Do nothing
             }
+        }
+    }
+
+    protected void handlingInitBranchSession(JSONObject referringParams){
+        try {
+            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
+            String deeplink = referringParams.getString("$android_deeplink_path");
+            if (deeplink == null) {
+                moveToHome();
+            } else {
+                Uri uri;
+                if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
+                    uri = Uri.parse(deeplink);
+                } else {
+                    uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                startActivity(intent);
+                finish();
+            }
+        } catch (JSONException e) {
+            moveToHome();
         }
     }
 
