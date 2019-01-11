@@ -57,6 +57,11 @@ public class ExploreParams {
         setFirstData();
     }
 
+    public void resetForFilterClick() {
+        isCanLoadMore = true;
+        this.cursor = "";
+    }
+
 
     public void setSort(SortViewModel sort) {
         this.sort = sort;

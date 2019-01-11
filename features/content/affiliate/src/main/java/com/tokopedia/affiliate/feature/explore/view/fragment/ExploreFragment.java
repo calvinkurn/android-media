@@ -299,6 +299,7 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
+        layoutFilter.setVisibility(View.GONE);
         exploreParams.setSearchParam(text);
         loadFirstData(false);
     }
@@ -467,10 +468,14 @@ public class ExploreFragment
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
-            exploreParams.setFilters(filters);
-            presenter.getFirstData(exploreParams, false);
+            getFilteredFirstData(filters);
         };
+    }
 
+    private void getFilteredFirstData(List<FilterViewModel> filters) {
+        exploreParams.setFilters(filters);
+        exploreParams.resetForFilterClick();
+        presenter.getFirstData(exploreParams, false);
     }
 
     @Override
@@ -624,10 +629,9 @@ public class ExploreFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DETAIL_FILTER) {
-                List<FilterViewModel> theData = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
-                populateFilter(theData);
-                exploreParams.setFilters(filterAdapter.getOnlySelectedFilter());
-                presenter.getFirstData(exploreParams, false);
+                List<FilterViewModel> currentFilter = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                populateFilter(currentFilter);
+                getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
             }
         }
     }
