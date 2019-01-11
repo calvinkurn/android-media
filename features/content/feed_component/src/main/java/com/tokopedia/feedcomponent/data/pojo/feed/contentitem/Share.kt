@@ -7,7 +7,7 @@ data class Share (
         @SerializedName("description")
         val description: String = "",
         @SerializedName("imageURL")
-        val imageURL: String = "",
+        val imageUrl: String = "",
         @SerializedName("text")
         val text: String = "",
         @SerializedName("title")

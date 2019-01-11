@@ -43,8 +43,5 @@ data class MediaItem(
 
         @SerializedName("position")
         @Expose
-        var position: MutableList<Float> = ArrayList(),
-
-        @SerializedName("tags")
-        val tags: MutableList<Tag> = ArrayList()
+        var position: MutableList<Float> = ArrayList()
 )

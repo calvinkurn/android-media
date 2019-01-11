@@ -36,5 +36,7 @@ data class Media(
         var mediaItems: List<MediaItem> = ArrayList(),
         @SerializedName("ctaLink")
         @Expose
-        var ctaLink: CtaLink = CtaLink()
+        var ctaLink: CtaLink = CtaLink(),
+        @SerializedName("tags")
+        val tags: List<Tag> = ArrayList()
 )

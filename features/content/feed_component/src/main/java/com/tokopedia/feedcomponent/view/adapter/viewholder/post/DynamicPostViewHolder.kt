@@ -230,8 +230,28 @@ class DynamicPostViewHolder(v: View,
             if (template.share) {
                 itemView.shareIcon.visible()
                 itemView.shareText.visible()
-                itemView.shareIcon.setOnClickListener { listener.onShareClick(adapterPosition) }
-                itemView.shareText.setOnClickListener { listener.onShareClick(adapterPosition) }
+                itemView.shareText.text = footer.share.text
+                itemView.shareIcon.setOnClickListener {
+                    listener.onShareClick(
+                            adapterPosition,
+                            id,
+                            footer.share.title,
+                            footer.share.description,
+                            footer.share.url,
+                            footer.share.imageUrl
+                    )
+                }
+                itemView.shareText.setOnClickListener {
+                    listener.onShareClick(
+                            adapterPosition,
+                            id,
+                            footer.share.title,
+                            footer.share.description,
+                            footer.share.url,
+                            footer.share.imageUrl
+                    )
+                }
+
             } else {
                 itemView.shareIcon.gone()
                 itemView.shareText.gone()
@@ -288,7 +308,7 @@ class DynamicPostViewHolder(v: View,
 
         fun onCommentClick(positionInFeed: Int,  id: Int)
 
-        fun onShareClick(positionInFeed: Int)
+        fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String)
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
     }

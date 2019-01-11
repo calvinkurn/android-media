@@ -1646,7 +1646,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareClick(int positionInFeed) {
+    public void onShareClick(int positionInFeed, int id, @NotNull String title,
+                             @NotNull String description, @NotNull String url,
+                             @NotNull String imageUrl) {
+        if (getActivity() != null) {
+            feedModuleRouter.shareFeed(
+                    getActivity(),
+                    String.valueOf(id),
+                    url,
+                    title,
+                    imageUrl,
+                    description
+            );
+        }
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
