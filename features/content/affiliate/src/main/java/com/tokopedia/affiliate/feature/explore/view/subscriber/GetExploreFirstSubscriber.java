@@ -64,7 +64,8 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
                             new ArrayList<>(),
                     exploreQuery.getPagination() != null ?
                             exploreQuery.getPagination().getNextCursor() :
-                            ""
+                            "",
+                    isSearch
             );
         }
     }

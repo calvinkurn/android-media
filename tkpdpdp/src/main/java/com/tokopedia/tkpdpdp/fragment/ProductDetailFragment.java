@@ -45,6 +45,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
@@ -325,6 +326,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton fabWishlist;
+    private TextViewCompat labelCod;
     private LinearLayout rootView;
     private boolean isAppBarCollapsed = false;
     private TextView tvTickerGTM;
@@ -363,6 +365,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
     private String lastStateOnClickBuyWhileRequestVariant;
     private RemoteConfig firebaseRemoteConfig;
+
+    private boolean isCodShown = false;
 
     @Inject
     UserSession userSession;
@@ -500,6 +504,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         varianCourierSimulationView
                 = view.findViewById(R.id.view_varian_courier_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
+        labelCod = view.findViewById(R.id.label_cod);
         rootView = (LinearLayout) view.findViewById(R.id.root_view);
         buttonAffiliate = view.findViewById(R.id.buttonAffiliate);
         productInfoShortView = view.findViewById(R.id.view_product_info_short);
@@ -527,6 +532,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             }
         });
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(new MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener() {
             @Override
             public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel, int position) {
@@ -643,6 +649,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
+        labelCod.setVisibility(View.GONE);
     }
 
     private void expandedAppBar() {
@@ -651,6 +658,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
             fabWishlist.show();
         }
+        labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -1216,7 +1224,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult, ProductViewData viewData) {
         presenter.processGetGTMTicker();
-
+        isCodShown = (!(successResult.getCampaign() != null && successResult.getCampaign().getActive())) && successResult.getInfo().isCod();
+        labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
         float weight = 0f;
         try {
             weight = getUnformattedWeight(successResult.getInfo().getProductWeight());
@@ -2084,6 +2093,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     initToolbarLight();
                     initStatusBarLight();
                     fabWishlist.hide();
+                    labelCod.setVisibility(View.GONE);
                     stateCollapsing = FROM_COLLAPSED;
                 } else if (intColor < SCROLL_ELEVATION + toolbar.getHeight() && isAdded() && stateCollapsing == FROM_COLLAPSED) {
                     initStatusBarDark();
@@ -2091,6 +2101,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
+                    labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
                     stateCollapsing = FROM_EXPANDED;
                 }
             }
@@ -2466,7 +2477,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
         enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
-        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
         String eventAction;
@@ -2589,6 +2600,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                                 String eventLabel) {
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartClickBayarOnAtcSuccess();
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(cartMap, eventLabel, eventAction);
+        checkoutAnalyticsAddToCart.flushEnhancedECommerceAddToCart();
     }
 
     @Override
@@ -2682,11 +2694,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onAddFavorite(int position, Data data) {
-
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
 
     }
 

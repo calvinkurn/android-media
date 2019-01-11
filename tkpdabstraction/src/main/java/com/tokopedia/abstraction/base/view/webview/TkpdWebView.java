@@ -38,6 +38,18 @@ public class TkpdWebView extends WebView {
         loadUrl(generateUri(url));
     }
 
+    public void loadAuthUrlWithFlags(String url, String userId, String accessToken) {
+        if (TextUtils.isEmpty(userId)) {
+            loadUrl(generateUri(url));
+        } else {
+            loadUrl(generateUri(url), AuthUtil.generateHeadersWithBearer(
+                    Uri.parse(url).getPath(),
+                    getQuery(Uri.parse(url).getQuery()),
+                    "GET",
+                    AuthUtil.KEY.KEY_WSV4, userId, accessToken));
+        }
+    }
+
     /**
      * use loadAuthUrl(String url, String userId, String accessToken) instead.
      */
