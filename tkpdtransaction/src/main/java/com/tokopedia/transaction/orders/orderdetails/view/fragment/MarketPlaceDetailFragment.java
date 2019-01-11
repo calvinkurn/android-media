@@ -186,9 +186,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         statusLihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String applink = "/myorder/buyer/detail/history/";
+                String applink = "http://m.tokopedia.com/myorder/buyer/detail/history";
                 applink = applink + getArguments().get(KEY_ORDER_ID);
-                RouteManager.route(getContext(), applink);
+
+                try {
+                    startActivity(((UnifiedOrderListRouter) getActivity()
+                            .getApplication()).getWebviewActivityWithIntent(getContext(),
+                            URLEncoder.encode(applink, ORDER_LIST_URL_ENCODING)));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
