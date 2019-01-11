@@ -53,8 +53,11 @@ import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.*
+import com.tokopedia.topchat.revamp.view.TopChatRoomDialog
+import com.tokopedia.topchat.revamp.view.TopChatViewStateImpl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+
 
 /**
  * @author : Steven 29/11/18
