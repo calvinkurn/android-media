@@ -1,4 +1,3 @@
-include ':kol_component', ':kol_component', ':instantapp'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
