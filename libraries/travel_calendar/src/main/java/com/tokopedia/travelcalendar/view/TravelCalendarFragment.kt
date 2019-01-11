@@ -116,7 +116,7 @@ class TravelCalendarFragment : BaseDaggerFragment(), TravelCalendarContract.View
         var year = year
         yearTabList.clear()
         mapDate.clear()
-        val loopCalendar = DateCalendarUtil.getCalendar()
+        val loopCalendar = DateCalendarUtil.calendar
         loopCalendar.set(Calendar.DATE, 1)
         yearTabList.add(year)
 
@@ -137,7 +137,7 @@ class TravelCalendarFragment : BaseDaggerFragment(), TravelCalendarContract.View
     }
 
     private fun renderInitalSelectedDateCalendar() {
-        val calendarNow = DateCalendarUtil.getCalendar()
+        val calendarNow = DateCalendarUtil.calendar
         calendarNow.time = selectedDate
 
         var selected: Boolean
@@ -232,9 +232,9 @@ class TravelCalendarFragment : BaseDaggerFragment(), TravelCalendarContract.View
     override fun renderAllHolidayEvent(holidayYearList: List<HolidayResult>) {
         //date selected from outside
         val cellDate = CellDate(selectedDate, true)
-        val calendarMaxDate = DateCalendarUtil.getCalendar()
+        val calendarMaxDate = DateCalendarUtil.calendar
         calendarMaxDate.time = maxDate
-        val calendarMinDate = DateCalendarUtil.getCalendar()
+        val calendarMinDate = DateCalendarUtil.calendar
         calendarMinDate.time = minDate
 
         if (holidayYearList.isEmpty()) {

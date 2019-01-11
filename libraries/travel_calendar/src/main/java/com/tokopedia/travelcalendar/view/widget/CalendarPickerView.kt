@@ -39,11 +39,11 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun renderCalendar(month: Int, year: Int, maxDateCal: Calendar, minDateCal: Calendar) {
-        val calendarDateUser = DateCalendarUtil.getCalendar()
+        val calendarDateUser = DateCalendarUtil.calendar
         calendarDateUser.time = cellDateUser.date
         val cells = mutableListOf<CellDate>()
 
-        val mCal = DateCalendarUtil.getCalendar()
+        val mCal = DateCalendarUtil.calendar
         mCal.set(Calendar.DAY_OF_MONTH, 1)
         mCal.set(Calendar.MONTH, month)
         mCal.set(Calendar.YEAR, year)

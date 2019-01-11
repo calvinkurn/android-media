@@ -61,7 +61,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
         internal var container = view.date_layout
 
         fun bind(cellDate: CellDate) {
-            val dateCal = DateCalendarUtil.getCalendar()
+            val dateCal = DateCalendarUtil.calendar
             dateCal.time = cellDate.date
             val dayValue = dateCal.get(Calendar.DAY_OF_MONTH)
             val dateCalMonth = dateCal.get(Calendar.MONTH)
@@ -88,7 +88,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
                     if (dayAtDate.equals(SUNDAY, ignoreCase = true)) {
                         cellNumber.setTextColor(getColor(context, R.color.red_a700))
                     }
-                    val dateNumber = DateCalendarUtil.getCalendar()
+                    val dateNumber = DateCalendarUtil.calendar
                     for (i in holidayResultList.indices) {
                         dateNumber.time = holidayResultList[i].attributes.dateHoliday
                         if (dayValue == dateNumber.get(Calendar.DATE)) {
@@ -100,7 +100,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
 
             container.setOnClickListener {
                 val dateSelected = cellDate.date
-                val calendarMonth = DateCalendarUtil.getCalendar()
+                val calendarMonth = DateCalendarUtil.calendar
                 calendarMonth.time = dateSelected
                 if (calendarMonth.get(Calendar.MONTH) == displayMonthInt && isDateInRange(dateCal.time)) {
                     actionListener.onClickDate(cellDate)

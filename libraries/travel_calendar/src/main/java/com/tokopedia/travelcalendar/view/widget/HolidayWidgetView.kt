@@ -32,7 +32,7 @@ class HolidayWidgetView @JvmOverloads constructor(context: Context, attrs: Attri
     fun setHolidayData(holidayYearList: List<HolidayResult>, month: Int, year: Int) {
         currentHolidayList.clear()
         for (i in holidayYearList.indices) {
-            val calendarHoliday = DateCalendarUtil.getCalendar()
+            val calendarHoliday = DateCalendarUtil.calendar
             calendarHoliday.time = holidayYearList[i].attributes.dateHoliday
 
             if (calendarHoliday.get(Calendar.MONTH) == month && calendarHoliday.get(Calendar.YEAR) == year) {
