@@ -30,3 +30,16 @@ const val AF_ID = "af_id"
 const val USER_ID = "userId"
 const val ID = "id"
 const val USER_DATA = "USER_DATA"
+
+const val GCM_ID = "gcm_id"
+const val ANDROID = "tkpd/mitra/android"
+const val MOBILE = "mobile"
+const val X_REQUESTED_WITH = "X-Requested-With"
+const val EXIT_DELAY_MILLIS = 2000
+
+const val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
+const val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
+const val AF_KEY = "SdSopxGtYr9yK8QEjFVHXL"
+const val MOENGAGE_ID = "54ZVOACYSSJX7DB30T0L8MSN"
+
+const val PERMISSION_REQUEST_LOCATION = 9912
