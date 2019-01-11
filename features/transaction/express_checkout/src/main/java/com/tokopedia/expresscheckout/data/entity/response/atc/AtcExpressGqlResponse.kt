@@ -7,8 +7,6 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class AtcExpressGqlResponse(
-
         @SerializedName("atcExpress")
         val atcExpress: AtcResponse
-
 )

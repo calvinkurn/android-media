@@ -2,7 +2,6 @@ package com.tokopedia.tkpdpdp.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,7 +24,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,7 +60,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest;
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -786,13 +784,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onBuyClick(String source) {
         try {
             if (getActivity() != null) {
-                AtcRequest atcRequest = new AtcRequest();
-                atcRequest.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
-                atcRequest.setProductId(Integer.parseInt(productPass.getProductId()));
-                atcRequest.setNotes("");
-                atcRequest.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
+                AtcRequestParam atcRequestParam = new AtcRequestParam();
+                atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+                atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
+                atcRequestParam.setNotes("");
+                atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
                 Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                        .getExpressCheckoutIntent(getActivity(), atcRequest);
+                        .getExpressCheckoutIntent(getActivity(), atcRequestParam);
                 startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
             }
         } catch (NumberFormatException e) {

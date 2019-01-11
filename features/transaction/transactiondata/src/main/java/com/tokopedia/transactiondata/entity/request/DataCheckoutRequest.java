@@ -18,6 +18,9 @@ public class DataCheckoutRequest {
     @Expose
     public List<ShopProductCheckoutRequest> shopProducts = new ArrayList<>();
 
+    public DataCheckoutRequest() {
+    }
+
     private DataCheckoutRequest(Builder builder) {
         addressId = builder.addressId;
         shopProducts = builder.shopProducts;

@@ -19,6 +19,9 @@ public class ShippingInfoCheckoutRequest {
     @Expose
     public String ratesId;
 
+    public ShippingInfoCheckoutRequest() {
+    }
+
     private ShippingInfoCheckoutRequest(Builder builder) {
         shippingId = builder.shippingId;
         spId = builder.spId;

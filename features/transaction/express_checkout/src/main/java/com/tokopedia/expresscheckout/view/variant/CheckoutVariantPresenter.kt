@@ -1,25 +1,30 @@
 package com.tokopedia.expresscheckout.view.variant
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.data.entity.response.atc.AtcData
+import com.tokopedia.expresscheckout.data.entity.request.Cart
+import com.tokopedia.expresscheckout.data.entity.request.CheckoutParam
+import com.tokopedia.expresscheckout.data.entity.request.CheckoutRequestParam
+import com.tokopedia.expresscheckout.data.entity.request.Profile
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcExpressGqlResponse
-import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
+import com.tokopedia.expresscheckout.data.entity.response.checkout.CheckoutExpressGqlResponse
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.expresscheckout.view.variant.subscriber.AtcExpressSubscriber
+import com.tokopedia.expresscheckout.view.variant.subscriber.CheckoutExpressSubscriber
 import com.tokopedia.expresscheckout.view.variant.subscriber.GetRatesSubscriber
+import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
+import com.tokopedia.transactiondata.entity.request.*
 import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -53,29 +58,29 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         view?.showData(viewModelMapper.convertToViewModels(atcResponseModel, productData))
     }
 
-    override fun loadExpressCheckoutData(atcRequest: AtcRequest) {
+    override fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam) {
 //        var json = FileUtils().readRawTextFile(view.getActivityContext(), R.raw.response_ok_triple_variant)
 //        var response: ExpressCheckoutResponse = Gson().fromJson(json, ExpressCheckoutResponse::class.java)
 //        val dataMapper: DataMapper = ViewModelMapper()
 //        view.showData(dataMapper.convertToViewModels(response.data))
 
-        getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
-
         view.showLoading()
 
-        val variables = HashMap<String, Any?>()
-        val mapParam = HashMap<String, Any>()
-        mapParam.put("shop_id", atcRequest.shopId)
-        mapParam.put("notes", atcRequest.notes)
-        mapParam.put("product_id", atcRequest.productId)
-        mapParam.put("quantity", atcRequest.quantity)
-        variables.put("params", mapParam)
+        val variables = getAtcParams(atcRequestParam)
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
                 R.raw.mutation_atc_express), AtcExpressGqlResponse::class.java, variables)
         getExpressCheckoutFormUseCase.clearRequest()
         getExpressCheckoutFormUseCase.addRequest(graphqlRequest)
         getExpressCheckoutFormUseCase.execute(RequestParams.create(), AtcExpressSubscriber(view, this))
+    }
+
+    private fun getAtcParams(atcRequestParam: AtcRequestParam): HashMap<String, Any?> {
+        val variables = HashMap<String, Any?>()
+        val jsonTreeAtcRequest = Gson().toJsonTree(atcRequestParam)
+        val jsonObjectAtcRequest = jsonTreeAtcRequest.asJsonObject
+        variables.put("params", jsonObjectAtcRequest)
+        return variables
     }
 
     override fun loadShippingRates(atcResponseModel: AtcResponseModel, itemPrice: Int, quantity: Int) {
@@ -102,15 +107,83 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         val serviceId = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.shipmentModel?.serviceId
 
         view.showLoading()
+        getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
         getCourierRecommendationUseCase.execute(
                 query, shippingParam, 0, shopShipmentModels,
                 GetRatesSubscriber(view, this, serviceId ?: 0)
         )
     }
 
-    override fun checkout() {
-        // Todo : show progress loading
-        // Todo : hit gql checkout
+    override fun checkout(fragmentViewModel: FragmentViewModel) {
+        view.showLoadingDialog()
+
+        val variables = getCheckoutParams(fragmentViewModel)
+
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
+                R.raw.mutation_checkout_express), CheckoutExpressGqlResponse::class.java, variables)
+        checkoutExpressUseCase.clearRequest()
+        checkoutExpressUseCase.addRequest(graphqlRequest)
+        checkoutExpressUseCase.execute(RequestParams.create(), CheckoutExpressSubscriber(view, this))
+
+    }
+
+    private fun getCheckoutParams(fragmentViewModel: FragmentViewModel): HashMap<String, Any?> {
+        val dropshipDataCheckoutRequest = DropshipDataCheckoutRequest()
+        dropshipDataCheckoutRequest.name = ""
+        dropshipDataCheckoutRequest.telpNo = ""
+
+        val productDataCheckoutRequest = ProductDataCheckoutRequest()
+        productDataCheckoutRequest.productId = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productId ?: 0
+        productDataCheckoutRequest.productQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity.toString()
+        productDataCheckoutRequest.productNotes = fragmentViewModel.getNoteViewModel()?.note
+        productDataCheckoutRequest.isPurchaseProtection = false
+
+        val shippingInfoCheckoutRequest = ShippingInfoCheckoutRequest()
+        shippingInfoCheckoutRequest.ratesId = 0.toString()
+        shippingInfoCheckoutRequest.shippingId = fragmentViewModel.getInsuranceViewModel()?.shippingId ?: 0
+        shippingInfoCheckoutRequest.spId = fragmentViewModel.getInsuranceViewModel()?.spId ?: 0
+
+        val shopProductCheckoutRequest = ShopProductCheckoutRequest()
+        shopProductCheckoutRequest.isDropship = 0
+        shopProductCheckoutRequest.finsurance = if (fragmentViewModel.getInsuranceViewModel()?.isChecked == true) 1 else 0
+        shopProductCheckoutRequest.isPreorder = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productIsPreorder ?: 0
+        shopProductCheckoutRequest.shopId = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId ?: 0
+        shopProductCheckoutRequest.dropshipData = dropshipDataCheckoutRequest
+        shopProductCheckoutRequest.productData = arrayListOf(productDataCheckoutRequest)
+        shopProductCheckoutRequest.shippingInfo = shippingInfoCheckoutRequest
+
+        val dataCheckoutRequest = DataCheckoutRequest()
+        dataCheckoutRequest.addressId = fragmentViewModel.getProfileViewModel()?.addressId ?: 0
+        dataCheckoutRequest.shopProducts = arrayListOf(shopProductCheckoutRequest)
+
+        val cart = Cart()
+        cart.setDefaultProfile = 0
+        cart.promoCode = ""
+        cart.isDonation = 0
+        cart.data = arrayListOf(dataCheckoutRequest)
+
+        val checkoutParam = CheckoutParam()
+        //        checkoutParam.accountName =
+        //        checkoutParam.accountNumber =
+        //        checkoutParam.bankId =
+
+        val profile = Profile()
+        profile.addressId = fragmentViewModel.getProfileViewModel()?.addressId
+        profile.description = ""
+        profile.gatewayCode = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
+        profile.status = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
+        profile.profileId = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
+        profile.checkoutParam = checkoutParam
+
+        val checkoutRequestParam = CheckoutRequestParam()
+        checkoutRequestParam.carts = cart
+        checkoutRequestParam.profile = profile
+
+        val variables = HashMap<String, Any?>()
+        val jsonTreeCheckoutRequest = Gson().toJsonTree(checkoutRequestParam)
+        val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
+        variables.put("params", jsonObjectCheckoutRequest)
+        return variables
     }
 
 }

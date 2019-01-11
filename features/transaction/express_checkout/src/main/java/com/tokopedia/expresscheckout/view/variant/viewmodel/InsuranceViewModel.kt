@@ -14,11 +14,15 @@ data class InsuranceViewModel(
         var insurancePrice: Int,
         var insuranceType: Int,
         var insuranceUsedDefault: Int,
+        var shippingId: Int,
+        var spId: Int,
         var isChecked: Boolean
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
             parcel?.readString() ?: "",
+            parcel?.readInt() ?: 0,
+            parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
@@ -34,6 +38,8 @@ data class InsuranceViewModel(
         parcel.writeInt(insurancePrice)
         parcel.writeInt(insuranceType)
         parcel.writeInt(insuranceUsedDefault)
+        parcel.writeInt(shippingId)
+        parcel.writeInt(spId)
         parcel.writeByte(if (isChecked) 1 else 0)
     }
 

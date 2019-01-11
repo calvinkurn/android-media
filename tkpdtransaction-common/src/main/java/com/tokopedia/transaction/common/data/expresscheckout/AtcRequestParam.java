@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Irfan Khoirul on 03/01/19.
  */
 
-public class AtcRequest implements Parcelable {
+public class AtcRequestParam implements Parcelable {
     @SerializedName("shop_id")
     public int shopId;
 
@@ -22,10 +22,10 @@ public class AtcRequest implements Parcelable {
     @SerializedName("product_id")
     public int productId;
 
-    public AtcRequest() {
+    public AtcRequestParam() {
     }
 
-    protected AtcRequest(Parcel in) {
+    protected AtcRequestParam(Parcel in) {
         shopId = in.readInt();
         quantity = in.readInt();
         notes = in.readString();
@@ -45,15 +45,15 @@ public class AtcRequest implements Parcelable {
         return 0;
     }
 
-    public static final Creator<AtcRequest> CREATOR = new Creator<AtcRequest>() {
+    public static final Creator<AtcRequestParam> CREATOR = new Creator<AtcRequestParam>() {
         @Override
-        public AtcRequest createFromParcel(Parcel in) {
-            return new AtcRequest(in);
+        public AtcRequestParam createFromParcel(Parcel in) {
+            return new AtcRequestParam(in);
         }
 
         @Override
-        public AtcRequest[] newArray(int size) {
-            return new AtcRequest[size];
+        public AtcRequestParam[] newArray(int size) {
+            return new AtcRequestParam[size];
         }
     };
 

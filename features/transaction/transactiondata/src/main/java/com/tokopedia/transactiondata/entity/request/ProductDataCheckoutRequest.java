@@ -15,19 +15,25 @@ public class ProductDataCheckoutRequest {
     @SerializedName("is_ppp")
     @Expose
     public boolean isPurchaseProtection;
+    @SerializedName("product_quantity")
+    public String productQuantity;
+    @SerializedName("product_notes")
+    public String productNotes;
 
     private String productName;
     private String productPrice;
     private String productBrand;
     private String productCategory;
     private String productVariant;
-    private String productQuantity;
     private String productShopId;
     private String productShopType;
     private String productShopName;
     private String productCategoryId;
     private String productListName;
     private String productAttribution;
+
+    public ProductDataCheckoutRequest() {
+    }
 
     private ProductDataCheckoutRequest(Builder builder) {
         productId = builder.productId;

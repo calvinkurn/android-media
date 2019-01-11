@@ -5,8 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -18,6 +19,10 @@ interface CheckoutVariantContract {
         fun showLoading()
 
         fun hideLoading()
+
+        fun showLoadingDialog()
+
+        fun hideLoadingDialog()
 
         fun showData(arrayList: ArrayList<Visitable<*>>)
 
@@ -42,11 +47,11 @@ interface CheckoutVariantContract {
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun loadExpressCheckoutData(atcRequest: AtcRequest)
+        fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam)
 
         fun loadShippingRates(atcResponseModel: AtcResponseModel, itemPrice: Int, quantity: Int)
 
-        fun checkout()
+        fun checkout(fragmentViewModel: FragmentViewModel)
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 

@@ -27,9 +27,9 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
         view?.finishWithError(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
     }
 
-    override fun onNext(objects: GraphqlResponse) {
+    override fun onNext(response: GraphqlResponse) {
         view?.hideLoading()
-        val expressCheckoutResponse = objects.getData<AtcExpressGqlResponse>(AtcExpressGqlResponse::class.java)
+        val expressCheckoutResponse = response.getData<AtcExpressGqlResponse>(AtcExpressGqlResponse::class.java)
         if (expressCheckoutResponse.atcExpress.status.equals("OK")) {
             if (expressCheckoutResponse.atcExpress.data.errors.isNotEmpty()) {
                 when (expressCheckoutResponse.atcExpress.data.errorCode) {

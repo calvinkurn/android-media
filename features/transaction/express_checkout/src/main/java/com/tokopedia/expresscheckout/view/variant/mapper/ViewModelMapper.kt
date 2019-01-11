@@ -224,6 +224,7 @@ class ViewModelMapper : DataMapper {
     override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
         val userProfileModel: ProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
         var profileViewModel = ProfileViewModel()
+        profileViewModel.addressId = userProfileModel?.addressModel?.addressId ?: 0
         profileViewModel.addressTitle = userProfileModel?.addressModel?.addressName ?: ""
         profileViewModel.addressDetail = userProfileModel?.addressModel?.addressStreet ?: ""
         profileViewModel.paymentOptionImageUrl = userProfileModel?.paymentModel?.image ?: ""
@@ -361,6 +362,8 @@ class ViewModelMapper : DataMapper {
         insuranceViewModel.insurancePrice = productData.insurance.insurancePrice
         insuranceViewModel.insuranceType = productData.insurance.insuranceType
         insuranceViewModel.insuranceUsedDefault = productData.insurance.insuranceUsedDefault
+        insuranceViewModel.shippingId = productData.shipperId
+        insuranceViewModel.spId = productData.shipperProductId
         insuranceViewModel.isChecked =
                 productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES ||
                 productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST

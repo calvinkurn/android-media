@@ -41,6 +41,8 @@ public class ShopProductCheckoutRequest {
         return shopId;
     }
 
+    public ShopProductCheckoutRequest() {
+    }
 
     private ShopProductCheckoutRequest(Builder builder) {
         shopId = builder.shopId;

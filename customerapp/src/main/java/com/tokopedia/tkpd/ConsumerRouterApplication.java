@@ -199,7 +199,6 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
@@ -268,9 +267,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifcenter.NotifCenterRouter;
-import com.tokopedia.nps.NpsRouter;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
@@ -302,8 +298,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
@@ -390,7 +384,6 @@ import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
-import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -403,7 +396,7 @@ import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest;
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
@@ -1060,8 +1053,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getExpressCheckoutIntent(Activity activity, AtcRequest atcRequest) {
-        return CheckoutVariantActivity.Companion.createIntent(activity, atcRequest);
+    public Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam) {
+        return CheckoutVariantActivity.Companion.createIntent(activity, atcRequestParam);
     }
 
     @Override

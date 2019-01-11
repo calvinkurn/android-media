@@ -1,7 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
@@ -21,9 +20,10 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 
 /**
@@ -34,21 +34,21 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         CheckoutVariantContract.View, CheckoutVariantActionListener {
 
     val contextView: Context get() = activity!!
-    lateinit var list: List<Visitable<*>>
-    lateinit var presenter: CheckoutVariantPresenter
-    lateinit var adapter: CheckoutVariantAdapter
-    lateinit var recyclerView: RecyclerView
-    lateinit var errorBottomSheets: ErrorBottomsheets
-    lateinit var fragmentListener: CheckoutVariantFragmentListener
-    lateinit var fragmentViewModel: FragmentViewModel
+    private lateinit var presenter: CheckoutVariantPresenter
+    private lateinit var adapter: CheckoutVariantAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var errorBottomSheets: ErrorBottomsheets
+    private lateinit var fragmentListener: CheckoutVariantFragmentListener
+    private lateinit var fragmentViewModel: FragmentViewModel
+    private lateinit var tkpdProgressDialog: TkpdProgressDialog
     var isDataLoaded = false
 
     companion object {
         val ARGUMENT_ATC_REQUEST = "ARGUMENT_ATC_REQUEST"
 
-        fun createInstance(atcRequest: AtcRequest): CheckoutVariantFragment {
+        fun createInstance(atcRequestParam: AtcRequestParam): CheckoutVariantFragment {
             val bundle = Bundle()
-            bundle.putParcelable(ARGUMENT_ATC_REQUEST, atcRequest)
+            bundle.putParcelable(ARGUMENT_ATC_REQUEST, atcRequestParam)
             val fragment = CheckoutVariantFragment()
             fragment.arguments = bundle
 
@@ -65,6 +65,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
+        tkpdProgressDialog = TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS)
+
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(CheckoutVariantItemDecorator())
         (recyclerView.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
@@ -87,6 +89,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun hideLoading() {
         super.hideLoading()
+    }
+
+    override fun showLoadingDialog() {
+        tkpdProgressDialog.showDialog()
+    }
+
+    override fun hideLoadingDialog() {
+        tkpdProgressDialog.dismiss()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -122,7 +132,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onClickEditProfile() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onClickEditDuration() {
@@ -148,9 +158,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
-        var productViewModel = adapter.getProductDataViewModel()
-        var summaryViewModel = adapter.getSummaryViewModel()
-        var quantityViewModel = adapter.getQuantityViewModel()
+        var productViewModel = fragmentViewModel.getProductViewModel()
+        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
+        var quantityViewModel = fragmentViewModel.getQuantityViewModel()
 
         if (productViewModel != null && productViewModel.productChildrenList.isNotEmpty()) {
             var selectedKey = 0
@@ -182,18 +192,18 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 for (productChild: ProductChild in productViewModel.productChildrenList) {
                     productChild.isSelected = productChild.productId == newSelectedProductChild.productId
                 }
-                onNeedToNotifySingleItem(adapter.getIndex(productViewModel))
+                onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
 
                 if (summaryViewModel != null) {
                     summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice) ?: 0
-                    onNeedToNotifySingleItem(adapter.getIndex(summaryViewModel))
+                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
                 }
 
-                var variantTypeViewModels = adapter.getVariantTypeViewModel()
+                var variantTypeViewModels = fragmentViewModel.getVariantTypeViewModel()
                 for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
                     if (variantTypeViewModel.variantId == selectedOptionViewModel.variantId) {
                         variantTypeViewModel.variantSelectedValue = selectedOptionViewModel.variantName
-                        onNeedToNotifySingleItem(adapter.getIndex(variantTypeViewModel))
+                        onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
                         break
                     }
                 }
@@ -232,7 +242,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                 optionViewModel.currentState == optionViewModel.STATE_NOT_SELECTED
                             }
                         }
-                        onNeedToNotifySingleItem(adapter.getIndex(variantTypeViewModel))
+                        onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
                     }
                 }
             }
@@ -261,8 +271,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
-        var productViewModel = adapter.getProductDataViewModel()
-        var summaryViewModel = adapter.getSummaryViewModel()
+        var productViewModel = fragmentViewModel.getProductViewModel()
+        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
 
         if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
             for (productChild: ProductChild in productViewModel.productChildrenList) {
@@ -274,11 +284,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         if (summaryViewModel != null) {
-            onNeedToNotifySingleItem(adapter.getIndex(summaryViewModel))
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
             onSummaryChanged(summaryViewModel)
         }
 
-        onNeedToNotifySingleItem(adapter.getIndex(quantityViewModel))
+        onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
@@ -290,7 +300,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
-        var summaryViewModel = adapter.getSummaryViewModel()
+        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
         if (summaryViewModel != null) {
             if (insuranceViewModel.isChecked) {
                 summaryViewModel.insurancePrice = insuranceViewModel.insurancePrice
@@ -300,27 +310,27 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 summaryViewModel.isUseInsurance = false
             }
 
-            onNeedToNotifySingleItem(adapter.getIndex(summaryViewModel))
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
         }
-        onNeedToNotifySingleItem(adapter.getIndex(insuranceViewModel))
+        onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
     }
 
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
-        var quantityViewModel = adapter.getQuantityViewModel()
+        var quantityViewModel = fragmentViewModel.getQuantityViewModel()
         if (quantityViewModel != null) {
             quantityViewModel.stockWording = stockWording
-            onNeedToNotifySingleItem(adapter.getIndex(quantityViewModel))
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
         }
     }
 
     override fun onBindVariantGetProductViewModel(): ProductViewModel? {
-        return adapter.getProductDataViewModel()
+        return fragmentViewModel.getProductViewModel()
     }
 
     override fun onBindVariantUpdateProductViewModel() {
-        val productViewModel = adapter.getProductDataViewModel()
+        val productViewModel = fragmentViewModel.getProductViewModel()
         if (productViewModel != null) {
-            onNeedToNotifySingleItem(adapter.getIndex(productViewModel))
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
         }
     }
 
@@ -334,7 +344,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun loadData(page: Int) {
         if (!isDataLoaded) {
-            presenter.loadExpressCheckoutData(arguments?.get(ARGUMENT_ATC_REQUEST) as AtcRequest)
+            presenter.loadExpressCheckoutData(arguments?.get(ARGUMENT_ATC_REQUEST) as AtcRequestParam)
         }
     }
 
@@ -363,25 +373,29 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomSheets.show(fragmentManager, title)
     }
 
-    override fun showData(arrayList: ArrayList<Visitable<*>>) {
+    override fun showData(viewModels: ArrayList<Visitable<*>>) {
         hideLoading()
+        fragmentViewModel.viewModels = viewModels
         adapter.clearAllElements()
-        adapter.addDataViewModel(arrayList)
+        adapter.addDataViewModel(viewModels)
         adapter.notifyDataSetChanged()
 
-        onSummaryChanged(adapter.getSummaryViewModel())
+        onSummaryChanged(fragmentViewModel.getSummaryViewModel())
+
+        rl_bottom_action_container.visibility = View.VISIBLE
+        bt_buy.setOnClickListener { presenter.checkout(fragmentViewModel) }
     }
 
     override fun setShippingError() {
-        var profileViewModel = adapter.getProfileViewModel()
+        var profileViewModel = fragmentViewModel.getProfileViewModel()
         if (profileViewModel != null) {
             profileViewModel.isDurationError = true
-            onNeedToNotifySingleItem(adapter.getIndex(profileViewModel))
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
     }
 
     override fun updateShippingData(productData: ProductData) {
-        var profileViewModel = adapter.getProfileViewModel()
+        var profileViewModel = fragmentViewModel.getProfileViewModel()
         if (profileViewModel != null) {
             if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 showBottomsheetError("Tandai Lokasi Pengiriman", productData.error.errorMessage, "Tandai Lokasi")
@@ -393,7 +407,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             } else {
                 profileViewModel.isDurationError = false
                 profileViewModel.shippingCourier = productData.shipperName
-                onNeedToNotifySingleItem(adapter.getIndex(profileViewModel))
+                onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
             }
         }
     }
