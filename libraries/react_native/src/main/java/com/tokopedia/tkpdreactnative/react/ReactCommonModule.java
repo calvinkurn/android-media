@@ -70,6 +70,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
                 }
             }
         });
+    }
 
     @ReactMethod
     public void getAppVersionCode(Promise promise) {
