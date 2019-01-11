@@ -96,7 +96,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     feed.activity,
                     feed.tracking.type,
                     media.type,
-                    media.tags.firstOrNull()?.linkType ?: "",
+                    media.mediaItems.firstOrNull()?.tags?.firstOrNull()?.linkType ?: "",
                     media.appLink,
                     feed.id,
                     feed.content.cardbanner.body.media.size,
@@ -232,7 +232,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     private fun mapPostTracking(feed: Feed): TrackingPostModel {
         val media = feed.content.cardpost.body.media.firstOrNull()
         val mediaType = media?.type ?: ""
-        val tagsType = media?.tags?.firstOrNull()?.linkType ?: ""
+        val tagsType = media?.mediaItems?.firstOrNull()?.tags?.firstOrNull()?.linkType ?: ""
 
         return TrackingPostModel(
                 feed.type,
@@ -249,7 +249,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapPostImage(media: Media): ImagePostViewModel {
         return ImagePostViewModel(
-                media.thumbnail
+                media.thumbnail,
+                media.appLink
         )
     }
 
@@ -282,7 +283,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return PollContentViewModel(
                 media.id,
                 media.text,
-                media.totalVoter,
                 media.isVoted,
                 options
         )
