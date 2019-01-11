@@ -242,6 +242,9 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 ChatListViewModel temp = (ChatListViewModel) list.get(i);
                 currentId = String.valueOf(temp.getId());
                 if (currentId.equals(messageId)) {
+                    if(lastReply.equals(temp.getMessage())){
+                        break;
+                    }
                     if (showNotif) {
                         int unread = temp.getUnreadCounter();
                         unread++;

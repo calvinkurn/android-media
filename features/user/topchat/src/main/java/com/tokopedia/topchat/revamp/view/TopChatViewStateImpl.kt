@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.revamp.view
 
+import android.os.Parcelable
 import android.support.annotation.NonNull
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -11,15 +12,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
@@ -214,6 +213,32 @@ class TopChatViewStateImpl(
 
     }
 
+    override fun getLastItem(): Parcelable?{
+        if(getAdapter().getList().isNotEmpty()){
+            for (i in 0 until getAdapter().getList().size){
+                var item = getAdapter().getList()[i]
+                if(item is BaseChatViewModel) {
+                    if(item is SendableViewModel){
+                        if((item as SendableViewModel).isDummy){
+                            break
+                        }else{
+                            return transform(item as BaseChatViewModel)
+                        }
+                    } else {
+                        return transform(item as BaseChatViewModel)
+                    }
+                } else {
+                    break
+                }
+            }
+        }
+        return null
+    }
+
+    private fun transform(item: BaseChatViewModel): Parcelable? {
+        return ReplyParcelableModel(item.messageId, item.message, item.replyTime)
+    }
+
     private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener) {
         val myAlertDialog = AlertDialog.Builder(view.context)
         myAlertDialog.setTitle(R.string.delete_chat_question)
@@ -254,16 +279,15 @@ class TopChatViewStateImpl(
             if (isFirstTime) {
                 isFirstTime = false
                 notifier.visibility = View.GONE
-                return
+            } else {
+                title.setText(R.string.connected_websocket);
+                action.visibility = View.GONE
+                Observable.timer(1500, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            notifier.visibility = View.GONE
+                        }
             }
-            title.setText(R.string.connected_websocket);
-            action.visibility = View.GONE
-            Observable.timer(1500, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        notifier.visibility = View.GONE
-                    }
-
         }
     }
 

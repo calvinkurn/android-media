@@ -75,9 +75,9 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun connectWebSocket(messageId: String) {
-        networkMode = WebsocketEvent.Mode.MODE_API
+//        networkMode = WebsocketEvent.Mode.MODE_API
         thisMessageId = messageId
-        return
+//        return
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +

@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.revamp.view
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -42,6 +43,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
+import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -258,6 +260,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         super.onReceiveMessageEvent(visitable)
+        getViewState().scrollDownWhenInBottom()
     }
 
     companion object {
@@ -544,7 +547,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             topChatRoomDialog.createAbortUploadImage(
                     this, alertDialog,
                     View.OnClickListener {
-                        activity?.onBackPressed()
+                        finishActivity()
                     }
             ).show()
         }
@@ -616,7 +619,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (presenter.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
-            activity?.finish()
+            finishActivity()
         }
+    }
+
+    fun finishActivity(){
+        activity?.let {
+            var intent = Intent()
+            var bundle = Bundle()
+            bundle.putParcelable(PARCEL, getViewState().getLastItem())
+            intent.putExtras(bundle)
+            it.setResult(RESULT_OK, intent)
+            it.finish()
+        }
+
     }
 }

@@ -15,11 +15,13 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -100,10 +102,17 @@ open class BaseChatViewStateImpl(
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
 
-        onlineDesc.text = ""
 
-        if (chatroomViewModel.headerModel.isOnline)
+
+
+        val string = ChatTimeConverter.getRelativeDate(view.context, chatroomViewModel.headerModel.lastTimeOnline)
+        onlineDesc.text = string
+        onlineDesc.visibility = View.VISIBLE
+
+        if (chatroomViewModel.headerModel.isOnline) {
             onlineStatus.setImageResource(R.drawable.status_indicator_online)
+            onlineDesc.text = view.context.getString(R.string.online)
+        }
         else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
 
@@ -191,7 +200,7 @@ open class BaseChatViewStateImpl(
     }
 
     private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
-        return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
+        return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() < 2
     }
 
 
