@@ -48,6 +48,7 @@ ext {
     tkpdTalkVersion = '2.22'
     tkpdLoginPhoneVersion = '2.22'
     tkpdLoginRegisterVersion = '2.22'
+    tkpdReferralVersion = '1.00'
     tkpdSessionCommonVersion = '2.22'
     tkpdTokocashVersion = '2.22'
     tkpdTokopointVersion = '2.22'
@@ -100,6 +101,7 @@ ext {
             productManageList       : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
             productDraftDatabase    : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             profile                 : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
+            referral                : "com.tokopedia.referral:referral:${tkpdReferralVersion}",
             reputation              : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon        : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             ride                    : "com.tokopedia.ride:ride:${tkpdRideVersion}",
@@ -181,6 +183,8 @@ ext {
             productDraftDatabase    : ":features:merchant:product_draft_database",
             productManageItem       : ":features:merchant:product_manage_item",
             productManageList       : ":features:merchant:product_manage_list",
+
+            referral                : ":features:im:referral",
             reputation              : ":features:merchant:reputation",
             reputationCommon        : ":features:merchant:reputation_common",
             shopCommon              : ":features:merchant:shop_common",

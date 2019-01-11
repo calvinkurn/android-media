@@ -288,6 +288,8 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
+import com.tokopedia.referral.interfaces.ReferralOtpRouter;
+import com.tokopedia.referral.interfaces.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -409,6 +411,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -506,7 +509,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoginPhoneNumberRouter,
         TopAdsDashboardRouter,
         NpsRouter,
-        DigitalRouter {
+        DigitalRouter,
+        ReferralRouter,
+        ReferralOtpRouter {
 
     private static final String EXTRA = "extra";
 
@@ -3453,4 +3458,56 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             goToCreateMerchantRedirect(context);
         }
     }
+
+    @Override
+    public void eventReferralAndShare(Context context, String action, String label){
+        UnifyTracking.eventReferralAndShare(context, action, label);
+    }
+
+    @Override
+    public void setBranchReferralCode(String referralCode){
+        BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
+    }
+
+    @Override
+    public void sendMoEngageReferralScreenOpen(Context context, String screenName){
+        TrackingUtils.sendMoEngageReferralScreenOpen(context, screenName);
+    }
+
+    @Override
+    public void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap){
+        new DefaultShare(activity, createShareDataFromHashMap(keyValueMap)).show();
+    }
+
+    @Override
+    public void executeShareSocmedHandler(Activity activity, HashMap<String, String> keyValueMap, String packageName){
+        ShareSocmedHandler.ShareSpecific(createShareDataFromHashMap(keyValueMap), activity, packageName,
+                "text/plain", null, null);
+    }
+
+    @Override
+    public void sendAnalyticsToGTM(Context context, String type, String channel){
+        if (type.equals(ShareData.REFERRAL_TYPE)) {
+            eventReferralAndShare(context,
+                    com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(context.getApplicationContext(), channel);
+        } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
+            UnifyTracking.eventAppShareWhenReferralOff(context.getApplicationContext(), com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
+        } else {
+            UnifyTracking.eventShare(context.getApplicationContext(), channel);
+        }
+    }
+
+    private ShareData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
+                .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
+                .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
+                .setTextContent(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.SHARING_CONTENT))
+                .setUri(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URI))
+                .setShareUrl(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URL))
+                .build();
+        return shareData;
+    }
+
 }

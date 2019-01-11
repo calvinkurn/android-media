@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="green_btn">#239229</color>
+    <color name="grey_hint_full">#ffe0e0e0</color>
+</resources>

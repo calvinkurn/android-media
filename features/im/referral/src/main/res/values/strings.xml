@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Referral</string>
+    <string name="referral">Referral</string>
+    <string name="dapatkan_cashback_dalam">Dapatkan Cashback dalam 3 Langkah:</string>
+    <string name="bagi_kode_referral">Bagi kode referral-mu</string>
+    <string name="referral_help_tell"><![CDATA[Minta teman untuk mendaftar & bertransaksi]]></string>
+    <string name="referral_screen_name">Referral Home</string>
+    <string name="referral_friend_welcome_screen_name">Friend View After Install</string>
+    <string name="drawer_title_referral_appshare">Dapatkan Cashback</string>
+    <string name="drawer_title_appshare">Share ke Teman</string>
+    <string name="apa_itu_tokocash">Apa itu Cashback?</string>
+    <string name="acquisition_referral">Perolehan Referral</string>
+    <string name="what_is_referral_tokocash">Cashback dari program Referral akan masuk ke Cashback Anda. \n Cashback adalah uang elektronik yang hanya bisa Anda gunakan untuk <b> bertransaksi di Tokopedia</b>. Cashback tidak dapat diuangkan.</string>
+    <string name="referral_tnc"><![CDATA[<ol> <li>Toppers akan mendapatkan bonus Cashback Rp20.000 setelah Teman berhasil melakukan transaksi pertama via Aplikasi Tokopedia dengan menggunakan kode referral.</li> <li>Untuk mendapatkan bonus Cashback, transaksi Teman harus berhasil, tidak boleh dibatalkan atau dikembalikan.</li> <li>Anda akan menerima bonus Cashback dalam waktu maksimum 2x24 jam , terhitung sejak transaksi pertama yang dilakukan teman Anda berhasil.</li> <li>Apabila Anda berpartisipasi sebagai Toppers, bonus Cashback akan diberikan untuk setiap referral yang berhasil.Artinya, bonus tidak langsung bertambah sesuai dengan jumlah</li> <li> Teman yang membuat akun di Tokopedia, karena bonus baru akan diberikan apabila Teman berhasil melakukan transaksi.</li> <li>Perlu kami informasikan bahwa nama yang Anda gunakan untuk membuat akun Tokopedia dapat ditambahkan ke dalam kode referral Anda.</li> <li>Dengan berpartisipasi, Anda setuju untuk: Mengirim kode referral hanya pada orang-orang yang Anda kenal; dan Tidak terlibat dalam kegiatan apapun yang dapat dianggap sebagai penipuan, pelanggaran privasi, atau spamming.</li> </ol>]]></string>
+    <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
+    <string name="copied">Tersalin</string>
+    <string name="fiends_invited_lable">teman diajak</string>
+    <string name="referral_welcome_header">Hi memberi kamu Promo Referral.</string>
+    <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
+    <string name="referral_share_screen_name">Share Channel</string>
+    <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
+    <string name="referral_help_receive">Dapatkan Cashback</string>
+    <string name="app_share_btn_label">Ajak Teman</string>
+    <string name="menu_copy">Salin</string>
+    <string name="cara_kerja">Cara Kerja</string>
+    <string name="ketentuan">Ketentuan</string>
+    <string name="bagikan_ke">Bagikan ke</string>
+    <string name="referral_count_label">0 teman diajak</string>
+    <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
+    <string name="no_coupon_to_copy_text">Gagal menyalin kode voucher</string>
+    <string name="title_app_referral_howitworks">Info lebih lanjut</string>
+    <string name="app_share_explore_btn_label">Dapatkan Cashback-mu</string>
+    <string name="referral_welcome_desc" formatted="false"><![CDATA[Gak perlu masukin kode, kamu pasti dapat <b>cashback 50% </b>hingga <b>Rp30.000</b> dalam dua langkah mudah:]]></string>
+    <string name="cashback_enter_tokocash"><![CDATA[<font color=\'#8a000000\'>Cashback akan masuk ke Cashback.</font> <br /><font color=\'#399c3f\'>Apa itu Cashback?</font>]]></string>
+    <string name="referral_title_desc">Ajak teman belanja di Tokopedia dan dapatkan hingga Rp1.000.000 </string>
+    <string name="app_share_default_msg"><![CDATA[Ada bonus cashback hingga Rp30.000 khusus buat kamu! Yuk mulai beli & bayar ini itu di Aplikasi Tokopedia, gunakan kode %s.]]></string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="app_share_referral_label_desc"><![CDATA[Teman Anda juga mendapat cashback hingga Rp100.000. Bagikan kode referral ini:]]></string>
+    <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
+</resources>
