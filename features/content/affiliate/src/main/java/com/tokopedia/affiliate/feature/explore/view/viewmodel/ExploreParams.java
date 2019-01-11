@@ -32,6 +32,11 @@ public class ExploreParams {
         resetFilterSort();
     }
 
+    public void setPullToRefreshData() {
+        isCanLoadMore = true;
+        cursor = "";
+    }
+
     public void setSearchParam(String keyword) {
         this.keyword = keyword;
         setFirstData();

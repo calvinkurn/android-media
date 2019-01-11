@@ -52,6 +52,9 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -92,7 +95,7 @@ public class ExploreFragment
     private String firstCursor = "";
     private List<Visitable> tempFirstData = new ArrayList<>();
     private SortFilterModel tempLocalSortFilterData = new SortFilterModel();
-
+    private RemoteConfig remoteConfig;
 
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
@@ -149,6 +152,7 @@ public class ExploreFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         initView();
         initListener();
         exploreParams.setLoading(true);
@@ -265,7 +269,7 @@ public class ExploreFragment
 
     @Override
     public void onRefresh() {
-        exploreParams.setFirstData();
+        exploreParams.setPullToRefreshData();
         loadFirstData(true);
     }
 
@@ -443,15 +447,22 @@ public class ExploreFragment
     }
 
     private void populateFilter(List<FilterViewModel> filterList) {
-        layoutFilter.setVisibility(View.VISIBLE);
-        rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener(), R.layout.item_explore_filter);
-        rvFilter.setAdapter(filterAdapter);
-        btnFilterMore.setOnClickListener(v->{
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
-            startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
-        });
+        if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
+            layoutFilter.setVisibility(View.VISIBLE);
+            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            if (filterAdapter == null) {
+                filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener(), R.layout.item_explore_filter);
+            } else {
+                filterAdapter.clearAllData();
+                filterAdapter.addItem(filterList);
+            }
+            rvFilter.setAdapter(filterAdapter);
+            btnFilterMore.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
+                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
+            });
+        }
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
