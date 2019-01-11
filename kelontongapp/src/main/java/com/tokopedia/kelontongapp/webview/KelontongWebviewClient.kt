@@ -41,17 +41,12 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
         return handleUri(view, uri)
     }
 
-    var message = ""
-
     private fun handleUri(view: WebView, uri: Uri): Boolean {
-        message += "AppsFlyer: " + uri.host + "\n SCHEME: " + uri.scheme
         return if (uri.scheme.startsWith(APPSFLYER_URL_SCHEME)) {
             handleAppsFlyer(uri)
-            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
             false
         } else {
             view.loadUrl(uri.toString())
-            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
             true
         }
     }
@@ -152,8 +147,6 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-            message += "\neventName: " + eventName
 
             AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
         }
