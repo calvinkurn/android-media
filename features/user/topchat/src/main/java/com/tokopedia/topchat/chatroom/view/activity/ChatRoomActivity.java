@@ -20,6 +20,7 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.constant.TkpdAppLink;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
@@ -314,6 +315,33 @@ public class ChatRoomActivity extends BasePresenterActivity
         Intent intent = getAskSellerIntent(context, toShopId, shopName, source,
                 avatar);
         Bundle bundle = intent.getExtras();
+        bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
+        bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+
+    @DeepLink(TkpdAppLink.ASKSELLER)
+    public static Intent getAskSellerIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, ChatRoomActivity.class);
+//        intent.putExtra(PARAM_SHOP_ID, bundle.getString("custom_subject"));
+        intent.putExtra(InboxMessageConstant.PARAM_SENDER_NAME, bundle.getString("shopName"));
+        intent.putExtra(PARAM_SENDER_ROLE, ROLE_SELLER);
+        intent.putExtra(InboxMessageConstant.PARAM_SENDER_ID, bundle.getString("shopId"));
+        bundle.putString(PARAM_SOURCE, TkpdInboxRouter.TX_ASK_SELLER);
+        bundle.putString(InboxMessageConstant.PARAM_SENDER_TAG, ROLE_SELLER);
+        intent.putExtra(InboxMessageConstant.PARAM_SENDER_IMAGE, bundle.getString("shopLogo"));
+        intent.putExtra(PARAM_CUSTOM_SUBJECT, "INVOICE:");
+        intent.putExtra(PARAM_CUSTOM_MESSAGE, bundle.getString("invoiceUrl"));
+        return intent;
+    }
+
+    public static Intent getAskSellerIntent(Context context, String toShopId,
+                                            String customSubject, String customMessage) {
+        Intent intent = new Intent(context, ChatRoomActivity.class);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(InboxMessageConstant.PARAM_SENDER_ID, toShopId);
         bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
         bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
         intent.putExtras(bundle);

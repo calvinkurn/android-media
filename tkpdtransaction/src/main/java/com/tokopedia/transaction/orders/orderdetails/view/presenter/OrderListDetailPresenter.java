@@ -48,6 +48,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     OrderListDetailContract.ActionInterface view;
+    String orderCategory;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -60,6 +61,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (getView().getAppContext() == null)
             return;
 
+        this.orderCategory = orderCategory;
         getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
@@ -184,6 +186,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 //                details.detail().set(3, detail);
                 getView().setDetail(details.detail().get(i));
             }
+            if (details.getShopInfo() != null) {
+                getView().setShopInfo(details.getShopInfo());
+            }
             if (details.getItems() != null && details.getItems().size() > 0) {
                 getView().setItems(details.getItems());
             }
@@ -208,6 +213,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPaymentData(details.paymentData());
 //        getView().setContactUs(details.contactUs());
 
+        if (!(orderCategory.equalsIgnoreCase("belanja") || orderCategory.equalsIgnoreCase("marketplace"))) {
             if (details.actionButtons().size() == 2) {
                 ActionButton leftActionButton = details.actionButtons().get(0);
                 ActionButton rightActionButton = details.actionButtons().get(1);
@@ -227,8 +233,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             } else {
                 getView().setActionButtonsVisibility(View.GONE, View.GONE);
             }
-
-
-            getView().setMainViewVisible(View.VISIBLE);
+        } else {
+            getView().setActionButtons(details.actionButtons());
+        }
+        getView().setMainViewVisible(View.VISIBLE);
         }
     }

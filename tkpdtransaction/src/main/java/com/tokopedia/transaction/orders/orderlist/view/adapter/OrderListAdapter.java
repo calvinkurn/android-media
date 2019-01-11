@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
@@ -52,6 +53,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     OnMenuItemListener menuListener;
     private boolean loading = false;
+    OrderListAnalytics  orderListAnalytics;
 
 
     public OrderListAdapter(Context context, OnMenuItemListener listener) {
@@ -63,6 +65,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        orderListAnalytics = new OrderListAnalytics(parent.getContext().getApplicationContext());
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list, parent, false);
@@ -374,8 +377,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            if (appLink != null && !appLink.equals(""))
+            if (appLink != null && !appLink.equals("")) {
+                orderListAnalytics.sendProductClickEvent(currentHolder.status.getText().toString());
                 RouteManager.route(context, appLink);
+            }
         }
 
         public void bindData(Order order, int position) {

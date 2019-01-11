@@ -15,6 +15,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
@@ -74,6 +75,10 @@ public interface OrderListDetailContract {
         void showProgressBar();
 
         void hideProgressBar();
+
+        void setActionButtons(List<ActionButton> actionButtons);
+
+        void setShopInfo(ShopInfo shopInfo);
 
     }
 

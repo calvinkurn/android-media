@@ -1,9 +1,11 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -35,7 +37,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -51,9 +55,11 @@ import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ProductItemAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -95,6 +101,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     LinearLayout infoValue;
     LinearLayout totalPrice;
     TextView helpLabel;
+    LinearLayout actionBtnLayout;
     TextView primaryActionBtn;
     TextView secondaryActionBtn;
     RecyclerView itemsRecyclerView;
@@ -103,8 +110,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
     CardView driverLayout, dropShipperLayout;
+    TextView statusLihat;
     FrameLayout progressBarLayout;
     private ClipData myClip;
+    @Inject
+    OrderListAnalytics orderListAnalytics;
+    private ShopInfo shopInfo;
 
 
     @Override
@@ -136,6 +147,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
+        statusLihat = view.findViewById(R.id.lihat_status);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
         detailContent = view.findViewById(R.id.detail_content);
@@ -145,13 +157,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
         helpLabel = view.findViewById(R.id.help_label);
+        actionBtnLayout = view.findViewById(R.id.actionBtnLayout);
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         itemsRecyclerView = view.findViewById(R.id.rv_items);
         productInformationTitle = view.findViewById(R.id.product_info_label);
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        myClipboard = (ClipboardManager)getContext().getSystemService(CLIPBOARD_SERVICE);
+        myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -169,6 +182,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         statusValue.setText(status.statusText());
         if (!status.textColor().equals(""))
             statusValue.setTextColor(Color.parseColor(status.textColor()));
+        statusLihat.setVisibility(View.VISIBLE);
+        statusLihat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String applink = "/myorder/buyer/detail/history/";
+                applink = applink + getArguments().get(KEY_ORDER_ID);
+                RouteManager.route(getContext(), applink);
+            }
+        });
     }
 
     @Override
@@ -201,6 +223,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
+            orderListAnalytics.sendViewInvoiceClickEvent();
             try {
                 startActivity(((UnifiedOrderListRouter) getActivity()
                         .getApplication()).getWebviewActivityWithIntent(getContext(),
@@ -363,6 +386,126 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         mainView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void setActionButtons(List<ActionButton> actionButtons) {
+        actionBtnLayout.removeAllViews();
+        actionBtnLayout.setOrientation(LinearLayout.VERTICAL);
+        for (ActionButton actionButton : actionButtons) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+            TextView textView = new TextView(getContext());
+            textView.setText(actionButton.getLabel());
+            textView.setPadding(16, 20, 16, 20);
+            textView.setTypeface(Typeface.DEFAULT_BOLD);
+            textView.setGravity(Gravity.CENTER);
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+            if (!actionButton.getActionColor().getBackground().equals("")) {
+                shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+            }
+            if (!actionButton.getActionColor().getBorder().equals("")) {
+                shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+            }
+            textView.setBackground(shape);
+            textView.setLayoutParams(params);
+            if (!actionButton.getActionColor().getTextColor().equals("")) {
+                textView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+            }
+            if (!TextUtils.isEmpty(actionButton.getUri())) {
+                textView.setOnClickListener(clickActionButton(actionButton));
+            }
+            actionBtnLayout.addView(textView);
+        }
+    }
+
+    @Override
+    public void setShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+    }
+
+
+    private View.OnClickListener clickActionButton(ActionButton actionButton) {
+        if (!TextUtils.isEmpty(actionButton.getKey())) {
+            String orderStatusEvent = "";
+            switch (actionButton.getKey()) {
+                case "ask_seller":
+                    orderStatusEvent = "click ask seller";
+                    break;
+                case "request_cancel":
+                    orderStatusEvent = "click request cancel";
+                    break;
+                case "receive_confirmation":
+                    orderStatusEvent = "";
+                    break;
+                case "track":
+                    orderStatusEvent = "click track";
+                    break;
+                case "complaint":
+                    orderStatusEvent = "click complain";
+                    break;
+                case "finish_order":
+                    orderStatusEvent = "click finished";
+                    break;
+                case "view_complaint":
+                    orderStatusEvent = "click view complain";
+                    break;
+                case "cancel_peluang":
+                    orderStatusEvent = "click cancel search";
+                    break;
+                default:
+                    break;
+            }
+            orderListAnalytics.sendActionButtonClickEvent(orderStatusEvent);
+        }
+        return view -> {
+            if (actionButton.getActionButtonPopUp() != null && !TextUtils.isEmpty(actionButton.getActionButtonPopUp().getTitle())) {
+                final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+                dialog.setTitle(actionButton.getActionButtonPopUp().getTitle());
+                dialog.setDesc(actionButton.getActionButtonPopUp().getBody());
+                if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
+                    dialog.setBtnOk(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
+                    dialog.setOnOkClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
+                                RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                            } else {
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                    dialog.setBtnCancel(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel());
+                    dialog.setOnCancelClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
+                                RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
+                            } else {
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                }
+                dialog.show();
+            } else if (!TextUtils.isEmpty(actionButton.getUri())) {
+                if (actionButton.getUri().contains("askseller")) {
+                    if (shopInfo != null) {
+                        String shopId = String.valueOf(this.shopInfo.getShopId());
+                        String shopName = this.shopInfo.getShopName();
+                        String shopLogo = this.shopInfo.getShopLogo();
+                        String shopUrl = this.shopInfo.getShopUrl();
+                        String applink = actionButton.getUri();
+                        applink = applink.concat("&shopId=" + shopId + "&shopName=" + shopName + "&shopLogo=" + shopLogo + "&shopUrl=" + shopUrl);
+                        RouteManager.route(getContext(), applink);
+                    }
+                } else {
+                    RouteManager.route(getContext(), actionButton.getUri());
+                }
+            }
+        };
+    }
+
     void openDialCaller(String phoneNumber) {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + phoneNumber));
@@ -473,7 +616,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 //                }
 //                RouteManager.route(getActivity(), newUri);
 //            } else
-                if (uri != null && !uri.equals("")) {
+            if (uri != null && !uri.equals("")) {
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),

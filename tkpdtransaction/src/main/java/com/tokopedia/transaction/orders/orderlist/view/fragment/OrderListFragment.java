@@ -27,6 +27,7 @@ import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilter
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheet;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
@@ -73,6 +74,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private String startDate = "";
     private String endDate = "";
     private int orderId = 1;
+    @Inject
+    OrderListAnalytics orderListAnalytics;
 
     private String selectedFilter = "0";
 
@@ -268,6 +271,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
                 endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
                 refreshHandler.startRefresh();
+                orderListAnalytics.sendDateFilterClickEvent();
             }
         }
     }
@@ -329,6 +333,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             isLoading = true;
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
         }
+        orderListAnalytics.sendLoadMoreEvent("load-" + page_num);
     }
 
     @Override
@@ -482,6 +487,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
         refreshHandler.startRefresh();
+        orderListAnalytics.sendQuickFilterClickEvent(typeFilter);
     }
 
 
@@ -520,6 +526,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onSearchTextChanged(String text) {
         if (text.length() >= 3) {
             searchedString = text;
+            orderListAnalytics.sendSearchFilterClickEvent();
         } else {
             searchedString = "";
         }

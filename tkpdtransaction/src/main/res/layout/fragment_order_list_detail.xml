@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -34,12 +34,27 @@
                         android:text="@string/status"
                         android:textSize="@dimen/sp_11" />
 
-                    <TextView
-                        android:id="@+id/status_value"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_medium"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/status_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/lihat_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lihat_text"
+                            android:visibility="gone"
+                            android:textColor="@color/green_250" />
+                    </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -197,8 +212,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:background="@color/grey_300" />
 
@@ -228,6 +243,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/actionBtnLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
@@ -274,13 +290,13 @@
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"
-        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_12"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ProgressBar
             android:id="@+id/prog_bar"

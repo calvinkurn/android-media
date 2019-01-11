@@ -129,6 +129,25 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
         method
         body
       }
+      popup {
+        title
+        body
+        actionButtons {
+           label
+           buttonType
+           uri
+           key
+           method
+           value
+           name
+        }
+      }
+    }
+    shopDetails {
+      id
+      name
+      logo
+      shopURL
     }
     conditionalInfo {
       text
