@@ -175,4 +175,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         }
         return items;
     }
+
+    public void resetAllFilters() {
+        for (FilterViewModel item : getAllFilterList()) {
+            item.setSelected(false);
+        }
+        notifyDataSetChanged();
+    }
 }

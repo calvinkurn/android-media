@@ -335,6 +335,7 @@ public class ExploreFragment
         adapter.clearAllElements();
         adapter.addElement(getLocalFirstData());
         filterAdapter.clearAllData();
+        filterAdapter.resetAllFilters();
         filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
     }
 
@@ -475,6 +476,7 @@ public class ExploreFragment
     private void getFilteredFirstData(List<FilterViewModel> filters) {
         exploreParams.setFilters(filters);
         exploreParams.resetForFilterClick();
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
     }
 
