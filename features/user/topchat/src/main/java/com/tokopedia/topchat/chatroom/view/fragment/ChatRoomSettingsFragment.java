@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,12 +29,13 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
-import com.tokopedia.topchat.common.di.DaggerChatRoomComponent;
 import com.tokopedia.topchat.common.util.Utils;
+import com.tokopedia.topchat.revamp.di.DaggerChatComponent;
+
 
 import javax.inject.Inject;
 
-public class ChatRoomSettingsFragment extends BaseDaggerFragment implements ChatSettingsInterface.View, CompoundButton.OnCheckedChangeListener{
+public class ChatRoomSettingsFragment extends BaseDaggerFragment implements ChatSettingsInterface.View, CompoundButton.OnCheckedChangeListener {
 
     private Switch chatPromotionSwitch, chatPersonalSwitch;
     private ConstraintLayout chatPromotionInfoView, chatPersonalInfoView;
@@ -99,8 +99,8 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
             chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
         }
         if (isChatEnabled) {
-            chatSettingsPresenter.onPersonalChatSettingChange(messageId,true, false);
-            chatSettingsPresenter.onPromotionalChatSettingChange(messageId,true, false);
+            chatSettingsPresenter.onPersonalChatSettingChange(messageId, true, false);
+            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, true, false);
         } else if (chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked()) {
             setPromotionViewOpacity(true);
         }
@@ -111,9 +111,12 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
 
     @Override
     protected void initInjector() {
-        DaggerChatRoomComponent.builder().appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
-                .build()
-                .inject(this);
+        if (getActivity() != null) {
+            DaggerChatComponent.builder().appComponent(
+                    ((MainApplication) getActivity().getApplication()).getAppComponent())
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override

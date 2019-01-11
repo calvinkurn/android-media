@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.GenerateHostRepository
@@ -28,6 +29,9 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource
 import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper
+import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
+import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -193,6 +197,14 @@ class ChatModule {
     internal fun provideMessageRepository(messageFactory: MessageFactory,
                                           sendMessageSource: SendMessageSource): MessageRepository {
         return MessageRepositoryImpl(messageFactory, sendMessageSource)
+    }
+
+    @ChatScope
+    @Provides
+    internal fun provideMessageRepository(graphqlUseCase: GraphqlUseCase,
+                                          chatSettingsAnalytics: ChatSettingsAnalytics):
+            ChatSettingsInterface.Presenter {
+        return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
     }
 
 }
