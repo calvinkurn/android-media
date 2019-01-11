@@ -250,10 +250,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 }
             });
         }
-        analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
-                ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE,
-                ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
-                challengeResult.getTitle());
+        if (challengeResult != null)
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                    challengeResult.getTitle());
         return view;
     }
 
@@ -564,7 +565,14 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void setChallengeResult(Result challengeResult) {
+        if (this.challengeResult == null) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                    challengeResult.getTitle());
+        }
         this.challengeResult = challengeResult;
+
     }
 
     @Override
