@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.revamp.domain.pojo
+package com.tokopedia.chat_common.domain.pojo.imageannouncement
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

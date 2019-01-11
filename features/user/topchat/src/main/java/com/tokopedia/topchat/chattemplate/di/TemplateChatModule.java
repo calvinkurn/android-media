@@ -143,7 +143,7 @@ public class TemplateChatModule {
     @Provides
     Retrofit provideChatRetrofit(OkHttpClient okHttpClient,
                                  Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TopChatUrl.BASE_URL)
+        return retrofitBuilder.baseUrl(TopChatUrl.Companion.getBASE_URL())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))

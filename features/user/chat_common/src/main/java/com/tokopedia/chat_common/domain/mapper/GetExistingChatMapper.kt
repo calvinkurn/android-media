@@ -3,11 +3,13 @@ package com.tokopedia.chat_common.domain.mapper
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -25,10 +27,6 @@ open class GetExistingChatMapper @Inject constructor() {
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         listChat.reverse()
-
-        if(!canLoadMore){
-            listChat.add()
-        }
         return ChatroomViewModel(listChat, headerModel, canLoadMore, isReplyable)
 
     }
@@ -99,8 +97,30 @@ open class GetExistingChatMapper @Inject constructor() {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
+            TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
             else -> convertToFallBackModel(chatItemPojoByDateByTime)
         }
+    }
+
+
+    private fun convertToImageAnnouncement(item: Reply): Visitable<*> {
+        //TODO MAP BLAST ID
+        val pojoAttribute = GsonBuilder().create().fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
+                ImageAnnouncementPojo::class.java)
+        val imageAnnouncement = ImageAnnouncementViewModel(
+                item.msgId.toString(),
+                item.senderId.toString(),
+                item.senderName,
+                item.role,
+                item.attachment?.id.toString(),
+                item.attachment?.type.toString(),
+                item.replyTime,
+                pojoAttribute.imageUrl,
+                pojoAttribute.url,
+                item.msg,
+                0
+        )
+        return imageAnnouncement
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
@@ -169,7 +189,6 @@ open class GetExistingChatMapper @Inject constructor() {
         return (!isOpposite && role.toLowerCase() == ROLE_USER.toLowerCase())
                 || (isOpposite && role.toLowerCase() != ROLE_USER.toLowerCase())
     }
-
 
     open fun hasAttachment(pojo: Reply): Boolean {
         return (pojo.attachment?.type != null && pojo.attachment.attributes.isNotBlank())

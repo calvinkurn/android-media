@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatlist.data
 
+import com.tokopedia.network.constant.TkpdBaseURL
+
 /**
  * @author by nisie on 27/12/18.
  */
@@ -13,8 +15,8 @@ class TopChatUrl {
         }
 
         const val WEBSOCKET_URL = "wss://chat.tokopedia.com/connect"
-        const val WEB_DOMAIN = "https://www.tokopedia.com/"
-        const val BASE_URL = "https://chat.tokopedia.com/"
+        val BASE_URL = TkpdBaseURL.CHAT_DOMAIN
+        val SECURITY_INFO_URL = TkpdBaseURL.WEB_DOMAIN + "panduan-keamanan"
 
     }
 }

@@ -9,9 +9,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener;
-import com.tokopedia.chat_common.R;
 import com.tokopedia.design.component.ButtonCompat;
 
 /**
@@ -34,6 +34,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private ImageView thumbnailsImage;
     private ButtonCompat tvBuy;
     private ImageView ivATC;
+    private View footerLayout;
 
     private Context context;
     private ProductAttachmentListener viewListener;
@@ -53,6 +54,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
         tvBuy = chatBalloon.findViewById(R.id.tv_buy);
         ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
+        footerLayout = chatBalloon.findViewById(R.id.footer_layout);
         this.viewListener = viewListener;
     }
 
@@ -153,6 +155,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         View separator = productContainer.findViewById(R.id.separator);
         if (element.getCanShowFooter()) {
             separator.setVisibility(View.VISIBLE);
+            footerLayout.setVisibility(View.VISIBLE);
             tvBuy.setVisibility(View.VISIBLE);
             ivATC.setVisibility(View.VISIBLE);
             tvBuy.setOnClickListener(v -> {
@@ -163,6 +166,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 viewListener.onClickATCFromProductAttachment(element);
             });
         } else {
+            footerLayout.setVisibility(View.GONE);
             separator.setVisibility(View.GONE);
             tvBuy.setVisibility(View.GONE);
             ivATC.setVisibility(View.GONE);

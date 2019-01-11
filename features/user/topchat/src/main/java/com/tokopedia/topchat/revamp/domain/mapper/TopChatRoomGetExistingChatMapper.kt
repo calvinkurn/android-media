@@ -2,11 +2,15 @@ package com.tokopedia.topchat.revamp.domain.mapper
 
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
-import com.tokopedia.topchat.revamp.domain.pojo.ImageAnnouncementPojo
+import com.tokopedia.topchat.chatlist.data.TopChatUrl
+import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.revamp.domain.pojo.ImageDualAnnouncementPojo
 import javax.inject.Inject
 
 /**
@@ -15,21 +19,28 @@ import javax.inject.Inject
 
 open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
 
+    override fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
+        val chatroomViewModel = super.map(pojo)
+        if (!pojo.chatReplies.hasNext && pojo.chatReplies.showTimeMachine == 1) {
+            chatroomViewModel.listChat.add(chatroomViewModel.listChat.size,
+                    SecurityInfoViewModel(TopChatUrl.SECURITY_INFO_URL))
+        }
+
+        return chatroomViewModel
+    }
+
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
-            TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
-//            TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
-            else ->
-                super.mapAttachment(chatItemPojoByDateByTime)
+            TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
+            else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
 
-
-
-    private fun convertToImageAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
-                ImageAnnouncementPojo::class.java)
-        val imageAnnouncement = ImageAnnouncementViewModel(
+    private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
+        //TODO MAP BLAST ID
+        val pojoAttribute = GsonBuilder().create().fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
+                ImageDualAnnouncementPojo::class.java)
+        return ImageDualAnnouncementViewModel(
                 item.msgId.toString(),
                 item.senderId.toString(),
                 item.senderName,
@@ -37,135 +48,12 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 item.attachment?.id.toString(),
                 item.attachment?.type.toString(),
                 item.replyTime,
+                item.msg,
                 pojoAttribute.imageUrl,
                 pojoAttribute.url,
-                item.msg,
+                pojoAttribute.imageUrl2,
+                pojoAttribute.url2,
                 0
         )
-        return imageAnnouncement
     }
-
-    /////////////////// QUICK REPLIES
-
-//    private fun convertToQuickReply(reply: Reply): Visitable<*> {
-//        val pojoAttribute = GsonBuilder().create()
-//                .fromJson<QuickReplyAttachmentAttributes>(reply.attachment?.attributes,
-//                        QuickReplyAttachmentAttributes::class.java)
-//        return QuickReplyListViewModel(
-//                reply.msgId.toString(),
-//                reply.senderId.toString(),
-//                reply.senderName,
-//                reply.role,
-//                reply.msg,
-//                reply.attachment?.id.toString(),
-//                reply.attachment?.type.toString(),
-//                reply.replyTime,
-//                convertToQuickRepliesList(pojoAttribute.quickReplies)
-//
-//
-//        )
-//    }
-//
-//    private fun convertToQuickRepliesList(quickReplies: List<QuickReplyPojo>): List<QuickReplyViewModel> {
-//        val list: ArrayList<QuickReplyViewModel> = ArrayList()
-//        for (pojo in quickReplies) {
-//            list.add(QuickReplyViewModel(pojo.text,
-//                    pojo.value,
-//                    pojo.action))
-//        }
-//        return list
-//    }
-//
-//    /////////////////// CHAT BALLOON
-//
-//
-//    private fun convertToBalloonAction(pojo: Reply): Visitable<*> {
-//        val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(
-//                pojo.attachment?.attributes, ChatActionBalloonSelectionAttachmentAttributes::class.java)
-//        return ChatActionSelectionBubbleViewModel(
-//                pojo.msgId.toString(),
-//                pojo.senderId.toString(),
-//                pojo.senderName,
-//                pojo.role,
-//                pojo.attachment?.id.toString(),
-//                pojo.attachment?.type.toString(),
-//                pojo.replyTime,
-//                pojo.msg,
-//                convertToChatActionBubbleViewModelList(pojoAttribute)
-//        )
-//    }
-//
-//    private fun convertToChatActionBubbleViewModelList(
-//            pojo: ChatActionBalloonSelectionAttachmentAttributes): List<ChatActionBubbleViewModel> {
-//        val result = ArrayList<ChatActionBubbleViewModel>()
-//        for (item in pojo.chatActions) {
-//            result.add(ChatActionBubbleViewModel(item.text, item.value, item.action))
-//        }
-//        return result
-//    }
-//
-//    /////////////////// INVOICE SELECTION
-//
-//    private fun convertToInvoicesSelection(pojo: Reply): AttachInvoiceSelectionViewModel {
-//        val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(pojo
-//                .attachment?.attributes, ListInvoicesSelectionPojo::class.java)
-//        val invoiceList = invoicesSelectionPojo.invoices
-//
-//        val list = ArrayList<AttachInvoiceSingleViewModel>()
-//
-//        for (invoice in invoiceList) {
-//            val attributes = invoice.attributes
-//            val attachInvoice = AttachInvoiceSingleViewModel(
-//                    invoice.type,
-//                    invoice.typeId,
-//                    attributes.code,
-//                    attributes.createdTime,
-//                    attributes.description,
-//                    attributes.url,
-//                    attributes.id,
-//                    attributes.imageUrl,
-//                    attributes.status,
-//                    attributes.statusId,
-//                    attributes.title,
-//                    attributes.amount)
-//            list.add(attachInvoice)
-//        }
-//
-//        return AttachInvoiceSelectionViewModel(
-//                pojo.msgId.toString(),
-//                pojo.senderId.toString(),
-//                pojo.senderName,
-//                pojo.role,
-//                pojo.attachment?.id.toString(),
-//                pojo.attachment?.type.toString(),
-//                pojo.replyTime,
-//                list,
-//                pojo.msg
-//        )
-//    }
-//
-//    /////////////////// INVOICE SEND
-//
-//
-//    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
-//        val invoiceSentPojo = GsonBuilder().create().fromJson<InvoiceSentPojo>(
-//                pojo.attachment?.attributes, InvoiceSentPojo::class.java)
-//        return AttachInvoiceSentViewModel(
-//                pojo.msgId.toString(),
-//                pojo.senderId.toString(),
-//                pojo.senderName,
-//                pojo.role,
-//                pojo.attachment?.id.toString(),
-//                pojo.attachment?.type.toString(),
-//                pojo.replyTime,
-//                invoiceSentPojo.invoiceLink.attributes.title,
-//                invoiceSentPojo.invoiceLink.attributes.description,
-//                invoiceSentPojo.invoiceLink.attributes.imageUrl,
-//                invoiceSentPojo.invoiceLink.attributes.totalAmount,
-//                !pojo.isOpposite,
-//                pojo.isRead
-//        )
-//
-//    }
-
 }

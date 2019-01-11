@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase;
@@ -403,7 +404,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             String websocketUrl = TopChatUrl.Companion.getPathWebsocket(userSession.getDeviceId(),
                     userSession.getUserId());
             Request request = new Request.Builder().url(websocketUrl)
-                    .header("Origin", TopChatUrl.WEB_DOMAIN)
+                    .header("Origin", TkpdBaseURL.WEB_DOMAIN)
                     .header("Accounts-Authorization",
                             "Bearer " + userSession.getAccessToken())
                     .header("x-app-version",String.valueOf(GlobalConfig.VERSION_CODE))

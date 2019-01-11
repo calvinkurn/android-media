@@ -24,7 +24,10 @@ data class ChatReplies(
         val hasNext: Boolean = false,
         @Expose
         @SerializedName("textareaReply")
-        val textAreaReply: Int = 0
+        val textAreaReply: Int = 0,
+        @Expose
+        @SerializedName("showTimeMachine")
+        val showTimeMachine: Int = 0
 )
 
 data class Contact(

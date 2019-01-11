@@ -21,7 +21,6 @@ class AttachmentType {
         const val TYPE_CHAT_BALLOON_ACTION = "9"
         const val TYPE_QUICK_REPLY_SEND = "10"
 
-
         const val TYPE_CHAT_RATING = "-1"
     }
 }
