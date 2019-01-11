@@ -37,4 +37,9 @@ class DigitalChannelPresenter @Inject constructor(private val recommendationUseC
         })
     }
 
+    override fun detachView() {
+        recommendationUseCase.unsubscribe()
+        super.detachView()
+    }
+
 }
