@@ -76,6 +76,7 @@
             android:orientation="horizontal"
             android:layout_marginRight="-3dp"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
             tools:visibility="visible">
 
             <android.support.v7.widget.RecyclerView
