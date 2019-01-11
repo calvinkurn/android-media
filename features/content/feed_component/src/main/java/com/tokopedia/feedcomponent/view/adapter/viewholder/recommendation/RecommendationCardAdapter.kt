@@ -47,9 +47,16 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
             loadImageOrDefault(itemView.ivImage1, element.image1Url)
             loadImageOrDefault(itemView.ivImage2, element.image2Url)
             loadImageOrDefault(itemView.ivImage3, element.image3Url)
-            itemView.ivProfile.loadImageCircle(element.profileImageUrl)
             itemView.tvDescription.text = element.description
             itemView.tvName.text = element.profileName
+
+            if (!TextUtils.isEmpty(element.profileImageUrl)) {
+                itemView.ivProfile.loadImageCircle(element.profileImageUrl)
+            } else {
+                itemView.ivProfile.setImageDrawable(
+                        MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
+                )
+            }
 
             setBadge(element.badgeUrl)
 
