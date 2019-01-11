@@ -84,6 +84,7 @@ public class ExploreUseCase extends GraphqlUseCase {
             JsonObject object = new JsonObject();
             object.addProperty(PARAM_FILTER_KEY, PARAM_FILTER_KEY_DATA);
             object.addProperty(PARAM_FILTER_VALUE, filter.getIds().toString());
+            dataArray.add(object);
         }
         return dataArray;
     }
