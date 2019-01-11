@@ -60,6 +60,7 @@
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btnFollow"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="@dimen/dp_72"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"

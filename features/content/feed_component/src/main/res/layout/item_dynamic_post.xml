@@ -48,6 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
@@ -70,6 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
@@ -87,6 +91,7 @@
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/headerAction"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="@dimen/dp_72"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_0"
