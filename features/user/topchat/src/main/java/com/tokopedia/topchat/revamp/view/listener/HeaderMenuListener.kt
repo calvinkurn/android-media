@@ -5,11 +5,9 @@ package com.tokopedia.topchat.revamp.view.listener
  */
 interface HeaderMenuListener{
 
-    fun onFollowShop()
+    fun onGoToShop()
 
     fun onDeleteConversation()
-
-    fun onUnfollowShop()
 
     fun onGoToDetailOpponentFromMenu()
 

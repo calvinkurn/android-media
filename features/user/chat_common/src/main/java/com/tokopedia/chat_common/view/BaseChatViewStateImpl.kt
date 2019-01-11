@@ -29,7 +29,7 @@ open class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
         private val typingListener: TypingListener
-        ) : BaseChatViewState {
+) : BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var mainLoading: ProgressBar
@@ -106,8 +106,8 @@ open class BaseChatViewStateImpl(
         else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
 
-        toolbar.setOnClickListener { onToolbarClicked() }
-
+        title.setOnClickListener { onToolbarClicked() }
+        avatar.setOnClickListener { onToolbarClicked() }
 
     }
 
@@ -223,7 +223,7 @@ open class BaseChatViewStateImpl(
     }
 
     protected fun showReplyBox(replyable: Boolean) {
-        val visibilityState = if(replyable) View.VISIBLE else View.GONE
+        val visibilityState = if (replyable) View.VISIBLE else View.GONE
         actionBox.visibility = visibilityState
         replyBox.visibility = visibilityState
     }

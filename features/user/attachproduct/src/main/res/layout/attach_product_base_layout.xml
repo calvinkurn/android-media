@@ -118,7 +118,7 @@
             android:layout_height="@dimen/dp_32"
             android:layout_marginRight="@dimen/dp_10"
             android:gravity="center"
-            android:src="@drawable/ic_check"
+            android:src="@drawable/ic_new_checkout_cart"
             android:visibility="gone"/>
 
         <com.tokopedia.design.component.ButtonCompat

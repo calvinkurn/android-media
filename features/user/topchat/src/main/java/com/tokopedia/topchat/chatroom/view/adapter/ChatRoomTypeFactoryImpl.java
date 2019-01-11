@@ -14,7 +14,7 @@
 //import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom
 //        .ImageDualAnnouncementViewHolder;
 //import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
-//import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.SecurityInfoChatViewHolder;
+//import com.tokopedia.topchat.revamp.view.adapter.viewholder.SecurityInfoChatViewHolder;
 //import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.TypingChatViewHolder;
 //import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.FallbackAttachmentViewHolder;
 //import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ImageUploadViewHolder;

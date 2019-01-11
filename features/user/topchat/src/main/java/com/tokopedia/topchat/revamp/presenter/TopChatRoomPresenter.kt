@@ -368,14 +368,6 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    override fun doFollowShop(shopId: Int, onError: (Throwable) -> Unit, onSuccessFollowShop: () -> Unit) {
-        //TODO ADD FOLLOW SHOP USE CASE
-    }
-
-    override fun doUnfollowShop(shopId: Int, onError: (Throwable) -> Unit, onSuccessUnfollowShop: () -> Unit) {
-        //TODO ADD UNFOLLOW SHOP USE CASE
-    }
-
     override fun deleteChat(messageId: String, onError: (Throwable) -> Unit, onSuccessDeleteConversation: () -> Unit) {
         deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId),
                 DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))

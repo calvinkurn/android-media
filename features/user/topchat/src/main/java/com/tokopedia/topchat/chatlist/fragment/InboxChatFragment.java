@@ -478,7 +478,23 @@ public class InboxChatFragment extends BaseDaggerFragment
                 && resultCode == TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE
                 && data != null
                 && data.hasExtra(ApplinkConst.Chat.MESSAGE_ID)) {
-            presenter.refreshData();
+            String messageId = data.getExtras().getString(ApplinkConst.Chat.MESSAGE_ID);
+            adapter.removeWithMessageId(messageId);
+        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
+                && resultCode == TopChatInternalRouter.Companion.CHAT_READ_RESULT_CODE
+                && data != null
+                && data.getExtras() != null
+                && data.hasExtra(TopChatInternalRouter.Companion.PARAM_INDEX)) {
+            int position = data.getExtras().getInt(TopChatInternalRouter.Companion.PARAM_INDEX);
+            //TODO update read
+        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
+                && data != null
+                && data.getExtras() != null
+                && data.hasExtra(TopChatInternalRouter.Companion.PARAM_MUST_REFRESH)) {
+            if (data.getExtras().getBoolean(TopChatInternalRouter.Companion.PARAM_MUST_REFRESH,
+                    false)) {
+                presenter.refreshData();
+            }
         }
 
         presenter.createWebSocket();

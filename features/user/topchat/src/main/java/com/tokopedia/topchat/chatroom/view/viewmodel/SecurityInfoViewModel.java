@@ -11,11 +11,11 @@ import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactory;
  * @author by nisie on 10/24/17.
  */
 
-public class TimeMachineChatModel implements Visitable<ChatRoomTypeFactory> {
+public class SecurityInfoViewModel implements Visitable<ChatRoomTypeFactory> {
 
     private String url = TkpdBaseURL.User.URL_SECURITY_INFO;
 
-    public TimeMachineChatModel(String url) {
+    public SecurityInfoViewModel(String url) {
         if (!TextUtils.isEmpty(url))
             this.url = url;
     }

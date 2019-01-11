@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.chatroom.view.viewmodel.TimeMachineChatModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TypingChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
@@ -34,7 +34,7 @@ public interface ChatRoomTypeFactory {
     int type(MessageViewModel messageViewModel);
 
     //OTHER
-    int type(TimeMachineChatModel timeMachineChatModel);
+    int type(SecurityInfoViewModel timeMachineChatModel);
 
     int type(TypingChatModel typingChatModel);
 

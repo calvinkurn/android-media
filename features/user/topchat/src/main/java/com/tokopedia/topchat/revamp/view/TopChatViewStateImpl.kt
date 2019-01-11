@@ -1,12 +1,10 @@
 package com.tokopedia.topchat.revamp.view
 
 import android.support.annotation.NonNull
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.view.Window
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,6 +14,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel
@@ -149,30 +148,35 @@ class TopChatViewStateImpl(
 
     fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
                                onToolbarClicked: () -> Unit,
-                               headerMenuListener: HeaderMenuListener) {
+                               headerMenuListener: HeaderMenuListener,
+                               alertDialog: Dialog) {
         hideLoading()
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
-        setHeaderMenuButton(viewModel, headerMenuListener)
+        setHeaderMenuButton(viewModel, headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
         showActionButtons()
         checkShowQuickReply(viewModel)
     }
 
-    private fun setHeaderMenuButton(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener) {
+    private fun setHeaderMenuButton(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
         headerMenuButton.visibility = View.VISIBLE
-        headerMenuButton.setOnClickListener { showHeaderMenuBottomSheet(chatroomViewModel, headerMenuListener) }
+        headerMenuButton.setOnClickListener { showHeaderMenuBottomSheet(chatroomViewModel,
+                headerMenuListener, alertDialog) }
     }
 
-    private fun showHeaderMenuBottomSheet(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener) {
+    private fun showHeaderMenuBottomSheet(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
         val headerMenu = Menus(view.context)
         val listMenu = ArrayList<Menus.ItemMenus>()
 
-        val title = toolbar.title
-        val viewProfileText = view.context.getString(R.string.view_profile_container_string, title)
-        listMenu.add(Menus.ItemMenus(viewProfileText, R.drawable.ic_people))
+        if(chatroomViewModel.headerModel.role.toLowerCase()
+                        .contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)) {
+            val title = toolbar.findViewById<TextView>(R.id.title)
+            val viewProfileText = view.context.getString(R.string.view_profile_container_string, title)
+            listMenu.add(Menus.ItemMenus(viewProfileText, R.drawable.ic_people))
+        }
 
-        if (chatroomViewModel.headerModel.role
+        if (chatroomViewModel.headerModel.role.toLowerCase()
                         .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
             val profileText = if (isShopFollowed) {
                 view.context.getString(R.string.already_follow_store);
@@ -192,13 +196,13 @@ class TopChatViewStateImpl(
             run {
                 when {
                     itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
-                        showDeleteChatDialog(headerMenuListener)
+                        showDeleteChatDialog(headerMenuListener, alertDialog)
                     }
                     itemMenus.title == view.context.getString(R.string.follow_store) -> {
-                        headerMenuListener.onFollowShop()
+                        headerMenuListener.onGoToShop()
                     }
                     itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
-                        headerMenuListener.onUnfollowShop()
+                        headerMenuListener.onGoToShop()
                     }
                     pos == 0 -> {
                         headerMenuListener.onGoToDetailOpponentFromMenu()
@@ -213,26 +217,16 @@ class TopChatViewStateImpl(
 
     }
 
-    private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener) {
-        val myAlertDialog = AlertDialog.Builder(view.context)
-        myAlertDialog.setTitle(R.string.delete_chat_question)
-        myAlertDialog.setMessage(R.string.delete_chat_warning_message)
-        myAlertDialog.setPositiveButton(view.context.getString(R.string.delete)) { _, _ ->
-            run {
-                headerMenuListener.onDeleteConversation()
-            }
+    private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog:Dialog) {
+        myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
+        myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
+        myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
+        myAlertDialog.setOnOkClickListener {
+            headerMenuListener.onDeleteConversation()
         }
-
-        myAlertDialog.setNegativeButton(view.context.getString(R.string.delete)) { dialog, _ ->
-            run {
-                dialog.cancel()
-            }
-        }
-
-        val dialog = myAlertDialog.create()
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.show()
-
+        myAlertDialog.setBtnCancel(view.context.getString(R.string.cancel))
+        myAlertDialog.setOnCancelClickListener {   myAlertDialog.dismiss() }
+        myAlertDialog.show()
     }
 
     private fun showActionButtons() {

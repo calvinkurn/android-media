@@ -26,7 +26,7 @@ interface TopChatContract {
 
         fun showSnackbarError(stringResource: String)
 
-        fun onSuccessGetTemplate(it: List<Visitable<Any>>)
+        fun onSuccessGetTemplate(list: List<Visitable<Any>>)
 
         fun onErrorGetTemplate()
 
@@ -72,15 +72,6 @@ interface TopChatContract {
 
         fun sendProductAttachment(messageId: String, item: ResultProduct,
                                   startTime: String, opponentId: String)
-
-        fun doFollowShop(shopId: Int,
-                         onError: (Throwable) -> Unit,
-                         onSuccessFollowShop: () -> Unit)
-
-        fun doUnfollowShop(shopId: Int,
-                           onError: (Throwable) -> Unit,
-                           onSuccessUnfollowShop: () -> Unit)
-
 
         fun deleteChat(messageId: String,
                                 onError: (Throwable) -> Unit,

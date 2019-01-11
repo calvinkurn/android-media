@@ -3,6 +3,8 @@ package com.tokopedia.topchat.common.analytics;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 
 /**
@@ -20,6 +22,7 @@ public class TopChatAnalytics {
     }
 
     public static final String SCREEN_CHAT_LIST = "inbox-chat";
+    public static final String SCREEN_CHAT_ROOM = "chatroom";
 
     public interface Category {
         public static final String PRODUCT_PAGE = "product page";
@@ -124,5 +127,15 @@ public class TopChatAnalytics {
                 "lihat profile"
         );
     }
+
+    public void trackClickImageAnnouncement(String blastId, @NotNull String attachmentId) {
+        analyticTracker.sendEventTracking(
+                Name.INBOX_CHAT,
+                "inbox-chat",
+                "click on thumbnail",
+                String.format("%s - %s", blastId, attachmentId)
+        );
+    }
+
 
 }

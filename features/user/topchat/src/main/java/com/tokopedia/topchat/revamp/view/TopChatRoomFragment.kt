@@ -38,7 +38,6 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
-import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
@@ -46,9 +45,7 @@ import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
-import com.tokopedia.topchat.revamp.view.listener.HeaderMenuListener
-import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
-import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
+import com.tokopedia.topchat.revamp.view.listener.*
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -57,7 +54,8 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener, HeaderMenuListener {
+        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
+        HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -73,19 +71,45 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
+    var indexFromInbox = -1
 
+    val REQUEST_GO_TO_SHOP = 111
     val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
+    val REQUEST_GO_TO_SETTING_TEMPLATE = 113
 
     private lateinit var actionBox: View
 
+    companion object {
+
+        private const val POST_ID = "{post_id}"
+        fun createInstance(bundle: Bundle): BaseChatFragment {
+            val fragment = TopChatRoomFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+
+    }
+
     override fun getContext(): Context? {
         return activity
+    }
+
+    override fun initInjector() {
+
+        if (activity != null && (activity as Activity).application != null) {
+            val chatComponent = DaggerChatComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+            chatComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
+        indexFromInbox = getParamInt(TopChatInternalRouter.Companion.PARAM_INDEX, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
     }
@@ -118,8 +142,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             presenter.connectWebSocket(messageId)
             updateViewData(it)
             renderList(it.listChat, it.canLoadMore)
-            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this)
+            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog)
             presenter.getTemplate()
+
+            activity?.run {
+                val data = Intent()
+                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+
+                if (indexFromInbox != -1) {
+                    data.putExtra(TopChatInternalRouter.Companion.PARAM_INDEX, indexFromInbox)
+                } else {
+                    data.putExtra(TopChatInternalRouter.Companion.PARAM_MUST_REFRESH, true)
+                }
+                setResult(TopChatInternalRouter.Companion.CHAT_READ_RESULT_CODE, data)
+                finish()
+            }
         }
     }
 
@@ -160,7 +197,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    fun checkShowLoading(canLoadMore: Boolean) {
+    private fun checkShowLoading(canLoadMore: Boolean) {
         if (canLoadMore) super.showLoading()
     }
 
@@ -172,7 +209,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return TopChatAnalytics.SCREEN_CHAT_ROOM
     }
 
     override fun getUserSession(): UserSessionInterface {
@@ -206,15 +243,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        //TODO create analytic class
-//        TrackingUtils.sendGTMEvent(
-//                new EventTracking(
-//                        "clickInboxChat",
-//                        "inbox-chat",
-//                        "click on thumbnail",
-//                        viewModel.getBlastId() + " - " + viewModel.getAttachmentId()
-//                ).getEvent()
-//        );
+        analytics.trackClickImageAnnouncement(viewModel.blastId.toString(), viewModel.attachmentId)
         super.onImageAnnouncementClicked(viewModel)
     }
 
@@ -233,20 +262,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        super.onReceiveMessageEvent(visitable)
-    }
-
-    companion object {
-
-        private const val POST_ID = "{post_id}"
-        fun createInstance(bundle: Bundle): BaseChatFragment {
-            val fragment = TopChatRoomFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-
-    }
 
     override fun loadData(page: Int) {
         presenter.loadPreviousChat(messageId, page, onError(), onSuccessGetPreviousChat())
@@ -314,16 +329,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().clearEditText()
     }
 
-    override fun initInjector() {
-
-        if (activity != null && (activity as Activity).application != null) {
-            val chatComponent = DaggerChatComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
-            chatComponent.inject(this)
-            presenter.attachView(this)
-        }
-    }
 //
 //    override fun disableAction() {
 //        getViewState().setActionable(false)
@@ -331,6 +336,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         return TopChatRoomAdapter(TopChatTypeFactoryImpl(
+                this,
+                this,
                 this,
                 this,
                 this,
@@ -372,14 +379,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun setCanLoadMore(chatroomViewModel: ChatroomViewModel) {
-        if (chatroomViewModel.canLoadMore) {
-            enableLoadMore()
-        } else {
-            disableLoadMore()
-        }
-    }
-
     override fun onStartTyping() {
         presenter.startTyping()
         getViewState().minimizeTools()
@@ -393,15 +392,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.sendMessage(messageId, message, generateStartTime, "")
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
-    }
-
     override fun addTemplateString(message: String?) {
         message?.let {
             getViewState().addTemplateString(message)
@@ -411,7 +401,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun goToSettingTemplate() {
         val intent = TemplateChatActivity.createInstance(context)
         activity?.run {
-            startActivityForResult(intent, 100)
+            startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
             overridePendingTransition(com.tokopedia.topchat.R.anim.pull_up, android.R.anim.fade_out)
         }
     }
@@ -429,7 +419,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             val builder = ImagePickerBuilder(it.getString(com.tokopedia.topchat.R.string.choose_image),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true, null, null)
-            val intent = ImagePickerActivity.getIntent(getContext(), builder)
+            val intent = ImagePickerActivity.getIntent(context, builder)
             startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
         }
     }
@@ -437,7 +427,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            100 -> {
+            REQUEST_GO_TO_SETTING_TEMPLATE -> {
                 presenter.getTemplate()
             }
 
@@ -451,11 +441,18 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 }
             }
 
-            TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(resultCode, data)
+            TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
+
+            REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
         }
     }
 
-    private fun onProductAttachmentSelected(resultCode: Int, data: Intent?) {
+    private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
+        //TODO
+//        presenter.getShopFollowingState()
+    }
+
+    private fun onProductAttachmentSelected(data: Intent?) {
         if (data == null)
             return
 
@@ -466,11 +463,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         attachProductRetrieved(resultProducts)
     }
 
-    fun attachProductRetrieved(resultProducts: java.util.ArrayList<ResultProduct>) {
+    private fun attachProductRetrieved(resultProducts: java.util.ArrayList<ResultProduct>) {
 
         analytics.trackSendProductAttachment()
 
-        val msgId = arguments!!.getString(InboxMessageConstant.PARAM_MESSAGE_ID)
         for (result in resultProducts) {
             val item = generateProductChatViewModel(result)
             getViewState().onSendProductAttachment(item)
@@ -499,13 +495,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val imagePath = imagePathList[0]
 
         if (!TextUtils.isEmpty(imagePath)) {
-            val temp = generateChatViewModelWithImage(imagePath)
-            return temp
+            return generateChatViewModelWithImage(imagePath)
         }
         return null
     }
 
-    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
+    private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
         return ImageUploadViewModel(
                 messageId,
                 arguments!!.getString(ApplinkConst.Chat.OPPONENT_ID),
@@ -515,7 +510,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         )
     }
 
-    fun showDialogConfirmToAbortUpload() {
+    private fun showDialogConfirmToAbortUpload() {
         context?.run {
             topChatRoomDialog.createAbortUploadImage(
                     this, alertDialog,
@@ -541,16 +536,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onFollowShop() {
-        showLoading()
-        presenter.doFollowShop(shopId, onError(), onSuccessFollowShop())
-    }
-
-    private fun onSuccessFollowShop(): () -> Unit {
-        return {
-            hideLoading()
-            getViewState().isShopFollowed = true
-        }
+    override fun onGoToShop() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP.replace("{shop_id}", shopId
+                .toString()))
+        startActivityForResult(intent, REQUEST_GO_TO_SHOP)
     }
 
     override fun onDeleteConversation() {
@@ -564,21 +553,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             activity?.run {
                 val data = Intent()
                 data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+
+                if (indexFromInbox != -1) {
+                    data.putExtra(TopChatInternalRouter.Companion.PARAM_INDEX, indexFromInbox)
+                } else {
+                    data.putExtra(TopChatInternalRouter.Companion.PARAM_MUST_REFRESH, true)
+                }
                 setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, data)
                 finish()
             }
-        }
-    }
-
-    override fun onUnfollowShop() {
-        showLoading()
-        presenter.doUnfollowShop(shopId, onError(), onSuccessUnfollowShop())
-    }
-
-    private fun onSuccessUnfollowShop(): () -> Unit {
-        return {
-            hideLoading()
-            getViewState().isShopFollowed = false
         }
     }
 
@@ -587,6 +570,18 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         goToDetailOpponent()
     }
 
+    override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
+        analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
+        if (redirectUrl.isNotEmpty()) {
+            onGoToWebView(redirectUrl, attachmentId)
+        }
+    }
+
+    override fun onGoToSecurityInfo(url: String) {
+        if (url.isNotEmpty()) {
+            onGoToWebView(url, "")
+        }
+    }
 
     override fun onBackPressedEvent() {
         if (presenter.isUploading()) {
@@ -594,5 +589,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         } else {
             activity?.finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }
