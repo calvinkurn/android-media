@@ -300,17 +300,17 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
+        startActivityForResult(TravelCalendarActivity.Companion
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.DEPARTURE_TYPE, true),
+                                TravelCalendarActivity.Companion.getDEPARTURE_TYPE(), true),
                 DATE_PICKER_DEPARTURE_REQUEST_CODE);
     }
 
     @Override
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
+        startActivityForResult(TravelCalendarActivity.Companion
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.RETURN_TYPE, true),
+                                TravelCalendarActivity.Companion.getRETURN_TYPE(), true),
                 DATE_PICKER_RETURN_REQUEST_CODE);
     }
 
@@ -384,7 +384,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                 break;
             case DATE_PICKER_DEPARTURE_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
                     Calendar calendarSelected = Calendar.getInstance();
                     calendarSelected.setTime(dateString);
                     trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
@@ -393,7 +393,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                 break;
             case DATE_PICKER_RETURN_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
                     Calendar calendarSelected = Calendar.getInstance();
                     calendarSelected.setTime(dateString);
                     trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),

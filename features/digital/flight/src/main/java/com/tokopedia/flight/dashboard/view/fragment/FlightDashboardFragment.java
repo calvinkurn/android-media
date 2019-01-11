@@ -440,17 +440,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
+        startActivityForResult(TravelCalendarActivity.Companion
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.DEPARTURE_TYPE, true),
+                                TravelCalendarActivity.Companion.getDEPARTURE_TYPE(), true),
                 REQUEST_CODE_DATE_PICKER_DEPARTURE);
     }
 
     @Override
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
+        startActivityForResult(TravelCalendarActivity.Companion
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.RETURN_TYPE, true),
+                                TravelCalendarActivity.Companion.getRETURN_TYPE(), true),
                 REQUEST_CODE_DATE_PICKER_RETURN);
     }
 
@@ -605,14 +605,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onLoginResultReceived();
                     break;
                 case REQUEST_CODE_DATE_PICKER_DEPARTURE:
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
                     Calendar calendarSelected = Calendar.getInstance();
                     calendarSelected.setTime(dateString);
                     presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
                             calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
                     break;
                 case REQUEST_CODE_DATE_PICKER_RETURN:
-                    dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
                     calendarSelected = Calendar.getInstance();
                     calendarSelected.setTime(dateString);
                     presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),

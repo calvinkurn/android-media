@@ -199,7 +199,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                     break;
                 case REQUEST_CODE_CHANGE_DATE:
                     flightSearchPresenter.attachView(this);
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
                     Calendar calendarSelected = Calendar.getInstance();
                     calendarSelected.setTime(dateString);
                     flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
