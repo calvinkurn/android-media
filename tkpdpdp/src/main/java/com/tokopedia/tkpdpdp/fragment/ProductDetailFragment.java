@@ -656,9 +656,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
             fabWishlist.show();
         }
-        if (isCodShown){
-            labelCod.setVisibility(View.VISIBLE);
-        }
+        labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -2079,9 +2077,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
-                    if (isCodShown){
-                        labelCod.setVisibility(View.VISIBLE);
-                    }
+                    labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
                     stateCollapsing = FROM_EXPANDED;
                 }
             }
