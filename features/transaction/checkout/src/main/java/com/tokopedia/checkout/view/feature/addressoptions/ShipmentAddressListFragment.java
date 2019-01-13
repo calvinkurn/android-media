@@ -30,7 +30,6 @@ import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
-import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.design.text.SearchInputView;
@@ -114,7 +113,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
-                .dataModule(new DataModule(getActivity()))
                 .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(),this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();

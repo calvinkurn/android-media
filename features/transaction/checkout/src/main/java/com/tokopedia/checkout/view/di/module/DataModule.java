@@ -42,7 +42,6 @@ import com.tokopedia.transactiondata.repository.CartRepository;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.transactiondata.repository.TopPayRepository;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -65,10 +64,7 @@ public class DataModule {
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 0;
 
-    private final Context context;
-
-    public DataModule(Context context) {
-        this.context = context;
+    public DataModule() {
     }
 
     @Provides
@@ -77,12 +73,6 @@ public class DataModule {
         return new OkHttpRetryPolicy(
                 NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY
         );
-    }
-
-    @Provides
-    @CartQualifier
-    HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        return new HttpLoggingInterceptor();
     }
 
     @Provides
@@ -99,7 +89,8 @@ public class DataModule {
 
     @Provides
     @CartApiInterceptorQualifier
-    CartApiInterceptor getCartApiInterceptor(UserSession userSession,
+    CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
+                                             UserSession userSession,
                                              AbstractionRouter abstractionRouter) {
         return new CartApiInterceptor(context, abstractionRouter, userSession, TransactionDataApiUrl.Cart.HMAC_KEY);
     }
@@ -107,14 +98,16 @@ public class DataModule {
 
     @Provides
     @CartKeroRatesApiInterceptorQualifier
-    TkpdAuthInterceptor provideKeroRatesInterceptor(UserSession userSession,
+    TkpdAuthInterceptor provideKeroRatesInterceptor(@ApplicationContext Context context,
+                                                    UserSession userSession,
                                                     AbstractionRouter abstractionRouter) {
         return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
     }
 
     @Provides
     @CartTxActApiInterceptorQualifier
-    TkpdAuthInterceptor provideTxActInterceptor(UserSession userSession,
+    TkpdAuthInterceptor provideTxActInterceptor(@ApplicationContext Context context,
+                                                UserSession userSession,
                                                 AbstractionRouter abstractionRouter) {
         return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
     }
@@ -122,7 +115,7 @@ public class DataModule {
 
     @Provides
     @CartApiOkHttpClientQualifier
-    OkHttpClient provideCartApiOkHttpClient(@CartQualifier HttpLoggingInterceptor httpLoggingInterceptor,
+    OkHttpClient provideCartApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             @CartApiInterceptorQualifier CartApiInterceptor cartApiInterceptor,
                                             @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
                                             @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
@@ -144,7 +137,7 @@ public class DataModule {
 
     @Provides
     @CartKeroRatesOkHttpQualifier
-    OkHttpClient provideKeroRatesApiOkHttpClient(@CartQualifier HttpLoggingInterceptor httpLoggingInterceptor,
+    OkHttpClient provideKeroRatesApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                                  @CartKeroRatesApiInterceptorQualifier TkpdAuthInterceptor keroRatesInterceptor,
                                                  @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
                                                  @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
@@ -165,7 +158,7 @@ public class DataModule {
 
     @Provides
     @CartTxActOkHttpClientQualifier
-    OkHttpClient provideTxActApiOkHttpClient(@CartQualifier HttpLoggingInterceptor httpLoggingInterceptor,
+    OkHttpClient provideTxActApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                              @CartTxActApiInterceptorQualifier TkpdAuthInterceptor txActInterceptor,
                                              @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
                                              @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,

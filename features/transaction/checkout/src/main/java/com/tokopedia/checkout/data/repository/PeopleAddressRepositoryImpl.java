@@ -9,6 +9,8 @@ import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -24,6 +26,7 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
     private final PeopleActApi peopleActApi;
     private final AddressModelMapper mAddressModelMapper;
 
+    @Inject
     public PeopleAddressRepositoryImpl(PeopleActApi peopleActApi, AddressModelMapper addressModelMapper) {
         this.peopleActApi = peopleActApi;
         this.mAddressModelMapper = addressModelMapper;

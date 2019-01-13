@@ -41,8 +41,6 @@ public class CartComponentInjector {
     GetCouponListCartMarketPlaceUseCase getCouponListCartMarketPlaceUseCase;
     @Inject
     GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase;
-//    @Inject
-//    UserSessionInterface userSessionInterface;
 
     private CartComponent cartApiServiceComponent;
 
@@ -62,7 +60,7 @@ public class CartComponentInjector {
                             .checkoutRouterModule(new CheckoutRouterModule())
                             .dataMapperModule(new DataMapperModule())
                             .dataUtilModule(new DataUtilModule())
-                            .dataModule(new DataModule(application.getApplicationContext()))
+                            .dataModule(new DataModule())
                             .cartUseCaseModule(new CartUseCaseModule())
                             .checkoutUseCaseModule(new CheckoutUseCaseModule())
                             .shipmentUseCaseModule(new ShipmentUseCaseModule())
@@ -107,7 +105,4 @@ public class CartComponentInjector {
         return getMarketPlaceCartCounterUseCase;
     }
 
-//    public UserSessionInterface getUserSession() {
-//        return userSessionInterface;
-//    }
 }

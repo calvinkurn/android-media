@@ -19,7 +19,7 @@ import dagger.Provides;
  * @author Aghny A. Putra on 31/01/18.
  */
 
-@Module(includes = {TrackingAnalyticsModule.class, DataModule.class})
+@Module(includes = {TrackingAnalyticsModule.class})
 public class ShipmentAddressListModule {
 
     private final ShipmentAddressListAdapter.ActionListener actionListener;
