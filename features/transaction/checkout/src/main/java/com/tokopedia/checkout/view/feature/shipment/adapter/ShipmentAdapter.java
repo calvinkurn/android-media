@@ -382,13 +382,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (item instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) item).getSelectedShipmentDetailData() != null) {
                     ((ShipmentCartItemModel) item).setSelectedShipmentDetailData(null);
-                    /*((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setSelectedShipment(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setSelectedCourier(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUseDropshipper(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setDropshipperPhone(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setDropshipperName(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUseInsurance(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUsePartialOrder(false);*/
                 }
             } else if (item instanceof ShipmentCostModel) {
                 ((ShipmentCostModel) item).setAdditionalFee(0);
