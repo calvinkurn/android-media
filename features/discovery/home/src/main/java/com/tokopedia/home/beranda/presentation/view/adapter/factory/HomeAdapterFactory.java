@@ -138,7 +138,7 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         else if (type == TickerViewHolder.LAYOUT)
             viewHolder = new TickerViewHolder(view, listener);
         else if (type == DigitalsViewHolder.LAYOUT)
-            viewHolder = new DigitalsViewHolder(fragmentManager, view);
+            viewHolder = new DigitalsViewHolder(listener, fragmentManager, view);
         else if (type == CategorySectionViewHolder.LAYOUT)
             viewHolder = new CategorySectionViewHolder(view, listener);
         else if (type == SellViewHolder.LAYOUT)

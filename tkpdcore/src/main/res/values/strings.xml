@@ -1013,7 +1013,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_update_receipt_number">Perbarui nomor resi anda</string>
     <!-- Success String -->
     <string name="success_send_msg">Sukses kirim pesan.</string>
-    <string name="title_activity_people_deposit">Saldo Saya</string>
+    <string name="title_activity_people_deposit">Detail Saldo</string>
     <string name="title_activity_people_withdraw_balance">Penarikan Saldo</string>
     <string name="title_activity_shipping_confirmation_detail">Detil Konfirmasi Pengiriman</string>
     <string name="title_activity_shipping_confirmation_prod_conf">Konfirmasi Pengiriman</string>
@@ -2212,6 +2212,8 @@ di Tokopedia Sekarang!</string>
     <string name="referral_welcome_header">Hi memberi kamu Promo Referral.</string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
+    <string name="option_broadcast">Broadcast Chat</string>
+    <string name="option_organize_chat">Atur Chat</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
     <string name="label_tokocard">TokoCard</string>
     <string name="react_native_developer_mode">React Native Developer Mode</string>

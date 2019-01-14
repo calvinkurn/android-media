@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.product.manage.list.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageSortAdapter;

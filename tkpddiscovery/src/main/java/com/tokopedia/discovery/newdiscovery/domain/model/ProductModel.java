@@ -35,6 +35,7 @@ public class ProductModel {
     private String bottomLabel;
     private int categoryId;
     private String categoryName;
+    private String categoryBreadcrumb;
 
     public String getProductUrl() {
         return productUrl;
@@ -234,5 +235,13 @@ public class ProductModel {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
     }
 }

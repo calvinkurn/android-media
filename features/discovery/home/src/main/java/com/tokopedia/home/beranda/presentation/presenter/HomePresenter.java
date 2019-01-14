@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
-import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
@@ -61,7 +61,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
-    GetHomeFeedsUseCase getHomeFeedsUseCase;
+    GetHomeFeedUseCase getHomeFeedUseCase;
 
     private String currentCursor = "";
     private PagingHandler pagingHandler;
@@ -326,8 +326,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void resetPageFeed() {
         currentCursor = "";
         pagingHandler.setPage(0);
-        if (getHomeFeedsUseCase != null) {
-            getHomeFeedsUseCase.unsubscribe();
+        if (getHomeFeedUseCase != null) {
+            getHomeFeedUseCase.unsubscribe();
         }
     }
 
@@ -339,9 +339,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void fetchCurrentPageFeed() {
         if (currentCursor == null)
             return;
-        getHomeFeedsUseCase.execute(
-                getHomeFeedsUseCase.getFeedPlusParam(
-                        pagingHandler.getPage(),
+        getHomeFeedUseCase.execute(
+                getHomeFeedUseCase.getFeedPlusParam(
                         userSession.getUserId(),
                         currentCursor),
                 new GetHomeFeedsSubscriber(getView().getContext(), feedListener, pagingHandler.getPage()));
@@ -449,11 +448,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private void unsubscribeAllUseCase() {
         if (getHomeDataUseCase != null) {
-            getHomeFeedsUseCase.unsubscribe();
+            getHomeFeedUseCase.unsubscribe();
         }
 
-        if (getHomeFeedsUseCase != null) {
-            getHomeFeedsUseCase.unsubscribe();
+        if (getHomeFeedUseCase != null) {
+            getHomeFeedUseCase.unsubscribe();
         }
 
         if (localHomeDataUseCase != null) {

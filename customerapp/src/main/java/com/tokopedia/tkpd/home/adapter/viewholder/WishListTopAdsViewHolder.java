@@ -73,9 +73,4 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
 
     }
 
-    @Override
-    public void onAddWishList(int position, Data data) {
-
-    }
-
 }

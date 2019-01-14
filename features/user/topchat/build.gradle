@@ -29,6 +29,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
@@ -41,9 +42,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
+
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -52,6 +56,10 @@ dependencies {
     }
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

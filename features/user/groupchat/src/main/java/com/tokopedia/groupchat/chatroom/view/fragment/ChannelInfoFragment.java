@@ -164,6 +164,10 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         name = view.findViewById(R.id.name);
         totalView = view.findViewById(R.id.participant);
         channelPartners = view.findViewById(R.id.channel_partners);
+
+        if (getActivity() instanceof GroupChatContract.View) {
+            ((GroupChatContract.View) getActivity()).showInfoDialog();
+        }
     }
 
     private void setViewListener() {

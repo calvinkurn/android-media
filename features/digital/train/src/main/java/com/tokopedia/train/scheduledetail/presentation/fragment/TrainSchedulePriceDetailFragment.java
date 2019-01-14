@@ -1,6 +1,7 @@
 package com.tokopedia.train.scheduledetail.presentation.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
@@ -16,7 +18,9 @@ import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetail
 /**
  * Created by Rizky on 14/05/18.
  */
-public class TrainSchedulePriceDetailFragment extends Fragment {
+public class TrainSchedulePriceDetailFragment extends BaseDaggerFragment {
+
+    private static final String TRAIN_SCHEDULE_DETAIL = "train_schedule_detail";
 
     private TextView textTrip;
     private LinearLayout containerAdultPrice;
@@ -26,9 +30,24 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
     private TextView textInfantCountPassenger;
     private TextView textInfantPrice;
     private TextView textTotalPrice;
+    private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
 
-    public static Fragment createInstance() {
-        return new TrainSchedulePriceDetailFragment();
+    @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    public static Fragment createInstance(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        Fragment fragment = new TrainSchedulePriceDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TRAIN_SCHEDULE_DETAIL, trainScheduleDetailViewModel);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -48,7 +67,17 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
         return rootview;
     }
 
-    public void showPrice(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        trainScheduleDetailViewModel = getArguments().getParcelable(TRAIN_SCHEDULE_DETAIL);
+        if (isAdded()) {
+            showPrice(trainScheduleDetailViewModel);
+        }
+    }
+
+    private void showPrice(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
         if (trainScheduleDetailViewModel.isReturnTrip()) {
             textTrip.setText(getString(R.string.train_return_trip,
                     trainScheduleDetailViewModel.getOriginStationCode(),

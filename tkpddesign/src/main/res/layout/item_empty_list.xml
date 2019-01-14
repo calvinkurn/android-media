@@ -21,23 +21,24 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_horizontal"
-        app:srcCompat="@drawable/ic_empty_state" />
+        app:srcCompat="@drawable/ic_empty_state"
+        android:layout_marginBottom="@dimen/dp_15"/>
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
         style="@style/TextView.Title"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_margin="@dimen/dp_3"
         android:gravity="center"
         android:maxWidth="@dimen/dp_250"
-        tools:text="@string/app_name" />
+        tools:text="ajasjd aiahkshj akshdkhkusdi" />
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
         style="@style/TextView.Small.BlackSecondary"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_margin="@dimen/dp_3"
         android:gravity="center"
         android:maxLines="4"
-        tools:text="@string/app_name" />
+        tools:text="jsdjjdjhds jsjdjsjsj kihakshkjsadjs sugdjghsadhsahdghsagdh hjashasg" />
 
     <TextView
         android:id="@+id/text_view_empty_content_item_text"
@@ -49,15 +50,15 @@
     <!-- text will be override programmatically -->
     <Button
         android:id="@+id/button_add_promo"
-        style="@style/Button.Submit.Green"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_150"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_15"
-        android:maxWidth="@dimen/dp_250"
-        android:minWidth="@dimen/dp_250"
-        android:visibility="gone"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/button_border_green"
+        android:padding="@dimen/dp_8"
+        android:textColor="@color/tkpd_main_green"
+        android:visibility="visible"
         tools:text="@string/app_name" />
 
     <View

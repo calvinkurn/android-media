@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -50,6 +51,19 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.VersionInfo;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
@@ -237,7 +251,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
-        if (savedInstanceState!= null) {
+        if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
                     CategoryData.class, null);
             bannerDataListState = saveInstanceCacheManager.get(EXTRA_STATE_BANNER_LIST_DATA,
@@ -290,7 +304,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             );
         }
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -335,7 +349,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onAttachActivity(context);
         actionListener = (ActionListener) context;
     }
-    
+
     protected void setupArguments(Bundle arguments) {
         categoryId = arguments.getString(ARG_PARAM_EXTRA_CATEGORY_ID);
         operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
@@ -848,6 +862,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     }
                 }
                 if (isFromWidget) {
+                    isFromWidget = false;
                     presenter.processGetHelpUrlData(categoryId);
                     presenter.processGetCategoryAndBannerData(
                             categoryId, operatorId, productId, clientNumber);
@@ -877,11 +892,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 }
                 break;
             case REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
-                    handleCallbackSearchNumber(orderClientNumber);
-                } else {
-                    handleCallbackSearchNumberCancel();
+                if (digitalProductView != null) {
+                    if (resultCode == Activity.RESULT_OK && data != null) {
+                        OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
+                        handleCallbackSearchNumber(orderClientNumber);
+                    } else {
+                        handleCallbackSearchNumberCancel();
+                    }
                 }
                 break;
         }
@@ -924,7 +941,16 @@ public class DigitalProductFragment extends BaseDaggerFragment
             if (categoryDataState != null) {
                 digitalAnalytics.eventClickDaftarTransaksiEvent(categoryDataState.getName());
             }
-            RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+            if (GlobalConfig.isSellerApp()) {
+                navigateToActivity(
+                        DigitalWebActivity.newInstance(
+                                getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
+                        )
+                );
+            } else {
+                RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+            }
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_digital) {
             presenter.onHelpMenuClicked();
@@ -1285,7 +1311,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             @Override
             public void onPageSelected(int position) {
                 if (position == PANDUAN_TAB_POSITION) {
-                    if(digitalAnalytics != null)
+                    if (digitalAnalytics != null)
                         digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
                 }
             }

@@ -1,0 +1,5 @@
+query withdrawalTicker{
+  withdrawalTicker {
+      Ticker
+      }
+  }

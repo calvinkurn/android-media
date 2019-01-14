@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,6 +52,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private CountDownView countDownView;
     private Context context;
     private LinearLayout textOfficialStore;
+    private FrameLayout codDescription;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -81,6 +83,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         campaignStockAvailable = findViewById(R.id.sale_text_stock_available);
         textTimerTitle = findViewById(R.id.text_title_discount_timer);
         linearDiscountPrice = findViewById(R.id.linear_discount_price);
+        codDescription = findViewById(R.id.layout_cod_content);
         this.context = context;
     }
 
@@ -171,6 +174,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
             showCountdownTimer(data);
         } else {
+            codDescription.setVisibility(data.getInfo().isCod() ? VISIBLE : GONE);
             linearDiscountTimerHolder.setVisibility(GONE);
             textDiscount.setVisibility(GONE);
             textOriginalPrice.setVisibility(GONE);
