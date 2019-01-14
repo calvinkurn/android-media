@@ -27,8 +27,6 @@ import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
-import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource
-import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
 import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
@@ -187,22 +185,14 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideSendMessageSource(chatApi: ChatApi,
-                                          sendMessageMapper: SendMessageMapper): SendMessageSource {
-        return SendMessageSource(chatApi, sendMessageMapper)
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideMessageRepository(messageFactory: MessageFactory,
-                                          sendMessageSource: SendMessageSource): MessageRepository {
-        return MessageRepositoryImpl(messageFactory, sendMessageSource)
+    internal fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
+        return MessageRepositoryImpl(messageFactory)
     }
 
     @ChatScope
     @Provides
     internal fun provideChatSettingsPresenter(graphqlUseCase: GraphqlUseCase,
-                                          chatSettingsAnalytics: ChatSettingsAnalytics):
+                                              chatSettingsAnalytics: ChatSettingsAnalytics):
             ChatSettingsInterface.Presenter {
         return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
     }

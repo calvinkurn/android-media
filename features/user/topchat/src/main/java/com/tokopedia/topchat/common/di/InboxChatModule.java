@@ -39,12 +39,9 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepository;
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepository;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepositoryImpl;
-import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource;
 import com.tokopedia.topchat.chatroom.data.mapper.GetUserStatusMapper;
-import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper;
 import com.tokopedia.topchat.chatroom.data.network.TopChatApi;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
-import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter;
@@ -124,9 +121,8 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    MessageRepository provideMessageRepository(MessageFactory messageFactory,
-                                               SendMessageSource sendMessageSource) {
-        return new MessageRepositoryImpl(messageFactory, sendMessageSource);
+    MessageRepository provideMessageRepository(MessageFactory messageFactory) {
+        return new MessageRepositoryImpl(messageFactory);
     }
 
     @InboxChatScope
@@ -195,26 +191,11 @@ public class InboxChatModule {
         return new ToggleFavouriteShopUseCase(shopCommonRepository);
     }
 
-    @InboxChatScope
-    @Provides
-    GetChatShopInfoUseCase provideGetChatShopInfo(GetShopInfoUseCase getShopInfoUseCase) {
-        return new GetChatShopInfoUseCase(getShopInfoUseCase);
-    }
-
-    @InboxChatScope
-    @Provides
-    SendMessageMapper provideSendMessageMapper() {
-        return new SendMessageMapper();
-    }
-
-
-    @InboxChatScope
-    @Provides
-    SendMessageSource provideSendMessageSource(ChatApi chatApi,
-                                               SendMessageMapper sendMessageMapper) {
-        return new SendMessageSource(chatApi, sendMessageMapper);
-    }
-
+//    @InboxChatScope
+//    @Provides
+//    GetChatShopInfoUseCase provideGetChatShopInfo(GetShopInfoUseCase getShopInfoUseCase) {
+//        return new GetChatShopInfoUseCase(getShopInfoUseCase);
+//    }
 
     @Provides
     public ErrorResponseInterceptor provideResponseInterceptor() {
