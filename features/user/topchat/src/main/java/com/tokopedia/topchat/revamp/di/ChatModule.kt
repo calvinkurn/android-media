@@ -201,7 +201,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideMessageRepository(graphqlUseCase: GraphqlUseCase,
+    internal fun provideChatSettingsPresenter(graphqlUseCase: GraphqlUseCase,
                                           chatSettingsAnalytics: ChatSettingsAnalytics):
             ChatSettingsInterface.Presenter {
         return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
