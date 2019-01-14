@@ -24,3 +24,7 @@ fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
 fun ImageView.loadImageWithoutPlaceholder(@DrawableRes drawableId: Int) {
     ImageHandler.loadImageWithIdWithoutPlaceholder(this, drawableId)
 }
+
+fun ImageView.clearImage() {
+    ImageHandler.clearImage(this)
+}

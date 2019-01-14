@@ -77,6 +77,10 @@ class DynamicPostViewHolder(v: View,
         }
     }
 
+    fun onViewRecycled() {
+        itemView.authorImage.clearImage()
+    }
+
     private fun bindTitle(title: Title, template: TemplateTitle) {
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
             itemView.cardTitle.bind(title, template)

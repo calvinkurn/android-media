@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsClickListener {
 
+    private RecyclerView recommendationRv;
     private DynamicFeedShopAdapter adapter;
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
@@ -45,7 +47,7 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new DynamicFeedShopAdapter(this);
 
-        RecyclerView recommendationRv = findViewById(R.id.recommendationRv);
+        recommendationRv = findViewById(R.id.recommendationRv);
         recommendationRv.setAdapter(adapter);
     }
 
@@ -59,6 +61,19 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void onViewRecycled() {
+        if (adapter == null || recommendationRv == null) {
+            return;
+        }
+
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            RecyclerView.ViewHolder holder = recommendationRv.findViewHolderForAdapterPosition(i);
+            if (holder instanceof DynamicFeedShopAdapter.DynamicFeedShopViewHolder) {
+                adapter.onViewRecycled((DynamicFeedShopAdapter.DynamicFeedShopViewHolder) holder);
+            }
+        }
     }
 
     @Override
