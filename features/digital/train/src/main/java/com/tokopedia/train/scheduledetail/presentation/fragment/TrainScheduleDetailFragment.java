@@ -1,6 +1,7 @@
 package com.tokopedia.train.scheduledetail.presentation.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetail
  */
 public class TrainScheduleDetailFragment extends BaseDaggerFragment {
 
+    private static final String TRAIN_SCHEDULE_DETAIL = "train_schedule_detail";
+
     private TextView trip;
     private TextView trainName;
     private TextView trainClass;
@@ -32,8 +35,14 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     private TextView destinationStationName;
     private TextView destinationCityName;
 
-    public static Fragment createInstance() {
-        return new TrainScheduleDetailFragment();
+    private TrainScheduleDetailViewModel viewModel;
+
+    public static Fragment createInstance(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        Fragment fragment = new TrainScheduleDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TRAIN_SCHEDULE_DETAIL, trainScheduleDetailViewModel);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -59,6 +68,14 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = getArguments().getParcelable(TRAIN_SCHEDULE_DETAIL);
+        if (viewModel != null)
+            render(viewModel);
+    }
+
+    @Override
     protected void initInjector() {
 
     }
@@ -69,9 +86,16 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     }
 
     public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        viewModel = getArguments().getParcelable("TRAIN_DETAIL");
+        if (isAdded()) {
+            render(viewModel);
+        }
+    }
+
+    private void render(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
         trip.setText(trainScheduleDetailViewModel.isReturnTrip() ?
-                getString(R.string.train_search_return_title) :
-                getString(R.string.train_search_departure_title));
+                R.string.train_search_return_title :
+                R.string.train_search_departure_title);
         trainName.setText(trainScheduleDetailViewModel.getTrainName() + " " +
                 trainScheduleDetailViewModel.getTrainNumber());
         trainClass.setText(trainScheduleDetailViewModel.getTrainClass() + " (" +

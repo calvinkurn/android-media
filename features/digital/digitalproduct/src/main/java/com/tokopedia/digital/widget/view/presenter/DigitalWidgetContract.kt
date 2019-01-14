@@ -17,8 +17,6 @@ class DigitalWidgetContract {
 
         fun renderErrorNetwork(resId: Int)
 
-        fun renderErrorMessage()
-
     }
 
     interface Presenter : CustomerPresenter<View> {
