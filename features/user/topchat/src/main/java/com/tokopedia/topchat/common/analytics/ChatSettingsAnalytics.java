@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 
