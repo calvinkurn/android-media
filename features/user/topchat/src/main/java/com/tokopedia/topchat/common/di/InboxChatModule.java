@@ -17,8 +17,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.chat_common.network.ChatUrl;
-import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -46,17 +46,15 @@ import com.tokopedia.topchat.chatroom.data.network.TopChatApi;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
-import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
-import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
-import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
@@ -344,19 +342,19 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    GraphqlUseCase provideGraphqlUseCase(){
+    GraphqlUseCase provideGraphqlUseCase() {
         return new GraphqlUseCase();
     }
 
     @Provides
     GetChatBlastSellerMetaDataUseCase provideGetChatBlastSellerMetaDataUseCase(GraphqlUseCase graphqlUseCase,
-                                                                               @ApplicationContext Context context){
+                                                                               @ApplicationContext Context context) {
         return new GetChatBlastSellerMetaDataUseCase(graphqlUseCase, context);
     }
 
     @InboxChatScope
     @Provides
-    GetUserStatusMapper provideGetUserStatusMapper(){
+    GetUserStatusMapper provideGetUserStatusMapper() {
         return new GetUserStatusMapper();
     }
 

@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel;
 
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 
 /**
  * @author by yfsx on 08/05/18.
@@ -21,7 +20,6 @@ public class BaseChatViewModel {
 
     /**
      * Constructor for WebSocketResponse / API Response
-     * {@link ChatWebSocketListenerImpl}
      *
      * @param messageId      messageId
      * @param fromUid        userId of sender
@@ -95,7 +93,6 @@ public class BaseChatViewModel {
     }
 
     /**
-     *
      * @param showDate set true to show date in header of chat
      */
     public void setShowDate(boolean showDate) {
@@ -107,7 +104,6 @@ public class BaseChatViewModel {
     }
 
     /**
-     *
      * @param showTime set true to show time in chat
      */
     public void setShowTime(boolean showTime) {

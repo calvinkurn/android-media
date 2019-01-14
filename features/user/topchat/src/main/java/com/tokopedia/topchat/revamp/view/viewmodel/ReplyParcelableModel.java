@@ -1,5 +1,5 @@
 
-package com.tokopedia.topchat.chatroom.view.viewmodel;
+package com.tokopedia.topchat.revamp.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

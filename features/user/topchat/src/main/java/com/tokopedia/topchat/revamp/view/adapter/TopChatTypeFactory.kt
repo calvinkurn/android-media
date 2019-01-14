@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.revamp.view.adapter
 
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.revamp.view.viewmodel.SecurityInfoViewModel
+import com.tokopedia.topchat.revamp.view.viewmodel.ImageDualAnnouncementViewModel
 
 interface TopChatTypeFactory {
 

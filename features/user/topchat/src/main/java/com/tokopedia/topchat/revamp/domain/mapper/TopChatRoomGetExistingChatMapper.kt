@@ -8,8 +8,8 @@ import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatlist.data.TopChatUrl
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.revamp.view.viewmodel.SecurityInfoViewModel
+import com.tokopedia.topchat.revamp.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.revamp.domain.pojo.ImageDualAnnouncementPojo
 import javax.inject.Inject
 

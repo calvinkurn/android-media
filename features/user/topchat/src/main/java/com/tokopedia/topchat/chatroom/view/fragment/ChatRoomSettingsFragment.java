@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -218,10 +219,10 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
         ViewGroup.MarginLayoutParams layoutParams =
                 (ViewGroup.MarginLayoutParams) chatPromotionalcardView.getLayoutParams();
         if (!TextUtils.isEmpty(chatRole)) {
-            if (chatRole.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
+            if (chatRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)) {
                 setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
-            } else if (chatRole.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
+            } else if (chatRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
                 layoutParams.setMargins(0, (int) getResources().getDimension(R.dimen.dp_24), 0, 0);
                 chatPromotionalcardView.requestLayout();
                 chatPromotionalcardView.setVisibility(View.VISIBLE);

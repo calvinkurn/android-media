@@ -21,14 +21,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
@@ -53,7 +52,7 @@ import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
+import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
@@ -89,7 +88,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     RefreshHandler refreshHandler;
     boolean isRetryShowing = false;
     LinearLayoutManager layoutManager;
-    TkpdProgressDialog progressDialog;
     SearchInputView searchInputView;
     boolean isMultiActionEnabled = false;
     ActionMode.Callback callbackContext;
@@ -179,7 +177,6 @@ public class InboxChatFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setHasFixedSize(true);
         presenter.attachView(this);
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
@@ -477,7 +474,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void finishLoading() {
         refreshHandler.finishRefresh();
-        progressDialog.dismiss();
         adapter.removeLoading();
         searchLoading.setVisibility(View.GONE);
     }

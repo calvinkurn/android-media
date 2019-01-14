@@ -82,8 +82,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
-        return (recyclerView.layoutManager as LinearLayoutManager)
-                .findFirstCompletelyVisibleItemPosition() < 1
+        //always scroll to bottom
+        return false
     }
 
     override fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel) {

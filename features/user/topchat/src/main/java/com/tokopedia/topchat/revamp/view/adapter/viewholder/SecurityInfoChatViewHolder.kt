@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
+import com.tokopedia.topchat.revamp.view.viewmodel.SecurityInfoViewModel
 import com.tokopedia.topchat.revamp.view.listener.SecurityInfoListener
 
 /**

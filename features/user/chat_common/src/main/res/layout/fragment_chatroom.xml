@@ -64,41 +64,6 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/chat_blocked_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_5"
-        android:background="@drawable/button_curvy_green"
-        android:padding="@dimen/dp_8"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/blocked_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/chat_blocked_text"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_12"
-            />
-
-        <TextView
-            android:id="@+id/enable_chat_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/blocked_text"
-            android:text="@string/enable_chat_settings"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="12sp"
-            />
-
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/add_comment_area"
         android:layout_width="match_parent"
@@ -219,6 +184,41 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/chat_blocked_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/add_comment_area"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@drawable/border_green_white_box"
+        android:padding="@dimen/dp_8"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/blocked_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_blocked_text"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_12"
+            />
+
+        <TextView
+            android:id="@+id/enable_chat_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/blocked_text"
+            android:text="@string/enable_chat_settings"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="12sp"
+            />
+
+    </RelativeLayout>
+
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"
@@ -232,7 +232,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/add_comment_area"
+        android:layout_above="@+id/chat_blocked_layout"
         android:layout_below="@id/header"
         android:layout_gravity="center"
         android:scrollbars="vertical"/>

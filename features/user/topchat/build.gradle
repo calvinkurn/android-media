@@ -27,8 +27,6 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation rootProject.ext.miscDependencies.multiDex
 

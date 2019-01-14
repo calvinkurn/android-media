@@ -7,8 +7,8 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.revamp.view.viewmodel.SecurityInfoViewModel
+import com.tokopedia.topchat.revamp.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.revamp.view.adapter.viewholder.ImageDualAnnouncementViewHolder
 import com.tokopedia.topchat.revamp.view.adapter.viewholder.SecurityInfoChatViewHolder
 import com.tokopedia.topchat.revamp.view.listener.DualAnnouncementListener
