@@ -58,6 +58,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         requestOtpUseCase.unsubscribe();
         validateOtpUseCase.unsubscribe();
         validateOtpLoginUseCase.unsubscribe();
+        getVerificationMethodListUseCase.unsubscribe();
     }
 
     @Override
@@ -168,26 +169,30 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
 
             @Override
             public void onError(Throwable e) {
-                String errorMessage = OtpErrorHandler.getErrorMessage(e,
-                        getView().getContext(), false);
+                if (getView() != null && getView().getContext() != null) {
+                    String errorMessage = OtpErrorHandler.getErrorMessage(e,
+                            getView().getContext(), false);
 
-                if (!TextUtils.isEmpty(e.getMessage())
-                        && errorMessage.contains(getView().getContext().getString(R.string
-                        .default_request_error_unknown))) {
-                    getView().logUnknownError(e);
+                    if (!TextUtils.isEmpty(e.getMessage())
+                            && errorMessage.contains(getView().getContext().getString(R.string
+                            .default_request_error_unknown))) {
+                        getView().logUnknownError(e);
+                    }
                 }
             }
 
             @Override
             public void onNext(ListVerificationMethod listVerificationMethod) {
-                if (listVerificationMethod.getList().isEmpty()) {
-                    getView().logUnknownError(new Throwable("mode list is empty"));
-                } else {
+                if (getView() != null) {
+                    if (listVerificationMethod.getList().isEmpty()) {
+                        getView().logUnknownError(new Throwable("mode list is empty"));
+                    } else {
 
-                    for (MethodItem methodItem : listVerificationMethod.getList()) {
-                        if (methodItem.getModeName().equals(viewModel.getMode())) {
-                            getView().onSuccessGetModelFromServer(methodItem);
-                            break;
+                        for (MethodItem methodItem : listVerificationMethod.getList()) {
+                            if (methodItem.getModeName().equals(viewModel.getMode())) {
+                                getView().onSuccessGetModelFromServer(methodItem);
+                                break;
+                            }
                         }
                     }
                 }

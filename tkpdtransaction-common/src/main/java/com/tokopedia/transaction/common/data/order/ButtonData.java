@@ -39,6 +39,8 @@ public class ButtonData implements Parcelable {
 
     private int changeAwbVisibility;
 
+    private int buyAgainVisibility;
+
     private int changeCourier;
 
     private int trackVisibility;
@@ -64,9 +66,38 @@ public class ButtonData implements Parcelable {
         confirmShippingVisibility = in.readInt();
         requestPickupVisibility = in.readInt();
         changeAwbVisibility = in.readInt();
+        buyAgainVisibility = in.readInt();
         changeCourier = in.readInt();
         trackVisibility = in.readInt();
         viewComplaint = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(askSellerVisibility);
+        dest.writeInt(requestCancelVisibility);
+        dest.writeInt(receiveConfirmationVisibility);
+        dest.writeInt(finishOrderVisibility);
+        dest.writeInt(complaintVisibility);
+        dest.writeInt(cancelPeluangVisibility);
+        dest.writeInt(orderDetailVisibility);
+        dest.writeInt(askBuyerVisibility);
+        dest.writeInt(acceptOrderVisibility);
+        dest.writeInt(acceptPartialOrderVisibility);
+        dest.writeInt(rejectOrderVisibility);
+        dest.writeInt(rejectShipmentVisibility);
+        dest.writeInt(confirmShippingVisibility);
+        dest.writeInt(requestPickupVisibility);
+        dest.writeInt(changeAwbVisibility);
+        dest.writeInt(buyAgainVisibility);
+        dest.writeInt(changeCourier);
+        dest.writeInt(trackVisibility);
+        dest.writeInt(viewComplaint);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
@@ -225,30 +256,11 @@ public class ButtonData implements Parcelable {
         this.viewComplaint = viewComplaint;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getBuyAgainVisibility() {
+        return buyAgainVisibility;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(askSellerVisibility);
-        parcel.writeInt(requestCancelVisibility);
-        parcel.writeInt(receiveConfirmationVisibility);
-        parcel.writeInt(finishOrderVisibility);
-        parcel.writeInt(complaintVisibility);
-        parcel.writeInt(cancelPeluangVisibility);
-        parcel.writeInt(orderDetailVisibility);
-        parcel.writeInt(askBuyerVisibility);
-        parcel.writeInt(acceptOrderVisibility);
-        parcel.writeInt(acceptPartialOrderVisibility);
-        parcel.writeInt(rejectOrderVisibility);
-        parcel.writeInt(rejectShipmentVisibility);
-        parcel.writeInt(confirmShippingVisibility);
-        parcel.writeInt(requestPickupVisibility);
-        parcel.writeInt(changeAwbVisibility);
-        parcel.writeInt(changeCourier);
-        parcel.writeInt(trackVisibility);
-        parcel.writeInt(viewComplaint);
+    public void setBuyAgainVisibility(int buyAgainVisibility) {
+        this.buyAgainVisibility = buyAgainVisibility;
     }
 }

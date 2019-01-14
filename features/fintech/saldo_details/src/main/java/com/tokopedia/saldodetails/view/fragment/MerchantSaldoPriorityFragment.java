@@ -29,7 +29,7 @@ import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
-import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
+import com.tokopedia.saldodetails.presenter.MerchantSaldoPriorityPresenter;
 import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
@@ -66,7 +66,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     SaldoDetailsAnalytics saldoDetailsAnalytics;
 
     @Inject
-    SaldoDetailsPresenter saldoDetailsPresenter;
+    MerchantSaldoPriorityPresenter saldoDetailsPresenter;
     private boolean originalSwitchState;
 
     @Nullable
@@ -334,7 +334,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public Context getActivityContext() {
+    public Context getContext() {
         return context;
     }
 

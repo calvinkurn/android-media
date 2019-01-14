@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -12,9 +11,9 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 import com.tokopedia.tkpd.home.model.VideoPushBannerModel;
-import com.tokopedia.tkpd.R;
 
 import java.util.List;
 
@@ -61,9 +60,7 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
             if (!TextUtils.isEmpty(bannerModelList.get(position).getLink())) {
                 RouteManager.route(context, bannerModelList.get(position).getLink());
                 HomeGATracking.eventClickVideoBannerClick(mVideoTitle + "_" + bannerModelList.get(position).getBannerName() + "_" + (position + 1));
-
             }
-            ((Activity) context).finish();
         });
         return imageLayout;
     }

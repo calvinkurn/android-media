@@ -33,7 +33,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     private GraphqlUseCase mSaveCouponUseCase;
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
-    private int selectedItem =0;
+    private int selectedItem = 0;
 
     @Inject
     public HomepagePresenter(GraphqlUseCase getTokoPointDetailUseCase,
@@ -308,41 +308,11 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         getView().showRedeemCouponDialog(cta, code, title);
     }
 
-    @Override
-    public void getPopupNotification() {
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_popup_notification),
-                TokoPointDetailEntity.class);
-        mRedeemCouponUseCase.clearRequest();
-        mRedeemCouponUseCase.addRequest(request);
-        mRedeemCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                //NA
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                TokoPointDetailEntity data = response.getData(TokoPointDetailEntity.class);
-                if (data != null
-                        && data.getTokoPoints() != null
-                        && data.getTokoPoints().getPopupNotif() != null) {
-                    getView().showPopupNotification(data.getTokoPoints().getPopupNotif());
-                }
-            }
-        });
-    }
-
     public int getPagerSelectedItem() {
         return selectedItem;
     }
 
-    public void setPagerSelectedItem(int selectedItem){
-        this.selectedItem=selectedItem;
+    public void setPagerSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
     }
 }

@@ -11,7 +11,7 @@
     <string name="kai_homepage_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
 
     <string name="kai_homepage_adult_passenger">Dewasa</string>
-    <string name="kai_homepage_adult_infant">Bayi</string>
+    <string name="kai_homepage_infant_passenger">Bayi</string>
     <string name="train_homepage_toolbar_title">Tiket Kereta</string>
     <string name="train_homepage_origin_station_hint">Kota/Stasiun Asal</string>
     <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>
@@ -27,9 +27,9 @@
 
     <string name="train_select_passenger_adult_subtitle">(Lebih dari 3 tahun)</string>
     <string name="train_select_passenger_adult_title">Dewasa</string>
-    <string name="train_select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
+    <string name="train_select_passenger_infant_subtitle">(Kurang dari 3 tahun)</string>
     <string name="train_select_passenger_infant_title">Bayi</string>
-    <string name="train_select_passenger_total_passenger_error_message">Total Penumpang maksimal 8 penumpang (Dewasa dan Anak)</string>
+    <string name="train_select_passenger_total_passenger_error_message">Total Penumpang maksimal 8 penumpang (Dewasa dan Bayi)</string>
     <string name="train_select_passenger_adult_cant_be_greater_than_four_error_message">Total Penumpang Dewasa maksimal 4 penumpang</string>
     <string name="train_select_passenger_infant_greater_than_adult_error_message">Jumlah penumpang bayi tidak boleh melebihi jumlah penumpang dewasa</string>
     <string name="train_select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
@@ -57,6 +57,7 @@
     <string name="train_search_fastest_label">Tercepat</string>
     <string name="train_search_seat_full_label">Penuh</string>
     <string name="train_search_remains_seat_label" formatted="false">Sisa %d kursi</string>
+    <string name="train_bottom_sheet_tag">Train Sort</string>
 
     <!-- filter -->
     <string name="train_filter_time_departure">Waktu Berangkat</string>
@@ -86,7 +87,7 @@
     <string name="train_passenger_additional_info">Bila tidak ada, mohon masukkan tanggal lahir dalam format (DDMMYYYY)</string>
     <string name="train_passenger_identity_number">Nomor Identitas (KTP/SIM/Paspor)</string>
     <string name="train_passenger_identity_number_hint">Isi Nomor Identitas</string>
-    <string name="train_passenger_header_format" formatted="false">%s %d (%s)</string>
+    <string name="train_passenger_header_format" formatted="false">%s %s</string>
     <string name="train_passenger_header_title">Penumpang</string>
     <string name="train_passenger_error_salutation">Sapaan harus dipilih</string>
     <string name="train_passenger_error_contact_name">Nama Lengkap harus diisi</string>
@@ -94,7 +95,6 @@
     <string name="train_passenger_error_identity_number">Nomor Identitas harus diisi</string>
     <string name="train_passenger_error_identity_number_min">Nomor Identitas minimal 5 huruf</string>
     <string name="train_passenger_error_identity_number_max">Nomor Identitas maksimal 20 huruf</string>
-    <string name="train_passenger_label_identity_number" formatted="false">No ID : %s</string>
     <string name="train_passenger_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
     <string name="train_passenger_contact_name_max">Nama kontak maksimal 60 huruf</string>
     <string name="train_passenger_contact_name_alpha_space_error">Nama harus terdiri alfabet dan spasi</string>
@@ -104,12 +104,12 @@
     <string name="train_passenger_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
     <string name="train_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 15 digit</string>
     <string name="train_passenger_contact_phone_min_length_error">Telepon Kontak minimal 9 digit</string>
-    <string name="train_passenger_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
+    <string name="train_passenger_passenger_not_fullfilled_error">Silakan mengisi Data Penumpang untuk melanjutkan.</string>
     <string name="train_dialog_booking_passanger_title">Batalkan Pengisian Data</string>
     <string name="train_dialog_booking_passanger_desc">Anda akan kembali ke halaman awal. Anda yakin?</string>
     <string name="train_dialog_booking_passanger_no">Ya, batalkan</string>
     <string name="train_dialog_booking_passanger_yes">Lanjut Isi</string>
-    <string name="train_btn_fill_passenger_data">Isi Data</string>
+    <string name="train_btn_fill_passenger_data">Pilih</string>
     <string name="train_btn_change_passenger_data">Ubah</string>
 
     <!-- sort -->

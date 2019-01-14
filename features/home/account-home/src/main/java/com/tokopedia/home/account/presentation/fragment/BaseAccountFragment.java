@@ -3,10 +3,12 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
@@ -30,6 +32,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import java.util.HashMap;
 
@@ -50,6 +53,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final String OVO = "OVO";
+    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE_FIRSTTIME = "KEY_AFFILIATE_FIRSTTIME";
+    public static final String BROADCAST_ACCOUNT = "BROADCAST_ACCOUNT";
+    public static final String PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED = "PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED";
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
@@ -151,9 +158,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     new HashMap<>(), getContext());
         }
 
+        if (item.getMainText().equals(getActivity().getResources().getString(R.string.title_menu_affiliate))) {
+            handleChangeStateAffiliateItem();
+        }
         sendTracking(item.getTitleTrack(), item.getSectionTrack(),
                 item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
+
     }
 
     @Override
@@ -205,10 +216,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
 
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
-        sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
-                AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
-                String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
-
+        if (bsData != null) {
+            sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
+                    AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
+                    String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
+        }
         if (applink != null && applink.startsWith("http")) {
             openApplink(String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW,
@@ -344,6 +356,22 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
             ((AccountHomeRouter) getContext().getApplicationContext()).
                     gotoTopAdsDashboard(getContext());
+        }
+    }
+
+    @Override
+    public void onShopStatusInfoButtonClicked() {
+        RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
+    }
+
+    private void handleChangeStateAffiliateItem() {
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_PROFILE_BUYER);
+        if (cache.getBoolean(KEY_AFFILIATE_FIRSTTIME, true)) {
+            cache.putBoolean(KEY_AFFILIATE_FIRSTTIME, false);
+            cache.applyEditor();
+            Intent intent = new Intent(BROADCAST_ACCOUNT);
+            intent.putExtra(PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED, true);
+            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).sendBroadcast(intent);
         }
     }
 }

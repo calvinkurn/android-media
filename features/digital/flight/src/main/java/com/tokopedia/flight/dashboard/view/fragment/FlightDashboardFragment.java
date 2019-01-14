@@ -362,8 +362,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderSingleTripView() {
-        oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
-        roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.setVisibility(View.GONE);
@@ -392,8 +390,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderRoundTripView() {
-        oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
-        roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
         returnDateTextInputView.setVisibility(View.VISIBLE);

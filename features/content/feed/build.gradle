@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.apollographql.android'
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -35,6 +34,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.profile)
@@ -88,10 +88,6 @@ dependencies {
     annotationProcessor   rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.networkDependencies.glide
-
-    implementation rootProject.ext.apolloDependencies.apolloRxSupport
-    implementation rootProject.ext.apolloDependencies.apolloRuntime
-    implementation rootProject.ext.apolloDependencies.apolloAndroidSupport
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor   rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

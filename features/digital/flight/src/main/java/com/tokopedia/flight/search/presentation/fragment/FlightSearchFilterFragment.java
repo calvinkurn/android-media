@@ -74,7 +74,9 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         FlightFilterModel filterModel = onFilterFragmentListener.getFlightFilterModel();
         FlightSearchStatisticModel statModel = onFilterFragmentListener.getFlightSearchStatisticModel();
 
-        populateViews(view, filterModel, statModel);
+        if (filterModel != null && statModel != null) {
+            populateViews(view, filterModel, statModel);
+        }
 
         view.requestFocus();
         return view;

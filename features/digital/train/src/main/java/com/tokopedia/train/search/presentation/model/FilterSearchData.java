@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by nabillasabbaha on 3/22/18.
+ * This object contains all data filter search and selected data filter by user
  */
 
 public class FilterSearchData implements Parcelable {

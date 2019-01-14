@@ -455,6 +455,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             analytics.eventSuccessLogin(actionLoginMethod);
             ((LoginRegisterRouter) getActivity().getApplicationContext()).setTrackingUserId
                     (userSession.getUserId(), getActivity().getApplicationContext());
+            ((LoginRegisterRouter) getActivity().getApplicationContext()).onLoginSuccess();
         }
     }
 

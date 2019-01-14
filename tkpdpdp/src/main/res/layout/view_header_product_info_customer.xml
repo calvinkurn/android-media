@@ -7,6 +7,27 @@
     android:background="@android:color/background_light"
     android:orientation="vertical">
 
+    <FrameLayout android:id="@+id/layout_cod_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_background"
+        android:visibility="gone"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_56"
+        android:paddingEnd="@dimen/dp_56">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cod_content"
+            app:fontSize="small"
+            app:textViewTheme="lightSecondary"/>
+
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/linear_discount_timer_holder"
         android:layout_width="match_parent"

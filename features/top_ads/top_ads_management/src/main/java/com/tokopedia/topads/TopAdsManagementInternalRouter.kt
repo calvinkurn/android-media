@@ -9,6 +9,7 @@ import com.tokopedia.topads.group.view.activity.TopAdsGroupAdListActivity
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity
 import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity
 
 object TopAdsManagementInternalRouter {
 
@@ -33,4 +34,7 @@ object TopAdsManagementInternalRouter {
     @JvmStatic
     fun getTopAdsKeywordNewChooseGroupIntent(context: Context, isPositive: Boolean, groupId: String? =null) =
             TopAdsKeywordNewChooseGroupActivity.createIntent(context, isPositive, groupId)
+
+    @JvmStatic
+    fun getTopAdsDetailProductIntent(context: Context) = Intent(context, TopAdsDetailProductActivity::class.java)
 }
