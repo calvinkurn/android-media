@@ -67,4 +67,7 @@
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
 
+    <!--EDUCATION-->
+    <string name="af_skip">Lewatkan</string>
+
 </resources>
