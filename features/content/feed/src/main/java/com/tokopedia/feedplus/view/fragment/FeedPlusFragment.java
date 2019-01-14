@@ -1563,7 +1563,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             trackCardPostClick(
                     positionInFeed,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.AVATAR
+                    FeedAnalytics.Element.AVATAR,
+                    redirectUrl
             );
         }
     }
@@ -1594,7 +1595,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             trackCardPostClick(
                     positionInFeed,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.FOLLOW
+                    FeedAnalytics.Element.FOLLOW,
+                    ""
             );
         }
     }
@@ -1672,7 +1674,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             trackCardPostClick(
                     positionInFeed,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.SHARE
+                    FeedAnalytics.Element.SHARE,
+                    url
             );
         }
     }
@@ -1687,7 +1690,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             trackCardPostClick(
                     positionInFeed,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.TAG
+                    FeedAnalytics.Element.TAG,
+                    redirectUrl
             );
         }
     }
@@ -1705,7 +1709,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     positionInFeed,
                     contentPosition,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.IMAGE
+                    FeedAnalytics.Element.IMAGE,
+                    redirectLink
             );
         }
     }
@@ -1713,10 +1718,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
                                         @NotNull String youtubeId) {
+        String redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId);
+
         if (getContext() != null) {
             RouteManager.route(
                     getContext(),
-                    ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
+                    redirectUrl
             );
         }
 
@@ -1727,7 +1734,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     positionInFeed,
                     contentPosition,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.VIDEO
+                    FeedAnalytics.Element.VIDEO,
+                    redirectUrl
             );
         }
     }
@@ -1749,7 +1757,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     positionInFeed,
                     contentPosition,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.OPTION + option
+                    FeedAnalytics.Element.OPTION + option,
+                    redirectLink
             );
         }
     }
@@ -1766,7 +1775,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     positionInFeed,
                     contentPosition,
                     model.getTrackingPostModel(),
-                    FeedAnalytics.Element.PRODUCT
+                    FeedAnalytics.Element.PRODUCT,
+                    redirectLink
             );
         }
     }
@@ -1817,7 +1827,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             trackingBannerModel.getActivityName(),
                             trackingBannerModel.getTrackingType(),
                             trackingBannerModel.getMediaType(),
-                            trackingBannerModel.getTagsType(),
                             trackingBannerModel.getBannerUrl(),
                             trackingBannerModel.getTotalBanner(),
                             trackingBannerModel.getPostId(),
@@ -1852,12 +1861,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void trackCardPostClick(int positionInFeed, TrackingPostModel trackingPostModel,
-                                    String element) {
-        trackCardPostClick(positionInFeed, -1, trackingPostModel, element);
+                                    String element, String redirectUrl) {
+        trackCardPostClick(positionInFeed, -1, trackingPostModel, element, redirectUrl);
     }
 
-    private void trackCardPostClick(int positionInFeed, int contentPosition, TrackingPostModel trackingPostModel,
-                                    String element) {
+    private void trackCardPostClick(int positionInFeed, int contentPosition,
+                                    TrackingPostModel trackingPostModel, String element,
+                                    String redirectUrl) {
         int userId = 0;
         try {
             userId = Integer.valueOf(getUserSession().getUserId());
@@ -1918,7 +1928,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 trackingBannerModel.getActivityName(),
                 trackingBannerModel.getTrackingType(),
                 trackingBannerModel.getMediaType(),
-                trackingBannerModel.getTagsType(),
                 trackingBannerModel.getBannerUrl(),
                 element,
                 trackingBannerModel.getTotalBanner(),
