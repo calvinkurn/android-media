@@ -61,6 +61,8 @@ public class FeedAnalytics {
     private static final String DASH = " - ";
     private static final String SINGLE = "single";
     private static final String MULTIPLE = "multiple";
+    private static final String FORMAT_PROMOTION_NAME = "%s - %s - %s - %s";
+    private static final String FORMAT_PROMOTION_NAME_RECCOMENDATION = "%s - %s - %s";
 
     private AnalyticTracker analyticTracker;
     private UserSessionInterface userSession;
@@ -419,8 +421,11 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         postId,
-                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
-                                singleOrMultiple(totalContent),
+                        String.format(FORMAT_PROMOTION_NAME,
+                                CONTENT_FEED,
+                                activityName,
+                                tagsType,
+                                singleOrMultiple(totalContent)),
                         redirectUrl,
                         position,
                         "",
@@ -446,9 +451,12 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         postId,
-                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
-                                singleOrMultiple(totalContent),
-                        redirectUrl+ DASH + contentPosition,
+                        String.format(FORMAT_PROMOTION_NAME,
+                                CONTENT_FEED,
+                                activityName,
+                                tagsType,
+                                singleOrMultiple(totalContent)),
+                        redirectUrl + DASH + contentPosition,
                         position,
                         "",
                         0,
@@ -474,8 +482,11 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         postId,
-                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
-                                singleOrMultiple(totalBanner),
+                        String.format(FORMAT_PROMOTION_NAME,
+                                CONTENT_FEED,
+                                activityName,
+                                tagsType,
+                                singleOrMultiple(totalBanner)),
                         bannerUrl + DASH + bannerPosition,
                         feedPosition,
                         String.valueOf(totalBanner),
@@ -502,8 +513,11 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         postId,
-                        CONTENT_FEED + DASH + activityName + DASH + tagsType + DASH +
-                                singleOrMultiple(totalBanner),
+                        String.format(FORMAT_PROMOTION_NAME,
+                                CONTENT_FEED,
+                                activityName,
+                                tagsType,
+                                singleOrMultiple(totalBanner)),
                         bannerUrl + DASH + bannerPosition,
                         feedPosition,
                         String.valueOf(totalBanner),
@@ -530,7 +544,10 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         authorId,
-                        CONTENT_FEED + DASH + activityName + DASH + authorType,
+                        String.format(FORMAT_PROMOTION_NAME_RECCOMENDATION,
+                                CONTENT_FEED,
+                                activityName,
+                                authorType),
                         authorName + DASH + cardPosition,
                         feedPosition,
                         "",
@@ -558,7 +575,10 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                         authorId,
-                        CONTENT_FEED + DASH + activityName + DASH + authorType,
+                        String.format(FORMAT_PROMOTION_NAME_RECCOMENDATION,
+                                CONTENT_FEED,
+                                activityName,
+                                authorType),
                         authorName + DASH + cardPosition,
                         feedPosition,
                         "",
