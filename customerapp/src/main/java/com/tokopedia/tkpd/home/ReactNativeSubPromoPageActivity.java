@@ -16,12 +16,16 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
  */
 
 public class ReactNativeSubPromoPageActivity extends ReactFragmentActivity<GeneralReactNativeFragment> {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String KEY_SLUG = "slug";
     public static final String CATEGORY_SLUG = "category_slug";
+
+    private static final String MP_OS_SUB_PROMO = "mp_os_sub_promo";
     
     @DeepLink({ApplinkConst.SUB_PROMO, ApplinkConst.SUB_PROMO_WITH_SLASH})
     public static Intent getSubPromoApplinkCallingIntent(Context context, Bundle bundle){
+        startTracing(MP_OS_SUB_PROMO);
         return ReactNativeSubPromoPageActivity.createApplinkCallingIntent(
                 context,
                 ReactConst.Screen.SUB_PROMO,

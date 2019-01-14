@@ -21,12 +21,17 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
  */
 
 public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralReactNativeFragment> implements PermissionAwareActivity {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String PAGE_ID = "page_id";
+
+    private static final String MP_FLASHSALE = "mp_flashsale";
+
     private PermissionListener mPermissionListener;
 
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
+        startTracing(MP_FLASHSALE);
         return ReactNativeDiscoveryActivity.createApplinkCallingIntent(
                 context, ReactConst.Screen.DISCOVERY_PAGE,
                 "",

@@ -11,12 +11,16 @@ import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<GeneralReactNativeFragment> {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
+    private static final String MP_OFFICIAL_STORE = "mp_official_store";
     private static final String CATEGORY = "Category";
     private static final String KEY_CATEGORY = "key_category";
 
     @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORES_CATEGORY})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
+        startTracing(MP_OFFICIAL_STORE);
         return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(
                 context,
                 ReactConst.Screen.OFFICIAL_STORE,

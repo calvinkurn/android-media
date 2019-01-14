@@ -27,7 +27,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 
 public abstract class ReactFragmentActivity<T extends ReactNativeFragment> extends BasePresenterActivity implements ReactNativeView {
 
-    private static final String REACT_NATIVE_TRACE = "react_native_trace";
     private static PerformanceMonitoring perfMonitor = null;
 
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
@@ -35,9 +34,9 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     public static final String DEEP_LINK_URI = "deep_link_uri";
     private ProgressBar loaderBootingReact;
 
-    public static void startTracing() {
+    public static void startTracing(String tracerName) {
         if (perfMonitor == null) {
-            perfMonitor = perfMonitor.start(REACT_NATIVE_TRACE);
+            perfMonitor = perfMonitor.start(tracerName);
         }
     }
 
@@ -66,7 +65,6 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     @Override
     protected void initView() {
-        startTracing();
         actionSetToolbarTitle(getToolbarTitle());
         loaderBootingReact = (ProgressBar) findViewById(R.id.rn_progressbar);
         T fragment = getReactNativeFragment();

@@ -22,15 +22,17 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
  */
 
 public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNativePromoSaleFragment> {
+
     private static final String SALE_PROMO = "Promo Sale";
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String KEY_SLUG = "slug";
-
+    private static final String MP_OS_PROMO = "mp_os_promo";
 
     @DeepLink({ApplinkConst.PROMO_SALE, ApplinkConst.PROMO_SALE_NO_SLASH})
     public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(context, SALE_PROMO);
+        startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -47,6 +49,7 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
     public static Intent getPromoSaleTermsIntent(Context context, Bundle bundle) {
+        startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createPromoSaleTerms(
                 context,
                 ReactConst.Screen.PROMO,

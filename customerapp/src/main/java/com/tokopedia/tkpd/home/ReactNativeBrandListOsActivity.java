@@ -16,10 +16,14 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
  */
 
 public class ReactNativeBrandListOsActivity extends ReactFragmentActivity<GeneralReactNativeFragment> {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
+    private static final String MP_BRAND_LIST = "MP_BRAND_LIST";
     
     @DeepLink({ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH})
     public static Intent getBrandlistApplinkCallingIntent(Context context, Bundle bundle){
+        startTracing(MP_BRAND_LIST);
         return ReactNativeBrandListOsActivity.createApplinkCallingIntent(context, ReactConst.Screen.BRANDLIST_PAGE, "All Brands", bundle);
     }
 

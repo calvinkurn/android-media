@@ -17,13 +17,17 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
  */
 
 public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
     public static final String DEEP_LINK_URI = "deep_link_uri";
 
+    private static final String MP_PAYMENT_MANAGEMENT_SYSTEM = "mp_payment_management_system";
+
     @DeepLink(ApplinkConst.HOWTOPAY)
     public static Intent getHowToPayApplinkCallingIntent(Context context, Bundle bundle){
+        ReactFragmentActivity.startTracing(MP_PAYMENT_MANAGEMENT_SYSTEM);
         return ReactNativeHowToPayActivity.createApplinkCallingIntent(context, ReactConst.Screen.HOW_TO_PAY, "Cara Pembayaran", bundle);
     }
 
