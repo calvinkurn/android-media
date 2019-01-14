@@ -58,7 +58,7 @@ class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceCon
                         pojoItem.attributes.createTime,
                         pojoItem.attributes.totalAmount,
                         pojoItem.type,
-                        pojoItem.attributes.code,
+                        pojoItem.attributes.description,
                         pojoItem.attributes.invoiceUrl
 
                 ))
