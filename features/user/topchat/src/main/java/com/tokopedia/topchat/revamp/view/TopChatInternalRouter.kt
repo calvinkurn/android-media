@@ -51,7 +51,7 @@ open class TopChatInternalRouter {
                                     blockedUntil
                             )
                     )),
-                    true,
+                    !isBlocked,
                     opponentRole,
                     opponentName)
         }

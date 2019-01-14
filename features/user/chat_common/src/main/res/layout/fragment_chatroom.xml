@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
 
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical">
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
 
 
     <RelativeLayout
@@ -37,7 +37,7 @@
             <ImageView
                 android:id="@+id/rep_icon"
                 android:layout_width="@dimen/dp_15"
-                android:layout_height="@dimen/dp_15" />
+                android:layout_height="@dimen/dp_15"/>
 
             <TextView
                 android:id="@+id/rep_rating"
@@ -46,7 +46,7 @@
                 android:layout_marginLeft="@dimen/dp_5"
                 android:gravity="center_vertical"
                 android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_12"/>
         </LinearLayout>
 
         <TextView
@@ -60,10 +60,44 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
-            android:singleLine="true" />
+            android:singleLine="true"/>
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/chat_blocked_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@drawable/button_curvy_green"
+        android:padding="@dimen/dp_8"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/blocked_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_blocked_text"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_12"
+            />
+
+        <TextView
+            android:id="@+id/enable_chat_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/blocked_text"
+            android:text="@string/enable_chat_settings"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="12sp"
+            />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/add_comment_area"
@@ -81,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_3"
             android:layout_marginRight="@dimen/dp_3"
-            android:layout_marginTop="@dimen/dp_3" />
+            android:layout_marginTop="@dimen/dp_3"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_quick_reply"
@@ -115,7 +149,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:padding="@dimen/dp_10"
-                app:srcCompat="@drawable/ic_attach" />
+                app:srcCompat="@drawable/ic_attach"/>
 
             <ImageView
                 android:id="@+id/image_picker"
@@ -124,7 +158,7 @@
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_toRightOf="@id/add_url"
                 android:padding="@dimen/dp_10"
-                app:srcCompat="@drawable/ic_image_picker" />
+                app:srcCompat="@drawable/ic_image_picker"/>
 
             <ImageView
                 android:id="@+id/maximize"
@@ -133,20 +167,20 @@
                 android:layout_alignBottom="@id/new_comment"
                 android:layout_toRightOf="@id/image_picker"
                 android:padding="@dimen/dp_10"
-                app:srcCompat="@drawable/ic_maximize"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_maximize"/>
 
             <ImageView
                 android:id="@+id/send_but"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/new_comment"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:padding="@dimen/dp_8"
-                android:layout_alignBottom="@id/new_comment"
-                android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_send_24dp_green" />
+                app:srcCompat="@drawable/ic_send_24dp_green"/>
 
             <EditText
                 android:id="@+id/new_comment"
@@ -167,7 +201,7 @@
                 android:paddingRight="@dimen/dp_12"
                 android:paddingTop="@dimen/dp_10"
                 android:textSize="@dimen/sp_16"
-                tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd" />
+                tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd"/>
 
             <ProgressBar
                 android:id="@+id/loading"
@@ -178,41 +212,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center"
                 android:visibility="gone"
-                tools:visibility="visible" />
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/chat_blocked_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:padding="@dimen/dp_8"
-            android:visibility="gone"
-            android:layout_marginRight="@dimen/dp_16"
-            android:background="@drawable/button_curvy_green">
-
-            <TextView
-                android:id="@+id/blocked_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_12"
-                android:textColor="@color/black_70"
-                android:text="@string/chat_blocked_text"
-                />
-
-            <TextView
-                android:id="@+id/enable_chat_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/tkpd_main_green"
-                android:layout_below="@+id/blocked_text"
-                android:text="@string/enable_chat_settings"
-                />
+                tools:visibility="visible"/>
 
 
         </RelativeLayout>
@@ -225,8 +225,8 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/add_comment_area"
         android:layout_below="@id/header"
-        android:visibility="gone"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -235,7 +235,7 @@
         android:layout_above="@+id/add_comment_area"
         android:layout_below="@id/header"
         android:layout_gravity="center"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"/>
 
     <TextView
         android:id="@+id/header_date"
@@ -247,7 +247,7 @@
         android:gravity="center_horizontal"
         android:padding="@dimen/dp_5"
         android:singleLine="true"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/notifier"
@@ -267,13 +267,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/white"
-            tools:text="JJJJ" />
+            tools:text="JJJJ"/>
 
         <ProgressBar
             android:id="@+id/action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 
