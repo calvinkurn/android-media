@@ -33,6 +33,11 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
         holder.bind(list[position])
     }
 
+    override fun onViewRecycled(holder: RecommendationCardViewHolder) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     class RecommendationCardViewHolder(v: View,
                                        private val positionInFeed: Int,
                                        private val listener: RecommendationCardListener)
@@ -41,6 +46,13 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
         fun bind(element: RecommendationCardViewModel) {
             initView(element)
             initViewListener(element)
+        }
+
+        fun onViewRecycled() {
+            itemView.ivImage1.clearImage()
+            itemView.ivImage2.clearImage()
+            itemView.ivImage3.clearImage()
+            itemView.ivProfile.clearImage()
         }
 
         private fun initView(element: RecommendationCardViewModel) {

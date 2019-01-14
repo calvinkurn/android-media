@@ -36,3 +36,7 @@ fun ImageView.loadImageRounded(url: String) {
 fun ImageView.loadImageRounded(url: String, radius: Float) {
     ImageHandler.loadImageRounded2(this.context, this, url, radius)
 }
+
+fun ImageView.clearImage() {
+    ImageHandler.clearImage(this)
+}
