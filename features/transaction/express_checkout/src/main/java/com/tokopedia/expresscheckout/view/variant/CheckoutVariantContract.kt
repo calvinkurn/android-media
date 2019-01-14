@@ -24,7 +24,9 @@ interface CheckoutVariantContract {
 
         fun hideLoadingDialog()
 
-        fun showData(arrayList: ArrayList<Visitable<*>>)
+        fun updateFragmentViewModel(atcResponseModel: AtcResponseModel)
+
+        fun showData(viewModels: ArrayList<Visitable<*>>)
 
         fun showBottomsheetError(title: String, message: String, action: String)
 

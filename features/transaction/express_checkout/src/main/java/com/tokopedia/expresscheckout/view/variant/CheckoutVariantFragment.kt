@@ -17,6 +17,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import android.support.v7.widget.SimpleItemAnimator
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
@@ -371,6 +372,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             errorBottomSheets.dismiss()
         }
         errorBottomSheets.show(fragmentManager, title)
+    }
+
+    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
+        fragmentViewModel.atcResponseModel = atcResponseModel
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) {
