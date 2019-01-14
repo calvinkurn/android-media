@@ -144,7 +144,7 @@ public class TopChatAnalytics {
     }
 
     public void trackClickUnblockChat() {
-        analyticTracker.sendEventTracking(EVENT_NAME,
+        analyticTracker.sendEventTracking(ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
