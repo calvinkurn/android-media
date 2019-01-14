@@ -135,7 +135,8 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
         val productDataCheckoutRequest = ProductDataCheckoutRequest()
         productDataCheckoutRequest.productId = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productId ?: 0
-        productDataCheckoutRequest.productQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity.toString()
+        productDataCheckoutRequest.productQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity ?:
+                fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity ?: 1
         productDataCheckoutRequest.productNotes = fragmentViewModel.getNoteViewModel()?.note
         productDataCheckoutRequest.isPurchaseProtection = false
 
@@ -158,7 +159,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         dataCheckoutRequest.shopProducts = arrayListOf(shopProductCheckoutRequest)
 
         val cart = Cart()
-        cart.setDefaultProfile = 0
+        cart.setDefaultProfile = false
         cart.promoCode = ""
         cart.isDonation = 0
         cart.data = arrayListOf(dataCheckoutRequest)

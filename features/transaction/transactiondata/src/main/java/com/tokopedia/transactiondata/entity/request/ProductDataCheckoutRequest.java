@@ -16,7 +16,7 @@ public class ProductDataCheckoutRequest {
     @Expose
     public boolean isPurchaseProtection;
     @SerializedName("product_quantity")
-    public String productQuantity;
+    public int productQuantity;
     @SerializedName("product_notes")
     public String productNotes;
 
@@ -88,7 +88,7 @@ public class ProductDataCheckoutRequest {
         return productVariant;
     }
 
-    public String getProductQuantity() {
+    public int getProductQuantity() {
         return productQuantity;
     }
 
@@ -117,7 +117,7 @@ public class ProductDataCheckoutRequest {
         private String productBrand;
         private String productCategory;
         private String productVariant;
-        private String productQuantity;
+        private int productQuantity;
         private String productShopId;
         private String productShopType;
         private String productShopName;
@@ -163,7 +163,7 @@ public class ProductDataCheckoutRequest {
             return this;
         }
 
-        public Builder productQuantity(String val) {
+        public Builder productQuantity(int val) {
             productQuantity = val;
             return this;
         }

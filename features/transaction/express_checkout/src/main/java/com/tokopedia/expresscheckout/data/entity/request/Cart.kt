@@ -9,5 +9,5 @@ import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 
 data class Cart(
         @SerializedName("set_default_profile")
-        var setDefaultProfile: Int? = 0
+        var setDefaultProfile: Boolean? = false
 ) : CheckoutRequest()

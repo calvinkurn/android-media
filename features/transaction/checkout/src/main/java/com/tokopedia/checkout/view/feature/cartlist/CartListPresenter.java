@@ -1081,7 +1081,7 @@ public class CartListPresenter implements ICartListPresenter {
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : cartItemData.getOriginData().getCategoryForAnalytics());
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
+        enhancedECommerceProductCartMapData.setQty(cartItemData.getUpdatedData().getQuantity());
         enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
         enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
@@ -1126,7 +1126,7 @@ public class CartListPresenter implements ICartListPresenter {
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : cartItemData.getOriginData().getCategoryForAnalytics());
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
+        enhancedECommerceProductCartMapData.setQty(cartItemData.getUpdatedData().getQuantity());
         enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
         enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
