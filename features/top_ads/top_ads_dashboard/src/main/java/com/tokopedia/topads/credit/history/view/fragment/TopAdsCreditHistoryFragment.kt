@@ -113,6 +113,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
         val minCalendar = Calendar.getInstance()
         minCalendar.add(Calendar.MONTH, -6)
+        minCalendar.add(Calendar.DATE, 1)
         minCalendar.set(Calendar.HOUR_OF_DAY, 0)
         minCalendar.set(Calendar.MINUTE, 0)
         minCalendar.set(Calendar.SECOND, 0)
