@@ -658,7 +658,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
             fabWishlist.show();
         }
-        labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
+        labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -790,38 +790,34 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
-        try {
-            if (getActivity() != null) {
-                AtcRequestParam atcRequestParam = new AtcRequestParam();
-                atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
-                atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
-                atcRequestParam.setNotes("");
-                atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
-                Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                        .getExpressCheckoutIntent(getActivity(), atcRequestParam);
-                startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-/*
-        if (productData.getInfo().getHasVariant()) {
-            if (!onClickBuyWhileRequestingVariant && productVariant != null) {
-                openVariantPage(generateStateVariant(source));
-            } else {
-                onClickBuyWhileRequestingVariant = true;
-                lastStateOnClickBuyWhileRequestVariant = source;
-                if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP)) {
-                    buttonBuyView.showLoadingBuyNow();
-                } else if (source.equals(ProductDetailView.SOURCE_BUTTON_CART_PDP)) {
-                    buttonBuyView.showLoadingAddToCart();
+        if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP)) {
+            try {
+                if (getActivity() != null) {
+                    AtcRequestParam atcRequestParam = new AtcRequestParam();
+                    atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+                    atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
+                    atcRequestParam.setNotes("");
+                    atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
+                    Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                            .getExpressCheckoutIntent(getActivity(), atcRequestParam);
+                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
                 }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         } else {
-            openProductModalActivity(generateStateVariant(source));
+            if (productData.getInfo().getHasVariant()) {
+                if (!onClickBuyWhileRequestingVariant && productVariant != null) {
+                    openVariantPage(generateStateVariant(source));
+                } else {
+                    onClickBuyWhileRequestingVariant = true;
+                    lastStateOnClickBuyWhileRequestVariant = source;
+                    buttonBuyView.showLoadingAddToCart();
+                }
+            } else {
+                openProductModalActivity(generateStateVariant(source));
+            }
         }
-*/
     }
 
     @Override
@@ -2101,7 +2097,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
-                    labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
+                    labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
                     stateCollapsing = FROM_EXPANDED;
                 }
             }
