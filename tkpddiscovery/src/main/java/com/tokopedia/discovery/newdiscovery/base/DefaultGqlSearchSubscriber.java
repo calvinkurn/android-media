@@ -30,11 +30,6 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         this.imageSearch = imageSearch;
     }
 
-    public DefaultGqlSearchSubscriber(D2 discoveryView) {
-        this.searchParameter = null;
-        this.discoveryView = discoveryView;
-    }
-
     @Override
     public void onCompleted() {
 
@@ -64,11 +59,11 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         }
     }
 
-    protected void onHandleApplink(String applink){
+    private void onHandleApplink(String applink){
         discoveryView.onHandleApplink(applink);
     }
 
-    protected void onHandleSearch(SearchProductGqlResponse gqlResponse) {
+    private void onHandleSearch(SearchProductGqlResponse gqlResponse) {
         ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPageGql(gqlResponse);
         model.setSearchParameter(searchParameter);
         model.setForceSearch(forceSearch);
