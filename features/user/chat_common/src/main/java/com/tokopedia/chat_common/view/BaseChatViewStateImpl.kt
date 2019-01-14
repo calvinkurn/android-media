@@ -199,7 +199,7 @@ open class BaseChatViewStateImpl(
                 }
     }
 
-    private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
+    open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
         return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() < 2
     }
 

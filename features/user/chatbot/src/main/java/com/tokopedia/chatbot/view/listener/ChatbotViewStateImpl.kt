@@ -81,6 +81,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+    override fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
+        return (recyclerView.layoutManager as LinearLayoutManager)
+                .findFirstCompletelyVisibleItemPosition() < 1
+    }
+
     override fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel) {
         super.onReceiveMessageEvent(visitable)
         showQuickReply(visitable)
