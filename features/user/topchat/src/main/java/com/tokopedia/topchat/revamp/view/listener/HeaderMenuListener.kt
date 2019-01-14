@@ -11,8 +11,6 @@ interface HeaderMenuListener{
 
     fun onDeleteConversation()
 
-    fun onGoToDetailOpponentFromMenu()
-
     fun onGoToChatSetting(blockedStatus: BlockedStatus)
 
 }

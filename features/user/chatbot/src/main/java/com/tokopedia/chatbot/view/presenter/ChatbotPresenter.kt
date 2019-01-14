@@ -146,6 +146,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun showErrorSnackbar(stringId: Int) {
+        view.showSnackbarError(stringId)
 
     }
 

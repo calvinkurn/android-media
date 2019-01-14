@@ -15,7 +15,10 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 interface ChatbotContract {
     interface View : BaseChatContract.View {
         fun onUploadUndersizedImage()
+
         fun onUploadOversizedImage()
+
+        fun showSnackbarError(stringId: Int)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

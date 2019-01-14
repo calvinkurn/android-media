@@ -658,11 +658,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     }
 
-    override fun onGoToDetailOpponentFromMenu() {
-        analytics.trackGoToDetailFromMenu()
-        goToDetailOpponent()
-    }
-
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
         if (redirectUrl.isNotEmpty()) {

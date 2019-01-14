@@ -187,13 +187,6 @@ class TopChatViewStateImpl(
         val headerMenu = Menus(view.context)
         val listMenu = ArrayList<Menus.ItemMenus>()
 
-        if (!chatroomViewModel.headerModel.role.toLowerCase()
-                        .contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)) {
-            val title = toolbar.findViewById<TextView>(R.id.title).text
-            val viewProfileText = view.context.getString(R.string.view_profile_container_string, title)
-            listMenu.add(Menus.ItemMenus(viewProfileText, R.drawable.ic_people))
-        }
-
         if (chatroomViewModel.headerModel.role.toLowerCase()
                         .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
             val profileText = if (isShopFollowed) {
@@ -227,9 +220,6 @@ class TopChatViewStateImpl(
                     }
                     itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
                         headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
-                    }
-                    pos == 0 -> {
-                        headerMenuListener.onGoToDetailOpponentFromMenu()
                     }
                     else -> {
                     }
