@@ -72,9 +72,6 @@ public class ExploreUseCase extends GraphqlUseCase {
         if (exploreParams.getFilters().size() != 0) {
             params.putObject(PARAM_FILTER, constructFilterParams(exploreParams.getFilters()));
         }
-//        if (!TextUtils.isEmpty(exploreParams.getSort().getKey())) {
-//            params.putObject(PARAM_SORT, exploreParams.getSort());
-//        }
         return params;
     }
 
