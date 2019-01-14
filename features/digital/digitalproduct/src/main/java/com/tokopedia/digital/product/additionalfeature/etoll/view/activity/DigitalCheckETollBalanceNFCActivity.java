@@ -16,24 +16,32 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
@@ -47,17 +55,24 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.T
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.listener.IETollView;
 import com.tokopedia.digital.utils.NFCUtils;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Rizky on 15/05/18.
@@ -109,14 +124,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent homeIntent;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivityInterfaceRouter(context);
-        }
-        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+        Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
         taskStackBuilder.addNextIntent(homeIntent);
 
         DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
@@ -156,7 +164,47 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         techListsArray = new String[][] { new String[] { IsoDep.class.getName(), NfcA.class.getName()} };
 
         SmartcardMapper mapper = new SmartcardMapper();
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+        Retrofit.Builder  retrofitBuilder = new Retrofit.Builder()
+                .baseUrl(TkpdBaseURL.DIGITAL_API_DOMAIN + TkpdBaseURL.DigitalApi.VERSION)
+                .addConverterFactory(new DigitalResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+
+        OkHttpClient.Builder okHttpbuilder = new OkHttpClient.Builder();
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.BODY;
+        }
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor().setLevel(loggingLevel);
+
+        NetworkRouter networkRouter =  ((NetworkRouter) getApplicationContext());
+        UserSession userSession = new UserSession(this);
+        UserSessionInterface userSessionInterceptor = userSession;
+        OkHttpRetryPolicy  okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
+        okHttpbuilder.addInterceptor(httpLoggingInterceptor);
+        OkHttpClient okHttpClient = okHttpbuilder
+                .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterceptor))
+                .addInterceptor(new DigitalHmacAuthInterceptor(
+                        this,
+                        networkRouter,
+                        userSession,
+                        TkpdBaseURL.DigitalApi.HMAC_KEY
+                ))
+                .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = retrofitBuilder.client(okHttpClient).build();
+        DigitalRestApi digitalEndpointService =  retrofit.create(DigitalRestApi.class);
+
         SmartcardInquiryDataSource smartcardInquiryDataSource = new SmartcardInquiryDataSource(
                 digitalEndpointService, mapper);
         SmartcardCommandDataSource smartcardCommandDataSource = new SmartcardCommandDataSource(
@@ -248,8 +296,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             DigitalCheckETollBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
         } else {
             // show webview help page
-            startActivity(DigitalWebActivity.newInstance(this, DigitalUrl.HelpUrl.ETOLL));
-            finish();
+            if (getApplication() instanceof DigitalModuleRouter) {
+                DigitalModuleRouter digitalModuleRouter =
+                        (DigitalModuleRouter) getApplication();
+                startActivity(digitalModuleRouter.getWebviewActivityWithIntent(this, DigitalUrl.HelpUrl.ETOLL));
+                finish();
+            }
         }
     }
 

@@ -9,14 +9,12 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
+
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 
 import java.util.Objects;
 
@@ -27,7 +25,7 @@ import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryLi
  * @author anggaprasetiyo on 4/25/17.
  */
 
-public class DigitalProductActivity extends BasePresenterActivity
+public class DigitalProductActivity extends BaseSimpleActivity
         implements DigitalProductFragment.ActionListener {
 
     private static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
@@ -48,25 +46,13 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .putExtra(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
     }
 
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
     @SuppressWarnings("unused")
     @DeepLink({ DIGITAL_PRODUCT })
     public static Intent getcallingIntent(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            Intent homeIntent;
-            if (GlobalConfig.isSellerApp()) {
-                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-            } else {
-                homeIntent = HomeRouter.getHomeActivity(context);
-            }
-            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+        if (extras.getBoolean(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), false)) {
+            Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
             taskStackBuilder.addNextIntent(homeIntent);
         }
         boolean isFromWidget = false;
@@ -88,59 +74,15 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .build();
 
         Intent destination = DigitalProductActivity.newInstance(context, passData);
-        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
         taskStackBuilder.addNextIntent(destination);
         return destination;
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-        this.passData = extras.getParcelable(EXTRA_CATEGORY_PASS_DATA);
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_cart_digital_module;
-    }
-
-    @Override
-    protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalProductFragment)) {
-            Fragment digitalProductFragment = DigitalProductFragment.newInstance(
-                    passData.getCategoryId(),
-                    passData.getOperatorId(),
-                    passData.getProductId(),
-                    passData.getClientNumber(),
-                    passData.isFromWidget(),
-                    passData.isCouponApplied(),
-                    passData.getAdditionalETollBalance(),
-                    passData.getAdditionalETollLastUpdatedDate());
-
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, digitalProductFragment)
-                    .commit();
-        }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        passData = getIntent().getExtras().getParcelable(EXTRA_CATEGORY_PASS_DATA);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -174,16 +116,15 @@ public class DigitalProductActivity extends BasePresenterActivity
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected android.support.v4.app.Fragment getNewFragment() {
+        return DigitalProductFragment.newInstance(
+                passData.getCategoryId(),
+                passData.getOperatorId(),
+                passData.getProductId(),
+                passData.getClientNumber(),
+                passData.isFromWidget(),
+                passData.isCouponApplied(),
+                passData.getAdditionalETollBalance(),
+                passData.getAdditionalETollLastUpdatedDate());
     }
-
-    @Override
-    protected int getContentId() {
-        if(com.tokopedia.abstraction.common.utils.GlobalConfig.isCustomerApp()) {
-            return com.tokopedia.abstraction.R.layout.activity_base_legacy_light;
-        }
-        return super.getContentId();
-    }
-
 }

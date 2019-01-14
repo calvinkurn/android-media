@@ -3,7 +3,6 @@ package com.tokopedia.digital.cart.data.repository;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.response.voucher.ResponseVoucherData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;

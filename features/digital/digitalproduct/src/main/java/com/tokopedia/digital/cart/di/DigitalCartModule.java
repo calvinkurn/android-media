@@ -17,7 +17,6 @@ import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;
 import com.tokopedia.digital.cart.domain.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
@@ -33,18 +32,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 @Module
 public class DigitalCartModule {
-
-    @Provides
-    @DigitalCartScope
-    UserSession provideUserSession(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @Provides
-    @DigitalCartScope
-    DigitalEndpointService provideDigitalEndpointServicde() {
-        return new DigitalEndpointService();
-    }
 
     @Provides
     @DigitalCartScope

@@ -7,8 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalSearchNumberFragment;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author rizkyfadillah on 10/4/2017.
  */
 
-public class DigitalSearchNumberActivity extends BasePresenterActivity implements
+public class DigitalSearchNumberActivity extends BaseSimpleActivity implements
         DigitalSearchNumberFragment.OnClientNumberClickListener {
 
     private static final String EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST";
@@ -51,12 +51,9 @@ public class DigitalSearchNumberActivity extends BasePresenterActivity implement
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
         this.categoryId = extras.getString(EXTRA_CATEGORY_ID);
         this.clientNumber = extras.getParcelable(EXTRA_CLIENT_NUMBER);
         this.number = extras.getString(EXTRA_NUMBER);
@@ -64,46 +61,9 @@ public class DigitalSearchNumberActivity extends BasePresenterActivity implement
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_search_number_digital;
-    }
-
-    @Override
-    protected void initView() {
-        toolbar.setTitle("Nomor Favorit");
-
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalSearchNumberFragment))
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container,
-                            DigitalSearchNumberFragment
-                                    .newInstance(categoryId, clientNumber, number, numberList))
-                    .commit();
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected android.support.v4.app.Fragment getNewFragment() {
+        return DigitalSearchNumberFragment
+                .newInstance(categoryId, clientNumber, number, numberList);
     }
 
     @Override

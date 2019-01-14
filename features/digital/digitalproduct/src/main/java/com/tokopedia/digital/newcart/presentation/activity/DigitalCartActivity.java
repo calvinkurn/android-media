@@ -41,7 +41,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         passData.setClientNumber(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_CLIENT_NUMBER()));
         passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_OPERATOR_ID()));
         passData.setProductId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_PRODUCT_ID()));
-        passData.setIsPromo(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IS_PROMO()));
+        passData.setPromo(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IS_PROMO()));
         passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_INSTANT_CHECKOUT()));
         passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_CAMPAIGN()));
         passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_MEDIUM()));

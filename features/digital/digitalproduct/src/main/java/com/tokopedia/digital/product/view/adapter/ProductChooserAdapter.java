@@ -1,7 +1,7 @@
 package com.tokopedia.digital.product.view.adapter;
 
-import android.app.Fragment;
 import android.graphics.Paint;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/video_thumbnail_main_view"
+    android:id="@+id/video_thumbnail_main_view"
     android:layout_width="match_parent"
     android:layout_height="@dimen/digital_youtube_thumbnail_height"
     android:layout_gravity="center_horizontal"
@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <com.google.android.youtube.player.YouTubeThumbnailView
-        android:id="@id/youtube_thumbnail_view"
+        android:id="@+id/youtube_thumbnail_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/digital_youtube_thumbnail_height"
@@ -21,7 +21,7 @@
         android:background="@drawable/ic_play_circle_outline_48dp" />
 
     <ProgressBar
-        android:id="@id/youtube_thumbnail_loading_bar"
+        android:id="@+id/youtube_thumbnail_loading_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />

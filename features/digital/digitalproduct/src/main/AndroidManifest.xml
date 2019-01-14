@@ -42,6 +42,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.view.activity.DigitalSearchNumberActivity"
+            android:label="Nomor Favorit"
             android:screenOrientation="portrait" />
         <activity android:name=".product.view.activity.DigitalYoutubeActivity"></activity>
 

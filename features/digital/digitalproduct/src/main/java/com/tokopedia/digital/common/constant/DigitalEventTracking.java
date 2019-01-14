@@ -11,7 +11,9 @@ public interface DigitalEventTracking {
         String ADD_TO_CART = "addToCart";
         String CHECKOUT = "checkout";
         String HOMEPAGE_INTERACTION = "userInteractionHomePage";
+        String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
         String CLICK_CHECKOUT = "clickCheckout";
+        String LONG_CLICK = "longClick";
     }
 
     interface Category {
@@ -20,9 +22,19 @@ public interface DigitalEventTracking {
         String DIGITAL_HOMEPAGE = "homepage digital";
         String DIGITAL_CHECKOUT = "digital - checkout";
         String DIGITAL_MULTIPLE_CHECKOUT = "digital - multiple checkout";
+        String DIGITAL = "digital - ";
+        String RECHARGE = "Recharge - ";
+        String PULSA = "Pulsa";
+        String LONG_PRESS = "Long Press";
     }
 
     interface Action {
+        String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";
+        String USSD_ATTEMPT = "ussd attempt";
+        String CLICK_SEARCH_BAR = "Click Search Bar";
+        String SELECT_OPERATOR = "select operator";
+        String SELECT_PRODUCT = "select product";
+        String CLICK_DAFTAR_TX = "Click Daftar Transaksi";
         String CLICK_PANDUAN_SECTION = "click panduan section";
         String CLICK_BELI = "click beli";
         String CLICK_LIHAT_SEMUA_PRODUK = "click lihat semua produk";
@@ -35,11 +47,17 @@ public interface DigitalEventTracking {
         String ERROR_TO_ADD_DEAL = "error to add deals";
         String CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk";
         String CLICK_RECOMMENDATION_WIDGET = "click recommendation widget";
+        String CLICK_USSD_BUY_PULSA = "Click Beli from USSD";
+        String CLICK_USSD_EDIT_NUMBER = "Click Edit Number from USSD";
+        String CLICK_BILL = "Click Tagihan";
+        String SELECT_CATEGORY = "select category";
     }
 
     interface Label {
         String DEFAULT_EMPTY_VALUE = "";
         String NO_PROMO = "no promo";
+        String PRODUCT = "Product - ";
+        String DIGITAL = "Digital";
     }
 
 }

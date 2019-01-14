@@ -1,6 +1,6 @@
 package com.tokopedia.digital.categorylist.data.mapper;
 
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
+import com.tokopedia.digital.categorylist.data.cloud.entity.HomeCategoryMenuItem;
 import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 

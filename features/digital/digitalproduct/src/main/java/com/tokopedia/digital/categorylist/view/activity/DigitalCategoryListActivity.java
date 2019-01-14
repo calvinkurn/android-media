@@ -1,16 +1,11 @@
 package com.tokopedia.digital.categorylist.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.digital.R;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment;
 
 import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL;
@@ -21,7 +16,7 @@ import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryLi
  * @author anggaprasetiyo on 7/3/17.
  */
 
-public class DigitalCategoryListActivity extends BasePresenterActivity {
+public class DigitalCategoryListActivity extends BaseSimpleActivity {
 
     public static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
 
@@ -69,66 +64,21 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
+    protected android.support.v4.app.Fragment getNewFragment() {
+        DigitalCategoryListFragment digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
 
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_digital_category_list_digital_module;
-    }
-
-    @Override
-    protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
-            DigitalCategoryListFragment digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
-
-            if (getIntent() != null) {
-                if (getIntent().hasExtra(Constants.FROM_APP_SHORTCUTS)) {
-                    boolean isFromAppShortCut = getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false);
-                    digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(isFromAppShortCut);
-                }
-
-                if (getIntent().hasExtra(PARAM_IS_COUPON_ACTIVE)) {
-                    digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(
-                            getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)
-                    );
-                }
+        if (getIntent() != null) {
+            if (getIntent().hasExtra(DigitalCategoryListFragment.FROM_APP_SHORTCUTS)) {
+                boolean isFromAppShortCut = getIntent().getBooleanExtra(DigitalCategoryListFragment.FROM_APP_SHORTCUTS, false);
+                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(isFromAppShortCut);
             }
 
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container,
-                    digitalCategoryListFragment).commit();
+            if (getIntent().hasExtra(PARAM_IS_COUPON_ACTIVE)) {
+                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(
+                        getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)
+                );
+            }
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+        return digitalCategoryListFragment;
     }
 }

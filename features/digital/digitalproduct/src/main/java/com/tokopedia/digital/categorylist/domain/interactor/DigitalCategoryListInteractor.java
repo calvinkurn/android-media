@@ -2,10 +2,10 @@ package com.tokopedia.digital.categorylist.domain.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
 import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 
 import java.util.List;
 
@@ -22,11 +22,14 @@ import rx.subscriptions.CompositeSubscription;
 public class DigitalCategoryListInteractor implements IDigitalCategoryListInteractor {
     private final CompositeSubscription compositeSubscription;
     private final IDigitalCategoryListRepository digitalCategoryListRepository;
+    private DigitalModuleRouter digitalModuleRouter;
 
     public DigitalCategoryListInteractor(CompositeSubscription compositeSubscription,
-                                         IDigitalCategoryListRepository digitalCategoryListRepository) {
+                                         IDigitalCategoryListRepository digitalCategoryListRepository,
+                                         DigitalModuleRouter digitalModuleRouter) {
         this.compositeSubscription = compositeSubscription;
         this.digitalCategoryListRepository = digitalCategoryListRepository;
+        this.digitalModuleRouter = digitalModuleRouter;
     }
 
     @Override
@@ -39,13 +42,11 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
     }
 
     @Override
-    public void getTokoCashData(Subscriber<TokoCashData> subscriber, Context context) {
-        if (context instanceof TkpdCoreRouter) {
-            Observable<TokoCashData> observable = ((TkpdCoreRouter) context).getTokoCashBalance();
-            compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber));
-        }
+    public void getTokoCashData(Subscriber<TokoCashData> subscriber) {
+        Observable<TokoCashData> observable = digitalModuleRouter.getDigitalTokoCashBalance();
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
     }
 }

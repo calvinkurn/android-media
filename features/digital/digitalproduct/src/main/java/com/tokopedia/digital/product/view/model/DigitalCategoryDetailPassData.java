@@ -1,4 +1,4 @@
-package com.tokopedia.core.router.digitalmodule.passdata;
+package com.tokopedia.digital.product.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

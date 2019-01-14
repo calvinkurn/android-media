@@ -1,20 +1,24 @@
 package com.tokopedia.digital.widget.view.fragment
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.tkpd.library.ui.view.LinearLayoutManager
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.database.manager.GlobalCacheManager
+import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital.R
 import com.tokopedia.digital.common.constant.DigitalEventTracking
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService
+import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi
 import com.tokopedia.digital.common.data.source.CategoryListDataSource
 import com.tokopedia.digital.common.data.source.StatusDataSource
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
@@ -26,8 +30,20 @@ import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
 import com.tokopedia.digital.widget.view.presenter.DigitalChannelContract
 import com.tokopedia.digital.widget.view.presenter.DigitalChannelPresenter
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.network.converter.StringResponseConverter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Rizky on 15/11/18.
@@ -119,9 +135,47 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         abstractionRouter = activity?.application as AbstractionRouter
         userSession = UserSession(activity)
 
-        val digitalEndpointService = DigitalEndpointService()
+        val gson = GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+        val  retrofitBuilder = Retrofit.Builder()
+                .baseUrl(TkpdBaseURL.DIGITAL_API_DOMAIN + TkpdBaseURL.DigitalApi.VERSION)
+                .addConverterFactory(DigitalResponseConverter())
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+
+        val okHttpbuilder = OkHttpClient.Builder();
+        var loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.BODY;
+        }
+        val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(loggingLevel);
+
+        val networkRouter =  context!!.applicationContext as NetworkRouter;
+        val userSessionInterceptor = userSession as UserSessionInterface;
+        val  okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
+        okHttpbuilder.addInterceptor(httpLoggingInterceptor);
+        val okHttpClient = okHttpbuilder
+        .addInterceptor(FingerprintInterceptor(networkRouter, userSessionInterceptor))
+                .addInterceptor(DigitalHmacAuthInterceptor(
+                  context,
+                        networkRouter,
+                        userSession,
+                        TkpdBaseURL.DigitalApi.HMAC_KEY
+                ))
+                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+                .build();
+
+        val retrofit = retrofitBuilder.client(okHttpClient).build();
+
+        val digitalEndpointService = retrofit.create(DigitalRestApi::class.java);
         val digitalGqlApiService = DigitalGqlApiService()
-        val globalCacheManager = GlobalCacheManager()
+        val globalCacheManager = context as CacheManager
 
         val statusDataSource = StatusDataSource(
                 digitalEndpointService, globalCacheManager, StatusMapper()

@@ -1,6 +1,5 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -9,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,10 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
@@ -151,15 +149,12 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     @Override
     public void onBannerItemClicked(BannerData bannerData) {
         if (!TextUtils.isEmpty(bannerData.getLink())) {
-            int deeplinkType = DeepLinkChecker.getDeepLinkType(bannerData.getLink());
-            if (deeplinkType == DeepLinkChecker.PROMO) {
-                Uri uriData = Uri.parse(bannerData.getLink());
-                List<String> linkSegment = uriData.getPathSegments();
+            Uri uri = Uri.parse(bannerData.getLink());
+            List<String> linkSegment = uri.getPathSegments();
+            if (linkSegment != null && linkSegment.size() == 1 && linkSegment.get(0).equalsIgnoreCase("promo")){
                 openPromo(bannerData.getLink(), linkSegment);
             } else {
-                navigateToActivity(DigitalWebActivity.newInstance(
-                        getActivity(), bannerData.getLink())
-                );
+                navigateToWebView(bannerData.getLink());
             }
         }
     }
@@ -171,7 +166,7 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     }
 
     private void openPromo(String url, List<String> linkSegment) {
-        IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
+        DigitalModuleRouter router = ((DigitalModuleRouter) getActivity().getApplication());
         if (linkSegment.size() == 2) {
             Intent intent = router.getPromoDetailIntent(getActivity(), linkSegment.get(1));
             startActivity(intent);
@@ -184,11 +179,14 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
                 Intent intent = router.getPromoListIntent(getActivity());
                 startActivity(intent);
             } else {
-                navigateToActivity(DigitalWebActivity.newInstance(
-                        getActivity(), url)
-                );
+                navigateToWebView(url);
             }
         }
+    }
+
+    private void navigateToWebView(String url){
+        DigitalModuleRouter router = ((DigitalModuleRouter) getActivity().getApplication());
+        navigateToActivity(router.getWebviewActivityWithIntent(getActivity(), url));
     }
 
     private void navigateToActivity(Intent intent) {

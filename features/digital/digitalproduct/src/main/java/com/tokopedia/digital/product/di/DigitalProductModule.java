@@ -73,8 +73,9 @@ public class DigitalProductModule {
     @DigitalProductScope
     CategoryDetailDataSource provideCategoryDetailDataSource(DigitalGqlApiService digitalEndpointService,
                                                              CacheManager cacheManager,
-                                                             ProductDigitalMapper productDigitalMapper) {
-        return new CategoryDetailDataSource(digitalEndpointService, cacheManager, productDigitalMapper);
+                                                             ProductDigitalMapper productDigitalMapper,
+                                                             @ApplicationContext Context context) {
+        return new CategoryDetailDataSource(digitalEndpointService, cacheManager, productDigitalMapper, context);
     }
 
     @Provides

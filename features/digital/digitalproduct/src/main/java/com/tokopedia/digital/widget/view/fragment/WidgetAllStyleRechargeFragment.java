@@ -25,10 +25,9 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
@@ -411,10 +410,10 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     public boolean isRecentInstantCheckoutUsed(String categoryId) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    getActivity(), DigitalCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
+                DigitalCache.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
         );
     }
 
@@ -422,10 +421,10 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    getActivity(), DigitalCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         cacheHandlerRecentInstantCheckoutUsed.putBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
+                DigitalCache.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
         );
         cacheHandlerRecentInstantCheckoutUsed.applyEditor();
     }
@@ -473,11 +472,6 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
 
     @Override
     public Map<String, String> getGeneratedAuthParamNetwork(Map<String, String> originParams) {
-        return null;
-    }
-
-    @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return null;
     }
 

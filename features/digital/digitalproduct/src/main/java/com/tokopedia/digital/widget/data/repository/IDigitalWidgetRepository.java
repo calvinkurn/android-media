@@ -18,6 +18,4 @@ public interface IDigitalWidgetRepository {
 
     Observable<List<Category>> getObservableCategoryList();
 
-    Observable<List<Recommendation>> getRecommendationList(int deviceId);
-
 }

@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
@@ -106,7 +105,6 @@ public class TopUpTokoCashView extends FrameLayout {
 
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
-                UnifyTracking.eventSelectProductOnNativePage(getContext(),categoryData.getName(), categoryData.getName());
                 listener.onDigitalChooserClicked(data, productText);
             }
 
@@ -121,9 +119,7 @@ public class TopUpTokoCashView extends FrameLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View view) {
-                String isInstant = instantCheckoutCheckbox.isChecked() ? "instant" : "no instant";
-                UnifyTracking.eventClickBuyOnNative(getContext(),categoryData.getName(), isInstant);
-                listener.onProcessAddToCart(generatePreCheckoutData());
+                listener.onProcessAddToCart(generatePreCheckoutData(), instantCheckoutCheckbox.isChecked());
             }
         };
     }
@@ -145,6 +141,6 @@ public class TopUpTokoCashView extends FrameLayout {
     public interface ActionListener {
         void onDigitalChooserClicked(List<Product> productList, String productText);
 
-        void onProcessAddToCart(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct);
+        void onProcessAddToCart(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct, boolean instantCheckoutChecked);
     }
 }

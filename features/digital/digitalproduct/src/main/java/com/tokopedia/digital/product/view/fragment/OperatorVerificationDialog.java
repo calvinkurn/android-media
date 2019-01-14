@@ -1,12 +1,12 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Html;
@@ -276,9 +276,9 @@ public class OperatorVerificationDialog extends DialogFragment {
     private void setOkButtonEnable(boolean enable) {
         btnOk.setEnabled(enable);
         if (enable) {
-            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_btn));
+            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         } else {
-            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey));
+            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_200));
         }
     }
 

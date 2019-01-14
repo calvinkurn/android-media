@@ -1,6 +1,7 @@
 package com.tokopedia.digital.common.util;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
@@ -199,5 +200,106 @@ public class DigitalAnalytics {
                         )
                 )
         );
+    }
+
+    public void eventClickBuyOnNative(String categoryItem, String isInstant) {
+        analyticTracker.sendEventTracking(
+                DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.DIGITAL + categoryItem,
+                DigitalEventTracking.Action.CLICK_BELI + " - " + categoryItem,
+                isInstant.toLowerCase()
+        );
+    }
+
+    public void eventSelectOperatorOnNativePage(String categoryName, String operatorName) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.DIGITAL + categoryName,
+                DigitalEventTracking.Action.SELECT_OPERATOR,
+                DigitalEventTracking.Label.PRODUCT + operatorName
+        );
+    }
+
+    public void eventSelectProductOnNativePage(String categoryName, String productDesc) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.DIGITAL + categoryName,
+                DigitalEventTracking.Action.SELECT_PRODUCT,
+                DigitalEventTracking.Label.PRODUCT + productDesc
+        );
+    }
+
+    public void eventClickDaftarTransaksiEvent(String categoryName) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.RECHARGE + categoryName,
+                DigitalEventTracking.Action.CLICK_DAFTAR_TX,
+                DigitalEventTracking.Label.PRODUCT + categoryName
+        );
+    }
+
+
+    public void eventUssd(String categoryName, String label) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.RECHARGE + categoryName,
+                DigitalEventTracking.Action.CLICK_USSD_CEK_SALDO,
+                label
+        );
+    }
+
+    public void eventUssd2(String action, String label) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.RECHARGE + DigitalEventTracking.Category.PULSA,
+                action,
+                label
+        );
+    }
+
+
+
+    public void eventUssdAttempt(String label) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
+                DigitalEventTracking.Category.DIGITAL + DigitalEventTracking.Category.PULSA ,
+                DigitalEventTracking.Action.USSD_ATTEMPT,
+                label
+        );
+    }
+
+
+
+    public void eventUssdAttempt(String categoryName, String label) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
+                DigitalEventTracking.Category.DIGITAL + categoryName,
+                DigitalEventTracking.Action.USSD_ATTEMPT,
+                label
+        );
+    }
+
+    public void eventSelectNumberOnUserProfileNative(String categoryName) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
+                DigitalEventTracking.Category.DIGITAL + categoryName,
+                DigitalEventTracking.Action.CLICK_BILL,
+                DigitalEventTracking.Label.DIGITAL
+        );
+    }
+
+    public void eventBillShortcut() {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.LONG_CLICK,
+                DigitalEventTracking.Category.LONG_PRESS,
+                DigitalEventTracking.Action.USSD_ATTEMPT,
+                DigitalEventTracking.Label.DIGITAL
+        );
+    }
+
+    public void eventClickSearchBar(String categoryName) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
+                DigitalEventTracking.Category.RECHARGE + categoryName,
+                DigitalEventTracking.Action.CLICK_SEARCH_BAR,
+                DigitalEventTracking.Label.PRODUCT + categoryName
+        );
+    }
+
+    public void eventClickProductOnDigitalHomepage(String categoryName) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalEventTracking.Action.SELECT_CATEGORY,
+                categoryName);
     }
 }

@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
+
+import rx.Observable;
 
 /**
  * @author by alvarisi on 2/20/18.
@@ -40,4 +43,22 @@ public interface DigitalModuleRouter {
                                boolean enableRecommendation,
                                boolean enableShare,
                                boolean enableLike);
+
+    Intent getPromoDetailIntent(Context context, String slug);
+
+    Intent getPromoListIntent(Activity activity);
+
+    Intent getOrderListIntent(Context activity);
+
+    String getAfUniqueId();
+
+    String getAdsId();
+
+    Observable<TokoCashData> getDigitalTokoCashBalance();
+
+    void showForceLogoutDialog();
+
+    Intent getWebviewActivityWithIntent(Context context, String url);
+
+    void goToTokoCash(String applinkUrl, Activity activity);
 }

@@ -7,9 +7,8 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
@@ -43,11 +42,12 @@ public class CategoryDetailDataSource {
 
     public CategoryDetailDataSource(DigitalGqlApiService digitalEndpointService,
                                     CacheManager cacheManager,
-                                    ProductDigitalMapper productDigitalMapper) {
+                                    ProductDigitalMapper productDigitalMapper,
+                                    Context context) {
         this.digitalEndpointService = digitalEndpointService;
         this.cacheManager = cacheManager;
         this.productDigitalMapper = productDigitalMapper;
-        context = MainApplication.getAppContext();
+        context = context;
     }
 
     /**

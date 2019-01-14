@@ -23,15 +23,11 @@ public interface DigitalCartComponent {
 
     DigitalModuleRouter digitalModuleRouter();
 
-    void inject(CartDigitalFragment cartDigitalFragment);
-
     void inject(DigitalCartActivity digitalCartActivity);
 
     void inject(DigitalCartDefaultFragment digitalCartDefaultFragment);
 
     void inject(DigitalDealCheckoutFragment digitalDealCheckoutFragment);
-
-    void inject(CartDigitalActivity cartDigitalActivity);
 
     DigitalPostPaidLocalCache digitalPostPaidLocalCache();
 }

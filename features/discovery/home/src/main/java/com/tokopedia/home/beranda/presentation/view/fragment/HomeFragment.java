@@ -133,9 +133,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean scrollToRecommendList = false;
     private boolean isTraceStopped = false;
 
-    @Inject
-    DigitalWidgetRepository digitalWidgetRepository;
-
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -403,8 +400,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getChildFragmentManager(),
                 this,
                 this,
-                this,
-                digitalWidgetRepository
+                this
                 );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);

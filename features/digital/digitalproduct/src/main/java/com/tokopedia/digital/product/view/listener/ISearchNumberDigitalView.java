@@ -1,9 +1,9 @@
 package com.tokopedia.digital.product.view.listener;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author rizkyfadillah on 10/4/2017.
@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface ISearchNumberDigitalView {
 
-    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams);
+    Map<String, String> getGeneratedAuthParamNetwork(
+            Map<String, String> originParams);
 
     void renderNumberList(List<OrderClientNumber> orderClientNumbers);
 

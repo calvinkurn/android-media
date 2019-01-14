@@ -24,7 +24,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
@@ -517,7 +517,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         attributes.setClientId(digitalModuleRouter.getTrackingClientId());
         attributes.setDealsIds(getDealIds());
-        attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
+        attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam(digitalModuleRouter.getAfUniqueId(), digitalModuleRouter.getAdsId()));
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

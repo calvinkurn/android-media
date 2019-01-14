@@ -19,10 +19,9 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -40,12 +39,8 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 import com.tokopedia.user.session.UserSession;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +64,9 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
+    private static final String DIGITAL_USSD_MOBILE_NUMBER = "DIGITAL_USSD_MOBILE_NUMBER";
+    private static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
+    private static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
     private static final int MAX_SIM_COUNT = 2;
     //private String currentMobileNumber;
     private final static String simSlotName[] = {
@@ -93,6 +91,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private final String PARAM_VALUE_SORT = "label";
     //    private Activity activity;
     private IProductDigitalView view;
+    private DigitalAnalytics digitalAnalytics;
     private IProductDigitalInteractor productDigitalInteractor;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
     private DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase;
@@ -106,12 +105,14 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Inject
     public ProductDigitalPresenter(
+            DigitalAnalytics digitalAnalytics,
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
             DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
             UserSession userSession) {
         super(localCacheHandler, userSession);
+        this.digitalAnalytics = digitalAnalytics;
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
@@ -323,7 +324,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 renderCheckPulsa();
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
                         view.getActivity().getString(R.string.message_ussd_title));
-                UnifyTracking.eventUssdAttempt(view.getActivity(), view.getActivity().getString(R.string.status_failed_label) + view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                digitalAnalytics.eventUssdAttempt( view.getActivity().getString(R.string.status_failed_label) + view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         } else {
             view.showAccessibilityAlertDialog();
@@ -530,11 +531,11 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public String getUssdPhoneNumberFromCache(int selectedSim) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
-            return localCacheHandler.getString(TkpdCache.Key.KEY_USSD_SIM1);
+            return localCacheHandler.getString(KEY_USSD_SIM1);
         } else if (selectedSim == 1) {
-            return localCacheHandler.getString(TkpdCache.Key.KEY_USSD_SIM2);
+            return localCacheHandler.getString(KEY_USSD_SIM2);
         }
         return null;
     }
@@ -542,11 +543,11 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
         number = DeviceUtil.formatPrefixClientNumber(number);
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
-            localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM1, number);
+            localCacheHandler.putString(KEY_USSD_SIM1, number);
         } else if (selectedSim == 1) {
-            localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM2, number);
+            localCacheHandler.putString(KEY_USSD_SIM2, number);
         }
         localCacheHandler.applyEditor();
     }

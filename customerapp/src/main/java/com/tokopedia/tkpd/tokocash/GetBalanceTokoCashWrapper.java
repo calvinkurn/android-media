@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.tokocash;
 
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.navigation_common.model.WalletModel;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
@@ -69,4 +71,20 @@ public class GetBalanceTokoCashWrapper {
                 .createObservable(RequestParams.EMPTY)
                 .map(new TokoCashHomeBalanceMapper());
     }
+
+
+    public Observable<com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData> processDigitalGetBalance() {
+        return getBalanceTokoCashUseCase
+                .createObservable(RequestParams.EMPTY)
+                .map(new DigitalTokoCashBalanceMapper())
+                .onErrorResumeNext(throwable -> {
+                    if (throwable instanceof SessionExpiredException)
+                        return Observable.error(
+                                new com.tokopedia.digital.categorylist.data.cloud.exception.
+                                        SessionExpiredException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                        );
+                    return Observable.error(throwable);
+                });
+    }
+
 }
