@@ -9,8 +9,8 @@ public class Grid {
 
     @SerializedName("appLink")
     private String appLink;
-    @SerializedName("media")
-    private Media media;
+    @SerializedName("img")
+    private String img;
 
     public String getAppLink() {
         return appLink;
@@ -20,11 +20,11 @@ public class Grid {
         this.appLink = appLink;
     }
 
-    public Media getMedia() {
-        return media;
+    public String getImg() {
+        return img;
     }
 
-    public void setMedia(Media media) {
-        this.media = media;
+    public void setImg(String img) {
+        this.img = img;
     }
 }

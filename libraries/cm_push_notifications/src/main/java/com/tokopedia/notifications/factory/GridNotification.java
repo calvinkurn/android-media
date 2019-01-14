@@ -20,8 +20,6 @@ import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
 
 import java.util.List;
 
-import static android.app.Notification.BADGE_ICON_SMALL;
-
 /**
  * @author lalit.singh
  */
@@ -55,7 +53,7 @@ public class GridNotification extends BaseNotification {
         List<Grid> gridList = baseNotificationModel.getGridList();
         Bitmap bitmap;
         if (count >= 1) {
-            bitmap = getBitmap(gridList.get(0).getMedia().getMediumQuality());
+            bitmap = getBitmap(gridList.get(0).getImg());
             if (bitmap != null) {
                 remoteViews.setImageViewBitmap(R.id.iv_gridOne, bitmap);
             }
@@ -64,7 +62,7 @@ public class GridNotification extends BaseNotification {
         }
 
         if (count >= 2) {
-            bitmap = getBitmap(gridList.get(1).getMedia().getMediumQuality());
+            bitmap = getBitmap(gridList.get(1).getImg());
             if (bitmap != null) {
                 remoteViews.setImageViewBitmap(R.id.iv_gridTwo, bitmap);
             }
@@ -72,14 +70,14 @@ public class GridNotification extends BaseNotification {
                     getPendingIntent(getRequestCode(), gridList.get(1).getAppLink()));
         }
         if (count >= 4) {
-            bitmap = getBitmap(gridList.get(2).getMedia().getMediumQuality());
+            bitmap = getBitmap(gridList.get(2).getImg());
             if (bitmap != null) {
                 remoteViews.setImageViewBitmap(R.id.iv_gridThree, bitmap);
             }
             remoteViews.setOnClickPendingIntent(R.id.iv_gridThree,
                     getPendingIntent(getRequestCode(), gridList.get(2).getAppLink()));
 
-            bitmap = getBitmap(gridList.get(3).getMedia().getMediumQuality());
+            bitmap = getBitmap(gridList.get(3).getImg());
             if (bitmap != null) {
                 remoteViews.setImageViewBitmap(R.id.iv_gridFour, bitmap);
             }
@@ -90,14 +88,14 @@ public class GridNotification extends BaseNotification {
         }
 
         if (count == 6) {
-            bitmap = getBitmap(gridList.get(4).getMedia().getMediumQuality());
+            bitmap = getBitmap(gridList.get(4).getImg());
             if (bitmap != null) {
                 remoteViews.setImageViewBitmap(R.id.iv_gridFive, bitmap);
             }
             remoteViews.setOnClickPendingIntent(R.id.iv_gridFive,
                     getPendingIntent(getRequestCode(), gridList.get(4).getAppLink()));
 
-            bitmap = getBitmap(gridList.get(5).getMedia().getMediumQuality());
+            bitmap = getBitmap(gridList.get(5).getImg());
             if (bitmap != null) {
                 remoteViews.setImageViewBitmap(R.id.iv_gridSix, bitmap);
             }
@@ -152,8 +150,3 @@ public class GridNotification extends BaseNotification {
     }
 
 }
-
-
-//2/3:1/2
-
-//

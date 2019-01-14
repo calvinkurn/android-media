@@ -86,7 +86,6 @@ public class PersistentNotification extends BaseNotification {
         persistentButton = new PersistentButton();
         persistentButton.setAppLink(baseNotificationModel.getAppLink());
         persistentButton.setAppLogo(true);
-        remoteView.setOnClickPendingIntent(R.id.lin_container_1, getPersistentClickPendingIntent(persistentButton, getRequestCode()));
         remoteView.setOnClickPendingIntent(R.id.image_icon6, getPersistentClickPendingIntent(persistentButton, getRequestCode()));
 
 
