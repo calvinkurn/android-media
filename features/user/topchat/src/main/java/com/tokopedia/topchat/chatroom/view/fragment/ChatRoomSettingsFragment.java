@@ -18,10 +18,10 @@ import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -112,8 +112,8 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     @Override
     protected void initInjector() {
         if (getActivity() != null) {
-            DaggerChatComponent.builder().appComponent(
-                    ((MainApplication) getActivity().getApplication()).getAppComponent())
+            DaggerChatComponent.builder().baseAppComponent(
+                    ((BaseMainApplication) getActivity().getApplication()).getAppComponent())
                     .build()
                     .inject(this);
         }
