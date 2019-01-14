@@ -28,6 +28,7 @@ public class ProductDataCheckoutRequest {
     private String productCategoryId;
     private String productListName;
     private String productAttribution;
+    private long dimension45;
 
     private ProductDataCheckoutRequest(Builder builder) {
         productId = builder.productId;
@@ -44,6 +45,7 @@ public class ProductDataCheckoutRequest {
         productCategoryId = builder.productCategoryId;
         productListName = builder.productListName;
         productAttribution = builder.productAttribution;
+        dimension45 = builder.dimension45;
     }
 
     public int getProductId() {
@@ -102,6 +104,10 @@ public class ProductDataCheckoutRequest {
         return productListName;
     }
 
+    public long getDimension45() {
+        return dimension45;
+    }
+
 
     public static final class Builder {
         private int productId;
@@ -118,6 +124,7 @@ public class ProductDataCheckoutRequest {
         private String productCategoryId;
         private String productListName;
         private String productAttribution;
+        private long dimension45;
 
         public Builder() {
         }
@@ -189,6 +196,11 @@ public class ProductDataCheckoutRequest {
 
         public Builder productAttribution(String val) {
             productAttribution = val;
+            return this;
+        }
+
+        public Builder dimension45(long val) {
+            dimension45 = val;
             return this;
         }
 
