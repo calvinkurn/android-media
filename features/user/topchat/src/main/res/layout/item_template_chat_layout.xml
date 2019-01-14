@@ -28,8 +28,8 @@
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:singleLine="true"
-        android:ellipsize="marquee"item_tem
-        android:textSize="@dimen/text_size_small"
+        android:ellipsize="marquee"
+        android:textSize="@dimen/sp_12"
         android:textColor="@color/tkpd_main_green"
         tools:text="Maafm" />
 
@@ -39,6 +39,5 @@
         android:layout_height="@dimen/min_height_template"
         android:background="@drawable/interactive_label_template_chat"
         app:srcCompat="@drawable/ic_setting_chat" />
-
 
 </LinearLayout>
