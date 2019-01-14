@@ -47,14 +47,11 @@ import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.*
-import com.tokopedia.topchat.revamp.view.TopChatRoomDialog
-import com.tokopedia.topchat.revamp.view.TopChatViewStateImpl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -86,6 +83,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SHOP = 111
     val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
+    val REQUEST_GO_TO_SETTING_CHAT = 114
+
 
     private lateinit var actionBox: View
 
@@ -119,7 +118,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
-        indexFromInbox = getParamInt(TopChatInternalRouter.Companion.PARAM_INDEX, arguments, savedInstanceState)
+        indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
     }
@@ -128,7 +127,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (messageId.isNotEmpty()) {
             presenter.getExistingChat(messageId,
                     onError(),
-                    onSuccessGetExistingChatFirstTime())
+                    onSuccessGetExistingChatFirstTime(),
+                    onChatIsBlocked())
             presenter.connectWebSocket(messageId)
         } else {
             presenter.getMessageId(toUserId.toString(),
@@ -136,6 +136,27 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     source,
                     onError(),
                     onSuccessGetMessageId())
+        }
+    }
+
+
+    private fun onChatIsBlocked(): (ChatroomViewModel) -> Unit {
+        return {
+            getViewState().showChatBlocked(it.blockedStatus, it.headerModel.role, it.headerModel
+                    .name, onUnblockChatClicked())
+        }
+    }
+
+    private fun onUnblockChatClicked(): () -> Unit {
+        return {
+            analytics.trackClickUnblockChat()
+            presenter.unblockChat(messageId, onError(), onSuccessUnblockChat())
+        }
+    }
+
+    private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
+        return {
+            getViewState().removeChatBlocked()
         }
     }
 
@@ -160,9 +181,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
 
                 if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.PARAM_INDEX, indexFromInbox)
+                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
                 } else {
-                    data.putExtra(TopChatInternalRouter.Companion.PARAM_MUST_REFRESH, true)
+                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
                 }
                 setResult(TopChatInternalRouter.Companion.CHAT_READ_RESULT_CODE, data)
             }
@@ -260,18 +281,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
         bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, com.tokopedia.topchat.R.string.resend, null)
         bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, com.tokopedia.topchat.R.string.delete, null)
-        var bottomSheetDialog = bottomSheetBuilder.expandOnStart(true).
-                setItemClickListener(BottomSheetItemClickListener {
-                    when(it.itemId){
-                        InboxMessageConstant.RESEND -> {
-                            presenter.startUploadImages(element)
-                            removeDummy(element)
-                        }
-                        InboxMessageConstant.DELETE -> {
-                            removeDummy(element)
-                        }
-                    }
-                }).createDialog().show()
+        var bottomSheetDialog = bottomSheetBuilder.expandOnStart(true).setItemClickListener(BottomSheetItemClickListener {
+            when (it.itemId) {
+                InboxMessageConstant.RESEND -> {
+                    presenter.startUploadImages(element)
+                    removeDummy(element)
+                }
+                InboxMessageConstant.DELETE -> {
+                    removeDummy(element)
+                }
+            }
+        }).createDialog().show()
     }
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
@@ -471,7 +491,32 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
 
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
+
+            REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
         }
+    }
+
+    private fun onReturnFromChatSetting(resultCode: Int, data: Intent?) {
+        data?.let {
+            val blockedStatus = BlockedStatus(
+                    it.getBooleanExtra(TopChatInternalRouter.Companion
+                            .RESULT_CHAT_SETTING_IS_BLOCKED, false),
+                    it.getBooleanExtra(TopChatInternalRouter.Companion
+                            .RESULT_CHAT_SETTING_IS_PROMO_BLOCKED, false),
+                    it.getStringExtra(TopChatInternalRouter.Companion
+                            .RESULT_CHAT_SETTING_BLOCKED_UNTIL)
+            )
+
+            when (resultCode) {
+                TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_DISABLED -> {
+                    getViewState().showChatBlocked(blockedStatus, opponentRole, opponentName, onUnblockChatClicked())
+                }
+                TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_ENABLED -> {
+                    getViewState().removeChatBlocked()
+                }
+            }
+        }
+
     }
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
@@ -584,14 +629,31 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
 
                 if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.PARAM_INDEX, indexFromInbox)
+                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
                 } else {
-                    data.putExtra(TopChatInternalRouter.Companion.PARAM_MUST_REFRESH, true)
+                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
                 }
                 setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, data)
                 finish()
             }
         }
+    }
+
+    override fun onGoToChatSetting(blockedStatus: BlockedStatus) {
+
+        (activity as Activity).let {
+            val intent = TopChatInternalRouter.Companion.getChatSettingIntent(it,
+                    messageId,
+                    opponentRole,
+                    opponentName,
+                    blockedStatus.isBlocked,
+                    blockedStatus.isPromoBlocked,
+                    blockedStatus.blockedUntil)
+            startActivityForResult(intent, REQUEST_GO_TO_SETTING_CHAT)
+        }
+
+        analytics.trackOpenChatSetting()
+
     }
 
     override fun onGoToDetailOpponentFromMenu() {
@@ -620,7 +682,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    fun finishActivity(){
+    fun finishActivity() {
         activity?.let {
             var intent = Intent()
             var bundle = Bundle()

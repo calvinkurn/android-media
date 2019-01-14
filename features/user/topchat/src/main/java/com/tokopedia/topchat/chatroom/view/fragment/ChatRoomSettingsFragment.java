@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +32,7 @@ import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.util.Utils;
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent;
+import com.tokopedia.topchat.revamp.view.TopChatInternalRouter;
 
 
 import javax.inject.Inject;
@@ -41,8 +43,6 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     private ConstraintLayout chatPromotionInfoView, chatPersonalInfoView;
     private CardView chatPersonalCardView, chatPromotionalcardView;
     private TextView chatPromotionInfoText, chatPersonalInfoText;
-    public static final int RESULT_CODE_CHAT_SETTINGS_ENABLED = 1;
-    public static final int RESULT_CODE_CHAT_SETTINGS_DISABLED = 2;
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
     private String messageId;
@@ -136,8 +136,19 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                     setPersonalInfoViewVisibility(false);
                     setPromotionalInfoViewVisibility(false);
                 }
-                getActivity().setResult(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() ? RESULT_CODE_CHAT_SETTINGS_DISABLED
-                        : RESULT_CODE_CHAT_SETTINGS_ENABLED);
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
+                        chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+                bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED,
+                        chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+                bundle.putString(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL,
+                        chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate());
+                Intent data = new Intent();
+                data.putExtras(bundle);
+                getActivity().setResult(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() ?
+                        TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_DISABLED
+                        :  TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_ENABLED, data);
             }
         }
     }

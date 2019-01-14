@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.revamp.domain.subscriber
 
+import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
@@ -9,6 +10,7 @@ import rx.Subscriber
 
 class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
                         val onSuccess: (ChatroomViewModel) -> Unit,
+                        val onChatIsBlocked : (ChatroomViewModel) -> Unit,
                         val mapper: TopChatRoomGetExistingChatMapper = TopChatRoomGetExistingChatMapper()
                         ) : Subscriber<GraphqlResponse>() {
     override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -20,7 +22,12 @@ class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
         return {
             val pojo = graphqlResponse.getData<GetExistingChatPojo>(GetExistingChatPojo::class.java)
-            onSuccess(mapper.map(pojo))
+            val chatroomViewModel = mapper.map(pojo)
+            onSuccess(chatroomViewModel)
+
+            if(chatroomViewModel.blockedStatus.isBlocked){
+                onChatIsBlocked(chatroomViewModel)
+            }
         }
     }
 

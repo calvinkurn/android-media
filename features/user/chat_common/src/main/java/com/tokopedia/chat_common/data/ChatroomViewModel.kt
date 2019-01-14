@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 class ChatroomViewModel(val listChat: ArrayList<Visitable<*>> = ArrayList(),
                         val headerModel: ChatRoomHeaderViewModel = ChatRoomHeaderViewModel(),
                         val canLoadMore: Boolean = false,
-                        val replyable: Boolean = false) {
+                        val replyable: Boolean = false,
+                        val blockedStatus: BlockedStatus = BlockedStatus()) {
 
 }

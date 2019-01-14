@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.revamp.view
 
 import android.os.Parcelable
+import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 
@@ -14,12 +15,11 @@ interface TopChatViewState : BaseChatViewState {
 
     fun getLastItem(): Parcelable?
 
-//    fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel)
-//
-//    fun onCheckToHideQuickReply(visitable: Visitable<*>)
-//
-//    fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel)
+    fun showChatBlocked(it: BlockedStatus,
+                        opponentRole: String,
+                        opponentName: String,
+                        onUnblockChatClicked : () -> Unit)
 
-//    fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel)
+    fun removeChatBlocked()
 
 }

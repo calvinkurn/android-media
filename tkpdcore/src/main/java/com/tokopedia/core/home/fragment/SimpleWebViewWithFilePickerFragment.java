@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +25,12 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core2.R;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -160,7 +159,15 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         protected boolean onOverrideUrl(Uri url) {
             String urlString = url.toString();
             try {
-                if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
+                //TODO delete this after ws change to new applink
+                if (urlString.contains(String.format("%s=true", TkpdInboxRouter.IS_CHAT_BOT))) {
+                    String messageId = urlString.toLowerCase().replace("tokopedia://topchat/", "")
+                            .replace("?is_chat_bot=true", "");
+                    Intent intent = ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .getChatBotIntent(getActivity(), messageId);
+                    startActivity(intent);
+                    return true;
+                } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
                         && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
                     ((TkpdInboxRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url.toString(), new

@@ -2,6 +2,7 @@ package com.tokopedia.topchat.revamp.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
@@ -50,7 +51,8 @@ interface TopChatContract {
         fun getExistingChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit)
+                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit,
+                onChatIsBlocked : (ChatroomViewModel) -> Unit)
 
         fun getMessageId(
                 toUserId: String,
@@ -76,6 +78,10 @@ interface TopChatContract {
         fun deleteChat(messageId: String,
                                 onError: (Throwable) -> Unit,
                                 onSuccessDeleteConversation: () -> Unit)
+
+        fun unblockChat(messageId : String,
+                        onError: (Throwable) -> Unit,
+                        onSuccessUnblockChat: (BlockedStatus) -> Unit)
 
     }
 }

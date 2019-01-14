@@ -137,5 +137,16 @@ public class TopChatAnalytics {
         );
     }
 
+    public void trackOpenChatSetting() {
+        analyticTracker.sendEventTracking(ChatSettingsAnalytics.EVENT_NAME,
+                ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
+                ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
+    }
 
+    public void trackClickUnblockChat() {
+        analyticTracker.sendEventTracking(EVENT_NAME,
+                ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
+                ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
+                ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
+    }
 }
