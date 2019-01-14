@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
@@ -213,6 +214,8 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             ((FeedRecommendationViewHolder) holder).onViewRecycled();
         } else if (holder instanceof TopadsShopViewHolder) {
             ((TopadsShopViewHolder) holder).onViewRecycled();
+        } else if (holder instanceof DynamicPostViewHolder) {
+            ((DynamicPostViewHolder) holder).onViewRecycled();
         }
     }
 
