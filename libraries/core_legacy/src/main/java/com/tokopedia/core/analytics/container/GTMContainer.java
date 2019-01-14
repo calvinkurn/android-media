@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,6 +37,7 @@ import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,10 +148,9 @@ public class GTMContainer implements IGTMContainer {
     public void loadContainer() {
         try {
             Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
-            TagManager tagManager = getTagManager();
+            TagManager tagManager = TagManager.getInstance(context);
             PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
-
             pResult.setResultCallback(new ResultCallback<ContainerHolder>() {
                 @Override
                 public void onResult(ContainerHolder cHolder) {
@@ -159,7 +160,6 @@ public class GTMContainer implements IGTMContainer {
                         cHolder.refresh();
                         //setExpiryRefresh();
                     }
-
                     validateGTM(cHolder);
                 }
             }, 2, TimeUnit.SECONDS);

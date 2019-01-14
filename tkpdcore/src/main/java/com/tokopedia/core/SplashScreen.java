@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -64,8 +65,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        setContentView(R.layout.activity_splash);
 
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);

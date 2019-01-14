@@ -1,70 +1,144 @@
 package com.tokopedia.core.analytics;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
 
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.tagmanager.ContainerHolder;
+import com.google.android.gms.tagmanager.TagManager;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
+import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.utils.RouterUtils;
+
+import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
 /**
- * @author  by alvarisi on 10/26/16.
+ * @author by alvarisi on 10/26/16.
  */
 
 public abstract class TrackingConfig {
 
-    public enum AnalyticsKind {
-        GTM,
-        APPSFLYER,
-        MOENGAGE
-    }
-
     /**
      * Get GTM Container Instance
+     *
      * @return GTM Container
      */
-    static IGTMContainer getGTMEngine(Context context){
-        return Nishikino.init(context).startAnalytics();
+    static IGTMContainer getGTMEngine(Context context) {
+        return GTMContainer.newInstance(context);
     }
 
     /**
      * Get Appsflyer Container Instance
+     *
      * @return Appsflyer Instance
      */
-    static IAppsflyerContainer getAFEngine(Context context){
+    static IAppsflyerContainer getAFEngine(Context context) {
         return Jordan.init(context).getAFContainer();
     }
 
     /**
      * Get MoEngage Engine Instance
+     *
      * @return MoEngage Instance
      */
-    static IMoengageContainer getMoEngine(Context context){
+    static IMoengageContainer getMoEngine(Context context) {
         return Jordan.init(context).getMoEngageContainer();
     }
 
-    /**
-     * Initialize container to start at first time apps launched
-     * @param what type container (GTM, Appsflyer, MoEngage)
-     */
-    public static void runFirstTime(Context context, AnalyticsKind what, SessionHandler sessionHandler){
-        switch (what){
-            case GTM:
-                getGTMEngine(context).loadContainer();
-                break;
-            case APPSFLYER:
-                Jordan.init(context).runFirstTimeAppsFlyer(sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000");
-                break;
-            case MOENGAGE:
-                Jordan.init(context).getMoEngageContainer().initialize();
-                break;
+    public static void runGTMFirstTime(Application application) {
+        new initGTMTask(application).execute();
+    }
+
+    static class initGTMTask extends AsyncTask<Void, Void, Void> {
+        WeakReference<Context> contextWeakReference;
+
+        initGTMTask(Context context) {
+            this.contextWeakReference = new WeakReference<>(context);
         }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Context context = null;
+            if (this.contextWeakReference!= null && contextWeakReference.get()!= null) {
+                context = this.contextWeakReference.get();
+            }
+            if (context == null) {
+                return null;
+            }
+            GTMContainer.newInstance(context).loadContainer();
+            return null;
+        }
+    }
+
+    public static void runAppsFylerFirstTime(Application application) {
+        new initAppsFlyerTask(application).execute();
+    }
+
+    static class initAppsFlyerTask extends AsyncTask<Void, Void, Void> {
+        WeakReference<Application> contextWeakReference;
+
+        initAppsFlyerTask(Application application) {
+            this.contextWeakReference = new WeakReference<>(application);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Application context = null;
+            if (this.contextWeakReference!= null && contextWeakReference.get()!= null) {
+                context = this.contextWeakReference.get();
+            }
+            if (context == null) {
+                return null;
+            }
+            SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
+            Jordan.init(context).runFirstTimeAppsFlyer(sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000");
+            return null;
+        }
+    }
+
+    public static void runMoengageFirstTime(Application application) {
+        new initMoengageTask(application).execute();
+    }
+
+
+    static class initMoengageTask extends AsyncTask<Void, Void, Void> {
+        WeakReference<Application> contextWeakReference;
+
+        initMoengageTask(Application application) {
+            this.contextWeakReference = new WeakReference<>(application);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Application context = null;
+            if (this.contextWeakReference!= null && contextWeakReference.get()!= null) {
+                context = this.contextWeakReference.get();
+            }
+            if (context == null) {
+                return null;
+            }
+            Jordan.init(context).getMoEngageContainer().initialize();
+            SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
+            TrackingUtils.setMoEngageExistingUser(context, sessionHandler.isLoggedIn());
+            return null;
+        }
+
     }
 
     /**
      * Set Logging Debugging, Production please set to false
+     *
      * @param debugState state debugging
      */
     public static void enableDebugging(Context context, boolean debugState) {
