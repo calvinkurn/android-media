@@ -15,12 +15,12 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
-import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
 
-class FlightSearchActivity : BaseFlightActivity(), FlightSearchFragment.OnFlightSearchFragmentListener {
+open class FlightSearchActivity : BaseFlightActivity(),
+        FlightSearchFragment.OnFlightSearchFragmentListener {
 
     protected lateinit var dateString: String
     protected lateinit var passengerString: String
@@ -43,7 +43,7 @@ class FlightSearchActivity : BaseFlightActivity(), FlightSearchFragment.OnFlight
         initializeToolbarData()
     }
 
-    protected fun initializeToolbarData() {
+    open fun initializeToolbarData() {
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
@@ -69,9 +69,9 @@ class FlightSearchActivity : BaseFlightActivity(), FlightSearchFragment.OnFlight
         return passengerFmt
     }
 
-    protected fun getDepartureAirport(): FlightAirportViewModel = passDataViewModel.departureAirport
+    open fun getDepartureAirport(): FlightAirportViewModel = passDataViewModel.departureAirport
 
-    protected fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.arrivalAirport
+    open fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.arrivalAirport
 
     private fun setupSearchToolbar() {
         toolbar.contentInsetStartWithNavigation = 0
@@ -110,14 +110,17 @@ class FlightSearchActivity : BaseFlightActivity(), FlightSearchFragment.OnFlight
         setupSearchToolbar()
     }
 
-    override fun selectFlight(selectedFlightID: String, flightPriceViewModel: FlightPriceViewModel, isBestPairing: Boolean) {
+    override fun selectFlight(selectedFlightID: String, flightPriceViewModel: FlightPriceViewModel,
+                              isBestPairing: Boolean, isCombineDone: Boolean) {
         if (passDataViewModel.isOneWay) {
             startActivityForResult(FlightBookingActivity
-                    .getCallingIntent(this, passDataViewModel, selectedFlightID, flightPriceViewModel),
+                    .getCallingIntent(this, passDataViewModel, selectedFlightID,
+                            flightPriceViewModel),
                     REQUEST_CODE_BOOKING)
         } else {
             startActivityForResult(FlightSearchReturnActivity
-                    .getCallingIntent(this, passDataViewModel, selectedFlightID, isBestPairing, flightPriceViewModel),
+                    .getCallingIntent(this, passDataViewModel, selectedFlightID,
+                            isBestPairing, flightPriceViewModel, isCombineDone),
                     REQUEST_CODE_RETURN)
         }
     }
