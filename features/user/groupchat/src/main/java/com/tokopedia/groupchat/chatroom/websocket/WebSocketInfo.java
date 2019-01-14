@@ -505,7 +505,9 @@ public class WebSocketInfo {
             return true;
         } else if (mappedMessage instanceof OverlayViewModel) {
             return true;
-        }else {
+        } else if (mappedMessage instanceof OverlayCloseViewModel) {
+            return true;
+        } else {
             return false;
         }
     }
