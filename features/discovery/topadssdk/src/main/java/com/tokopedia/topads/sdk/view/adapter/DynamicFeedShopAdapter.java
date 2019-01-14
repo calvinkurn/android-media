@@ -62,7 +62,13 @@ public class DynamicFeedShopAdapter
         notifyDataSetChanged();
     }
 
-    class DynamicFeedShopViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onViewRecycled(@NonNull DynamicFeedShopViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onViewRecycled();
+    }
+
+    public class DynamicFeedShopViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
         private ImageView ivImageLeft, ivImageMiddle, ivImageRight, ivProfile, ivBadge;
         private TextView tvDescription, tvName;
@@ -87,6 +93,13 @@ public class DynamicFeedShopAdapter
         private void bind(Data data) {
             initView(data);
             initListener(data);
+        }
+
+        private void onViewRecycled() {
+            ImageLoader.clearImage(ivImageLeft);
+            ImageLoader.clearImage(ivImageMiddle);
+            ImageLoader.clearImage(ivImageRight);
+            ImageLoader.clearImage(ivProfile);
         }
 
         private void initView(Data data) {

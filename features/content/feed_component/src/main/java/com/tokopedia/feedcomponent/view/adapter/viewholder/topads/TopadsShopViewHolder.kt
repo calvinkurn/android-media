@@ -63,6 +63,10 @@ class TopadsShopViewHolder(v: View,
     override fun onAddWishList(position: Int, data: Data) {
     }
 
+    fun onViewRecycled() {
+        itemView.topadsShop.onViewRecycled()
+    }
+
     interface TopadsShopListener {
         fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop)
 
