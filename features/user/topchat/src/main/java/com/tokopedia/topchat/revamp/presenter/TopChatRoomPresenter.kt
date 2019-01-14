@@ -206,7 +206,8 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page), GetChatSubscriber(onError, onSuccessGetPreviousChat))
+            getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page),
+                    GetChatSubscriber(onError, onSuccessGetPreviousChat, {}))
         }
     }
 
