@@ -113,7 +113,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     protected void initInjector() {
         if (getActivity() != null) {
             DaggerChatComponent.builder().baseAppComponent(
-                    ((BaseMainApplication) getActivity().getApplication()).getAppComponent())
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                     .build()
                     .inject(this);
         }
