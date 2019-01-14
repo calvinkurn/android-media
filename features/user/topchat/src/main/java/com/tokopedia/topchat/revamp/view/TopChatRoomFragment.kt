@@ -451,7 +451,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val intent = TemplateChatActivity.createInstance(context)
         activity?.run {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
-            overridePendingTransition(com.tokopedia.topchat.R.anim.pull_up, android.R.anim.fade_out)
+            overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
         }
     }
 
