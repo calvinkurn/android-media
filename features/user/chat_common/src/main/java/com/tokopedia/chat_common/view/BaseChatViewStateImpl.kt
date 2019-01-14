@@ -102,13 +102,6 @@ open class BaseChatViewStateImpl(
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
 
-
-
-
-        val string = ChatTimeConverter.getRelativeDate(view.context, chatroomViewModel.headerModel.lastTimeOnline)
-        onlineDesc.text = string
-        onlineDesc.visibility = View.VISIBLE
-
         if (chatroomViewModel.headerModel.isOnline) {
             onlineStatus.setImageResource(R.drawable.status_indicator_online)
             onlineDesc.text = view.context.getString(R.string.online)

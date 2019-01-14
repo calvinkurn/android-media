@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -156,12 +157,22 @@ class TopChatViewStateImpl(
         hideLoading()
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
+        showLastTimeOnline(viewModel)
         setHeaderMenuButton(viewModel, headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
         showActionButtons()
         checkShowQuickReply(viewModel)
 
         isReplyable = viewModel.replyable
+    }
+
+    private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
+        val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
+
+        val string = ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
+        onlineDesc.text = string
+        onlineDesc.visibility = View.VISIBLE
+
     }
 
     private fun setHeaderMenuButton(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
