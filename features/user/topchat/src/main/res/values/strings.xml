@@ -101,4 +101,12 @@ yang ditemukan</string>
     <string name="bm_showcase_desc">Promosikan barang atau toko melalui chat ke followers Anda dengan fitur baru ini</string>
 
     <string name="success_add_to_cart">Berhasil menambahkan ke cart</string>
+
+    <string name="mark_as_read">Tandai sudah dibaca</string>
+    <string name="mark_as_unread">Tandai belum dibaca</string>
+
+    <string name="option_organize_chat">Atur Chat</string>
+    <string name="option_broadcast">Broadcast Chat</string>
+    <string name="drawer_title_setting">Pengaturan</string>
+
 </resources>

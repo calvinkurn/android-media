@@ -1,7 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel;
 
-import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
-
 /**
  * @author by yfsx on 08/05/18.
  */
@@ -26,8 +24,7 @@ public class BaseChatViewModel {
      * @param from           name of sender
      * @param fromRole       role of sender
      * @param attachmentId   attachment id
-     * @param attachmentType attachment type. Please refer to
-     *                       {@link WebSocketMapper} types
+     * @param attachmentType attachment type.
      * @param replyTime      replytime in unixtime
      */
     public BaseChatViewModel(String messageId,

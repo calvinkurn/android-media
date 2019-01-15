@@ -38,7 +38,8 @@ public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateCh
             imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_grey));
             textView.setTextColor(MethodChecker.getColor(view.getContext(), R.color.add_template_disabled));
         } else {
-            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_green));
+            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable
+                    .ic_plus_green));
             textView.setTextColor(MethodChecker.getColor(view.getContext(), R.color.medium_green));
         }
 

@@ -106,7 +106,8 @@ public class InboxChatActivity extends BaseSimpleActivity
         indicatorAdapter = IndicatorAdapter.createInstance(getIndicatorList(), this);
         indicator.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
                 .HORIZONTAL, false));
-        indicator.addItemDecoration(new SpaceItemDecoration((int) getResources().getDimension(R.dimen.step_size_nob)));
+        indicator.addItemDecoration(new SpaceItemDecoration((int) getResources().getDimension(R
+                .dimen.dp_30)));
         indicator.setAdapter(indicatorAdapter);
 
         if (isIndicatorVisible()) {
