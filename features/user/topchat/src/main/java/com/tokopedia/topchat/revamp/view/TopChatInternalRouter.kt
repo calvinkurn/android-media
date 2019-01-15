@@ -44,7 +44,7 @@ open class TopChatInternalRouter {
             return ChatRoomSettingsActivity.getIntent(context,
                     messageId,
                     ChatSettingsResponse(ChatBlockResponse(
-                            true,
+                            isBlocked,
                             ChatBlockStatus(
                                     isBlocked,
                                     isPromoBlocked,
