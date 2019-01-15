@@ -42,12 +42,11 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     private var callCounter: Int = 0
 
     override fun initialize() {
-        if (!view.getSearchPassData().isOneWay && !view.isReturning()) {
+        if (!view.getSearchPassData().isOneWay &&
+                !view.isStatusCombineDone()) {
             fetchCombineData(view.getSearchPassData())
 
-            for (item in view.getAirportCombineModelList().data) {
-                fireAndForgetReturnFlight(view.getSearchPassData(), item)
-            }
+            runFireAndForgetForReturn()
         }
     }
 
@@ -432,6 +431,14 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         0
                 )
             }
+
+    private fun runFireAndForgetForReturn() {
+        if (!view.isReturning()) {
+            for (item in view.getAirportCombineModelList().data) {
+                fireAndForgetReturnFlight(view.getSearchPassData(), item)
+            }
+        }
+    }
 
     private fun addSubscription(subscription: Subscription) {
         if (compositeSubscription.isUnsubscribed) {

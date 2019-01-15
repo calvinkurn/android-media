@@ -1,7 +1,7 @@
 package com.tokopedia.flight.searchV3.presentation.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 
@@ -104,7 +104,7 @@ interface FlightSearchContract {
 
         fun fetchSearchDataCloud(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int = -1)
 
-        fun fetchSortAndFilter(@FlightSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean)
+        fun fetchSortAndFilter(@TravelSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean)
 
         fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel)
 

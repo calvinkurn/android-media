@@ -18,14 +18,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
-import com.tokopedia.flight.search.constant.FlightSortOption
-import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.di.FlightSearchComponent
 import com.tokopedia.flight.search.presentation.activity.FlightSearchFilterActivity
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory
@@ -52,16 +51,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     lateinit var flightSearchPresenter: FlightSearchPresenter
         @Inject set
 
-    protected lateinit var flightSearchComponent: FlightSearchComponent?
+    protected var flightSearchComponent: FlightSearchComponent? = null
     protected lateinit var flightSearchPassData: FlightSearchPassDataViewModel
     protected var onFlightSearchFragmentListener: OnFlightSearchFragmentListener? = null
-    protected lateinit var flightAirportCombineModelList: FlightAirportCombineModelList
+    private lateinit var flightAirportCombineModelList: FlightAirportCombineModelList
 
     private var inFilterMode: Boolean = false
     private var progress = 0
-    var selectedSortOption: Int = FlightSortOption.NO_PREFERENCE
+    var selectedSortOption: Int = TravelSortOption.NO_PREFERENCE
 
-    private var isCombineDone: Boolean = false
+    protected var isCombineDone: Boolean = false
 
     private lateinit var flightFilterModel: FlightFilterModel
 
@@ -71,7 +70,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         if (savedInstanceState == null) {
             flightFilterModel = buildFilterModel(FlightFilterModel())
-            selectedSortOption = FlightSortOption.CHEAPEST
+            selectedSortOption = TravelSortOption.CHEAPEST
             setUpCombinationAirport()
             progress = 0
         } else {
@@ -488,11 +487,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         return emptyResultViewModel
     }
 
-    protected fun onSelectedFromDetail(selectedId: String) {
+    open fun onSelectedFromDetail(selectedId: String) {
         flightSearchPresenter.onSearchItemClicked(selectedId = selectedId)
     }
 
-    protected fun buildFilterModel(flightFilterModel: FlightFilterModel): FlightFilterModel =
+    open fun buildFilterModel(flightFilterModel: FlightFilterModel): FlightFilterModel =
             flightFilterModel
 
     protected fun setUpSwipeRefresh() {
@@ -510,14 +509,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     .setMode(BottomSheetBuilder.MODE_LIST)
                     .addTitleItem(getString(R.string.flight_search_sort_title))
 
-            (bottomSheetBuilder as CheckedBottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST)
-            bottomSheetBuilder.addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE)
-            bottomSheetBuilder.addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == FlightSortOption.EARLIEST_DEPARTURE)
-            bottomSheetBuilder.addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == FlightSortOption.LATEST_DEPARTURE)
-            bottomSheetBuilder.addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == FlightSortOption.SHORTEST_DURATION)
-            bottomSheetBuilder.addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == FlightSortOption.LONGEST_DURATION)
-            bottomSheetBuilder.addItem(FlightSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == FlightSortOption.EARLIEST_ARRIVAL)
-            bottomSheetBuilder.addItem(FlightSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == FlightSortOption.LATEST_ARRIVAL)
+            (bottomSheetBuilder as CheckedBottomSheetBuilder).addItem(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == TravelSortOption.CHEAPEST)
+            bottomSheetBuilder.addItem(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == TravelSortOption.MOST_EXPENSIVE)
+            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == TravelSortOption.EARLIEST_DEPARTURE)
+            bottomSheetBuilder.addItem(TravelSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == TravelSortOption.LATEST_DEPARTURE)
+            bottomSheetBuilder.addItem(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == TravelSortOption.SHORTEST_DURATION)
+            bottomSheetBuilder.addItem(TravelSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == TravelSortOption.LONGEST_DURATION)
+            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == TravelSortOption.EARLIEST_ARRIVAL)
+            bottomSheetBuilder.addItem(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == TravelSortOption.LATEST_ARRIVAL)
 
             val bottomSheetDialog: BottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                     .setItemClickListener { menuItem ->
@@ -566,7 +565,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     private fun setUIMarkSort() {
-        if (selectedSortOption == FlightSortOption.NO_PREFERENCE) {
+        if (selectedSortOption == TravelSortOption.NO_PREFERENCE) {
             bottom_action_filter_sort.setMarkRight(false)
         } else {
             bottom_action_filter_sort.setMarkRight(true)
