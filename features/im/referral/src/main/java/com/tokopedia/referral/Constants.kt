@@ -73,6 +73,8 @@ interface Constants {
             const val CLICK_KNOW_MORE = "click know more"
             const val CLICK_HOW_IT_WORKS = "click how it works"
             const val CLICK_WHAT_IS_TOKOCASH = "click apa itu tokocash"
+            const val ACTION_GET_REFERRAL_CODE = 1;
+            const val ACTION_GET_REFERRAL_CODE_IF_EXIST = 2;
         }
     }
 
@@ -99,6 +101,12 @@ interface Constants {
     interface Category {
         companion object {
             const val REFERRAL = "Referral"
+        }
+    }
+
+    interface ErrorCode{
+        companion object {
+            const val REFERRAL_API_ERROR = -1;
         }
     }
 }

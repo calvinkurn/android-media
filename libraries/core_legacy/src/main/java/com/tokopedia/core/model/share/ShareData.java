@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 
@@ -48,7 +49,14 @@ public class ShareData implements Parcelable {
     private String ogDescription;
     private String ogImageUrl;
     private String deepLink;
+    private String shopName;
 
+    private final String PLACEHOLDER_NAME = "{{name}}";
+    private final String PLACEHOLDER_LINK = "{{branchlink}}";
+    private final String PLACEHOLDER_PRICE = "{{price}}";
+    public  static final String PLACEHOLDER_REFERRAL_CODE = "{{referral_code}}";
+    private final String PLACEHOLDER_SHOP_NAME = "{{shop_name}}";
+    private final String PLACEHOLDER_NEW_LINE = "\\n";
 
     public ShareData() {
     }
@@ -70,6 +78,7 @@ public class ShareData implements Parcelable {
         ogDescription = in.readString();
         ogImageUrl = in.readString();
         deepLink = in.readString();
+        shopName = in.readString();
     }
 
     @Override
@@ -90,6 +99,7 @@ public class ShareData implements Parcelable {
         dest.writeString(ogDescription);
         dest.writeString(ogImageUrl);
         dest.writeString(deepLink);
+        dest.writeString(shopName);
     }
 
     @Override
@@ -154,10 +164,20 @@ public class ShareData implements Parcelable {
     }
 
     public String getTextContent(Activity activity) {
+        String fallbackShareMsg = String.valueOf(MethodChecker.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
         if (getType() != null) {
-            return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();
+            if(!TextUtils.isEmpty(this.textContent)){
+                if(!this.textContent.contains(this.PLACEHOLDER_LINK)){
+                    this.textContent = this.textContent + "\n" + this.PLACEHOLDER_LINK;
+                }
+                return FindAndReplaceHelper.findAndReplacePlaceHolders(this.textContent,
+                        this.PLACEHOLDER_PRICE, this.getPrice() != null ? this.getPrice() : "",
+                        this.PLACEHOLDER_SHOP_NAME, this.getShopName() != null ? this.getShopName() : "",
+                        this.PLACEHOLDER_NAME, this.getName() != null ? this.getName() : "");
+            }
+            return fallbackShareMsg;
         }
-        return String.valueOf(MethodChecker.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
+        return fallbackShareMsg;
     }
 
     public void setTextContent(String textContent) {
@@ -228,7 +248,18 @@ public class ShareData implements Parcelable {
 
     public String getTextContentForBranch(String shortUrl) {
         if (getType() != null) {
-            return (this.textContent != null) ? (this.textContent + "\n" + shortUrl) : shortUrl;
+            if(!TextUtils.isEmpty(this.textContent)){
+                if(this.textContent.contains(PLACEHOLDER_LINK)){
+                    return  FindAndReplaceHelper.findAndReplacePlaceHolders(this.textContent,
+                            PLACEHOLDER_LINK, shortUrl != null ? shortUrl : "", PLACEHOLDER_NEW_LINE, "\r\n");
+                }
+                else {
+                    return (this.textContent + "\n" + shortUrl);
+                }
+            }
+            else {
+                return shortUrl;
+            }
         }
         return String.valueOf(MethodChecker.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
     }
@@ -284,8 +315,15 @@ public class ShareData implements Parcelable {
         return deepLink;
     }
 
+    public String getShopName() {
+        return shopName;
+    }
+
     public void setDeepLink(String deepLink) {
         this.deepLink = deepLink;
+    }
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public static class Builder {
@@ -305,6 +343,7 @@ public class ShareData implements Parcelable {
         private String ogDescription;
         private String ogImageUrl;
         private String deepLink;
+        private String shopName;
 
         private Builder() {
         }
@@ -392,6 +431,11 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setShopName(String shopName) {
+            this.shopName = shopName;
+            return this;
+        }
+
         public Builder but() {
             return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -414,6 +458,7 @@ public class ShareData implements Parcelable {
             shareData.setOgDescription(ogDescription);
             shareData.setOgImageUrl(ogImageUrl);
             shareData.setDeepLink(deepLink);
+            shareData.setShopName(shopName);
             return shareData;
         }
 

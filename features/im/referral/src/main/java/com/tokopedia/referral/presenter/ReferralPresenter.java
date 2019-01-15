@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
+import com.tokopedia.referral.Util;
 import com.tokopedia.referral.data.ReferralCodeEntity;
 import com.tokopedia.referral.domain.GetReferralDataUseCase;
 import com.tokopedia.referral.interfaces.ReferralRouter;
@@ -122,9 +123,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void getReferralVoucherCode() {
         getView().showProcessDialog();
-        RequestParams params = RequestParams.create();
-        getPostRequestBody(params);
-        getReferralDataUseCase.execute(params,new Subscriber<Map<Type, RestResponse>>() {
+        getReferralDataUseCase.execute(Util.getPostRequestBody(userSession),new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
@@ -177,15 +176,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             }
         });
-    }
-
-    private void getPostRequestBody(RequestParams requestParams){
-        if(userSession.isLoggedIn()) {
-            JsonObject requestBody = new JsonObject();
-            requestBody.addProperty(GetReferralDataUseCase.Companion.getUserId(), Integer.parseInt(userSession.getUserId()));
-            requestBody.addProperty(GetReferralDataUseCase.Companion.getMsisdn(), userSession.getPhoneNumber());
-            requestParams.getParameters().put(GetReferralDataUseCase.Companion.getData(), requestBody);
-        }
     }
 
     @Override
