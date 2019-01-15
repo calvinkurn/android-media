@@ -499,7 +499,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             )
 
             if (resultCode == Activity.RESULT_OK) {
-                getViewState().onCheckChatBlocked(opponentRole, opponentName, blockedStatus, onUnblockChatClicked())
+                getViewState().onCheckChatBlocked(opponentRole, opponentName,
+                        blockedStatus, onUnblockChatClicked())
             }
 
         }
