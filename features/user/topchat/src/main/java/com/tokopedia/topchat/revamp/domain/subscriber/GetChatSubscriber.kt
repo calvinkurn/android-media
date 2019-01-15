@@ -10,7 +10,6 @@ import rx.Subscriber
 
 class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
                         val onSuccess: (ChatroomViewModel) -> Unit,
-                        val onChatIsBlocked : (ChatroomViewModel) -> Unit,
                         val mapper: TopChatRoomGetExistingChatMapper = TopChatRoomGetExistingChatMapper()
                         ) : Subscriber<GraphqlResponse>() {
     override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -24,10 +23,6 @@ class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
             val pojo = graphqlResponse.getData<GetExistingChatPojo>(GetExistingChatPojo::class.java)
             val chatroomViewModel = mapper.map(pojo)
             onSuccess(chatroomViewModel)
-
-            if(chatroomViewModel.blockedStatus.isBlocked){
-                onChatIsBlocked(chatroomViewModel)
-            }
         }
     }
 

@@ -7,19 +7,17 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 
 interface TopChatViewState : BaseChatViewState {
 
-    abstract fun showErrorWebSocket(b: Boolean)
+    fun showErrorWebSocket(b: Boolean)
 
-    abstract fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
+    fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
 
     fun onSetCustomMessage(customMessage: String)
 
     fun getLastItem(): Parcelable?
 
-    fun showChatBlocked(it: BlockedStatus,
-                        opponentRole: String,
-                        opponentName: String,
-                        onUnblockChatClicked : () -> Unit)
-
-    fun removeChatBlocked()
+    fun onCheckChatBlocked(opponentRole: String,
+                           opponentName : String,
+                           blockedStatus: BlockedStatus,
+                           onUnblockChatClicked: () -> Unit)
 
 }

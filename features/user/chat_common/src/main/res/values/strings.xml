@@ -51,6 +51,7 @@
 
     <string name="chat_blocked_text">Anda berhenti menerima %s dari %s hingga %s</string>
     <string name="enable_chat_settings">Kembali Menerima Chat</string>
+    <string name="chat_unblocked_text">Anda menerima chat dari %s</string>
 
 
 </resources>

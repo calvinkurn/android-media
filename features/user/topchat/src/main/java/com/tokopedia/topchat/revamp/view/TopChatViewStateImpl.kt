@@ -153,7 +153,8 @@ class TopChatViewStateImpl(
     fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
                                onToolbarClicked: () -> Unit,
                                headerMenuListener: HeaderMenuListener,
-                               alertDialog: Dialog) {
+                               alertDialog: Dialog,
+                               onUnblockChatClicked: () -> Unit) {
         chatRoomViewModel = viewModel
         hideLoading()
         scrollToBottom()
@@ -163,6 +164,8 @@ class TopChatViewStateImpl(
         showReplyBox(viewModel.replyable)
         showActionButtons()
         checkShowQuickReply(viewModel)
+        onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
+                .blockedStatus, onUnblockChatClicked)
 
     }
 
@@ -252,10 +255,39 @@ class TopChatViewStateImpl(
         return null
     }
 
-    override fun showChatBlocked(it: BlockedStatus,
-                                 opponentRole: String,
-                                 opponentName: String,
-                                 onUnblockChatClicked: () -> Unit) {
+    override fun onCheckChatBlocked(opponentRole: String,
+                                    opponentName: String,
+                                    blockedStatus: BlockedStatus,
+                                    onUnblockChatClicked: () -> Unit) {
+
+
+        val isBlocked = when {
+            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)
+            -> {
+                blockedStatus.isPromoBlocked
+            }
+            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP) -> {
+                blockedStatus.isBlocked
+            }
+            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_USER) -> {
+                blockedStatus.isBlocked
+            }
+            else -> {
+                false
+            }
+        }
+
+        if (isBlocked) {
+            showChatBlocked(blockedStatus, opponentRole, opponentName, onUnblockChatClicked)
+        } else {
+            removeChatBlocked()
+        }
+    }
+
+    private fun showChatBlocked(it: BlockedStatus,
+                                opponentRole: String,
+                                opponentName: String,
+                                onUnblockChatClicked: () -> Unit) {
         updateChatroomBlockedStatus(it)
 
         showReplyBox(false)
@@ -299,7 +331,7 @@ class TopChatViewStateImpl(
         blockText.text = blockString
     }
 
-    override fun removeChatBlocked() {
+    fun removeChatBlocked() {
         chatRoomViewModel.blockedStatus = BlockedStatus(false, false, "")
 
         showReplyBox(chatRoomViewModel.replyable)

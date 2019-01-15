@@ -179,11 +179,10 @@ class TopChatRoomPresenter @Inject constructor(
     override fun getExistingChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit,
-            onChatIsBlocked: (ChatroomViewModel) -> Unit) {
+            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
-                    GetChatSubscriber(onError, onSuccessGetExistingMessage, onChatIsBlocked))
+                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
         }
     }
 
@@ -207,7 +206,7 @@ class TopChatRoomPresenter @Inject constructor(
     ) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page),
-                    GetChatSubscriber(onError, onSuccessGetPreviousChat, {}))
+                    GetChatSubscriber(onError, onSuccessGetPreviousChat))
         }
     }
 

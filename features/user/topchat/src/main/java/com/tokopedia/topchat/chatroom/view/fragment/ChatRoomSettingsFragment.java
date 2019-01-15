@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -138,18 +139,18 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                     setPromotionalInfoViewVisibility(false);
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
-                        chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
-                bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED,
-                        chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
-                bundle.putString(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL,
-                        chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate());
-                Intent data = new Intent();
-                data.putExtras(bundle);
-                getActivity().setResult(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() ?
-                        TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_DISABLED
-                        :  TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_ENABLED, data);
+                if(chatSettingsResponse.getChatBlockResponse() != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
+                            chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+                    bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED,
+                            chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+                    bundle.putString(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL,
+                            chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate());
+                    Intent data = new Intent();
+                    data.putExtras(bundle);
+                    getActivity().setResult(Activity.RESULT_OK, data);
+                }
             }
         }
     }
@@ -165,6 +166,19 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                     setPromotionalInfoViewVisibility(false);
                 }
             }
+        }
+
+        if(chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse()!= null) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
+                    chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+            bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED,
+                    chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+            bundle.putString(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL,
+                    chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate());
+            Intent data = new Intent();
+            data.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, data);
         }
     }
 

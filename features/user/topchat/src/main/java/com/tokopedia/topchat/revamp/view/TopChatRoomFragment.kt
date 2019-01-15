@@ -47,14 +47,12 @@ import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.*
 import com.tokopedia.user.session.UserSessionInterface
-
 import javax.inject.Inject
 
 
@@ -129,8 +127,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (messageId.isNotEmpty()) {
             presenter.getExistingChat(messageId,
                     onError(),
-                    onSuccessGetExistingChatFirstTime(),
-                    onChatIsBlocked())
+                    onSuccessGetExistingChatFirstTime())
             presenter.connectWebSocket(messageId)
         } else {
             presenter.getMessageId(toUserId.toString(),
@@ -138,14 +135,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     source,
                     onError(),
                     onSuccessGetMessageId())
-        }
-    }
-
-
-    private fun onChatIsBlocked(): (ChatroomViewModel) -> Unit {
-        return {
-            getViewState().showChatBlocked(it.blockedStatus, it.headerModel.role, it.headerModel
-                    .name, onUnblockChatClicked())
         }
     }
 
@@ -158,6 +147,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
         return {
+            ToasterNormal.make(view, String.format(getString(R.string.chat_unblocked_text),
+                    opponentName), ToasterNormal.LENGTH_SHORT).show()
             getViewState().removeChatBlocked()
         }
     }
@@ -175,7 +166,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             presenter.connectWebSocket(messageId)
             updateViewData(it)
             renderList(it.listChat, it.canLoadMore)
-            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog)
+            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             presenter.getTemplate()
 
             activity?.run {
@@ -509,14 +500,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                             .RESULT_CHAT_SETTING_BLOCKED_UNTIL)
             )
 
-            when (resultCode) {
-                TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_DISABLED -> {
-                    getViewState().showChatBlocked(blockedStatus, opponentRole, opponentName, onUnblockChatClicked())
-                }
-                TopChatInternalRouter.Companion.RESULT_CODE_CHAT_SETTINGS_ENABLED -> {
-                    getViewState().removeChatBlocked()
-                }
+            if (resultCode == Activity.RESULT_OK) {
+                getViewState().onCheckChatBlocked(opponentRole, opponentName, blockedStatus, onUnblockChatClicked())
             }
+
         }
 
     }
