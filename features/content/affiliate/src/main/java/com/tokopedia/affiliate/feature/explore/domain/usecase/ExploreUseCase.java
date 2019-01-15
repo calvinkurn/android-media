@@ -11,6 +11,7 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -31,6 +32,8 @@ public class ExploreUseCase extends GraphqlUseCase {
     private final static String PARAM_FILTER_KEY = "key";
     private final static String PARAM_FILTER_KEY_DATA = "d_id";
     private final static String PARAM_FILTER_VALUE = "value";
+    private final static String PARAM_SORT_KEY = "key";
+    private final static String PARAM_SORT_ASC = "asc";
 
     @Inject
     public ExploreUseCase(@ApplicationContext Context context) {
@@ -72,6 +75,9 @@ public class ExploreUseCase extends GraphqlUseCase {
         if (exploreParams.getFilters().size() != 0) {
             params.putObject(PARAM_FILTER, constructFilterParams(exploreParams.getFilters()));
         }
+        if (exploreParams.getSort() != null && !TextUtils.isEmpty(exploreParams.getSort().getText())) {
+            params.putObject(PARAM_SORT, constructSortParams(exploreParams.getSort()));
+        }
         return params;
     }
 
@@ -95,5 +101,12 @@ public class ExploreUseCase extends GraphqlUseCase {
             }
         }
         return value.toString();
+    }
+
+    private static JsonObject constructSortParams(SortViewModel sort) {
+        JsonObject object = new JsonObject();
+        object.addProperty(PARAM_SORT_KEY, sort.getKey());
+        object.addProperty(PARAM_SORT_ASC, sort.isAsc());
+        return object;
     }
 }

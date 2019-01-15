@@ -46,6 +46,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
@@ -85,7 +86,7 @@ public class ExploreFragment
 
     private static final int TIME_DEBOUNCE_MILIS = 500;
     public static final int REQUEST_DETAIL_FILTER = 1234;
-
+    public static final int REQUEST_DETAIL_SORT = 2345;
 
     private ExploreAdapter adapter;
     private ExploreParams exploreParams;
@@ -399,6 +400,7 @@ public class ExploreFragment
        populateFirstData(itemList, cursor);
         if (!isPullToRefresh) {
             populateFilter(sortFilterModel.getFilterList());
+            populateSort(sortFilterModel.getSortList());
             if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
         }
     }
@@ -467,6 +469,14 @@ public class ExploreFragment
         }
     }
 
+    private void populateSort(List<SortViewModel> sortList) {
+        //1. show button sort
+        //2. handle onclick and passing sortlist and current selected sort (default is first data)
+        // current selected sort can b
+        sortList.get(0).setSelected(true);
+        exploreParams.setSort(sortList.get(0));
+    }
+
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
             getFilteredFirstData(filters);
@@ -475,6 +485,13 @@ public class ExploreFragment
 
     private void getFilteredFirstData(List<FilterViewModel> filters) {
         exploreParams.setFilters(filters);
+        exploreParams.resetForFilterClick();
+        exploreParams.setLoading(true);
+        presenter.getFirstData(exploreParams, false);
+    }
+
+    private void getSortedData(SortViewModel sort) {
+        exploreParams.setSort(sort);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
@@ -634,6 +651,10 @@ public class ExploreFragment
                 List<FilterViewModel> currentFilter = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
                 getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
+            }
+            else if (requestCode == REQUEST_DETAIL_SORT) {
+                SortViewModel selectedSort = data.getParcelableExtra("");
+                getSortedData(selectedSort);
             }
         }
     }
