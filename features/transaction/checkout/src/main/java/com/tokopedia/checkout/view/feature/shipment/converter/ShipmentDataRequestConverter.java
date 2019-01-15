@@ -192,7 +192,7 @@ public class ShipmentDataRequestConverter {
                 .productCategoryId(cartItem.getAnalyticsProductCheckoutData().getProductCategoryId())
                 .productListName(cartItem.getAnalyticsProductCheckoutData().getProductListName())
                 .productAttribution(cartItem.getAnalyticsProductCheckoutData().getProductAttribution())
-                .dimension45(cartItem.getCartId())
+                .cartId(cartItem.getCartId())
                 .build();
     }
 

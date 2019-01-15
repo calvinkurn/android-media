@@ -28,7 +28,7 @@ public class ProductDataCheckoutRequest {
     private String productCategoryId;
     private String productListName;
     private String productAttribution;
-    private long dimension45;
+    private long cartId;
 
     private ProductDataCheckoutRequest(Builder builder) {
         productId = builder.productId;
@@ -45,7 +45,7 @@ public class ProductDataCheckoutRequest {
         productCategoryId = builder.productCategoryId;
         productListName = builder.productListName;
         productAttribution = builder.productAttribution;
-        dimension45 = builder.dimension45;
+        cartId = builder.cartId;
     }
 
     public int getProductId() {
@@ -104,8 +104,8 @@ public class ProductDataCheckoutRequest {
         return productListName;
     }
 
-    public long getDimension45() {
-        return dimension45;
+    public long getCartId() {
+        return cartId;
     }
 
     public static final class Builder {
@@ -123,7 +123,7 @@ public class ProductDataCheckoutRequest {
         private String productCategoryId;
         private String productListName;
         private String productAttribution;
-        private long dimension45;
+        private long cartId;
 
         public Builder() {
         }
@@ -198,8 +198,8 @@ public class ProductDataCheckoutRequest {
             return this;
         }
 
-        public Builder dimension45(long val) {
-            dimension45 = val;
+        public Builder cartId(long val) {
+            cartId = val;
             return this;
         }
 

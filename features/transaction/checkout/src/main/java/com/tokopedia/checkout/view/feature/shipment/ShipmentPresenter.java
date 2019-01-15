@@ -18,9 +18,6 @@ import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
@@ -736,7 +733,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
                     enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
                     enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
-                    enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getDimension45()));
+                    enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
                     enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
                 }
             }
