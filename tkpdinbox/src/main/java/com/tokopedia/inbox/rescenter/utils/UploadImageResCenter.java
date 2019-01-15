@@ -53,6 +53,7 @@ public interface UploadImageResCenter {
     @POST()
     Observable<NewUploadResCenterImageData> uploadImageNew(
             @Url String url,
+            @Header("Authorization") String authorization,
             @Part("user_id") RequestBody userId,
             @Part("device_id") RequestBody deviceId,
             @Part("hash") RequestBody hash,
