@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
@@ -52,6 +53,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     OnMenuItemListener menuListener;
     private boolean loading = false;
+    OrderListAnalytics  orderListAnalytics;
 
 
     public OrderListAdapter(Context context, OnMenuItemListener listener) {
@@ -63,6 +65,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        orderListAnalytics = new OrderListAnalytics(parent.getContext().getApplicationContext());
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list, parent, false);
@@ -150,7 +153,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setDotMenuVisibility(int visibility) {
-        currentHolder.orderListBtnOverflow.setVisibility(visibility);
+        if (currentHolder.orderCategory.equalsIgnoreCase("belanja") || currentHolder.orderCategory.equalsIgnoreCase("marketplace")) {
+            currentHolder.orderListBtnOverflow.setVisibility(View.GONE);
+        } else {
+            currentHolder.orderListBtnOverflow.setVisibility(visibility);
+        }
     }
 
     @Override
@@ -160,6 +167,15 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         else
             currentHolder.categoryName.setText(categoryName);
         currentHolder.title.setText(categoryTitle);
+    }
+
+    @Override
+    public void setItemCount(String itemCount) {
+        if (currentHolder.orderCategory.equalsIgnoreCase("belanja") || currentHolder.orderCategory.equalsIgnoreCase("marketplace")) {
+            currentHolder.itemCount.setVisibility(View.VISIBLE);
+            currentHolder.title.setVisibility(View.GONE);
+            currentHolder.itemCount.setText("(+" + itemCount + " " + "Produk Lainnya)");
+        }
     }
 
     @Override
@@ -256,6 +272,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyItemRemoved(size);
     }
 
+    public void clearItemList() {
+        mOrderList.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (mOrderList == null || mOrderList.size() == 0) return 1;
@@ -319,6 +340,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageView imgShopAvatar;
         TextView categoryName;
         TextView title;
+        TextView itemCount;
         ImageView paymentAvatar;
         TextView totalLabel;
         TextView total;
@@ -344,6 +366,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             imgShopAvatar = itemView.findViewById(R.id.shop_avatar);
             categoryName = itemView.findViewById(R.id.category_name);
             title = itemView.findViewById(R.id.title);
+            itemCount = itemView.findViewById(R.id.itemCount);
             paymentAvatar = itemView.findViewById(R.id.status_shop_avatar);
             totalLabel = itemView.findViewById(R.id.total_price_label);
             total = itemView.findViewById(R.id.total);
@@ -354,8 +377,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            if (appLink != null && !appLink.equals(""))
+            if (appLink != null && !appLink.equals("")) {
+                orderListAnalytics.sendProductClickEvent(currentHolder.status.getText().toString());
                 RouteManager.route(context, appLink);
+            }
         }
 
         public void bindData(Order order, int position) {

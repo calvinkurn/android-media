@@ -15,6 +15,8 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
+import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
+import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
@@ -46,6 +48,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     OrderListDetailContract.ActionInterface view;
+    String orderCategory;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -55,22 +58,33 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment) {
-        if(getView().getAppContext()==null)
+        if (getView().getAppContext() == null)
             return;
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(ORDER_CATEGORY, orderCategory);
-        variables.put(ORDER_ID, orderId);
-        variables.put(DETAIL, 1);
-        if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
-            variables.put(ACTION, 0);
-        } else {
-            variables.put(ACTION, 1);
-        }
-        variables.put(UPSTREAM, "");
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.orderdetails), DetailsData.class, variables);
+        this.orderCategory = orderCategory;
+        getView().showProgressBar();
+        GraphqlRequest graphqlRequest;
+        Map<String, Object> variables = new HashMap<>();
+        if (orderCategory.equalsIgnoreCase("marketplace")) {
+            variables.put("orderCategory", orderCategory);
+            variables.put(ORDER_ID, orderId);
+            graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                    R.raw.orderdetail_marketplace), DetailsData.class, variables);
+        } else {
+            variables.put(ORDER_CATEGORY, orderCategory);
+            variables.put(ORDER_ID, orderId);
+            variables.put(DETAIL, 1);
+            if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
+                variables.put(ACTION, 0);
+            } else {
+                variables.put(ACTION, 1);
+            }
+            variables.put(UPSTREAM, "");
+            graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                    R.raw.orderdetails), DetailsData.class, variables);
+        }
 
 
         orderDetailsUseCase.addRequest(graphqlRequest);
@@ -82,7 +96,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("error occured"+e);
+                CommonUtils.dumper("error occured" + e);
+                getView().hideProgressBar();
             }
 
             @Override
@@ -122,7 +137,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        CommonUtils.dumper("error occured"+e);
+                        CommonUtils.dumper("error occured" + e);
                     }
 
                     @Override
@@ -132,8 +147,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             ActionButtonList data = response.getData(ActionButtonList.class);
                             actionButtonList = data.getActionButtonList();
                             if (actionButtonList != null)
-                                if(flag) {
-                                view.setTapActionButton(position, actionButtonList);
+                                if (flag) {
+                                    view.setTapActionButton(position, actionButtonList);
                                 } else {
                                     view.setActionButton(position, actionButtonList);
                                 }
@@ -148,6 +163,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private void setDetailsData(OrderDetails details) {
+        getView().hideProgressBar();
         getView().setStatus(details.status());
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
             getView().setConditionalInfo(details.conditionalInfo());
@@ -157,51 +173,69 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
         getView().setInvoice(details.invoice());
         getView().setOrderToken(details.orderToken());
-        for (Detail detail : details.detail()) {
-            getView().setDetail(detail);
-        }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
-        }
-        if (details.additionalInfo().size() > 0) {
-            getView().setAdditionInfoVisibility(View.VISIBLE);
-        }
-        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
+        for (int i = 0; i < details.detail().size(); i++) {
+            if (i == 2) {
+                if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
+                    getView().showDropshipperInfo(details.getDropShipper());
+                }
+                else if (details.getDriverDetails() != null) {
+                    getView().showDriverInfo(details.getDriverDetails());
+                }
+            }
+//                Detail detail = new Detail("No. Resi", "AA1234567890BBCC");
+//                details.detail().set(3, detail);
+                getView().setDetail(details.detail().get(i));
+            }
+            if (details.getShopInfo() != null) {
+                getView().setShopInfo(details.getShopInfo());
+            }
+            if (details.getItems() != null && details.getItems().size() > 0) {
+                getView().setItems(details.getItems());
+            }
+            if (details.getItems() != null && details.getItems().size() > 0) {
+                getView().setItems(details.getItems());
+            }
+            if (details.additionalInfo().size() > 0) {
+                getView().setAdditionInfoVisibility(View.VISIBLE);
+            }
+            for (AdditionalInfo additionalInfo : details.additionalInfo()) {
 
-            getView().setAdditionalInfo(additionalInfo);
-        }
-        for (PayMethod payMethod : details.getPayMethods()) {
-            if (!TextUtils.isEmpty(payMethod.getValue()))
-                getView().setPayMethodInfo(payMethod);
-        }
+                getView().setAdditionalInfo(additionalInfo);
+            }
+            for (PayMethod payMethod : details.getPayMethods()) {
+                if (!TextUtils.isEmpty(payMethod.getValue()))
+                    getView().setPayMethodInfo(payMethod);
+            }
 
-        for (Pricing pricing : details.pricing()) {
-            getView().setPricing(pricing);
-        }
-        getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs());
+            for (Pricing pricing : details.pricing()) {
+                getView().setPricing(pricing);
+            }
+            getView().setPaymentData(details.paymentData());
+//        getView().setContactUs(details.contactUs());
 
-        if (details.actionButtons().size() == 2) {
-            ActionButton leftActionButton = details.actionButtons().get(0);
-            ActionButton rightActionButton = details.actionButtons().get(1);
-            getView().setTopActionButton(leftActionButton);
-            getView().setBottomActionButton(rightActionButton);
-        } else if (details.actionButtons().size() == 1) {
-            ActionButton actionButton = details.actionButtons().get(0);
-            getView().setButtonMargin();
-            if (actionButton.getLabel().equals(INVOICE)) {
-                getView().setBottomActionButton(actionButton);
-                getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
+        if (!(orderCategory.equalsIgnoreCase("belanja") || orderCategory.equalsIgnoreCase("marketplace"))) {
+            if (details.actionButtons().size() == 2) {
+                ActionButton leftActionButton = details.actionButtons().get(0);
+                ActionButton rightActionButton = details.actionButtons().get(1);
+                getView().setTopActionButton(leftActionButton);
+                getView().setBottomActionButton(rightActionButton);
+            } else if (details.actionButtons().size() == 1) {
+                ActionButton actionButton = details.actionButtons().get(0);
+                getView().setButtonMargin();
+                if (actionButton.getLabel().equals(INVOICE)) {
+                    getView().setBottomActionButton(actionButton);
+                    getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
+                } else {
+                    getView().setTopActionButton(actionButton);
+                    getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
+
+                }
             } else {
-                getView().setTopActionButton(actionButton);
-                getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
-
+                getView().setActionButtonsVisibility(View.GONE, View.GONE);
             }
         } else {
-            getView().setActionButtonsVisibility(View.GONE, View.GONE);
+            getView().setActionButtons(details.actionButtons());
         }
-
-
         getView().setMainViewVisible(View.VISIBLE);
+        }
     }
-}

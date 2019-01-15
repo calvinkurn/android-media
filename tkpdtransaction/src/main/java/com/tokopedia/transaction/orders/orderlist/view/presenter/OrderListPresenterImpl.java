@@ -36,7 +36,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
         if (getView().getAppContext() == null)
             return;
-        getView().showProcessGetData(orderCategory);
+        getView().showProcessGetData();
 //        getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
@@ -46,8 +46,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             variables.put("Page", page);
             variables.put("PerPage", 10);
             variables.put("Search", getView().getSearchedString());
-            variables.put("StartDate", "");
-            variables.put("EndDate", "");
+            variables.put("StartDate", getView().getStartDate());
+            variables.put("EndDate", getView().getEndDate());
             variables.put("Sort", "");
             variables.put("OrderStatus", Integer.parseInt(getView().getSelectedFilter()));
             graphqlRequest = new
@@ -64,7 +64,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
         getOrderListUseCase = new GraphqlUseCase();
         getOrderListUseCase.clearRequest();
-        getOrderListUseCase.setRequest(graphqlRequest);
+        getOrderListUseCase.addRequest(graphqlRequest);
 
         getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override

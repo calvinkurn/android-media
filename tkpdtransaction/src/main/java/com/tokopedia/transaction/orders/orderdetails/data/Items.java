@@ -45,6 +45,22 @@ public class Items {
     @Expose
     private String metaData;
 
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    @SerializedName("productUrl")
+    @Expose
+    private String productUrl;
+
+    @SerializedName("totalPrice")
+    @Expose
+    private String totalPrice;
+
+    @SerializedName("weight")
+    @Expose
+    private String weight;
+
     private boolean isTapActionsLoaded;
 
     private boolean isActionButtonLoaded;
@@ -142,6 +158,38 @@ public class Items {
 
     public void setActionButtonLoaded(boolean actionButtonLoaded) {
         isActionButtonLoaded = actionButtonLoaded;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
+    public String getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
     }
 
     @Override

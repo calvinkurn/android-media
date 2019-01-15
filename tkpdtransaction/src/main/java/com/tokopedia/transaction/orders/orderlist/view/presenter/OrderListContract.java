@@ -15,7 +15,7 @@ import java.util.List;
 
 public class OrderListContract {
     public interface View extends CustomerView {
-        void showProcessGetData(String orderCategory);
+        void showProcessGetData();
 
         void renderDataList(List<Order> orderDataList);
 
@@ -45,9 +45,9 @@ public class OrderListContract {
 
         String getSearchedString();
 
-        void showProgressBar();
+        String getStartDate();
 
-        void hideProgressBar();
+        String getEndDate();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

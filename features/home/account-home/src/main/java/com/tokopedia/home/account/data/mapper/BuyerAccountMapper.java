@@ -179,19 +179,19 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
         menuGrid.setTitleTrack(PEMBELI);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
-        menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
+        menuGrid.setApplinkUrl(ApplinkConst.MARKETPLACE_ORDER);
 
         menuGrid.setItems(getBuyerOrderMenu(
             accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
             accountModel
         ));
-        items.add(menuGrid);
+//        items.add(menuGrid);
 
 
         items.add(getBuyerResolutionMenu(accountModel));
 
         menuGrid = new MenuGridViewModel();
-        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
+        menuGrid.setTitle("Detail Transaksi");
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
 
@@ -379,6 +379,15 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private List<MenuGridItemViewModel> getDigitalOrderMenu() {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_belanja,
+                context.getString(R.string.title_menu_market_place),
+                ApplinkConst.MARKETPLACE_ORDER,
+                0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+        gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
                 ApplinkConst.DIGITAL_ORDER,

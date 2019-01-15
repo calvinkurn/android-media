@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,11 +31,14 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
+import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
+import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
@@ -81,6 +85,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView helpLabel;
     TextView primaryActionBtn;
     TextView secondaryActionBtn;
+    FrameLayout progressBarLayout;
     private boolean isSingleButton;
 
 
@@ -124,6 +129,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         helpLabel = view.findViewById(R.id.help_label);
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -237,6 +243,38 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void showDropshipperInfo(DropShipper dropShipper) {
+
+    }
+
+    @Override
+    public void showDriverInfo(DriverDetails driverDetails) {
+
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setActionButtons(List<ActionButton> actionButtons) {
+
+    }
+
+    @Override
+    public void setShopInfo(ShopInfo shopInfo) {
+
+    }
+
+    @Override
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
@@ -330,8 +368,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             String newUri = uri;
             if (uri != null && uri.startsWith("tokopedia")) {
                 Uri url = Uri.parse(newUri);
-                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                newUri = newUri.replace("idem_potency_key=", "");
+
+                if (newUri.contains("idem_potency_key")) {
+                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                    newUri = newUri.replace("idem_potency_key=", "");
+                }
                 RouteManager.route(getActivity(), newUri);
             } else if (uri != null && !uri.equals("")){
                 try {

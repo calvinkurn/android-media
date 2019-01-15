@@ -61,6 +61,10 @@ public class ActionButton {
     @Expose
     private ActionColor actionColor;
 
+    @SerializedName("popup")
+    @Expose
+    private ActionButtonPopUp actionButtonPopUp;
+
     public Body getBody() {
         return Body;
     }
@@ -171,6 +175,14 @@ public class ActionButton {
 
     public void setActionColor(ActionColor actionColor) {
         this.actionColor = actionColor;
+    }
+
+    public ActionButtonPopUp getActionButtonPopUp() {
+        return actionButtonPopUp;
+    }
+
+    public void setActionButtonPopUp(ActionButtonPopUp actionButtonPopUp) {
+        this.actionButtonPopUp = actionButtonPopUp;
     }
 
     @Override

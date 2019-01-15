@@ -259,10 +259,14 @@
     <string name="title_order_detail">Order Detail</string>
     <string name="additional_text">Masa Perlindungan JKK JKM</string>
     <string name="oops_message">Ooops</string>
+    <string name="empty_message_marketplace">Belum Ada Daftar Transaksi</string>
     <string name="empty_list_message">Transaksi Anda masih kosong</string>
+    <string name="empty_list_message_mp">Mulai belanja dan cek daftar transaksi
+Anda di sini.</string>
     <string name="info_label">Informasi Pembayaran</string>
     <string name="lihat_detail">Lihat Detail</string>
     <string name="detail_label">Detail Pembelian</string>
+    <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>
     <string name="status">Status</string>
     <string name="top_btn_text">langannan</string>
@@ -295,4 +299,5 @@
     <string name="protection_count_label">Biaya Proteksi Gadget (%d barang)</string>
     <string name="button_order_detail_buy_again">Beli Lagi</string>
     <string name="filter">Filter</string>
+    <string name="try_again">Belanja Sekarang</string>
 </resources>
