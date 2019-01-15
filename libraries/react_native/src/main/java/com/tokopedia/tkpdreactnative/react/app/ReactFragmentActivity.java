@@ -27,7 +27,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 
 public abstract class ReactFragmentActivity<T extends ReactNativeFragment> extends BasePresenterActivity implements ReactNativeView {
 
-    private static PerformanceMonitoring perfMonitor = null;
+    private static PerformanceMonitoring perfMonitor;
 
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
@@ -36,14 +36,13 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     public static void startTracing(String tracerName) {
         if (perfMonitor == null) {
-            perfMonitor = perfMonitor.start(tracerName);
+            perfMonitor = PerformanceMonitoring.start(tracerName);
         }
     }
 
     public static void stopTracing() {
         if (perfMonitor != null) {
             perfMonitor.stopTrace();
-            perfMonitor = null;
         }
     }
 
@@ -60,6 +59,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
             ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
             return true;
         }
+
         return super.onKeyUp(keyCode, event);
     }
 

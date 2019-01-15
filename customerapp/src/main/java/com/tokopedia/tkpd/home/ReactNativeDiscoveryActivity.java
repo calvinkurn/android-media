@@ -71,6 +71,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
                                              String reactScreenName,
                                              String pageTitle,
                                              String pageId) {
+        ReactFragmentActivity.startTracing(MP_FLASHSALE);
         Intent intent = new Intent(context, ReactNativeDiscoveryActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);

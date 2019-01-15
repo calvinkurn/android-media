@@ -34,13 +34,13 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
-    private static final String GB_THANK_YOU_PAGE =  "gb_thank_you_page";
+    private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
 
     private ReactInstanceManager reactInstanceManager;
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
-        ReactFragmentActivity.startTracing(GB_THANK_YOU_PAGE);
+        ReactFragmentActivity.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"

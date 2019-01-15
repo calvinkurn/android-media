@@ -56,7 +56,6 @@ import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
-import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -80,7 +79,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
-    private static final String MP_FLASHSALE = "mp_flashsale";
     private static final String OVERRIDE_URL = "override_url";
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
@@ -566,7 +564,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url) {
-        ReactFragmentActivity.startTracing(MP_FLASHSALE);
         context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
                 context,
                 ReactConst.Screen.DISCOVERY_PAGE,
