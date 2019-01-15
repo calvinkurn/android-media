@@ -108,7 +108,6 @@ public class ProductDataCheckoutRequest {
         return dimension45;
     }
 
-
     public static final class Builder {
         private int productId;
         private boolean isPurchaseProtection;
