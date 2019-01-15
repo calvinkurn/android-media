@@ -50,7 +50,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var fragmentViewModel: FragmentViewModel
     private lateinit var tkpdProgressDialog: TkpdProgressDialog
     private lateinit var compositeSubscription: CompositeSubscription
-    private lateinit var saveStateDebounceListener: SaveStateDebounceListener
+    private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
     var isDataLoaded = false
 
     companion object {
@@ -272,6 +272,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     }
                 }
             }
+
+            reloadRatesDebounceListener.onNeedToRecalculateRates(true)
         }
     }
 
@@ -315,7 +317,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
-        saveStateDebounceListener.onNeedToSaveState(true)
+        reloadRatesDebounceListener.onNeedToRecalculateRates(true)
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
@@ -492,8 +494,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     private fun initUpdateShippingRatesDebouncer() {
         compositeSubscription.add(Observable.create(Observable.OnSubscribe<Boolean> { subscriber ->
-            saveStateDebounceListener = object : SaveStateDebounceListener {
-                override fun onNeedToSaveState(boolean: Boolean) {
+            reloadRatesDebounceListener = object : ReloadRatesDebounceListener {
+                override fun onNeedToRecalculateRates(boolean: Boolean) {
                     subscriber.onNext(boolean)
                 }
             }
@@ -517,9 +519,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }))
     }
 
-    private interface SaveStateDebounceListener {
+    private interface ReloadRatesDebounceListener {
 
-        fun onNeedToSaveState(boolean: Boolean)
+        fun onNeedToRecalculateRates(boolean: Boolean)
 
     }
 
