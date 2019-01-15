@@ -20,7 +20,7 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -40,7 +40,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
-        ReactFragmentActivity.startTracing(GL_THANK_YOU_PAGE);
+        ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
@@ -14,8 +12,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativePromoSaleFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
-import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 /**
  * Created by yogieputra on 08/01/18.
@@ -32,7 +30,7 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
     @DeepLink({ApplinkConst.PROMO_SALE, ApplinkConst.PROMO_SALE_NO_SLASH})
     public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(context, SALE_PROMO);
-        startTracing(MP_OS_PROMO);
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -49,7 +47,7 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
     public static Intent getPromoSaleTermsIntent(Context context, Bundle bundle) {
-        startTracing(MP_OS_PROMO);
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createPromoSaleTerms(
                 context,
                 ReactConst.Screen.PROMO,
