@@ -6,13 +6,9 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponseData;
-import com.tokopedia.topchat.chatroom.domain.pojo.imageupload.ImageUploadAttributes;
-import com.tokopedia.topchat.chatroom.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.message.MessageViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 
 import javax.inject.Inject;
 

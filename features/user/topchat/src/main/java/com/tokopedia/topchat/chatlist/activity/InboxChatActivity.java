@@ -171,10 +171,10 @@ public class InboxChatActivity extends BaseSimpleActivity
 //        indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
 //    }
 
-    private void setTitleToolbar(String titleToolbar) {
-        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
-        titleTextView.setText(titleToolbar);
-    }
+//    private void setTitleToolbar(String titleToolbar) {
+//        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
+//        titleTextView.setText(titleToolbar);
+//    }
 
     @Override
     public void onIndicatorClicked(int position) {
