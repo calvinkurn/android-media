@@ -72,7 +72,5 @@ public interface InputShippingFragmentView {
 
     void dropKeyBoard();
 
-    Retrofit.Builder getRetrofitBuilder();
-
-    OkHttpClient getUploadHttpClient();
+    Retrofit getRetrofit();
 }

@@ -453,9 +453,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                                 networkCalculator.getContent().get("web_service"));
 
                         Log.d(TAG + "(step 2):host", inputModel.getUploadHost());
-                        final Observable<NewUploadResCenterImageData> upload = getRetrofit(networkCalculator.getUrl())
+                        final Observable<NewUploadResCenterImageData> upload = getRetrofit()
                                 .create(UploadImageResCenter.class)
                                 .uploadImageNew(
+                                        networkCalculator.getUrl() + "/upload/attachment",
                                         networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
                                         networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
                                         networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
@@ -493,8 +494,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                 .toList();
     }
 
-    private Retrofit getRetrofit(String url) {
-        return viewListener.getRetrofitBuilder().baseUrl(url).client(viewListener.getUploadHttpClient()).build();
+    private Retrofit getRetrofit() {
+        return viewListener.getRetrofit();
     }
 
     private void clearAttachment() {

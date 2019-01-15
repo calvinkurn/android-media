@@ -10,6 +10,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -49,8 +50,9 @@ public interface UploadImageResCenter {
     );
 
     @Multipart
-    @POST("/upload/attachment")
+    @POST()
     Observable<NewUploadResCenterImageData> uploadImageNew(
+            @Url String url,
             @Header("Content-MD5") String contentMD5,
             @Header("Date") String date,
             @Header("Authorization") String authorization,

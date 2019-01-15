@@ -124,13 +124,8 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     }
 
     @Override
-    public Retrofit.Builder getRetrofitBuilder() {
-        return daggerShippingComponent.getDefaultRetrofitBuilder();
-    }
-
-    @Override
-    public OkHttpClient getUploadHttpClient() {
-        return daggerShippingComponent.getDefaultAuthOKHttpClient();
+    public Retrofit getRetrofit() {
+        return daggerShippingComponent.uploadWsV4Retrofit();
     }
 
     @Override
