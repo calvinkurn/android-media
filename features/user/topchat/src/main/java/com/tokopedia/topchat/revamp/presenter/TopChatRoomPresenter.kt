@@ -44,6 +44,7 @@ import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
+import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import javax.inject.Inject
@@ -67,6 +68,7 @@ class TopChatRoomPresenter @Inject constructor(
     private var mSubscription: CompositeSubscription
 
     private lateinit var webSocketUrl: String
+    private lateinit var subject: PublishSubject<Boolean>
     private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
@@ -77,9 +79,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun connectWebSocket(messageId: String) {
-//        networkMode = WebsocketEvent.Mode.MODE_API
         thisMessageId = messageId
-//        return
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
@@ -96,8 +96,8 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
-                networkMode = WebsocketEvent.Mode.MODE_WEBSOCKET
                 view.showErrorWebSocket(false)
+                networkMode = WebsocketEvent.Mode.MODE_WEBSOCKET
                 readMessage()
             }
 
@@ -129,7 +129,6 @@ class TopChatRoomPresenter @Inject constructor(
                 }
                 networkMode = WebsocketEvent.Mode.MODE_API
                 view.showErrorWebSocket(true)
-                connectWebSocket(messageId)
             }
 
             override fun onClose() {
@@ -139,6 +138,7 @@ class TopChatRoomPresenter @Inject constructor(
                 networkMode = WebsocketEvent.Mode.MODE_API
                 destroyWebSocket()
                 view.showErrorWebSocket(true)
+                connectWebSocket(messageId)
             }
 
         }

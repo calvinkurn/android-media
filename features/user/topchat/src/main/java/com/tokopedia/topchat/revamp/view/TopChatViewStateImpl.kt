@@ -22,16 +22,13 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import java.util.concurrent.TimeUnit
-
 
 /**
  * @author : Steven 29/11/18
@@ -44,8 +41,8 @@ class TopChatViewStateImpl(
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
         private val onAttachProductClicked: () -> Unit,
-
-        toolbar: Toolbar
+        toolbar: Toolbar,
+        val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
 
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
@@ -89,10 +86,12 @@ class TopChatViewStateImpl(
         templateRecyclerView.visibility = View.GONE
 
         pickerButton.setOnClickListener {
+            analytics.eventPickImage()
             imagePickerListener.pickImageToUpload()
         }
 
         attachButton.setOnClickListener {
+            analytics.eventAttachProduct()
             onAttachProductClicked()
         }
     }
@@ -111,10 +110,6 @@ class TopChatViewStateImpl(
         maximize.visibility = View.GONE
         pickerButton.visibility = View.VISIBLE
         attachButton.visibility = View.VISIBLE
-    }
-
-    fun developmentView() {
-        actionBox?.visibility = View.VISIBLE
     }
 
     fun setDefault() {
@@ -372,18 +367,14 @@ class TopChatViewStateImpl(
             action.visibility = View.VISIBLE
 
         } else {
-            if (isFirstTime) {
-                isFirstTime = false
-                notifier.visibility = View.GONE
-            } else {
-                title.setText(R.string.connected_websocket);
-                action.visibility = View.GONE
-                Observable.timer(1500, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            notifier.visibility = View.GONE
-                        }
-            }
+//            title.setText(R.string.connected_websocket);
+            action.visibility = View.GONE
+            notifier.visibility = View.GONE
+//            Observable.timer(1500, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe {
+//                        notifier.visibility = View.GONE
+//                    }
         }
     }
 
@@ -408,6 +399,7 @@ class TopChatViewStateImpl(
         replyEditText.setText(String.format("%s %s %s", text.substring(0, index), message, text
                 .substring(index)))
         replyEditText.setSelection(message.length + text.substring(0, index).length + 1)
+        analytics.eventClickTemplate()
     }
 
     override fun showRetryUploadImages(it: ImageUploadViewModel, retry: Boolean) {

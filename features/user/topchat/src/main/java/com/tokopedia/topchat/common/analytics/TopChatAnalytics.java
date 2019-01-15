@@ -143,6 +143,26 @@ public class TopChatAnalytics {
                 ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
     }
 
+    public void eventPickImage() {
+        analyticTracker.sendEventTracking(Category.CHAT_DETAIL, Action.CHAT_DETAIL_ATTACH
+                , Name.CHAT_DETAIL, "");
+    }
+
+    public void eventAttachProduct() {
+        analyticTracker.sendEventTracking(Category.CHAT_DETAIL, Action.CHAT_DETAIL_INSERT
+                , Name.CHAT_DETAIL, "");
+    }
+
+    public void eventSendMessage() {
+        analyticTracker.sendEventTracking(Category.CHAT_DETAIL, Action.CHAT_DETAIL_SEND
+                , Name.CHAT_DETAIL, "");
+    }
+
+    public void eventClickTemplate() {
+        analyticTracker.sendEventTracking(Category.INBOX_CHAT, Action.TEMPLATE_CHAT_CLICK
+                , Name.INBOX_CHAT, "");
+    }
+
     public void trackClickUnblockChat() {
         analyticTracker.sendEventTracking(ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,

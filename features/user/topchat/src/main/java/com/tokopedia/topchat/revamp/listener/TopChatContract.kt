@@ -15,8 +15,6 @@ interface TopChatContract {
 
     interface View : BaseChatContract.View {
 
-        fun developmentView()
-
         fun addDummyMessage(visitable: Visitable<*>)
 
         fun removeDummy(visitable: Visitable<*>)

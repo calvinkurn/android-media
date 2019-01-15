@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.data.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.domain.pojo.search.RepliesContent;
@@ -106,9 +105,9 @@ public class SearchChatMapper implements Func1<Response<DataResponse<SearchedMes
                 viewModel.setTime(item.getCreateTime());
                 viewModel.setUnreadCounter(0);
                 viewModel.setReadStatus(InboxMessageConstant.STATE_CHAT_READ);
-                viewModel.setLabel(getRole(item.getOppositeType()));
+                viewModel.setLabel(item.getContact().getRole());
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_MESSAGE);
-                viewModel.setRole("user");
+                viewModel.setRole(item.getContact().getRole());
                 viewModel.setSenderId(String.valueOf(item.getOppositeId()));
                 listReplies.add(viewModel);
                 if (index == 0) {

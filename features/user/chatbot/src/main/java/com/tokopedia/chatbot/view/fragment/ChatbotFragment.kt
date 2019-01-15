@@ -295,6 +295,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val startTime = SendableViewModel.generateStartTime()
         getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
                 .name, sendMessage, startTime)
+        getViewState().scrollToBottom()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId)
     }
 

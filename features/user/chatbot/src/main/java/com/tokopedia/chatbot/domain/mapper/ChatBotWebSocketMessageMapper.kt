@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.domain.mapper
 import android.text.TextUtils
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
@@ -21,8 +22,8 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.domain.pojo.InvoiceSentPojo
-import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import java.util.*
 import javax.inject.Inject
@@ -39,8 +40,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             super.map(pojo)
     }
 
-    override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        return when (pojo.attachment?.type) {
+    override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: String): Visitable<*> {
+        return when (pojo.attachment?.type.toString()) {
             TYPE_QUICK_REPLY -> convertToQuickReplyModel(pojo, jsonAttributes)
             TYPE_INVOICE_SEND -> convertToInvoiceSent(pojo, jsonAttributes)
             TYPE_INVOICES_SELECTION -> convertToInvoiceSelection(pojo, jsonAttributes)
@@ -67,9 +68,11 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
 
 
     private fun convertToInvoiceSelection(pojo: ChatSocketPojo,
-                                          jsonAttribute: JsonObject): AttachInvoiceSelectionViewModel {
+                                          jsonAttribute: String): AttachInvoiceSelectionViewModel {
         val invoiceListKey = "invoice_list"
-        val jsonObject = jsonAttribute.getAsJsonObject(invoiceListKey)
+        val parser = JsonParser()
+        val o: JsonObject = parser.parse(jsonAttribute).asJsonObject
+        val jsonObject = o.getAsJsonObject(invoiceListKey)
 
         val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(jsonObject, InvoicesSelectionPojo::class.java)
         val invoiceList = invoicesSelectionPojo.invoices
@@ -99,8 +102,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.fromUid,
                 pojo.from,
                 pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
+                pojo.attachment?.id.toString(),
+                pojo.attachment?.type.toString(),
                 pojo.message.timeStampUnixNano,
                 list,
                 pojo.message.censoredReply
@@ -108,7 +111,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
 
     }
 
-    private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
+    private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: String):
             AttachInvoiceSentViewModel {
         val invoiceSentPojo = GsonBuilder().create().fromJson<InvoiceSentPojo>(jsonAttribute,
                 InvoiceSentPojo::class.java)
@@ -117,8 +120,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.fromUid,
                 pojo.from,
                 pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
+                pojo.attachment?.id.toString(),
+                pojo.attachment?.type.toString(),
                 pojo.message.timeStampUnixNano,
                 pojo.startTime,
                 invoiceSentPojo.invoiceLink.attributes.title,
@@ -131,15 +134,15 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
 
-    private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): ChatActionSelectionBubbleViewModel {
+    private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: String): ChatActionSelectionBubbleViewModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes::class.java)
         return ChatActionSelectionBubbleViewModel(
                 pojo.msgId.toString(),
                 pojo.fromUid,
                 pojo.from,
                 pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
+                pojo.attachment?.id.toString(),
+                pojo.attachment?.type.toString(),
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
                 convertToChatActionBubbleViewModelList(pojoAttribute)
@@ -155,7 +158,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         return result
     }
 
-    private fun convertToQuickReplyModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): QuickReplyListViewModel {
+    private fun convertToQuickReplyModel(pojo: ChatSocketPojo, jsonAttribute: String): QuickReplyListViewModel {
         val pojoAttribute = GsonBuilder().create()
                 .fromJson<QuickReplyAttachmentAttributes>(jsonAttribute,
                         QuickReplyAttachmentAttributes::class.java)
@@ -165,7 +168,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.from,
                 pojo.fromRole,
                 pojo.message.censoredReply,
-                pojo.attachment!!.id,
+                pojo.attachment?.id.toString(),
                 TYPE_QUICK_REPLY,
                 pojo.message.timeStampUnixNano,
                 convertToQuickReplyList(pojoAttribute)

@@ -31,5 +31,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onImageUpload(it: ImageUploadViewModel)
 
+    fun scrollToBottom()
 
 }

@@ -153,7 +153,13 @@ data class Fallback(
         val message: String = "",
         @Expose
         @SerializedName("html")
-        val html: String = ""
+        val html: String = "",
+        @SerializedName("url")
+        @Expose
+        var url: String = "",
+        @SerializedName("span")
+        @Expose
+        var span: String = ""
 )
 
 

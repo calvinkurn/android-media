@@ -511,13 +511,6 @@ public class InboxChatFragment extends BaseDaggerFragment
             String messageId = data.getExtras().getString(ApplinkConst.Chat.MESSAGE_ID);
             adapter.removeWithMessageId(messageId);
         } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
-                && resultCode == TopChatInternalRouter.Companion.CHAT_READ_RESULT_CODE
-                && data != null
-                && data.getExtras() != null
-                && data.hasExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX)) {
-            int position = data.getExtras().getInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX);
-            //TODO update read
-        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
                 && data != null
                 && data.getExtras() != null
                 && data.hasExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH)) {
