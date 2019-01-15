@@ -340,10 +340,6 @@ class TopChatRoomPresenter @Inject constructor(
         return topChatRoomWebSocketMessageMapper.map(pojo)
     }
 
-    override fun clearEditText() {
-        view.clearEditText()
-    }
-
     override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime))

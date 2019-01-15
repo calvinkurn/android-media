@@ -142,9 +142,6 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    override fun clearEditText() {
-    }
-
     override fun showErrorSnackbar(stringId: Int) {
         view.showSnackbarError(stringId)
 
