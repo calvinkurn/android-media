@@ -6,6 +6,7 @@ import com.tokopedia.iris.data.db.table.Tracking
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 
 /**
  * Created by meta on 23/11/18.
@@ -24,8 +25,6 @@ class TrackingMapper {
         row.put("device_id", deviceId)
         row.put("user_id", userId)
         row.put("event_data", event)
-        row.put("container", KEY_CONTAINER)
-        row.put("event_ga", KEY_EVENT_GA)
 
         data.put(row)
 
@@ -54,8 +53,6 @@ class TrackingMapper {
                 }
                 row.put("device_id", item.deviceId)
                 row.put("user_id", item.userId)
-                row.put("container", KEY_CONTAINER)
-                row.put("event_ga", KEY_EVENT_GA)
                 event = JSONArray()
             }
         }
@@ -66,10 +63,19 @@ class TrackingMapper {
     fun addSessionToEvent(event: String, sessionId: String) : JSONObject {
         return try {
             var item = JSONObject(event)
+            if (item.get("event") != null) {
+                item.put("event_ga", item.get("event"))
+                item.remove("event")
+            }
             item.put("iris_session_id", sessionId)
+            item.put("container", KEY_CONTAINER)
+            item.put("event", KEY_EVENT_GA)
+            item.put("client_timestamp", Calendar.getInstance().timeInMillis)
             item
         } catch (e: JSONException) {
             JSONObject()
         }
     }
+
+
 }
