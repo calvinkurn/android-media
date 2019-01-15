@@ -4,14 +4,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by fajarnuha on 07/01/19.
+ * Created by fajarnuha on 14/01/19.
  */
-data class CodResponse(@SerializedName("header")
+data class CodResponse(@SerializedName("checkout_cod")
                        @Expose
-                       var header: Header? = null,
-                       @SerializedName("data")
-                       @Expose
-                       var data: Data? = null,
-                       @SerializedName("status")
-                       @Expose
-                       var status: String? = null)
+                       var checkoutCod: CheckoutCod? = null)

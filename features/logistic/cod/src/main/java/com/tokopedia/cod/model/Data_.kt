@@ -9,6 +9,6 @@ import com.google.gson.annotations.SerializedName
 data class Data_(@SerializedName("payment_id")
                  @Expose
                  var paymentId: Int? = null,
-                 @SerializedName("thanks_applink")
+                 @SerializedName("applink")
                  @Expose
                  var thanksApplink: String? = null)

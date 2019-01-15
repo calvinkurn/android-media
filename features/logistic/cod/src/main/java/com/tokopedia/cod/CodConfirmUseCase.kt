@@ -11,7 +11,8 @@ import javax.inject.Inject
 /**
  * Created by fajarnuha on 07/01/19.
  */
-class CodConfirmUseCase @Inject constructor(@ApplicationContext val context: Context): GraphqlUseCase() {
+class CodConfirmUseCase
+@Inject constructor(@ApplicationContext val context: Context): GraphqlUseCase() {
 
     init {
         clearRequest()
