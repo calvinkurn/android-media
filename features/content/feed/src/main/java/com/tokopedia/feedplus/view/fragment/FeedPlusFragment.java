@@ -1599,11 +1599,43 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onShopItemClicked(int positionInFeed, int adapterPosition, @NotNull Shop shop) {
         Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
+
+        if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
+            TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
+
+            if (model.getTrackingList().size() > adapterPosition) {
+                TrackingRecommendationModel trackingRecommendationModel
+                        = model.getTrackingList().get(adapterPosition);
+
+                trackRecommendationClick(
+                        positionInFeed,
+                        adapterPosition,
+                        trackingRecommendationModel,
+                        FeedAnalytics.Element.AVATAR
+                );
+            }
+        }
     }
 
     @Override
     public void onAddFavorite(int positionInFeed, int adapterPosition, @NotNull Data data) {
         presenter.toggleFavoriteShop(positionInFeed, adapterPosition, data.getShop().getId());
+
+        if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
+            TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
+
+            if (model.getTrackingList().size() > adapterPosition) {
+                TrackingRecommendationModel trackingRecommendationModel
+                        = model.getTrackingList().get(adapterPosition);
+
+                trackRecommendationClick(
+                        positionInFeed,
+                        adapterPosition,
+                        trackingRecommendationModel,
+                        FeedAnalytics.Element.FOLLOW
+                );
+            }
+        }
     }
 
     @Override
@@ -1688,9 +1720,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             menus.setItemMenuList(menusList);
             menus.setActionText(getString(R.string.feed_cancel));
 
-            menus.setOnActionClickListener(v -> {
-                menus.dismiss();
-            });
+            menus.setOnActionClickListener(v -> menus.dismiss());
             menus.setOnItemMenuClickListener((itemMenus, pos) -> {
                 if (itemMenus.title.equals(getString(R.string.feed_report))) {
                     goToContentReport(postId);
@@ -1924,6 +1954,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             userId
                     );
                 }
+            } else if (visitable instanceof TopadsShopViewModel) {
+                TopadsShopViewModel topadsShopViewModel = (TopadsShopViewModel) visitable;
+
+                for (TrackingRecommendationModel trackingRecommendationModel
+                        : topadsShopViewModel.getTrackingList()) {
+
+                    analytics.eventRecommendationImpression(
+                            trackingRecommendationModel.getTemplateType(),
+                            trackingRecommendationModel.getActivityName(),
+                            trackingRecommendationModel.getTrackingType(),
+                            trackingRecommendationModel.getMediaType(),
+                            trackingRecommendationModel.getAuthorName(),
+                            trackingRecommendationModel.getAuthorType(),
+                            trackingRecommendationModel.getAuthorId(),
+                            feedPosition,
+                            trackingRecommendationModel.getCardPosition(),
+                            userId
+                    );
+                }
             }
         }
     }
@@ -1948,7 +1997,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 trackingPostModel.getTrackingType(),
                 trackingPostModel.getMediaType(),
                 trackingPostModel.getTagsType(),
-                trackingPostModel.getRedirectUrl(),
+                redirectUrl,
                 element,
                 trackingPostModel.getTotalContent(),
                 trackingPostModel.getPostId(),
