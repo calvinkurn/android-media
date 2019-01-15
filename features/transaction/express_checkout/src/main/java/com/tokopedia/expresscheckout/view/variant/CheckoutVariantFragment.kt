@@ -431,9 +431,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomSheets.show(fragmentManager, title)
     }
 
-    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
+    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
         fragmentViewModel.atcResponseModel = atcResponseModel
-        fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) {
@@ -457,7 +456,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun updateShippingData(productData: ProductData, serviceData: ServiceData) {
+    override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
+        fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
+
         shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
         shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this)
 
@@ -533,7 +534,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
             for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
                 if (shippingCourierViewModel.productData.isRecommend) {
-                    updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData)
+                    updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, shippingCourierViewModels)
                     break
                 }
             }
@@ -556,8 +557,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     }
 
-    override fun onCourierChoosen(courierItemData: CourierItemData?, recipientAddressModel: RecipientAddressModel?, cartPosition: Int, hasCourierPromo: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean) {
-
+    override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierViewModel, courierItemData: CourierItemData?,
+                                  recipientAddressModel: RecipientAddressModel?, cartPosition: Int, hasCourierPromo: Boolean,
+                                  isPromoCourier: Boolean, isNeedPinpoint: Boolean) {
+        updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, null)
     }
 
     override fun onCourierShipmentRecpmmendationCloseClicked() {

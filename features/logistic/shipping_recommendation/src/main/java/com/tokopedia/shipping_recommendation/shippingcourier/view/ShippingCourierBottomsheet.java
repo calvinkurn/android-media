@@ -176,7 +176,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(
-                    courierItemData, presenter.getRecipientAddressModel(), cartPosition, hasCourierPromo,
+                    shippingCourierViewModel, courierItemData, presenter.getRecipientAddressModel(), cartPosition, hasCourierPromo,
                     !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode()), isNeedPinpoint);
         }
         dismiss();

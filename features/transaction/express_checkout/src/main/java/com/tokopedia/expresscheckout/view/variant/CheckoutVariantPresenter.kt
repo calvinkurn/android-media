@@ -54,9 +54,9 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         this.atcResponseModel = atcResponseModel
     }
 
-    override fun prepareViewModel(productData: ProductData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
+    override fun prepareViewModel(productData: ProductData) {
         viewModelMapper = ViewModelMapper()
-        view?.updateFragmentViewModel(atcResponseModel, shippingCourierViewModels)
+        view?.updateFragmentViewModel(atcResponseModel)
         view?.showData(viewModelMapper.convertToViewModels(atcResponseModel, productData))
     }
 

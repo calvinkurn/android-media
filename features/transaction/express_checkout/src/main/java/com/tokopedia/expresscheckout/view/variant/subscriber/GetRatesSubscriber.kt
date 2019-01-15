@@ -56,9 +56,9 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
 
     private fun prepareViewModel(product: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
         if (!isReloadData) {
-            presenter.prepareViewModel(product, shippingCourierViewModels)
+            presenter.prepareViewModel(product)
         }
-        view?.updateShippingData(product, serviceData)
+        view?.updateShippingData(product, serviceData, shippingCourierViewModels)
     }
 
 }

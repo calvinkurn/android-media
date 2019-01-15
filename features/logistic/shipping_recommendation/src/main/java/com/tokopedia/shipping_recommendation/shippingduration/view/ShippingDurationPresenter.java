@@ -88,7 +88,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
 
             ShippingParam shippingParam = getShippingParam(shipmentDetailData);
 
-            loadDuration(shipmentDetailData.getSelectedCourier().getShipperProductId(), selectedServiceId, shopShipmentList, query, shippingParam);
+            int selectedSpId = 0;
+            if (shipmentDetailData.getSelectedCourier() != null) {
+                selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
+            }
+            loadDuration(selectedSpId, selectedServiceId, shopShipmentList, query, shippingParam);
         }
     }
 

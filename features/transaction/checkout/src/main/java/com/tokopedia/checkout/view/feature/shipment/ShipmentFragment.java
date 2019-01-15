@@ -1565,7 +1565,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
+    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
                                  int cartItemPosition, boolean hasCourierPromo, boolean isPromoCourier, boolean isNeedPinpoint) {
         sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId());
         if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||

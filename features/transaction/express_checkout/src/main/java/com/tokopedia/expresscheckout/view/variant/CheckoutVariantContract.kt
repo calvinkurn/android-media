@@ -28,7 +28,7 @@ interface CheckoutVariantContract {
 
         fun hideLoadingDialog()
 
-        fun updateFragmentViewModel(atcResponseModel: AtcResponseModel, shippingCourierViewModels: MutableList<ShippingCourierViewModel>)
+        fun updateFragmentViewModel(atcResponseModel: AtcResponseModel)
 
         fun showData(viewModels: ArrayList<Visitable<*>>)
 
@@ -42,7 +42,7 @@ interface CheckoutVariantContract {
 
         fun setShippingError()
 
-        fun updateShippingData(productData: ProductData, serviceData: ServiceData)
+        fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?)
 
         fun navigateToOcs()
 
@@ -61,7 +61,7 @@ interface CheckoutVariantContract {
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 
-        fun prepareViewModel(productData: ProductData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>)
+        fun prepareViewModel(productData: ProductData)
 
         fun getShippingParam(quantity: Int, price: Int): ShippingParam
     }
