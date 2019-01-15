@@ -56,9 +56,6 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
             })
 
             itemView.tv_quantity_stock_available.text = element.stockWording
-//            if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-//                listener.onChangeQuantity(element)
-//            }
 
             setupMinButton(element)
             setupPlusButton(element)

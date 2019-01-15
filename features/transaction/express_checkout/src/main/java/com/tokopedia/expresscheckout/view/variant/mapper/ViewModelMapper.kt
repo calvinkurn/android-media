@@ -47,7 +47,7 @@ class ViewModelMapper : DataMapper {
         dataList.add(convertToNoteViewModel(atcResponseModel))
         var summaryViewModel = convertToSummaryViewModel(atcResponseModel)
         if (productData.insurance.insuranceType != InsuranceConstant.INSURANCE_TYPE_NO) {
-            dataList.add(convertToInsuranceViewModel(atcResponseModel, productData, summaryViewModel))
+            dataList.add(convertToInsuranceViewModel(productData, summaryViewModel))
         }
         if (atcResponseModel.atcDataModel?.userProfileModelDefaultModel != null) {
             dataList.add(summaryViewModel)
@@ -354,9 +354,8 @@ class ViewModelMapper : DataMapper {
         return false
     }
 
-    override fun convertToInsuranceViewModel(atcResponseModel: AtcResponseModel,
-                                             productData: ProductData,
-                                             summaryViewModel: SummaryViewModel): InsuranceViewModel {
+    override fun convertToInsuranceViewModel(productData: ProductData,
+                                             summaryViewModel: SummaryViewModel?): InsuranceViewModel {
         var insuranceViewModel = InsuranceViewModel()
         insuranceViewModel.insuranceLongInfo = productData.insurance.insuranceUsedInfo
         insuranceViewModel.insurancePrice = productData.insurance.insurancePrice
@@ -367,11 +366,12 @@ class ViewModelMapper : DataMapper {
         insuranceViewModel.isChecked =
                 productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES ||
                 productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST
+        insuranceViewModel.isVisible = true
 
-        summaryViewModel.isUseInsurance = insuranceViewModel.isChecked
-        summaryViewModel.shippingPrice = productData.price.price
-        summaryViewModel.insurancePrice = productData.insurance.insurancePrice
-        summaryViewModel.insuranceInfo = productData.insurance.insuranceUsedInfo
+        summaryViewModel?.isUseInsurance = insuranceViewModel.isChecked
+        summaryViewModel?.shippingPrice = productData.price.price
+        summaryViewModel?.insurancePrice = productData.insurance.insurancePrice
+        summaryViewModel?.insuranceInfo = productData.insurance.insuranceUsedInfo
 
         return insuranceViewModel
     }

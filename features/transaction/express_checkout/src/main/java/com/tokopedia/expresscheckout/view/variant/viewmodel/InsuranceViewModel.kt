@@ -16,7 +16,8 @@ data class InsuranceViewModel(
         var insuranceUsedDefault: Int,
         var shippingId: Int,
         var spId: Int,
-        var isChecked: Boolean
+        var isChecked: Boolean,
+        var isVisible: Boolean
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
@@ -26,6 +27,7 @@ data class InsuranceViewModel(
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
+            parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte()) {
     }
 
@@ -41,6 +43,7 @@ data class InsuranceViewModel(
         parcel.writeInt(shippingId)
         parcel.writeInt(spId)
         parcel.writeByte(if (isChecked) 1 else 0)
+        parcel.writeByte(if (isVisible) 1 else 0)
     }
 
     override fun describeContents(): Int {

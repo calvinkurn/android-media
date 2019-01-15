@@ -13,7 +13,7 @@ public class ShippingParam {
     private String destinationPostalCode;
     private String destinationLatitude;
     private String destinationLongitude;
-    private double weightInGrams;
+    private double weightInKilograms;
     private String shopId;
     private String token;
     private String ut;
@@ -86,12 +86,12 @@ public class ShippingParam {
         this.destinationLongitude = destinationLongitude;
     }
 
-    public double getWeightInGrams() {
-        return weightInGrams;
+    public double getWeightInKilograms() {
+        return weightInKilograms;
     }
 
-    public void setWeightInGrams(double weightInGrams) {
-        this.weightInGrams = weightInGrams;
+    public void setWeightInKilograms(double weightInKilograms) {
+        this.weightInKilograms = weightInKilograms;
     }
 
     public String getShopId() {

@@ -14,7 +14,8 @@ import rx.Subscriber
 
 class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                          val presenter: CheckoutVariantContract.Presenter,
-                         val profileServiceId: Int) : Subscriber<ShippingRecommendationData>() {
+                         val profileServiceId: Int,
+                         val isReloadData: Boolean) : Subscriber<ShippingRecommendationData>() {
 
     override fun onCompleted() {
 
@@ -36,13 +37,11 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
                         for (product: ProductData in shippingDurationViewModel.serviceData.products) {
                             if (product.isRecommend) {
-                                presenter.prepareViewModel(product)
-                                view?.updateShippingData(product)
+                                prepareViewModel(product)
                                 return
                             }
                         }
-                        presenter.prepareViewModel(shippingDurationViewModel.serviceData.products[0])
-                        view?.updateShippingData(shippingDurationViewModel.serviceData.products[0])
+                        prepareViewModel(shippingDurationViewModel.serviceData.products[0])
                         return
                     }
                 }
@@ -51,6 +50,13 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         } else {
             view?.finishWithError(ratesData.errorMessage)
         }
+    }
+
+    private fun prepareViewModel(product: ProductData) {
+        if (!isReloadData) {
+            presenter.prepareViewModel(product)
+        }
+        view?.updateShippingData(product)
     }
 
 }

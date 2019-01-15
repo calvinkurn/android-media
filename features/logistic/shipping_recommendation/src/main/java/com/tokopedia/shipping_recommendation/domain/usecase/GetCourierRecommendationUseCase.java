@@ -120,7 +120,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
         shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
         shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
-        shippingParam.setWeightInGrams(shipmentDetailData.getShipmentCartData().getWeight());
+        shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
         shippingParam.setShopId(shipmentDetailData.getShopId());
         shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
         shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
@@ -177,7 +177,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         }
         queryStringBuilder = setParam(queryStringBuilder, Param.DESTINATION, destinationStringBuilder.toString());
 
-        double weightInKilograms = shippingParam.getWeightInGrams() / KILOGRAM_DIVIDER;
+        double weightInKilograms = shippingParam.getWeightInKilograms() / KILOGRAM_DIVIDER;
         queryStringBuilder = setParam(queryStringBuilder, Param.WEIGHT, String.valueOf(weightInKilograms));
 
         queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shippingParam.getShopId());

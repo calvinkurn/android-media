@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
@@ -51,7 +52,7 @@ interface CheckoutVariantContract {
 
         fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam)
 
-        fun loadShippingRates(atcResponseModel: AtcResponseModel, itemPrice: Int, quantity: Int)
+        fun loadShippingRates(price: Int, quantity: Int, isReloadData: Boolean)
 
         fun checkout(fragmentViewModel: FragmentViewModel)
 

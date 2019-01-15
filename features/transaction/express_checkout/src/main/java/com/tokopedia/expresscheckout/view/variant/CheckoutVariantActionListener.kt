@@ -10,6 +10,8 @@ interface CheckoutVariantActionListener {
 
     fun onNeedToNotifySingleItem(position: Int)
 
+    fun onNeedToRemoveSingleItem(position: Int)
+
     fun onNeedToNotifyAllItem()
 
     fun onClickEditProfile()

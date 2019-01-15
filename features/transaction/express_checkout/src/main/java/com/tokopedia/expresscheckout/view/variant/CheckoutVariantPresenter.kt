@@ -84,7 +84,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         return variables
     }
 
-    override fun loadShippingRates(atcResponseModel: AtcResponseModel, itemPrice: Int, quantity: Int) {
+    override fun loadShippingRates(price: Int, quantity: Int, isReloadData: Boolean) {
         val query = GraphqlHelper.loadRawString(view.getActivityContext()?.getResources(), R.raw.rates_v3_query)
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.districtId.toString()
@@ -95,14 +95,16 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         shippingParam.destinationPostalCode = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.addressModel?.postalCode
         shippingParam.destinationLatitude = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.addressModel?.latitude
         shippingParam.destinationLongitude = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.addressModel?.longitude
-        shippingParam.weightInGrams = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productWeight?.toDouble() ?: 0.0
         shippingParam.shopId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId.toString()
         shippingParam.token = atcResponseModel.atcDataModel?.keroToken
         shippingParam.ut = atcResponseModel.atcDataModel?.keroUnixTime.toString()
         shippingParam.insurance = 1
-        shippingParam.productInsurance = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productFinsurance ?: 0
-        shippingParam.orderValue = itemPrice * quantity
         shippingParam.categoryIds = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productCatId.toString()
+
+        shippingParam.weightInKilograms = quantity * (atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productWeight
+                ?: 0) / 1000.0
+        shippingParam.productInsurance = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productFinsurance ?: 0
+        shippingParam.orderValue = price * quantity
 
         val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
         val serviceId = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.shipmentModel?.serviceId
@@ -111,7 +113,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
         getCourierRecommendationUseCase.execute(
                 query, shippingParam, 0, shopShipmentModels,
-                GetRatesSubscriber(view, this, serviceId ?: 0)
+                GetRatesSubscriber(view, this, serviceId ?: 0, isReloadData)
         )
     }
 
@@ -135,8 +137,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
         val productDataCheckoutRequest = ProductDataCheckoutRequest()
         productDataCheckoutRequest.productId = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productId ?: 0
-        productDataCheckoutRequest.productQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity ?:
-                fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity ?: 1
+        productDataCheckoutRequest.productQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity ?: fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity ?: 1
         productDataCheckoutRequest.productNotes = fragmentViewModel.getNoteViewModel()?.note
         productDataCheckoutRequest.isPurchaseProtection = false
 

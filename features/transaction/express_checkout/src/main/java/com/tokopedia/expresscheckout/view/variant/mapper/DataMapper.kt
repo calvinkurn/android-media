@@ -32,5 +32,5 @@ interface DataMapper {
 
     fun convertToOptionVariantViewModel(optionModel: OptionModel, variantId: Int, childrenModel: ArrayList<ChildModel>): OptionVariantViewModel
 
-    fun convertToInsuranceViewModel(atcResponseModel: AtcResponseModel, productData: ProductData, summaryViewModel: SummaryViewModel): InsuranceViewModel
+    fun convertToInsuranceViewModel(productData: ProductData, summaryViewModel: SummaryViewModel?): InsuranceViewModel
 }

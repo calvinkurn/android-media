@@ -22,10 +22,17 @@ import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -42,6 +49,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
     private lateinit var fragmentViewModel: FragmentViewModel
     private lateinit var tkpdProgressDialog: TkpdProgressDialog
+    private lateinit var compositeSubscription: CompositeSubscription
+    private lateinit var saveStateDebounceListener: SaveStateDebounceListener
     var isDataLoaded = false
 
     companion object {
@@ -73,8 +82,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         (recyclerView.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
 
         errorBottomSheets = ErrorBottomsheets()
-
         fragmentViewModel = FragmentViewModel()
+        compositeSubscription = CompositeSubscription()
+        initUpdateShippingRatesDebouncer()
 
         return view
     }
@@ -82,6 +92,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         fragmentListener = context as CheckoutVariantFragmentListener
+    }
+
+    override fun onDetach() {
+        compositeSubscription.unsubscribe()
+        super.onDetach()
     }
 
     override fun showLoading() {
@@ -119,6 +134,16 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
         } else {
             adapter.notifyItemChanged(position)
+        }
+    }
+
+    override fun onNeedToRemoveSingleItem(position: Int) {
+        if (recyclerView.isComputingLayout) {
+            recyclerView.post {
+                adapter.notifyItemRemoved(position)
+            }
+        } else {
+            adapter.notifyItemRemoved(position)
         }
     }
 
@@ -290,6 +315,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
+        saveStateDebounceListener.onNeedToSaveState(true)
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
@@ -401,6 +427,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun updateShippingData(productData: ProductData) {
         var profileViewModel = fragmentViewModel.getProfileViewModel()
+        var insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
+        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
         if (profileViewModel != null) {
             if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 showBottomsheetError("Tandai Lokasi Pengiriman", productData.error.errorMessage, "Tandai Lokasi")
@@ -415,6 +443,42 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
             }
         }
+
+        if (insuranceViewModel != null) {
+            if (productData.insurance.insuranceType != InsuranceConstant.INSURANCE_TYPE_NO) {
+                insuranceViewModel.insuranceLongInfo = productData.insurance.insuranceUsedInfo
+                insuranceViewModel.insurancePrice = productData.insurance.insurancePrice
+                insuranceViewModel.insuranceType = productData.insurance.insuranceType
+                insuranceViewModel.insuranceUsedDefault = productData.insurance.insuranceUsedDefault
+                insuranceViewModel.shippingId = productData.shipperId
+                insuranceViewModel.spId = productData.shipperProductId
+                insuranceViewModel.isChecked = insuranceViewModel.isChecked ||
+                        productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES ||
+                        productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST
+                insuranceViewModel.isVisible = true
+                onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+
+                if (summaryViewModel != null) {
+                    summaryViewModel.isUseInsurance = insuranceViewModel.isChecked
+                    summaryViewModel.shippingPrice = productData.price.price
+                    summaryViewModel.insurancePrice = productData.insurance.insurancePrice
+                    summaryViewModel.insuranceInfo = productData.insurance.insuranceUsedInfo
+                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
+                }
+            } else {
+                insuranceViewModel.isChecked = false
+                insuranceViewModel.isVisible = false
+                onNeedToRemoveSingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+
+                if (summaryViewModel != null) {
+                    summaryViewModel.isUseInsurance = false
+                    summaryViewModel.shippingPrice = productData.price.price
+                    summaryViewModel.insurancePrice = 0
+                    summaryViewModel.insuranceInfo = ""
+                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
+                }
+            }
+        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
@@ -425,4 +489,38 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun getActivityContext(): Context? {
         return activity
     }
+
+    private fun initUpdateShippingRatesDebouncer() {
+        compositeSubscription.add(Observable.create(Observable.OnSubscribe<Boolean> { subscriber ->
+            saveStateDebounceListener = object : SaveStateDebounceListener {
+                override fun onNeedToSaveState(boolean: Boolean) {
+                    subscriber.onNext(boolean)
+                }
+            }
+        }).debounce(1000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Boolean>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(boolean: Boolean) {
+                        presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice
+                                ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                                ?: 0, true)
+                    }
+                }))
+    }
+
+    private interface SaveStateDebounceListener {
+
+        fun onNeedToSaveState(boolean: Boolean)
+
+    }
+
 }
