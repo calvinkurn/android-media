@@ -1,4 +1,4 @@
-include ':websocket'
+include ':websocket', ':chatbot_no_op'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
