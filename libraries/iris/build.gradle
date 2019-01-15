@@ -34,7 +34,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"
-    implementation "android.arch.work:work-runtime-ktx:1.0.0-beta01"
+    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha10"
 
     implementation "android.arch.persistence.room:runtime:1.1.1"
     kapt "android.arch.persistence.room:compiler:1.1.1"
