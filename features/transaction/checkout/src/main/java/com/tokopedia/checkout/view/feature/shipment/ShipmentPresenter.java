@@ -203,6 +203,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         super.detachView();
         compositeSubscription.unsubscribe();
         getCourierRecommendationUseCase.unsubscribe();
+        codCheckoutUseCase.unsubscribe();
     }
 
     @Override

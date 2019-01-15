@@ -1,11 +1,10 @@
-package com.tokopedia.cod
+package com.tokopedia.cod.view
 
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.transactiondata.entity.response.cod.Message
+import com.tokopedia.cod.R
 import com.tokopedia.transactiondata.entity.response.cod.PriceSummary
 import kotlinx.android.synthetic.main.item_summary.view.*
 import kotlinx.android.synthetic.main.item_grand_total.view.*

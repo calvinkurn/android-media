@@ -1,4 +1,4 @@
-package com.tokopedia.cod
+package com.tokopedia.cod.view
 
 import android.content.Context
 import android.content.Intent

@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_16"
-                    android:text="Bayar di Tempat"
+                    android:text="@string/cod_brand_tag"
                     android:textStyle="bold" />
 
                 <View
@@ -108,7 +108,7 @@
             android:gravity="center"
             android:paddingTop="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_12"
-            android:text="Bayar di Tempat"
+            android:text="@string/cod_brand_tag"
             android:textColor="@color/white" />
 
     </android.support.v7.widget.CardView>

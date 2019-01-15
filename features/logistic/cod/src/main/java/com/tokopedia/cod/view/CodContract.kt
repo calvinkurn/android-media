@@ -1,6 +1,4 @@
-package com.tokopedia.cod
-
-import android.view.View
+package com.tokopedia.cod.view
 
 /**
  * Created by fajarnuha on 17/12/18.

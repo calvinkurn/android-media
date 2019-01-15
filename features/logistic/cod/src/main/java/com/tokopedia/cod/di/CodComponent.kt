@@ -1,8 +1,8 @@
 package com.tokopedia.cod.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.cod.CodActivity
-import com.tokopedia.cod.CodFragment
+import com.tokopedia.cod.view.CodActivity
+import com.tokopedia.cod.view.CodFragment
 import dagger.Component
 
 /**

@@ -1,8 +1,9 @@
-package com.tokopedia.cod
+package com.tokopedia.cod.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.cod.R
 import com.tokopedia.cod.model.CodResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase

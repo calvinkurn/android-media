@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".CodActivity"
+            android:name=".view.CodActivity"
             android:label="@string/cod_brand_tag"
             android:theme="@style/Theme.White"/>
 

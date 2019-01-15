@@ -1,6 +1,7 @@
-package com.tokopedia.cod
+package com.tokopedia.cod.view
 
 import com.tokopedia.cod.model.CodResponse
+import com.tokopedia.cod.usecase.CodConfirmUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber

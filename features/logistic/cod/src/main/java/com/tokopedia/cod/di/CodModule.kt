@@ -2,8 +2,8 @@ package com.tokopedia.cod.di
 
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
-import com.tokopedia.cod.CodContract
-import com.tokopedia.cod.CodPresenter
+import com.tokopedia.cod.view.CodContract
+import com.tokopedia.cod.view.CodPresenter
 import com.tokopedia.logisticanalytics.CodAnalytics
 import dagger.Module
 import dagger.Provides

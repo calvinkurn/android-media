@@ -1,4 +1,4 @@
-package com.tokopedia.cod
+package com.tokopedia.cod.view
 
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.cod.R
 import com.tokopedia.cod.di.DaggerCodComponent
 import com.tokopedia.logisticanalytics.CodAnalytics
 import com.tokopedia.transactiondata.entity.response.cod.Data

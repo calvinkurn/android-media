@@ -9,6 +9,7 @@ import android.support.test.filters.LargeTest
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.google.gson.Gson
+import com.tokopedia.cod.view.CodActivity
 import com.tokopedia.transactiondata.entity.response.cod.Data
 import org.junit.Before
 import org.junit.Rule
