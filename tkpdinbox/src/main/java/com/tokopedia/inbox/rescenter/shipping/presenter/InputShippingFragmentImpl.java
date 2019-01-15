@@ -19,7 +19,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -30,7 +29,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.data.pojo.GenerateHostDataResponse;
 import com.tokopedia.inbox.common.data.pojo.GenerateHostResponse;
-import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
@@ -66,6 +64,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageV2UseCase.PARAM_FILE_TO_UPLOAD;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_ATTACHMENT;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
 
@@ -451,21 +450,27 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                                 networkCalculator.getContent().get("token"));
                         RequestBody web_service = RequestBody.create(MediaType.parse("text/plain"),
                                 networkCalculator.getContent().get("web_service"));
+                        RequestBody osType = RequestBody.create(MediaType.parse("text/plain"),
+                                "1");
+
+                        Map<String, RequestBody> requestBodyMap = new HashMap<>();
+                        requestBodyMap.put(NetworkCalculator.USER_ID, userId);
+                        requestBodyMap.put(NetworkCalculator.DEVICE_ID, deviceId);
+                        requestBodyMap.put("os_type", osType);
+                        requestBodyMap.put(NetworkCalculator.HASH, hash);
+                        requestBodyMap.put(NetworkCalculator.DEVICE_TIME, deviceTime);
+                        requestBodyMap.put("id", imageId);
+                        requestBodyMap.put("token", token);
+                        requestBodyMap.put(PARAM_FILE_TO_UPLOAD, imageId);
+                        requestBodyMap.put("web_service", web_service);
 
                         Log.d(TAG + "(step 2):host", inputModel.getUploadHost());
                         final Observable<NewUploadResCenterImageData> upload = getRetrofit()
                                 .create(UploadImageResCenter.class)
                                 .uploadImageNew(
                                         networkCalculator.getUrl() + "/upload/attachment",
-                                        networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),
-                                        userId,
-                                        deviceId,
-                                        hash,
-                                        deviceTime,
-                                        fileToUpload,
-                                        imageId,
-                                        token,
-                                        web_service
+                                        requestBodyMap,
+                                        fileToUpload
                                 );
 
                         return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterVersion2DB, NewUploadResCenterImageData, AttachmentResCenterVersion2DB>() {
