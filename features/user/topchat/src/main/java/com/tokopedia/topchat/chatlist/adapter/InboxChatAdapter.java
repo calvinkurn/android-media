@@ -322,11 +322,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                         temp.setTime(String.valueOf(new Date().getTime()));
                         temp.setTyping(false);
                     }
-                    list.remove(i);
-                    notifyItemRemoved(i);
-                    list.add(0, temp);
-                    notifyItemInserted(0);
-                    notifyItemRangeChanged(0, i);
+                    notifyItemChanged(i);
                     break;
                 }
 
