@@ -58,6 +58,7 @@ import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -452,7 +453,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                                 networkCalculator.getContent().get("web_service"));
 
                         Log.d(TAG + "(step 2):host", inputModel.getUploadHost());
-                        final Observable<NewUploadResCenterImageData> upload = RetrofitUtils.createRetrofit(networkCalculator.getUrl())
+                        final Observable<NewUploadResCenterImageData> upload = getRetrofit(networkCalculator.getUrl())
                                 .create(UploadImageResCenter.class)
                                 .uploadImageNew(
                                         networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
@@ -490,6 +491,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                     }
                 })
                 .toList();
+    }
+
+    private Retrofit getRetrofit(String url) {
+        return viewListener.getRetrofitBuilder().baseUrl(url).client(viewListener.getUploadHttpClient()).build();
     }
 
     private void clearAttachment() {
