@@ -2,26 +2,14 @@ package com.tokopedia.core.analytics;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.tagmanager.ContainerHolder;
-import com.google.android.gms.tagmanager.TagManager;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
-import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
-
-import java.lang.ref.WeakReference;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author by alvarisi on 10/26/16.
@@ -54,45 +42,6 @@ public abstract class TrackingConfig {
      */
     static IMoengageContainer getMoEngine(Context context) {
         return Jordan.init(context).getMoEngageContainer();
-    }
-
-    public static void runGTMFirstTime(Application application) {
-        new initGTMTask(application).execute();
-    }
-
-    static abstract class ContextAsyncTask extends AsyncTask<Void, Void, Void> {
-        WeakReference<Context> contextWeakReference;
-
-        ContextAsyncTask(Context context) {
-            this.contextWeakReference = new WeakReference<>(context);
-        }
-
-        abstract void doInBackground(Context context);
-
-        @Override
-        protected final Void doInBackground(Void... voids) {
-            Context context = null;
-            if (this.contextWeakReference!= null && contextWeakReference.get()!= null) {
-                context = this.contextWeakReference.get();
-            }
-            if (context == null) {
-                return null;
-            }
-            doInBackground(context);
-            return null;
-        }
-    }
-
-    static class initGTMTask extends ContextAsyncTask {
-
-        initGTMTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        void doInBackground(Context context) {
-            GTMContainer.newInstance(context).loadContainer();
-        }
     }
 
     public static void runAppsFylerFirstTime(Application application) {

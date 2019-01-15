@@ -20,14 +20,6 @@ import java.util.Map;
  */
 
 public interface IGTMContainer {
-    /**
-     * Load init container, use this when app start and sync/refresh container
-     */
-    void loadContainer();
-
-    void loadContainer(String containerId, int defaultContainerResId);
-
-    void loadContainer(ResultCallback<ContainerHolder> callback);
 
     /**
      * Method for send open screen event
@@ -75,17 +67,7 @@ public interface IGTMContainer {
 
     GTMContainer clearAddtoCartDataLayer(String act);
 
-    String eventHTTP();
-
-    String getString(String key);
-
     String getClientIDString();
-
-    boolean getBoolean(String key);
-
-    long getLong(String key);
-
-    double getDouble(String key);
 
     void eventError(String screenName, String errorDesc);
 

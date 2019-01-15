@@ -457,12 +457,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processGetGTMTicker() {
-        if (TrackingUtils.getGtmString(viewListener.getActivityContext(), AppEventTracking.GTM.TICKER_PDP).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(viewListener.getActivityContext(), AppEventTracking.GTM.TICKER_PDP_TEXT);
-            viewListener.showTickerGTM(message);
-        } else {
-            viewListener.hideTickerGTM();
-        }
+        viewListener.hideTickerGTM();
     }
 
     @Override

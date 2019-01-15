@@ -7,19 +7,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.tagmanager.Container;
 import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
@@ -29,7 +24,6 @@ import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
@@ -39,20 +33,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class GTMContainer implements IGTMContainer {
 
-    private static final String DEFAULT_CONTAINERID = "GTM-P32KTB";
-    private static final int DEFAULT_CONTAINER_RES_ID = R.raw.gtm_default;
     private static final int EXPIRE_CONTAINER_TIME = 7200;
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
     private static final int EXPIRE_CONTAINER_TIME_DEBUG = 900;
 
     private static final String IS_EXCEPTION_ENABLED = "is_exception_enabled";
     private static final String IS_USING_HTTP_2 = "is_using_http_2";
-    private static final String STR_GTM_EXCEPTION_ENABLED = "GTM is exception enabled";
-    public static final String CLIENT_ID = "client_id";
     private static final String TAG = GTMContainer.class.getSimpleName();
 
     private Context context;
@@ -110,68 +99,6 @@ public class GTMContainer implements IGTMContainer {
             cache.setExpire(EXPIRE_CONTAINER_TIME);
         }
         cache.applyEditor();
-    }
-
-    private void validateGTM() {
-        if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
-            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED));
-        } else {
-            Log.e("GTMContainer", "failure loading container");
-        }
-    }
-
-    private void validateGTM(ContainerHolder containerHolder) {
-        if (containerHolder.getStatus().isSuccess()) {
-            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED));
-        } else {
-            Log.e("GTMContainer", "failure loading container");
-        }
-    }
-
-    @Override
-    public void loadContainer(String containerId, int defaultContainerResId) {
-        TagManager tagManager = getTagManager();
-        PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(containerId, defaultContainerResId);
-
-        pResult.setResultCallback(new ResultCallback<ContainerHolder>() {
-            @Override
-            public void onResult(ContainerHolder cHolder) {
-                ContainerHolderSingleton.setContainerHolder(cHolder);
-                validateGTM();
-            }
-        }, 2, TimeUnit.SECONDS);
-    }
-
-    @Override
-    public void loadContainer() {
-        try {
-            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
-            TagManager tagManager = TagManager.getInstance(context);
-            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
-                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
-            pResult.setResultCallback(new ResultCallback<ContainerHolder>() {
-                @Override
-                public void onResult(ContainerHolder cHolder) {
-                    ContainerHolderSingleton.setContainerHolder(cHolder);
-                    if (isAllowRefreshDefault(cHolder)) {
-                        Log.i("GTM TKPD", "Refreshed Container ");
-                        cHolder.refresh();
-                        //setExpiryRefresh();
-                    }
-                    validateGTM(cHolder);
-                }
-            }, 2, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            TrackingUtils.eventError(context, context.getClass().toString(), e.toString());
-        }
-    }
-
-    @Override
-    public void loadContainer(ResultCallback<ContainerHolder> callback) {
-        TagManager tagManager = getTagManager();
-        PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferNonDefault(DEFAULT_CONTAINERID, DEFAULT_CONTAINER_RES_ID);
-
-        pResult.setResultCallback(callback, 2, TimeUnit.SECONDS);
     }
 
     private DataLayer getDataLayer() {
@@ -332,31 +259,10 @@ public class GTMContainer implements IGTMContainer {
         return this;
     }
 
-    @Override
-    public String eventHTTP() {
-        return getString(GTMContainer.IS_USING_HTTP_2);
-    }
-
-    @Override
-    public String getString(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getString(key);
-        }
-        return "";
-    }
-
 
     @Override
     public void eventError(String screenName, String errorDesc) {
-        if (TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
-            Log.d(TAG, "Sending Push Event Error");
-            GTMDataLayer.pushEvent(context, "trackException", DataLayer.mapOf(
-                    "screenName", screenName,
-                    "exception.description", errorDesc,
-                    "exception.isFatal", "true"));
-        } else {
-            Log.d(TAG, "Sending Push Event Error disabled");
-        }
+        // no op
     }
 
     @Override
@@ -388,13 +294,7 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void eventNetworkError(String networkError) {
-        if (TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
-            Log.d(TAG, "Sending Push Event Network Error");
-            GTMDataLayer.pushEvent(context,
-                    "trackException", DataLayer.mapOf("exception.description", networkError, "exception.isFatal", true));
-        } else {
-            Log.d(TAG, "Sending Push Event Network Error Disabled");
-        }
+        // no op
     }
 
     @Override
@@ -425,10 +325,6 @@ public class GTMContainer implements IGTMContainer {
         getDataLayer().push(maps);
     }
 
-    public static ContainerHolder getContainerHolder() {
-        return ContainerHolderSingleton.getContainerHolder();
-    }
-
     @Override
     public void sendButtonClick(String event,
                                 String category,
@@ -447,34 +343,6 @@ public class GTMContainer implements IGTMContainer {
         Log.i("Tag Manager", "UA-9801603-15: Send Button Click Event");
         GTMDataLayer.pushGeneral(context, buttonClickEvent.getEvent());
         return this;
-    }
-
-    public static Container getContainer() {
-        return ContainerHolderSingleton.getContainerHolder().getContainer();
-    }
-
-    @Override
-    public boolean getBoolean(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getBoolean(key);
-        }
-        return false;
-    }
-
-    @Override
-    public long getLong(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getLong(key);
-        }
-        return -1;
-    }
-
-    @Override
-    public double getDouble(String key) {
-        if (ContainerHolderSingleton.isContainerHolderAvailable()) {
-            return GTMContainer.getContainer().getDouble(key);
-        }
-        return -1;
     }
 
     @Override

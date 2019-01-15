@@ -319,7 +319,6 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runGTMFirstTime(this);
         TrackingUtils.runAppsFylerFirstTime(this);
         TrackingUtils.runMoengageFirstTime(this);
         TrackingUtils.enableDebugging(this, isDebug());
