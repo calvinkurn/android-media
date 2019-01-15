@@ -13,6 +13,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -56,6 +57,6 @@ public interface UploadImageResCenter {
     @POST()
     Observable<NewUploadResCenterImageData> uploadImageNew(
             @Url String url,
-            @PartMap Map<String, RequestBody> params,
+            @QueryMap Map<String, String> params,
             @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
 }
