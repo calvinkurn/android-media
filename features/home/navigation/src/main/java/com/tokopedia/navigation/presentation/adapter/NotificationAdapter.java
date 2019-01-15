@@ -32,6 +32,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
 import static com.tokopedia.navigation.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.UPDATE;
 import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
 import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
 
