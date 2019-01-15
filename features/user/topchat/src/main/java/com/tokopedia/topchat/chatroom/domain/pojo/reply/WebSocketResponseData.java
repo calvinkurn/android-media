@@ -39,6 +39,9 @@ public class  WebSocketResponseData {
     @SerializedName("rating_status")
     @Expose
     private int ratingStatus;
+    @SerializedName("is_bot")
+    @Expose
+    private boolean isBot;
 
     public int getMsgId() {
         return msgId;
@@ -126,5 +129,9 @@ public class  WebSocketResponseData {
 
     public void setRatingStatus(int ratingStatus) {
         this.ratingStatus = ratingStatus;
+    }
+
+    public boolean isBot() {
+        return isBot;
     }
 }

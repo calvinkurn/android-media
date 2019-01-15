@@ -52,12 +52,12 @@ import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
-import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
 import com.tokopedia.topchat.revamp.view.TopChatInternalRouter;
+import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -574,11 +574,14 @@ public class InboxChatFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
-                                response.getData().getMessage().getCensoredReply(), response,
-                                true);
-                        reloadNotifDrawer();
+                        if (!response.getData().isBot()) {
+                            adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
+                                    response.getData().getMessage().getCensoredReply(), response,
+                                    true);
+                            reloadNotifDrawer();
+                        }
                     });
+
                 }
                 break;
             default:
