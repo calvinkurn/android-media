@@ -119,4 +119,6 @@
     <string name="value_courier_count">%1$s Kurir</string>
 
     <string name="value_cashback_pdp">Cashback %1$s</string>
+    <string name="title_cod">Bayar di Tempat</string>
+    <string name="cod_content">Bayar Ke kurir saat pesanan diterima. Tersedia dibeberapa kota tertentu</string>
 </resources>

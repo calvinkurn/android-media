@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
@@ -35,6 +36,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
@@ -406,8 +408,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getChildFragmentManager(),
                 this,
                 this,
-                this,
-                digitalWidgetRepository
+                this
         );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
@@ -454,12 +455,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onDigitalMoreClicked(int pos) {
-        if (getActivity().getApplication() instanceof DigitalModuleRouter) {
-            DigitalModuleRouter digitalModuleRouter =
-                    (DigitalModuleRouter) getActivity().getApplication();
-            startActivityForResult(
-                    digitalModuleRouter.instanceIntentDigitalCategoryList(),
-                    REQUEST_CODE_DIGITAL_CATEGORY_LIST
+        AnalyticTracker tracker = HomePageTracking.getTracker(getActivity());
+        if (tracker != null) {
+            tracker.sendEventTracking(
+                    DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                    DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
+                    DigitalEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
+                    ""
             );
         }
     }
@@ -614,6 +616,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getHeaderData(false);
         }
         loadEggData();
+        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
 
     private void resetFeedState() {
