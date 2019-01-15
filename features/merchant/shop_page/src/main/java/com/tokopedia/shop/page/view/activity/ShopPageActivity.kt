@@ -298,12 +298,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
-    private fun stopPerformanceMonitor(){
+    override fun stopPerformanceMonitor(){
         performanceMonitoring?.stopTrace()
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
-        stopPerformanceMonitor()
         setViewState(VIEW_CONTENT)
         shopInfo?.run {
             this@ShopPageActivity.shopInfo = this
@@ -365,7 +364,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
-        stopPerformanceMonitor()
         setViewState(VIEW_ERROR)
         errorTextView.text = ErrorHandler.getErrorMessage(this, e)
         errorButton.setOnClickListener { getShopInfo() }
