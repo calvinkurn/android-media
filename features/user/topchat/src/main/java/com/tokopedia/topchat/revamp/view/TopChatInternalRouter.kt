@@ -59,7 +59,7 @@ open class TopChatInternalRouter {
                 opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)
                 -> { !isPromoBlocked }
                 opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)
-                -> { !isBlocked }
+                -> { !isBlocked && !isPromoBlocked}
                 opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_USER)
                 -> { !isBlocked }
                 else -> { true }
