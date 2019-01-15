@@ -17,17 +17,20 @@ import kotlinx.coroutines.experimental.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 import kotlin.coroutines.experimental.CoroutineContext
 
 class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                       private val userSessionInterface: UserSessionInterface)
+                                                       private val userSessionInterface: UserSessionInterface,
+                                                       @Named("Main")
+                                                       private val baseDispatcher: CoroutineDispatcher)
     : ViewModel(), CoroutineScope {
     private val job = Job()
 
     val creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+        get() = baseDispatcher + job
 
 
     fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {

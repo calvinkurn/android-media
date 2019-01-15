@@ -193,7 +193,8 @@ ext {
             kotlinMockito      : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
             spekApi            : "org.jetbrains.spek:spek-api:${SpekVersion}",
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
-            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0"
+            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
+            archCoreTesting    : "android.arch.core:core-testing:$lifeCycleVersion"
     ]
 
     debugToolsDependencies = [

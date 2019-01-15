@@ -40,8 +40,11 @@ import com.tokopedia.user.session.UserSessionInterface
 
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.Dispatchers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import javax.inject.Named
 
 /**
  * Created by hadi.putra on 23/04/18.
@@ -198,4 +201,9 @@ class TopAdsDashboardModule {
 
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+
+    @TopAdsDashboardScope
+    @Provides
+    @Named("Main")
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }
