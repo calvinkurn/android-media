@@ -3559,10 +3559,4 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
     }
 
-    @Override
-    public Class<?> getDeeplinkClass() {
-        return RouterUtils.getRouterFromContext(mContext).getDeeplinkClass();
-    }
-
-
 }
