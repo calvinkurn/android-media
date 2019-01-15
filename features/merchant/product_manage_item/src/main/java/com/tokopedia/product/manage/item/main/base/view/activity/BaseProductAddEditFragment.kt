@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -29,6 +30,7 @@ import com.tokopedia.product.manage.item.category.view.activity.ProductEditCateg
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ProductStatus
+import com.tokopedia.product.manage.item.common.util.ProductVariantConstant
 import com.tokopedia.product.manage.item.common.util.StockTypeDef
 import com.tokopedia.product.manage.item.description.view.activity.ProductEditDescriptionActivity
 import com.tokopedia.product.manage.item.description.view.model.ProductDescription
@@ -458,6 +460,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startProductVariantActivity() {
+        context?.let {
+            val app = it.applicationContext
+            if (app is AbstractionRouter){
+                app.analyticTracker.sendEventTracking(ProductVariantConstant.TRACKING_EVENT,
+                        ProductVariantConstant.TRACKING_EVENT_CATEGORY,
+                        ProductVariantConstant.TRACKING_EVENT_ACTION, null)
+            }
+        }
         currentProductAddViewModel?.run {
             if (productVariantByCatModelList.size == 0) {
                 NetworkErrorHelper.createSnackbarWithAction(activity) {
