@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -113,6 +116,28 @@ public class ImageLoader {
         imageFetcher.loadImage(url, imageView);
     }
 
+    public void loadCircle(Shop shop, final ImageView imageView) {
+        Glide.with(context)
+                .load(shop.getImageShop().getXsEcs())
+                .asBitmap()
+                .placeholder(R.drawable.loading_page)
+                .into(new BitmapImageViewTarget(imageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(imageView.getContext()
+                                        .getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        imageView.setImageDrawable(circularBitmapDrawable);
+
+                        if (!shop.isLoaded()) {
+                            shop.setLoaded(true);
+                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                        }
+                    }
+                });
+    }
+
     public void loadBadge(final LinearLayout container, List<Badge> badges) {
         container.removeAllViews();
         for (Badge badge : badges) {
@@ -140,7 +165,7 @@ public class ImageLoader {
         }
     }
 
-    private static Drawable getDrawable(Context context, int resId) {
+    public static Drawable getDrawable(Context context, int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             return context.getResources().getDrawable(
                     resId,

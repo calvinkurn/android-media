@@ -2385,7 +2385,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInstantLoanIntent(Context context) {
-        return InstantLoanActivity.createIntent(context);
+        return InstantLoanActivity.Companion.createIntent(context);
     }
 
     public Intent getOpenShopIntent(Context context) {
@@ -3190,12 +3190,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return OrderListActivity.getInstance(context);
     }
 
-    @Override
-    public Intent getInstantLoanActivityIntent(Context context) {
-        return null;
-    }
-
-    @Override
+        @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
     }

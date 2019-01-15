@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="poll_black">#80000000</color>
+    <color name="poll_first_green">@color/medium_green</color>
+    <color name="poll_second_green">#aee2b1</color>
+    <color name="poll_first_white">#e0e0e0</color>
+    <color name="poll_second_white">#cecece</color>
+    <color name="poll_first_white_image">#b5b5b5</color>
+    <color name="poll_second_white_image">#f8f8f8</color>
+
+    <color name="feed_image_default">#eeeeee</color>
+</resources>
