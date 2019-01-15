@@ -21,8 +21,6 @@ public interface RetrofitInteractor {
 
     void unSubscribe();
 
-    Observable<ShippingParamsPostModel> getObservableGenerateHost(Context context, ShippingParamsPostModel passData);
-
     interface GetKurirListener {
 
         void onStart();
