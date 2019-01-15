@@ -457,10 +457,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                                 .create(UploadImageResCenter.class)
                                 .uploadImageNew(
                                         networkCalculator.getUrl() + "/upload/attachment",
-                                        networkCalculator.getHeader().get(NetworkCalculator.CONTENT_MD5),// 1
-                                        networkCalculator.getHeader().get(NetworkCalculator.DATE),// 2
-                                        networkCalculator.getHeader().get(NetworkCalculator.AUTHORIZATION),// 3
-                                        networkCalculator.getHeader().get(NetworkCalculator.X_METHOD),// 4
                                         userId,
                                         deviceId,
                                         hash,
