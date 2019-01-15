@@ -96,38 +96,14 @@ public abstract class TrackingConfig {
     }
 
     public static void runAppsFylerFirstTime(Application application) {
-        new initAppsFlyerTask(application).execute();
-    }
-
-    static class initAppsFlyerTask extends ContextAsyncTask {
-
-        initAppsFlyerTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        void doInBackground(Context context) {
-            SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
-            Jordan.init(context).runFirstTimeAppsFlyer(sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000");
-        }
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(application).legacySessionHandler();
+        Jordan.init(application).runFirstTimeAppsFlyer(sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000");
     }
 
     public static void runMoengageFirstTime(Application application) {
-        new initMoengageTask(application).execute();
-    }
-
-    static class initMoengageTask extends ContextAsyncTask {
-
-        initMoengageTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        void doInBackground(Context context) {
-            Jordan.init(context).getMoEngageContainer().initialize();
-            SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
-            TrackingUtils.setMoEngageExistingUser(context, sessionHandler.isLoggedIn());
-        }
+        Jordan.init(application).getMoEngageContainer().initialize();
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(application).legacySessionHandler();
+        TrackingUtils.setMoEngageExistingUser(application, sessionHandler.isLoggedIn());
     }
 
     /**
