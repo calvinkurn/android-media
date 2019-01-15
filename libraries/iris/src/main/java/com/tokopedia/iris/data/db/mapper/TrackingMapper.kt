@@ -6,7 +6,6 @@ import com.tokopedia.iris.data.db.table.Tracking
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 /**
  * Created by meta on 23/11/18.
@@ -70,7 +69,6 @@ class TrackingMapper {
             item.put("iris_session_id", sessionId)
             item.put("container", KEY_CONTAINER)
             item.put("event", KEY_EVENT_GA)
-            item.put("client_timestamp", Calendar.getInstance().timeInMillis)
             item
         } catch (e: JSONException) {
             JSONObject()

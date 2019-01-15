@@ -425,7 +425,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -576,7 +575,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         getReactNativeComponent().inject(this);
     }
 
-
     private void initIris() {
         mIris = Iris.Companion.init(this);
 
@@ -587,6 +585,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 IRIS_TIME,
                 irisEnable
         ));
+    }
+
+    @Override
+    public Iris getIris() {
+        return mIris;
     }
 
     private FlightConsumerComponent getFlightConsumerComponent() {
@@ -1727,18 +1730,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public void sendEventTracking(Map<String, Object> events) {
                 UnifyTracking.eventClearEnhanceEcommerce(ConsumerRouterApplication.this);
                 UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, events);
-                mIris.saveEvent(events);
             }
 
             @Override
             public void sendEventTracking(String event, String category, String action, String label) {
                 UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
-                        event,
-                        category,
-                        action,
-                        label
-                ).getEvent());
-                mIris.saveEvent(new EventTracking(
                         event,
                         category,
                         action,

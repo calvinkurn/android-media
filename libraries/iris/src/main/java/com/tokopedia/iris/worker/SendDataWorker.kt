@@ -35,7 +35,7 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                 val response = service.sendMultiEvent(requestBody)
                 response.await()
             }
-            if (response.isSuccessful) {
+            if (response.isSuccessful && response.code() == 200) {
                 trackingRepository.delete(trackings)
                 return Result.SUCCESS
             }
