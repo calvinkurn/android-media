@@ -5,6 +5,7 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData
 import rx.Subscriber
@@ -38,11 +39,11 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
                         for (product: ProductData in shippingDurationViewModel.serviceData.products) {
                             if (product.isRecommend) {
-                                prepareViewModel(product, shippingDurationViewModel.serviceData)
+                                prepareViewModel(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
                                 return
                             }
                         }
-                        prepareViewModel(shippingDurationViewModel.serviceData.products[0], shippingDurationViewModel.serviceData)
+                        prepareViewModel(shippingDurationViewModel.serviceData.products[0], shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
                         return
                     }
                 }
@@ -53,9 +54,9 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         }
     }
 
-    private fun prepareViewModel(product: ProductData, serviceData: ServiceData) {
+    private fun prepareViewModel(product: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
         if (!isReloadData) {
-            presenter.prepareViewModel(product)
+            presenter.prepareViewModel(product, shippingCourierViewModels)
         }
         view?.updateShippingData(product, serviceData)
     }

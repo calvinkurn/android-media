@@ -10,6 +10,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 
 /**
@@ -27,7 +28,7 @@ interface CheckoutVariantContract {
 
         fun hideLoadingDialog()
 
-        fun updateFragmentViewModel(atcResponseModel: AtcResponseModel)
+        fun updateFragmentViewModel(atcResponseModel: AtcResponseModel, shippingCourierViewModels: MutableList<ShippingCourierViewModel>)
 
         fun showData(viewModels: ArrayList<Visitable<*>>)
 
@@ -60,7 +61,7 @@ interface CheckoutVariantContract {
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 
-        fun prepareViewModel(productData: ProductData)
+        fun prepareViewModel(productData: ProductData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>)
 
         fun getShippingParam(quantity: Int, price: Int): ShippingParam
     }

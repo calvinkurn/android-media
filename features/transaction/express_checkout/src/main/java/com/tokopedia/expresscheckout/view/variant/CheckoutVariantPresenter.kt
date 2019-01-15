@@ -20,6 +20,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
@@ -53,9 +54,9 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         this.atcResponseModel = atcResponseModel
     }
 
-    override fun prepareViewModel(productData: ProductData) {
+    override fun prepareViewModel(productData: ProductData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
         viewModelMapper = ViewModelMapper()
-        view?.updateFragmentViewModel(atcResponseModel)
+        view?.updateFragmentViewModel(atcResponseModel, shippingCourierViewModels)
         view?.showData(viewModelMapper.convertToViewModels(atcResponseModel, productData))
     }
 

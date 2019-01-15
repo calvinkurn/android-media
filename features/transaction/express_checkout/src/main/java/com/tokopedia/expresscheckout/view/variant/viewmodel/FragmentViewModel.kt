@@ -2,6 +2,7 @@ package com.tokopedia.expresscheckout.view.variant.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 
 /**
  * Created by Irfan Khoirul on 09/01/19.
@@ -12,6 +13,7 @@ data class FragmentViewModel(
         var totalPayment: Int? = 0,
         var lastQuantity: Int? = 0,
         var lastPrice: Int? = 0,
+        var shippingCourierViewModels: MutableList<ShippingCourierViewModel>? = null,
         var viewModels: ArrayList<Visitable<*>> = ArrayList()
 ) {
 

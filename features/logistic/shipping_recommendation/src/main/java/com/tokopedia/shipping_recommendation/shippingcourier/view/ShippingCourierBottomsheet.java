@@ -54,8 +54,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
                                                          RecipientAddressModel recipientAddressModel,
                                                          int cartPosition) {
-        ShippingCourierBottomsheet shippingCourierBottomsheet =
-                new ShippingCourierBottomsheet();
+        ShippingCourierBottomsheet shippingCourierBottomsheet = new ShippingCourierBottomsheet();
         Bundle bundle = new Bundle();
         if (shippingCourierViewModels != null) {
             bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
@@ -67,8 +66,20 @@ public class ShippingCourierBottomsheet extends BottomSheets
         return shippingCourierBottomsheet;
     }
 
+    public static ShippingCourierBottomsheet newInstance() {
+        return new ShippingCourierBottomsheet();
+    }
+
     public void setShippingCourierBottomsheetListener(ShippingCourierBottomsheetListener shippingCourierBottomsheetListener) {
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener;
+    }
+
+    public void updateArguments(List<ShippingCourierViewModel> shippingCourierViewModels) {
+        Bundle bundle = new Bundle();
+        if (shippingCourierViewModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        }
+        setArguments(bundle);
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,

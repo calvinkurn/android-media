@@ -26,9 +26,9 @@ import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
+import com.tokopedia.shipping_recommendation.domain.shipping.*
+import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
@@ -45,7 +45,8 @@ import java.util.concurrent.TimeUnit
  */
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
-        CheckoutVariantContract.View, CheckoutVariantActionListener, ShippingDurationBottomsheetListener {
+        CheckoutVariantContract.View, CheckoutVariantActionListener,
+        ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
     val contextView: Context get() = activity!!
     private lateinit var presenter: CheckoutVariantPresenter
@@ -58,6 +59,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
     private lateinit var shippingDurationBottomsheet: ShippingDurationBottomsheet
+    private lateinit var shippingCourierBottomsheet: ShippingCourierBottomsheet
     var isDataLoaded = false
 
     companion object {
@@ -190,7 +192,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onClickEditCourier() {
-
+        shippingCourierBottomsheet.updateArguments(fragmentViewModel.shippingCourierViewModels)
+        if (!shippingCourierBottomsheet.isAdded) {
+            shippingCourierBottomsheet.show(activity?.supportFragmentManager, "")
+        }
     }
 
     override fun onClickInsuranceInfo(insuranceInfo: String) {
@@ -426,8 +431,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomSheets.show(fragmentManager, title)
     }
 
-    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
+    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
         fragmentViewModel.atcResponseModel = atcResponseModel
+        fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) {
@@ -454,6 +460,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun updateShippingData(productData: ProductData, serviceData: ServiceData) {
         shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
         shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this)
+
+        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance()
+        shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this)
 
         var profileViewModel = fragmentViewModel.getProfileViewModel()
         var insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
@@ -521,6 +530,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            flagNeedToSetPinpoint: Boolean,
                                            hasCourierPromo: Boolean) {
         if (shippingCourierViewModels != null) {
+            fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
             for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
                 if (shippingCourierViewModel.productData.isRecommend) {
                     updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData)
@@ -543,6 +553,18 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
+
+    }
+
+    override fun onCourierChoosen(courierItemData: CourierItemData?, recipientAddressModel: RecipientAddressModel?, cartPosition: Int, hasCourierPromo: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean) {
+
+    }
+
+    override fun onCourierShipmentRecpmmendationCloseClicked() {
+        shippingCourierBottomsheet.dismiss()
+    }
+
+    override fun onRetryReloadCourier(shipmentCartItemModel: ShipmentCartItemModel?, cartPosition: Int, shopShipmentList: MutableList<ShopShipment>?) {
 
     }
 
