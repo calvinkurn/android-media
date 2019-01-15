@@ -17,12 +17,6 @@ public interface TopChatRouter {
 
     String EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP = "SHOP_STATUS_FAVOURITE";
 
-    Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot);
-
-    void openRedirectUrl(Activity activity, String url);
-
-    Intent getSplashScreenIntent(Context context);
-
     void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>
             imageDesc, String title, String date);
 

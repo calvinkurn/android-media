@@ -44,6 +44,9 @@ data class Attributes(
         @SerializedName("Title")
         @Expose
         val title: String = "",
+        @SerializedName("Description")
+        @Expose
+        val description: String = "",
         @SerializedName("CreateTime")
         @Expose
         val createTime: String = "",

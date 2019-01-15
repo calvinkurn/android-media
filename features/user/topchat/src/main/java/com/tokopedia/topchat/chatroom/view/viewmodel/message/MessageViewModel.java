@@ -15,7 +15,6 @@ public class MessageViewModel extends SendableViewModel implements Visitable<Cha
     /**
      * Constructor for WebSocketResponse / API Response
      * {@link ChatWebSocketListenerImpl}
-     * {@link GetReplyListUseCase}
      *
      * @param messageId      messageId
      * @param fromUid        userId of sender

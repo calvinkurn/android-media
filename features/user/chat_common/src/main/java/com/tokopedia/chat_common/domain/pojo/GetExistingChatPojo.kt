@@ -27,7 +27,10 @@ data class ChatReplies(
         val textAreaReply: Int = 0,
         @Expose
         @SerializedName("showTimeMachine")
-        val showTimeMachine: Int = 0
+        val showTimeMachine: Int = 0,
+        @Expose
+        @SerializedName("block")
+        val block: Block = Block()
 )
 
 data class Contact(
@@ -154,4 +157,17 @@ data class Fallback(
         @SerializedName("span")
         @Expose
         var span: String = ""
+)
+
+
+data class Block(
+        @Expose
+        @SerializedName("isPromoBlocked")
+        val isPromoBlocked: Boolean = false,
+        @Expose
+        @SerializedName("isBlocked")
+        val isBlocked: Boolean = false,
+        @Expose
+        @SerializedName("blockedUntil")
+        val blockedUntil: String = ""
 )

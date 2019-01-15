@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -372,6 +373,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onUploadOversizedImage() {
         ToasterError.make(view, getString(R.string.oversize_image)).show()
+    }
+
+    override fun showSnackbarError(stringId: Int) {
+        if (view != null) {
+            ToasterError.make(view, getString(stringId), Snackbar.LENGTH_LONG).show()
+        }
     }
 
     /**

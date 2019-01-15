@@ -6,13 +6,9 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponseData;
-import com.tokopedia.topchat.chatroom.domain.pojo.imageupload.ImageUploadAttributes;
-import com.tokopedia.topchat.chatroom.domain.pojo.productattachment.ProductAttachmentAttributes;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.message.MessageViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 
 import javax.inject.Inject;
 
@@ -69,10 +65,6 @@ public class WebSocketMapper {
 
     private BaseChatViewModel mapAttachmentMessage(WebSocketResponse pojo, JsonObject jsonAttributes) {
         switch (pojo.getData().getAttachment().getType()) {
-            case TYPE_PRODUCT_ATTACHMENT:
-                return convertToProductAttachment(pojo.getData(), jsonAttributes);
-            case TYPE_IMAGE_UPLOAD:
-                return convertToImageUpload(pojo.getData(), jsonAttributes);
             default:
                 return convertToFallBackModel(pojo.getData());
         }
@@ -92,50 +84,6 @@ public class WebSocketMapper {
                 false,
                 false,
                 !pojo.getIsOpposite()
-        );
-    }
-
-    private BaseChatViewModel convertToImageUpload(WebSocketResponseData pojo, JsonObject
-            jsonAttribute) {
-        ImageUploadAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
-                ImageUploadAttributes.class);
-
-        return new ImageUploadViewModel(
-                String.valueOf(pojo.getMsgId()),
-                String.valueOf(pojo.getFromUid()),
-                pojo.getFrom(),
-                pojo.getFromRole(),
-                pojo.getAttachment().getId(),
-                pojo.getAttachment().getType(),
-                pojo.getMessage().getTimeStampUnix(),
-                !pojo.getIsOpposite(),
-                pojoAttribute.getImageUrl(),
-                pojoAttribute.getThumbnail(),
-                pojo.getStartTime(),
-                pojo.getMessage().getCensoredReply()
-        );
-    }
-
-    private BaseChatViewModel convertToProductAttachment(WebSocketResponseData pojo, JsonObject jsonAttribute) {
-        ProductAttachmentAttributes pojoAttribute = new GsonBuilder().create().fromJson(jsonAttribute,
-                ProductAttachmentAttributes.class);
-
-        return new ProductAttachmentViewModel(
-                String.valueOf(pojo.getMsgId()),
-                String.valueOf(pojo.getFromUid()),
-                pojo.getFrom(),
-                pojo.getFromRole(),
-                pojo.getAttachment().getId(),
-                pojo.getAttachment().getType(),
-                pojo.getMessage().getTimeStampUnix(),
-                pojoAttribute.getProductId(),
-                pojoAttribute.getProductProfile().getName(),
-                pojoAttribute.getProductProfile().getPrice(),
-                pojoAttribute.getProductProfile().getUrl(),
-                pojoAttribute.getProductProfile().getImageUrl(),
-                !pojo.getIsOpposite(),
-                pojo.getMessage().getCensoredReply(),
-                pojo.getStartTime()
         );
     }
 

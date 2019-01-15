@@ -106,7 +106,8 @@ public class InboxChatActivity extends BaseSimpleActivity
         indicatorAdapter = IndicatorAdapter.createInstance(getIndicatorList(), this);
         indicator.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
                 .HORIZONTAL, false));
-        indicator.addItemDecoration(new SpaceItemDecoration((int) getResources().getDimension(R.dimen.step_size_nob)));
+        indicator.addItemDecoration(new SpaceItemDecoration((int) getResources().getDimension(R
+                .dimen.dp_30)));
         indicator.setAdapter(indicatorAdapter);
 
         if (isIndicatorVisible()) {
@@ -170,10 +171,10 @@ public class InboxChatActivity extends BaseSimpleActivity
 //        indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
 //    }
 
-    private void setTitleToolbar(String titleToolbar) {
-        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
-        titleTextView.setText(titleToolbar);
-    }
+//    private void setTitleToolbar(String titleToolbar) {
+//        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
+//        titleTextView.setText(titleToolbar);
+//    }
 
     @Override
     public void onIndicatorClicked(int position) {

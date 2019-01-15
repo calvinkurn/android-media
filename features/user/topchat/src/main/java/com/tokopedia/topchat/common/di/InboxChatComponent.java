@@ -15,5 +15,4 @@ public interface InboxChatComponent {
 
     void inject(InboxChatFragment fragment);
 
-//    void inject(ChatRoomFragment fragment);
 }

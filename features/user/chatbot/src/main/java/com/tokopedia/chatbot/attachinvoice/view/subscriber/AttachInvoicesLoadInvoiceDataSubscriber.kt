@@ -51,14 +51,14 @@ class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceCon
                         pojoItem.attributes.id.toLong(),
                         pojoItem.typeId,
                         pojoItem.attributes.statusId,
-                        pojoItem.attributes.paymentId,
+                        pojoItem.attributes.code,
                         pojoItem.attributes.title,
                         pojoItem.attributes.imageUrl,
                         pojoItem.attributes.status,
                         pojoItem.attributes.createTime,
                         pojoItem.attributes.totalAmount,
                         pojoItem.type,
-                        pojoItem.attributes.code,
+                        pojoItem.attributes.description,
                         pojoItem.attributes.invoiceUrl
 
                 ))

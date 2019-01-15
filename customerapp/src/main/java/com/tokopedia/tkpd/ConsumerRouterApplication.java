@@ -2771,18 +2771,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }
 
-
-    @Override
-    public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
-        Bundle extras = new Bundle();
-        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(
-                TextUtils.isEmpty(url) ? TkpdBaseURL.BASE_CONTACT_US : url, context
-        ));
-        extras.putBoolean(ContactUsConstant.EXTRAS_IS_CHAT_BOT, isFromChatBot);
-        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(context, extras);
-        return intent;
-    }
-
     @Override
     public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
         return UploadAwbLogisticActivity.newInstance(this, urlUpload);
@@ -3570,4 +3558,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMPushNotificationManager.getInstance().init(this);
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
     }
+
 }

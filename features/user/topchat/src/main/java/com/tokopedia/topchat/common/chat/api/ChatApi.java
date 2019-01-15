@@ -1,9 +1,7 @@
 package com.tokopedia.topchat.common.chat.api;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
 import com.tokopedia.topchat.chatlist.domain.pojo.search.SearchedMessage;
@@ -33,10 +31,10 @@ public interface ChatApi {
     @GET(TkpdBaseURL.Chat.GET_MESSAGE)
     Observable<Response<DataResponse<MessageData>>> getMessage(@QueryMap Map<String, Object> requestParams);
 
-    @FormUrlEncoded
-    @Headers("Cookie:_SID_TOKOPEDIA_")
-    @POST(TkpdBaseURL.Chat.REPLY)
-    Observable<Response<TkpdResponse>> reply(@FieldMap Map<String, Object> requestParams);
+//    @FormUrlEncoded
+//    @Headers("Cookie:_SID_TOKOPEDIA_")
+//    @POST(TkpdBaseURL.Chat.REPLY)
+//    Observable<Response<TkpdResponse>> reply(@FieldMap Map<String, Object> requestParams);
 
     @Headers("Cookie:_SID_TOKOPEDIA_")
     @GET(TkpdBaseURL.Chat.SEARCH)
@@ -48,10 +46,10 @@ public interface ChatApi {
     Observable<Response<DataResponse<DeleteChatListViewModel>>> deleteMessage(@Body JsonObject
                                                                                       parameters);
 
-    @FormUrlEncoded
-    @Headers("Cookie:_SID_TOKOPEDIA_")
-    @POST(TkpdBaseURL.Chat.SEND_MESSAGE)
-    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> requestParams);
+//    @FormUrlEncoded
+//    @Headers("Cookie:_SID_TOKOPEDIA_")
+//    @POST(TkpdBaseURL.Chat.SEND_MESSAGE)
+//    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> requestParams);
 
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
     Observable<Response<DataResponse<TemplateData>>> getTemplate(@QueryMap Map<String, Object>

@@ -137,6 +137,11 @@ public class TopChatAnalytics {
         );
     }
 
+    public void trackOpenChatSetting() {
+        analyticTracker.sendEventTracking(ChatSettingsAnalytics.EVENT_NAME,
+                ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
+                ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
+    }
 
     public void eventPickImage() {
         analyticTracker.sendEventTracking(Category.CHAT_DETAIL, Action.CHAT_DETAIL_ATTACH
@@ -158,4 +163,10 @@ public class TopChatAnalytics {
                 , Name.INBOX_CHAT, "");
     }
 
+    public void trackClickUnblockChat() {
+        analyticTracker.sendEventTracking(ChatSettingsAnalytics.EVENT_NAME,
+                ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
+                ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
+                ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
+    }
 }

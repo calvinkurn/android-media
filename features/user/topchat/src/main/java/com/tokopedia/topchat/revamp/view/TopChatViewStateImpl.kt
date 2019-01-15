@@ -11,18 +11,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
@@ -48,12 +50,14 @@ class TopChatViewStateImpl(
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
+    private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
 
     lateinit var templateAdapter: TemplateChatAdapter
     lateinit var templateChatTypeFactory: TemplateChatTypeFactory
     var isUploading: Boolean = false
     var isFirstTime: Boolean = true
     var isShopFollowed: Boolean = false
+    var isReplyable: Boolean = false
 
     init {
         initView()
@@ -149,27 +153,35 @@ class TopChatViewStateImpl(
         hideLoading()
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
+        showLastTimeOnline(viewModel)
         setHeaderMenuButton(viewModel, headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
         showActionButtons()
+        checkShowQuickReply(viewModel)
+
+        isReplyable = viewModel.replyable
+    }
+
+    private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
+        val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
+
+        val string = ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
+        onlineDesc.text = string
+        onlineDesc.visibility = View.VISIBLE
+
     }
 
     private fun setHeaderMenuButton(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
         headerMenuButton.visibility = View.VISIBLE
-        headerMenuButton.setOnClickListener { showHeaderMenuBottomSheet(chatroomViewModel,
-                headerMenuListener, alertDialog) }
+        headerMenuButton.setOnClickListener {
+            showHeaderMenuBottomSheet(chatroomViewModel,
+                    headerMenuListener, alertDialog)
+        }
     }
 
     private fun showHeaderMenuBottomSheet(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
         val headerMenu = Menus(view.context)
         val listMenu = ArrayList<Menus.ItemMenus>()
-
-        if(!chatroomViewModel.headerModel.role.toLowerCase()
-                        .contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)) {
-            val title = toolbar.findViewById<TextView>(R.id.title)
-            val viewProfileText = view.context.getString(R.string.view_profile_container_string, title)
-            listMenu.add(Menus.ItemMenus(viewProfileText, R.drawable.ic_people))
-        }
 
         if (chatroomViewModel.headerModel.role.toLowerCase()
                         .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
@@ -183,6 +195,9 @@ class TopChatViewStateImpl(
 
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation),
                 R.drawable.ic_trash))
+
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable
+                .ic_chat_settings))
 
         headerMenu.itemMenuList = listMenu
         headerMenu.setActionText(view.context.getString(R.string.cancel_bottom_sheet))
@@ -199,8 +214,8 @@ class TopChatViewStateImpl(
                     itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
                         headerMenuListener.onGoToShop()
                     }
-                    pos == 0 -> {
-                        headerMenuListener.onGoToDetailOpponentFromMenu()
+                    itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
+                        headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
                     }
                     else -> {
                     }
@@ -212,15 +227,15 @@ class TopChatViewStateImpl(
 
     }
 
-    override fun getLastItem(): Parcelable?{
-        if(getAdapter().getList().isNotEmpty()){
-            for (i in 0 until getAdapter().getList().size){
+    override fun getLastItem(): Parcelable? {
+        if (getAdapter().getList().isNotEmpty()) {
+            for (i in 0 until getAdapter().getList().size) {
                 var item = getAdapter().getList()[i]
-                if(item is BaseChatViewModel) {
-                    if(item is SendableViewModel){
-                        if((item as SendableViewModel).isDummy){
+                if (item is BaseChatViewModel) {
+                    if (item is SendableViewModel) {
+                        if ((item as SendableViewModel).isDummy) {
                             break
-                        }else{
+                        } else {
                             return transform(item as BaseChatViewModel)
                         }
                     } else {
@@ -234,11 +249,59 @@ class TopChatViewStateImpl(
         return null
     }
 
+    override fun showChatBlocked(it: BlockedStatus,
+                                 opponentRole: String,
+                                 opponentName: String,
+                                 onUnblockChatClicked: () -> Unit) {
+        showReplyBox(false)
+        templateRecyclerView.visibility = View.GONE
+        chatBlockLayout.visibility = View.VISIBLE
+
+        setChatBlockedText(chatBlockLayout, it, opponentRole, opponentName)
+
+        val unblockText = chatBlockLayout.findViewById<TextView>(R.id.enable_chat_textView)
+        unblockText.setOnClickListener { onUnblockChatClicked() }
+
+    }
+
+    private fun setChatBlockedText(chatBlockLayout: View, blockedStatus: BlockedStatus,
+                                   opponentRole: String, opponentName: String) {
+        val CHAT_PROMOTION = "chat promosi"
+        val CHAT_PERSONAL = "chat personal"
+        val CHAT_BOTH = "semua chat"
+
+        val blockText = chatBlockLayout.findViewById<TextView>(R.id.blocked_text)
+        val category = when {
+            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
+            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP) ->
+                CHAT_BOTH
+            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_USER) ->
+                CHAT_PERSONAL
+            else -> {
+                ""
+            }
+        }
+        val blockString = String.format(
+                chatBlockLayout.context.getString(R.string.chat_blocked_text),
+                category,
+                opponentName,
+                Utils.getDateTime(blockedStatus.blockedUntil))
+
+        blockText.text = blockString
+    }
+
+    override fun removeChatBlocked() {
+        showReplyBox(isReplyable)
+        templateRecyclerView.visibility = View.VISIBLE
+        chatBlockLayout.visibility = View.GONE
+
+    }
+
     private fun transform(item: BaseChatViewModel): Parcelable? {
         return ReplyParcelableModel(item.messageId, item.message, item.replyTime)
     }
 
-    private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog:Dialog) {
+    private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
         myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
         myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
         myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
@@ -246,7 +309,7 @@ class TopChatViewStateImpl(
             headerMenuListener.onDeleteConversation()
         }
         myAlertDialog.setBtnCancel(view.context.getString(R.string.cancel))
-        myAlertDialog.setOnCancelClickListener {   myAlertDialog.dismiss() }
+        myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
         myAlertDialog.show()
     }
 
@@ -277,6 +340,13 @@ class TopChatViewStateImpl(
         }
     }
 
+    private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
+//        if (chatroomViewModel.listChat.isNotEmpty()
+//                && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
+//            showQuickReply(chatroomViewModel.listChat[0] as QuickReplyListViewModel)
+//        }
+    }
+
     fun setTemplate(listTemplate: List<Visitable<Any>>?) {
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
@@ -297,6 +367,7 @@ class TopChatViewStateImpl(
     override fun showRetryUploadImages(it: ImageUploadViewModel, retry: Boolean) {
         getAdapter().showRetryFor(it, retry)
     }
+
     fun onSendProductAttachment(item: ProductAttachmentViewModel) {
         getAdapter().addElement(item)
         scrollDownWhenInBottom()

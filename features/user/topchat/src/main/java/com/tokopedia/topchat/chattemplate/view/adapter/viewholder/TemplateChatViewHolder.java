@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
@@ -33,7 +32,7 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
 
     @Override
     public void bind(final TemplateChatModel element) {
-        if(element.isIcon()){
+        if (element.isIcon()) {
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -42,7 +41,7 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
             });
             textHolder.setVisibility(View.GONE);
             icon.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             textHolder.setText(element.getMessage());
 
             textHolder.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.data.mapper;
 
-import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusDataPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusResponsePojo;
 
@@ -26,8 +26,7 @@ public class GetUserStatusMapper implements Func1<Response<GetUserStatusResponse
                 && response.body().getData() != null) {
             return response.body().getData();
         } else {
-            throw new ErrorMessageException(response.message(),
-                    response.code());
+            throw new RuntimeException(response.message());
         }
     }
 }

@@ -4,7 +4,6 @@ package com.tokopedia.topchat.chatlist.data.repository;
 import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
 
 import java.util.HashMap;
 
@@ -20,5 +19,4 @@ public interface MessageRepository {
 
     Observable<DeleteChatListViewModel> deleteMessage(JsonObject parameters);
 
-    Observable<SendMessageViewModel> sendMessage(HashMap<String, Object> requestParams);
 }

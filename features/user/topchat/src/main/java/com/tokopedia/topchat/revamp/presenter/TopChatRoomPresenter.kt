@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.revamp.domain.pojo.TopChatImageUploadPojo
+import com.tokopedia.topchat.revamp.domain.subscriber.ChangeChatBlockSettingSubscriber
 import com.tokopedia.topchat.revamp.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
 import com.tokopedia.topchat.revamp.domain.subscriber.GetExistingMessageIdSubscriber
@@ -60,7 +61,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
         private var replyChatUseCase: ReplyChatUseCase,
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-        private var deleteMessageListUseCase: DeleteMessageListUseCase)
+        private var deleteMessageListUseCase: DeleteMessageListUseCase,
+        private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -177,10 +179,11 @@ class TopChatRoomPresenter @Inject constructor(
     override fun getExistingChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
+            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit,
+            onChatIsBlocked: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
-                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
+                    GetChatSubscriber(onError, onSuccessGetExistingMessage, onChatIsBlocked))
         }
     }
 
@@ -203,7 +206,8 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page), GetChatSubscriber(onError, onSuccessGetPreviousChat))
+            getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page),
+                    GetChatSubscriber(onError, onSuccessGetPreviousChat, {}))
         }
     }
 
@@ -250,7 +254,7 @@ class TopChatRoomPresenter @Inject constructor(
             uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
                 override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
                     t.dataResultImageUpload.data?.run {
-                        when(networkMode){
+                        when (networkMode) {
                             MODE_API -> sendByApi(
                                     ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
                                     it
@@ -416,6 +420,18 @@ class TopChatRoomPresenter @Inject constructor(
                 DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))
     }
 
+    override fun unblockChat(messageId: String,
+                             onError: (Throwable) -> Unit,
+                             onSuccessUnblockChat: (BlockedStatus) -> Unit) {
+        changeChatBlockSettingUseCase.execute(
+                ChangeChatBlockSettingUseCase.generateParam(
+                        messageId,
+                        ChangeChatBlockSettingUseCase.BLOCK_TYPE_PROMOTION,
+                        false
+                ), ChangeChatBlockSettingSubscriber(onError, onSuccessUnblockChat)
+        )
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getChatUseCase.unsubscribe()
@@ -423,6 +439,7 @@ class TopChatRoomPresenter @Inject constructor(
         getExistingMessageIdUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         deleteMessageListUseCase.unsubscribe()
+        changeChatBlockSettingUseCase.unsubscribe()
         super.detachView()
     }
 

@@ -16,12 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
@@ -101,8 +101,8 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     private void setBottomSheetDialog() {
         bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.new_text_size_input));
-        bottomSheetView.setBodyTextSize(getResources().getDimension(R.dimen.new_text_size_input));
+        bottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.sp_14));
+        bottomSheetView.setBodyTextSize(getResources().getDimension(R.dimen.sp_14));
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
                 .setTitle(getActivity().getString(R.string.title_info_list_template))

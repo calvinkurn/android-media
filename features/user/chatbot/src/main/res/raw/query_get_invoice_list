@@ -8,13 +8,17 @@ query get_invoice_list($msgId: String!, $showAll: Boolean!, $startTime: String!,
       PaymentID
       Code
       Title
+      Description
       CreateTime
       CreateTimeSort
       StatusID
       Status
       StatusTime
       TotalAmount
+      ImageURL
       InvoiceURL
+      PaymentMethod
+      ResolutionID
       FailedTime
     }
     Status {
