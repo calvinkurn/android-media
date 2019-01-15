@@ -9,6 +9,7 @@ import java.util.Map;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -53,11 +54,14 @@ public interface UploadImageResCenter {
             @Part("web_service") RequestBody webService
     );
 
+
+    String CONTENT_TYPE_APPLICATION_JSON = "Content-Type: multipart/form-data";
+
     @Multipart
     @POST()
+    @Headers({CONTENT_TYPE_APPLICATION_JSON})
     Observable<NewUploadResCenterImageData> uploadImageNew(
             @Url String url,
-            @Header("Content-Type") String contentType,
-            @PartMap Map<String, RequestBody> params,
+            @QueryMap Map<String, String> params,
             @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
 }
