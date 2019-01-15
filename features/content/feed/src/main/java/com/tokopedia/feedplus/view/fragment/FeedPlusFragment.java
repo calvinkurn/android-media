@@ -42,10 +42,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
@@ -828,9 +828,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void triggerClearNewFeedNotification() {
-        Intent intent = new Intent(BROADCAST_FEED);
-        intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true);
-        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        if (getContext() != null && getContext().getApplicationContext() != null) {
+            Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        }
     }
 
     @Override
@@ -1332,14 +1334,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .make(getView(),
                         getString(R.string.feed_content_reported),
                         BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> { })
+                .setAction(R.string.label_close, v -> {
+                })
                 .show();
     }
 
     private void onErrorReportContent(String errorMsg) {
         ToasterError
                 .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> { })
+                .setAction(R.string.label_close, v -> {
+                })
                 .show();
     }
 
@@ -1410,7 +1414,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             newPercentage = Integer.valueOf(
                                     voteStatisticDomainModel.getListOptions().get(i).getPercentage()
                             );
-                        } catch (NumberFormatException|IndexOutOfBoundsException ignored) {
+                        } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
                         }
                         optionViewModel.setPercentage(newPercentage);
                     }
