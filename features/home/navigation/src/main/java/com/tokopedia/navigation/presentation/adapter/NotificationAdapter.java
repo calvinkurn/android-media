@@ -104,7 +104,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                 for (DrawerNotification.ChildDrawerNotification child : childs) {
                     if (item.getId() == UPDATE){
                         if (child.getId() == NEWEST_INFO) {
-                            child.setBadge(data.getSellerInfo().getNotification());
+                            child.setBadge(getNotifCenterUnread(unread));
                         }
                     }
                     else if (item.getId() == PEMBELIAN) {
@@ -122,8 +122,6 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                             child.setBadge(data.getBuyerOrder().getShipped());
                         } else if (child.getId() == SAMPAI_TUJUAN) {
                             child.setBadge(data.getBuyerOrder().getArriveAtDestination());
-                        } else if (child.getId() == BUYER_INFO) {
-                            child.setBadge(getNotifCenterUnread(unread));
                         }
                     } else if (item.getId() == PENJUALAN) {
                         if (child.getId() == PESANAN_BARU) {
