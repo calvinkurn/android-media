@@ -421,12 +421,13 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun unblockChat(messageId: String,
+                             opponentRole: String,
                              onError: (Throwable) -> Unit,
                              onSuccessUnblockChat: (BlockedStatus) -> Unit) {
         changeChatBlockSettingUseCase.execute(
                 ChangeChatBlockSettingUseCase.generateParam(
                         messageId,
-                        ChangeChatBlockSettingUseCase.BLOCK_TYPE_PROMOTION,
+                        ChangeChatBlockSettingUseCase.getBlockType(opponentRole),
                         false
                 ), ChangeChatBlockSettingSubscriber(onError, onSuccessUnblockChat)
         )

@@ -18,7 +18,6 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
@@ -28,6 +27,7 @@ import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
+import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -59,7 +59,7 @@ class TopChatViewStateImpl(
     var isUploading: Boolean = false
     var isFirstTime: Boolean = true
     var isShopFollowed: Boolean = false
-    var isReplyable: Boolean = false
+    lateinit var chatRoomViewModel: ChatroomViewModel
 
     init {
         initView()
@@ -154,16 +154,16 @@ class TopChatViewStateImpl(
                                onToolbarClicked: () -> Unit,
                                headerMenuListener: HeaderMenuListener,
                                alertDialog: Dialog) {
+        chatRoomViewModel = viewModel
         hideLoading()
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
         showLastTimeOnline(viewModel)
-        setHeaderMenuButton(viewModel, headerMenuListener, alertDialog)
+        setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
         showActionButtons()
         checkShowQuickReply(viewModel)
 
-        isReplyable = viewModel.replyable
     }
 
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
@@ -175,11 +175,10 @@ class TopChatViewStateImpl(
 
     }
 
-    private fun setHeaderMenuButton(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
+    private fun setHeaderMenuButton(headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
         headerMenuButton.visibility = View.VISIBLE
         headerMenuButton.setOnClickListener {
-            showHeaderMenuBottomSheet(chatroomViewModel,
-                    headerMenuListener, alertDialog)
+            showHeaderMenuBottomSheet(chatRoomViewModel, headerMenuListener, alertDialog)
         }
     }
 
@@ -257,6 +256,8 @@ class TopChatViewStateImpl(
                                  opponentRole: String,
                                  opponentName: String,
                                  onUnblockChatClicked: () -> Unit) {
+        updateChatroomBlockedStatus(it)
+
         showReplyBox(false)
         templateRecyclerView.visibility = View.GONE
         chatBlockLayout.visibility = View.VISIBLE
@@ -266,6 +267,10 @@ class TopChatViewStateImpl(
         val unblockText = chatBlockLayout.findViewById<TextView>(R.id.enable_chat_textView)
         unblockText.setOnClickListener { onUnblockChatClicked() }
 
+    }
+
+    private fun updateChatroomBlockedStatus(it: BlockedStatus) {
+        chatRoomViewModel.blockedStatus = it
     }
 
     private fun setChatBlockedText(chatBlockLayout: View, blockedStatus: BlockedStatus,
@@ -295,7 +300,9 @@ class TopChatViewStateImpl(
     }
 
     override fun removeChatBlocked() {
-        showReplyBox(isReplyable)
+        chatRoomViewModel.blockedStatus = BlockedStatus(false, false, "")
+
+        showReplyBox(chatRoomViewModel.replyable)
         templateRecyclerView.visibility = View.VISIBLE
         chatBlockLayout.visibility = View.GONE
 

@@ -152,7 +152,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onUnblockChatClicked(): () -> Unit {
         return {
             analytics.trackClickUnblockChat()
-            presenter.unblockChat(messageId, onError(), onSuccessUnblockChat())
+            presenter.unblockChat(messageId, opponentRole, onError(), onSuccessUnblockChat())
         }
     }
 

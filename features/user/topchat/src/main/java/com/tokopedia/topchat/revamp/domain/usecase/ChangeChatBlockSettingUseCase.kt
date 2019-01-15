@@ -2,6 +2,7 @@ package com.tokopedia.topchat.revamp.domain.usecase
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -31,12 +32,12 @@ class ChangeChatBlockSettingUseCase @Inject constructor(
 
     companion object {
 
-        private val PARAM_MESSAGE_ID: String = "messageId"
+        private val PARAM_MESSAGE_ID: String = "messageID"
         private val PARAM_BLOCK_TYPE: String = "blockType"
         private val PARAM_IS_BLOCKED: String = "isBlocked"
 
-        const val BLOCK_TYPE_PROMOTION : String = "2"
-
+        const val BLOCK_TYPE_PERSONAL: String = "1"
+        const val BLOCK_TYPE_PROMOTION: String = "2"
 
         fun generateParam(messageId: String, blockType: String, isBlocked: Boolean):
                 Map<String, Any> {
@@ -45,6 +46,14 @@ class ChangeChatBlockSettingUseCase @Inject constructor(
             requestParams[PARAM_BLOCK_TYPE] = blockType
             requestParams[PARAM_IS_BLOCKED] = isBlocked
             return requestParams
+        }
+
+        fun getBlockType(opponentRole: String): String {
+            return if (opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)) {
+                ChangeChatBlockSettingUseCase.BLOCK_TYPE_PROMOTION
+            } else {
+                ChangeChatBlockSettingUseCase.BLOCK_TYPE_PERSONAL
+            }
         }
     }
 

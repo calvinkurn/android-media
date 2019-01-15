@@ -80,6 +80,7 @@ interface TopChatContract {
                                 onSuccessDeleteConversation: () -> Unit)
 
         fun unblockChat(messageId : String,
+                        opponentRole: String,
                         onError: (Throwable) -> Unit,
                         onSuccessUnblockChat: (BlockedStatus) -> Unit)
 
