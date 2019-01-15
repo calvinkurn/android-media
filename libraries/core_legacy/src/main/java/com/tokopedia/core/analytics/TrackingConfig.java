@@ -60,15 +60,17 @@ public abstract class TrackingConfig {
         new initGTMTask(application).execute();
     }
 
-    static class initGTMTask extends AsyncTask<Void, Void, Void> {
+    static abstract class ContextAsyncTask extends AsyncTask<Void, Void, Void> {
         WeakReference<Context> contextWeakReference;
 
-        initGTMTask(Context context) {
+        ContextAsyncTask(Context context) {
             this.contextWeakReference = new WeakReference<>(context);
         }
 
+        abstract void doInBackground(Context context);
+
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected final Void doInBackground(Void... voids) {
             Context context = null;
             if (this.contextWeakReference!= null && contextWeakReference.get()!= null) {
                 context = this.contextWeakReference.get();
@@ -76,8 +78,20 @@ public abstract class TrackingConfig {
             if (context == null) {
                 return null;
             }
-            GTMContainer.newInstance(context).loadContainer();
+            doInBackground(context);
             return null;
+        }
+    }
+
+    static class initGTMTask extends ContextAsyncTask {
+
+        initGTMTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        void doInBackground(Context context) {
+            GTMContainer.newInstance(context).loadContainer();
         }
     }
 
@@ -85,25 +99,16 @@ public abstract class TrackingConfig {
         new initAppsFlyerTask(application).execute();
     }
 
-    static class initAppsFlyerTask extends AsyncTask<Void, Void, Void> {
-        WeakReference<Application> contextWeakReference;
+    static class initAppsFlyerTask extends ContextAsyncTask {
 
-        initAppsFlyerTask(Application application) {
-            this.contextWeakReference = new WeakReference<>(application);
+        initAppsFlyerTask(Context context) {
+            super(context);
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            Application context = null;
-            if (this.contextWeakReference!= null && contextWeakReference.get()!= null) {
-                context = this.contextWeakReference.get();
-            }
-            if (context == null) {
-                return null;
-            }
+        void doInBackground(Context context) {
             SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
             Jordan.init(context).runFirstTimeAppsFlyer(sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000");
-            return null;
         }
     }
 
@@ -111,29 +116,18 @@ public abstract class TrackingConfig {
         new initMoengageTask(application).execute();
     }
 
+    static class initMoengageTask extends ContextAsyncTask {
 
-    static class initMoengageTask extends AsyncTask<Void, Void, Void> {
-        WeakReference<Application> contextWeakReference;
-
-        initMoengageTask(Application application) {
-            this.contextWeakReference = new WeakReference<>(application);
+        initMoengageTask(Context context) {
+            super(context);
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            Application context = null;
-            if (this.contextWeakReference!= null && contextWeakReference.get()!= null) {
-                context = this.contextWeakReference.get();
-            }
-            if (context == null) {
-                return null;
-            }
+        void doInBackground(Context context) {
             Jordan.init(context).getMoEngageContainer().initialize();
             SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
             TrackingUtils.setMoEngageExistingUser(context, sessionHandler.isLoggedIn());
-            return null;
         }
-
     }
 
     /**
