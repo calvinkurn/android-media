@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Facing;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.homecredit.R;
 
@@ -68,6 +69,8 @@ public class HomeCreditFragment extends BaseDaggerFragment {
             public void onPictureTaken(byte[] imageByte) {
             }
         };
+
+        cameraView.setFacing(Facing.FRONT);
         cameraView.addCameraListener(cameraListener);
     }
 

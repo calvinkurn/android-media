@@ -85,7 +85,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
                 ActivityCompat.requestPermissions(this,
                         permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
             } else {
-                initView();
+//                initView();
             }
         } else { // under jellybean, no need to check runtime permission
             //initView();
