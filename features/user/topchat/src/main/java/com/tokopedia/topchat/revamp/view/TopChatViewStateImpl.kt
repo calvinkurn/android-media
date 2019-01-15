@@ -280,7 +280,7 @@ class TopChatViewStateImpl(
         if (isBlocked) {
             showChatBlocked(blockedStatus, opponentRole, opponentName, onUnblockChatClicked)
         } else {
-            removeChatBlocked()
+            removeChatBlocked(blockedStatus)
         }
     }
 
@@ -331,8 +331,8 @@ class TopChatViewStateImpl(
         blockText.text = blockString
     }
 
-    fun removeChatBlocked() {
-        chatRoomViewModel.blockedStatus = BlockedStatus(false, false, "")
+    fun removeChatBlocked(it: BlockedStatus) {
+        updateChatroomBlockedStatus(it)
 
         showReplyBox(chatRoomViewModel.replyable)
         templateRecyclerView.visibility = View.VISIBLE

@@ -47,7 +47,6 @@ import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.revamp.di.ChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
@@ -151,7 +150,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             ToasterNormal.make(view, String.format(getString(R.string.chat_unblocked_text),
                     opponentName), ToasterNormal.LENGTH_SHORT).show()
-            getViewState().removeChatBlocked()
+            getViewState().removeChatBlocked(it)
         }
     }
 
