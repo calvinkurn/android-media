@@ -34,7 +34,7 @@ data class ChatSocketPojo(
         var imageUri: String = "",
         @SerializedName("attachment")
         @Expose
-        var attachment: AttachmentPojo? = null,
+        var attachment: Attachment?,
         @SerializedName("show_rating")
         @Expose
         var showRating: Boolean = false,

@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatlist.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,18 +23,18 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.text.TextDrawable;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -512,13 +511,6 @@ public class InboxChatFragment extends BaseDaggerFragment
                 && data.hasExtra(ApplinkConst.Chat.MESSAGE_ID)) {
             String messageId = data.getExtras().getString(ApplinkConst.Chat.MESSAGE_ID);
             adapter.removeWithMessageId(messageId);
-        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
-                && resultCode == TopChatInternalRouter.Companion.CHAT_READ_RESULT_CODE
-                && data != null
-                && data.getExtras() != null
-                && data.hasExtra(TopChatInternalRouter.Companion.PARAM_INDEX)) {
-            int position = data.getExtras().getInt(TopChatInternalRouter.Companion.PARAM_INDEX);
-            //TODO update read
         } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
                 && data != null
                 && data.getExtras() != null

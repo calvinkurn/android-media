@@ -2,7 +2,6 @@ package com.tokopedia.chat_common.domain.mapper
 
 import android.support.annotation.NonNull
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
@@ -24,7 +23,7 @@ open class WebsocketMessageMapper @Inject constructor() {
 
         return if (hasAttachment(pojo)) {
             val jsonAttributes = pojo.attachment!!.attributes
-            mapAttachmentMessage(pojo, jsonAttributes!!)
+            mapAttachmentMessage(pojo, jsonAttributes)
         } else {
             convertToMessageViewModel(pojo)
         }
@@ -44,8 +43,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.message.censoredReply, false, false, !pojo.isOpposite)
     }
 
-    open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        return when (pojo.attachment!!.type) {
+    open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: String): Visitable<*> {
+        return when (pojo.attachment?.type.toString()) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(pojo, jsonAttributes)
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
             else -> convertToFallBackModel(pojo)
@@ -53,7 +52,7 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
 
-    private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
+    private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: String):
             ImageUploadViewModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(jsonAttribute,
                 ImageUploadAttributes::class.java)
@@ -63,8 +62,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromUid,
                 pojo.from,
                 pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
+                pojo.attachment?.id.toString(),
+                pojo.attachment?.type.toString(),
                 pojo.message.timeStampUnixNano,
                 !pojo.isOpposite,
                 pojoAttribute.imageUrl,
@@ -76,7 +75,7 @@ open class WebsocketMessageMapper @Inject constructor() {
 
 
     private fun convertToProductAttachment(@NonNull pojo: ChatSocketPojo, jsonAttribute:
-    JsonObject): ProductAttachmentViewModel {
+    String): ProductAttachmentViewModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(jsonAttribute,
                 ProductAttachmentAttributes::class.java)
 
@@ -85,8 +84,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromUid,
                 pojo.from,
                 pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
+                pojo.attachment?.id.toString(),
+                pojo.attachment?.type.toString(),
                 pojo.message.timeStampUnixNano,
                 pojoAttribute.productId,
                 pojoAttribute.productProfile.name,
@@ -109,21 +108,25 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     open fun convertToFallBackModel(pojo: ChatSocketPojo): Visitable<*> {
+        val pojoAttribute = GsonBuilder().create().fromJson<FallbackAttachmentViewModel>(pojo.attachment?.attributes,
+                FallbackAttachmentViewModel::class.java)
         return FallbackAttachmentViewModel(
                 pojo.msgId.toString(),
                 pojo.fromUid,
                 pojo.from,
                 pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
+                pojo.attachment?.id.toString(),
+                pojo.attachment?.type.toString(),
                 pojo.message.timeStampUnixNano,
-                pojo.attachment!!.fallbackAttachment.message
+                pojoAttribute.message
         )
     }
 
     open fun hasAttachment(pojo: ChatSocketPojo): Boolean {
-        return (pojo.attachment != null
-                && pojo.attachment?.attributes != null)
+        pojo.attachment?.let {
+            return (it.type != null && it.attributes.isNotBlank())
+        }
+        return false
     }
 
 }

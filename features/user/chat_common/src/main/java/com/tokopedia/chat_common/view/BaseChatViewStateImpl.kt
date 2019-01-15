@@ -186,12 +186,12 @@ open class BaseChatViewStateImpl(
     }
 
     open fun scrollDownWhenInBottom() {
-        if (!checkLastCompletelyVisibleItemIsFirst()) {
+        if (checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }
 
-    fun scrollToBottom() {
+    open fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
