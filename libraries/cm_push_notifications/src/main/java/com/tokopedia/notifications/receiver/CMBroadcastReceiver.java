@@ -148,14 +148,14 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
     private void handleCarousalButtonClick(Context context, Intent intent, int notificationId, boolean isNext) {
         try {
             List<Carousal> carousalList = intent.getParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA);
-            int index = intent.getIntExtra(CMConstant.PayloadKeys.CAROUSAL_INDEX, 0);
+            int index = intent.getIntExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0);
             if (null == carousalList || carousalList.size() == 0)
                 return;
             index = isNext ? index + 1 : index - 1;
             Bundle bundle = intent.getExtras();
             bundle.putString(CMConstant.PayloadKeys.NOTIFICATION_ID, String.valueOf(notificationId));
-            bundle.putInt(CMConstant.PayloadKeys.CAROUSAL_INDEX, index);
-            bundle.putString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, CMConstant.NotificationType.CAROUSAL_NOTIFICATION);
+            bundle.putInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, index);
+            bundle.putString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, CMConstant.NotificationType.CAROUSEL_NOTIFICATION);
             BaseNotification baseNotification = CMNotificationFactory.getNotification(context.getApplicationContext(), bundle);
             postNotification(context, baseNotification);
         } catch (Exception e) {

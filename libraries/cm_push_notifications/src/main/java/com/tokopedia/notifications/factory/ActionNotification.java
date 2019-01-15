@@ -34,33 +34,46 @@ public class ActionNotification extends BaseNotification {
         NotificationCompat.Builder builder = getNotificationBuilder();
         RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName()
                 , R.layout.layout_collapsed);
-        setCollapseData(collapsedView, baseNotificationModel);
+        setCollapseData(collapsedView, baseNotificationModel, true);
         RemoteViews expandedView = new RemoteViews(context.getApplicationContext().getPackageName(),
                 R.layout.layout_big_image);
         builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView);
-        if (!TextUtils.isEmpty((baseNotificationModel.getMedia().getMediumQuality()))) {
-            expandedView.setImageViewBitmap(R.id.img_big, CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getMedia().getMediumQuality()));
+        if (baseNotificationModel.getMedia() != null &&
+                !TextUtils.isEmpty((baseNotificationModel.getMedia().getMediumQuality()))) {
+            expandedView.setImageViewBitmap(R.id.img_big,
+                    CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getMedia().getMediumQuality()));
         }
         if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
             addActionButton(baseNotificationModel.getActionButton(), expandedView);
         }
-        setCollapseData(expandedView, baseNotificationModel);
+        setCollapseData(expandedView, baseNotificationModel, false);
         return builder.build();
     }
 
-    private void setCollapseData(RemoteViews remoteView, BaseNotificationModel baseNotificationModel) {
-        if (TextUtils.isEmpty(baseNotificationModel.getIcon())) {
-            remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
-        } else {
-            Bitmap iconBitmap = getBitmap(baseNotificationModel.getIcon());
-            if (null != iconBitmap) {
-                remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap);
+    private void setCollapseData(RemoteViews remoteView, BaseNotificationModel baseNotificationModel, boolean isCollapsed) {
+
+        if (isCollapsed) {
+            if (TextUtils.isEmpty(baseNotificationModel.getIcon())) {
+                Bitmap iconBitmap = getBitmap(baseNotificationModel.getIcon());
+                if (null != iconBitmap) {
+                    remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap);
+                } else {
+                    remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
+                }
+            } else if (baseNotificationModel.getMedia() != null) {
+                Bitmap iconBitmap = getBitmap(baseNotificationModel.getMedia().getMediumQuality());
+                if (null != iconBitmap) {
+                    remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap);
+                } else {
+                    remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
+                }
             } else {
                 remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
             }
         }
+
         remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getTitle()));
         remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getMessage()));
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, createMainPendingIntent(baseNotificationModel,
@@ -68,8 +81,6 @@ public class ActionNotification extends BaseNotification {
     }
 
     private void addActionButton(List<ActionButton> actionButtonList, RemoteViews expandedView) {
-
-
         ActionButton actionButton;
         expandedView.setViewVisibility(R.id.ll_action, View.VISIBLE);
         for (int i = 0; i < actionButtonList.size(); i++) {
@@ -77,17 +88,17 @@ public class ActionNotification extends BaseNotification {
             switch (i) {
                 case 0:
                     expandedView.setViewVisibility(R.id.tv_button1, View.VISIBLE);
-                    expandedView.setTextViewText(R.id.tv_button1,actionButton.getText());
+                    expandedView.setTextViewText(R.id.tv_button1, actionButton.getText());
                     expandedView.setOnClickPendingIntent(R.id.tv_button1, getButtonPendingIntent(actionButton, getRequestCode()));
                     break;
                 case 1:
                     expandedView.setViewVisibility(R.id.tv_button2, View.VISIBLE);
-                    expandedView.setTextViewText(R.id.tv_button2,actionButton.getText());
+                    expandedView.setTextViewText(R.id.tv_button2, actionButton.getText());
                     expandedView.setOnClickPendingIntent(R.id.tv_button2, getButtonPendingIntent(actionButton, getRequestCode()));
                     break;
                 case 2:
                     expandedView.setViewVisibility(R.id.tv_button3, View.VISIBLE);
-                    expandedView.setTextViewText(R.id.tv_button3,actionButton.getText());
+                    expandedView.setTextViewText(R.id.tv_button3, actionButton.getText());
                     expandedView.setOnClickPendingIntent(R.id.tv_button3, getButtonPendingIntent(actionButton, getRequestCode()));
                     break;
             }

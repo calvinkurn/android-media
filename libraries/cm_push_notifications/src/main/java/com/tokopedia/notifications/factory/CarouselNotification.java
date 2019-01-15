@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
@@ -16,21 +15,18 @@ import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CarousalUtilities;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.model.Carousal;
-import com.tokopedia.notifications.model.PersistentButton;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Notification.BADGE_ICON_SMALL;
-
 /**
  * @author lalit.singh
  */
-public class CarousalNotification extends BaseNotification {
+public class CarouselNotification extends BaseNotification {
 
 
-    CarousalNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    CarouselNotification(Context context, BaseNotificationModel baseNotificationModel) {
         super(context, baseNotificationModel);
     }
 
@@ -87,7 +83,7 @@ public class CarousalNotification extends BaseNotification {
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
         intent.putExtra(CMConstant.PayloadKeys.CHANNEL, baseNotificationModel.getChannelName());
         intent.putExtra(CMConstant.PayloadKeys.UPDATE, true);
-        intent.putExtra(CMConstant.PayloadKeys.CAROUSAL_INDEX, index);
+        intent.putExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, index);
         intent.putParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA, (ArrayList<? extends Parcelable>) carousalList);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(

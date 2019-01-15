@@ -23,12 +23,12 @@ public interface CMConstant {
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
-        String CAROUSAL_NOTIFICATION = "Carousal";
+        String CAROUSEL_NOTIFICATION = "Carousel";
         String SILENT_PUSH = "Silent";
     }
 
 
-    interface PayloadKeys{
+    interface PayloadKeys {
         String ICON = "icon";
         String SOUND = "sound";
         String NOTIFICATION_ID = "notificationId";
@@ -53,9 +53,9 @@ public interface CMConstant {
         String CUSTOM_VALUE = "customValues";
 
         String VIDEO_DATA = "videoData";
-        String CAROUSAL_DATA =  "carousal";
-        String CAROUSAL_INDEX =  "carousalIndex";
-        String IMG =  "img";
+        String CAROUSEL_DATA = "carousel";
+        String CAROUSEL_INDEX = "carouselIndex";
+        String IMG = "img";
         String VIBRATE = "vibrate";
         String UPDATE = "update";
         String GRID_DATA = "gridData";
@@ -83,7 +83,7 @@ public interface CMConstant {
         String CHANNEL_GROUP_NAME = "Marketing";
     }
 
-    interface ReceiverAction{
+    interface ReceiverAction {
         String ACTION_BUTTON = "com.tokopedia.notification.ACTION_BUTTON";
         String ACTION_CANCEL_PERSISTENT = "com.tokopedia.notification.ACTION_CANCEL_PERSISTENT";
         String ACTION_ON_NOTIFICATION_DISMISS = "com.tokopedia.notification.ACTION_ON_NOTIFICATION_DISMISS";

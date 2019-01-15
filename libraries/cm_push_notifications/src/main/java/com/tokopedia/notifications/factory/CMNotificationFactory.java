@@ -63,8 +63,8 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
                     return null;
-                case CMConstant.NotificationType.CAROUSAL_NOTIFICATION:
-                    return (new CarousalNotification(context.getApplicationContext(), baseNotificationModel));
+                case CMConstant.NotificationType.CAROUSEL_NOTIFICATION:
+                    return (new CarouselNotification(context.getApplicationContext(), baseNotificationModel));
             }
         }
         return null;
@@ -106,7 +106,7 @@ public class CMNotificationFactory {
         model.setVideoPushModel(getVideoNotificationData(data));
         model.setCustomValues(getCustomValues(data));
         model.setCarousalList(getCarousalList(data));
-        model.setCarousalIndex(data.getInt(CMConstant.PayloadKeys.CAROUSAL_INDEX, 0));
+        model.setCarousalIndex(data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0));
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
         model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
         model.setGridList(getGridList(data));
@@ -201,7 +201,7 @@ public class CMNotificationFactory {
     }
 
     private static List<Carousal> getCarousalList(Bundle extras) {
-        String carousalData = extras.getString(CMConstant.PayloadKeys.CAROUSAL_DATA);
+        String carousalData = extras.getString(CMConstant.PayloadKeys.CAROUSEL_DATA);
         if (TextUtils.isEmpty(carousalData)) {
             List<Carousal> carousalList = extras.getParcelableArrayList(CMConstant.ReceiverExtraData.CAROUSAL_DATA);
             if (carousalList != null)
