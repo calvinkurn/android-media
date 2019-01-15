@@ -196,12 +196,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (opponentRole.toLowerCase() == ChatRoomHeaderViewModel.Companion.ROLE_USER) {
             goToProfile(opponentId)
         } else if (opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
-            goToShop(shopId)
+            onGoToShop()
         }
-    }
-
-    private fun goToShop(shopId: Int) {
-        RouteManager.route(activity, ApplinkConst.SHOP.replace("{shop_id}", shopId.toString()))
     }
 
     private fun goToProfile(opponentId: String) {

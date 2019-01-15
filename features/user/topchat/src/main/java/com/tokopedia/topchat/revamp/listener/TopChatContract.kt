@@ -51,8 +51,7 @@ interface TopChatContract {
         fun getExistingChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit,
-                onChatIsBlocked : (ChatroomViewModel) -> Unit)
+                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit)
 
         fun getMessageId(
                 toUserId: String,
