@@ -22,6 +22,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.BUYER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
+import static com.tokopedia.navigation.GlobalNavConstant.NEWEST_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
@@ -100,7 +101,12 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
             if (item.getId() != null) {
                 List<DrawerNotification.ChildDrawerNotification> childs = item.getChilds();
                 for (DrawerNotification.ChildDrawerNotification child : childs) {
-                    if (item.getId() == PEMBELIAN) {
+                    if (item.getId() == UPDATE){
+                        if (child.getId() == NEWEST_INFO) {
+                            child.setBadge(data.getSellerInfo().getNotification());
+                        }
+                    }
+                    else if (item.getId() == PEMBELIAN) {
                         if (child.getId() == MENUNGGU_PEMBAYARAN) {
                             try {
                                 child.setBadge(Integer.parseInt(data.getBuyerOrder().getPaymentStatus()));
@@ -127,8 +133,6 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                             child.setBadge(data.getSellerOrder().getShipped());
                         } else if (child.getId() == SAMPAI_TUJUAN) {
                             child.setBadge(data.getSellerOrder().getArriveAtDestination());
-                        } else if (child.getId() == SELLER_INFO) {
-                            child.setBadge(data.getSellerInfo().getNotification());
                         }
                     } else if (item.getId() == KOMPLAIN) {
                         if (child.getId() == BUYER) {
