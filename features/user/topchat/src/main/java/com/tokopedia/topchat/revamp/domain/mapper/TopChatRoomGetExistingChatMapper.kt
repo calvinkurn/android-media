@@ -37,7 +37,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
-        //TODO MAP BLAST ID
         val pojoAttribute = GsonBuilder().create().fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
                 ImageDualAnnouncementPojo::class.java)
         return ImageDualAnnouncementViewModel(
@@ -53,7 +52,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 pojoAttribute.url,
                 pojoAttribute.imageUrl2,
                 pojoAttribute.url2,
-                0
+                item.blastId
         )
     }
 }

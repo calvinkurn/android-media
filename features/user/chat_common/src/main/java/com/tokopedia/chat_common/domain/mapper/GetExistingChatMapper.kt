@@ -111,7 +111,6 @@ open class GetExistingChatMapper @Inject constructor() {
 
 
     private fun convertToImageAnnouncement(item: Reply): Visitable<*> {
-        //TODO MAP BLAST ID
         val pojoAttribute = GsonBuilder().create().fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
                 ImageAnnouncementPojo::class.java)
         val imageAnnouncement = ImageAnnouncementViewModel(
@@ -125,7 +124,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.imageUrl,
                 pojoAttribute.url,
                 item.msg,
-                0
+                item.blastId
         )
         return imageAnnouncement
     }

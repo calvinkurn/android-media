@@ -126,7 +126,10 @@ data class Reply(
         val isHighlight: Boolean = false,
         @Expose
         @SerializedName("isRead")
-        val isRead: Boolean = true
+        val isRead: Boolean = true,
+        @Expose
+        @SerializedName("blastId")
+        val blastId: Int = 0
 )
 
 data class Attachment(
