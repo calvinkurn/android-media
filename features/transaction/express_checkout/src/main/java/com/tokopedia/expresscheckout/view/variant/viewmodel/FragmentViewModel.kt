@@ -10,6 +10,8 @@ import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 data class FragmentViewModel(
         var atcResponseModel: AtcResponseModel? = null,
         var totalPayment: Int? = 0,
+        var lastQuantity: Int? = 0,
+        var lastPrice: Int? = 0,
         var viewModels: ArrayList<Visitable<*>> = ArrayList()
 ) {
 

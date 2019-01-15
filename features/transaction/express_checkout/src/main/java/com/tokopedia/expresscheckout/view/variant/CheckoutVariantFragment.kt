@@ -512,9 +512,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     }
 
                     override fun onNext(boolean: Boolean) {
-                        presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice
-                                ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                                ?: 0, true)
+                        if (fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
+                                fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
+                            fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                            fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
+                            presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice
+                                    ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                                    ?: 0, true)
+                        }
                     }
                 }))
     }
