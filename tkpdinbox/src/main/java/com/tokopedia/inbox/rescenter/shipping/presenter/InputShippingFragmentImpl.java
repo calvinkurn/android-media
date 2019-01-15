@@ -434,41 +434,42 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(com.tokopedia.core2.R.string.error_upload_image));
                         }
-//                        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
-//                                networkCalculator.getContent().get(NetworkCalculator.USER_ID));
-//                        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
-//                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
-//                        RequestBody hash = RequestBody.create(MediaType.parse("text/plain"),
-//                                networkCalculator.getContent().get(NetworkCalculator.HASH));
-//                        RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"),
-//                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
+                        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.USER_ID));
+                        RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
+                        RequestBody hash = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.HASH));
+                        RequestBody deviceTime = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
                         RequestBody fileToUpload = RequestBody.create(MediaType.parse("image/*"),
                                 file);
-//                        RequestBody imageId = RequestBody.create(MediaType.parse("text/plain"),
-//                                networkCalculator.getContent().get("id"));
-//                        RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
-//                                networkCalculator.getContent().get("token"));
-//                        RequestBody web_service = RequestBody.create(MediaType.parse("text/plain"),
-//                                networkCalculator.getContent().get("web_service"));
-//                        RequestBody osType = RequestBody.create(MediaType.parse("text/plain"),
-//                                "1");
+                        RequestBody imageId = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get("id"));
+                        RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get("token"));
+                        RequestBody web_service = RequestBody.create(MediaType.parse("text/plain"),
+                                networkCalculator.getContent().get("web_service"));
+                        RequestBody osType = RequestBody.create(MediaType.parse("text/plain"),
+                                "1");
 
-                        Map<String, String> requestBodyMap = new HashMap<>();
-                        requestBodyMap.put(NetworkCalculator.USER_ID, networkCalculator.getContent().get(NetworkCalculator.USER_ID));
-                        requestBodyMap.put(NetworkCalculator.DEVICE_ID, networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
-                        requestBodyMap.put("os_type", "1");
-                        requestBodyMap.put(NetworkCalculator.HASH, networkCalculator.getContent().get(NetworkCalculator.HASH));
-                        requestBodyMap.put(NetworkCalculator.DEVICE_TIME, networkCalculator.getContent().get(NetworkCalculator.DEVICE_TIME));
-                        requestBodyMap.put("id", networkCalculator.getContent().get("id"));
-                        requestBodyMap.put("token", networkCalculator.getContent().get("token"));
-                        requestBodyMap.put(PARAM_FILE_TO_UPLOAD, networkCalculator.getContent().get("id"));
-                        requestBodyMap.put("web_service", "1");
+                        Map<String, RequestBody> requestBodyMap = new HashMap<>();
+                        requestBodyMap.put(NetworkCalculator.USER_ID, userId);
+                        requestBodyMap.put(NetworkCalculator.DEVICE_ID, deviceId);
+                        requestBodyMap.put("os_type", osType);
+                        requestBodyMap.put(NetworkCalculator.HASH, hash);
+                        requestBodyMap.put(NetworkCalculator.DEVICE_TIME, deviceTime);
+                        requestBodyMap.put("id", imageId);
+                        requestBodyMap.put("token", token);
+                        requestBodyMap.put(PARAM_FILE_TO_UPLOAD, imageId);
+                        requestBodyMap.put("web_service", web_service);
 
                         Log.d(TAG + "(step 2):host", inputModel.getUploadHost());
                         final Observable<NewUploadResCenterImageData> upload = getRetrofit()
                                 .create(UploadImageResCenter.class)
                                 .uploadImageNew(
                                         networkCalculator.getUrl() + "/upload/attachment",
+                                        "multipart/form-data",
                                         requestBodyMap,
                                         fileToUpload
                                 );

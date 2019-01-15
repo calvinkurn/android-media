@@ -57,6 +57,7 @@ public interface UploadImageResCenter {
     @POST()
     Observable<NewUploadResCenterImageData> uploadImageNew(
             @Url String url,
-            @QueryMap Map<String, String> params,
+            @Header("Content-Type") String contentType,
+            @PartMap Map<String, RequestBody> params,
             @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
 }
