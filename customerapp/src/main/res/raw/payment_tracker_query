@@ -13,6 +13,9 @@
                 category{
                     category_id
                     category_name
+                    category_level1
+                    category_level2
+                    category_level3
                 }
                 product_id
                 product_name

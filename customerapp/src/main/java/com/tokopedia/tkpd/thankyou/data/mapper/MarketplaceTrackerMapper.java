@@ -218,7 +218,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private String getProductCategory(OrderDetail orderDetail) {
         if (orderDetail.getProduct() != null
                 && orderDetail.getProduct().getProductCategory() != null) {
-            return orderDetail.getProduct().getProductCategory().getCategoryName();
+            return orderDetail.getProduct().getProductCategory().getCategoryLevel1()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryLevel2()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryLevel3();
         }
 
         return "";
