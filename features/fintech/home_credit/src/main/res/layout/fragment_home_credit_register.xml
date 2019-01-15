@@ -24,7 +24,7 @@
         app:cameraPlaySounds="true"
         app:cameraSessionType="picture" />
 
-    <com.tokopedia.reksadana.view.activities.CircleOverlayView
+    <com.tokopedia.design.component.CircleOverlayView
         android:id="@+id/cicleOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
