@@ -29,7 +29,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_post_entry;
 
-    private static final String USER_ID = "{user_id}";
+    private static final String SHOP_ID = "{shop_id}";
 
     public WhitelistViewHolder(View itemView, FeedPlus.View mainView) {
         super(itemView);
@@ -61,7 +61,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
         btnSeeProfile.setOnClickListener(v ->
             RouteManager.route(
                     btnSeeProfile.getContext(),
-                    ApplinkConst.PROFILE.replace(USER_ID, mainView.getUserSession().getUserId())
+                    ApplinkConst.SHOP.replace(SHOP_ID, mainView.getUserSession().getShopId())
             )
         );
 
