@@ -16,6 +16,7 @@ data class ProfileViewModel(
         var paymentOptionImageUrl: String,
         var paymentDetail: String,
         var shippingDuration: String,
+        var shippingDurationId: Int,
         var shippingCourier: String,
         var isDurationError: Boolean,
         var isSelected: Boolean,
@@ -33,6 +34,7 @@ data class ProfileViewModel(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
+            parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
@@ -53,6 +55,7 @@ data class ProfileViewModel(
         parcel.writeString(paymentOptionImageUrl)
         parcel.writeString(paymentDetail)
         parcel.writeString(shippingDuration)
+        parcel.writeInt(shippingDurationId)
         parcel.writeString(shippingCourier)
         parcel.writeByte(if (isDurationError) 1 else 0)
         parcel.writeByte(if (isSelected) 1 else 0)

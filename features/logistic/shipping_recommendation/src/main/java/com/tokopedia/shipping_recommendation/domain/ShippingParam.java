@@ -1,10 +1,13 @@
 package com.tokopedia.shipping_recommendation.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Irfan Khoirul on 08/01/19.
  */
 
-public class ShippingParam {
+public class ShippingParam implements Parcelable {
     private String originDistrictId;
     private String originPostalCode;
     private String originLatitude;
@@ -21,6 +24,65 @@ public class ShippingParam {
     private int productInsurance;
     private int orderValue;
     private String categoryIds;
+
+    public ShippingParam() {
+    }
+
+    protected ShippingParam(Parcel in) {
+        originDistrictId = in.readString();
+        originPostalCode = in.readString();
+        originLatitude = in.readString();
+        originLongitude = in.readString();
+        destinationDistrictId = in.readString();
+        destinationPostalCode = in.readString();
+        destinationLatitude = in.readString();
+        destinationLongitude = in.readString();
+        weightInKilograms = in.readDouble();
+        shopId = in.readString();
+        token = in.readString();
+        ut = in.readString();
+        insurance = in.readInt();
+        productInsurance = in.readInt();
+        orderValue = in.readInt();
+        categoryIds = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(originDistrictId);
+        dest.writeString(originPostalCode);
+        dest.writeString(originLatitude);
+        dest.writeString(originLongitude);
+        dest.writeString(destinationDistrictId);
+        dest.writeString(destinationPostalCode);
+        dest.writeString(destinationLatitude);
+        dest.writeString(destinationLongitude);
+        dest.writeDouble(weightInKilograms);
+        dest.writeString(shopId);
+        dest.writeString(token);
+        dest.writeString(ut);
+        dest.writeInt(insurance);
+        dest.writeInt(productInsurance);
+        dest.writeInt(orderValue);
+        dest.writeString(categoryIds);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ShippingParam> CREATOR = new Creator<ShippingParam>() {
+        @Override
+        public ShippingParam createFromParcel(Parcel in) {
+            return new ShippingParam(in);
+        }
+
+        @Override
+        public ShippingParam[] newArray(int size) {
+            return new ShippingParam[size];
+        }
+    };
 
     public String getOriginDistrictId() {
         return originDistrictId;

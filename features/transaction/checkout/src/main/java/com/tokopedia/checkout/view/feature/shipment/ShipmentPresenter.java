@@ -49,6 +49,7 @@ import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -1236,10 +1237,35 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
+
+        ShippingParam shippingParam = getShippingParam(shipmentDetailData);
+
+        getCourierRecommendationUseCase.execute(query, shippingParam, spId, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
                         shipmentCartItemModel, shopShipmentList, isInitialLoad));
+    }
+
+    @NonNull
+    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData) {
+        ShippingParam shippingParam = new ShippingParam();
+        shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
+        shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
+        shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
+        shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
+        shippingParam.setDestinationDistrictId(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
+        shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+        shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+        shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+        shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
+        shippingParam.setShopId(shipmentDetailData.getShopId());
+        shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
+        shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
+        shippingParam.setInsurance(shipmentDetailData.getShipmentCartData().getInsurance());
+        shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
+        shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
+        shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
+        return shippingParam;
     }
 
     @Override

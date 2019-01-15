@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData
 import rx.Subscriber
@@ -37,11 +38,11 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
                         for (product: ProductData in shippingDurationViewModel.serviceData.products) {
                             if (product.isRecommend) {
-                                prepareViewModel(product)
+                                prepareViewModel(product, shippingDurationViewModel.serviceData)
                                 return
                             }
                         }
-                        prepareViewModel(shippingDurationViewModel.serviceData.products[0])
+                        prepareViewModel(shippingDurationViewModel.serviceData.products[0], shippingDurationViewModel.serviceData)
                         return
                     }
                 }
@@ -52,11 +53,11 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         }
     }
 
-    private fun prepareViewModel(product: ProductData) {
+    private fun prepareViewModel(product: ProductData, serviceData: ServiceData) {
         if (!isReloadData) {
             presenter.prepareViewModel(product)
         }
-        view?.updateShippingData(product)
+        view?.updateShippingData(product, serviceData)
     }
 
 }

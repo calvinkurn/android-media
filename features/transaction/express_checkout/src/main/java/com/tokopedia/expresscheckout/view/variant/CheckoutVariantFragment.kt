@@ -25,6 +25,12 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
@@ -39,7 +45,7 @@ import java.util.concurrent.TimeUnit
  */
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
-        CheckoutVariantContract.View, CheckoutVariantActionListener {
+        CheckoutVariantContract.View, CheckoutVariantActionListener, ShippingDurationBottomsheetListener {
 
     val contextView: Context get() = activity!!
     private lateinit var presenter: CheckoutVariantPresenter
@@ -51,6 +57,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var tkpdProgressDialog: TkpdProgressDialog
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
+    private lateinit var shippingDurationBottomsheet: ShippingDurationBottomsheet
     var isDataLoaded = false
 
     companion object {
@@ -97,6 +104,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onDetach() {
         compositeSubscription.unsubscribe()
         super.onDetach()
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
+        adapter = CheckoutVariantAdapter(adapterTypeFactory)
+        return adapter
+    }
+
+    override fun getActivityContext(): Context? {
+        return activity
     }
 
     override fun showLoading() {
@@ -162,7 +178,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onClickEditDuration() {
-
+        val shippingParam = presenter.getShippingParam(fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                ?: 0, fragmentViewModel.getProductViewModel()?.productPrice ?: 0)
+        val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
+        val selectedServiceId = fragmentViewModel.getProfileViewModel()?.shippingDurationId
+        shippingDurationBottomsheet.updateArguments(shippingParam, selectedServiceId
+                ?: 0, shopShipmentList)
+        if (!shippingDurationBottomsheet.isAdded) {
+            shippingDurationBottomsheet.show(activity?.supportFragmentManager, "")
+        }
     }
 
     override fun onClickEditCourier() {
@@ -427,7 +451,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun updateShippingData(productData: ProductData) {
+    override fun updateShippingData(productData: ProductData, serviceData: ServiceData) {
+        shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
+        shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this)
+
         var profileViewModel = fragmentViewModel.getProfileViewModel()
         var insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
         var summaryViewModel = fragmentViewModel.getSummaryViewModel()
@@ -442,6 +469,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             } else {
                 profileViewModel.isDurationError = false
                 profileViewModel.shippingCourier = productData.shipperName
+                profileViewModel.shippingDuration = serviceData.serviceName
+                profileViewModel.shippingDurationId = serviceData.serviceId
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
             }
         }
@@ -483,13 +512,38 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
-        adapter = CheckoutVariantAdapter(adapterTypeFactory)
-        return adapter
+    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>?,
+                                           courierItemData: CourierItemData?,
+                                           recipientAddressModel: RecipientAddressModel?,
+                                           cartPosition: Int,
+                                           selectedServiceId: Int,
+                                           selectedServiceName: String,
+                                           flagNeedToSetPinpoint: Boolean,
+                                           hasCourierPromo: Boolean) {
+        if (shippingCourierViewModels != null) {
+            for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
+                if (shippingCourierViewModel.productData.isRecommend) {
+                    updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData)
+                    break
+                }
+            }
+        }
     }
 
-    override fun getActivityContext(): Context? {
-        return activity
+    override fun onNoCourierAvailable(message: String?) {
+
+    }
+
+    override fun onShippingDurationButtonCloseClicked() {
+        shippingDurationBottomsheet.dismiss()
+    }
+
+    override fun onShippingDurationButtonShowCaseDoneClicked() {
+
+    }
+
+    override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
+
     }
 
     private fun initUpdateShippingRatesDebouncer() {
@@ -518,6 +572,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
                             presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice
                                     ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                                    ?: 0, fragmentViewModel.getProfileViewModel()?.shippingDurationId
                                     ?: 0, true)
                         }
                     }

@@ -84,8 +84,22 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         return variables
     }
 
-    override fun loadShippingRates(price: Int, quantity: Int, isReloadData: Boolean) {
+    override fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, isReloadData: Boolean) {
         val query = GraphqlHelper.loadRawString(view.getActivityContext()?.getResources(), R.raw.rates_v3_query)
+        val shippingParam = getShippingParam(quantity, price)
+
+        val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
+        val serviceId = selectedServiceId
+
+        view.showLoading()
+        getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
+        getCourierRecommendationUseCase.execute(
+                query, shippingParam, 0, 0, shopShipmentModels,
+                GetRatesSubscriber(view, this, serviceId ?: 0, isReloadData)
+        )
+    }
+
+    override fun getShippingParam(quantity: Int, price: Int): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.districtId.toString()
         shippingParam.originPostalCode = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.postalCode
@@ -105,16 +119,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
                 ?: 0) / 1000.0
         shippingParam.productInsurance = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productFinsurance ?: 0
         shippingParam.orderValue = price * quantity
-
-        val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
-        val serviceId = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.shipmentModel?.serviceId
-
-        view.showLoading()
-        getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
-        getCourierRecommendationUseCase.execute(
-                query, shippingParam, 0, shopShipmentModels,
-                GetRatesSubscriber(view, this, serviceId ?: 0, isReloadData)
-        )
+        return shippingParam
     }
 
     override fun checkout(fragmentViewModel: FragmentViewModel) {

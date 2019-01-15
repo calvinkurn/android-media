@@ -230,6 +230,7 @@ class ViewModelMapper : DataMapper {
         profileViewModel.paymentOptionImageUrl = userProfileModel?.paymentModel?.image ?: ""
         profileViewModel.paymentDetail = userProfileModel?.paymentModel?.gatewayCode ?: ""
         profileViewModel.shippingDuration = userProfileModel?.shipmentModel?.serviceDuration ?: ""
+        profileViewModel.shippingDurationId = userProfileModel?.shipmentModel?.serviceId ?: 0
         profileViewModel.isDefaultProfileCheckboxChecked = false
         profileViewModel.isDurationError = false
         profileViewModel.isEditable = false

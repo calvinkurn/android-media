@@ -44,8 +44,11 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
                 atcResponseModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse.atcExpress)
                 presenter.setAtcResponseModel(atcResponseModel)
                 val productModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
+                val serviceId = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.shipmentModel?.serviceId
                 presenter.loadShippingRates(productModel?.productPrice
-                        ?: 0, productModel?.productMinOrder ?: 0, false)
+                        ?: 0, productModel?.productMinOrder
+                        ?: 0, serviceId
+                        ?: 0, false)
             }
         } else {
             view?.finishWithError(expressCheckoutResponse.atcExpress.errorMessage.joinToString(". "))

@@ -23,13 +23,9 @@ public class ShippingDurationConverter {
 
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,
                                                               List<ShopShipment> shopShipmentList,
-                                                              ShipmentDetailData shipmentDetailData,
+                                                              int selectedSpId,
                                                               String ratesId,
                                                               int selectedServiceId) {
-        int selectedSpId = 0;
-        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
-            selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
-        }
         List<ShippingDurationViewModel> shippingDurationViewModels = new ArrayList<>();
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationViewModel shippingDurationViewModel = new ShippingDurationViewModel();

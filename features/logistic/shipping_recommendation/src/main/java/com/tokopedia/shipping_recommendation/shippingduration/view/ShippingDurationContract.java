@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -37,6 +38,8 @@ public interface ShippingDurationContract {
 
     interface Presenter extends CustomerPresenter<View> {
         void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId, List<ShopShipment> shopShipmentList);
+
+        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList);
 
         List<ShippingDurationViewModel> getShippingDurationViewModels();
 

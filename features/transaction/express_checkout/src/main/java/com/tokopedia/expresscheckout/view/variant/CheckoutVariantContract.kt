@@ -8,6 +8,8 @@ import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 
 /**
@@ -39,7 +41,7 @@ interface CheckoutVariantContract {
 
         fun setShippingError()
 
-        fun updateShippingData(productData: ProductData)
+        fun updateShippingData(productData: ProductData, serviceData: ServiceData)
 
         fun navigateToOcs()
 
@@ -52,13 +54,15 @@ interface CheckoutVariantContract {
 
         fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam)
 
-        fun loadShippingRates(price: Int, quantity: Int, isReloadData: Boolean)
+        fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, isReloadData: Boolean)
 
         fun checkout(fragmentViewModel: FragmentViewModel)
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 
         fun prepareViewModel(productData: ProductData)
+
+        fun getShippingParam(quantity: Int, price: Int): ShippingParam
     }
 
 }

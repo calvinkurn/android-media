@@ -41,33 +41,16 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
     public void execute(String query,
                         ShippingParam shippingParam,
+                        int selectedSpId,
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<ShippingRecommendationData> subscriber) {
         query = getQueryWithParams(query, shopShipments, shippingParam);
-        executeQuery(query, null, selectedServiceId, shopShipments, subscriber);
+        executeQuery(query, selectedSpId, selectedServiceId, shopShipments, subscriber);
     }
 
-    public void execute(String query,
-                        ShipmentDetailData shipmentDetailData,
-                        int selectedServiceId,
-                        List<ShopShipment> shopShipments,
-                        Subscriber<ShippingRecommendationData> subscriber) {
-        ShippingParam shippingParam = getShippingParam(shipmentDetailData);
-
-        if (shipmentDetailData.getShipmentCartData() != null &&
-                shipmentDetailData.getShipmentCartData().getShopShipments() != null) {
-            query = getQueryWithParams(query, shipmentDetailData.getShipmentCartData().getShopShipments(), shippingParam);
-        } else {
-            query = getQueryWithParams(query, shopShipments, shippingParam);
-        }
-
-        executeQuery(query, shipmentDetailData, selectedServiceId, shopShipments, subscriber);
-    }
-
-    private void executeQuery(String query, ShipmentDetailData shipmentDetailData,
-                              int selectedServiceId, List<ShopShipment> shopShipments,
-                              Subscriber<ShippingRecommendationData> subscriber) {
+    private void executeQuery(String query, int selectedSpId, int selectedServiceId,
+                              List<ShopShipment> shopShipments, Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
         GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 
@@ -98,7 +81,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 shippingRecommendationData.setShippingDurationViewModels(
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
-                                                shopShipments, shipmentDetailData, ratesId, selectedServiceId
+                                                shopShipments, selectedSpId, ratesId, selectedServiceId
                                         )
                                 );
                             }
@@ -107,28 +90,6 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                     }
                 })
                 .subscribe(subscriber);
-    }
-
-    @NonNull
-    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData) {
-        ShippingParam shippingParam = new ShippingParam();
-        shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
-        shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
-        shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
-        shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
-        shippingParam.setDestinationDistrictId(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
-        shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
-        shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
-        shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
-        shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
-        shippingParam.setShopId(shipmentDetailData.getShopId());
-        shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
-        shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
-        shippingParam.setInsurance(shipmentDetailData.getShipmentCartData().getInsurance());
-        shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
-        shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
-        shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
-        return shippingParam;
     }
 
     private String getQueryWithParams(String query, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
