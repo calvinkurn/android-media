@@ -41,9 +41,7 @@ class AffiliateEducationFragment : BaseDaggerFragment() {
 
     private fun initView() {
         imageBg.loadImageWithoutPlaceholder(
-                getImagePathWithDrawable(
-                        AffiliateConstant.IMG_AFFILIATE_EDUCATION_BG,
-                        AffiliateConstant.PNG)
+                "https://bluebuffalo.com/globalassets/article-pages/articles/safe-car-travels-with-your-cat/articleimage-cattravel-car.jpg"
         )
 
         val adapter = EducationAdapter(getCarouselList())
