@@ -10,7 +10,8 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 /**
  * @author by yfsx on 08/05/18.
  */
-
+@Deprecated
+//To be converted to gql and use chat_common
 public class FallbackAttachmentViewModel extends BaseChatViewModel implements
         Visitable<ChatRoomTypeFactory> {
 

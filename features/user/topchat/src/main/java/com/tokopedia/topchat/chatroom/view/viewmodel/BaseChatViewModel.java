@@ -3,7 +3,8 @@ package com.tokopedia.topchat.chatroom.view.viewmodel;
 /**
  * @author by yfsx on 08/05/18.
  */
-
+@Deprecated
+//To be converted to gql and use chat_common
 public class BaseChatViewModel {
     private String messageId;
     private String fromUid;

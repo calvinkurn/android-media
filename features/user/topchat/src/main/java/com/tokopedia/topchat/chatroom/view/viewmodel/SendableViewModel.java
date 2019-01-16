@@ -11,6 +11,8 @@ import java.util.TimeZone;
 /**
  * @author by nisie on 5/16/18.
  */
+@Deprecated
+//To be converted to gql and use chat_common
 public class SendableViewModel extends BaseChatViewModel {
 
     public static final String START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";

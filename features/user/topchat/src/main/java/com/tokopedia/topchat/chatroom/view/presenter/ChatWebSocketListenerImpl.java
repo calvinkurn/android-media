@@ -15,6 +15,8 @@ import okio.ByteString;
  * Created by stevenfredian on 9/20/17.
  */
 
+@Deprecated
+//To be converted to websocket library
 public class ChatWebSocketListenerImpl extends WebSocketListener {
     private static final int NORMAL_CLOSURE_STATUS = 1000;
     private final WebSocketInterface listener;

@@ -415,7 +415,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendClicked(message: String, generateStartTime: String) {
-        presenter.sendMessage(messageId, message, generateStartTime, "")
+        presenter.sendMessage(messageId, message, generateStartTime, "", onSendingMessage(
+                message, generateStartTime
+        ))
     }
 
     override fun addTemplateString(message: String?) {

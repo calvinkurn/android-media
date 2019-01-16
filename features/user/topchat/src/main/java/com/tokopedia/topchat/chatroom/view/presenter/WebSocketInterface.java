@@ -6,7 +6,8 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 /**
  * Created by stevenfredian on 9/22/17.
  */
-
+@Deprecated
+//To be converted to websocket library
 public interface WebSocketInterface {
     void onIncomingEvent(WebSocketResponse response);
 
