@@ -36,7 +36,6 @@
 
         <activity
             android:name=".view.feature.webview.CheckoutWebViewActivity"
-            android:label="@string/title_activity_checkout_webview"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

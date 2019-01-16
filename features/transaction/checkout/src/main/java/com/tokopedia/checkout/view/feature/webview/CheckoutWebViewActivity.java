@@ -18,9 +18,10 @@ public class CheckoutWebViewActivity extends BaseWebViewActivity {
     public static final String EXTRA_URL = "EXTRA_URL";
     private String mUrl;
 
-    public static Intent newInstance(Context context,String url) {
+    public static Intent newInstance(Context context, String url, String title) {
         Intent intent = new Intent(context, CheckoutWebViewActivity.class);
         intent.putExtra(EXTRA_URL, url);
+        intent.putExtra(EXTRA_TITLE, title);
         return intent;
     }
 
