@@ -74,4 +74,4 @@ include 'tkpdseller'
 include 'tkpdabstraction'
 include 'tkpdtransaction-common'
 
-include 'posapp'
+include 'possapp'
