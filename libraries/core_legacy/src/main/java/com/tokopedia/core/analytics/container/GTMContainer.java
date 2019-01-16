@@ -17,17 +17,14 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.json.JSONObject;
 
