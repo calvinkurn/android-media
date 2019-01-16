@@ -28,13 +28,6 @@ public class FileUtils {
         } catch (IOException e) {
             return null;
         }
-        ErrorBottomsheets a = new ErrorBottomsheets();
-        a.setActionListener(new ErrorBottomsheetsActionListener() {
-            @Override
-            public void onActionButtonClicked() {
-
-            }
-        });
         return text.toString();
     }
 
