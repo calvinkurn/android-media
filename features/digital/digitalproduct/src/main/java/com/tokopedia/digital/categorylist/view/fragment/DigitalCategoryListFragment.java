@@ -548,7 +548,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private void renderTerminateTicker(){
         ArrayList<String> messages = new ArrayList<>();
         messages.add(getString(R.string.digital_terminate_announcement));
-        tickerView.setVisibility(View.INVISIBLE);
+        tickerView.setVisibility(View.VISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
         tickerView.buildView();
