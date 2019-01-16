@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.revamp.data.api
 
-import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.chat_common.domain.pojo.ReplyChatItemPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.network.data.model.response.DataResponse
@@ -14,9 +13,6 @@ import rx.Observable
  */
 
 interface ChatRoomApi {
-
-    @GET(ChatUrl.GET_REPLY)
-    fun getReply(@Path("msgId") messageId: String, @QueryMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<ChatItemPojo>>>
 
     @FormUrlEncoded
     @Headers("Cookie:_SID_TOKOPEDIA_")

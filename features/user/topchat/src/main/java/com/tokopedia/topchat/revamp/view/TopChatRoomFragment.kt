@@ -249,7 +249,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
         bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, com.tokopedia.topchat.R.string.resend, null)
         bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, com.tokopedia.topchat.R.string.delete, null)
-        var bottomSheetDialog = bottomSheetBuilder.expandOnStart(true).setItemClickListener(BottomSheetItemClickListener {
+        bottomSheetBuilder.expandOnStart(true).setItemClickListener {
             when (it.itemId) {
                 InboxMessageConstant.RESEND -> {
                     presenter.startUploadImages(element)
@@ -259,7 +259,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     removeDummy(element)
                 }
             }
-        }).createDialog().show()
+        }.createDialog().show()
     }
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
@@ -655,10 +655,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    fun finishActivity() {
+    private fun finishActivity() {
         activity?.let {
-            var intent = Intent()
-            var bundle = Bundle()
+            val intent = Intent()
+            val bundle = Bundle()
             bundle.putParcelable(PARCEL, getViewState().getLastItem())
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)

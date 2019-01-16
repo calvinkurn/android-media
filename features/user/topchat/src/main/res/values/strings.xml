@@ -110,5 +110,7 @@ yang ditemukan</string>
     <string name="drawer_title_setting">Pengaturan</string>
 
     <string name="title_understand">Mengerti</string>
+    <string name="title_save">Simpan</string>
+
 
 </resources>

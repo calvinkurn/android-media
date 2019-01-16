@@ -17,7 +17,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/grey_button_round"
+            android:background="@drawable/grey_button_rounded"
             >
 
             <ImageView
@@ -39,7 +39,7 @@
                 android:lineSpacingExtra="5sp"
                 android:text="@string/time_machine_chat"
                 android:textColor="@color/black_54"
-                android:textSize="@dimen/text_size_xsmall"
+                android:textSize="@dimen/sp_11"
                 android:textStyle="normal" />
 
         </RelativeLayout>

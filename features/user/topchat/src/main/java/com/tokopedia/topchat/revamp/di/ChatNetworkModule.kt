@@ -3,12 +3,9 @@ package com.tokopedia.topchat.revamp.di
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.chat_common.network.ChatUrl.Companion.CHATBOT_BASE_URL
 import com.tokopedia.chat_common.network.ChatUrl.Companion.TOPCHAT
-import com.tokopedia.chat_common.network.ChatUrl.Companion.TOPCHAT_BASE_URL
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -35,57 +32,6 @@ class ChatNetworkModule {
         return CommonNetwork.createRetrofit(
                 context,
                 TOPCHAT,
-                context as NetworkRouter,
-                userSession
-        )
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideChatRetrofitJsDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
-        if ((context is NetworkRouter).not()) {
-            throw IllegalStateException("Application must implement "
-                    .plus(NetworkRouter::class.java.simpleName)
-            )
-        }
-
-        return CommonNetwork.createRetrofit(
-                context,
-                TOPCHAT_BASE_URL,
-                context as NetworkRouter,
-                userSession
-        )
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideWsRetrofitDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
-        if ((context is NetworkRouter).not()) {
-            throw IllegalStateException("Application must implement "
-                    .plus(NetworkRouter::class.java.simpleName)
-            )
-        }
-
-        return CommonNetwork.createRetrofit(
-                context,
-                TkpdBaseURL.BASE_DOMAIN,
-                context as NetworkRouter,
-                userSession
-        )
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideTomeRetrofitDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
-        if ((context is NetworkRouter).not()) {
-            throw IllegalStateException("Application must implement "
-                    .plus(NetworkRouter::class.java.simpleName)
-            )
-        }
-
-        return CommonNetwork.createRetrofit(
-                context,
-                TkpdBaseURL.TOME_DOMAIN,
                 context as NetworkRouter,
                 userSession
         )
