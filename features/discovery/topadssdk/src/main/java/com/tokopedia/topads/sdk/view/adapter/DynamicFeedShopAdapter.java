@@ -171,22 +171,14 @@ public class DynamicFeedShopAdapter
             ViewGroup.MarginLayoutParams layoutParams
                     = (ViewGroup.MarginLayoutParams) tvName.getLayoutParams();
 
-            if (shop.isGoldShopBadge()) {
+            if (shop.getBadges() != null
+                    && shop.getBadges().size() > 0
+                    && shop.getBadges().get(0) != null) {
+
                 ivBadge.setVisibility(View.VISIBLE);
-                ivBadge.setImageDrawable(
-                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_gold)
-                );
+                imageLoader.loadImage(shop.getBadges().get(0).getImageUrl(), ivBadge);
                 layoutParams.leftMargin =
                         (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);
-
-            } else if (shop.isShop_is_official()) {
-                ivBadge.setVisibility(View.VISIBLE);
-                ivBadge.setImageDrawable(
-                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_official)
-                );
-                layoutParams.leftMargin =
-                        (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);
-
             } else {
                 ivBadge.setVisibility(View.GONE);
                 layoutParams.leftMargin =
