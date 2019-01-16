@@ -2385,7 +2385,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInstantLoanIntent(Context context) {
-        return InstantLoanActivity.createIntent(context);
+        return InstantLoanActivity.Companion.createIntent(context);
     }
 
     public Intent getOpenShopIntent(Context context) {
@@ -2405,6 +2405,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void openTokoPoint(Context context, String url) {
         context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
+    }
+
+    @Override
+    public void openTokopointWebview(Context context, String url, String title) {
+        context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, url, title));
     }
 
     public Intent getPromoDetailIntent(Context context, String slug) {
@@ -3185,12 +3190,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return OrderListActivity.getInstance(context);
     }
 
-    @Override
-    public Intent getInstantLoanActivityIntent(Context context) {
-        return null;
-    }
-
-    @Override
+        @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
     }
@@ -3573,4 +3573,3 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
     }
 }
-

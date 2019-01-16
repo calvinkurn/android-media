@@ -34,6 +34,7 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewMod
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -115,6 +116,12 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getParentFragment() instanceof OnFragmentInteraction) {
+            if (interaction == null) {
+                interaction = (OnFragmentInteraction) getParentFragment();
+            }
+        }
+        
         TrainSeatAdapterTypeFactory adapterTypeFactory = new TrainSeatAdapterTypeFactory(this);
         initView(adapterTypeFactory);
         presenter.attachView(this);
@@ -153,12 +160,12 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
 
     @Override
     public List<TrainSeatPassengerViewModel> getPassengers() {
-        return interaction.getPassengers();
+        return interaction != null ? interaction.getPassengers() : new ArrayList<>();
     }
 
     @Override
     public List<TrainSeatPassengerViewModel> getOriginPassengers() {
-        return interaction.getOriginPassengers();
+        return  interaction != null ? interaction.getOriginPassengers() : new ArrayList<>();
     }
 
     @Override
