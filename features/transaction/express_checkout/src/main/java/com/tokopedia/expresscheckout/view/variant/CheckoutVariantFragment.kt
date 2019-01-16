@@ -457,7 +457,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
-        fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
+        if (shippingCourierViewModels != null) {
+            fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
+        }
 
         shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
         shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this)
