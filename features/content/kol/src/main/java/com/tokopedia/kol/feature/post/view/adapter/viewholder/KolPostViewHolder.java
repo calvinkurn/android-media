@@ -92,6 +92,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             containerView.setBackgroundColor(
                     MethodChecker.getColor(context, R.color.white)
             );
+
+            element.setReviewExpanded(true);
         } else {
             containerView.setBackground(
                     MethodChecker.getDrawable(context, R.drawable.card_shadow_top_bottom)
