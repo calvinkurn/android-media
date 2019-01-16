@@ -21,6 +21,11 @@ public class TopChatAnalytics {
         this.analyticTracker = analyticTracker;
     }
 
+    private static final String EVENT_NAME = "event";
+    private static final String EVENT_CATEGORY = "eventCategory";
+    private static final String EVENT_ACTION = "eventAction";
+    private static final String EVENT_LABEL = "eventLabel";
+    private static final String ECOMMERCE = "ecommerce";
     public static final String SCREEN_CHAT_LIST = "inbox-chat";
     public static final String SCREEN_CHAT_ROOM = "chatroom";
 
@@ -60,6 +65,7 @@ public class TopChatAnalytics {
         public static final String CHAT_DETAIL_ATTACHMENT = "click on send product attachment";
         public static final String TEMPLATE_CHAT_CLICK = "click on template chat";
         public static final String UPDATE_TEMPLATE = "click on tambah template";
+        public static final String CLICK_PRODUCT_IMAGE = "click on product image";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
@@ -169,4 +175,27 @@ public class TopChatAnalytics {
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
     }
+
+//    public void eventClickProductThumbnailEE(String blastId, String productId, String productName, String productPrice){
+//        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+//                EVENT_NAME, Name.CHAT_DETAIL,
+//                EVENT_CATEGORY, Category.CHAT_DETAIL,
+//                EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
+//                EVENT_LABEL, String.format("%s - %s", blastId, productId),
+//                ECOMMERCE, getProductThumbnailEEDataLayer("", ""),
+//                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
+//        ));
+//    }
+//
+//    public static HashMap<String, Object> getProductThumbnailEEDataLayer() {
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("click", getEEDataLayer());
+//        return hashMap;
+//    }
+//
+//    public Map<String, Object> getEEDataLayer(String eventName, String eventContent) {
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put(eventName, eventContent);
+//        return hashMap;
+//    }
 }

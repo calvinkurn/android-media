@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.topchat.R
 import rx.Subscriber
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 class GetChatUseCase @Inject constructor(
         val resources: Resources,
-        private val graphqlUseCase: GraphqlUseCase
+        private val graphqlUseCase: GraphqlUseCase,
+        var graphqlCacheDataStore: GraphqlCacheDataStore
 ) {
 
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {

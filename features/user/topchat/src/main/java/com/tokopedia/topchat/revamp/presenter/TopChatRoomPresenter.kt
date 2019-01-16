@@ -146,8 +146,7 @@ class TopChatRoomPresenter @Inject constructor(
         var rxWebSocket = RxWebSocket[webSocketUrl, userSession.accessToken]
         val subscription = rxWebSocket?.subscribe(subscriber)
 
-
-        mSubscription.add(subscription)
+        mSubscription?.add(subscription)
     }
 
     override fun destroyWebSocket() {
@@ -183,6 +182,18 @@ class TopChatRoomPresenter @Inject constructor(
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
                     GetChatSubscriber(onError, onSuccessGetExistingMessage))
+        }
+    }
+
+
+    override fun getChatCache(
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
+        if (messageId.isNotEmpty()) {
+            var temp = true
+//            getChatUseCase.getCache(GetChatUseCase.generateParamCache(messageId),
+//                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
         }
     }
 

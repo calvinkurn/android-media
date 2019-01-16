@@ -51,6 +51,11 @@ interface TopChatContract {
                 onError: (Throwable) -> Unit,
                 onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit)
 
+        fun getChatCache(
+                messageId: String,
+                onError: (Throwable) -> Unit,
+                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit)
+
         fun getMessageId(
                 toUserId: String,
                 toShopId: String,

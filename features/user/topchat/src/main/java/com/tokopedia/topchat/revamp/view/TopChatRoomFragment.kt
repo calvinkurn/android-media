@@ -127,7 +127,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun loadInitialData() {
         if (messageId.isNotEmpty()) {
             presenter.getExistingChat(messageId,
-                    onError(),
+                    onErrorInitiateData(),
                     onSuccessGetExistingChatFirstTime())
             presenter.connectWebSocket(messageId)
         } else {
@@ -227,6 +227,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
+    private fun onErrorInitiateData(): (Throwable) -> Unit {
+        return {
+            hideLoading()
+            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+            presenter.getChatCache(messageId, onError(), onSuccessGetExistingChatFirstTime());
+        }
+    }
+
     override fun getScreenName(): String {
         return TopChatAnalytics.SCREEN_CHAT_ROOM
     }
@@ -270,6 +278,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             abstractionRouter.analyticTracker.sendEventTracking(
                     AttachProductAnalytics.getEventClickChatAttachedProductImage().event
             )
+//            analytics.eventClickProductThumbnailEE("",
+//                    element.productId.toString(),
+//                    element.productName,
+//                    element.productPrice)
         }
     }
 
