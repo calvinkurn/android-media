@@ -154,7 +154,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     private static final String YOUTUBE_URL = "{youtube_url}";
-    private static final String FEED_TRACE = "feed_trace";
+    private static final String FEED_TRACE = "mp_feed";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -172,6 +172,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private PerformanceMonitoring performanceMonitoring;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private int loginIdInt;
+    private boolean isLoadedOnce;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -860,21 +861,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
         LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
     }
 
-
-    private boolean isLoadedOnce = false;
-
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
                 && getActivity() != null && presenter != null) {
             if (!isLoadedOnce) {
                 presenter.fetchFirstPage();
-                performanceMonitoring.stopTrace();
 
                 isLoadedOnce = !isLoadedOnce;
             }
 
             analytics.trackScreen(getActivity(), getScreenName());
         }
+    }
+
+    @Override
+    public void stopTracePerformanceMon() {
+        performanceMonitoring.stopTrace();
     }
 
     @Override

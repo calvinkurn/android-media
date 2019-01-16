@@ -237,6 +237,7 @@ public class FavoritePresenter
             getView().hideRefreshLoading();
             getView().showInitialDataPage(getDataFavoriteViewModel(dataFavorite));
             getView().validateMessageError();
+            getView().stopTracePerformanceMonitoring();
         }
 
         @NonNull
