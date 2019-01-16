@@ -35,6 +35,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/grey_300"/>
 
-
-
 </android.support.constraint.ConstraintLayout>

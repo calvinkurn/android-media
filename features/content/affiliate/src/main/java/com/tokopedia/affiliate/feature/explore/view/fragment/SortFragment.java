@@ -65,13 +65,13 @@ public class SortFragment extends BaseDaggerFragment {
             selectedSort = getArguments().getParcelable(SortActivity.PARAM_SORT_SELECTED);
             initView();
             initViewListener();
-
-        } else getActivity().finish();
+        } else
+            getActivity().finish();
     }
 
     private void initView() {
-        rvSort.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new SortAdapter(getActivity(), getSortItemClickListener(), sortList, selectedSort);
+        rvSort.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvSort.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
