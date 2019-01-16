@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -30,6 +29,7 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
+import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
@@ -101,6 +101,9 @@ public class ExploreFragment
     @Inject
     AffiliateAnalytics affiliateAnalytics;
 
+    @Inject
+    AffiliatePreference affiliatePreference;
+
     public static ExploreFragment getInstance(Bundle bundle) {
         ExploreFragment fragment = new ExploreFragment();
         fragment.setArguments(bundle);
@@ -134,8 +137,11 @@ public class ExploreFragment
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
 
-        if (getContext() != null) {
+        if (getContext() != null
+                && affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
+
             startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
+            affiliatePreference.setFirstTimeEducation(userSession.getUserId());
         }
     }
 
