@@ -1,15 +1,12 @@
 package com.tokopedia.digital.product.view.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalSearchNumberFragment;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 

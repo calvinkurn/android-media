@@ -13,11 +13,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
-import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent;
+import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.common.di.DaggerDigitalComponent;
+import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
@@ -88,8 +90,11 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     }
 
     private void initInjector() {
-        DigitalComponent digitalComponent = DaggerDigitalComponent.builder().baseAppComponent(
+        DigitalCommonComponent digitalCommonComponent = DaggerDigitalCommonComponent.builder().baseAppComponent(
                 ((BaseMainApplication) getApplication()).getBaseAppComponent()).build();
+        DigitalComponent digitalComponent = DaggerDigitalComponent.builder()
+                .digitalCommonComponent(digitalCommonComponent)
+                .build();
         component = DaggerDigitalCartComponent.builder()
                 .digitalComponent(digitalComponent)
                 .build();

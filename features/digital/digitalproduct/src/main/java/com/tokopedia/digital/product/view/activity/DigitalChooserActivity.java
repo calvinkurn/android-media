@@ -2,7 +2,6 @@ package com.tokopedia.digital.product.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;

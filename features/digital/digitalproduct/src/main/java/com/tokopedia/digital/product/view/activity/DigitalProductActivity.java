@@ -1,6 +1,5 @@
 package com.tokopedia.digital.product.view.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,10 +8,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 

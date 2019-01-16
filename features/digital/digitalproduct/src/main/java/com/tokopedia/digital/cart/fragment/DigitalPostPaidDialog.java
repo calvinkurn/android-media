@@ -7,7 +7,6 @@ import android.view.View;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.user.session.UserSession;
 
 public class DigitalPostPaidDialog extends Dialog {
     private AppCompatCheckBox dontshowAgainCheckbox;

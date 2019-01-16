@@ -1,4 +1,4 @@
-package com.tokopedia.digital.common.constant;
+package com.tokopedia.digital.common.analytic;
 
 /**
  * @author by furqan on 13/08/18.
@@ -14,6 +14,7 @@ public interface DigitalEventTracking {
         String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
         String CLICK_CHECKOUT = "clickCheckout";
         String LONG_CLICK = "longClick";
+        String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
     }
 
     interface Category {
@@ -51,6 +52,9 @@ public interface DigitalEventTracking {
         String CLICK_USSD_EDIT_NUMBER = "Click Edit Number from USSD";
         String CLICK_BILL = "Click Tagihan";
         String SELECT_CATEGORY = "select category";
+        String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
+        String CHECK_INSTANT_SALDO = "Check Instant Saldo";
+        String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
     }
 
     interface Label {

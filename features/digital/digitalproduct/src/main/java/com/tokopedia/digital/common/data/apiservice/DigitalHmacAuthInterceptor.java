@@ -3,17 +3,14 @@ package com.tokopedia.digital.common.data.apiservice;
 import android.content.Context;
 import android.util.Log;
 
-
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
-import java.util.Map;
 
 import okhttp3.Response;
 

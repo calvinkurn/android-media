@@ -1,8 +1,8 @@
 package com.tokopedia.digital.categorylist.di;
 
 
-import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment;
+import com.tokopedia.digital.common.di.DigitalComponent;
 
 import dagger.Component;
 

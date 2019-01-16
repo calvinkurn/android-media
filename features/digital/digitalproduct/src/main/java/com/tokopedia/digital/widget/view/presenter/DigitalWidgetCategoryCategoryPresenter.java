@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.view.presenter;
 
 import android.text.TextUtils;
 
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;

@@ -1,9 +1,7 @@
 package com.tokopedia.digital.product.view.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -13,7 +11,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalUssdFragment;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 

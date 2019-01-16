@@ -19,7 +19,6 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
 
-
 import java.util.List;
 
 /**

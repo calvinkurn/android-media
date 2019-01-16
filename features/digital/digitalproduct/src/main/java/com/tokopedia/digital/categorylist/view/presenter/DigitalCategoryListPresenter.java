@@ -2,7 +2,6 @@ package com.tokopedia.digital.categorylist.view.presenter;
 
 import android.support.annotation.NonNull;
 
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
 import com.tokopedia.digital.categorylist.data.cloud.exception.SessionExpiredException;
@@ -17,6 +16,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -28,6 +29,7 @@ public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCa
     private final IDigitalCategoryListInteractor digitalCategoryListInteractor;
     private DigitalModuleRouter digitalModuleRouter;
 
+    @Inject
     public DigitalCategoryListPresenter(
             IDigitalCategoryListInteractor digitalCategoryListInteractor,
             DigitalModuleRouter digitalModuleRouter) {

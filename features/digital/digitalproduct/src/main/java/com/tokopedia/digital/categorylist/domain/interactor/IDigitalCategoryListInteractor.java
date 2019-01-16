@@ -1,8 +1,5 @@
 package com.tokopedia.digital.categorylist.domain.interactor;
 
-import android.content.Context;
-
-
 import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 

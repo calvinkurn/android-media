@@ -10,4 +10,4 @@ import javax.inject.Scope
  */
 @Scope
 @Retention(RetentionPolicy.CLASS)
-annotation class DigitalScope
+annotation class DigitalCommonScope

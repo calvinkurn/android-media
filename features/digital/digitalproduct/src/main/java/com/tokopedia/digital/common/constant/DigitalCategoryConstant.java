@@ -1,6 +1,5 @@
 package com.tokopedia.digital.common.constant;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.StringDef;
 
 import java.lang.annotation.Retention;

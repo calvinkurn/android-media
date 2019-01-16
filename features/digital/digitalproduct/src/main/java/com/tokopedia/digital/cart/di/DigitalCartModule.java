@@ -2,7 +2,6 @@ package com.tokopedia.digital.cart.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
@@ -18,9 +17,6 @@ import com.tokopedia.digital.cart.domain.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
-import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -92,22 +88,6 @@ public class DigitalCartModule {
     DigitalCheckoutUseCase provideDigitalCheckoutUseCase(ICheckoutRepository checkoutRepository) {
         return new DigitalCheckoutUseCase(checkoutRepository);
     }
-
-    @Provides
-    @DigitalCartScope
-    DigitalAnalytics provideDigitalAnalytics(AbstractionRouter abstractionRouter, @ApplicationContext Context context) {
-        return new DigitalAnalytics(abstractionRouter.getAnalyticTracker(), context);
-    }
-
-    @Provides
-    @DigitalCartScope
-    DigitalModuleRouter provideDigitalModuleRouter(@ApplicationContext Context context) {
-        if (context instanceof DigitalModuleRouter) {
-            return (DigitalModuleRouter) context;
-        }
-        throw new RuntimeException("Application must implement " + DigitalModuleRouter.class.getSimpleName());
-    }
-
 
     @Provides
     @DigitalCartScope

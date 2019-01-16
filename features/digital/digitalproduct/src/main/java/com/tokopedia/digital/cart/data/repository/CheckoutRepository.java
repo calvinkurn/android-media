@@ -1,15 +1,11 @@
 package com.tokopedia.digital.cart.data.repository;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
-import com.tokopedia.digital.cart.data.entity.response.checkout.ResponseCheckoutData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.domain.ICheckoutRepository;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;

@@ -20,6 +20,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.tokopedia.common_digital.R
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.common_digital.product.presentation.model.Validation
 import java.util.regex.Pattern
 
@@ -173,7 +174,7 @@ abstract class CommonClientNumberInputView : LinearLayout {
     protected open fun setupLayoutParamAndInputType(clientNumber: ClientNumber) {
         val layoutParams = LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT)
-        if (clientNumber.type!!.equals(ClientNumber.TYPE_INPUT_TEL, ignoreCase = true)) {
+        if (clientNumber.type!!.equals(ClientNumberType.TYPE_INPUT_TEL, ignoreCase = true)) {
             btnContactPicker.visibility = View.VISIBLE
             layoutParams.weight = 0.88f
         } else {
@@ -181,7 +182,7 @@ abstract class CommonClientNumberInputView : LinearLayout {
             layoutParams.weight = 1f
         }
         pulsaFramelayout.layoutParams = layoutParams
-        if (clientNumber.type!!.equals(ClientNumber.TYPE_INPUT_TEL, ignoreCase = true) || clientNumber.type!!.equals(ClientNumber.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
+        if (clientNumber.type!!.equals(ClientNumberType.TYPE_INPUT_TEL, ignoreCase = true) || clientNumber.type!!.equals(ClientNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
             setInputTypeNumber()
         } else {
             setInputTypeText()

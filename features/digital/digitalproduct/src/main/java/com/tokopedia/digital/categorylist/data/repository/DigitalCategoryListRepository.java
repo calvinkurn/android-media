@@ -4,9 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.cloud.entity.HomeCategoryMenuItem;
 import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;

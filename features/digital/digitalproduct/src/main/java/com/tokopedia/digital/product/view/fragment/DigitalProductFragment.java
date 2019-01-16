@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -51,24 +50,11 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.VersionInfo;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
@@ -837,6 +823,11 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onInstantCheckoutChanged(String categoryName, boolean isChecked) {
+        digitalAnalytics.eventCheckInstantSaldo(categoryName, isChecked);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -943,10 +934,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
             }
             if (GlobalConfig.isSellerApp()) {
                 navigateToActivity(
-                        DigitalWebActivity.newInstance(
-                                getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
-                        )
+                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(),TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
                 );
             } else {
                 RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);

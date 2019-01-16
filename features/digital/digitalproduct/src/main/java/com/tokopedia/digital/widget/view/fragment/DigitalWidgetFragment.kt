@@ -10,44 +10,19 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.constant.TkpdCache
-import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital.R
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService
-import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor
-import com.tokopedia.digital.common.data.apiservice.DigitalRestApi
-import com.tokopedia.digital.common.data.source.CategoryListDataSource
-import com.tokopedia.digital.common.data.source.StatusDataSource
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
-import com.tokopedia.digital.widget.data.source.RecommendationListDataSource
-import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase
 import com.tokopedia.digital.widget.view.adapter.RechargeViewPagerAdapter
 import com.tokopedia.digital.widget.view.model.category.Category
-import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper
-import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetContract
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetPresenter
-import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.constant.TkpdBaseURL
-import com.tokopedia.network.converter.StringResponseConverter
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
-import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by Rizky on 15/11/18.
@@ -56,9 +31,13 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     val WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED"
 
     private lateinit var cacheHandler: LocalCacheHandler
-    private lateinit var userSession: UserSession
     private var rechargeViewPagerAdapter: RechargeViewPagerAdapter? = null
-    private lateinit var digitalWidgetPresenter: DigitalWidgetPresenter
+
+    @Inject
+    lateinit var userSession: UserSession
+
+    @Inject
+    lateinit var digitalWidgetPresenter: DigitalWidgetPresenter
 
     private lateinit var tab_layout_widget: TabLayout
     private lateinit var view_pager_widget: DigitalWrapContentViewPager
@@ -94,15 +73,12 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
 
             digitalWidgetPresenter.fetchDataRechargeCategory()
         }
-
-        digitalWidgetPresenter.attachView(this)
-
         return rootview
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        digitalWidgetPresenter.attachView(this)
         digitalWidgetPresenter.fetchDataRechargeCategory()
     }
 
@@ -112,69 +88,8 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
 
     override fun initInjector() {
         cacheHandler = LocalCacheHandler(activity, WIDGET_RECHARGE_TAB_LAST_SELECTED)
-        userSession = UserSession(context)
-
-        val gson = GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-        val  retrofitBuilder = Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.DIGITAL_API_DOMAIN + TkpdBaseURL.DigitalApi.VERSION)
-                .addConverterFactory(DigitalResponseConverter())
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-
-        val okHttpbuilder = OkHttpClient.Builder();
-        var loggingLevel = HttpLoggingInterceptor.Level.NONE;
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingLevel = HttpLoggingInterceptor.Level.BODY;
-        }
-        val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(loggingLevel);
-
-        val networkRouter =  context!!.applicationContext as NetworkRouter;
-        val userSessionInterceptor = userSession as UserSessionInterface;
-        val  okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
-        okHttpbuilder.addInterceptor(httpLoggingInterceptor);
-        val okHttpClient = okHttpbuilder
-                .addInterceptor(FingerprintInterceptor(networkRouter, userSessionInterceptor))
-                .addInterceptor(DigitalHmacAuthInterceptor(
-                        context,
-                        networkRouter,
-                        userSession,
-                        TkpdBaseURL.DigitalApi.HMAC_KEY
-                ))
-                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .build();
-
-        val retrofit = retrofitBuilder.client(okHttpClient).build();
-        val digitalEndpointService = retrofit.create(DigitalRestApi::class.java);
-        val digitalGqlApiService = DigitalGqlApiService()
-        val globalCacheManager = context as CacheManager
-
-        val statusDataSource = StatusDataSource(digitalEndpointService,
-                globalCacheManager,
-                StatusMapper())
-
-        val categoryListDataSource = CategoryListDataSource(digitalEndpointService,
-                globalCacheManager,
-                CategoryMapper())
-
-        val recommendationListDataSource = RecommendationListDataSource(
-                digitalGqlApiService, context
-        )
-
-        val digitalWidgetRepository = DigitalWidgetRepository(
-                statusDataSource, categoryListDataSource, recommendationListDataSource
-        )
-
-        val digitalWidgetUseCase = DigitalWidgetUseCase(context,
-                digitalWidgetRepository)
-
-        digitalWidgetPresenter = DigitalWidgetPresenter(digitalWidgetUseCase)
+        DigitalProductComponentInstance.getDigitalProductComponent(activity!!.application)
+                .inject(this)
     }
 
     override fun renderDataRechargeCategory(rechargeCategory: List<Category>) {

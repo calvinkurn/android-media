@@ -1,6 +1,7 @@
 package com.tokopedia.digital.common.data.mapper;
 
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -86,7 +87,7 @@ public class ProductDigitalMapper {
     private List<ClientNumber> transformClientNumberList(RechargeCategoryDetail entity) {
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
 
-        if (entity != null && entity.getClientNumber() != null && entity.getClientNumber().getName().equalsIgnoreCase(ClientNumber.Companion.getDEFAULT_TYPE_CONTRACT())) {
+        if (entity != null && entity.getClientNumber() != null && entity.getClientNumber().getName().equalsIgnoreCase(ClientNumberType.DEFAULT_TYPE_CONTRACT)) {
             ClientNumber clientNumberCategory = new ClientNumber();
             clientNumberCategory.setName(entity.getClientNumber().getName());
             clientNumberCategory.set_default(entity.getClientNumber().getDefault());

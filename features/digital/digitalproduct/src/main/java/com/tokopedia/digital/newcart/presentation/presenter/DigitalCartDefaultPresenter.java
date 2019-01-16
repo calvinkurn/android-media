@@ -5,8 +5,8 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
 import com.tokopedia.user.session.UserSession;
 

@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
@@ -41,14 +41,14 @@ public abstract class BaseDigitalPresenter extends BaseDaggerPresenter<CustomerV
     public void storeLastClientNumberTyped(String categoryId, String operatorId, String clientNumber,
                                            String productId) {
         localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
+                DigitalCache.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
         );
         localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
+                DigitalCache.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
                 operatorId
         );
         localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
+                DigitalCache.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
                 productId
         );
         localCacheHandlerLastClientNumber.applyEditor();
@@ -57,19 +57,19 @@ public abstract class BaseDigitalPresenter extends BaseDaggerPresenter<CustomerV
     @Override
     public String getLastOperatorSelected(String categoryId) {
         return localCacheHandlerLastClientNumber.getString(
-                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, "");
+                DigitalCache.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, "");
     }
 
     @Override
     public String getLastClientNumberTyped(String categoryId) {
         return localCacheHandlerLastClientNumber.getString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, "");
+                DigitalCache.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, "");
     }
 
     @Override
     public String getLastProductSelected(String categoryId) {
         return localCacheHandlerLastClientNumber.getString(
-                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
+                DigitalCache.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
     }
 
     @Override

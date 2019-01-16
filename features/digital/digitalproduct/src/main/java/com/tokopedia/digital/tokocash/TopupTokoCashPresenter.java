@@ -1,8 +1,8 @@
 package com.tokopedia.digital.tokocash;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;

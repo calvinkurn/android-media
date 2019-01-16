@@ -100,7 +100,7 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
             radioButton.setLayoutParams(layoutParams);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
-            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
+            radioButton.setTextSize(getResources().getDimension(R.dimen.sp_12) /
                     getResources().getDisplayMetrics().density);
             radioButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_600));
             radioGroup.addView(radioButton);

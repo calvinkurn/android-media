@@ -1,6 +1,5 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -25,6 +24,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.adapter.NumberListAdapter;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -140,8 +140,8 @@ public class DigitalSearchNumberFragment extends BaseDaggerFragment
     }
 
     private void setClientNumberInputType() {
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_TEL())
-                || clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_NUMERIC())) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
+                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC)) {
             editTextSearchNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             editTextSearchNumber.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
         } else {

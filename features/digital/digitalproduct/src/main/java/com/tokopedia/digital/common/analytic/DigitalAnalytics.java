@@ -1,22 +1,18 @@
-package com.tokopedia.digital.common.util;
+package com.tokopedia.digital.common.analytic;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.digital.common.constant.DigitalEventTracking.Action.CLICK_PANDUAN_SECTION;
-import static com.tokopedia.digital.common.constant.DigitalEventTracking.Category.DIGITAL_NATIVE;
-import static com.tokopedia.digital.common.constant.DigitalEventTracking.Event.DIGITAL_GENERAL_EVENT;
+
 
 /**
  * @author by furqan on 13/08/18.
@@ -34,9 +30,9 @@ public class DigitalAnalytics {
 
     public void eventClickPanduanPage(String categoryName) {
         analyticTracker.sendEventTracking(
-                DIGITAL_GENERAL_EVENT,
-                DIGITAL_NATIVE,
-                CLICK_PANDUAN_SECTION,
+                DigitalEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                DigitalEventTracking.Category.DIGITAL_NATIVE,
+                DigitalEventTracking.Action.CLICK_PANDUAN_SECTION,
                 categoryName.toLowerCase()
         );
     }
@@ -317,5 +313,40 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalEventTracking.Action.SELECT_CATEGORY,
                 categoryName);
+    }
+
+    public void eventClickBuyOnWidget(String categoryName, String label) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                DigitalEventTracking.Action.CLICK_BELI + " - " + categoryName,
+                label);
+    }
+
+    public void eventSelectNumberOnUserProfileWidget(String name) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                DigitalEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
+                name);
+    }
+
+    public void eventSelectOperatorOnWidget(String categoryName, String operatorName) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                DigitalEventTracking.Action.SELECT_OPERATOR,
+                categoryName + " - " + operatorName);
+    }
+
+    public void eventSelectProductOnWidget(String categoryName, String productDesc) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                DigitalEventTracking.Action.SELECT_PRODUCT,
+                categoryName + " - " + productDesc);
+    }
+
+    public void eventCheckInstantSaldo(String categoryName, boolean isChecked) {
+        analyticTracker.sendEventTracking(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                DigitalEventTracking.Category.RECHARGE + categoryName,
+                isChecked? DigitalEventTracking.Action.CHECK_INSTANT_SALDO :  DigitalEventTracking.Action.UNCHECK_INSTANT_SALDO,
+                DigitalEventTracking.Label.PRODUCT + categoryName);
     }
 }

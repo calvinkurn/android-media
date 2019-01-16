@@ -73,6 +73,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -1332,8 +1333,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
-        return CartDigitalActivity.newInstance(this, bundle);
+    public String getAfUniqueId() {
+        return TrackingUtils.getAfUniqueId(MainApplication.getAppContext());
+    }
+
+    @Override
+    public String getAdsId() {
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
+        return analHandler.getAdsId();
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.tokopedia.digital.widget.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.digital.R
 import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase
 import com.tokopedia.digital.widget.view.model.Recommendation
 import rx.Subscriber
 import javax.inject.Inject
-import com.tokopedia.digital.R
 
 /**
  * Created by Rizky on 15/11/18.

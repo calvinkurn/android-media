@@ -19,7 +19,6 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
 
-
 import java.util.List;
 
 /**
@@ -94,7 +93,7 @@ public class DigitalWidgetRadioInputView extends LinearLayout {
                 radioButton.setLayoutParams(layoutParams);
                 radioButton.setId(i);
                 radioButton.setText(operator.getName());
-                radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
+                radioButton.setTextSize(getResources().getDimension(R.dimen.sp_12) /
                         getResources().getDisplayMetrics().density);
                 radioButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_600));
                 radioGroup.addView(radioButton);

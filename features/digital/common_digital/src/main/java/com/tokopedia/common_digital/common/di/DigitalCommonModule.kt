@@ -5,7 +5,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
@@ -44,9 +43,9 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Created by Rizky on 13/08/18.
  */
 @Module
-class DigitalModule {
+class DigitalCommonModule {
 
-    @DigitalScope
+    @DigitalCommonScope
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         if (context is NetworkRouter) {
@@ -55,21 +54,21 @@ class DigitalModule {
         throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
     }
 
-    @DigitalScope
+    @DigitalCommonScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     internal fun provideDigitalInterceptor(@ApplicationContext context: Context,
                                            networkRouter: AbstractionRouter, userSession: com.tokopedia.abstraction.common.data.model.session.UserSession): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter, userSession)
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     fun provideDigitalRouter(@ApplicationContext context: Context): DigitalRouter {
         if (context is DigitalRouter) {
             return context
@@ -78,7 +77,7 @@ class DigitalModule {
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     @DigitalRestApiClient
     fun provideDigitalRestApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
                                           digitalRouter: DigitalRouter,
@@ -102,7 +101,7 @@ class DigitalModule {
         return builder.build()
     }
 
-    @DigitalScope
+    @DigitalCommonScope
     @DigitalRestApiRetrofit
     @Provides
     fun provideFlightGson(): Gson {
@@ -113,7 +112,7 @@ class DigitalModule {
                 .create()
     }
 
-    @DigitalScope
+    @DigitalCommonScope
     @Provides
     @DigitalRestApiRetrofit
     fun provideRetrofitBuilder(@DigitalRestApiRetrofit gson: Gson): Retrofit.Builder {
@@ -125,7 +124,7 @@ class DigitalModule {
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     @DigitalRestApiRetrofit
     fun provideDigitalRestApiRetrofit(@DigitalRestApiClient okHttpClient: OkHttpClient,
                                       @DigitalRestApiRetrofit retrofitBuilder: Retrofit.Builder): Retrofit {
@@ -133,46 +132,46 @@ class DigitalModule {
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     fun provideDigitalRestApi(@DigitalRestApiRetrofit retrofit: Retrofit): DigitalRestApi {
         return retrofit.create(DigitalRestApi::class.java)
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     internal fun provideCartMapperData(): ICartMapperData {
         return CartMapperData()
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     fun provideDigitalAddToCartDataSource(digitalRestApi: DigitalRestApi,
                                           cartMapperData: ICartMapperData): DigitalAddToCartDataSource {
         return DigitalAddToCartDataSource(digitalRestApi, cartMapperData)
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     internal fun provideDigitalInstantCheckoutDataSource(digitalRestApi: DigitalRestApi,
                                                          cartMapperData: ICartMapperData): DigitalInstantCheckoutDataSource {
         return DigitalInstantCheckoutDataSource(digitalRestApi, cartMapperData)
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     fun provideDigitalCartRepository(digitalAddToCartDataSource: DigitalAddToCartDataSource,
                                      digitalInstantCheckoutDataSource: DigitalInstantCheckoutDataSource): IDigitalCartRepository {
         return DigitalCartRepository(digitalAddToCartDataSource, digitalInstantCheckoutDataSource)
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     fun provideDigitalAddToCartUseCase(digitalCartRepository: IDigitalCartRepository): DigitalAddToCartUseCase {
         return DigitalAddToCartUseCase(digitalCartRepository)
     }
 
     @Provides
-    @DigitalScope
+    @DigitalCommonScope
     fun provideDigitalInstantCheckoutUseCase(digitalCartRepository: IDigitalCartRepository): DigitalInstantCheckoutUseCase {
         return DigitalInstantCheckoutUseCase(digitalCartRepository)
     }
@@ -180,5 +179,6 @@ class DigitalModule {
     companion object {
         private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     }
+
 
 }

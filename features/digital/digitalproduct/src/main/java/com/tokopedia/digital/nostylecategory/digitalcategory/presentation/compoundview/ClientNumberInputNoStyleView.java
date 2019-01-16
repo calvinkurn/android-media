@@ -14,11 +14,11 @@ import com.tokopedia.common_digital.product.presentation.compoundview.CommonClie
 import com.tokopedia.common_digital.product.presentation.model.AdditionalButton;
 import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.utils.DeviceUtil;
-
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -66,7 +66,7 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
                 if (tempInput.isEmpty()) {
                     resetOperator();
                 } else {
-                    if (clientNumber.getType().equals(ClientNumber.Companion.getTYPE_INPUT_TEL())) {
+                    if (clientNumber.getType().equals(ClientNumberType.TYPE_INPUT_TEL)) {
                         if (tempInput.length() >= 4) {
                             String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempInput);
                             boolean operatorFound = false;
@@ -191,7 +191,7 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
     protected void setupLayoutParamAndInputType(ClientNumber clientNumber) {
         LayoutParams layoutParams = new LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_TEL())) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)) {
             getBtnContactPicker().setVisibility(View.VISIBLE);
             layoutParams.weight = 0.88f;
         } else {
@@ -199,8 +199,8 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
             layoutParams.weight = 1;
         }
         getPulsaFramelayout().setLayoutParams(layoutParams);
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_TEL())
-                || clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_NUMERIC())) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
+                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC)) {
             setInputTypeNumber();
         } else {
             setInputTypeText();

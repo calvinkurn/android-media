@@ -26,8 +26,7 @@ import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.common_digital.R
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.DigitalRouter
-import com.tokopedia.common_digital.common.di.DaggerDigitalComponent
-import com.tokopedia.common_digital.common.di.DigitalComponent
+import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent
 import com.tokopedia.network.constant.ErrorNetMessage
 
 import javax.inject.Inject
@@ -67,7 +66,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
     }
 
     private fun initInjector() {
-        val digitalComponent = DaggerDigitalComponent.builder()
+        val digitalComponent = DaggerDigitalCommonComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
         digitalComponent.inject(this)

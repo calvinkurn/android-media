@@ -3,6 +3,7 @@ package com.tokopedia.digital.categorylist.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.config.GlobalConfig;
@@ -15,6 +16,14 @@ import com.tokopedia.digital.categorylist.domain.interactor.IDigitalCategoryList
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,16 +33,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.subscriptions.CompositeSubscription;
-
-import com.google.gson.GsonBuilder;
-import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
-import com.tokopedia.network.utils.OkHttpRetryPolicy;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.concurrent.TimeUnit;
 
 @Module
 public class DigitalListModule {
@@ -50,14 +49,6 @@ public class DigitalListModule {
     @Provides
     CategoryDigitalListDataMapper provideCategoryDigitalListDataMapper() {
         return new CategoryDigitalListDataMapper();
-    }
-
-    @Provides
-    DigitalModuleRouter provideDigitalModuleRouter(@ApplicationContext Context context) {
-        if (context instanceof DigitalModuleRouter) {
-            return (DigitalModuleRouter) context;
-        }
-        throw new RuntimeException("Application must implement " + DigitalModuleRouter.class.getSimpleName());
     }
 
     @Provides

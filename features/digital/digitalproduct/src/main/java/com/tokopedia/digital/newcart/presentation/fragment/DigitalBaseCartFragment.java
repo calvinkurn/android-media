@@ -22,7 +22,6 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
@@ -281,7 +280,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
                         ((DigitalModuleRouter)getActivity().getApplicationContext()).
                                 showAdvancedAppRatingDialog(getActivity(), dialog -> {
-                                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                                    getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
                                     closeView();
                                 });
                     }

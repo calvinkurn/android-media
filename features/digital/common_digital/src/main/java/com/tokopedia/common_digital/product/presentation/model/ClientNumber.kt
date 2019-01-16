@@ -53,22 +53,13 @@ class ClientNumber : Parcelable {
         `in`.readList(this.validation, Validation::class.java.classLoader)
     }
 
-    companion object {
+    companion object CREATOR : Parcelable.Creator<ClientNumber> {
+        override fun createFromParcel(source: Parcel): ClientNumber {
+            return ClientNumber(source)
+        }
 
-        val TYPE_INPUT_TEL = "tel"
-        val TYPE_INPUT_NUMERIC = "numeric"
-        val TYPE_INPUT_ALPHANUMERIC = "tel"
-        val DEFAULT_TYPE_CONTRACT = "client_number"
-
-        @JvmField
-        val CREATOR: Parcelable.Creator<ClientNumber> = object : Parcelable.Creator<ClientNumber> {
-            override fun createFromParcel(source: Parcel): ClientNumber {
-                return ClientNumber(source)
-            }
-
-            override fun newArray(size: Int): Array<ClientNumber?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<ClientNumber?> {
+            return arrayOfNulls(size)
         }
     }
 }

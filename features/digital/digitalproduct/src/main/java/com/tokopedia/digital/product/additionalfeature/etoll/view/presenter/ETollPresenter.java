@@ -2,12 +2,12 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.presenter;
 
 import android.util.Log;
 
-import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardCommandUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 import com.tokopedia.digital.product.view.listener.IETollView;
+import com.tokopedia.network.exception.ResponseErrorException;
 
 import rx.Subscriber;
 

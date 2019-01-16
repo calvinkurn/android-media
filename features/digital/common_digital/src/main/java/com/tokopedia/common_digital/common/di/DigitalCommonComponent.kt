@@ -3,7 +3,6 @@ package com.tokopedia.common_digital.common.di
 import android.content.Context
 
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -21,9 +20,9 @@ import retrofit2.Retrofit
 /**
  * Created by Rizky on 13/08/18.
  */
-@DigitalScope
-@Component(modules = arrayOf(DigitalModule::class), dependencies = arrayOf(BaseAppComponent::class))
-interface DigitalComponent {
+@DigitalCommonScope
+@Component(modules = arrayOf(DigitalCommonModule::class), dependencies = arrayOf(BaseAppComponent::class))
+interface DigitalCommonComponent {
 
     @ApplicationContext
     fun context(): Context

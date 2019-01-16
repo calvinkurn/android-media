@@ -2,8 +2,6 @@ package com.tokopedia.digital.widget.data.repository;
 
 import com.tokopedia.digital.common.data.source.CategoryListDataSource;
 import com.tokopedia.digital.common.data.source.StatusDataSource;
-import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
-import com.tokopedia.digital.widget.view.model.Recommendation;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.status.Status;
 

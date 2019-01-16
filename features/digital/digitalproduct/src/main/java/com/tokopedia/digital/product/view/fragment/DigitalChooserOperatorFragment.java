@@ -1,6 +1,5 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -21,7 +20,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.view.presenter.OperatorChooserContract;
@@ -30,9 +29,9 @@ import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.subscriptions.CompositeSubscription;
-
 import javax.inject.Inject;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 5/8/17.

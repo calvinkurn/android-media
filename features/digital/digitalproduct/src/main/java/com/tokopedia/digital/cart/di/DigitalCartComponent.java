@@ -1,9 +1,9 @@
 package com.tokopedia.digital.cart.di;
 
-import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalDealCheckoutFragment;

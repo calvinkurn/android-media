@@ -1,24 +1,17 @@
 package com.tokopedia.digital.widget.domain.interactor
 
 import android.content.Context
-
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.digital.R
 import com.tokopedia.digital.widget.data.entity.RecommendationEntity
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
 import com.tokopedia.digital.widget.view.model.Recommendation
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-
-import java.util.ArrayList
-import java.util.HashMap
-
 import rx.Observable
-import rx.functions.Func1
+import java.util.*
 
 /**
  * Created by Rizky on 14/11/18.

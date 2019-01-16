@@ -20,14 +20,17 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.constant.DigitalCache;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
@@ -38,7 +41,6 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetCategoryCategoryPresenter;
-import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetCategoryPresenter;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
@@ -56,6 +58,10 @@ import permissions.dispatcher.RuntimePermissions;
 public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
         implements IDigitalWidgetView, BaseDigitalProductView.ActionListener {
 
+    private static final int REQUEST_CODE_LOGIN = 1001;
+    private static final int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 1002;
+    private static final int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 1003;
+    private static final int REQUEST_CODE_CONTACT_PICKER = 1004;
     private LinearLayout holderProductDetail;
     private ProgressBar pbMainLoading;
 
@@ -80,6 +86,10 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     UserSession userSession;
     @Inject
     DigitalWidgetCategoryCategoryPresenter presenter;
+    @Inject
+    DigitalAnalytics digitalAnalytics;
+    @Inject
+    DigitalModuleRouter digitalModuleRouter;
 
     public static WidgetAllStyleRechargeFragment newInstance(Category category, int position) {
         WidgetAllStyleRechargeFragment fragment = new WidgetAllStyleRechargeFragment();
@@ -94,18 +104,13 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         Category category = getArguments().getParcelable(ARG_PARAM_CATEGORY);
         if (category != null) categoryId = String.valueOf(category.getId());
-
-        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
-                .inject(this);
-
-        presenter.attachView(this);
-
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initInjector() {
-
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
     }
 
     @Nullable
@@ -116,6 +121,12 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
+        presenter.fetchCategory(categoryId);
+    }
 
     protected void initView(View view) {
         holderProductDetail = view.findViewById(R.id.holder_product_detail);
@@ -139,7 +150,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
-        UnifyTracking.eventClickBuyOnWidget(getActivity(),categoryDataState.getName(), isInstantCheckoutChecked ? INSTANT : NO_INSTANT);
+        digitalAnalytics.eventClickBuyOnWidget(categoryDataState.getName(), isInstantCheckoutChecked ? INSTANT : NO_INSTANT);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -179,8 +190,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
 
     private void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = ((IDigitalModuleRouter) MainApplication.getAppContext()).getLoginIntent(getActivity());
-        navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
+        navigateToActivityRequest(digitalModuleRouter.getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -189,7 +199,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), categoryId, operatorId, titleChooser
                 ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+                REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
         getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
@@ -202,13 +212,13 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                         categoryDataState.getOperatorLabel(),
                         categoryDataState.getName()
                 ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
+                REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
         getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
-        UnifyTracking.eventSelectNumberOnUserProfileWidget(getActivity(),categoryDataState.getName());
+        digitalAnalytics.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
 
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
@@ -283,7 +293,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
         );
         try {
             navigateToActivityRequest(
-                    contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+                    contactPickerIntent, REQUEST_CODE_CONTACT_PICKER
             );
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
@@ -296,17 +306,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL():
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                        if (!TextUtils.isEmpty(message)) {
-                            showToastMessage(message);
-                        }
-                    }
-                }
-                break;
-            case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:
+            case REQUEST_CODE_CONTACT_PICKER:
                 try {
                     Uri contactURI = data.getData();
                     ContactData contact = presenter.processGenerateContactDataFromUri(contactURI,
@@ -316,8 +316,8 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                     e.printStackTrace();
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
-                if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
+            case REQUEST_CODE_LOGIN:
+                if (userSession.isLoggedIn() && digitalCheckoutPassDataState != null) {
                     if (getActivity().getApplication() instanceof DigitalRouter) {
                         DigitalRouter digitalModuleRouter =
                                 (DigitalRouter) getActivity().getApplication();
@@ -328,7 +328,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                     }
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+            case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackProductChooser(
                             (Product) data.getParcelableExtra(
@@ -336,7 +336,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                             )
                     );
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
+            case REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     handleCallBackOperatorChooser(
                             (Operator) data.getParcelableExtra(
@@ -345,6 +345,16 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                     );
                 }
                 break;
+        }
+        if (requestCode == DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                if (data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
+                    String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
+                    if (!TextUtils.isEmpty(message)) {
+                        showToastMessage(message);
+                    }
+                }
+            }
         }
     }
 
@@ -441,20 +451,20 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
 
     @Override
     public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
-        UnifyTracking.eventSelectNumberOnUserProfileWidget(getActivity(),categoryDataState.getName());
+        digitalAnalytics.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
 
         handleCallbackSearchNumber(orderClientNumber);
     }
 
     @Override
     public void onOperatorSelected(String categoryName, String operatorName) {
-        UnifyTracking.eventSelectOperatorOnWidget(getActivity(),categoryName,
+        digitalAnalytics.eventSelectOperatorOnWidget(categoryName,
                 operatorName);
     }
 
     @Override
     public void onProductSelected(String categoryName, String productDesc) {
-        UnifyTracking.eventSelectProductOnWidget(getActivity(),categoryName,
+        digitalAnalytics.eventSelectProductOnWidget(categoryName,
                 productDesc);
     }
 
@@ -495,5 +505,10 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onInstantCheckoutChanged(String categoryName, boolean isChecked) {
+        digitalAnalytics.eventCheckInstantSaldo(categoryName, isChecked);
     }
 }

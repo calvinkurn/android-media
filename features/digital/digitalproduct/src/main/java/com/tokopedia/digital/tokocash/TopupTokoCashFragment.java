@@ -18,7 +18,7 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;

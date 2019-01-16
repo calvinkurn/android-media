@@ -5,7 +5,6 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
