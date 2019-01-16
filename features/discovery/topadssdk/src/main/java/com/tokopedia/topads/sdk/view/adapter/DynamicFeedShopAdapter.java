@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.component.ButtonCompat;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
@@ -171,14 +172,25 @@ public class DynamicFeedShopAdapter
             ViewGroup.MarginLayoutParams layoutParams
                     = (ViewGroup.MarginLayoutParams) tvName.getLayoutParams();
 
-            if (shop.getBadges() != null
-                    && shop.getBadges().size() > 0
-                    && shop.getBadges().get(0) != null) {
-
+            if (shop.isGoldShopBadge()) {
                 ivBadge.setVisibility(View.VISIBLE);
-                imageLoader.loadImage(shop.getBadges().get(0).getImageUrl(), ivBadge);
+                ivBadge.setImageDrawable(
+                        ImageLoader.getDrawable(
+                                ivBadge.getContext(),
+                                GMConstant.getGMDrawableResource(ivBadge.getContext())
+                        )
+                );
                 layoutParams.leftMargin =
                         (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);
+
+            } else if (shop.isShop_is_official()) {
+                ivBadge.setVisibility(View.VISIBLE);
+                ivBadge.setImageDrawable(
+                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_official)
+                );
+                layoutParams.leftMargin =
+                        (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);
+
             } else {
                 ivBadge.setVisibility(View.GONE);
                 layoutParams.leftMargin =
