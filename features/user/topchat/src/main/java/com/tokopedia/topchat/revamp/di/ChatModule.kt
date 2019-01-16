@@ -90,7 +90,7 @@ class ChatModule {
     @ChatScope
     @InboxQualifier
     @Provides
-    internal fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
+    fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(NET_READ_TIMEOUT,
                 NET_WRITE_TIMEOUT,
                 NET_CONNECT_TIMEOUT,
@@ -99,13 +99,13 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideChatRoomApi(@Named("retrofit") retrofit: Retrofit): ChatRoomApi {
+    fun provideChatRoomApi(@Named("retrofit") retrofit: Retrofit): ChatRoomApi {
         return retrofit.create(ChatRoomApi::class.java)
     }
 
     @ChatScope
     @Provides
-    internal fun provideGetTemplateChatUseCase(api: ChatRoomApi, mapper: GetTemplateChatRoomMapper): GetTemplateChatRoomUseCase {
+    fun provideGetTemplateChatUseCase(api: ChatRoomApi, mapper: GetTemplateChatRoomMapper): GetTemplateChatRoomUseCase {
         return GetTemplateChatRoomUseCase(api, mapper)
     }
 
@@ -117,29 +117,29 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
         return ChuckInterceptor(context)
     }
 
     @ChatScope
     @Provides
-    internal fun provideXUserIdInterceptor(@ApplicationContext context: Context,
-                                           networkRouter: NetworkRouter,
-                                           userSession: UserSession):
+    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
+                                  networkRouter: NetworkRouter,
+                                  userSession: UserSession):
             XUserIdInterceptor {
         return XUserIdInterceptor(context, networkRouter, userSession)
     }
 
     @ChatScope
     @Provides
-    internal fun provideOkHttpClient(@ApplicationContext context: Context,
-                                     @InboxQualifier retryPolicy: OkHttpRetryPolicy,
-                                     errorResponseInterceptor: ErrorResponseInterceptor,
-                                     chuckInterceptor: ChuckInterceptor,
-                                     httpLoggingInterceptor: HttpLoggingInterceptor,
-                                     networkRouter: NetworkRouter,
-                                     userSessionInterface: UserSessionInterface,
-                                     xUserIdInterceptor: XUserIdInterceptor):
+    fun provideOkHttpClient(@ApplicationContext context: Context,
+                            @InboxQualifier retryPolicy: OkHttpRetryPolicy,
+                            errorResponseInterceptor: ErrorResponseInterceptor,
+                            chuckInterceptor: ChuckInterceptor,
+                            httpLoggingInterceptor: HttpLoggingInterceptor,
+                            networkRouter: NetworkRouter,
+                            userSessionInterface: UserSessionInterface,
+                            xUserIdInterceptor: XUserIdInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(FingerprintInterceptor(networkRouter, userSessionInterface))
@@ -160,8 +160,8 @@ class ChatModule {
     @ChatScope
     @InboxQualifier
     @Provides
-    internal fun provideChatRetrofit(okHttpClient: OkHttpClient,
-                                     retrofitBuilder: Retrofit.Builder): Retrofit {
+    fun provideChatRetrofit(okHttpClient: OkHttpClient,
+                            retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(ChatUrl.TOPCHAT)
                 .client(okHttpClient)
                 .build()
@@ -169,14 +169,14 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
+    fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
         return retrofit.create(ChatApi::class.java)
     }
 
 
     @ChatScope
     @Provides
-    internal fun provideMessageFactory(
+    fun provideMessageFactory(
             chatApi: ChatApi,
             getMessageMapper: GetMessageMapper,
             deleteMessageMapper: DeleteMessageMapper): MessageFactory {
@@ -185,14 +185,14 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
+    fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
         return MessageRepositoryImpl(messageFactory)
     }
 
     @ChatScope
     @Provides
-    internal fun provideChatSettingsPresenter(graphqlUseCase: GraphqlUseCase,
-                                              chatSettingsAnalytics: ChatSettingsAnalytics):
+    fun provideChatSettingsPresenter(graphqlUseCase: GraphqlUseCase,
+                                     chatSettingsAnalytics: ChatSettingsAnalytics):
             ChatSettingsInterface.Presenter {
         return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
     }

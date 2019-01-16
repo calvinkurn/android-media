@@ -22,7 +22,7 @@ class ChatNetworkModule {
     @ChatScope
     @Provides
     @Named("retrofit")
-    internal fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
+     fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
             throw IllegalStateException("Application must implement "
                     .plus(NetworkRouter::class.java.simpleName)
@@ -46,7 +46,7 @@ class ChatNetworkModule {
 
     @ChatScope
     @Provides
-    internal fun provideResources(@ApplicationContext context: Context): Resources {
+     fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
     }
 
