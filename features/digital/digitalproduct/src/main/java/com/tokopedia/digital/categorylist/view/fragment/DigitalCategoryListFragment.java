@@ -304,6 +304,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         refreshHandler.finishRefresh();
         rvDigitalCategoryList.setLayoutManager(gridLayoutManager);
         adapter.addAllDataList(digitalCategoryListDataState);
+        if (GlobalConfig.isSellerApp()){
+            renderTerminateTicker();
+        }
     }
 
     @Override
@@ -540,5 +543,29 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private void hideCouponAppliedTicker() {
         tickerView.setVisibility(View.GONE);
         separatorForTicker.setVisibility(View.GONE);
+    }
+
+    private void renderTerminateTicker(){
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(getString(R.string.digital_terminate_announcement));
+        tickerView.setVisibility(View.INVISIBLE);
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
+        tickerView.buildView();
+
+        tickerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tickerView.setItemPadding(
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15),
+                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+                        getResources().getDimensionPixelSize(R.dimen.dp_15)
+                );
+                tickerView.setItemTextAppearance(R.style.TextView_Micro);
+            }
+        }, DEFAULT_DELAY_TIME);
+
+        separatorForTicker.setVisibility(View.VISIBLE);
     }
 }
