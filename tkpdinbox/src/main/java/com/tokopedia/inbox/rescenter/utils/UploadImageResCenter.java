@@ -55,8 +55,6 @@ public interface UploadImageResCenter {
     );
 
 
-    String CONTENT_TYPE_APPLICATION_JSON = "Content-Type: multipart/form-data";
-
     @Multipart
     @POST("")
     Observable<NewUploadResCenterImageData> uploadImageNew(
