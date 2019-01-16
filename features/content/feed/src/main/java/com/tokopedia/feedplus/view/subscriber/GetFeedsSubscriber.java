@@ -26,31 +26,28 @@ public class GetFeedsSubscriber extends GetFirstPageFeedsSubscriber {
     @Override
     public void onError(Throwable e) {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
 
-        viewListener.shouldLoadTopAds(false);
+        viewListener.unsetEndlessScroll();
         viewListener.onShowRetryGetFeed();
-        viewListener.hideTopAdsAdapterLoading();
+        viewListener.hideAdapterLoading();
     }
 
     @Override
     public void onNext(FeedResult feedResult) {
         ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
+        viewListener.hideAdapterLoading();
+
         if (list.size() == 0) {
-            viewListener.onShowAddFeedMore();
-            viewListener.hideTopAdsAdapterLoading();
             viewListener.unsetEndlessScroll();
-        }else {
+        } else {
+            viewListener.onSuccessGetFeed(list);
+
             if (feedResult.isHasNext()) {
                 viewListener.updateCursor(getCurrentCursor(feedResult));
-                viewListener.onSuccessGetFeed(list);
-                viewListener.hideTopAdsAdapterLoading();
             } else {
-                viewListener.onSuccessGetFeed(list);
-                viewListener.onShowAddFeedMore();
-                viewListener.hideTopAdsAdapterLoading();
                 viewListener.unsetEndlessScroll();
             }
         }
