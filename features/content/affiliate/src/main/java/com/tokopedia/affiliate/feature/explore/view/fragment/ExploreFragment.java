@@ -409,10 +409,10 @@ public class ExploreFragment
                                                     boolean isSearch,
                                                     boolean isPullToRefresh) {
         populateFirstData(itemList, cursor);
-        rvExplore.scrollTo(0,0);
     }
 
     private void populateFirstData(List<Visitable> itemList, String cursor) {
+        rvExplore.scrollTo(0,0);
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
