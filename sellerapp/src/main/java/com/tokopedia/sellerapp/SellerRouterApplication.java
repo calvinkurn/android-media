@@ -37,6 +37,7 @@ import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -51,12 +52,9 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -95,7 +93,6 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
@@ -117,6 +114,7 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
+import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
@@ -682,11 +680,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public String getSchemeAppLinkCancelPayment() {
-        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
-    }
-
-
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
     }
@@ -717,7 +710,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return deepLinkDelegate.supportsUri(appLinks);
     }
 
-    @Override
     public Intent getIntentDeepLinkHandlerActivity() {
         return new Intent(this, DeepLinkHandlerActivity.class);
     }
@@ -908,16 +900,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return BuildConfig.FLAVOR;
     }
 
-    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
-        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
-                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
-            actionApplink(activity, Constants.Applinks.SellerApp.SELLER_APP_HOME);
-        } else {
-            actionApplink(activity, appLinkScheme);
-        }
-
-    }
-
     @Override
     public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
         GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
@@ -1056,12 +1038,6 @@ public abstract class SellerRouterApplication extends MainApplication
         fragment.startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(fragment.getActivity(),
                 token),
                 requestCode);
-    }
-
-    @Override
-    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
-        Intent intent = GeolocationActivity.createInstanceIntent(fragment.getActivity(), locationPass);
-        fragment.startActivityForResult(intent, requestCode);
     }
 
     @Deprecated
@@ -1339,16 +1315,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
-        return isSupportedDelegateDeepLink(url);
-    }
-
-    @Override
-    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        actionNavigateByApplinksUrl(activity, applinks, bundle);
-    }
-
-    @Override
     public void gotoTopAdsDashboard(Context context) {
         context.startActivity(TopAdsDashboardActivity.Companion.getCallingIntent(context));
     }
@@ -1389,10 +1355,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
-    @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token, boolean isFromMarketplaceCart) {
-        return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
-    }
 
     @Override
     public Intent getCartIntent(Activity activity) {
@@ -1917,6 +1879,17 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public boolean isAllowLogOnChuckInterceptorNotification() {
+        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptions.CHUCK_ENABLED);
+        return cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
+    }
+
+    @Override
+    public Intent navigateToGeoLocationActivityRequest(Context context, com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass locationPass) {
+        return GeolocationActivity.createInstance(context, locationPass, false);
+    }
+
+    @Override
     @NonNull
     public Intent getTopAdsDashboardIntent(@NonNull Context context) {
         return TopAdsDashboardInternalRouter.getTopAdsdashboardIntent(context);
@@ -1929,7 +1902,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void openTopAdsDashboardApplink(Context context) {}
+    public void openTopAdsDashboardApplink(Context context) {
+    }
 
     @Override
     public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {

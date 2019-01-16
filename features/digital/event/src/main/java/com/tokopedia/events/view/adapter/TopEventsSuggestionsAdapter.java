@@ -306,7 +306,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             }
             tvAddToWishlist.setText(String.valueOf(data.getLikes()));
             if (Utils.getSingletonInstance().containsLikedEvent(data.getId())) {
-                tvAddToWishlist.setTextColor(mContext.getResources().getColor(R.color.red_1));
+                tvAddToWishlist.setTextColor(mContext.getResources().getColor(R.color.red_a700));
                 tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
                         0, 0, 0);
             } else {

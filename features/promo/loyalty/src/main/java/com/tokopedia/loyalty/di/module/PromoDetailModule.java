@@ -11,7 +11,6 @@ import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.interactor.PromoInteractor;
 import com.tokopedia.loyalty.view.presenter.IPromoDetailPresenter;
 import com.tokopedia.loyalty.view.presenter.PromoDetailPresenter;
-import com.tokopedia.loyalty.view.analytics.PromoDetailAnalytics;
 
 import dagger.Module;
 import dagger.Provides;
