@@ -37,7 +37,7 @@
                     android:layout_weight="0.6"
                     android:text="@string/train_countdown_label" />
 
-                <com.tokopedia.train.seat.presentation.widget.CountdownTimeView
+                <com.tokopedia.common.travel.widget.CountdownTimeView
                     android:id="@+id/ct_countdown"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

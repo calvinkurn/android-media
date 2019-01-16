@@ -49,16 +49,13 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     private final CountDownView.CountDownListener countDownListener;
     private HomeFeedListener feedListener;
     private final FragmentManager fragmentManager;
-    private final DigitalWidgetRepository digitalWidgetRepository;
 
     public HomeAdapterFactory(FragmentManager fragmentManager, HomeCategoryListener listener,
-                              HomeFeedListener feedListener, CountDownView.CountDownListener countDownListener,
-                              DigitalWidgetRepository digitalWidgetRepository) {
+                              HomeFeedListener feedListener, CountDownView.CountDownListener countDownListener) {
         this.fragmentManager = fragmentManager;
         this.listener = listener;
         this.feedListener = feedListener;
         this.countDownListener = countDownListener;
-        this.digitalWidgetRepository = digitalWidgetRepository;
     }
 
     @Override
@@ -141,7 +138,7 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         else if (type == TickerViewHolder.LAYOUT)
             viewHolder = new TickerViewHolder(view, listener);
         else if (type == DigitalsViewHolder.LAYOUT)
-            viewHolder = new DigitalsViewHolder(fragmentManager, view, listener, digitalWidgetRepository);
+            viewHolder = new DigitalsViewHolder(listener, fragmentManager, view);
         else if (type == CategorySectionViewHolder.LAYOUT)
             viewHolder = new CategorySectionViewHolder(view, listener);
         else if (type == SellViewHolder.LAYOUT)

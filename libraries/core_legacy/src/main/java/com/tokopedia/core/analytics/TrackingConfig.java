@@ -12,7 +12,7 @@ import com.tokopedia.core.deprecated.SessionHandler;
 /**
  * @author  by alvarisi on 10/26/16.
  */
-
+@Deprecated
 public abstract class TrackingConfig {
 
     public enum AnalyticsKind {
@@ -49,6 +49,7 @@ public abstract class TrackingConfig {
      * Initialize container to start at first time apps launched
      * @param what type container (GTM, Appsflyer, MoEngage)
      */
+    @Deprecated
     public static void runFirstTime(Context context, AnalyticsKind what, SessionHandler sessionHandler){
         switch (what){
             case GTM:

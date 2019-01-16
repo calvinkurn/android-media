@@ -11,16 +11,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.GridSpaceItemDecoration;
 import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheetDynamicChannel;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class TopAdsDynamicChannelView extends LinearLayout implements View.OnClickListener, LocalAdsClickListener {
 
@@ -34,19 +40,25 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     private OpenTopAdsUseCase openTopAdsUseCase;
     private LinearLayout channelTitleContainer;
 
+    @Inject
+    TopAdsPresenter presenter;
+
     public TopAdsDynamicChannelView(Context context) {
         super(context);
         inflateView(context, null, 0);
+        initInjector();
     }
 
     public TopAdsDynamicChannelView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         inflateView(context, attrs, 0);
+        initInjector();
     }
 
     public TopAdsDynamicChannelView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflateView(context, attrs, defStyleAttr);
+        initInjector();
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
@@ -64,6 +76,15 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
                 getResources().getDimensionPixelSize(R.dimen.dp_8), true));
         infoCta.setOnClickListener(this);
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
+    }
+
+    private void initInjector() {
+        BaseMainApplication application = ((BaseMainApplication) getContext().getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
     }
 
 
@@ -112,8 +133,10 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if(adsItemClickListener!=null){
-            adsItemClickListener.onAddWishList(position, data);
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
     }
 }

@@ -114,7 +114,11 @@ public class TrackingUtils extends TrackingConfig {
 
 
     public static void eventMoEngageLogoutUser(Context context) {
-        getMoEngine(context).logoutEvent();
+        try {
+            getMoEngine(context).logoutEvent();
+        } catch (Throwable t) {
+            // No action
+        }
     }
 
     public static String extractFirstSegment(Context context,String inputString, String separator) {

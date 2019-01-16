@@ -1,0 +1,21 @@
+query travelPassenger {
+  travelPassengers {
+    passengerList{
+      id
+      userId
+      title
+      name
+      firstName
+      lastName
+      birthDate
+      nationality
+      passportNo
+      passportCountry
+      passportExpiry
+      idNumber
+      isBuyer
+      paxType
+      travelId
+    }
+  }
+}

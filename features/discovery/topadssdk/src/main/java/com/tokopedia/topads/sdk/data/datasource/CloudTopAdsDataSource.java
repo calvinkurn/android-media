@@ -35,9 +35,9 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     public static final String MOJITO_URL = "mojito.tokopedia.com";
     public static final String V1_USERS = "v1/users";
     public static final String WISHLIST_CHECK = "wishlist/check";
-    private static final String URL_DISPLAY_ADS = "v1.1/display/ads";
-    private static final String URL_DISPLAY_ADS_V1_3 = "v1.3/display/ads";
-    private static final String URL_INFO_USER = "v1/info/user";
+    private static final String URL_DISPLAY_ADS = "promo/v1.1/display/ads";
+    private static final String URL_DISPLAY_ADS_V1_3 = "promo/v1.3/display/ads";
+    private static final String URL_INFO_USER = "promo/v1/info/user";
     private static final String URL_MERLIN = "https://merlin.tokopedia.com/v4/product/category/recommendation";
     private static final String TKPD_SESSION_ID = "Tkpd-SessionId";
     private static final String TKPD_USER_ID = "Tkpd-UserId";

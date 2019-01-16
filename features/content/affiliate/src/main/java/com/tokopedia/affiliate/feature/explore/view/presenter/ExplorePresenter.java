@@ -49,6 +49,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
 
     @Override
     public void getFirstData(ExploreParams exploreParams, boolean isPullToRefresh) {
+        unsubscribeAutoComplete();
         if (!isPullToRefresh) getView().showLoading();
         exploreUseCase.clearRequest();
         exploreUseCase.addRequest(exploreUseCase.getRequest(exploreParams));
@@ -56,12 +57,14 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
                 new GetExploreFirstSubscriber(
                         getView(),
                         !TextUtils.isEmpty(exploreParams.getKeyword()),
+                        isPullToRefresh,
                         exploreParams)
         );
     }
 
     @Override
     public void loadMoreData(ExploreParams exploreParams) {
+        unsubscribeAutoComplete();
         exploreUseCase.clearRequest();
         exploreUseCase.addRequest(exploreUseCase.getRequestLoadMore(exploreParams));
         exploreUseCase.execute(new GetExploreLoadMoreSubscriber(getView()));
@@ -85,4 +88,10 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         checkQuotaUseCase.addRequest(checkQuotaUseCase.getRequest());
         checkQuotaUseCase.execute(new CheckQuotaSubscriber(getView(), productId, adId));
     }
+
+    @Override
+    public void unsubscribeAutoComplete() {
+        autoCompleteUseCase.unsubscribe();
+    }
+
 }

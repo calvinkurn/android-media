@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">cm_push_notifications</string>
+    <string name="tv_coupon_code_copied">Coupon code copied</string>
+</resources>

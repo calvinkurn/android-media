@@ -48,6 +48,13 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
+        selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,15 +70,6 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     public void onSwipeRefresh() {
         super.onSwipeRefresh();
         shopEtalasePresenter.clearEtalaseCache();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
-            selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
-        }
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

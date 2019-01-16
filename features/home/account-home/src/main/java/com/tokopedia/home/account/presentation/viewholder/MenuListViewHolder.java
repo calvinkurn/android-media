@@ -34,7 +34,7 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     public void bind(MenuListViewModel element) {
         layout.setOnClickListener(v -> {
             if (element.getApplink().equalsIgnoreCase(AccountConstants.Navigation.TOPADS)){
-                listener.onTopadsInfoClicked();
+                listener.onTopAdsMenuClicked();
             } else {
                 listener.onMenuListClicked(element);
             }

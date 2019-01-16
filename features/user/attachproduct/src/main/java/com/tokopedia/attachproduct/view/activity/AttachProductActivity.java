@@ -26,9 +26,15 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     public static final String TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY = "TKPD_ATTACH_PRODUCT_SHOP_ID";
     public static final String TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY = "TKPD_ATTACH_PRODUCT_SHOP_NAME";
     public static final String TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY = "TKPD_ATTACH_PRODUCT_IS_SELLER";
+    private static final String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
+
+    public static final String SOURCE_TOPCHAT = "topchat";
+    public static final String SOURCE_TALK = "talk";
+
     private String shopId;
     private String shopName;
     private boolean isSeller;
+    private String source;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +43,6 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-
-        isSeller = getIntent().getBooleanExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, false);
-
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
     }
 
@@ -59,11 +62,21 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         toolbar.setSubtitle(shopName);
     }
 
-    public static Intent createInstance(Context context, String shopId, String shopName, boolean isSeller) {
+    /**
+     * @param context
+     * @param shopId
+     * @param shopName
+     * @param isSeller
+     * @param source   use Key Source from this activity
+     * @return
+     */
+    public static Intent createInstance(Context context, String shopId, String shopName, boolean
+            isSeller, String source) {
         Intent intent = new Intent(context, AttachProductActivity.class);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName);
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, source);
         return intent;
     }
 
@@ -73,7 +86,11 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (fragment != null) {
             return fragment;
         } else {
-            fragment = AttachProductFragment.newInstance(this, isSeller);
+            if (getIntent() != null && getIntent().getExtras() != null) {
+                isSeller = getIntent().getBooleanExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, false);
+                source = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY);
+            }
+            fragment = AttachProductFragment.newInstance(this, isSeller, source);
             return fragment;
         }
     }

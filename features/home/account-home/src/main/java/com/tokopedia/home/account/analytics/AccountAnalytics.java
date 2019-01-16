@@ -62,6 +62,18 @@ public class AccountAnalytics {
         );
     }
 
+    public void eventClickOVOPayLater(String category, String action, String label) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                category,
+                action,
+                label
+        );
+    }
+
     public void eventClickSetting(String item) {
         if (analyticTracker == null)
             return;
@@ -166,13 +178,21 @@ public class AccountAnalytics {
 
         switch (status){
             case KYCConstant.STATUS_REJECTED:
+                analyticTracker.sendEventTracking(
+                        AccountConstants.Analytics.CLICK_ACCOUNT,
+                        String.format("%s %s", ACCOUNT, SETTING),
+                        AccountConstants.Analytics.CLICK_KYC_REJECTED,
+                        ""
+                );
+                break;
             case KYCConstant.STATUS_EXPIRED:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
-                        AccountConstants.Analytics.CLICK_KYC_EXPIRED,
+                        AccountConstants.Analytics.CLICK_KYC_REJECTED,
                         ""
                 );
+                break;
             case KYCConstant.STATUS_PENDING:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
@@ -180,6 +200,7 @@ public class AccountAnalytics {
                         AccountConstants.Analytics.CLICK_KYC_PENDING,
                         ""
                 );
+                break;
             case KYCConstant.STATUS_NOT_VERIFIED:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
@@ -187,6 +208,7 @@ public class AccountAnalytics {
                         AccountConstants.Analytics.CLICK_KYC_NOT_VERIFIED,
                         ""
                 );
+                break;
             default:
                 break;
         }
@@ -211,6 +233,18 @@ public class AccountAnalytics {
         eventTracking.put(EVENT_LABEL, "");
 
         analyticTracker.sendEventTracking(eventTracking);
+    }
+
+    public void eventClickTokopediaCornerSetting() {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                AccountConstants.Analytics.EVENT_CLICK_SAMPAI,
+                AccountConstants.Analytics.EVENT_CATEGORY_SAMPAI,
+                AccountConstants.Analytics.EVENT_ACTION_SAMPAI,
+                ""
+        );
     }
 
     public void setUserAttributes(UserAttributeData data) {
