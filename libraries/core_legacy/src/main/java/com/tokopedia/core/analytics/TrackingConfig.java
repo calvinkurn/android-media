@@ -14,7 +14,7 @@ import com.tokopedia.core.gcm.utils.RouterUtils;
 /**
  * @author by alvarisi on 10/26/16.
  */
-
+@Deprecated
 public abstract class TrackingConfig {
 
     /**

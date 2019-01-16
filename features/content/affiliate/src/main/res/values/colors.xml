@@ -6,4 +6,7 @@
     <color name="color_ongoing_text">#1c9ba5</color>
     <color name="color_finished_bg">#e0e0e0</color>
     <color name="medium_green_two">#399c3f</color>
+    <color name="filter_background_inactive">#51000000</color>
+    <color name="filter_background_active">#900a8f08</color>
 </resources>
+

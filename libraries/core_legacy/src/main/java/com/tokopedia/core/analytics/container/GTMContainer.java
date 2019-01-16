@@ -27,6 +27,7 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.json.JSONObject;
 
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class GTMContainer implements IGTMContainer {
 
     private static final int EXPIRE_CONTAINER_TIME = 7200;
@@ -57,11 +59,19 @@ public class GTMContainer implements IGTMContainer {
         this.sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
     }
 
+    /**
+     * {@link GTMAnalytics#getTagManager()}
+     * @return
+     */
     @Override
     public TagManager getTagManager() {
         return TagManager.getInstance(context);
     }
 
+    /**
+     * {@link GTMAnalytics#getClientIDString()}
+     * @return
+     */
     @Override
     public String getClientIDString() {
         try {
@@ -105,6 +115,10 @@ public class GTMContainer implements IGTMContainer {
         return getTagManager().getDataLayer();
     }
 
+    /**
+     * {@link GTMAnalytics#sendScreen(String)}
+     * @return
+     */
     @Override
     public GTMContainer sendScreen(String screenName) {
         Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
@@ -322,27 +336,7 @@ public class GTMContainer implements IGTMContainer {
     public void pushUserId(String userId) {
         Map<String, Object> maps = new HashMap<>();
         maps.put("user_id", userId);
-        getDataLayer().push(maps);
-    }
-
-    @Override
-    public void sendButtonClick(String event,
-                                String category,
-                                String action,
-                                String label) {
-        ButtonClickEvent clickEvent = new ButtonClickEvent(
-                event,
-                category,
-                action,
-                label
-        );
-        sendButtonEvent(clickEvent);
-    }
-
-    public GTMContainer sendButtonEvent(ButtonClickEvent buttonClickEvent) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Button Click Event");
-        GTMDataLayer.pushGeneral(context, buttonClickEvent.getEvent());
-        return this;
+        getTagManager().getDataLayer().push(maps);
     }
 
     @Override
@@ -547,49 +541,6 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
-    public GTMContainer eventAddToCartPurchase(Product product) {
-        try {
-            GTMDataLayer.pushEvent(
-                    context, "addToCart", DataLayer.mapOf(
-                            AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                    "currencyCode", "IDR",
-                                    "add", DataLayer.mapOf(
-                                            "products", product.getProduct())
-                            )
-                    )
-            );
-        } catch (Exception e) {
-            CommonUtils.dumper("GAv4 DATA LAYER " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        CommonUtils.dumper("GAv4 DATA LAYER " + DataLayer.mapOf(
-                AppEventTracking.EVENT, "addToCart",
-                AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                        "currencyCode", "IDR",
-                        "add", DataLayer.mapOf(
-                                "products", product.getProduct())
-                )
-        ));
-        return this;
-    }
-
-    @Override
-    public GTMContainer eventRemoveFromCartPurchase(Product product) {
-        GTMDataLayer.pushEvent(
-                context, "removeFromCart",
-                DataLayer.mapOf(
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "remove", DataLayer.mapOf(
-                                        "products", product.getProduct())
-                        )
-                )
-        );
-        return this;
-    }
-
     public void eventImpressionCategoryLifestyle(List<Object> list) {
         clearEnhanceEcommerce();
         GTMDataLayer.pushGeneral(
@@ -616,89 +567,6 @@ public class GTMContainer implements IGTMContainer {
                                 "promoClick", DataLayer.mapOf(
                                         "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
                         "destinationURL", categoryUrl
-                )
-        );
-    }
-
-    @Override
-    public void enhanceClickSearchResultProduct(Object object,
-                                                String keyword,
-                                                String actionField,
-                                                String activeFilter) {
-
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "search result",
-                        "eventAction", "click - product",
-                        "eventLabel", keyword,
-                        "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", actionField),
-                                        "products", DataLayer.listOf(object)
-                                )
-                        ),
-                        "searchFilter", activeFilter
-                )
-        );
-    }
-
-    @Override
-    public void enhanceClickImageSearchResultProduct(Object object, String actionField) {
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "search result",
-                        "eventAction", "click - product",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", actionField),
-                                        "products", DataLayer.listOf(object)
-                                )
-                        )
-                )
-        );
-    }
-
-    @Override
-    public void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword) {
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "search result",
-                        "eventAction", "impression - product",
-                        "eventLabel", keyword,
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        objects.toArray(new Object[objects.size()])
-                                ))
-                )
-        );
-    }
-
-    @Override
-    public void enhanceImpressionImageSearchResultProduct(List<Object> objects) {
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", AppEventTracking.Category.IMAGE_SEARCH_RESULT,
-                        "eventAction", "impression - product",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        objects.toArray(new Object[objects.size()])
-                                ))
                 )
         );
     }
