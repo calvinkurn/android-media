@@ -17,15 +17,21 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
+    <View
+        android:id="@+id/helper"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dp_32"
+        app:layout_constraintBottom_toBottomOf="@+id/image" />
+
     <ImageView
         android:id="@+id/numberBackground"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:src="@drawable/ic_number_background"
-        app:layout_constraintBottom_toBottomOf="@+id/image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image" />
+        app:layout_constraintTop_toBottomOf="@+id/helper" />
 
     <TextView
         android:id="@+id/numberText"
