@@ -18,8 +18,10 @@ import org.junit.runner.RunWith
 
 /**
  * Instrumented test, which will execute on an Android device.
- *
- * @see [Testing documentation](http://d.android.com/tools/testing)
+ * Able to execute if Dagger was not injected
+ * [FAILED] Unable to execute espresso test if:
+ * - run at module level -> cannot cast running espresso application to BaseMainApplication
+ * - run at app level -> got many errors from other test cases at androidTest source set
  */
 @RunWith(AndroidJUnit4::class)
 @LargeTest
