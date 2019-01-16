@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
@@ -21,6 +22,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDe
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
 import com.tokopedia.user.session.UserSession;
 
 /**
@@ -104,23 +106,26 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            category = getIntent().getStringExtra((DeepLink.URI));
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                category = getIntent().getStringExtra((DeepLink.URI));
 
-            if (category != null) {
-                category = category.toUpperCase();
+                if (category != null) {
+                    category = category.toUpperCase();
 
-                if (category.contains(OrderCategory.DIGITAL)) {
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
+                    if (category.contains(OrderCategory.DIGITAL)) {
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
 
-                } else if (category.contains("")) {
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment)).commit();
+                    } else if (category.contains("")) {
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment)).commit();
+                    }
                 }
+            } else {
+                finish();
             }
-        } else {
-            finish();
         }
     }
+
 }

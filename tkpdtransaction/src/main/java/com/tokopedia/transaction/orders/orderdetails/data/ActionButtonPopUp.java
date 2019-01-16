@@ -15,7 +15,7 @@ public class ActionButtonPopUp {
     @Expose
     private String body;
 
-    @SerializedName("action_button")
+    @SerializedName("actionButtons")
     @Expose
     private List<ActionButton> actionButtonList;
 
