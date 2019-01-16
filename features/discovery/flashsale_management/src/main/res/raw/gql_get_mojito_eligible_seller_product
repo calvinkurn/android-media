@@ -1,10 +1,10 @@
-query getMojitoEligibleSellerProduct($camp_id: Int!,
+query getCampaignEligibleSellerProduct($camp_id: Int!,
                       $rows: Int!,
                       $offset: Int!,
                       $shop_id: Int!,
                       $q: String,
                       $filter: Int){
-    getMojitoEligibleSellerProduct(params:{
+    getCampaignEligibleSellerProduct(params:{
     camp_id:$camp_id
     rows:$rows
     offset:$offset

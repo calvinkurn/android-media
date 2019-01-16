@@ -141,7 +141,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
         val params = mapOf(FlashSaleConstant.PARAM_SHOP_ID to userSession.shopId.toInt(),
                 FlashSaleConstant.PARAM_SLUG to campaignSlug)
         sellerStatusUseCase.setRequestParams(params)
-        sellerStatusUseCase.execute({ onSuccess(it.getMojitoSellerStatus.sellerStatus) }, onError)
+        sellerStatusUseCase.execute({ onSuccess(it.getCampaignSellerStatus.sellerStatus) }, onError)
     }
 
     fun submitSubmission(campaignId: Int, onSuccess: (FlashSaleDataContainer) -> Unit, onError: (Throwable) -> Unit) {
