@@ -376,6 +376,7 @@ public abstract class MainApplication extends MainRouterApplication{
         }
     }
 
+
     @Override
     public Intent getSellerHomeActivityReal(Context context) {
         return SellerAppRouter.getSellerHomeActivity(context);
@@ -410,12 +411,11 @@ public abstract class MainApplication extends MainRouterApplication{
     public Intent getActivitySellingTransactionListReal(Context mContext) {
         return SellerRouter.getActivitySellingTransactionList(mContext);
     }
-	
+
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext){
         return null;
     }
-
 
 
 }

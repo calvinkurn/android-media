@@ -30,9 +30,16 @@ class DigitalChannelPresenter @Inject constructor(private val recommendationUseC
             }
 
             override fun onError(e: Throwable?) {
-                view.showError(R.string.digital_channel_error_default)
+                if (isViewAttached) {
+                    view.showError(R.string.digital_channel_error_default)
+                }
             }
         })
+    }
+
+    override fun detachView() {
+        recommendationUseCase.unsubscribe()
+        super.detachView()
     }
 
 }
