@@ -409,6 +409,7 @@ public class ExploreFragment
                                                     boolean isSearch,
                                                     boolean isPullToRefresh) {
         populateFirstData(itemList, cursor);
+        rvExplore.scrollTo(0,0);
     }
 
     private void populateFirstData(List<Visitable> itemList, String cursor) {
