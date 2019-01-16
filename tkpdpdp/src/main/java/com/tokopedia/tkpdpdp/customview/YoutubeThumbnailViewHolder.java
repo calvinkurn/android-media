@@ -107,7 +107,7 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
                     @Override
                     public void onThumbnailError(YouTubeThumbnailView youTubeThumbnailView,
                                                  YouTubeThumbnailLoader.ErrorReason errorReason) {
-
+                        mainView.setVisibility(GONE);
                     }
                 });
             }
