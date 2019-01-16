@@ -109,6 +109,7 @@ public class ExploreFragment
     private BottomActionView scrollToTopButton;
     private LinearLayout layoutFilter;
     private CardView btnFilterMore;
+    private BottomActionView sortButton;
 
     private boolean isCanDoAction;
 
@@ -145,6 +146,7 @@ public class ExploreFragment
         scrollToTopButton = view.findViewById(R.id.bottom_action_view);
         layoutFilter = view.findViewById(R.id.layout_filter);
         btnFilterMore = view.findViewById(R.id.btn_filter_more);
+        sortButton = view.findViewById(R.id.bav);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
