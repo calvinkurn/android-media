@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -71,9 +70,7 @@ public class RetrofitUtils {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             // set your desired log level
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            ChuckInterceptor chuckInterceptor = new ChuckInterceptor(MainApplication.getAppContext());
             client.interceptors().add(logging);
-            client.interceptors().add(chuckInterceptor);
         }
         if (checkNotNull(urlProxy))
             client.proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(urlProxy, port)));
