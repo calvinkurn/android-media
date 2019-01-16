@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.feature.explore.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -146,6 +148,6 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
     }
 
     private boolean isFirstDataWithFilterSort(ExploreParams exploreParams) {
-        return exploreParams.getFilters().size()!=0;
+        return exploreParams.getFilters().size()!=0 || !TextUtils.isEmpty(exploreParams.getSort().getText());
     }
 }
