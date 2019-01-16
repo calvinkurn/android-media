@@ -70,5 +70,9 @@
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>
     <string name="af_start_curating">Mulai Kurasi Produk</string>
+    <string name="af_share_and_commission">Bagikan By Me dan Raih Komisinya!</string>
+    <string name="af_choose_favorite_product">Pilih produk favoritmu</string>
+    <string name="af_curate_product_profile">Kurasi produknya di profilmu</string>
+    <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
 
 </resources>
