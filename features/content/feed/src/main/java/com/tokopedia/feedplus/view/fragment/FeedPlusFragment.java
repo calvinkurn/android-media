@@ -1391,10 +1391,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
                     pollContentViewModel.setVoted(true);
 
-                    int totalVoter = 0;
+                    int totalVoter;
                     try {
                         totalVoter = Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
                     } catch (NumberFormatException ignored) {
+                        totalVoter = 0;
                     }
                     pollContentViewModel.setTotalVoterNumber(totalVoter);
 
