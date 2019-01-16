@@ -21,5 +21,5 @@ fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
 }
 
 fun ImageView.loadImageWithoutPlaceholder(url: String) {
-    ImageHandler.loadImageWithoutPlaceholder( this, url)
+    ImageHandler.loadImageWithoutPlaceholderAndError( this, url)
 }

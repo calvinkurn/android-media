@@ -41,7 +41,7 @@ class AffiliateEducationFragment : BaseDaggerFragment() {
 
     private fun initView() {
         imageBg.loadImageWithoutPlaceholder(
-                "https://bluebuffalo.com/globalassets/article-pages/articles/safe-car-travels-with-your-cat/articleimage-cattravel-car.jpg"
+                getImagePath(AffiliateConstant.IMG_AFFILIATE_EDUCATION_BG)
         )
 
         val adapter = EducationAdapter(getCarouselList())
@@ -53,30 +53,24 @@ class AffiliateEducationFragment : BaseDaggerFragment() {
         val list = arrayListOf<EducationItemViewModel>()
 
         list.add(EducationItemViewModel(
-                getImagePath(AffiliateConstant.IMG_AFFILIATE_TEASER, AffiliateConstant.JPG),
+                getImagePath(AffiliateConstant.IMG_AFFILIATE_ILLUSTRATION),
                 getString(R.string.af_share_and_commission)
         ))
 
         list.add(EducationItemViewModel(
-                getImagePathWithDrawable(
-                        AffiliateConstant.IMG_AFFILIATE_SCREENSHOT_1,
-                        AffiliateConstant.PNG),
+                getImagePath(AffiliateConstant.IMG_AFFILIATE_SCREENSHOT_1),
                 getString(R.string.af_choose_favorite_product),
                 1
         ))
 
         list.add(EducationItemViewModel(
-                getImagePathWithDrawable(
-                        AffiliateConstant.IMG_AFFILIATE_SCREENSHOT_2,
-                        AffiliateConstant.PNG),
+                getImagePath(AffiliateConstant.IMG_AFFILIATE_SCREENSHOT_2),
                 getString(R.string.af_curate_product_profile),
                 2
         ))
 
         list.add(EducationItemViewModel(
-                getImagePathWithDrawable(
-                        AffiliateConstant.IMG_AFFILIATE_SCREENSHOT_3,
-                        AffiliateConstant.PNG),
+                getImagePath(AffiliateConstant.IMG_AFFILIATE_SCREENSHOT_3),
                 getString(R.string.af_share_product_buy),
                 3
         ))
@@ -84,18 +78,9 @@ class AffiliateEducationFragment : BaseDaggerFragment() {
         return list
     }
 
-    private fun getImagePath(imageName: String, imageFormat: String): String {
-        val screenDensity = DisplayMetricUtils.getScreenDensity(context)
-        return String.format(
-                AffiliateConstant.ANDROID_PATH_FORMAT,
-                imageName,
-                screenDensity,
-                imageName,
-                imageFormat
-        )
-    }
+    private fun getImagePath(imageName: String, imageFormat: String = AffiliateConstant.PNG)
+            : String {
 
-    private fun getImagePathWithDrawable(imageName: String, imageFormat: String): String {
         val screenDensity = DisplayMetricUtils.getScreenDensity(context)
         return String.format(
                 AffiliateConstant.ANDROID_DRAWABLE_PATH_FORMAT,
