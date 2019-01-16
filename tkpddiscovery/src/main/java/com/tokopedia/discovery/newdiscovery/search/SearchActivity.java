@@ -311,7 +311,7 @@ public class SearchActivity extends DiscoveryActivity
         List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
 
         if (productViewModel.isHasCatalog()) {
-            populateThreeTabItem(searchSectionItemList, productViewModel);
+            populateFourTabItem(searchSectionItemList, productViewModel);
         } else {
             populateTwoTabItem(searchSectionItemList, productViewModel);
         }
@@ -340,7 +340,7 @@ public class SearchActivity extends DiscoveryActivity
         return viewPager.getAdapter().getCount() - 1;
     }
 
-    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
+    private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
                                       ProductViewModel productViewModel) {
 
         productListFragment = getProductFragment(productViewModel);

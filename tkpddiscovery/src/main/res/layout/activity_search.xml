@@ -51,7 +51,7 @@
                 app:tabGravity="fill"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                 app:tabIndicatorColor="@color/tkpd_green_header"
-                app:tabMode="fixed"
+                app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/tkpd_green_header" />
 
             <View
