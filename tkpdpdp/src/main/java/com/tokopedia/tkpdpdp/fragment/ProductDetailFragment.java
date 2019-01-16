@@ -1667,8 +1667,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else if (i == R.id.action_share) {
             if (productData != null) {
                 onProductShareClicked(productData);
-//                .setShopName(productData.getShopInfo().getShopName())
-
             }
             return true;
         } else if (i == R.id.action_cart) {

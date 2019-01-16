@@ -20,4 +20,4 @@ fun ProductData.getShareContent(shortUrl: String):String{
     }
     else
         return shortUrl
-} //= "${if (productName.isNotEmpty()) "\n" else ""}$shortUrl"
+}
