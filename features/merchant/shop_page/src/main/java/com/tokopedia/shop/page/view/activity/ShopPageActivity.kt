@@ -94,7 +94,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
-        const val SHOP_TRACE = "shop_trace"
+        const val SHOP_TRACE = "mp_shop"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val VIEW_CONTENT = 1
