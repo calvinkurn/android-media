@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -45,7 +46,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         DeepLinkWebViewHandleListener,
         ProductInfoView,
         DetailFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver, YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
+        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
         BottomSheets.BottomSheetDismissListener {
 
     public static final String SHARE_DATA = "SHARE_DATA";
@@ -303,10 +304,10 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void onBackPressed() {
-        if (thumbnailIntializing) {
-            isBackPressed = true;
-            return;
-        }
+            if(thumbnailIntializing) {
+                isBackPressed = true;
+                return;
+            }
 
 
         if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -368,7 +369,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     boolean isBackPressed;
 
     boolean thumbnailIntializing = false;
-
     @Override
     public void onIntializationStart() {
         thumbnailIntializing = true;
@@ -378,7 +378,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     public void onIntializationComplete() {
 
         thumbnailIntializing = false;
-        if (isBackPressed) {
+        if(isBackPressed) {
             onBackPressed();
         }
     }

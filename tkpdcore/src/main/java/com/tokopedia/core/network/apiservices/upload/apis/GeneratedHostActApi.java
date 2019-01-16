@@ -5,7 +5,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -51,5 +50,5 @@ public interface GeneratedHostActApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Upload.PATH_GENERATE_HOST)
-    Observable<Response<TkpdResponse>> generateHost4(@FieldMap HashMap<String, String> params);
+    Observable<Response<TkpdResponse>> generateHost4(@FieldMap Map<String, String> params);
 }

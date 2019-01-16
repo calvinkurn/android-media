@@ -22,6 +22,7 @@ import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
+import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -232,6 +233,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         LoginRegisterUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionCommonUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionCommonUrl.BASE_WS_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
+        ChatUrl.Companion.setTOPCHAT(SellerAppBaseUrl.CHAT_DOMAIN);
 
     }
 

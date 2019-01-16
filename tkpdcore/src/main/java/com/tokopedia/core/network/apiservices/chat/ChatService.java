@@ -7,8 +7,6 @@ import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
-import javax.inject.Inject;
-
 import retrofit2.Retrofit;
 
 /**
@@ -16,10 +14,6 @@ import retrofit2.Retrofit;
  */
 
 public class ChatService extends AuthService<ChatApi> {
-
-    @Inject
-    public ChatService() {
-    }
 
     @Override
     protected void initApiService(Retrofit retrofit) {

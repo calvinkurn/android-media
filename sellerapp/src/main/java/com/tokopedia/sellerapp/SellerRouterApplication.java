@@ -1923,4 +1923,24 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
         return null;
     }
+
+    @Override
+    public String getContactUsBaseURL() {
+        return TkpdBaseURL.ContactUs.URL_HELP;
+    }
+
+    @Override
+    public Class getDeeplinkClass() {
+        return DeepLinkActivity.class;
+    }
+
+    @Override
+    public void refereshFcmTokenToCMNotif(String token) {
+
+    }
+
+    @Override
+    public void onLoginSuccess() {
+
+    }
 }

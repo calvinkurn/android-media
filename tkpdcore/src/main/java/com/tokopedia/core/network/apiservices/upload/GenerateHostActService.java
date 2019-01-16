@@ -4,8 +4,6 @@ import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
-import javax.inject.Inject;
-
 import retrofit2.Retrofit;
 
 /**
@@ -14,10 +12,6 @@ import retrofit2.Retrofit;
  */
 public class GenerateHostActService extends AuthService<GeneratedHostActApi> {
     private static final String TAG = GenerateHostActService.class.getSimpleName();
-
-    @Inject
-    public GenerateHostActService() {
-    }
 
     @Override
     protected void initApiService(Retrofit retrofit) {
