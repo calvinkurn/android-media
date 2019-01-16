@@ -217,11 +217,6 @@ public class ExploreFragment
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
                 )
         );
-        rvExplore.getViewTreeObserver().addOnScrollChangedListener(
-                () -> {
-//                    showBottomActionWhenScrollingUp();
-                }
-        );
         scrollToTopButton.setButton2OnClickListener(view -> {
             rvExplore.scrollToPosition(0);
         });

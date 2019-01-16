@@ -34,12 +34,15 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private List<FilterViewModel> currentSelectedFilter = new ArrayList<>();
     private Context context;
     private int layout;
+    private static final int MAX_CHIP = 5;
+    private int PADDING_DEFAULT;
 
     public FilterAdapter(Context context, List<FilterViewModel> filterList, OnFilterClickedListener onFilterClickedListener, int layout) {
         this.filterList = filterList;
         this.context = context;
         this.filterClickedListener = onFilterClickedListener;
         this.layout = layout;
+        PADDING_DEFAULT = context.getResources().getDimensionPixelOffset(R.dimen.dp_16);
     }
 
     @NonNull
@@ -59,7 +62,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         holder.text.setText(filter.getName());
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
-        holder.cardView.setPadding(getPadding(16),0, getPadding(16),0);
+        holder.cardView.setPadding(getPadding(PADDING_DEFAULT),0, getPadding(PADDING_DEFAULT),0);
     }
 
     private int getPadding(int padding) {
@@ -120,7 +123,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     @Override
     public int getItemCount() {
-        if (layout ==  R.layout.item_explore_filter && filterList.size() > 5) return 5;
+        if (layout ==  R.layout.item_explore_filter && filterList.size() > MAX_CHIP) return MAX_CHIP;
         return filterList.size();
     }
 
