@@ -54,7 +54,6 @@ public interface UploadImageResCenter {
             @Part("web_service") RequestBody webService
     );
 
-
     @Multipart
     @POST("")
     Observable<NewUploadResCenterImageData> uploadImageNew(
