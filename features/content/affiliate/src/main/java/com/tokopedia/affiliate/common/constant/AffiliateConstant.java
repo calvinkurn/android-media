@@ -10,6 +10,7 @@ public interface AffiliateConstant {
     String FAQ_URL = "https://www.tokopedia.com/bantuan/pembeli/program-tokopedia/tokopedia-by-me/#faq-seputar-tokopedia-by-me";
 
     String ANDROID_PATH_FORMAT = "https://ecs7.tokopedia.net/img/android/%s/%s/%s%s";
+    String ANDROID_DRAWABLE_PATH_FORMAT = "https://ecs7.tokopedia.net/img/android/%s/drawable-%s/%s%s";
 
     String IMG_AFFILIATE_EDUCATION_BG = "af_bg_education";
     String IMG_AFFILIATE_TEASER = "af_teaser";

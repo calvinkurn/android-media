@@ -31,6 +31,7 @@ import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
+import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
@@ -132,6 +133,10 @@ public class ExploreFragment
         initListener();
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
+
+        if (getContext() != null) {
+            startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
+        }
     }
 
     private void initView() {

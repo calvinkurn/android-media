@@ -19,3 +19,7 @@ fun ImageView.loadImageCircle(url: String) {
 fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
     ImageHandler.loadImageRounded2(context, this, url, radius)
 }
+
+fun ImageView.loadImageWithoutPlaceholder(url: String) {
+    ImageHandler.loadImageWithoutPlaceholder( this, url)
+}
