@@ -35,6 +35,7 @@ import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
+import com.tokopedia.affiliate.feature.explore.view.activity.SortActivity;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
@@ -470,8 +471,15 @@ public class ExploreFragment
         //1. show button sort
         //2. handle onclick and passing sortlist and current selected sort (default is first data)
         // current selected sort can b
+        sortButton.setVisibility(View.VISIBLE);
         sortList.get(0).setSelected(true);
         exploreParams.setSort(sortList.get(0));
+        sortButton.setButton2OnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST, new ArrayList<>(sortList));
+            bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
+            startActivityForResult(SortActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_SORT);
+        });
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
@@ -650,7 +658,7 @@ public class ExploreFragment
                 getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
             }
             else if (requestCode == REQUEST_DETAIL_SORT) {
-                SortViewModel selectedSort = data.getParcelableExtra("");
+                SortViewModel selectedSort = data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
                 getSortedData(selectedSort);
             }
         }
