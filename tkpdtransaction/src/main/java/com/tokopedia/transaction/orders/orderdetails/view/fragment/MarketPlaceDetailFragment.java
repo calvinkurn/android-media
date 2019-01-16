@@ -484,6 +484,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                                     Intent newIntent = InboxRouter.getCreateResCenterActivityIntent(getContext(),
                                             (String) getArguments().get(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                    dialog.dismiss();
                                 } else
                                      RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
                             } else {
