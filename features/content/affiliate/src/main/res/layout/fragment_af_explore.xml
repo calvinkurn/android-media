@@ -170,6 +170,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="@dimen/dp_15"
+        android:visibility="gone"
         app:bav_2_display="true"
         app:bav_label_2="@string/text_button_sort"
         app:bav_icon_2="@drawable/ic_sort_aff"/>

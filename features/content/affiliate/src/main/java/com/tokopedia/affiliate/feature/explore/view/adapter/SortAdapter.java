@@ -41,7 +41,7 @@ public class SortAdapter extends RecyclerView.Adapter<SortAdapter.Holder> {
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(context).inflate(R.layout.item_sort, parent, false));
+        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sort, parent, false));
     }
 
     @Override
@@ -87,9 +87,9 @@ public class SortAdapter extends RecyclerView.Adapter<SortAdapter.Holder> {
 
         public Holder(View itemView) {
             super(itemView);
-            tvText = (TextView) itemView.findViewById(R.id.tv_text);
+            tvText = (TextView) itemView.findViewById(R.id.tv_sort);
             ivCheck = (ImageView) itemView.findViewById(R.id.iv_check);
-            layout = (CoordinatorLayout) itemView.findViewById(R.id.layout);
+            layout = (CoordinatorLayout) itemView.findViewById(R.id.item_sort);
         }
     }
 }
