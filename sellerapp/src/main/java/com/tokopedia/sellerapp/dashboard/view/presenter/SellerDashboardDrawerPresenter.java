@@ -41,8 +41,7 @@ public class SellerDashboardDrawerPresenter {
     }
 
     public void getFlashsaleSellerStatus( String shopId) {
-        //TODO for next release to show the flash sale menu
-        /*String rawQuery = GraphqlHelper.loadRawString(listener.getContext().getResources(), R.raw.gql_get_seller_status);
+        String rawQuery = GraphqlHelper.loadRawString(listener.getContext().getResources(), R.raw.gql_get_seller_status);
         RequestParams params = FlashsaleGetSellerStatusUseCase.createRequestParams(rawQuery, shopId);
         flashsaleGetSellerStatusUseCase.execute(params, new Subscriber<Boolean>() {
             @Override
@@ -56,7 +55,7 @@ public class SellerDashboardDrawerPresenter {
             public void onNext(Boolean isVisible) {
                 listener.onSuccessGetFlashsaleSellerStatus(isVisible);
             }
-        });*/
+        });
     }
 
     public void isGoldMerchantAsync() {
