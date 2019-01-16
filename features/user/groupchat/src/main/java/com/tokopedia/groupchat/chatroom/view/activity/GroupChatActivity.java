@@ -469,9 +469,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         main = findViewById(R.id.main_content);
 
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
-            if (overlayDialog != null) {
                 showOverlayDialogOnScreen();
-            }
         });
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
@@ -1141,21 +1139,21 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void showInfoDialog() {
-        if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null
-                && viewModel.getChannelInfoViewModel().getOverlayViewModel().getStatus() != OVERLAY_STATUS_INACTIVE) {
-            showOverlayDialog(viewModel.getChannelInfoViewModel().getOverlayViewModel());
-            viewModel.getChannelInfoViewModel().getOverlayViewModel().setStatus(0);
-        } else if (canShowDialog) {
+        if (canShowDialog) {
             channelInfoDialog.setContentView(
                     createBottomSheetView(
                             checkPollValid(),
                             viewModel.getChannelInfoViewModel()));
-
             if (getIntent() != null
                     && getIntent().getExtras() != null
                     && getIntent().getExtras().getBoolean(GroupChatActivity.EXTRA_SHOW_BOTTOM_DIALOG, false)) {
                 channelInfoDialog.show();
                 canShowDialog = false;
+            }
+            if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null
+                    && viewModel.getChannelInfoViewModel().getOverlayViewModel().getStatus() != OVERLAY_STATUS_INACTIVE) {
+                showOverlayDialog(viewModel.getChannelInfoViewModel().getOverlayViewModel());
+                viewModel.getChannelInfoViewModel().getOverlayViewModel().setStatus(0);
             }
         }
     }
@@ -1677,17 +1675,24 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showOverlayDialog(OverlayViewModel model) {
         //1. stack overlay if channel info is shown
-        //2. close earlier overlay if overlay is already shown, then show new overlay
-        //3. show overlay if no other bottom dialog is shown
+        //2. check pinned message on group chat fragment if shown or not
+        //3. close earlier overlay if overlay is already shown, then show new overlay
+        //4. show overlay if no other bottom dialog is shown
 
         if (channelInfoDialog != null && channelInfoDialog.isShowing())
             createOverlayDialog(model, false);
-        else if (overlayDialog != null && overlayDialog.isShowing()) {
+        else if(isPinnedMessageShowing()) {
+            createOverlayDialog(model, false);
+        } else if (overlayDialog != null && overlayDialog.isShowing()) {
             closeOverlayDialog();
             createOverlayDialog(model, true);
         } else
             createOverlayDialog(model, true);
+    }
 
+    private boolean isPinnedMessageShowing() {
+        return currentFragmentIsChat() && ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName())).isPinnedMessageShowing();
     }
 
     private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
@@ -1714,8 +1719,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         analytics.eventViewOverlay(model.getChannelId());
     }
 
-    private void showOverlayDialogOnScreen() {
-        overlayDialog.show();
+    @Override
+    public void showOverlayDialogOnScreen() {
+        if (overlayDialog != null) {
+            overlayDialog.show();
+        }
     }
 
     private View createOverlayView(final OverlayViewModel model) {
