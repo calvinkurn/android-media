@@ -1,4 +1,3 @@
-
 package com.tokopedia.flashsale.management.product.domain.usecase
 
 import com.tokopedia.flashsale.management.data.FlashSaleConstant

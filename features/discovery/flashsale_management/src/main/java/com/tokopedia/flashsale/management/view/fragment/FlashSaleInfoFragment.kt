@@ -35,7 +35,6 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
     override fun getAdapterTypeFactory() = CampaignInfoAdapterTypeFactory(sellerStatus){
         activity?.let {
             if (it is CampaignDetailActivity){
-                flashSaleTracking?.clickInfoToProduct(campaignId)
                 it.moveToTabProduct()
             }
         }

@@ -12,7 +12,7 @@ import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
  * Created by hendry on 25/10/18.
  */
 data class FlashSaleSubmissionProductGQL(
-        @SerializedName("getMojitoEligibleSellerProduct")
+        @SerializedName("getCampaignEligibleSellerProduct")
         @Expose val mojitoEligibleSellerProduct: MojitoEligibleSellerProduct)
 
 data class MojitoEligibleSellerProduct(

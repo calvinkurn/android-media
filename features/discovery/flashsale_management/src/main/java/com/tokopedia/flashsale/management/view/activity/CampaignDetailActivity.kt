@@ -31,6 +31,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     private var campaignId: Long = -1
     private var campaignType: String? = null
     private var flashSaleTracking: FlashSaleTracking? = null
+    private var tabProductUseButton: Boolean = false
     @Inject lateinit var presenter: CampaignInfoPresenter
 
     val titles by lazy {
@@ -54,6 +55,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     }
 
     fun moveToTabProduct(){
+        this.tabProductUseButton = true
         pager.currentItem = TAB_POS_MY_PRODUCT
     }
 
@@ -98,7 +100,12 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
                 if (position == 0) {
                     flashSaleTracking?.clickTabInfo(campaignId.toString())
                 } else {
-                    flashSaleTracking?.clickTabProduct(campaignId.toString())
+                    if (tabProductUseButton) {
+                        flashSaleTracking?.clickInfoToProduct(campaignId.toString())
+                        tabProductUseButton = false
+                    } else {
+                        flashSaleTracking?.clickTabProduct(campaignId.toString())
+                    }
                 }
             }
 
