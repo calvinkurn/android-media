@@ -146,6 +146,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
+    @Inject
+    CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
@@ -1750,8 +1752,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToProtectionMore(String url) {
-        shipmentPresenter.sendPurchaseProtectionAnalytics(
-                CheckoutAnalyticsPurchaseProtection.Event.CLICK_PELAJARI, url);
+        mTrackerPurchaseProtection.eventClickOnPelajari(url);
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
         startActivity(intent);
     }

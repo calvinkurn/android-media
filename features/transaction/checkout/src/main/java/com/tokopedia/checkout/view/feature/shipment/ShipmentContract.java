@@ -285,7 +285,6 @@ public interface ShipmentContract {
 
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
 
-        void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label);
     }
 
 }
