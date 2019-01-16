@@ -285,6 +285,7 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
         app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|left|start"/>
+        app:layout_anchorGravity="bottom|left|start"
+        app:layout_behavior="com.tokopedia.tkpdpdp.listener.CodBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
