@@ -20,6 +20,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -110,6 +111,8 @@ public class HotlistFragment extends BrowseSectionFragment
     private static final int REQUEST_ACTIVITY_SORT_HOTLIST = 2021;
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 1111;
+    private static final String PERFORMANCE_TRACE_HOTLIST = "mp_hotlist";
+    private static final String PERFORMANCE_TRACE_STATUS = "PERFORMANCE_TRACE_STATUS";
 
     protected BottomNavigationListener bottomNavigationListener;
     protected RefreshHandler refreshHandler;
@@ -133,7 +136,10 @@ public class HotlistFragment extends BrowseSectionFragment
     HotlistFragmentPresenter presenter;
     @Inject
     UserSessionInterface userSession;
+
     private String trackerAttribution;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStopped;
 
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
@@ -251,6 +257,7 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_HOTLIST);
         trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
             setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));
@@ -319,6 +326,7 @@ public class HotlistFragment extends BrowseSectionFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         hotlistAdapter.onSaveInstanceState(outState);
+        outState.putBoolean(PERFORMANCE_TRACE_STATUS, isTraceStopped);
         outState.putString(EXTRA_ALIAS, getHotlistAlias());
         outState.putParcelable(EXTRA_QUERY_HOTLIST, getQueryModel());
         outState.putBoolean(EXTRA_DISABLE_TOPADS, isDisableTopads());
@@ -329,6 +337,7 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        isTraceStopped = savedInstanceState.getBoolean(PERFORMANCE_TRACE_STATUS);
         setHotlistAlias(savedInstanceState.getString(EXTRA_ALIAS));
         setQueryModel((HotlistQueryModel) savedInstanceState.getParcelable(EXTRA_QUERY_HOTLIST));
         setDisableTopads(savedInstanceState.getBoolean(EXTRA_DISABLE_TOPADS));
@@ -896,6 +905,10 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void hideRefresh() {
         refreshHandler.setRefreshing(false);
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     @Override
