@@ -111,7 +111,7 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
                 viewListener.onGoToLink(element.getRedirectLink());
                 trackingPromoCode = pollViewModel.getKolProfileUrl();
             } else {
-                viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element);
+                viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element.getOptionId());
                 trackingPromoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY;
             }
 
