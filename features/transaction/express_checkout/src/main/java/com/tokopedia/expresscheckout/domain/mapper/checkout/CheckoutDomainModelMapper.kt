@@ -11,7 +11,7 @@ import com.tokopedia.expresscheckout.domain.model.checkout.*
 class CheckoutDomainModelMapper : CheckoutDataMapper {
 
     override fun convertToDomainModel(checkoutResponse: CheckoutResponse): CheckoutResponseModel {
-        var checkoutResponseModel = CheckoutResponseModel()
+        val checkoutResponseModel = CheckoutResponseModel()
         checkoutResponseModel.status = checkoutResponse.status
         checkoutResponseModel.headerModel = getHeaderModel(checkoutResponse)
         checkoutResponseModel.checkoutDataModel = getCheckoutDataModel(checkoutResponse.data)
@@ -19,8 +19,8 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         return checkoutResponseModel
     }
 
-    fun getHeaderModel(checkoutResponse: CheckoutResponse): HeaderModel {
-        var headerModel = HeaderModel()
+    private fun getHeaderModel(checkoutResponse: CheckoutResponse): HeaderModel {
+        val headerModel = HeaderModel()
         headerModel.processTime = checkoutResponse.header.processTime
         headerModel.reason = checkoutResponse.header.reason
         headerModel.errors = checkoutResponse.header.errors
@@ -29,8 +29,8 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         return headerModel
     }
 
-    fun getCheckoutDataModel(checkoutData: CheckoutData): CheckoutDataModel {
-        var checkoutDataModel = CheckoutDataModel()
+    private fun getCheckoutDataModel(checkoutData: CheckoutData): CheckoutDataModel {
+        val checkoutDataModel = CheckoutDataModel()
         checkoutDataModel.success = checkoutData.success
         checkoutDataModel.error = checkoutData.error
         checkoutDataModel.errorState = checkoutData.errorState
@@ -40,8 +40,8 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         return checkoutDataModel
     }
 
-    fun getDataModel(data: Data): DataModel {
-        var dataModel = DataModel()
+    private fun getDataModel(data: Data): DataModel {
+        val dataModel = DataModel()
         dataModel.applink = data.applink
         dataModel.callbackUrl = data.callbackUrl
         dataModel.redirectParam = data.redirectParam
@@ -50,8 +50,8 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         return dataModel
     }
 
-    fun getReflectModel(reflect: Reflect): ReflectModel {
-        var reflectModel = ReflectModel()
+    private fun getReflectModel(reflect: Reflect): ReflectModel {
+        val reflectModel = ReflectModel()
         reflectModel.additionalFee = reflect.additionalFee
         reflectModel.amount = reflect.amount
         reflectModel.currency = reflect.currency
@@ -62,7 +62,7 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         reflectModel.gatewayCode = reflect.gatewayCode
         reflectModel.gatewayType = reflect.gatewayType
 
-        var itemModels = ArrayList<ItemModel>()
+        val itemModels = ArrayList<ItemModel>()
         for (item: Item in reflect.items) {
             itemModels.add(getItemModel(item))
         }
@@ -72,7 +72,7 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         reflectModel.pairData = reflect.pairData
         reflectModel.profileCode = reflect.profileCode
 
-        var paymentDetailModels = ArrayList<PaymentDetailModel>()
+        val paymentDetailModels = ArrayList<PaymentDetailModel>()
         for (paymentDetail: PaymentDetail in reflect.paymentDetails) {
             paymentDetailModels.add(getPaymentDetailModel(paymentDetail))
         }
@@ -90,8 +90,8 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         return reflectModel
     }
 
-    fun getItemModel(item: Item): ItemModel {
-        var itemModel = ItemModel()
+    private fun getItemModel(item: Item): ItemModel {
+        val itemModel = ItemModel()
         itemModel.id = item.id
         itemModel.name = item.name
         itemModel.price = item.price
@@ -100,8 +100,8 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         return itemModel
     }
 
-    fun getPaymentDetailModel(paymentDetail: PaymentDetail): PaymentDetailModel {
-        var paymentDetailModel = PaymentDetailModel()
+    private fun getPaymentDetailModel(paymentDetail: PaymentDetail): PaymentDetailModel {
+        val paymentDetailModel = PaymentDetailModel()
         paymentDetailModel.amount = paymentDetail.amount
         paymentDetailModel.name = paymentDetail.name
 

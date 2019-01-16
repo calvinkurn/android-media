@@ -12,15 +12,15 @@ import com.tokopedia.expresscheckout.domain.model.profile.*
 class ProfileDomainModelMapper : ProfileDataMapper {
 
     override fun convertToDomainModel(profileResponse: ProfileResponse): ProfileResponseModel {
-        var profileResponseModel = ProfileResponseModel()
+        val profileResponseModel = ProfileResponseModel()
         profileResponseModel.headerModel = getHeaderModel(profileResponse.header)
         profileResponseModel.profileDataModel = getProfileDataModel(profileResponse.data)
 
         return profileResponseModel
     }
 
-    fun getHeaderModel(header: Header): HeaderModel {
-        var headerModel = HeaderModel()
+    private fun getHeaderModel(header: Header): HeaderModel {
+        val headerModel = HeaderModel()
         headerModel.processTime = header.processTime
         headerModel.reason = header.reason
         headerModel.errors = header.errors
@@ -29,11 +29,11 @@ class ProfileDomainModelMapper : ProfileDataMapper {
         return headerModel
     }
 
-    fun getProfileDataModel(profileData: ProfileData): ProfileDataModel {
-        var profileDataModel = ProfileDataModel()
+    private fun getProfileDataModel(profileData: ProfileData): ProfileDataModel {
+        val profileDataModel = ProfileDataModel()
         profileDataModel.defaultProfileId = profileData.defaultProfileId
 
-        var profileModels = ArrayList<ProfileModel>()
+        val profileModels = ArrayList<ProfileModel>()
         for (profile: Profile in profileData.profiles) {
             profileModels.add(getProfileModel(profile))
         }
@@ -42,8 +42,8 @@ class ProfileDomainModelMapper : ProfileDataMapper {
         return profileDataModel
     }
 
-    fun getProfileModel(profile: Profile): ProfileModel {
-        var profileModel = ProfileModel()
+    private fun getProfileModel(profile: Profile): ProfileModel {
+        val profileModel = ProfileModel()
         profileModel.id = profile.id
         profileModel.status = profile.status
         profileModel.addressModel = getAddressModel(profile.address)
@@ -53,8 +53,8 @@ class ProfileDomainModelMapper : ProfileDataMapper {
         return profileModel
     }
 
-    fun getAddressModel(address: Address): AddressModel {
-        var addressModel = AddressModel()
+    private fun getAddressModel(address: Address): AddressModel {
+        val addressModel = AddressModel()
         addressModel.addressId = address.addressId
         addressModel.addressName = address.addressName
         addressModel.addressStreet = address.addressStreet
@@ -73,8 +73,8 @@ class ProfileDomainModelMapper : ProfileDataMapper {
         return addressModel
     }
 
-    fun getPaymentModel(payment: Payment): PaymentModel {
-        var paymentModel = PaymentModel()
+    private fun getPaymentModel(payment: Payment): PaymentModel {
+        val paymentModel = PaymentModel()
         paymentModel.checkoutParam = payment.checkoutParam
         paymentModel.description = payment.description
         paymentModel.gatewayCode = payment.gatewayCode
@@ -84,8 +84,8 @@ class ProfileDomainModelMapper : ProfileDataMapper {
         return paymentModel
     }
 
-    fun getShipmentModel(shipment: Shipment): ShipmentModel {
-        var shipmentModel = ShipmentModel()
+    private fun getShipmentModel(shipment: Shipment): ShipmentModel {
+        val shipmentModel = ShipmentModel()
         shipmentModel.serviceId = shipment.serviceId
         shipmentModel.serviceDuration = shipment.serviceDuration
 

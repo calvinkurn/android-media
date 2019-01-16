@@ -24,7 +24,7 @@ import com.tokopedia.transactiondata.entity.response.variantdata.Variant
 class AtcDomainModelMapper : AtcDataMapper {
 
     override fun convertToDomainModel(atcResponse: AtcResponse): AtcResponseModel {
-        var responseModel = AtcResponseModel()
+        val responseModel = AtcResponseModel()
         if (atcResponse.header != null) {
             responseModel.headerModel = getHeaderModel(atcResponse)
         }
@@ -34,15 +34,15 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getDataModel(atcResponse: AtcResponse): AtcDataModel {
-        var dataModel = AtcDataModel()
+        val dataModel = AtcDataModel()
         dataModel.errorCode = atcResponse.data.errorCode
         dataModel.errors = atcResponse.data.errors
         dataModel.success = atcResponse.data.success
 
-        var cartModel = CartModel()
+        val cartModel = CartModel()
         cartModel.errors = atcResponse.data.cart.errors
 
-        var groupShopModels = ArrayList<GroupShopModel>()
+        val groupShopModels = ArrayList<GroupShopModel>()
         for (groupShop: GroupShop in atcResponse.data.cart.groupShops) {
             groupShopModels.add(getGroupShopModel(groupShop))
         }
@@ -50,10 +50,10 @@ class AtcDomainModelMapper : AtcDataMapper {
 
         dataModel.cartModel = cartModel
 
-        var autoApplyModel = getAutoApplyModel(atcResponse)
+        val autoApplyModel = getAutoApplyModel(atcResponse)
         dataModel.autoapplyModel = autoApplyModel
 
-        var donationModel = getDonationModel(atcResponse)
+        val donationModel = getDonationModel(atcResponse)
         dataModel.donationModel = donationModel
 
         dataModel.success = atcResponse.data.success
@@ -66,24 +66,24 @@ class AtcDomainModelMapper : AtcDataMapper {
         dataModel.maxCharNote = atcResponse.data.maxCharNote ?: 0
         dataModel.maxQuantity = atcResponse.data.maxQuantity ?: 0
 
-        var messagesModel = HashMap<String, String>()
+        val messagesModel = HashMap<String, String>()
         if (atcResponse.data.messages != null) {
             for (message: Message in atcResponse.data.messages) {
-                messagesModel.put(message.index, message.message)
+                messagesModel[message.index] = message.message
             }
         }
         dataModel.messagesModel = messagesModel
 
-        var promoSuggestionModel = getPromoSuggestionModel(atcResponse)
+        val promoSuggestionModel = getPromoSuggestionModel(atcResponse)
         dataModel.promoSuggestionModel = promoSuggestionModel
 
-        var userProfileDefaultModel = getUserProfileModel(atcResponse)
+        val userProfileDefaultModel = getUserProfileModel(atcResponse)
         dataModel.userProfileModelDefaultModel = userProfileDefaultModel
         return dataModel
     }
 
     private fun getHeaderModel(atcResponse: AtcResponse): HeaderModel {
-        var headerModel = HeaderModel()
+        val headerModel = HeaderModel()
         headerModel.errorCode = atcResponse.header.errorCode
         headerModel.errors = atcResponse.header.errors
         headerModel.processTime = atcResponse.header.processTime
@@ -92,22 +92,22 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getGroupShopModel(groupShop: GroupShop): GroupShopModel {
-        var groupShopModel = GroupShopModel()
+        val groupShopModel = GroupShopModel()
 
-        var errors = ArrayList<String>()
+        val errors = ArrayList<String>()
         errors.addAll(groupShop.errors)
         groupShopModel.errors = errors
 
-        var dropshipperModel = getDropshipperModel(groupShop)
-        groupShopModel.dropshiperModel = dropshipperModel;
+        val dropshipperModel = getDropshipperModel(groupShop)
+        groupShopModel.dropshiperModel = dropshipperModel
 
-        groupShopModel.isInsurance = groupShop.isInsurance;
+        groupShopModel.isInsurance = groupShop.isInsurance
 
-        var messages = ArrayList<String>()
+        val messages = ArrayList<String>()
         messages.addAll(groupShop.messages)
-        groupShopModel.messages = messages;
+        groupShopModel.messages = messages
 
-        var productModels = ArrayList<ProductModel>()
+        val productModels = ArrayList<ProductModel>()
         for (product: Product in groupShop.products) {
             productModels.add(getProductModel(product))
         }
@@ -115,10 +115,10 @@ class AtcDomainModelMapper : AtcDataMapper {
         groupShopModel.shippingId = groupShop.shippingId
         groupShopModel.spId = groupShop.spId
 
-        var shopModel = getShopModel(groupShop)
+        val shopModel = getShopModel(groupShop)
         groupShopModel.shopModel = shopModel
 
-        var shopShipmentModels = ArrayList<com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment>()
+        val shopShipmentModels = ArrayList<com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment>()
         for (shopShiment: ShopShipment in groupShop.shopShipments) {
             shopShipmentModels.add(getShopShipmentModel(shopShiment))
         }
@@ -127,16 +127,16 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getDropshipperModel(groupShop: GroupShop): DropshipperModel {
-        var dropshipperModel = DropshipperModel()
+        val dropshipperModel = DropshipperModel()
         dropshipperModel.name = groupShop.dropshiper?.name
         dropshipperModel.telpNo = groupShop.dropshiper?.telpNo
         return dropshipperModel
     }
 
     private fun getProductModel(product: Product): ProductModel {
-        var productModel = ProductModel()
-        productModel.cartId = product.cartId;
-        var errors = ArrayList<String>()
+        val productModel = ProductModel()
+        productModel.cartId = product.cartId
+        val errors = ArrayList<String>()
         errors.addAll(product.errors)
         productModel.errors = errors
         productModel.productCashback = product.productCashback
@@ -167,44 +167,44 @@ class AtcDomainModelMapper : AtcDataMapper {
         productModel.productWholesalePrice = product.productWholesalePrice
         productModel.productWholesalePriceFmt = product.productWholesalePriceFmt
 
-        var freeReturnsModel = getFreeReturnsModel(product)
+        val freeReturnsModel = getFreeReturnsModel(product)
         productModel.freeReturnsModel = freeReturnsModel
 
-        var productShipmentMappingModels = ArrayList<ProductShipmentMappingModel>()
+        val productShipmentMappingModels = ArrayList<ProductShipmentMappingModel>()
         for (productShipmentMapping: ProductShipmentMapping in product.productShipmentMapping) {
             productShipmentMappingModels.add(getProductShipmentMappingModel(productShipmentMapping))
         }
         productModel.productShipmentMappingModels = productShipmentMappingModels
 
-        var productPreorderModel = getProductPreorderModel(product)
+        val productPreorderModel = getProductPreorderModel(product)
         productModel.productPreorderModel = productPreorderModel
 
-        var productShipmentModels = ArrayList<ProductShipmentModel>()
+        val productShipmentModels = ArrayList<ProductShipmentModel>()
         for (productShipment: ProductShipment in product.productShipment) {
             productShipmentModels.add(getProductShipmentModel(productShipment))
         }
         productModel.productShipmentModels = productShipmentModels
 
-        var productTrackerDataModel = getProductTrackerDataModel(product)
+        val productTrackerDataModel = getProductTrackerDataModel(product)
         productModel.productTrackerDataModel = productTrackerDataModel
 
-        var purchaseProtectionPlanDataModel = getPurchaseProtectionPlanDataModel(product)
-        productModel.purchaseProtectionPlanDataModel = purchaseProtectionPlanDataModel;
+        val purchaseProtectionPlanDataModel = getPurchaseProtectionPlanDataModel(product)
+        productModel.purchaseProtectionPlanDataModel = purchaseProtectionPlanDataModel
 
-        var productVariantDataModels = ArrayList<ProductVariantDataModel>()
+        val productVariantDataModels = ArrayList<ProductVariantDataModel>()
         productVariantDataModels.add(getProductVariantDataModel(product.productVariantData))
         productModel.productVariantDataModels = productVariantDataModels
         return productModel
     }
 
     private fun getFreeReturnsModel(product: Product): FreeReturnsModel {
-        var freeReturnsModel = FreeReturnsModel()
+        val freeReturnsModel = FreeReturnsModel()
         freeReturnsModel.freeReturnsLogo = product.freeReturns?.freeReturnsLogo
         return freeReturnsModel
     }
 
     private fun getProductPreorderModel(product: Product): ProductPreorderModel {
-        var productPreorderModel = ProductPreorderModel()
+        val productPreorderModel = ProductPreorderModel()
         productPreorderModel.durationDay = product.productPreorder?.durationDay ?: 0
         productPreorderModel.durationText = product.productPreorder?.durationText
         productPreorderModel.durationUnitCode = product.productPreorder?.durationUnitCode ?: 0
@@ -214,23 +214,23 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getProductShipmentModel(productShipment: ProductShipment): ProductShipmentModel {
-        var productShipmentModel = ProductShipmentModel()
+        val productShipmentModel = ProductShipmentModel()
         productShipmentModel.shipmentId = productShipment.shipmentId
-        var serviceIds = ArrayList<String>()
+        val serviceIds = ArrayList<String>()
         serviceIds.addAll(productShipment.serviceId)
         productShipmentModel.serviceId = serviceIds
         return productShipmentModel
     }
 
     private fun getProductTrackerDataModel(product: Product): ProductTrackerDataModel {
-        var productTrackerDataModel = ProductTrackerDataModel()
+        val productTrackerDataModel = ProductTrackerDataModel()
         productTrackerDataModel.attribution = product.productTrackerData?.attribution
         productTrackerDataModel.trackerListName = product.productTrackerData?.trackerListName
         return productTrackerDataModel
     }
 
     private fun getShopModel(groupShop: GroupShop): ShopModel {
-        var shopModel = ShopModel()
+        val shopModel = ShopModel()
         shopModel.addressId = groupShop.shop?.addressId ?: 0
         shopModel.addressStreet = groupShop.shop?.addressStreet
         shopModel.cityId = groupShop.shop?.cityId ?: 0
@@ -256,14 +256,14 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getShopShipmentModel(shopShiment: ShopShipment): com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment {
-        var shopShipment = com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment()
+        val shopShipment = com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment()
         shopShipment.isDropshipEnabled = shopShiment.isDropshipEnabled == 1
         shopShipment.shipCode = shopShiment.shipCode
         shopShipment.shipId = shopShiment.shipId
         shopShipment.shipLogo = shopShiment.shipLogo
         shopShipment.shipName = shopShiment.shipName
 
-        var shipProds = ArrayList<com.tokopedia.shipping_recommendation.domain.shipping.ShipProd>()
+        val shipProds = ArrayList<com.tokopedia.shipping_recommendation.domain.shipping.ShipProd>()
         for (shipProd: ShipProd in shopShiment.shipProds) {
             shipProds.add(getShipProdModel(shipProd))
         }
@@ -272,7 +272,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getShipProdModel(shipProd: ShipProd): com.tokopedia.shipping_recommendation.domain.shipping.ShipProd {
-        var shipProdModel = com.tokopedia.shipping_recommendation.domain.shipping.ShipProd()
+        val shipProdModel = com.tokopedia.shipping_recommendation.domain.shipping.ShipProd()
         shipProdModel.additionalFee = shipProd.additionalFee
         shipProdModel.minimumWeight = shipProd.minimumWeight
         shipProdModel.shipGroupId = shipProd.shipGroupId
@@ -283,7 +283,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getAutoApplyModel(atcResponse: AtcResponse): AutoApplyModel {
-        var autoApplyModel = AutoApplyModel()
+        val autoApplyModel = AutoApplyModel()
         autoApplyModel.code = atcResponse.data.autoapply?.code
         autoApplyModel.discountAmount = atcResponse.data.autoapply?.discountAmount ?: 0
         autoApplyModel.isCoupon = atcResponse.data.autoapply?.isCoupon ?: 0
@@ -295,7 +295,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getDonationModel(atcResponse: AtcResponse): DonationModel {
-        var donationModel = DonationModel()
+        val donationModel = DonationModel()
         donationModel.description = atcResponse.data.donation?.description
         donationModel.nominal = atcResponse.data.donation?.nominal ?: 0
         donationModel.title = atcResponse.data.donation?.title
@@ -303,7 +303,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getPromoSuggestionModel(atcResponse: AtcResponse): PromoSuggestionModel {
-        var promoSuggestionModel = PromoSuggestionModel()
+        val promoSuggestionModel = PromoSuggestionModel()
         promoSuggestionModel.cta = atcResponse.data.promoSuggestion?.cta
         promoSuggestionModel.ctaColor = atcResponse.data.promoSuggestion?.ctaColor
         promoSuggestionModel.isVisible = atcResponse.data.promoSuggestion?.isVisible
@@ -313,7 +313,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getUserProfileModel(atcResponse: AtcResponse): ProfileModel {
-        var userProfileDefaultModel = ProfileModel()
+        val userProfileDefaultModel = ProfileModel()
         userProfileDefaultModel.id = atcResponse.data.userProfileDefault?.id ?: 0
         userProfileDefaultModel.status = atcResponse.data.userProfileDefault?.status ?: 0
         userProfileDefaultModel.addressModel = getAddressModel(atcResponse.data.userProfileDefault?.address)
@@ -324,7 +324,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getAddressModel(address: Address?): AddressModel {
-        var addressModel = AddressModel()
+        val addressModel = AddressModel()
         addressModel.addressId = address?.addressId ?: 0
         addressModel.addressName = address?.addressName
         addressModel.addressStreet = address?.addressStreet
@@ -344,7 +344,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getPaymentModel(payment: Payment?): PaymentModel {
-        var paymentModel = PaymentModel()
+        val paymentModel = PaymentModel()
         paymentModel.checkoutParam = payment?.checkoutParam
         paymentModel.description = payment?.description
         paymentModel.gatewayCode = payment?.gatewayCode
@@ -355,7 +355,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getShipmentModel(shipment: Shipment?): ShipmentModel {
-        var shipmentModel = ShipmentModel()
+        val shipmentModel = ShipmentModel()
         shipmentModel.serviceId = shipment?.serviceId ?: 0
         shipmentModel.serviceDuration = shipment?.serviceDuration
 
@@ -363,7 +363,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getPurchaseProtectionPlanDataModel(product: Product): PurchaseProtectionPlanDataModel {
-        var purchaseProtectionPlanDataModel = PurchaseProtectionPlanDataModel()
+        val purchaseProtectionPlanDataModel = PurchaseProtectionPlanDataModel()
         purchaseProtectionPlanDataModel.protectionAvailable = product.purchaseProtectionPlanData?.protectionAvailable
         purchaseProtectionPlanDataModel.protectionLinkText = product.purchaseProtectionPlanData?.protectionLinkText
         purchaseProtectionPlanDataModel.protectionLinkUrl = product.purchaseProtectionPlanData?.protectionLinkUrl
@@ -377,19 +377,19 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getProductVariantDataModel(productVariantData: ProductVariantData): ProductVariantDataModel {
-        var productVariantDataModel = ProductVariantDataModel()
+        val productVariantDataModel = ProductVariantDataModel()
         productVariantDataModel.parentId = productVariantData.parentId
         productVariantDataModel.defaultChild = productVariantData.defaultChild
         productVariantDataModel.stock = productVariantData.stock
         productVariantDataModel.isEnabled = productVariantData.isEnabled
 
-        var childModels = ArrayList<ChildModel>()
+        val childModels = ArrayList<ChildModel>()
         for (child: Child in productVariantData.children) {
             childModels.add(getChildModel(child))
         }
         productVariantDataModel.childModels = childModels
 
-        var variantModels = ArrayList<VariantModel>()
+        val variantModels = ArrayList<VariantModel>()
         for (variant: Variant in productVariantData.variants) {
             variantModels.add(getVariantModel(variant))
         }
@@ -398,7 +398,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getChildModel(child: Child): ChildModel {
-        var childModel = ChildModel()
+        val childModel = ChildModel()
         childModel.isBuyable = child.isBuyable
         childModel.isEnabled = child.isEnabled
         childModel.maxOrder = child.maxOrder
@@ -410,20 +410,20 @@ class AtcDomainModelMapper : AtcDataMapper {
         childModel.stock = child.stock
         childModel.stockWording = child.stockWording
         childModel.url = child.url
-        var optionIds = ArrayList<Int>()
+        val optionIds = ArrayList<Int>()
         optionIds.addAll(child.optionIds)
         childModel.optionIds = optionIds
         return childModel
     }
 
     private fun getVariantModel(variant: Variant): VariantModel {
-        var variantModel = VariantModel()
+        val variantModel = VariantModel()
         variantModel.identifier = variant.identifier
         variantModel.position = variant.position
         variantModel.productVariantId = variant.productVariantId
         variantModel.variantName = variant.variantName
 
-        var optionModels = ArrayList<OptionModel>()
+        val optionModels = ArrayList<OptionModel>()
         for (option: Option in variant.options) {
             optionModels.add(getOptionModel(option))
         }
@@ -432,7 +432,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getOptionModel(option: Option): OptionModel {
-        var optionModel = OptionModel()
+        val optionModel = OptionModel()
         optionModel.hex = option.hex
         optionModel.id = option.id
         optionModel.value = option.value
@@ -440,10 +440,10 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getProductShipmentMappingModel(productShipmentMapping: ProductShipmentMapping): ProductShipmentMappingModel {
-        var productShipmentMappingModel = ProductShipmentMappingModel()
+        val productShipmentMappingModel = ProductShipmentMappingModel()
         productShipmentMappingModel.shipmentId = productShipmentMapping.shipmentId
         productShipmentMappingModel.shipmentId = productShipmentMapping.shipmentId
-        var serviceIdModels = ArrayList<ServiceIdModel>()
+        val serviceIdModels = ArrayList<ServiceIdModel>()
         for (serviceId: ServiceId in productShipmentMapping.serviceIds) {
             serviceIdModels.add(getServiceIdModel(serviceId))
         }
@@ -452,7 +452,7 @@ class AtcDomainModelMapper : AtcDataMapper {
     }
 
     private fun getServiceIdModel(serviceId: ServiceId): ServiceIdModel {
-        var serviceIdModel = ServiceIdModel()
+        val serviceIdModel = ServiceIdModel()
         serviceIdModel.serviceId = serviceId.serviceId
         serviceIdModel.spIds = serviceId.spIds
         return serviceIdModel

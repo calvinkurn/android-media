@@ -213,9 +213,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
-        var productViewModel = fragmentViewModel.getProductViewModel()
-        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
-        var quantityViewModel = fragmentViewModel.getQuantityViewModel()
+        val productViewModel = fragmentViewModel.getProductViewModel()
+        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+        val quantityViewModel = fragmentViewModel.getQuantityViewModel()
 
         if (productViewModel != null && productViewModel.productChildrenList.isNotEmpty()) {
             var selectedKey = 0
@@ -225,7 +225,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
             if (selectedKey != 0) {
-                productViewModel.selectedVariantOptionsIdMap.put(selectedKey, selectedOptionViewModel.optionId)
+                productViewModel.selectedVariantOptionsIdMap[selectedKey] = selectedOptionViewModel.optionId
             }
 
             // Check is product child for selected variant is available
@@ -254,7 +254,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
                 }
 
-                var variantTypeViewModels = fragmentViewModel.getVariantTypeViewModel()
+                val variantTypeViewModels = fragmentViewModel.getVariantTypeViewModel()
                 for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
                     if (variantTypeViewModel.variantId == selectedOptionViewModel.variantId) {
                         variantTypeViewModel.variantSelectedValue = selectedOptionViewModel.variantName
@@ -268,7 +268,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                         for (optionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
 
                             // Get other variant type selected option id
-                            var otherVariantSelectedOptionIds = ArrayList<Int>()
+                            val otherVariantSelectedOptionIds = ArrayList<Int>()
                             for (otherVariantViewModel: TypeVariantViewModel in variantTypeViewModels) {
                                 if (otherVariantViewModel.variantId != variantTypeViewModel.variantId &&
                                         otherVariantViewModel.variantId != selectedOptionViewModel.variantId) {
@@ -328,8 +328,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
-        var productViewModel = fragmentViewModel.getProductViewModel()
-        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
+        val productViewModel = fragmentViewModel.getProductViewModel()
+        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
 
         if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
             for (productChild: ProductChild in productViewModel.productChildrenList) {
@@ -350,7 +350,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
-        var totalPayment = summaryViewModel?.itemPrice?.plus(summaryViewModel.shippingPrice)?.plus(summaryViewModel.servicePrice)?.plus(summaryViewModel.insurancePrice)
+        val totalPayment = summaryViewModel?.itemPrice?.plus(summaryViewModel.shippingPrice)?.plus(summaryViewModel.servicePrice)?.plus(summaryViewModel.insurancePrice)
         fragmentViewModel.totalPayment = totalPayment
 
         tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(fragmentViewModel.totalPayment
@@ -358,7 +358,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
-        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
+        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
         if (summaryViewModel != null) {
             if (insuranceViewModel.isChecked) {
                 summaryViewModel.insurancePrice = insuranceViewModel.insurancePrice
@@ -374,7 +374,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
-        var quantityViewModel = fragmentViewModel.getQuantityViewModel()
+        val quantityViewModel = fragmentViewModel.getQuantityViewModel()
         if (quantityViewModel != null) {
             quantityViewModel.stockWording = stockWording
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
@@ -449,7 +449,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun setShippingError() {
-        var profileViewModel = fragmentViewModel.getProfileViewModel()
+        val profileViewModel = fragmentViewModel.getProfileViewModel()
         if (profileViewModel != null) {
             profileViewModel.isDurationError = true
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
@@ -465,9 +465,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance()
         shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this)
 
-        var profileViewModel = fragmentViewModel.getProfileViewModel()
-        var insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
-        var summaryViewModel = fragmentViewModel.getSummaryViewModel()
+        val profileViewModel = fragmentViewModel.getProfileViewModel()
+        val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
+        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
         if (profileViewModel != null) {
             if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 showBottomsheetError("Tandai Lokasi Pengiriman", productData.error.errorMessage, "Tandai Lokasi")
