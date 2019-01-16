@@ -83,7 +83,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
         //always scroll to bottom
-        return false
+        return true
     }
 
     override fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel) {

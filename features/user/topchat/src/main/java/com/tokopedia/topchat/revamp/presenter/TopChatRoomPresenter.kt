@@ -27,10 +27,7 @@ import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.revamp.domain.pojo.TopChatImageUploadPojo
-import com.tokopedia.topchat.revamp.domain.subscriber.ChangeChatBlockSettingSubscriber
-import com.tokopedia.topchat.revamp.domain.subscriber.DeleteMessageAllSubscriber
-import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
-import com.tokopedia.topchat.revamp.domain.subscriber.GetExistingMessageIdSubscriber
+import com.tokopedia.topchat.revamp.domain.subscriber.*
 import com.tokopedia.topchat.revamp.domain.usecase.*
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.usecase.RequestParams
@@ -62,7 +59,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var replyChatUseCase: ReplyChatUseCase,
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
-        private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase)
+        private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
+        private var getShopFollowingUseCase: GetShopFollowingUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -428,6 +426,11 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
+    override fun getShopFollowingStatus(shopId: Int, onError: (Throwable) -> Unit, onSuccessGetShopFollowingStatus: (Boolean) -> Unit) {
+        getShopFollowingUseCase.execute(GetShopFollowingUseCase.generateParam(shopId),
+                GetShopFollowingStatusSubscriber(onError, onSuccessGetShopFollowingStatus))
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getChatUseCase.unsubscribe()
@@ -436,6 +439,7 @@ class TopChatRoomPresenter @Inject constructor(
         getTemplateChatRoomUseCase.unsubscribe()
         deleteMessageListUseCase.unsubscribe()
         changeChatBlockSettingUseCase.unsubscribe()
+        getShopFollowingUseCase.unsubscribe()
         super.detachView()
     }
 

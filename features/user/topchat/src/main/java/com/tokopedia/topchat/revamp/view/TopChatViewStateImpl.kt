@@ -187,9 +187,9 @@ class TopChatViewStateImpl(
         if (chatroomViewModel.headerModel.role.toLowerCase()
                         .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
             val profileText = if (isShopFollowed) {
-                view.context.getString(R.string.already_follow_store);
+                view.context.getString(R.string.already_follow_store)
             } else {
-                view.context.getString(R.string.follow_store);
+                view.context.getString(R.string.follow_store)
             }
             listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_plus_add))
         }

@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -55,7 +54,6 @@ import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.view.listener.*
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-
 
 /**
  * @author : Steven 29/11/18
@@ -164,8 +162,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
-            presenter.connectWebSocket(messageId)
             updateViewData(it)
+            presenter.connectWebSocket(messageId)
+            presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
+                    onSuccessGetShopFollowingStatus())
+
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             presenter.getTemplate()
@@ -180,6 +181,18 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
                 }
             }
+        }
+    }
+
+    private fun onErrorGetShopFollowingStatus(): (Throwable) -> Unit {
+        return {
+            getViewState().isShopFollowed = false
+        }
+    }
+
+    private fun onSuccessGetShopFollowingStatus(): (Boolean) -> Unit {
+        return {
+            getViewState().isShopFollowed = it
         }
     }
 

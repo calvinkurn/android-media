@@ -81,5 +81,9 @@ interface TopChatContract {
                         onError: (Throwable) -> Unit,
                         onSuccessUnblockChat: (BlockedStatus) -> Unit)
 
+        fun getShopFollowingStatus(shopId: Int,
+                                   onError: (Throwable) -> Unit,
+                                   onSuccessGetShopFollowingStatus: (Boolean) -> Unit)
+
     }
 }

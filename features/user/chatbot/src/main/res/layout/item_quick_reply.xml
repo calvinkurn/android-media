@@ -16,7 +16,6 @@
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
-        android:minWidth="@dimen/dp_52"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/dp_32"
         android:gravity="center"
