@@ -28,10 +28,13 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.affiliate.AffiliateRouter;
@@ -299,6 +302,7 @@ import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketpla
 import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
+import com.tokopedia.referral.ReferralAction;
 import com.tokopedia.referral.interfaces.ReferralOtpRouter;
 import com.tokopedia.referral.interfaces.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -440,6 +444,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
+import static com.tokopedia.core.share.DefaultShare.KEY_OTHER;
 
 
 /**
@@ -2026,6 +2031,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, CartActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
+    }
+
+    @Override
+    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+        ReferralAction<Context, String, Integer, String, String, String, Context> referralAction = new ReferralAction<>();
+            String referralCode = referralAction.getData(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, dataObj);
+            if (!TextUtils.isEmpty(referralCode)) {
+                actionCreator.actionSuccess(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, referralCode);
+            } else {
+                referralAction.doAction(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE, dataObj,
+                        actionCreator, actionUIDelegate);
+            }
     }
 
     @Override
