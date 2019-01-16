@@ -419,7 +419,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                 .flatMap(new Func1<AttachmentResCenterVersion2DB, Observable<AttachmentResCenterVersion2DB>>() {
                     @Override
                     public Observable<AttachmentResCenterVersion2DB> call(AttachmentResCenterVersion2DB attachmentResCenterDB) {
-                        String uploadUrl = "http://" + inputModel.getUploadHost();
+                        String uploadUrl = "https://" + inputModel.getUploadHost();
                         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context, uploadUrl)
                                 .setIdentity()
                                 .addParam("id", attachmentResCenterDB.imageUUID)
