@@ -27,34 +27,44 @@ public class ReferralAction<T,V,W,X,Y,A,B> implements ActionExecutor<T,V,W,X,Y>,
             case Constants.Action.ACTION_GET_REFERRAL_CODE:
                 GetReferralDataUseCase getReferralDataUseCase = new GetReferralDataUseCase();
                 if(actionUIDelegate != null) actionUIDelegate.waitForResult(actionId, (X)"");
-                getReferralDataUseCase.execute(Util.getPostRequestBody(new UserSession((Context) dataObj)), new Subscriber<Map<Type, RestResponse>>() {
-                    @Override
-                    public void onCompleted() {
-                        if(actionUIDelegate != null) actionUIDelegate.stopWaiting(actionId, (Y)"");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if(actionCreator != null) actionCreator.actionError(actionId, (W) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
-                    }
-
-                    @Override
-                    public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                        Type token = new TypeToken<DataResponse<ReferralCodeEntity>>() {
-                        }.getType();
-                        RestResponse res1 = typeRestResponseMap.get(token);
-                        DataResponse ticketListResponse = res1.getData();
-                        ReferralCodeEntity referralCodeEntity = (ReferralCodeEntity) ticketListResponse.getData();
-                        if (referralCodeEntity.getErorMessage() == null) {
-                            LocalCacheHandler localCacheHandler = new LocalCacheHandler((Context) dataObj, Constants.Values.Companion.REFERRAL);
-                            localCacheHandler.putString(Constants.Key.Companion.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());
-                            localCacheHandler.applyEditor();
+                if(dataObj != null) {
+                    getReferralDataUseCase.execute(Util.getPostRequestBody(new UserSession((Context) dataObj)), new Subscriber<Map<Type, RestResponse>>() {
+                        @Override
+                        public void onCompleted() {
+                            if (actionUIDelegate != null)
+                                actionUIDelegate.stopWaiting(actionId, (Y) "");
                         }
-                        if(actionUIDelegate != null) actionUIDelegate.stopWaiting(actionId, (Y)"");
-                        if(actionCreator != null) actionCreator.actionSuccess(actionId, (V) referralCodeEntity.getPromoContent().getCode());
-                    }
-                });
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            if (actionCreator != null)
+                                actionCreator.actionError(actionId, (W) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
+                        }
+
+                        @Override
+                        public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                            Type token = new TypeToken<DataResponse<ReferralCodeEntity>>() {
+                            }.getType();
+                            RestResponse res1 = typeRestResponseMap.get(token);
+                            DataResponse ticketListResponse = res1.getData();
+                            ReferralCodeEntity referralCodeEntity = (ReferralCodeEntity) ticketListResponse.getData();
+                            if (referralCodeEntity.getErorMessage() == null && dataObj != null) {
+                                LocalCacheHandler localCacheHandler = new LocalCacheHandler((Context) dataObj, Constants.Values.Companion.REFERRAL);
+                                localCacheHandler.putString(Constants.Key.Companion.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());
+                                localCacheHandler.applyEditor();
+                            }
+                            if (actionUIDelegate != null)
+                                actionUIDelegate.stopWaiting(actionId, (Y) "");
+                            if (actionCreator != null)
+                                actionCreator.actionSuccess(actionId, (V) referralCodeEntity.getPromoContent().getCode());
+                        }
+                    });
+                }
+                else {
+                    if(actionUIDelegate != null) actionUIDelegate.stopWaiting(actionId, (Y) "");
+                    if (actionCreator != null) actionCreator.actionError(actionId, (W) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
+                }
                 break;
         }
     }
