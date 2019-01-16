@@ -49,13 +49,13 @@ class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentLis
     override fun navigateToOcs() {
         setResult(RESULT_CODE_NAVIGATE_TO_OCS)
         finish()
-        overridePendingTransition(0, R.anim.push_down)
+        overridePendingTransition(0, 0)
     }
 
     override fun navigateToNcf() {
         setResult(RESULT_CODE_NAVIGATE_TO_NCF)
         finish()
-        overridePendingTransition(0, R.anim.push_down)
+        overridePendingTransition(0, 0)
     }
 
     override fun onBackPressed() {

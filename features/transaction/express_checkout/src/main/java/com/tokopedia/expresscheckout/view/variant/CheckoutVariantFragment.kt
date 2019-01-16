@@ -20,6 +20,8 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
+import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
+import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
@@ -45,11 +47,11 @@ import java.util.concurrent.TimeUnit
  */
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
-        CheckoutVariantContract.View, CheckoutVariantActionListener,
+        CheckoutVariantContract.View, CheckoutVariantActionListener, CheckoutProfileFragmentListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
     val contextView: Context get() = activity!!
-    private lateinit var presenter: CheckoutVariantPresenter
+    private lateinit var presenter: CheckoutVariantContract.Presenter
     private lateinit var adapter: CheckoutVariantAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var errorBottomSheets: ErrorBottomsheets
@@ -60,6 +62,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
     private lateinit var shippingDurationBottomsheet: ShippingDurationBottomsheet
     private lateinit var shippingCourierBottomsheet: ShippingCourierBottomsheet
+    private lateinit var checkoutProfileBottomSheet: CheckoutProfileBottomSheet
     var isDataLoaded = false
 
     companion object {
@@ -94,6 +97,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         fragmentViewModel = FragmentViewModel()
         compositeSubscription = CompositeSubscription()
         initUpdateShippingRatesDebouncer()
+
+        shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
+        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance()
+        checkoutProfileBottomSheet = CheckoutProfileBottomSheet.newInstance()
 
         return view
     }
@@ -175,8 +182,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onClickEditProfile() {
+    override fun onBindProfile() {
+        checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
+    }
 
+    override fun onClickEditProfile() {
+        checkoutProfileBottomSheet.show(activity?.supportFragmentManager, "")
     }
 
     override fun onClickEditDuration() {
@@ -408,7 +419,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun showToasterError(message: String?) {
         ToasterError.make(view, message
-                ?: contextView.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+                ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
     }
 
     override fun finishWithError(messages: String) {
@@ -461,10 +472,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
         }
 
-        shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
         shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this)
-
-        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance()
         shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this)
 
         val profileViewModel = fragmentViewModel.getProfileViewModel()
@@ -570,6 +578,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onRetryReloadCourier(shipmentCartItemModel: ShipmentCartItemModel?, cartPosition: Int, shopShipmentList: MutableList<ShopShipment>?) {
+
+    }
+
+    override fun onContinueWithoutProfile() {
 
     }
 

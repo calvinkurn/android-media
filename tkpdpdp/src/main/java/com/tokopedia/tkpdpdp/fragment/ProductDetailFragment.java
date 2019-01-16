@@ -237,6 +237,8 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
 import static com.tokopedia.transaction.common.data.expresscheckout.Constant.EXTRA_MESSAGES_ERROR;
 import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_ERROR;
+import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_NCF;
+import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_OCS;
 
 
 /**
@@ -807,17 +809,21 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 e.printStackTrace();
             }
         } else {
-            if (productData.getInfo().getHasVariant()) {
-                if (!onClickBuyWhileRequestingVariant && productVariant != null) {
-                    openVariantPage(generateStateVariant(source));
-                } else {
-                    onClickBuyWhileRequestingVariant = true;
-                    lastStateOnClickBuyWhileRequestVariant = source;
-                    buttonBuyView.showLoadingAddToCart();
-                }
+            checkVariant(source);
+        }
+    }
+
+    private void checkVariant(String source) {
+        if (productData.getInfo().getHasVariant()) {
+            if (!onClickBuyWhileRequestingVariant && productVariant != null) {
+                openVariantPage(generateStateVariant(source));
             } else {
-                openProductModalActivity(generateStateVariant(source));
+                onClickBuyWhileRequestingVariant = true;
+                lastStateOnClickBuyWhileRequestVariant = source;
+                buttonBuyView.showLoadingAddToCart();
             }
+        } else {
+            openProductModalActivity(generateStateVariant(source));
         }
     }
 
@@ -1779,6 +1785,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             case REQUEST_CODE_ATC_EXPRESS:
                 if (resultCode == RESULT_CODE_ERROR) {
                     ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR));
+                } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
+                    checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                } else if (resultCode == RESULT_CODE_NAVIGATE_TO_NCF) {
+                    checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
                 }
                 break;
             default:

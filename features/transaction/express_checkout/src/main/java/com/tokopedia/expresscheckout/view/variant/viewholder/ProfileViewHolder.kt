@@ -54,6 +54,8 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 itemView.ll_profile_default_checkbox_container.visibility = View.GONE
                 itemView.cb_profile_set_default.setOnClickListener { }
             }
+
+            listener.onBindProfile()
         }
     }
 

@@ -1,9 +1,9 @@
 package com.tokopedia.expresscheckout.view.profile.viewholder
 
 import android.os.Build
+import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileActionListener
@@ -14,13 +14,13 @@ import kotlinx.android.synthetic.main.item_profile_profile_list_page.view.*
  * Created by Irfan Khoirul on 01/01/19.
  */
 
-class ProfileViewHolder(val view: View, val listener: CheckoutProfileActionListener) : AbstractViewHolder<ProfileViewModel>(view) {
+class ProfileViewHolder(val view: View, val listener: CheckoutProfileActionListener) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val LAYOUT = R.layout.item_profile_profile_list_page
     }
 
-    override fun bind(element: ProfileViewModel?) {
+    fun bind(element: ProfileViewModel?) {
         if (element != null) {
             if (element.isSelected) {
                 itemView.img_selected.visibility = View.VISIBLE

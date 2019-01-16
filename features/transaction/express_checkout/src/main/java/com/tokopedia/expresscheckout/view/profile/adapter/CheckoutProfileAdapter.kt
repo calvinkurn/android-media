@@ -1,17 +1,41 @@
 package com.tokopedia.expresscheckout.view.profile.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import com.tokopedia.expresscheckout.view.profile.CheckoutProfileActionListener
+import com.tokopedia.expresscheckout.view.profile.viewholder.ProfileViewHolder
+import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 
 /**
  * Created by Irfan Khoirul on 01/01/19.
  */
 
-class CheckoutProfileAdapter(adapterTypeFactory: CheckoutProfileAdapterTypeFactory) :
-        BaseListAdapter<Visitable<*>, CheckoutProfileAdapterTypeFactory>(adapterTypeFactory) {
+class CheckoutProfileAdapter(val data: ArrayList<ProfileViewModel>, val listener: CheckoutProfileActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    fun addDataViewModel(visitableList: ArrayList<Visitable<*>>) {
-        visitables.addAll(visitableList)
+    public fun setData(newData: ArrayList<ProfileViewModel>) {
+        data.clear()
+        data.addAll(newData)
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return ProfileViewHolder(view, listener)
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return ProfileViewHolder.LAYOUT
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is ProfileViewHolder) {
+            holder.bind(data[position])
+        }
+    }
+
 
 }
