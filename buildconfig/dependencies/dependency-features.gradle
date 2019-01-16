@@ -64,6 +64,36 @@ ext {
     tkpdUserIdentification = '2.22'
     tkpdUserIdentificationCommon = '2.22'
 
+    //SCOPE TRANSACTION
+    groupIdTransaction = 'com.tokopedia.transaction'
+    artifactIdCheckout = 'checkout'
+    artifactIdTransactionAnalytics = 'transactionanalytics'
+    artifactIdTransactionData = 'transactiondata'
+    artifactIdTransactionInvoice = 'transactioninvoice'
+    transactionGroupVersion = '2.22'
+
+    //SCOPE LOGISTIC
+    groupIdLogistic = 'com.tokopedia.logistic'
+    artifactIdDistrictRecommendation = 'district_recommendation'
+    artifactIdLogisticAnalytics = 'logisticanalytics'
+    artifactIdLogisticData = 'logisticdata'
+    artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
+    artifactIdLogisticUploadAwb = 'logisticuploadawb'
+    artifactIdLogisticTracking = 'tracking'
+    artifactIdLogisticAddAddress = 'logisticaddaddress'
+    artifactIdLogisticListAddress = 'logisticlistaddress'
+    artifactIdLogisticGeoLocation = 'logisticgeolocation'
+    artifactIdLogisticCommon = 'logisticcommon'
+    artifactIdLogisticInsurance = 'logisticinsurance'
+    logisticGroupVersion = '2.22'
+
+    groupIdPayment = 'com.tokopedia.payment'
+    artifactIdPayment = 'payment'
+    artifactIdPaymentSetting = 'payment_setting'
+    artifactIdPaymentManagementSystem = 'pms'
+    artifactIdWithdraw = 'withdraw'
+    paymentGroupVersion = '2.22'
+
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
             affiliate                   : "com.tokopedia.affiliate:affiliate:${tkpdAffiliateVersion}",
@@ -178,13 +208,29 @@ ext {
             searchbar                   : ":features:home:searchbar",
 
             challenges                  : ":features:im:challenges",
-
-            districtRecommendation      : ":features:logistic:district_recommendation",
-            logisticaddaddress          : ":features:logistic:logisticaddaddress",
-            logisticanalytics           : ":features:logistic:logisticanalytics",
+           
             logisticdata                : ":features:logistic:logisticdata",
-            logisticuploadawb           : ":features:logistic:logisticuploadawb",
+//            logisticdata                : ":features:logistic:logisticdata_no_op",
+            logisticanalytics           : ":features:logistic:logisticanalytics",
+//            logisticanalytics           : ":features:logistic:logisticanalytics_no_op",
+            logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment",
+//            logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment_no_op",
+            logisticlistaddress         : ":features:logistic:logisticlistaddress",
+//            logisticlistaddress         : ":features:logistic:logisticlistaddress_no_op",
+            logisticaddaddress          : ":features:logistic:logisticaddaddress",
+//            logisticaddaddress          : ":features:logistic:logisticaddaddress_no_op",
+            logisticCommon              : ":features:logistic:logisticcommon",
+//            logisticCommon              : ":features:logistic:logisticcommon_no_op",
             tracking                    : ":features:logistic:tracking",
+//            tracking                    : ":features:logistic:tracking_no_op",
+            logisticuploadawb           : ":features:logistic:logisticuploadawb",
+//            logisticuploadawb           : ":features:logistic:logisticuploadawb_no_op",
+            logisticgeolocation         : ":features:logistic:logisticgeolocation",
+//            logisticgeolocation         : ":features:logistic:logisticgeolocation_no_op",
+            logisticdistrictrecommendation: ":features:logistic:district_recommendation",
+//            logisticdistrictrecommendation      : ":features:logistic:district_recommendation_no_op",
+            logisticinsurance           : ":features:logistic:logisticinsurance",
+//            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
 
             goldMerchant                : ":features:merchant:gold_merchant",
             goldMerchantCommon          : ":features:merchant:gold_merchant_common",
@@ -208,6 +254,7 @@ ext {
             contactUs                   : ":features:operational:contact_us",
 
             payment                     : ":features:payment:payment",
+//            payment                     : ":features:payment:payment_no_op",
             paymentSetting              : ":features:payment:payment_setting",
 //            paymentSetting            : ":features:payment:payment_setting_no_op",
             paymentManagementSystem     : ":features:payment:pms",
@@ -230,9 +277,10 @@ ext {
             topAdsManagementCommon      : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging         : ":features:top_ads:top_ads_management_sourcetagging",
 
-            checkout                    : ":features:transaction:checkout",
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
+            checkout                    : ":features:transaction:checkout",
+            transactionInvoice          : ":features:transaction:transactioninvoice",
             loyalty                     : ":features:promo:loyalty",
             loyaltyCommon               : ":features:promo:loyalty_common",
 
