@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.feature.education.view.fragment
 
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +11,17 @@ import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.constant.AffiliateConstant
 import com.tokopedia.affiliate.feature.education.view.adapter.EducationAdapter
 import com.tokopedia.affiliate.feature.education.view.viewmodel.EducationItemViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.fragment_af_education.*
 
 /**
  * @author by milhamj on 14/01/19.
  */
 class AffiliateEducationFragment : BaseDaggerFragment() {
+
+    lateinit var adapter: EducationAdapter
 
     companion object {
         fun createInstance() = AffiliateEducationFragment()
@@ -31,6 +36,7 @@ class AffiliateEducationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initListener()
     }
 
     override fun getScreenName(): String? = null
@@ -44,9 +50,50 @@ class AffiliateEducationFragment : BaseDaggerFragment() {
                 getImagePath(AffiliateConstant.IMG_AFFILIATE_EDUCATION_BG)
         )
 
-        val adapter = EducationAdapter(getCarouselList())
+        adapter = EducationAdapter(getCarouselList())
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
+    }
+
+    private fun initListener() {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) {
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                if (tab.position == adapter.list.size - 1) {
+                    skipText.hide()
+                    endBtn.show()
+
+                } else {
+                    skipText.show()
+                    endBtn.hide()
+                }
+            }
+        })
+
+        //TODO milhamj
+//        tabLayout.onTabSelected {
+//            if (it.position == adapter.list.size - 1) {
+//                skipText.hide()
+//                endBtn.show()
+//
+//            } else {
+//                skipText.show()
+//                endBtn.hide()
+//            }
+//        }
+
+        skipText.setOnClickListener {
+            activity?.finish()
+        }
+
+        endBtn.setOnClickListener {
+            activity?.finish()
+        }
     }
 
     private fun getCarouselList(): MutableList<EducationItemViewModel> {
