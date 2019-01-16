@@ -28,6 +28,7 @@ import rx.schedulers.Schedulers;
  * Modified by Alvarisi 29/11/2016
  * appsflyer get commented.
  */
+@Deprecated
 public class AppsflyerContainer implements IAppsflyerContainer {
 
     private static final String TAG = AppsflyerContainer.class.getSimpleName();
@@ -76,21 +77,12 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     @Override
     public void setUserID(String userID) {
-        HashMap<String, Object> addData = initAdditionalData();
-        addData.put(KEY_INSTALL_SOURCE, getInstallSource());
+        HashMap<String, Object> addData = new HashMap<>();
+        addData.put(KEY_INSTALL_SOURCE, context.getPackageManager().getInstallerPackageName(
+                context.getPackageName()));
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
         AppsFlyerLib.getInstance().setAdditionalData(addData);
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
-    }
-
-    private HashMap<String, Object> initAdditionalData(){
-        return new HashMap<>();
-    }
-
-    private String getInstallSource() {
-        String installer = context.getPackageManager().getInstallerPackageName(
-                context.getPackageName());
-        return installer;
     }
 
     private void setGCMId(String gcmID) {
