@@ -552,19 +552,19 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
         tickerView.buildView();
-
-        tickerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tickerView.setItemPadding(
-                        getResources().getDimensionPixelSize(R.dimen.dp_10),
-                        getResources().getDimensionPixelSize(R.dimen.dp_15),
-                        getResources().getDimensionPixelSize(R.dimen.dp_10),
-                        getResources().getDimensionPixelSize(R.dimen.dp_15)
-                );
-                tickerView.setItemTextAppearance(R.style.TextView_Micro);
-            }
-        }, DEFAULT_DELAY_TIME);
+//
+//        tickerView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                tickerView.setItemPadding(
+//                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+//                        getResources().getDimensionPixelSize(R.dimen.dp_15),
+//                        getResources().getDimensionPixelSize(R.dimen.dp_10),
+//                        getResources().getDimensionPixelSize(R.dimen.dp_15)
+//                );
+//                tickerView.setItemTextAppearance(R.style.TextView_Micro);
+//            }
+//        }, DEFAULT_DELAY_TIME);
 
         separatorForTicker.setVisibility(View.VISIBLE);
     }
