@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.explore.view.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -80,10 +81,9 @@ public class SortAdapter extends RecyclerView.Adapter<SortAdapter.Holder> {
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-
         TextView tvText;
         ImageView ivCheck;
-        CoordinatorLayout layout;
+        ConstraintLayout layout;
 
         public Holder(View itemView) {
             super(itemView);
