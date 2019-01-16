@@ -16,7 +16,7 @@ public class ExploreData {
     @Expose
     private FilterQuery filter;
 
-    @SerializedName("sort")
+    @SerializedName("topadsGetExploreSort")
     private SortQuery sort;
 
     public ExploreQuery getExploreProduct() {
