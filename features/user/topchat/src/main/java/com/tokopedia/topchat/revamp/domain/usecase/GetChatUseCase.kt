@@ -94,20 +94,6 @@ class GetChatUseCase @Inject constructor(
 
 
         fun generateParamFirstTime(messageId: String): Map<String, Any> {
-            var temp = true
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
-            requestParams[PARAM_PAGE] = 1
-            if(temp) {
-                requestParams[PARAM_CACHE_STRATEGY] = CacheType.CLOUD_THEN_CACHE
-            } else {
-                requestParams[PARAM_CACHE_STRATEGY] = CacheType.CACHE_ONLY
-            }
-            return requestParams
-        }
-
-        fun generateParamCache(messageId: String): Map<String, Any> {
-            var temp = true
             val requestParams = HashMap<String, Any>()
             requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
             requestParams[PARAM_PAGE] = 1

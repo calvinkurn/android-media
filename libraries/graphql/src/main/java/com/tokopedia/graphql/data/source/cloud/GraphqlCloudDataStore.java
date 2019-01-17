@@ -50,6 +50,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                                 cacheStrategy.getExpiryTime());
                         break;
                     case CLOUD_THEN_CACHE:
+                        //store the data into disk if data is not empty
                         if(!TextUtils.isEmpty(graphqlResponseInternal.getOriginalResponse().toString())) {
                             mCacheManager.save(mFingerprintManager.generateFingerPrint(requests.toString(), cacheStrategy.isSessionIncluded()),
                                     graphqlResponseInternal.getOriginalResponse().toString(),
