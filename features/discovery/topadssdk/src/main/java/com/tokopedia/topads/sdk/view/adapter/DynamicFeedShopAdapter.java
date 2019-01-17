@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.component.ButtonCompat;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
@@ -175,10 +174,7 @@ public class DynamicFeedShopAdapter
             if (shop.isGoldShopBadge()) {
                 ivBadge.setVisibility(View.VISIBLE);
                 ivBadge.setImageDrawable(
-                        ImageLoader.getDrawable(
-                                ivBadge.getContext(),
-                                GMConstant.getGMDrawableResource(ivBadge.getContext())
-                        )
+                        ImageLoader.getDrawable(ivBadge.getContext(), R.drawable.ic_gold)
                 );
                 layoutParams.leftMargin =
                         (int) ivBadge.getContext().getResources().getDimension(R.dimen.dp_4);

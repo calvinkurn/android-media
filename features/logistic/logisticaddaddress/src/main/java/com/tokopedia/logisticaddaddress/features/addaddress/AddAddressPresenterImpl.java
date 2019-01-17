@@ -72,16 +72,8 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     public void requestReverseGeoCode(Context context, Destination destination) {
         GeoLocationUtils.getReverseGeoCodeParallel(context,
                 Double.parseDouble(destination.getLatitude()),
-                Double.parseDouble(destination.getLongitude()), new GeoLocationUtils.GeoLocationListener() {
-                    @Override
-                    public void getGeoCode(String resultAddress) {
-                        mView.setPinpointAddress(resultAddress);
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        mView.showErrorSnackbar(message);
-                    }
+                Double.parseDouble(destination.getLongitude()), resultAddress -> {
+                    mView.setPinpointAddress(resultAddress);
                 });
     }
 

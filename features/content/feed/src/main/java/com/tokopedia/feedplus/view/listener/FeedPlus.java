@@ -35,8 +35,6 @@ public interface FeedPlus {
 
         void sendMoEngageOpenFeedEvent();
 
-        void stopTracePerformanceMon();
-
         interface Kol {
 
             UserSessionInterface getUserSession();

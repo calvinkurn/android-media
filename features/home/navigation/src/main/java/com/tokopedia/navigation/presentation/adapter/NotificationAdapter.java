@@ -22,7 +22,6 @@ import static com.tokopedia.navigation.GlobalNavConstant.BUYER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
-import static com.tokopedia.navigation.GlobalNavConstant.NEWEST_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
 import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
@@ -32,7 +31,6 @@ import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
 import static com.tokopedia.navigation.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
-import static com.tokopedia.navigation.GlobalNavConstant.UPDATE;
 import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
 import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
 
@@ -102,12 +100,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
             if (item.getId() != null) {
                 List<DrawerNotification.ChildDrawerNotification> childs = item.getChilds();
                 for (DrawerNotification.ChildDrawerNotification child : childs) {
-                    if (item.getId() == UPDATE){
-                        if (child.getId() == NEWEST_INFO) {
-                            child.setBadge(getNotifCenterUnread(unread));
-                        }
-                    }
-                    else if (item.getId() == PEMBELIAN) {
+                    if (item.getId() == PEMBELIAN) {
                         if (child.getId() == MENUNGGU_PEMBAYARAN) {
                             try {
                                 child.setBadge(Integer.parseInt(data.getBuyerOrder().getPaymentStatus()));
@@ -122,6 +115,8 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                             child.setBadge(data.getBuyerOrder().getShipped());
                         } else if (child.getId() == SAMPAI_TUJUAN) {
                             child.setBadge(data.getBuyerOrder().getArriveAtDestination());
+                        } else if (child.getId() == BUYER_INFO) {
+                            child.setBadge(getNotifCenterUnread(unread));
                         }
                     } else if (item.getId() == PENJUALAN) {
                         if (child.getId() == PESANAN_BARU) {
@@ -132,6 +127,8 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                             child.setBadge(data.getSellerOrder().getShipped());
                         } else if (child.getId() == SAMPAI_TUJUAN) {
                             child.setBadge(data.getSellerOrder().getArriveAtDestination());
+                        } else if (child.getId() == SELLER_INFO) {
+                            child.setBadge(data.getSellerInfo().getNotification());
                         }
                     } else if (item.getId() == KOMPLAIN) {
                         if (child.getId() == BUYER) {

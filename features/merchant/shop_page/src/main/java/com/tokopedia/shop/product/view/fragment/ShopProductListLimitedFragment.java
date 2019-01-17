@@ -61,7 +61,6 @@ import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
-import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
@@ -596,9 +595,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         shopProductAdapter.notifyDataSetChanged();
         shopProductAdapter.refreshSticky();
-        if(getActivity() instanceof ShopPageView){
-            ((ShopPageView) getActivity()).stopPerformanceMonitor();
-        }
     }
 
     @Override
@@ -649,9 +645,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void showGetListError(Throwable throwable) {
-        if(getActivity() instanceof ShopPageView){
-            ((ShopPageView)getActivity()).stopPerformanceMonitor();
-        }
         hideLoading();
         updateStateScrollListener();
         if (shopProductAdapter.getShopProductViewModelList().size() > 0) {
