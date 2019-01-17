@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 
 /**
  * @author by furqan on 07/01/19
@@ -243,6 +244,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
 
         flightSearchPresenter.fetchSearchData(flightSearchPassData, flightAirportCombineModelList)
+    }
+
+    override fun fetchSortAndFilterData() {
+        setUpProgress()
+        if (adapter.itemCount == 0) {
+            showLoading()
+        }
+
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
@@ -494,7 +504,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     open fun buildFilterModel(flightFilterModel: FlightFilterModel): FlightFilterModel =
             flightFilterModel
 
-    protected fun setUpSwipeRefresh() {
+    private fun setUpSwipeRefresh() {
         swipe_refresh_layout.setSwipeDistance()
         swipe_refresh_layout.setOnRefreshListener {
             hideLoading()
@@ -503,7 +513,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
     }
 
-    protected fun setUpBottomAction() {
+    private fun setUpBottomAction() {
         bottom_action_filter_sort.setButton2OnClickListener {
             val bottomSheetBuilder: BottomSheetBuilder = CheckedBottomSheetBuilder(activity)
                     .setMode(BottomSheetBuilder.MODE_LIST)
@@ -577,7 +587,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             if (isDoneLoadData()) {
                 progress = MAX_PROGRESS
                 horizontal_progress_bar.setProgress(MAX_PROGRESS)
-//                flightSearchPresenter.setDelayHorizontalProgress()
+                flightSearchPresenter.setDelayHorizontalProgress()
             } else {
                 horizontal_progress_bar.setProgress(progress)
             }

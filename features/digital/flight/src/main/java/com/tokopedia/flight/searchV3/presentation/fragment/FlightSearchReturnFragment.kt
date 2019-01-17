@@ -10,6 +10,7 @@ import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
@@ -55,6 +56,8 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         flightSearchReturnPresenter.attachView(this)
 
         clearAdapterData()
+
+        flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture)
 
         super.onViewCreated(view, savedInstanceState)
     }

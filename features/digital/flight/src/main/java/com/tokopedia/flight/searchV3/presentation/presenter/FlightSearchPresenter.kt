@@ -182,6 +182,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     override fun onNext(t: Boolean?) {
                         if (t != null) {
                             view.setCombineStatus(t)
+                            view.fetchSortAndFilterData()
                         }
                     }
                 })

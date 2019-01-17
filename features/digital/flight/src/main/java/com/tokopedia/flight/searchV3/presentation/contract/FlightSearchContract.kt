@@ -26,6 +26,8 @@ interface FlightSearchContract {
 
         fun fetchFlightSearchData()
 
+        fun fetchSortAndFilterData()
+
         fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean)
 
         fun addToolbarElevation()
