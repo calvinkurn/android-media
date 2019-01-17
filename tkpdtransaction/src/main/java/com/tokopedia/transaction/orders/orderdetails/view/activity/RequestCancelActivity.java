@@ -14,12 +14,17 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.ACTION_BUTTON_URL;
+import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST;
+import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.REJECT_BUYER_REQUEST;
 
 public class RequestCancelActivity extends BaseSimpleActivity implements HasComponent<OrderDetailsComponent>, RejectOrderBuyerRequest.RejectOrderBuyerRequestListener, CancelSearchFragment.CancelSearchReplacementListener {
 
@@ -34,12 +39,6 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         orderID = getIntent().getStringExtra(KEY_ORDER_ID);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            toolbar.setElevation(10);
-//            toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
-//        } else {
-//            toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow);
-//        }
     }
 
     @Override
@@ -83,20 +82,21 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     public void rejectOrderBuyerRequest(TKPDMapParam<String, String> rejectParam) {
-        Intent i = new Intent();
-        i.putExtra("reason",rejectParam.get("reason"));
-        i.putExtra("r_code", 1);
-        setResult(1,i);
+        Intent intent = new Intent();
+        intent.putExtra(OrderListContants.REASON,rejectParam.get(OrderListContants.REASON));
+        intent.putExtra(OrderListContants.REASON_CODE, 1);
+        intent.putExtra(ACTION_BUTTON_URL, getIntent().getStringExtra(ACTION_BUTTON_URL));
+        setResult(REJECT_BUYER_REQUEST,intent);
         finish();
     }
 
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
         Intent intent = new Intent();
-        intent.putExtra("reason", notes);
-        intent.putExtra("reason_code", reasonId);
-        intent.putExtra("r_code", reasonId);
-        setResult(2, intent);
+        intent.putExtra(OrderListContants.REASON, notes);
+        intent.putExtra(OrderListContants.REASON_CODE, reasonId);
+        intent.putExtra(ACTION_BUTTON_URL, getIntent().getStringExtra(ACTION_BUTTON_URL));
+        setResult(CANCEL_BUYER_REQUEST, intent);
         finish();
     }
 

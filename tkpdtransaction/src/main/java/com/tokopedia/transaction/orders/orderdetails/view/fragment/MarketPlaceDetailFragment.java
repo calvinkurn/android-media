@@ -63,6 +63,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancel
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ProductItemAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -78,10 +79,13 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
+    public static final String ACTION_BUTTON_URL = "action_button_url";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
     public static final int REQUEST_CANCEL_ORDER = 101;
+    public static final int REJECT_BUYER_REQUEST = 102;
+    public static final int CANCEL_BUYER_REQUEST = 103;
     @Inject
     OrderListDetailPresenter presenter;
     LinearLayout mainView;
@@ -188,11 +192,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         statusLihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String applink = "http://m.tokopedia.com/myorder/buyer/detail/history";
-                applink = applink + getArguments().get(KEY_ORDER_ID);
-
                 Intent intent = OrderHistoryActivity
-                        .createInstance(getActivity(), (String) getArguments().get(KEY_ORDER_ID), 1);
+                        .createInstance(getActivity(), getArguments().getString(KEY_ORDER_ID), 1);
                 startActivity(intent);
             }
         });
@@ -246,7 +247,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void setDetail(Detail detail) {
-        detailLabel.setText("Detail Pengiriman");
+        detailLabel.setText(getContext().getResources().getString(R.string.detail_product));
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         if (!detail.label().equalsIgnoreCase("No. Resi")) {
             doubleTextView.setTopText(detail.label());
@@ -262,7 +263,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                     try {
                         myClip = ClipData.newPlainText("text", detail.value());
                         myClipboard.setPrimaryClip(myClip);
-                        ToasterNormal.showClose(getActivity(), "Nomor Resi berhasil disalin");
+                        ToasterNormal.showClose(getActivity(), getContext().getResources().getString(R.string.awb_number_copied));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -478,11 +479,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                         public void onClick(View v) {
                             if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
                                 if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
-                                    presenter.finishOrder((String) getArguments().get(KEY_ORDER_ID));
+                                    presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
                                     dialog.dismiss();
                                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
                                     Intent newIntent = InboxRouter.getCreateResCenterActivityIntent(getContext(),
-                                            (String) getArguments().get(KEY_ORDER_ID));
+                                            getArguments().getString(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
                                 } else
@@ -518,7 +519,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                     }
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
-                    intent.putExtra(KEY_ORDER_ID, (String) getArguments().get(KEY_ORDER_ID));
+                    intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                    intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals("220") || this.status.status().equals("400")) {
                         intent.putExtra("cancelFragment", 1);
                         startActivityForResult(intent, REQUEST_CANCEL_ORDER);
@@ -527,7 +529,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                         startActivityForResult(intent, REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
                         String routingAppLink;
-                        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", (String) getArguments().get(KEY_ORDER_ID));
+                        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));
 
                         String trackingUrl;
                         Uri uri = Uri.parse(actionButton.getUri());
@@ -551,10 +553,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CANCEL_ORDER) {
-            if (resultCode == 1) {
-                String reason = data.getStringExtra("reason");
-                int reasonCode = data.getIntExtra("r_code", 1);
-                presenter.updateOrderCancelReason(reason, (String) getArguments().get(KEY_ORDER_ID), reasonCode);
+            String reason = "";
+            int reasonCode = 1;
+            if (resultCode == REJECT_BUYER_REQUEST) {
+                reason = data.getStringExtra(OrderListContants.REASON);
+                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
+                presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
+            } else if ( requestCode == CANCEL_BUYER_REQUEST) {
+                reason = data.getStringExtra(OrderListContants.REASON);
+                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
+                presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             }
         }
     }

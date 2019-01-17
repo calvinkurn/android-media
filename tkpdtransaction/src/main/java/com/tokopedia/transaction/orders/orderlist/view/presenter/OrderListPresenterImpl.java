@@ -37,14 +37,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (getView().getAppContext() == null)
             return;
         getView().showProcessGetData();
-//        getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
 
         if (orderCategory.equalsIgnoreCase("MarketPlace")) {
             variables.put(OrderCategory.KEY_LABEL, orderCategory);
-            variables.put("Page", page);
-            variables.put("PerPage", 10);
+            variables.put(OrderCategory.PAGE, page);
+            variables.put(OrderCategory.PER_PAGE, 10);
             variables.put("Search", getView().getSearchedString());
             variables.put("StartDate", getView().getStartDate());
             variables.put("EndDate", getView().getEndDate());
@@ -55,8 +54,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     R.raw.orderlist_marketplace), Data.class, variables);
         } else {
             variables.put(OrderCategory.KEY_LABEL, orderCategory);
-            variables.put("Page", page);
-            variables.put("PerPage", 10);
+            variables.put(OrderCategory.PAGE, page);
+            variables.put(OrderCategory.PER_PAGE, 10);
             variables.put("orderId", orderId);
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
@@ -75,7 +74,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             public void onError(Throwable e) {
                 CommonUtils.dumper("error =" + e.toString());
                 getView().removeProgressBarView();
-//                getView().hideProgressBar();
                 getView().unregisterScrollListener();
                 getView().showErrorNetwork(
                         ErrorHandler.getErrorMessage(getView().getAppContext(), e));
@@ -86,7 +84,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 if (getView() == null || getView().getAppContext() == null)
                     return;
                 getView().removeProgressBarView();
-//                getView().hideProgressBar();
                 if (response != null) {
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {

@@ -13,8 +13,7 @@ public class SaveDateBottomSheetActivity extends BaseSimpleActivity implements S
     public static final String END_DATE = "END_DATE";
 
     public static Intent getInstance(Context context) {
-        Intent i = new Intent(context,SaveDateBottomSheetActivity.class);
-        return i;
+        return new Intent(context,SaveDateBottomSheetActivity.class);
     }
 
     @Override

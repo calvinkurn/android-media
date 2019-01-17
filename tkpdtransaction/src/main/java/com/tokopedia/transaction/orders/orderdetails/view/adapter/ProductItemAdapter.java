@@ -34,12 +34,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
-        RecyclerView.ViewHolder holder = null;
-        View v;
-
-        v = inflater.inflate(R.layout.marketplace_product_detail_item, parent, false);
-        holder = new ItemViewHolder(v);
-        return holder;
+        View v = inflater.inflate(R.layout.marketplace_product_detail_item, parent, false);
+        return new ItemViewHolder(v);
     }
 
     @Override
@@ -83,7 +79,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if (!TextUtils.isEmpty(items.getTitle())) {
                     productName.setText(items.getTitle());
                 }
-                quantity.setText(items.getQuantity() + " " + "Barang" + " (" + items.getWeight() + ")");
+                quantity.setText(String.format(context.getResources().getString(R.string.quantity), items.getQuantity(), items.getWeight()));
                 if (!TextUtils.isEmpty(items.getPrice()))
                     productPrice.setText(items.getPrice());
             }

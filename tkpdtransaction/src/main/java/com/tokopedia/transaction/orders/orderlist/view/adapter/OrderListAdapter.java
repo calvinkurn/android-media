@@ -23,6 +23,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
@@ -31,6 +32,7 @@ import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenterImpl;
+import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -153,7 +155,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setDotMenuVisibility(int visibility) {
-        if (currentHolder.orderCategory.equalsIgnoreCase("belanja") || currentHolder.orderCategory.equalsIgnoreCase("marketplace")) {
+        if (currentHolder.orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || currentHolder.orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
             currentHolder.orderListBtnOverflow.setVisibility(View.GONE);
         } else {
             currentHolder.orderListBtnOverflow.setVisibility(visibility);
@@ -170,11 +172,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void setItemCount(String itemCount) {
-        if (currentHolder.orderCategory.equalsIgnoreCase("belanja") || currentHolder.orderCategory.equalsIgnoreCase("marketplace")) {
+    public void setItemCount(int itemCount) {
+        if (currentHolder.orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || currentHolder.orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
             currentHolder.itemCount.setVisibility(View.VISIBLE);
             currentHolder.title.setVisibility(View.GONE);
-            currentHolder.itemCount.setText("(+" + itemCount + " " + "Produk Lainnya)");
+            currentHolder.itemCount.setText(String.format(context.getResources().getString(R.string.item_count), itemCount));
         }
     }
 

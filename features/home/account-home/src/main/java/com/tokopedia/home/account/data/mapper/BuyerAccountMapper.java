@@ -180,7 +180,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setTitleTrack(PEMBELI);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
         menuGrid.setApplinkUrl(ApplinkConst.MARKETPLACE_ORDER);
-        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_global_nav_new_design", true)) {
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
             menuGrid.setItems(getMarketPlaceOrderMenu(
                     accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
                     accountModel
@@ -192,15 +192,13 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     accountModel
             ));
         }
-//        items.add(menuGrid);
-
-
-        items.add(getBuyerResolutionMenu(accountModel));
 
         menuGrid = new MenuGridViewModel();
-        menuGrid.setTitle("Detail Transaksi");
+        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
+
+        items.add(getBuyerResolutionMenu(accountModel));
 
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_favorites));
@@ -455,15 +453,15 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         );
         menuGridItems.add(gridItem);
 
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_train,
-                context.getString(R.string.title_menu_train),
-                AccountConstants.Navigation.TRAIN_ORDER_LIST,
-                0,
-                PEMBELI,
-                context.getString(R.string.title_menu_transaction)
-        );
-        menuGridItems.add(gridItem);
+//        gridItem = new MenuGridItemViewModel(
+//                R.drawable.ic_train,
+//                context.getString(R.string.title_menu_train),
+//                AccountConstants.Navigation.TRAIN_ORDER_LIST,
+//                0,
+//                PEMBELI,
+//                context.getString(R.string.title_menu_transaction)
+//        );
+//        menuGridItems.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,

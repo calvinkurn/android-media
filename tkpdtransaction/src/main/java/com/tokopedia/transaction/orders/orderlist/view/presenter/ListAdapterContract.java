@@ -21,7 +21,7 @@ public class ListAdapterContract {
 
         void setCategoryAndTitle(String categoryName, String title);
 
-        void setItemCount(String itemCount);
+        void setItemCount(int itemCount);
 
         void setTotal(String totalLabel, String totalValue, String textColor);
 

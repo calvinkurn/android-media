@@ -112,6 +112,7 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
     }
     actionButtons {
       label
+      buttonType
       key
       value
       weight

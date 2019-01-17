@@ -23,11 +23,14 @@ import static com.tokopedia.travelcalendar.view.TravelCalendarActivity.DATE_SELE
 public class SaveDateBottomSheet extends BottomSheets {
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
+    public static final String TITLE = "Filter Tanggal";
 
     public static final Locale LOCALE = new Locale("in", "ID");
     private static final String MIN_DATE = "01/01/2017";
     private String filterStartDate = "";
     private String filterFinalDate = "";
+    TextView startDate;
+    TextView endDate;
 
     public SaveDateBottomSheet() {
 
@@ -37,10 +40,6 @@ public class SaveDateBottomSheet extends BottomSheets {
     public int getLayoutResourceId() {
         return R.layout.select_filter_date;
     }
-
-    TextView startDate;
-    TextView endDate;
-
 
     DateFilterResult dateFilterResult;
     @Override
@@ -98,7 +97,7 @@ public class SaveDateBottomSheet extends BottomSheets {
 
     @Override
     protected String title() {
-        return "Filter Tanggal";
+        return TITLE;
     }
 
     private Date getMinimumDate() {

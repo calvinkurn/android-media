@@ -9,6 +9,5 @@ public abstract class TkpdAppLink {
     public static final String SELLER_APP_HOME = "sellerapp://home";
 
     public static final String EXPLORE = "tokopedia://jump/{section}";
-    public static final String ASKSELLER = "tokopedia://topchat/askseller/{custom_subject}";
 
 }

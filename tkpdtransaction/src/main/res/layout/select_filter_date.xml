@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="@dimen/dp_16"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -9,21 +10,21 @@
         android:id="@+id/startDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tanggal Awal"
+        android:text="@string/start_date"
         android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/black_70"
         android:layout_marginTop="@dimen/dp_16"
         android:textStyle="bold"
-        android:textSize="14dp" />
+        android:textSize="@dimen/dp_14" />
 
     <TextView
         android:id="@+id/set_current_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
-        android:text="20/12/2018"
+        tools:text="20/12/2018"
         android:textColor="@color/black_70"
         android:textSize="@dimen/dp_14"
         app:layout_constraintLeft_toLeftOf="@+id/startDate"
@@ -45,19 +46,19 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:text="Tanggal Akhir"
+        android:text="@string/end_date"
         android:textColor="@color/black_70"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintTop_toBottomOf="@+id/divider1"
-        android:textSize="14dp" />
+        android:textSize="@dimen/dp_14" />
 
     <TextView
         android:id="@+id/set_end_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
-        android:text="25/12/2018"
+        tools:text="25/12/2018"
         android:textColor="@color/black_70"
         android:textSize="@dimen/dp_14"
         app:layout_constraintLeft_toLeftOf="@+id/endDate"
@@ -86,7 +87,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2"
         android:padding="@dimen/dp_16"
-        android:text="Terapkan"
+        android:text="@string/save_date"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"

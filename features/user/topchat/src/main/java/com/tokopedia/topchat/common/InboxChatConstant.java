@@ -28,5 +28,10 @@ public interface InboxChatConstant {
     String CHAT_PROMOTION = "chat promosi";
     String CHAT_PERSONAL = "chat personal";
     String CHAT_BOTH = "semua chat";
+    String SHOP_NAME = "shopName";
+    String SHOP_ID = "shopId";
+    String SHOP_LOGO = "shopLogo";
+    String INVOICE = "INVOICE:";
+    String INVOICEURL = "invoiceUrl";
 
 }

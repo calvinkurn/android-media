@@ -25,8 +25,7 @@ import okhttp3.Interceptor;
 public class PostCancelReasonUseCase extends RestRequestSupportInterceptorUseCase {
 
     private RequestParams params;
-    private int cancelOrReplacement = 1;
-    public static final String REQUEST_BODY="request_body";
+    private String url = "";
 
     @Inject
     public PostCancelReasonUseCase(Interceptor interceptor, Context context) {
@@ -37,30 +36,20 @@ public class PostCancelReasonUseCase extends RestRequestSupportInterceptorUseCas
         this.params = params;
     }
 
-    public void cancelOrReplaceOrder(int cancelOrReplacement) {
-        this.cancelOrReplacement = cancelOrReplacement;
+    public void cancelOrReplaceOrder(String url) {
+        this.url = url;
     }
     @Override
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         Map<String, Object> params = this.params.getParameters();
-        Map<String, Object> headerParams = new HashMap<>();
-        headerParams.put("device_time", String.valueOf((new Date().getTime()) / 1000));
 
-        String url = "";
-        if (this.cancelOrReplacement == 1) {
-            url = "https://ws-staging.tokopedia.com/v4/action/tx-order/request_cancel_order.pl";
-        } else {
-            url = "https://ws-staging.tokopedia.com/v4/replacement/cancel";
-        }
         Type token = new TypeToken<DataResponse<JsonObject>>() {
         }.getType();
 
-        RestRequest restRequest1 = new RestRequest.Builder(url, token)
+        RestRequest restRequest1 = new RestRequest.Builder(this.url, token)
                 .setRequestType(RequestType.POST)
-                .setBody("")
-                .setQueryParams(params)
-                .setHeaders(headerParams)
+                .setBody(params)
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;

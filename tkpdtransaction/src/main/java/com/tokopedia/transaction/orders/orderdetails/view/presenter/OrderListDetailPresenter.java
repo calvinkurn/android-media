@@ -188,8 +188,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().showDriverInfo(details.getDriverDetails());
                 }
             }
-//                Detail detail = new Detail("No. Resi", "AA1234567890BBCC");
-//                details.detail().set(3, detail);
             getView().setDetail(details.detail().get(i));
         }
         if (details.getShopInfo() != null) {
@@ -246,7 +244,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
 
-    public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement) {
+    public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement, String url) {
 
         UserSession userSession = new UserSession(getView().getAppContext());
         String userId = userSession.getUserId();
@@ -263,7 +261,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         this.postCancelReasonUseCase = new PostCancelReasonUseCase(new TkpdOldAuthInterceptor(getView().getAppContext(),
                 (NetworkRouter) getView().getAppContext(), new UserSession(getView().getAppContext())), getView().getAppContext());
         postCancelReasonUseCase.setRequestParams(requestParams);
-        postCancelReasonUseCase.cancelOrReplaceOrder(cancelOrReplacement);
+        postCancelReasonUseCase.cancelOrReplaceOrder(url);
         postCancelReasonUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -281,14 +279,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 Type token = new TypeToken<DataResponse<JsonObject>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
-                DataResponse dataResponse = restResponse.getData();
                 getView().hideProgressBar();
                 getView().finishOrderDetail();
             }
         });
     }
 
-    public void finishOrder(String orderId) {
+    public void finishOrder(String orderId, String url) {
         UserSession userSession = new UserSession(getView().getAppContext());
         String userId = userSession.getUserId();
 
@@ -300,6 +297,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         this.finishOrderUseCase = new FinishOrderUseCase(new TkpdOldAuthInterceptor(getView().getAppContext(),
                 (NetworkRouter) getView().getAppContext(), new UserSession(getView().getAppContext())), getView().getAppContext());
         finishOrderUseCase.setRequestParams(requestParams);
+        finishOrderUseCase.setEndPoint(url);
         finishOrderUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {

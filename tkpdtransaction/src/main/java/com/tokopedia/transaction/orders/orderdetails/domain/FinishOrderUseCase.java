@@ -24,6 +24,7 @@ import okhttp3.Interceptor;
 public class FinishOrderUseCase extends RestRequestSupportInterceptorUseCase {
 
     private RequestParams params;
+    private String endpoint;
 
     @Inject
     public FinishOrderUseCase(Interceptor interceptor, Context context) {
@@ -39,16 +40,19 @@ public class FinishOrderUseCase extends RestRequestSupportInterceptorUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
         Map<String, Object> params = this.params.getParameters();
 
-        String url = "https://ws-staging.tokopedia.com/v4/action/tx-order/delivery_finish_order.pl";
         Type token = new TypeToken<DataResponse<JsonObject>>() {
         }.getType();
 
-        RestRequest restRequest1 = new RestRequest.Builder(url, token)
+        RestRequest restRequest1 = new RestRequest.Builder(this.endpoint, token)
                 .setRequestType(RequestType.POST)
                 .setBody("")
                 .setQueryParams(params)
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;
+    }
+
+    public void setEndPoint(String url) {
+        this.endpoint = url;
     }
 }

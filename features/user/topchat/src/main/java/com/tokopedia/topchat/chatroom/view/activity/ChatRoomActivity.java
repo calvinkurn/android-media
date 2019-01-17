@@ -39,6 +39,7 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
 
@@ -322,18 +323,17 @@ public class ChatRoomActivity extends BasePresenterActivity
     }
 
 
-    @DeepLink(TkpdAppLink.ASKSELLER)
+    @DeepLink(ApplinkConst.ASKSELLER)
     public static Intent getAskSellerIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, ChatRoomActivity.class);
-//        intent.putExtra(PARAM_SHOP_ID, bundle.getString("custom_subject"));
-        intent.putExtra(InboxMessageConstant.PARAM_SENDER_NAME, bundle.getString("shopName"));
+        intent.putExtra(InboxMessageConstant.PARAM_SENDER_NAME, bundle.getString(InboxChatConstant.SHOP_NAME));
         intent.putExtra(PARAM_SENDER_ROLE, ROLE_SELLER);
-        intent.putExtra(InboxMessageConstant.PARAM_SENDER_ID, bundle.getString("shopId"));
+        intent.putExtra(InboxMessageConstant.PARAM_SENDER_ID, bundle.getString(InboxChatConstant.SHOP_ID));
         bundle.putString(PARAM_SOURCE, TkpdInboxRouter.TX_ASK_SELLER);
         bundle.putString(InboxMessageConstant.PARAM_SENDER_TAG, ROLE_SELLER);
-        intent.putExtra(InboxMessageConstant.PARAM_SENDER_IMAGE, bundle.getString("shopLogo"));
-        intent.putExtra(PARAM_CUSTOM_SUBJECT, "INVOICE:");
-        intent.putExtra(PARAM_CUSTOM_MESSAGE, bundle.getString("invoiceUrl"));
+        intent.putExtra(InboxMessageConstant.PARAM_SENDER_IMAGE, bundle.getString(InboxChatConstant.SHOP_LOGO));
+        intent.putExtra(PARAM_CUSTOM_SUBJECT, InboxChatConstant.INVOICE);
+        intent.putExtra(PARAM_CUSTOM_MESSAGE, bundle.getString(InboxChatConstant.INVOICEURL));
         return intent;
     }
 

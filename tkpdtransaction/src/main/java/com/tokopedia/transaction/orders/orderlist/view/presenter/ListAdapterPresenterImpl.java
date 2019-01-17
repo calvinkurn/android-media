@@ -76,8 +76,8 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
         view.setDate(date);
 
         view.setCategoryAndTitle(order.categoryName(), order.title());
-        if (!order.getItemCount().equalsIgnoreCase("0")) {
-            view.setItemCount(order.getItemCount());
+        if (!order.getItemCount().equalsIgnoreCase("0") && !order.getItemCount().equalsIgnoreCase("1")) {
+            view.setItemCount(Integer.parseInt(order.getItemCount()) - 1);
         }
         List<MetaData> metaDataList = order.metaData();
         for (MetaData metaData : metaDataList) {

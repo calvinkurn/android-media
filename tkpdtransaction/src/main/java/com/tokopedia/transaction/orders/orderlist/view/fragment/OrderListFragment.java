@@ -55,6 +55,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private static final String ORDER_CATEGORY = "orderCategory";
     private static final String ORDER_TAB_LIST = "TAB_LIST";
+    private static final int MINIMUM_CHARATERS_HIT_API = 3;
     private static final int FILTER_DATE_REQUEST = 1;
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
@@ -107,8 +108,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_transaction_list_order_module, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_transaction_list_order_module, container, false);
     }
 
     protected int getFragmentLayout() {
@@ -246,8 +246,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         tryAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                refreshHandler.startRefresh();
-                presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
+                ((UnifiedOrderListRouter) getActivity().getApplication()).goToHome(getContext());
             }
         });
         if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
@@ -318,7 +317,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             mOrderDataList.clear();
             orderListAdapter.clearItemList();
         }
-        if (mOrderCategory.equalsIgnoreCase("Belanja") || mOrderCategory.equalsIgnoreCase("MARKETPLACE")) {
+        if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
             quickSingleFilterView.setVisibility(View.VISIBLE);
             simpleSearchView.setVisibility(View.VISIBLE);
         }
@@ -367,7 +366,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void renderEmptyList(int typeRequest) {
         if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
             swipeToRefresh.setVisibility(View.GONE);
-            if (mOrderCategory.equalsIgnoreCase("belanja") || mOrderCategory.equalsIgnoreCase("marketplace")) {
+            if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
                 emptyLayoutMarketPlace.setVisibility(View.VISIBLE);
             } else {
                 emptyLayoutOrderList.setVisibility(View.VISIBLE);
@@ -446,7 +445,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         swipeToRefresh.setVisibility(View.VISIBLE);
         emptyLayoutOrderList.setVisibility(View.GONE);
         emptyLayoutMarketPlace.setVisibility(View.GONE);
-        if (mOrderCategory.equalsIgnoreCase("belanja") || mOrderCategory.equalsIgnoreCase("marketplace")) {
+        if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
             filterDate.setVisibility(View.VISIBLE);
         }
     }
@@ -524,7 +523,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchTextChanged(String text) {
-        if (text.length() >= 3) {
+        if (text.length() >= MINIMUM_CHARATERS_HIT_API) {
             searchedString = text;
             orderListAnalytics.sendSearchFilterClickEvent();
         } else {
