@@ -21,6 +21,8 @@ public interface AccountItemListener {
 
     void onBuyerVoucherClicked(BuyerCardViewModel element);
 
+    void onByMeClicked();
+
     void onTokopediaPayLinkClicked();
 
     void onMenuGridItemClicked(MenuGridItemViewModel item);

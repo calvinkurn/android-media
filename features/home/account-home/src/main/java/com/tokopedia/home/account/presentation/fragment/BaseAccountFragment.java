@@ -8,9 +8,9 @@ import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
@@ -32,6 +32,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import java.util.HashMap;
 
@@ -43,7 +44,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
-import com.tokopedia.user_identification_common.KycCommonUrl;
 
 /**
  * @author okasurya on 7/26/18.
@@ -125,6 +125,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onBuyerVoucherClicked(BuyerCardViewModel element) {
         sendTracking(PEMBELI, AKUN_SAYA, MY_COUPON);
         openApplink(ApplinkConst.COUPON_LISTING);
+    }
+
+    @Override
+    public void onByMeClicked() {
+        openApplink(ApplinkConst.AFFILIATE_EXPLORE);
     }
 
     @Override
