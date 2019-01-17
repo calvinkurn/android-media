@@ -41,7 +41,6 @@ class TickerViewAdapter extends PagerAdapter {
     private View tickerBackground;
     private TextView tickerMessage;
     private Context context;
-    private int appearance;
 
     public TickerViewAdapter(ArrayList<Integer> listTextColor,
                              int backgroundColor,
@@ -96,13 +95,6 @@ class TickerViewAdapter extends PagerAdapter {
             }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         tickerMessage.setText(style);
-        if (appearance != 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                tickerMessage.setTextAppearance(appearance);
-            } else {
-                tickerMessage.setTextAppearance(context, appearance);
-            }
-        }
 
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -155,7 +147,11 @@ class TickerViewAdapter extends PagerAdapter {
     }
 
     public void setTextAppearance(int appearance) {
-        this.appearance = appearance;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tickerMessage.setTextAppearance(appearance);
+        } else {
+            tickerMessage.setTextAppearance(context, appearance);
+        }
     }
 
     @SuppressWarnings("deprecation")
