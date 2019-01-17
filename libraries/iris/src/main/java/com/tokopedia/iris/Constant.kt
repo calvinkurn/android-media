@@ -38,5 +38,5 @@ const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT_GA = "default_v2" // default_app
 //const val KEY_EVENT_GA = "testing datahub Android"
 
-const val DEFAULT_SERVICE_TIME: Long = 10000
+const val DEFAULT_SERVICE_TIME: Long = 900000
 const val DEFAULT_MAX_ROW = 50

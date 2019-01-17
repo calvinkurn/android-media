@@ -531,7 +531,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     private final static int IRIS_ROW_LIMIT = 50;
-    private final static long IRIS_TIME = 900000;
+    private final static long IRIS_TIME = 10000;
 
     private static final String EXTRA = "extra";
 
