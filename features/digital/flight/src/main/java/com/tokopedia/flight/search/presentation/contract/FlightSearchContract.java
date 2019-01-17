@@ -128,6 +128,8 @@ public interface FlightSearchContract {
         boolean isDoneLoadData();
 
         void resetCounterCall();
+
+        void unsubscribeAll();
     }
 
 }

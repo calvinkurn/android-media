@@ -164,15 +164,13 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void onResume() {
         super.onResume();
-        flightSearchPresenter.attachView(this);
-
         flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        flightSearchPresenter.detachView();
+        flightSearchPresenter.unsubscribeAll();
     }
 
     @Override
