@@ -23,7 +23,12 @@ public class ThanksTrackerService extends IntentService {
     public static void start(Context context, ThanksTrackerData data) {
         Intent intent = new Intent(context, ThanksTrackerService.class);
         intent.putExtra(DATA, data);
-        context.startService(intent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
     }
 
     public ThanksTrackerService() {
