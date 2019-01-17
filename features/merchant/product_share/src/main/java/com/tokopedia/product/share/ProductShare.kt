@@ -61,7 +61,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         }
     }
 
-    private fun openIntentShare(file: File?, title: String, shareContent: String, shareUri: String) {
+    private fun openIntentShare(file: File?, title: String?, shareContent: String, shareUri: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = if (file == null || mode == MODE_TEXT) "text/plain" else "image/*"
@@ -103,7 +103,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         canonicalIdentifier = data.productId
         title = data.productName
         setContentDescription(data.productName)
-        setContentImageUrl(data.productImageUrl)
+        setContentImageUrl(data.productImageUrl ?: "")
         setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
     }
 
