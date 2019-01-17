@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -21,7 +20,7 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
 import com.tokopedia.topchat.chatlist.fragment.InboxChatFragment;
 import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;

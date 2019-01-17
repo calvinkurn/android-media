@@ -16,7 +16,7 @@ import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;

@@ -43,7 +43,7 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 
 import java.util.Map;
 

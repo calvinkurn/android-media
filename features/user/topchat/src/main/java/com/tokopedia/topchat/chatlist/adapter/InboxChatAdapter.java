@@ -17,7 +17,7 @@ import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.EmptyChatModel;
-import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 
 import java.util.ArrayList;

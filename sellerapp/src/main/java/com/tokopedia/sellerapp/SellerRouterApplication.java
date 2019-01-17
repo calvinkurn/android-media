@@ -223,7 +223,7 @@ import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachP
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.topchat.revamp.view.TopChatRoomActivity;
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;

@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
+import com.tokopedia.topchat.chatlist.presenter.WebSocketInterface;
 
 import java.util.List;
 

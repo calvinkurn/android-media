@@ -393,7 +393,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
-import com.tokopedia.topchat.revamp.view.TopChatRoomActivity;
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
