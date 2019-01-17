@@ -41,6 +41,10 @@ public class CustomViewQuickFilterView extends QuickSingleFilterView {
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
+    public void scrollToPosition(int position) {
+        recyclerView.scrollToPosition(position);
+    }
+
     @Override
     protected int getLayoutRes() {
         return R.layout.widget_custom_quick_filter;
