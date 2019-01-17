@@ -8,6 +8,6 @@ data class DataCampaignLabel(
         @Expose
         val data: List<CampaignStatus> = listOf()
 ){
-    data class Response(@SerializedName("getMojitoCampaignLabel")
+    data class Response(@SerializedName("getCampaignLabel")
                         @Expose val result: DataCampaignLabel)
 }

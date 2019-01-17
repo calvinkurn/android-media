@@ -23,20 +23,18 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
@@ -44,8 +42,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
-import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
-import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -56,6 +52,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -73,7 +70,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
 
 public class ImageSearchProductListFragment extends BaseDaggerFragment implements
         SearchSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
-        ItemClickListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
+        ProductListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
 
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -85,8 +82,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     protected RecyclerView recyclerView;
     @Inject
     ImageProductListPresenter presenter;
+    @Inject
+    UserSessionInterface userSession;
 
-    private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
     private Config topAdsConfig;
     private ImageProductListAdapter adapter;
@@ -121,7 +119,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         } else {
             loadDataFromArguments();
         }
-        sessionHandler = new SessionHandler(getContext());
         gcmHandler = new GCMHandler(getContext());
     }
 
@@ -191,7 +188,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private void initTopAdsConfig() {
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
     }
@@ -340,12 +337,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public boolean isUserHasLogin() {
-        return SessionHandler.isV4Login(getContext());
+        return userSession.isLoggedIn();
     }
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+        return userSession.getUserId();
     }
 
     @Override
@@ -404,7 +401,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void sendImageTrackingDataInChunks(List<Visitable> list) {
         if (list != null && list.size() > 0) {
-            String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+            String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
             List<Object> dataLayerList = new ArrayList<>();
             for (int j = 0; j < list.size(); ) {
                 int count = 0;
@@ -471,12 +468,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private String generateUserId() {
-        return sessionHandler.isV4Login() ? sessionHandler.getLoginID() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : null;
     }
 
     private String generateUniqueId() {
-        return sessionHandler.isV4Login() ?
-                AuthUtil.md5(sessionHandler.getLoginID()) :
+        return userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
                 AuthUtil.md5(gcmHandler.getRegistrationId());
     }
 
@@ -539,7 +536,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),true, getQueryKey());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
@@ -553,7 +550,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),false, getQueryKey());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
@@ -648,8 +645,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = SessionHandler.isV4Login(getContext()) ?
-                SessionHandler.getLoginID(getContext()) : "";
+        String userId = userSession.isLoggedIn() ?
+                userSession.getUserId() : "";
 
         SearchTracking.trackEventClickImageSearchResultProduct(
                 getActivity(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);

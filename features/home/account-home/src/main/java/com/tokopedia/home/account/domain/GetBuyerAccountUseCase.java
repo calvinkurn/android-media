@@ -59,6 +59,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     return accountModel;
                 })
                 .doOnNext(this::saveLocallyWallet)
+                .doOnNext(this::saveLocallyVccUserStatus)
                 .doOnNext(this::savePhoneVerified)
                 .map(mapper);
     }
@@ -89,9 +90,15 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
         }
     }
 
+    private void saveLocallyVccUserStatus(AccountModel accountModel) {
+        if (accountModel.getVccUserStatus() != null) {
+            walletPref.saveVccUserStatus(accountModel.getVccUserStatus());
+        }
+    }
+
     private void savePhoneVerified(AccountModel accountModel) {
         if (accountModel.getProfile() != null) {
-            userSession.setIsMsisdnVerified(accountModel.getProfile().isPhoneVerified());
+            userSession.setIsMSISDNVerified(accountModel.getProfile().isPhoneVerified());
         }
     }
 }

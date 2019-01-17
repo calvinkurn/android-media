@@ -7,6 +7,7 @@ package com.tokopedia.applink;
  */
 
 public interface ApplinkConst {
+    String APPLINK_CUSTOMER_SCHEME = "tokopedia";
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
@@ -29,6 +30,7 @@ public interface ApplinkConst {
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
+    String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String CART = "tokopedia://cart";
@@ -52,6 +54,7 @@ public interface ApplinkConst {
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
+    String PROMO_DETAIL = "tokopedia://promo/{slug}";
     String DISCOVERY_CATEGORY = "tokopedia://category";
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
@@ -64,6 +67,7 @@ public interface ApplinkConst {
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
+    String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
@@ -88,6 +92,8 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
+    String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
+    String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
 
@@ -135,6 +141,7 @@ public interface ApplinkConst {
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
+    String SETTING_DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts/{type}";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
@@ -161,7 +168,22 @@ public interface ApplinkConst {
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
+    String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
+    String AFFILIATE_EDIT_POST = "tokopedia://affiliate/edit/{post_id}";
+    String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
+    String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
+    String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
+    String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
+
     String CHALLENGE = "tokopedia://challenges";
+    String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
+    String ADD_NAME_PROFILE = "tokopedia://addname";
+    String CREATE_PASSWORD = "tokopedia://createpassword";
+    String PHONE_VERIFICATION = "tokopedia://phoneverification";
+    String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
+
+    String KYC = "tokopedia://kyc";
+    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

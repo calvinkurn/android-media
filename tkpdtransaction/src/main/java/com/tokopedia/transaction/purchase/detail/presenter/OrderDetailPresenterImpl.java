@@ -8,8 +8,8 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
-import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
@@ -314,8 +314,8 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     public void processFinish(Context context, String orderId, String orderStatus) {
         TKPDMapParam<String, String> orderDetailParams = new TKPDMapParam<>();
         orderDetailParams.put(ORDER_ID_KEY, orderId);
-        if (orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERED))
-                || orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERY_FAILURE))) {
+        if (orderStatus.equals(context.getString(com.tokopedia.core2.R.string.ORDER_DELIVERED))
+                || orderStatus.equals(context.getString(com.tokopedia.core2.R.string.ORDER_DELIVERY_FAILURE))) {
             orderDetailInteractor.confirmDeliveryConfirm(confirmShipmentSubscriber(),
                     AuthUtil.generateParamsNetwork(context, orderDetailParams));
         } else {
@@ -423,7 +423,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showSnackbar(e.getMessage());
+                mainView.showSnackbarWithCloseButton(e.getMessage());
             }
 
             @Override

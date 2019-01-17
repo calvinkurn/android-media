@@ -11,7 +11,7 @@ import android.os.PersistableBundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.deposit.fragment.DepositFragment;
@@ -19,7 +19,7 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.deposit.presenter.DepositPresenter;
 import com.tokopedia.core.deposit.presenter.DepositPresenterImpl;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.view.fragment.MerchantSaldoPriorityFragment;
 
 /**
@@ -110,7 +110,7 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> imp
     }
 
     @Override
-    public void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+    public void showSaldoFragment(int resId, GqlDetailsResponse sellerDetails) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("seller_details", sellerDetails);
         getSupportFragmentManager()

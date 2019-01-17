@@ -20,7 +20,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;

@@ -1,6 +1,7 @@
 package com.tokopedia.tracking.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.tracking.adapter.TrackingHistoryAdapter;
@@ -83,12 +84,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.tracking_page_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadingScreen = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
@@ -132,8 +133,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         buyerName.setText(model.getBuyerName());
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
-        trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
+        initialHistoryView();
+        setHistoryView(model);
         setEmptyHistoryView(model);
         setLiveTrackingButton();
         sendAnalyticsOnViewTrackingRendered();
@@ -157,7 +158,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public void closeMainLoadingPage() {
         loadingScreen.dismiss();
         rootView.setVisibility(View.VISIBLE);
-
     }
 
     @Override
@@ -173,25 +173,42 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void showError(String message) {
         NetworkErrorHelper.showEmptyState(getActivity(), rootView,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-                    }
-                });
+                () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
+    }
+
+
+    private void initialHistoryView() {
+        trackingHistory.setVisibility(View.GONE);
+        emptyUpdateNotification.setVisibility(View.GONE);
+        liveTrackingButton.setVisibility(View.GONE);
+    }
+
+    private void setHistoryView(TrackingViewModel model) {
+        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING ||
+                model.isInvalid() || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
+            trackingHistory.setVisibility(View.GONE);
+        } else {
+            trackingHistory.setVisibility(View.VISIBLE);
+            trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+            trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
+        }
     }
 
     private void setEmptyHistoryView(TrackingViewModel model) {
-        if (model.isInvalid() || model.getStatus().toLowerCase().contains(INVALID_REFERENCE_STATUS)) {
+        if (model.isInvalid()) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
             notificationText.setText(getString(R.string.warning_courier_invalid));
             notificationHelpStep.setVisibility(View.VISIBLE);
             notificationHelpStep.setLayoutManager(new LinearLayoutManager(getActivity()));
             notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
-        } else if (model.getChange() == 0 || model.getHistoryList().size() == 0) {
+        } else if (model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING
+                || model.getChange() == 0 || model.getHistoryList().size() == 0) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
+            notificationText.setText(getString(R.string.warning_no_courier_change));
+            notificationHelpStep.setVisibility(View.GONE);
         } else {
-            trackingHistory.setVisibility(View.VISIBLE);
+            emptyUpdateNotification.setVisibility(View.GONE);
+            notificationHelpStep.setVisibility(View.GONE);
         }
     }
 
@@ -224,23 +241,15 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private View.OnClickListener onFurtherInformationClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
-            }
-        };
+        return view -> startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
     }
 
     private View.OnClickListener onLiveTrackingClickedListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendAnalyticsOnButtonLiveTrackingClicked();
-                startActivity(
-                        SimpleWebViewActivity.createIntent(getActivity(),
-                                getArguments().getString(URL_LIVE_TRACKING)));
-            }
+        return view -> {
+            sendAnalyticsOnButtonLiveTrackingClicked();
+            startActivity(
+                    SimpleWebViewActivity.createIntent(getActivity(),
+                            getArguments().getString(URL_LIVE_TRACKING)));
         };
     }
 

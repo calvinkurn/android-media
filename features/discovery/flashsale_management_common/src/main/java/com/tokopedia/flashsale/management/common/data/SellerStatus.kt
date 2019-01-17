@@ -43,11 +43,11 @@ data class SellerStatus(
         }
 
         data class Response(
-                @SerializedName("getMojitoSellerStatus")
-                val getMojitoSellerStatus: GetMojitoSellerStatus
+                @SerializedName("getCampaignSellerStatus")
+                val getCampaignSellerStatus: GetCampaignSellerStatus
         )
 
-        data class GetMojitoSellerStatus(
+        data class GetCampaignSellerStatus(
                 @SerializedName("data")
                 val sellerStatus: SellerStatus
         )

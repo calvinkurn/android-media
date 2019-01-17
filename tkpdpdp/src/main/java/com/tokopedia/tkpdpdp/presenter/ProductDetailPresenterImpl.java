@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -41,7 +42,6 @@ import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
-import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
@@ -72,17 +72,22 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.presenter.subscriber.AffiliateProductDataSubscriber;
+import com.tokopedia.tkpdpdp.presenter.subscriber.ImageReviewSubscriber;
+import com.tokopedia.tkpdpdp.presenter.subscriber.MostHelpfulReviewSubscriber;
 import com.tokopedia.tkpdpdp.presenter.subscriber.WishlistCountSubscriber;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
@@ -126,7 +131,6 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
  * Created by ANGGA on 11/2/2015.
  */
 public class ProductDetailPresenterImpl implements ProductDetailPresenter {
-
     public static final String TAG = ProductDetailPresenterImpl.class.getSimpleName();
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String PRODUCT_NAME = "CACHE_PRODUCT_NAME";
@@ -136,11 +140,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public static final String OFFICIAL_STORE_TYPE = "os";
     public static final String MERCHANT_TYPE = "merchant";
     private static final String NON_LOGIN_USER_ID = "0";
+    public static final int FIRST_PAGE = 0;
+    public static final int TOTAL_IMAGE_FOR_PDP = 4;
 
     private final WishListActionListener wishListActionListener;
+    private final GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase;
+    private final GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase;
+    private final GetImageReviewUseCase getImageReviewUseCase;
 
     private GetWishlistCountUseCase getWishlistCountUseCase;
-
 
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
@@ -156,14 +164,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public ProductDetailPresenterImpl(
             GetWishlistCountUseCase getWishlistCountUseCase,
             ProductDetailView viewListener,
-            WishListActionListener wishListActionListener) {
+            WishListActionListener wishListActionListener,
+            RetrofitInteractor retrofitInteractor,
+            CacheInteractor cacheInteractor,
+            GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase,
+            GetImageReviewUseCase getImageReviewUseCase,
+            GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase) {
         this.viewListener = viewListener;
         this.wishListActionListener = wishListActionListener;
-        this.retrofitInteractor = new RetrofitInteractorImpl();
-        this.cacheInteractor = new CacheInteractorImpl();
+        this.retrofitInteractor = retrofitInteractor;
+        this.cacheInteractor = cacheInteractor;
         this.getWishlistCountUseCase = getWishlistCountUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-
+        this.getProductAffiliateGqlUseCase = getProductAffiliateGqlUseCase;
+        this.getImageReviewUseCase = getImageReviewUseCase;
+        this.getMostHelpfulReviewUseCase = getMostHelpfulReviewUseCase;
     }
 
     private void checkWishlistCount(String productId) {
@@ -171,6 +186,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         requestParams.putString(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
 
         getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber(viewListener));
+    }
+
+    private void checkImageReview(int productId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putInt(GetImageReviewUseCase.Companion.getKEY_PRODUCT_ID(), productId);
+        requestParams.putInt(GetImageReviewUseCase.Companion.getKEY_PAGE(), FIRST_PAGE);
+        requestParams.putInt(GetImageReviewUseCase.Companion.getKEY_TOTAL(), TOTAL_IMAGE_FOR_PDP);
+
+        getImageReviewUseCase.execute(requestParams,
+                new ImageReviewSubscriber(viewListener));
     }
 
     @Override
@@ -199,11 +224,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
+                        viewListener.onErrorLoadRateEstimation();
                     }
 
                     @Override
                     public void onNext(RatesEstimationModel ratesEstimationModel) {
-                        viewListener.onSuccesLoadRateEstimaion(ratesEstimationModel.getRates());
+                        viewListener.onSuccesLoadRateEstimation(ratesEstimationModel.getRates());
                     }
                 });
     }
@@ -230,8 +256,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()));
-        UnifyTracking.eventPDPCart();
+        boolean skipToCart = data.isSkipToCart();
+        Subscriber subscriber = skipToCart ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc());
+        boolean isOneClickShipment = skipToCart && !data.isBigPromo();
+        routeToNewCheckout(context, data, subscriber, isOneClickShipment);
+        UnifyTracking.eventPDPCart(context);
     }
 
     private Subscriber getCartSubscriber(String sourceAtc) {
@@ -302,7 +331,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess()) {
                     addToCartResult.setSource(sourceAtc);
-                    viewListener.renderAddToCartSuccessOpenCart(addToCartResult);
+                    viewListener.renderAddToCartSuccessOpenCheckout(addToCartResult);
                 } else {
                     viewListener.showToastMessage(addToCartResult.getMessage());
                 }
@@ -316,7 +345,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         );
     }
 
-    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data, Subscriber subscriber) {
+    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data,
+                                    Subscriber subscriber, boolean isOneClickShipment) {
         if (context.getApplication() instanceof PdpRouter) {
             viewListener.showProgressLoading();
             ((PdpRouter) context.getApplication()).addToCartProduct(
@@ -327,7 +357,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             .trackerAttribution(data.getTrackerAttribution())
                             .trackerListName(data.getListName())
                             .shopId(Integer.parseInt(data.getShopId()))
-                            .build()
+                            .build(), isOneClickShipment
             ).subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -361,7 +391,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToTalk(@NonNull Context context, @NonNull Bundle bundle) {
-        UnifyTracking.eventPDPTalk();
+        UnifyTracking.eventPDPTalk(context);
         Intent intent = ((PdpRouter) context.getApplicationContext()).getProductTalk(context,
                 bundle.getString("product_id", ""));
         viewListener.navigateToActivityRequest(intent,
@@ -370,7 +400,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToReputation(@NonNull Context context, String productId, String productName) {
-        UnifyTracking.eventPDPReputation();
+        UnifyTracking.eventPDPReputation(context);
         if (context.getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) context.getApplicationContext())
                     .getProductReputationIntent(context, productId, productName);
@@ -416,10 +446,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void reportProduct(@NonNull Context context) {
         if (SessionHandler.isV4Login(context)) {
-            UnifyTracking.eventPDPReport();
+            UnifyTracking.eventPDPReport(context);
             viewListener.showReportDialog();
         } else {
-            UnifyTracking.eventPDPReportNotLogin();
+            UnifyTracking.eventPDPReportNotLogin(context);
             Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
@@ -427,8 +457,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processGetGTMTicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_PDP).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_PDP_TEXT);
+        if (TrackingUtils.getGtmString(viewListener.getActivityContext(), AppEventTracking.GTM.TICKER_PDP).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(viewListener.getActivityContext(), AppEventTracking.GTM.TICKER_PDP_TEXT);
             viewListener.showTickerGTM(message);
         } else {
             viewListener.hideTickerGTM();
@@ -445,8 +475,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.navigateToActivityRequest(intent,
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
-        UnifyTracking.eventPDPSendMessage();
-        UnifyTracking.eventPDPSendChat();
+        UnifyTracking.eventPDPSendMessage(context);
+        UnifyTracking.eventPDPSendChat(context);
     }
 
     @Override
@@ -457,7 +487,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void sendAppsFlyerCheckout(@NonNull final Context context, @NonNull final ProductCartPass param) {
-        PaymentTracking.checkoutEventAppsflyer(param);
+        PaymentTracking.checkoutEventAppsflyer(context, param);
     }
 
     @Override
@@ -471,16 +501,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         ProductDetail pdt = new ProductDetail();
         pdt.addProduct(product.getProduct());
 
-        UnifyTracking.eventPDPDetail(pdt);
-        TrackingUtils.sendMoEngageOpenProductEvent(successResult);
+        UnifyTracking.eventPDPDetail(viewListener.getActivityContext(), pdt);
+        TrackingUtils.sendMoEngageOpenProductEvent(viewListener.getActivityContext(), successResult);
 
         try {
             if (successResult.getShopInfo().getShopIsOfficial() == 1) {
-                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "official_store", "/product", String.valueOf(successResult.getInfo().getProductId()));
+                ScreenTracking.eventOfficialStoreScreenAuth(viewListener.getActivityContext(), successResult.getShopInfo().getShopId(), "official_store", "/product", String.valueOf(successResult.getInfo().getProductId()));
             } else if (successResult.getShopInfo().getShopIsGold() == 1) {
-                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "gold_merchant", "/product", String.valueOf(successResult.getInfo().getProductId()));
+                ScreenTracking.eventOfficialStoreScreenAuth(viewListener.getActivityContext(), successResult.getShopInfo().getShopId(), "gold_merchant", "/product", String.valueOf(successResult.getInfo().getProductId()));
             } else {
-                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "regular", "/product", String.valueOf(successResult.getInfo().getProductId()));
+                ScreenTracking.eventOfficialStoreScreenAuth(viewListener.getActivityContext(), successResult.getShopInfo().getShopId(), "regular", "/product", String.valueOf(successResult.getInfo().getProductId()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -503,11 +533,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     new CacheInteractor.GetProductDetailCacheListener() {
                         @Override
                         public void onSuccess(ProductDetailData productDetailData) {
+                            Campaign campaign = productDetailData.getCampaign();
                             viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
+
+                            checkImageReview(productDetailData.getInfo().getProductId());
+
+                            requestAffiliateProductData(productDetailData);
 
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
@@ -521,11 +556,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
-                                viewListener.trackingEnhanceProductDetail();
                                 getProductStock(context
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             }
+                            viewListener.trackingEnhanceProductDetail();
                             validateProductDataWithProductPassAndShowMessage(productDetailData, productPass, context);
+
+                            if (campaign.getActive()) {
+                                getProductDetailFromNetwork(context, productPass, useVariant);
+                            }
                         }
 
                         @Override
@@ -578,7 +617,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.navigateToActivityRequest(intent,
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
-        UnifyTracking.eventPDPFavorite();
+        UnifyTracking.eventPDPFavorite(context);
     }
 
     @Override
@@ -1049,7 +1088,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private void requestAddWishList(final Context context, final Integer productId) {
         viewListener.loadingWishList();
-        UnifyTracking.eventPDPWishlit();
+        UnifyTracking.eventPDPWishlit(context);
 
         AddWishListUseCase addWishListUseCase = new AddWishListUseCase(context);
         addWishListUseCase.createObservable(String.valueOf(productId),
@@ -1085,6 +1124,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
+                        checkImageReview(data.getInfo().getProductId());
+
+                        requestAffiliateProductData(
+                                data
+                        );
+
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
@@ -1098,10 +1143,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
-                            viewListener.trackingEnhanceProductDetail();
                             getProductStock(context
                                     , Integer.toString(data.getInfo().getProductId()));
                         }
+                        viewListener.trackingEnhanceProductDetail();
                         validateProductDataWithProductPassAndShowMessage(data, productPass, context);
                     }
 
@@ -1144,7 +1189,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             CourierViewData items = new CourierViewData();
             items.setCourierId(shopShipment.getShippingId());
             items.setLogo(shopShipment.getLogo());
-            items.setPackageName(shopShipment.getPackageNames());
+            if (shopShipment.getPackageNames() != null) {
+                items.setPackageName(shopShipment.getPackageNames());
+            } else {
+                items.setPackageName(new ArrayList<>());
+            }
             items.setCourierName(shopShipment.getShippingName());
             list.add(items);
         }
@@ -1174,13 +1223,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void sendAppsFlyerData(@NonNull final Context context, @NonNull final ProductDetailData successResult, @NonNull final String eventName) {
-        ScreenTracking.sendAFPDPEvent(successResult, eventName);
+        ScreenTracking.sendAFPDPEvent(context, successResult, eventName);
     }
 
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
-        UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
-        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
+        UnifyTracking.eventPDPAddToWishlist(context, successResult.getInfo().getProductName());
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {
@@ -1204,19 +1252,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     public void getMostHelpfulReview(@NonNull Context context, @NonNull String productId, String
             shopId) {
-        retrofitInteractor.getMostHelpfulReview(context, productId, shopId,
-                new MostHelpfulListener() {
-                    @Override
-                    public void onSucccess(List<Review> reviews) {
-                        if (reviews != null && reviews.size() > 0)
-                            viewListener.showMostHelpfulReview(reviews);
-                    }
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetMostHelpfulReviewUseCase.PRODUCT_ID_PARAM, productId);
+        requestParams.putString(GetMostHelpfulReviewUseCase.SHOP_ID, shopId);
 
-                    @Override
-                    public void onError(String error) {
-
-                    }
-                }
+        getMostHelpfulReviewUseCase.execute(
+                requestParams,
+                new MostHelpfulReviewSubscriber(viewListener)
         );
     }
 
@@ -1315,7 +1357,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             context.startActivity(topadsIntent);
         } else if (context.getApplicationContext() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
-            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
+            UnifyTracking.eventTopAdsSwitcher(context, AppEventTracking.Category.SWITCHER);
         }
     }
 
@@ -1347,26 +1389,41 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         });
     }
 
-    public void getProductVariant(@NonNull Context context, @NonNull String id) {
-        retrofitInteractor.getProductVariant(context, id,
-                new RetrofitInteractor.ProductVariantListener() {
-                    @Override
-                    public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0
-                                && productVariant.getChildren() != null && productVariant.getChildren().size() > 0) {
-                            viewListener.addProductVariant(productVariant);
-                        } else {
-                            viewListener.setVariantFalse();
-                        }
-                        viewListener.updateButtonBuyListener();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        viewListener.showErrorVariant();
-                    }
-                }
+    @Override
+    public void requestAffiliateProductData(ProductDetailData productDetailData) {
+        ArrayList<Integer> productList = new ArrayList<>();
+        productList.add(productDetailData.getInfo().getProductId());
+        getProductAffiliateGqlUseCase.execute(
+                GetProductAffiliateGqlUseCase.Companion.createRequestParams(
+                        productList,
+                        Integer.parseInt(productDetailData.getShopInfo().getShopId())
+                ),
+                new AffiliateProductDataSubscriber(viewListener)
         );
+    }
+
+    public void getProductVariant(@NonNull Context context, @NonNull String id) {
+        if (!viewListener.isFromExploreAffiliate()) {
+            retrofitInteractor.getProductVariant(context, id,
+                    new RetrofitInteractor.ProductVariantListener() {
+                        @Override
+                        public void onSucccess(final ProductVariant productVariant) {
+                            if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0
+                                    && productVariant.getChildren() != null && productVariant.getChildren().size() > 0) {
+                                viewListener.addProductVariant(productVariant);
+                            } else {
+                                viewListener.setVariantFalse();
+                            }
+                            viewListener.updateButtonBuyListener();
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            viewListener.showErrorVariant();
+                        }
+                    }
+            );
+        }
     }
 
     public void getProductStock(@NonNull Context context, @NonNull String id) {

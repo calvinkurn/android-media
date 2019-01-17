@@ -9,6 +9,7 @@ import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint;
 import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,7 +29,7 @@ public class GetTicketListUseCase extends RestRequestUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         RestRequest restRequest1 = new RestRequest.Builder(getUrl(), new TypeToken<DataResponse<TicketListResponse>>() {

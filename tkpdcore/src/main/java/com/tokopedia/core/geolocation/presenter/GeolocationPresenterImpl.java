@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -16,6 +17,9 @@ import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewM
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
+import java.util.HashMap;
+
 
 /**
  * Created by hangnadi on 1/29/16.
@@ -30,8 +34,11 @@ public class GeolocationPresenterImpl implements GeolocationPresenter {
 
     @Override
     public void initFragment(@NonNull Context context, Uri uri, Bundle bundle) {
-        final LocationPass locationPass = bundle
-                .getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+        LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+//                unBundleLocationMap(
+//                        (HashMap<String, String>) bundle.getSerializable(GeolocationActivity.EXTRA_HASH_LOCATION)
+//                );
+
         if (locationPass != null) {
             if (locationPass.getLatitude() != null && !locationPass.getLatitude().isEmpty())
                 viewListener

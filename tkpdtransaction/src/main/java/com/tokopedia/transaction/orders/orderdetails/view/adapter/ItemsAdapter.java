@@ -17,16 +17,17 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
-import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface {
@@ -34,6 +35,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_BUTTON = "button";
     public static final String KEY_TEXT = "text";
     public static final String KEY_REDIRECT = "redirect";
+    private static final int DEALS_CATEGORY_ID = 35;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
@@ -95,7 +97,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals)) {
+        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
             if (isShortLayout)
                 return ITEM_DEALS_SHORT;
             else
@@ -123,8 +125,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((OrderListDetailActivity) context, uri);
+                try {
+                    context.startActivity(((UnifiedOrderListRouter) context.getApplicationContext())
+                            .getWebviewActivityWithIntent(context,
+                            URLEncoder.encode(uri, "UTF-8")));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }
@@ -247,7 +254,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (item.getQuantity() == 0) {
                         itemView.findViewById(R.id.ll_details4).setVisibility(View.GONE);
                     } else {
-                        tvRightNumberOfBooking.setText(String.valueOf(item.getQuantity()));
+                        tvRightNumberOfBooking.setText(String.valueOf(metaDataInfo.getTotalTicketCount()));
                     }
                     if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
                         tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));

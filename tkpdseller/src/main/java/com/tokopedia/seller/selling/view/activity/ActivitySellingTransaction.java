@@ -25,7 +25,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -222,10 +222,8 @@ public class ActivitySellingTransaction extends TkpdActivity
     private void setTrackerWidget() {
         boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
         if (fromWidget) {
-            UnifyTracking.eventAccessAppViewWidget();
+            UnifyTracking.eventAccessAppViewWidget(this);
         }
-
-        TrackingUtils.sendMoEngageOpenSellerScreen();
     }
 
     @Override
@@ -357,7 +355,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             public void onPageSelected(int position) {
                 setDrawerPosition(position);
                 if (indicator.getTabAt(position) != null) {
-                    UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
+                    UnifyTracking.eventShopTabSelected(ActivitySellingTransaction.this, indicator.getTabAt(position).getText().toString());
                 }
                 initSellerTicker();
             }
@@ -593,6 +591,6 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        // Do not put super, avoid crash transactionTooLarge
     }
 }

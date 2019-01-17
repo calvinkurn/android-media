@@ -32,7 +32,6 @@ public class TkpdDigitalResponse {
     private static final String KEY_ERROR = "errors";
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
 
-
     private JsonElement jsonElementData;
     private JsonElement jsonElementIncluded;
     private JsonElement jsonElementMeta;

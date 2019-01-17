@@ -187,7 +187,6 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
      */
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        startDataLoading();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -299,7 +298,6 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     protected final void loadCompleted(@NonNull List<T> moreItems, Object rawObject) {
         if (mCallback != null) {
             if (mCurrentPageIndex == 1 && moreItems.isEmpty()) {
-                mCallback.onFinishFirstPageLoad(moreItems == null ? ERROR_ITEM_COUNT : moreItems.size(), rawObject);
                 mCallback.onEmptyList(rawObject);
             } else if (mCurrentPageIndex == 1) {
                 mCallback.onFinishFirstPageLoad(moreItems == null ? ERROR_ITEM_COUNT : moreItems.size(), rawObject);
@@ -364,6 +362,10 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
 
     public final int getCurrentPageIndex() {
         return mCurrentPageIndex;
+    }
+
+    public void setCurrentPageIndex(int currentPageIndex){
+        mCurrentPageIndex=currentPageIndex;
     }
 
     protected final boolean isLoading() {

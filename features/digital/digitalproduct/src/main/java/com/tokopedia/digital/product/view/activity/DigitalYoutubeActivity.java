@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 
-import com.project.youtubeutils.activity.YoutubePlayerActivity;
+import com.tokopedia.youtubeutils.activity.YoutubePlayerActivity;
 
 public class DigitalYoutubeActivity extends YoutubePlayerActivity {
 
@@ -31,4 +31,5 @@ public class DigitalYoutubeActivity extends YoutubePlayerActivity {
         videoUrl = getIntent().getStringExtra(EXTRA_YOUTUBE_VIDEO_URL);
         return videoUrl;
     }
+
 }

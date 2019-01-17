@@ -75,4 +75,14 @@ dependencies {
     })
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
+
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation 'org.assertj:assertj-core:3.8.0'
+
+    testImplementation rootProject.ext.testDependencies.powerMock
+    testImplementation rootProject.ext.testDependencies.powerMockJUnit
+    testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
+    testImplementation rootProject.ext.testDependencies.powerMockito
+    testImplementation rootProject.ext.testDependencies.powerMockXstream
 }

@@ -3,12 +3,17 @@ package com.tokopedia.shop.analytic;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -45,6 +50,9 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUC
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_BANNER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
@@ -64,14 +72,68 @@ public class ShopPageTrackingUser {
         this.shopTrackingRouter = router;
     }
 
-    private void sendScreenName(Activity activity, String screenName) {
-        shopTrackingRouter.getAnalyticTracker().sendScreen(activity, screenName);
+    private void sendScreenName(Activity activity, String screenName, CustomDimensionShopPage customDimensionShopPage) {
+        shopTrackingRouter.getAnalyticTracker().sendCustomScreen(activity, screenName,
+                customDimensionShopPage.shopId, customDimensionShopPage.shopType, SHOPPAGE, null);
+    }
+
+    protected void sendDataLayerEvent(Map<String, Object> eventTracking) {
+        shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventTracking);
     }
 
     protected void sendEvent(String event, String category, String action, String label,
                              CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventMap);
+    }
+
+    private HashMap<String, Object> createMvcImpressionMap(String event, String category, String action, String label,
+                                                           List<MerchantVoucherViewModel> viewModelList) {
+        List<Object> mvcListMap = createMvcListMap(viewModelList, 0);
+        if (mvcListMap.size() > 0) {
+            HashMap<String, Object> eventMap = createMap(event, category, action, label, null);
+            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                    ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
+                            ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, 0))));
+            return eventMap;
+        } else {
+            return null;
+        }
+    }
+
+    private HashMap<String, Object> createMvcClickMap(String event, String category, String action,
+                                                      MerchantVoucherViewModel viewModel, int positionIndex) {
+        ArrayList<MerchantVoucherViewModel> viewModelList = new ArrayList<>();
+        viewModelList.add(viewModel);
+        HashMap<String, Object> eventMap = createMap(event, category, action, viewModel.getVoucherName(),
+                null);
+        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                ShopPageTrackingConstant.PROMO_CLICK, DataLayer.mapOf(
+                        ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, positionIndex))));
+        return eventMap;
+    }
+
+    private List<Object> createMvcListMap(List<MerchantVoucherViewModel> viewModelList, int startIndex) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < viewModelList.size(); i++) {
+            MerchantVoucherViewModel viewModel = viewModelList.get(i);
+            if (viewModel.isAvailable()) {
+                list.add(
+                        DataLayer.mapOf(
+                                ShopPageTrackingConstant.ID, viewModel.getVoucherId(),
+                                ShopPageTrackingConstant.NAME, joinDash(SHOPPAGE, viewModel.getVoucherName()),
+                                ShopPageTrackingConstant.POSITION, String.valueOf(startIndex + i + 1),
+                                ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(),
+                                ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherCode()
+                        )
+                );
+            }
+        }
+        if (list.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        return DataLayer.listOf(list.toArray(new Object[list.size()]));
     }
 
     protected HashMap<String, Object> createMap(String event, String category, String action, String label,
@@ -81,7 +143,7 @@ public class ShopPageTrackingUser {
         eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, category);
         eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, action);
         eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, label);
-        if (customDimensionShopPage!= null) {
+        if (customDimensionShopPage != null) {
             addCustomDimension(eventMap, customDimensionShopPage);
             if (customDimensionShopPage instanceof CustomDimensionShopPageProduct) {
                 eventMap.put(ShopPageTrackingConstant.PRODUCT_ID,
@@ -118,8 +180,8 @@ public class ShopPageTrackingUser {
         return TextUtils.join(" ", s);
     }
 
-    public void sendScreenShopPage(Activity activity, String shopId) {
-        sendScreenName(activity, joinDash(SHOPPAGE, shopId));
+    public void sendScreenShopPage(Activity activity, CustomDimensionShopPage customDimensionShopPage) {
+        sendScreenName(activity, joinDash(SHOPPAGE, customDimensionShopPage.shopId), customDimensionShopPage);
     }
 
     public void clickManageShop(CustomDimensionShopPage customDimensionShopPage) {
@@ -309,7 +371,7 @@ public class ShopPageTrackingUser {
     }
 
     public void clickReview(boolean isOwner,
-                               CustomDimensionShopPage customDimensionShopPage) {
+                            CustomDimensionShopPage customDimensionShopPage) {
         sendEvent(CLICK_SHOP_PAGE,
                 shopPageBuyerOrSeller(isOwner),
                 joinDash(INFO, CLICK),
@@ -350,20 +412,28 @@ public class ShopPageTrackingUser {
                 null);
     }
 
-    public void clickUseMerchantVoucher(boolean isOwner) {
-        sendEvent(CLICK_SHOP_PAGE,
-                shopPageBuyerOrSeller(isOwner),
-                joinDash(MERCHANT_VOUCHER_CODE, CLICK),
-                USE_VOUCHER,
-                null);
+    public void clickUseMerchantVoucher(boolean isOwner, MerchantVoucherViewModel viewModel, int positionIndex) {
+        if (!isOwner) {
+            sendDataLayerEvent(
+                    createMvcClickMap(PROMO_CLICK,
+                            SHOP_PAGE_BUYER,
+                            joinSpace(PROMO_BANNER, CLICK),
+                            viewModel,
+                            positionIndex));
+        }
     }
 
-    public void impressionUseMerchantVoucher(boolean isOwner) {
-        sendEvent(VIEW_SHOP_PAGE,
-                shopPageBuyerOrSeller(isOwner),
-                joinDash(MERCHANT_VOUCHER_CODE, IMPRESSION),
-                USE_VOUCHER,
-                null);
+    public void impressionUseMerchantVoucher(boolean isOwner, List<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        if (!isOwner) {
+            HashMap<String, Object> map = createMvcImpressionMap(PROMO_VIEW,
+                    SHOP_PAGE_BUYER,
+                    joinSpace(PROMO_BANNER, IMPRESSION),
+                    USE_VOUCHER,
+                    merchantVoucherViewModelList);
+            if (map != null) {
+                sendDataLayerEvent(map);
+            }
+        }
     }
 
 }

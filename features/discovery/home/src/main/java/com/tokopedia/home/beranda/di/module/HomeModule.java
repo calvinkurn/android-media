@@ -4,10 +4,17 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
+import com.tokopedia.digital.common.data.source.CategoryListDataSource;
+import com.tokopedia.digital.common.data.source.StatusDataSource;
+import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
+import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
@@ -31,27 +38,21 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    protected HomeMapper providehomeMapper(){
-        return new HomeMapper();
-    }
-
-    @HomeScope
-    @Provides
-    protected GlobalCacheManager globalCacheManager() {
-        return new GlobalCacheManager();
+    protected HomeMapper providehomeMapper(@ApplicationContext Context context){
+        return new HomeMapper(context);
     }
 
     @HomeScope
     @Provides
     protected HomePresenter homePresenter(PagingHandler pagingHandler,
-                                UserSession userSession,
-                                GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
+                                          UserSession userSession,
+                                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         return realHomePresenter(pagingHandler, userSession, getShopInfoByDomainUseCase);
     }
 
     protected HomePresenter realHomePresenter(PagingHandler pagingHandler,
-                                          UserSession userSession,
-                                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase){
+                                              UserSession userSession,
+                                              GetShopInfoByDomainUseCase getShopInfoByDomainUseCase){
         return new HomePresenter(pagingHandler, userSession, getShopInfoByDomainUseCase);
     }
 
@@ -69,10 +70,10 @@ public class HomeModule {
 
     @Provides
     protected HomeDataSource provideHomeDataSource(HomeDataApi homeDataApi,
-                                         HomeMapper homeMapper,
-                                         @ApplicationContext Context context,
-                                         GlobalCacheManager cacheManager,
-                                         Gson gson){
+                                                   HomeMapper homeMapper,
+                                                   @ApplicationContext Context context,
+                                                   CacheManager cacheManager,
+                                                   Gson gson){
         return new HomeDataSource(homeDataApi, homeMapper, context, cacheManager, gson);
     }
 
@@ -81,9 +82,81 @@ public class HomeModule {
         return new GetHomeDataUseCase(homeRepository);
     }
 
+    @Provides
+    protected com.tokopedia.user.session.UserSession provideUserSession(
+            @ApplicationContext Context context){
+        return new com.tokopedia.user.session.UserSession(context);
+    }
+
     @HomeScope
     @Provides
     protected GetLocalHomeDataUseCase getLocalHomeDataUseCase(HomeRepository repository){
         return new GetLocalHomeDataUseCase(repository);
+    }
+
+    @HomeScope
+    @Provides
+    protected DigitalEndpointService provideDigitalEndpointService(){
+        return new DigitalEndpointService();
+    }
+
+    @HomeScope
+    @Provides
+    protected StatusDataSource provideStatusDataSource(DigitalEndpointService digitalEndpointService,
+                                                       CacheManager cacheManager,
+                                                       StatusMapper statusMapper){
+        return new StatusDataSource(
+                digitalEndpointService,
+                cacheManager,
+                statusMapper);
+    }
+
+    @HomeScope
+    @Provides
+    protected CategoryListDataSource provideCategoryListDataSource(DigitalEndpointService digitalEndpointService,
+                                                                   CacheManager cacheManager,
+                                                                   CategoryMapper categoryMapper){
+        return new CategoryListDataSource(
+                digitalEndpointService,
+                cacheManager,
+                categoryMapper);
+    }
+
+    @HomeScope
+    @Provides
+    protected StatusMapper provideStatusMapper(){
+        return new StatusMapper();
+    }
+
+    @HomeScope
+    @Provides
+    protected CategoryMapper provideCategoryMapper(){
+        return new CategoryMapper();
+    }
+
+    @HomeScope
+    @Provides
+    protected DigitalGqlApiService provideDigitalGqlApiService() {
+        return new DigitalGqlApiService();
+    }
+
+    @HomeScope
+    @Provides
+    protected RecommendationListDataSource provideRecommendationListDataSource(
+            DigitalGqlApiService digitalGqlApiService, @ApplicationContext Context context) {
+        return new RecommendationListDataSource(digitalGqlApiService, context);
+    }
+
+    @HomeScope
+    @Provides
+    protected DigitalWidgetRepository providetDigitalWidgetRepository(
+            StatusDataSource statusDataSource,
+            CategoryListDataSource categoryListDataSource,
+            RecommendationListDataSource recommendationListDataSource){
+        return new DigitalWidgetRepository(
+                statusDataSource,
+                categoryListDataSource,
+                recommendationListDataSource
+        );
     }
 }

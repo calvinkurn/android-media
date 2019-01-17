@@ -3,37 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/padding_small" >
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_10">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_small">
+        android:paddingBottom="@dimen/dp_10">
+
+        <ProgressBar
+            android:id="@+id/logistic_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone" />
 
         <!-- Jenis alamat dan nama penerima -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/address_type_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_save_address_as">
+                android:hint="@string/title_save_address_as_layout">
 
                 <EditText
                     android:id="@+id/address_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:textSize="@dimen/sp_14" />
@@ -55,18 +63,16 @@
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
-        <!-- End of Jenis alamat dan nama penerima -->
-
 
         <!-- Alamat -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/address_layout"
@@ -88,20 +94,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:paddingEnd="@dimen/dp_4"
-                android:paddingLeft="@dimen/dp_4"
-                android:paddingRight="@dimen/dp_4"
                 android:paddingStart="@dimen/dp_4"
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingEnd="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_4"
                 android:paddingBottom="@dimen/dp_8"
                 android:text="@string/minimal_karakter"
                 android:textSize="@dimen/sp_12" />
+
+            <!-- District Recommendation -->
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/district_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Kota atau Kecamatan"
-                android:visibility="gone">
+                android:hint="@string/logistic_district_recommendation_label">
 
                 <EditText
                     android:id="@+id/district"
@@ -116,8 +123,7 @@
                 android:id="@+id/postal_code_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Kode Pos"
-                android:visibility="gone">
+                android:hint="@string/logistic_zip_code_label">
 
                 <AutoCompleteTextView
                     android:id="@+id/autocomplete_postal_code"
@@ -131,27 +137,29 @@
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
+        <!-- Detail Alamat (supposed to be removed exchanged with District Recommendation) -->
         <LinearLayout
             android:id="@+id/address_spinner_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_province"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/sp_14" />
 
             <Spinner
                 android:id="@+id/provinsi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:inputType="text" />
 
             <TextView
@@ -159,8 +167,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_province"
-                android:textColor="#ff0000"
-                android:textSize="@dimen/fontvs"
+                android:textColor="@color/red"
+                android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
 
             <TextView
@@ -169,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_regency"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/fonts"
+                android:textSize="@dimen/dp_5"
                 android:visibility="gone" />
 
             <ProgressBar
@@ -182,7 +190,7 @@
                 android:id="@+id/regency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:inputType="text"
                 android:visibility="gone" />
 
@@ -191,8 +199,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_regency"
-                android:textColor="#ff0000"
-                android:textSize="@dimen/fontvs"
+                android:textColor="@color/red"
+                android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
 
             <TextView
@@ -201,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_sub_district"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/fonts"
+                android:textSize="@dimen/dp_5"
                 android:visibility="gone" />
 
             <ProgressBar
@@ -214,7 +222,7 @@
                 android:id="@+id/sub_district"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:inputType="text"
                 android:visibility="gone" />
 
@@ -223,19 +231,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_sub_district"
-                android:textColor="#ff0000"
-                android:textSize="@dimen/fontvs"
+                android:textColor="@color/red"
+                android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
-        </LinearLayout>
-        <!-- End of detail alamat -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:background="@drawable/cards_ui_2"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_small">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/post_code_layout"
@@ -251,6 +249,16 @@
                     android:inputType="number"
                     android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Phone Number and Password (Password will be removed as it does not required anymore) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@drawable/cards_ui_2"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_10">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/receiver_phone_layout"
@@ -285,8 +293,6 @@
 
         </LinearLayout>
 
-        <!-- End of kodepos no hp -->
-
         <!-- Map -->
 
         <LinearLayout
@@ -294,28 +300,28 @@
             android:layout_height="wrap_content"
             android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_delivery_location_pickup"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/dp_5" />
 
             <RelativeLayout
                 android:id="@+id/layout_value_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_vs">
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_10">
 
                 <ImageView
                     android:id="@+id/icon_map"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     app:srcCompat="@drawable/ic_icon_market_toped" />
 
@@ -324,10 +330,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginLeft="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
-                    android:layout_marginStart="@dimen/margin_vs"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:layout_toEndOf="@id/icon_map"
                     android:layout_toRightOf="@id/icon_map"
                     android:clickable="true"
@@ -342,17 +348,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/desc_delivery_location"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/sp_12" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/save_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_height"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/button_buy_from_cart"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/bg_button_green"
             android:gravity="center"
+            android:padding="@dimen/dp_8"
             android:text="@string/title_save"
             android:textColor="@color/white"
             android:textStyle="bold" />

@@ -8,6 +8,8 @@
         tools:node="remove"
         tools:selector="com.google.firebase"/>
 
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
+
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="true"
@@ -34,6 +36,10 @@
             <meta-data android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+
+        <activity
+            android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".dashboard.view.activity.DashboardActivity"

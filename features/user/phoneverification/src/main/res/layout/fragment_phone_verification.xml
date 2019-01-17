@@ -1,0 +1,181 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/view_otp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:text="@string/title_phone_number"
+                android:textSize="@dimen/sp_12" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/phone_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:maxLines="1"
+                    android:textColor="@color/grey_500"
+                    android:textSize="@dimen/sp_16"
+                    tools:text="08123401923" />
+
+                <TextView
+                    android:id="@+id/change_phone_number_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/button_change"
+                    android:textColor="@color/green_300" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@color/grey_400" />
+
+
+            <TextView
+                android:id="@+id/send_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_30"
+                android:background="@drawable/green_button_rounded"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/dp_5"
+                android:padding="@dimen/dp_10"
+                android:text="@string/send_otp_sms"
+                android:textColor="@color/white"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/countdown_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_30"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/dp_5"
+                android:padding="@dimen/dp_10"
+                android:textColor="@color/grey_500"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone"
+                tools:text="Verifikasi sudah dikirim\nharap menunggu selama 50 detik."
+                tools:visibility="gone" />
+
+            <TextView
+                android:id="@+id/send_otp_call"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:gravity="center"
+                android:padding="@dimen/dp_10"
+                android:text="@string/action_send_otp_with_call_2"
+                android:textColor="@color/grey_500"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/input_otp_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_20"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:gravity="center"
+                    android:text="@string/title_otp" />
+
+
+                <com.tkpd.library.ui.widget.PinEntryEditText
+                    android:id="@+id/input_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_40"
+                    android:layout_marginRight="@dimen/dp_40"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:digits="1234567890"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:textIsSelectable="false"
+                    android:textSize="28sp"
+                    app:pinLineColors="@color/pin_line_colors" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/verify_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:background="@drawable/grey_button_rounded"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/title_confirm_otp"
+        android:textColor="@color/grey_600"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/skip_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:gravity="center"
+        android:padding="@dimen/dp_10"
+        android:text="@string/skip"
+        android:textColor="@color/grey_500"
+        android:textStyle="bold" />
+
+
+</LinearLayout>

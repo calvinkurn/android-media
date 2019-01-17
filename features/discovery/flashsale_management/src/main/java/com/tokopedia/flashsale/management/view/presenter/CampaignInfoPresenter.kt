@@ -18,7 +18,7 @@ class CampaignInfoPresenter @Inject
         val params = mapOf(FlashSaleConstant.PARAM_SHOP_ID to userSession.shopId.toInt(),
                             FlashSaleConstant.PARAM_SLUG to campaignSlug)
         useCase.setRequestParams(params)
-        useCase.execute({onSucces(it.getMojitoSellerStatus.sellerStatus)}, onError)
+        useCase.execute({onSucces(it.getCampaignSellerStatus.sellerStatus)}, onError)
     }
 
     fun detachView(){

@@ -2,27 +2,26 @@ package com.tokopedia.discovery.autocomplete.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteDataSource;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepositoryImpl;
 import com.tokopedia.discovery.autocomplete.usecase.AutoCompleteUseCase;
 import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
-import com.tokopedia.discovery.newdiscovery.di.module.ApiModule;
+import com.tokopedia.discovery.newdiscovery.di.qualifier.AutoCompleteQualifier;
+import com.tokopedia.discovery.newdiscovery.network.BrowseApi;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.domain.interactor.SearchMapper;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
 
 @AutoCompleteScope
-@Module(includes = ApiModule.class)
+@Module
 public class AutoCompleteModule {
-
     @AutoCompleteScope
     @Provides
     SearchPresenter provideSearchPresenter(@ApplicationContext Context context) {
@@ -32,13 +31,9 @@ public class AutoCompleteModule {
     @AutoCompleteScope
     @Provides
     AutoCompleteUseCase provideSearchUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
             AutoCompleteRepository autoCompleteRepository
     ) {
         return new AutoCompleteUseCase(
-                threadExecutor,
-                postExecutionThread,
                 autoCompleteRepository
         );
     }
@@ -46,33 +41,36 @@ public class AutoCompleteModule {
     @AutoCompleteScope
     @Provides
     AutoCompleteRepository provideAutoCompleteRepository(
-        BrowseApi browseApi,
-        SearchMapper autoCompleteMapper
+        @AutoCompleteQualifier BrowseApi browseApi,
+        SearchMapper autoCompleteMapper,
+        CacheManager cacheManager
     ) {
         return new AutoCompleteRepositoryImpl(
-            new AutoCompleteDataSource(browseApi, autoCompleteMapper)
+            new AutoCompleteDataSource(browseApi, autoCompleteMapper, cacheManager)
         );
     }
 
     @AutoCompleteScope
     @Provides
-    SearchMapper provideSearchMapper(Gson gson) {
-        return new SearchMapper(gson);
+    SearchMapper provideSearchMapper() {
+        return new SearchMapper();
     }
 
     @AutoCompleteScope
     @Provides
     DeleteRecentSearchUseCase provideDeleteRecentSearchUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
             AutoCompleteRepository autoCompleteRepository,
             AutoCompleteUseCase autoCompleteUseCase
     ) {
         return new DeleteRecentSearchUseCase(
-                threadExecutor,
-                postExecutionThread,
                 autoCompleteRepository,
                 autoCompleteUseCase
         );
+    }
+
+    @AutoCompleteScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

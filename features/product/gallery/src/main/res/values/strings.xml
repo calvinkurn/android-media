@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Gallery</string>
+    <string name="review_image_slider_by_prefix">oleh</string>
+    <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+</resources>

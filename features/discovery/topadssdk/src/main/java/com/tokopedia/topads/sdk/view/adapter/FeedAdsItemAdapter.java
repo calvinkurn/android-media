@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.view.adapter.factory.FeedAdapterTypeFactory;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.feednew.ProductFeedNewViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feednew.ShopFeedNewViewHolder;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class FeedAdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder>
         notifyDataSetChanged();
     }
 
-    public void addItem(Item item){
+    public void addItem(Item item) {
         this.list.add(item);
         notifyDataSetChanged();
     }
@@ -51,19 +53,21 @@ public class FeedAdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder>
     }
 
     @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
         return typeFactory.createViewHolder((ViewGroup) view, viewType);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position) {
         holder.bind(list.get(position));
         if (holder instanceof ShopFeedNewViewHolder) {
             ((ShopFeedNewViewHolder) holder).setAdapterPosition(adapterPosition);
@@ -73,6 +77,17 @@ public class FeedAdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder>
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull AbstractViewHolder holder) {
+        super.onViewRecycled(holder);
+
+        if (holder instanceof ShopFeedNewViewHolder) {
+            ((ShopFeedNewViewHolder) holder).onViewRecycled();
+        } else if (holder instanceof ProductFeedNewViewHolder) {
+            ((ProductFeedNewViewHolder) holder).onViewRecycled();
+        }
     }
 
     public void clearData() {

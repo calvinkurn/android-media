@@ -25,13 +25,14 @@ public class NumberPickerWithCounterView extends BaseCustomView {
     private static final boolean DEFAULT_ENABLED_VALUE = true;
 
     private AppCompatTextView numberInputView;
-    private AppCompatImageButton minusImageButton;
-    private AppCompatImageButton plusImageButton;
+    protected AppCompatImageButton minusImageButton;
+    protected AppCompatImageButton plusImageButton;
 
     private boolean enabled;
-    private int number;
-    private int minValue;
-    private int maxValue;
+    protected int defaultValue;
+    protected int number;
+    protected int minValue;
+    protected int maxValue;
     private OnPickerActionListener onPickerActionListener;
 
     public interface OnPickerActionListener {
@@ -66,23 +67,26 @@ public class NumberPickerWithCounterView extends BaseCustomView {
         }
     }
 
-    private void init() {
+    protected void init() {
         View view = inflate(getContext(), R.layout.widget_number_picker_with_counter_view, this);
 
-        numberInputView = (AppCompatTextView) view.findViewById(R.id.decimal_input_view);
         plusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_plus);
         minusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_minus);
-        numberInputView.setEnabled(false);
+        numberInputView = (AppCompatTextView) view.findViewById(R.id.decimal_input_view);
+    }
+
+    protected void setEnabledNumberInputView(boolean enabled) {
+        numberInputView.setEnabled(enabled);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        numberInputView.setText(String.valueOf(number));
+        setTextNumberInputView(number);
         plusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateMaxValue(Integer.parseInt(numberInputView.getText().toString().trim()) + 1);
+                validateMaxValue(Integer.parseInt(getNumberTextString().trim()) + 1);
                 updateButtonState();
             }
         });
@@ -90,41 +94,46 @@ public class NumberPickerWithCounterView extends BaseCustomView {
         minusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateMinValue(Integer.parseInt(numberInputView.getText().toString().trim()) - 1);
+                validateMinValue(Integer.parseInt(getNumberTextString().trim()) - 1);
                 updateButtonState();
             }
         });
-        numberInputView.setEnabled(enabled);
+        setEnabledNumberInputView(enabled);
         updateButtonState();
     }
 
     private void validateMaxValue(int newNumber) {
-        if (Integer.parseInt(numberInputView.getText().toString().trim()) < maxValue) {
-            numberInputView.setText(String.valueOf(newNumber));
+        if (Integer.parseInt(getNumberTextString().trim()) < maxValue) {
+            setTextNumberInputView(newNumber);
         }
+    }
+
+    protected void setTextNumberInputView(int newNumber) {
+        numberInputView.setText(String.valueOf(newNumber));
     }
 
     private void validateMinValue(int newNumber) {
-        if (Integer.parseInt(numberInputView.getText().toString().trim()) > minValue) {
-            numberInputView.setText(String.valueOf(newNumber));
+        if (Integer.parseInt(getNumberTextString().trim()) > minValue) {
+            setTextNumberInputView(newNumber);
         }
     }
 
-    private void updateButtonState() {
-        minusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) > minValue);
-        plusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) < maxValue);
+    protected void updateButtonState() {
+        minusImageButton.setEnabled(enabled && Integer.parseInt(getNumberTextString().trim()) > minValue);
+        plusImageButton.setEnabled(enabled && Integer.parseInt(getNumberTextString().trim()) < maxValue);
 
         if (onPickerActionListener != null) {
-            onPickerActionListener.onNumberChange(Integer.parseInt(numberInputView.getText().toString().trim()));
+            onPickerActionListener.onNumberChange(Integer.parseInt(getNumberTextString().trim()));
         }
     }
 
     public void setInitialState(int minValue, int maxValue, int defaultValue) {
         this.minValue = minValue;
         this.maxValue = maxValue;
-        numberInputView.setText(String.valueOf(defaultValue));
-        minusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) > minValue);
-        plusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) < maxValue);
+        this.defaultValue = defaultValue;
+        setTextNumberInputView(defaultValue);
+        minusImageButton.setEnabled(enabled && Integer.parseInt(getNumberTextString().trim()) > minValue);
+        plusImageButton.setEnabled(enabled && Integer.parseInt(getNumberTextString().trim()) < maxValue);
         invalidate();
         requestLayout();
     }
@@ -134,6 +143,11 @@ public class NumberPickerWithCounterView extends BaseCustomView {
     }
 
     public int getValue() {
-        return Integer.parseInt(numberInputView.getText().toString().trim());
+        return Integer.parseInt(getNumberTextString().trim());
+    }
+
+    @NonNull
+    protected String getNumberTextString() {
+        return numberInputView.getText().toString();
     }
 }

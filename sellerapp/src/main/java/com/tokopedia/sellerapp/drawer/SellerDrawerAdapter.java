@@ -9,6 +9,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.var.TkpdState;
 
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.sellerapp.R;
 
 import java.util.ArrayList;
@@ -82,15 +83,16 @@ public class SellerDrawerAdapter extends DrawerAdapter {
     }
 
     public DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
-        DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
-                R.drawable.ic_goldmerchant_drawer,
-                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0);
+	String gm = context.getString(GMConstant.getGMTitleResource(context));
+        DrawerGroup gmMenu = new DrawerGroup(gm,
+            GMConstant.getGMDrawerDrawableResource(context),
+            TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
+            drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+            0);
 
         String gmString = isGoldMerchant ?
-                context.getString(R.string.extend_gold_merchant) :
-                context.getString(R.string.upgrade_gold_merchant);
+            context.getString(R.string.extend_gold_merchant, gm) :
+            context.getString(R.string.upgrade_gold_merchant, gm);
 
         gmMenu.add(new DrawerItem(gmString,
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,

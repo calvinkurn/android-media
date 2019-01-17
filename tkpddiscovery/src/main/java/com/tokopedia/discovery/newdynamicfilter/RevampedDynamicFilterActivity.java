@@ -17,10 +17,9 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.helper.KeyboardHelper;
+import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
@@ -92,7 +91,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             Intent intent = new Intent(activity, RevampedDynamicFilterActivity.class);
             intent.putParcelableArrayListExtra(EXTRA_FILTER_LIST, new ArrayList<>(filterCategoryList));
             activity.startActivityForResult(intent, REQUEST_CODE);
-            activity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
+            activity.overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 
@@ -319,7 +318,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core.R.anim.push_down);
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core2.R.anim.push_down);
     }
 
     @Override

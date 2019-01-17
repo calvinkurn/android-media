@@ -3,7 +3,7 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

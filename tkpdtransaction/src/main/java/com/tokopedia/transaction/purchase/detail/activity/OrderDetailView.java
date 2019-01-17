@@ -17,8 +17,8 @@ import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderEmptyVarian
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderShopClosedFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderWeightPriceFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
-import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 
 /**
  * Created by kris on 11/13/17. Tokopedia
@@ -91,6 +91,8 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
     void onViewComplaint(OrderDetailData resoId);
 
     void showSnackbar(String errorMessage);
+
+    void showSnackbarWithCloseButton(String errorMessage);
 
     void dismissSellerActionFragment();
 

@@ -1,5 +1,6 @@
 package com.tokopedia.tracking.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +38,7 @@ public class ExternalWebViewFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_external_webview, container, false);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         webView = view.findViewById(R.id.webview);

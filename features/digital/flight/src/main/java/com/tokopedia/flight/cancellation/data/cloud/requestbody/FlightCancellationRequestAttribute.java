@@ -16,12 +16,12 @@ public class FlightCancellationRequestAttribute {
     @SerializedName("reason")
     @Expose
     private String reason;
+    @SerializedName("reason_id")
+    @Expose
+    private int reasonId;
     @SerializedName("attachments")
     @Expose
-    private List<String> attachments;
-    @SerializedName("estimated_refund")
-    @Expose
-    private Long estimatedRefund;
+    private List<FlightCancellationRequestAttachment> attachments;
     @SerializedName("details")
     @Expose
     private List<FlightCancellationDetailRequestBody> details;
@@ -45,20 +45,12 @@ public class FlightCancellationRequestAttribute {
         this.reason = reason;
     }
 
-    public List<String> getAttachments() {
+    public List<FlightCancellationRequestAttachment> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<String> attachments) {
+    public void setAttachments(List<FlightCancellationRequestAttachment> attachments) {
         this.attachments = attachments;
-    }
-
-    public Long getEstimatedRefund() {
-        return estimatedRefund;
-    }
-
-    public void setEstimatedRefund(Long estimatedRefund) {
-        this.estimatedRefund = estimatedRefund;
     }
 
     public List<FlightCancellationDetailRequestBody> getDetails() {
@@ -67,5 +59,13 @@ public class FlightCancellationRequestAttribute {
 
     public void setDetails(List<FlightCancellationDetailRequestBody> details) {
         this.details = details;
+    }
+
+    public int getReasonId() {
+        return reasonId;
+    }
+
+    public void setReasonId(int reasonId) {
+        this.reasonId = reasonId;
     }
 }

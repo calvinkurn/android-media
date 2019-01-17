@@ -15,7 +15,6 @@ import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoReposi
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.di.module.TopAdsShopModule;
-import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
@@ -47,9 +46,6 @@ public interface TopAdsComponent {
 
     @TopAdsManagementQualifier
     Retrofit topAdsManagementRetrofit();
-
-    @ShopWsQualifier
-    Retrofit shopWsRetrofit();
 
     @ShopQualifier
     Retrofit shopRetrofit();
