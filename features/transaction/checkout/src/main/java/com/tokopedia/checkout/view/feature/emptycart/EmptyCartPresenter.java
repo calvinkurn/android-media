@@ -13,6 +13,8 @@ import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetRecentViewSub
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetWishlistSubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
@@ -22,6 +24,7 @@ import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyC
 import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyCartProductData;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 
@@ -52,6 +55,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CompositeSubscription compositeSubscription;
+    private final UserSessionInterface userSessionInterface;
     private List<WishlistViewModel> wishlistViewModels = new ArrayList<>();
     private List<RecentViewViewModel> recentViewViewModels = new ArrayList<>();
     private List<Product> recommendationViewModels = new ArrayList<>();
@@ -63,13 +67,15 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
                               GetRecentViewUseCase getRecentViewUseCase,
                               CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                               CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                              CompositeSubscription compositeSubscription) {
+                              CompositeSubscription compositeSubscription,
+                              UserSessionInterface userSessionInterface) {
         this.getCartListUseCase = getCartListUseCase;
         this.getWishlistUseCase = getWishlistUseCase;
         this.getRecentViewUseCase = getRecentViewUseCase;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.compositeSubscription = compositeSubscription;
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
@@ -113,6 +119,12 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
 
     @Override
     public void processCancelAutoApply() {
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>());
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CancelAutoApplyCouponUseCase.PARAM_REQUEST_AUTH_MAP_STRING, authParam);
+
         compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.di.component;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.AddToCartOneClickShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
@@ -18,6 +17,7 @@ import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.di.module.DataUtilModule;
 import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -41,8 +41,6 @@ public class CartComponentInjector {
     GetCouponListCartMarketPlaceUseCase getCouponListCartMarketPlaceUseCase;
     @Inject
     GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase;
-    @Inject
-    UserSession userSession;
 
     private CartComponent cartApiServiceComponent;
 
@@ -107,7 +105,4 @@ public class CartComponentInjector {
         return getMarketPlaceCartCounterUseCase;
     }
 
-    public UserSession getUserSession() {
-        return userSession;
-    }
 }

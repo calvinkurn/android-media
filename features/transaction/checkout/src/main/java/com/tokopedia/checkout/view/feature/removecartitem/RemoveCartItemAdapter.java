@@ -19,7 +19,7 @@ import javax.inject.Inject;
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public class RemoveCartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<CartRemoveProductModel> cartRemoveProductModels = new ArrayList<>();

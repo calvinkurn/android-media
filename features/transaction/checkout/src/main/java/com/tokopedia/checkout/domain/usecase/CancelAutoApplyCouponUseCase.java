@@ -1,9 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import android.content.Context;
-
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -17,23 +15,25 @@ import rx.Observable;
  */
 
 public class CancelAutoApplyCouponUseCase extends UseCase<String> {
+    public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
 
     public static final String RESPONSE_DATA = "data";
     public static final String RESPONSE_SUCCESS = "success";
 
     private final ICartRepository cartRepository;
-    private Context context;
 
     @Inject
-    public CancelAutoApplyCouponUseCase(ICartRepository cartRepository, Context context) {
+    public CancelAutoApplyCouponUseCase(ICartRepository cartRepository) {
         this.cartRepository = cartRepository;
-        this.context = context;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Observable<String> createObservable(RequestParams requestParams) {
-        return cartRepository.cancelAutoApplyCoupon(AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE,
-                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()));
+        TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
+                requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
+
+        return cartRepository.cancelAutoApplyCoupon(AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE, param);
     }
 
 }
