@@ -137,11 +137,8 @@ public class ExploreFragment
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
 
-        if (getContext() != null
-                && affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
-
-            startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
-            affiliatePreference.setFirstTimeEducation(userSession.getUserId());
+        if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
+            goToEducation();
         }
     }
 
@@ -193,12 +190,7 @@ public class ExploreFragment
 
     private void initListener() {
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
-        ivBantuan.setOnClickListener(view ->
-                RouteManager.route(
-                        getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
-                )
-        );
+        ivBantuan.setOnClickListener(view -> goToEducation());
     }
 
     @Override
@@ -553,5 +545,12 @@ public class ExploreFragment
         ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
                 .setAction(R.string.title_try_again, listener)
                 .show();
+    }
+
+    private void goToEducation() {
+        if (getContext() != null) {
+            startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
+            affiliatePreference.setFirstTimeEducation(userSession.getUserId());
+        }
     }
 }

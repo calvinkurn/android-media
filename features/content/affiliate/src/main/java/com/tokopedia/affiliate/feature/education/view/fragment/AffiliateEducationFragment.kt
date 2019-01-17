@@ -1,7 +1,6 @@
 package com.tokopedia.affiliate.feature.education.view.fragment
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import com.tokopedia.affiliate.feature.education.view.adapter.EducationAdapter
 import com.tokopedia.affiliate.feature.education.view.viewmodel.EducationItemViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.fragment_af_education.*
 
@@ -56,36 +56,16 @@ class AffiliateEducationFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab) {
+        tabLayout.onTabSelected {
+            if (it.position == adapter.list.size - 1) {
+                skipText.hide()
+                endBtn.show()
+
+            } else {
+                skipText.show()
+                endBtn.hide()
             }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab.position == adapter.list.size - 1) {
-                    skipText.hide()
-                    endBtn.show()
-
-                } else {
-                    skipText.show()
-                    endBtn.hide()
-                }
-            }
-        })
-
-        //TODO milhamj
-//        tabLayout.onTabSelected {
-//            if (it.position == adapter.list.size - 1) {
-//                skipText.hide()
-//                endBtn.show()
-//
-//            } else {
-//                skipText.show()
-//                endBtn.hide()
-//            }
-//        }
+        }
 
         skipText.setOnClickListener {
             activity?.finish()
