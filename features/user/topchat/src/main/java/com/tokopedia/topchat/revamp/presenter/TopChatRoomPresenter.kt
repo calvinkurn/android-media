@@ -22,6 +22,8 @@ import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
@@ -53,6 +55,8 @@ import javax.inject.Inject
 class TopChatRoomPresenter @Inject constructor(
         private var getChatUseCase: GetChatUseCase,
         override var userSession: UserSessionInterface,
+        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+        private val fingerprintInterceptor: FingerprintInterceptor,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         private var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
@@ -60,10 +64,11 @@ class TopChatRoomPresenter @Inject constructor(
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
         private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
-        private var getShopFollowingUseCase: GetShopFollowingUseCase)
+        private var getShopFollowingUseCase: GetShopFollowingUseCase, )
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
+    private var listInterceptor: ArrayList<Interceptor>
 
     private lateinit var webSocketUrl: String
     private lateinit var subject: PublishSubject<Boolean>
@@ -73,6 +78,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     init {
         mSubscription = CompositeSubscription()
+        listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
     }
 
@@ -381,8 +387,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendMessageWebSocket(messageText: String) {
-        //TODO ADD TKPDAUTHINTERCEPTOR && FINGERPRINT
-        RxWebSocket.send(messageText, null)
+        RxWebSocket.send(messageText, listInterceptor)
     }
 
 
@@ -400,11 +405,9 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun sendProductAttachment(messageId: String, item: ResultProduct,
                                        startTime: String, opponentId: String) {
-        //TODO ADD INTERCEPTOR
-        RxWebSocket.send(
-                SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime,
-                        opponentId),
-                ArrayList<Interceptor>()
+
+        RxWebSocket.send(SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime,
+                        opponentId), listInterceptor
         )
     }
 

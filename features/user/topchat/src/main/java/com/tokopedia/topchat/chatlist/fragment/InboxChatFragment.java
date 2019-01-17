@@ -499,8 +499,10 @@ public class InboxChatFragment extends BaseDaggerFragment
             else if (data.getExtras() != null &&
                     data.getExtras().getParcelable(PARCEL) != null) {
                 Bundle bundle = data.getExtras();
+                boolean isMoveToTop = bundle.getBoolean(TopChatInternalRouter.Companion
+                        .RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP, false);
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
-                adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
+                adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false, isMoveToTop);
                 adapter.updateListCache(model.getMessageId(), model.getMsg(), false,
                         presenter.getListCache());
             }
@@ -577,7 +579,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                         if (!response.getData().isBot()) {
                             adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
                                     response.getData().getMessage().getCensoredReply(), response,
-                                    true);
+                                    true, isMoveToTop);
                             reloadNotifDrawer();
                         }
                     });
@@ -647,10 +649,6 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void reloadNotifDrawer() {
-        //TODO : GET NOTIF AND UPDATE TOOLBAR IF STILL USED
-//        if (getActivity() instanceof InboxChatActivity) {
-//            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
-//        }
     }
 
     @Override

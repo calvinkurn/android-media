@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -23,7 +22,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -78,14 +76,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     var indexFromInbox = -1
+    var isMoveItemInboxToTop = false
 
     val REQUEST_GO_TO_SHOP = 111
     val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
-
-
-    private lateinit var actionBox: View
 
     companion object {
 
@@ -284,6 +280,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         super.onReceiveMessageEvent(visitable)
         getViewState().scrollDownWhenInBottom()
+        isMoveItemInboxToTop = true
     }
 
     override fun loadData(page: Int) {
@@ -667,6 +664,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val intent = Intent()
             val bundle = Bundle()
+            bundle.putBoolean(TopChatInternalRouter.Companion
+                    .RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP, isMoveItemInboxToTop)
             bundle.putParcelable(PARCEL, getViewState().getLastItem())
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)

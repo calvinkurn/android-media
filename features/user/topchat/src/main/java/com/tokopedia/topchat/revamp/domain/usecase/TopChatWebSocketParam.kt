@@ -64,7 +64,4 @@ object TopChatWebSocketParam {
         return json.toString()
     }
 
-    fun generateParamSendProductAttachment(messageId: String, startTime: String, item: ProductAttachmentViewModel): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 }

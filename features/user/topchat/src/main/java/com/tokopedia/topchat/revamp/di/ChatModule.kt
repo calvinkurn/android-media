@@ -22,6 +22,7 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
@@ -132,17 +133,32 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context,
-                            @InboxQualifier retryPolicy: OkHttpRetryPolicy,
+    fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
+                                      userSessionInterface: UserSessionInterface):
+            FingerprintInterceptor {
+        return FingerprintInterceptor(networkRouter, userSessionInterface)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+                                   networkRouter: NetworkRouter,
+                                   userSessionInterface: UserSessionInterface):
+            TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideOkHttpClient(@InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckInterceptor,
+                            fingerprintInterceptor: FingerprintInterceptor
                             httpLoggingInterceptor: HttpLoggingInterceptor,
-                            networkRouter: NetworkRouter,
-                            userSessionInterface: UserSessionInterface,
                             xUserIdInterceptor: XUserIdInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
-                .addInterceptor(FingerprintInterceptor(networkRouter, userSessionInterface))
+                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(CacheApiInterceptor())
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
