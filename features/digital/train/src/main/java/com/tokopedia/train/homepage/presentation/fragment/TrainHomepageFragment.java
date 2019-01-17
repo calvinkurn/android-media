@@ -38,7 +38,9 @@ import com.tokopedia.train.homepage.presentation.widget.TrainPromoListView;
 import com.tokopedia.train.search.presentation.activity.TrainSearchDepartureActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -300,18 +302,44 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity.Companion
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.Companion.getDEPARTURE_TYPE(), true),
-                DATE_PICKER_DEPARTURE_REQUEST_CODE);
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setMinDate(minDate)
+                .setMaxDate(maxDate)
+                .setSelectedDate(selectedDate)
+                .setShowHoliday(true)
+                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date))
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar train departure");
     }
 
     @Override
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity.Companion
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.Companion.getRETURN_TYPE(), true),
-                DATE_PICKER_RETURN_REQUEST_CODE);
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setMinDate(minDate)
+                .setMaxDate(maxDate)
+                .setSelectedDate(selectedDate)
+                .setShowHoliday(true)
+                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date))
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar train return");
     }
 
     @Override
@@ -382,24 +410,24 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                     trainHomepagePresenterImpl.onTrainPassengerChange(passengerViewModel);
                 }
                 break;
-            case DATE_PICKER_DEPARTURE_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-                    Calendar calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
-                }
-                break;
-            case DATE_PICKER_RETURN_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-                    Calendar calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
-                }
-                break;
+//            case DATE_PICKER_DEPARTURE_REQUEST_CODE:
+//                if (resultCode == Activity.RESULT_OK) {
+//                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
+//                    Calendar calendarSelected = Calendar.getInstance();
+//                    calendarSelected.setTime(dateString);
+//                    trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+//                }
+//                break;
+//            case DATE_PICKER_RETURN_REQUEST_CODE:
+//                if (resultCode == Activity.RESULT_OK) {
+//                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
+//                    Calendar calendarSelected = Calendar.getInstance();
+//                    calendarSelected.setTime(dateString);
+//                    trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+//                }
+//                break;
             case REQUEST_CODE_LOGIN:
                 trainHomepagePresenterImpl.onLoginRecieved();
                 break;

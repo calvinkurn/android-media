@@ -52,9 +52,11 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -440,18 +442,44 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity.Companion
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.Companion.getDEPARTURE_TYPE(), true),
-                REQUEST_CODE_DATE_PICKER_DEPARTURE);
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setMinDate(minDate)
+                .setMaxDate(maxDate)
+                .setSelectedDate(selectedDate)
+                .setShowHoliday(true)
+                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date))
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar departure");
     }
 
     @Override
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity.Companion
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.Companion.getRETURN_TYPE(), true),
-                REQUEST_CODE_DATE_PICKER_RETURN);
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setMinDate(minDate)
+                .setMaxDate(maxDate)
+                .setSelectedDate(selectedDate)
+                .setShowHoliday(true)
+                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date))
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar return");
     }
 
     @Override
@@ -604,20 +632,20 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 case REQUEST_CODE_LOGIN:
                     presenter.onLoginResultReceived();
                     break;
-                case REQUEST_CODE_DATE_PICKER_DEPARTURE:
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-                    Calendar calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-                    break;
-                case REQUEST_CODE_DATE_PICKER_RETURN:
-                    dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-                    calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-                    break;
+//                case REQUEST_CODE_DATE_PICKER_DEPARTURE:
+//                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
+//                    Calendar calendarSelected = Calendar.getInstance();
+//                    calendarSelected.setTime(dateString);
+//                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+//                    break;
+//                case REQUEST_CODE_DATE_PICKER_RETURN:
+//                    dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
+//                    calendarSelected = Calendar.getInstance();
+//                    calendarSelected.setTime(dateString);
+//                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+//                    break;
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
