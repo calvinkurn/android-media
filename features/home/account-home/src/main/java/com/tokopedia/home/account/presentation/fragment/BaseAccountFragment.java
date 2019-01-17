@@ -161,9 +161,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     new HashMap<>(), getContext());
         }
 
-        if (getActivity() != null
+        if (getContext() != null
                 && item.getMainText().equals(
-                        getActivity().getResources().getString(R.string.title_menu_affiliate))) {
+                        getContext().getResources().getString(R.string.title_menu_affiliate))
+                && AccountByMeHelper.isFirstTimeByme(getContext())) {
             item.setIconRes(R.drawable.ic_byme_card);
             notifyItemChanged(adapterPosition);
             AccountByMeHelper.setFirstTimeByme(getContext());
