@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
@@ -11,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -553,5 +555,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private void renderTerminateTicker(){
         terminateAnnouncementLayout.setVisibility(View.VISIBLE);
         terminateAnnouncementTicker.setDescription(getString(R.string.digital_terminate_announcement));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            terminateAnnouncementTicker.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+        }
     }
 }
