@@ -11,7 +11,7 @@ public interface AffiliateConstant {
 
     String ANDROID_DRAWABLE_PATH_FORMAT = "https://ecs7.tokopedia.net/img/android/%s/drawable-%s/%s%s";
 
-    String IMG_AFFILIATE_EDUCATION_BG = "af_bg_education";
+    String IMG_AFFILIATE_EDUCATION_BG = "af_bg_gradient_education";
     String IMG_AFFILIATE_ILLUSTRATION = "af_illustration";
     String IMG_AFFILIATE_SCREENSHOT_1 = "af_screenshot_1";
     String IMG_AFFILIATE_SCREENSHOT_2 = "af_screenshot_2";

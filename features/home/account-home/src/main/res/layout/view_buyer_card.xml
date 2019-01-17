@@ -96,6 +96,7 @@
             android:background="@drawable/bg_button_white_border"
             android:clickable="true"
             android:focusable="true"
+            android:fontFamily="sans-serif-medium"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center_horizontal"
             android:paddingTop="@dimen/dp_12"
