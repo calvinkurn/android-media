@@ -13,6 +13,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import com.tokopedia.design.R;
+
 public class CircleOverlayView extends LinearLayout {
 
     private Bitmap bitmap;
@@ -33,11 +35,6 @@ public class CircleOverlayView extends LinearLayout {
     public CircleOverlayView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-
-    /*@Override
-    protected void onDraw(Canvas canvas) {
-//        createWindowFrame(canvas);
-    }*/
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -79,19 +76,17 @@ public class CircleOverlayView extends LinearLayout {
 
         RectF ktpRectangle = new RectF(
                 getWidth() / 2 - ktpRectWidth / 2,
-                getHeight() / 2 + ovalAndKtpRectDiffHeight +ovalVerticleShift,
+                getHeight() / 2 + ovalAndKtpRectDiffHeight + ovalVerticleShift,
                 getWidth() / 2 + ktpRectWidth / 2,
-                getHeight() / 2 + ktpRectHeight + ovalAndKtpRectDiffHeight +ovalVerticleShift);
-
+                getHeight() / 2 + ktpRectHeight + ovalAndKtpRectDiffHeight + ovalVerticleShift);
 
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.parseColor("#42b549"));
+        paint.setColor(getResources().getColor(R.color.colorPrimary));
 
         paint.setAlpha(255);
         osCanvas.drawRect(mainRectangle, paint);
 
-//        paint.setColor(Color.parseColor("#42b549"));
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         paint.setAlpha(49);
         osCanvas.drawRect(outerRectangle, paint);
@@ -100,67 +95,7 @@ public class CircleOverlayView extends LinearLayout {
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         osCanvas.drawOval(innerRectangle, paint);
 
-
         osCanvas.drawRoundRect(ktpRectangle, 10, 10, paint);
 
     }
-
-    /*private void createBitmap() {
-
-        bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas osCanvas = new Canvas(bitmap);
-
-        RectF mainRectangle = new RectF(0, 0, getWidth(), getHeight());
-
-        RectF outerRectangle = new RectF(getWidth() / 2 - 350, getHeight() / 2 - 700, getWidth() / 2 + 350, getHeight() / 2 + 600);
-
-        RectF innerRectangle = new RectF(getWidth() / 2 - 300, getHeight() / 2 - 600, getWidth() / 2 + 300, getHeight() / 2 + 100);
-
-        RectF ktpRectangle = new RectF(getWidth() / 2 - 250, getHeight() / 2 + 100, getWidth() / 2 + 250, getHeight() / 2 + 400);
-
-
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.parseColor("#42b549"));
-
-        paint.setAlpha(255);
-        osCanvas.drawRect(mainRectangle, paint);
-
-//        paint.setColor(Color.parseColor("#42b549"));
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        paint.setAlpha(49);
-        osCanvas.drawRect(outerRectangle, paint);
-
-        paint.setColor(Color.TRANSPARENT);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-        osCanvas.drawOval(innerRectangle, paint);
-
-
-        osCanvas.drawRoundRect(ktpRectangle, 10, 10, paint);
-
-
-    }*/
-
-    protected void createWindowFrame(Canvas canvas) {
-
-        RectF outerRectangle = new RectF(0, 0, getWidth(), getHeight());
-        RectF innerRectangle = new RectF(getWidth() / 2 - 300, getHeight() / 2 - 700, getWidth() / 2 + 300, getHeight() / 2);
-        RectF ktpRectangle = new RectF(getWidth() / 2 - 200, getHeight() / 2 + 100, getWidth() / 2 + 200, getHeight() / 2 + 300);
-
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.parseColor("#42b549"));
-        paint.setStyle(Paint.Style.FILL);
-//        paint.setAlpha(99);
-        canvas.drawPaint(paint);
-//        canvas.drawRect(outerRectangle, paint);
-
-//        Paint transparentPaint = new Paint();
-//        paint.setColor(Color.TRANSPARENT);
-//        paint.setAlpha(100);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        canvas.drawRoundRect(innerRectangle, getWidth() / 2 - 300, getWidth() / 2 + 300, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        canvas.drawRoundRect(ktpRectangle, 10, 10, paint);
-    }
-
 }

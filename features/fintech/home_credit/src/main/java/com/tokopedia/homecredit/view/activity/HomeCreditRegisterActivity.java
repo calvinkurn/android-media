@@ -15,21 +15,32 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.homecredit.R;
-import com.tokopedia.homecredit.view.fragment.HomeCreditFragment;
+import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment;
+import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeCreditRegisterActivity extends BaseSimpleActivity {
 
+    private final static String SHOW_KTP = "show_ktp";
     private List<String> permissionsToRequest;
     private boolean isPermissionGotDenied;
     protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
 
-    @DeepLink(ApplinkConst.HOMECREDIT)
-    public static Intent getHomeCreditRegisterIntent(Context context, Bundle bundle) {
+    @DeepLink(ApplinkConst.HOME_CREDIT_KTP)
+    public static Intent getHomeCreditKTPIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        bundle.putBoolean(SHOW_KTP, true);
+        return new Intent(context, HomeCreditRegisterActivity.class)
+                .setData(uri.build())
+                .putExtras(bundle);
+    }
+
+    @DeepLink(ApplinkConst.HOME_CREDIT_SELFIE)
+    public static Intent getHomeCreditSelfieIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        bundle.putBoolean(SHOW_KTP, false);
         return new Intent(context, HomeCreditRegisterActivity.class)
                 .setData(uri.build())
                 .putExtras(bundle);
@@ -97,18 +108,17 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
     }
 
     @SuppressLint("MissingPermission")
-    private void initView() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.parent_view, HomeCreditFragment.createInstance(), HomeCreditFragment.class.getSimpleName())
-                .commit();
-
-    }
-
-    @SuppressLint("MissingPermission")
     @Override
     protected Fragment getNewFragment() {
-        return HomeCreditFragment.createInstance();
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra(SHOW_KTP, false)) {
+
+            return HomeCreditKTPFragment.createInstance();
+        } else {
+            return HomeCreditSelfieFragment.createInstance();
+        }
+
+
     }
 
 }
