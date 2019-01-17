@@ -12,10 +12,4 @@ import dagger.Provides
 
 @Module
 class ReferralModule {
-
-    @Provides
-    @ReferralScope
-    internal fun provideGetReferralDataUseCase(): GetReferralDataUseCase {
-        return GetReferralDataUseCase()
-    }
 }
