@@ -6,3 +6,7 @@ buildscript {
         mavenCentral()
     }
 }
+
+dependencies {
+    implementation project(rootProject.ext.libraries.abstraction)
+}
