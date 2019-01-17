@@ -109,13 +109,15 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
-    String MARKETPLACE_ORDER = "tokopedia://belanja/order";
-    String MARKETPLACE_ORDER_FILTER = "tokopedia://belanja/order/{filter_id}";
 
-    String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://belanja/order/5";
-    String MARKETPLACE_SENT = "tokopedia://belanja/order/13";
-    String MARKETPLACE_ORDER_PROCESSED = "tokopedia://belanja/order/12";
-    String MARKETPLACE_DELIVERED = "tokopedia://belanja/order/14";
+
+    String MARKETPLACE_ORDER = "tokopedia://belanja/order";
+    String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filterStatus}";
+
+    String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter//5";
+    String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
+    String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
+    String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
 
 
     String BUYER_INFO = "tokopedia://buyerinfo";

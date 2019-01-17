@@ -180,11 +180,18 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setTitleTrack(PEMBELI);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
         menuGrid.setApplinkUrl(ApplinkConst.MARKETPLACE_ORDER);
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_global_nav_new_design", true)) {
+            menuGrid.setItems(getMarketPlaceOrderMenu(
+                    accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
+                    accountModel
+            ));
+        }else {
 
-        menuGrid.setItems(getBuyerOrderMenu(
-            accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
-            accountModel
-        ));
+            menuGrid.setItems(getBuyerOrderMenu(
+                    accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
+                    accountModel
+            ));
+        }
 //        items.add(menuGrid);
 
 
@@ -324,6 +331,49 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_waiting_for_confirmation,
                 context.getString(R.string.label_menu_waiting_confirmation),
+                ApplinkConst.PURCHASE_CONFIRMED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getConfirmed() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction));
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_order_processed,
+                context.getString(R.string.label_menu_order_processed),
+                ApplinkConst.PURCHASE_PROCESSED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getProcessed() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_shipped,
+                context.getString(R.string.label_menu_shipping),
+                ApplinkConst.PURCHASE_SHIPPED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getShipped() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_delivered,
+                context.getString(R.string.label_menu_delivered),
+                ApplinkConst.PURCHASE_DELIVERED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getArriveAtDestination() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+        return menuGridItems;
+    }
+
+    private List<MenuGridItemViewModel> getMarketPlaceOrderMenu(Boolean isNotNull, AccountModel accountModel) {
+        List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
+        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_waiting_for_confirmation,
+                context.getString(R.string.label_menu_waiting_confirmation),
                 ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION,
                 isNotNull ? accountModel.getNotifications().getBuyerOrder().getConfirmed() : 0,
                 PEMBELI,
@@ -361,7 +411,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGridItems.add(gridItem);
         return menuGridItems;
     }
-
     private ParcelableViewModel getBuyerResolutionMenu(AccountModel accountModel) {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_buyer_complain));

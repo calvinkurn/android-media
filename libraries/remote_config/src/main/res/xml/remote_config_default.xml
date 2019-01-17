@@ -12,6 +12,11 @@
         <key>mainapp_is_force_update</key>
         <value>false</value>
     </entry>
+
+    <entry>
+        <key>app_global_nav_new_design</key>
+        <value>true</value>
+    </entry>
     <entry>
         <key>mainapp_update_message</key>
         <value>Update aplikasi sekarang dan nikmati performa yang lebih stabil.</value>
