@@ -579,7 +579,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                         if (!response.getData().isBot()) {
                             adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
                                     response.getData().getMessage().getCensoredReply(), response,
-                                    true, isMoveToTop);
+                                    true, true);
                             reloadNotifDrawer();
                         }
                     });
