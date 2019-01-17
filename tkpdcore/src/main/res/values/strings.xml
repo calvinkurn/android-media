@@ -1013,7 +1013,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_update_receipt_number">Perbarui nomor resi anda</string>
     <!-- Success String -->
     <string name="success_send_msg">Sukses kirim pesan.</string>
-    <string name="title_activity_people_deposit">Saldo Saya</string>
+    <string name="title_activity_people_deposit">Detail Saldo</string>
     <string name="title_activity_people_withdraw_balance">Penarikan Saldo</string>
     <string name="title_activity_shipping_confirmation_detail">Detil Konfirmasi Pengiriman</string>
     <string name="title_activity_shipping_confirmation_prod_conf">Konfirmasi Pengiriman</string>
@@ -1054,7 +1054,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_confirmed_payment">Pembayaran yang telah dikonfirmasi</string>
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
-    <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_people_tx_details">Detail Transaksi</string>
     <string name="title_activity_people_tx_history">Detil Status</string>
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>

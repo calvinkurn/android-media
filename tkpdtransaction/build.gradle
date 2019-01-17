@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.loyalty)
@@ -85,6 +86,7 @@ dependencies {
 
     implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
 }
 

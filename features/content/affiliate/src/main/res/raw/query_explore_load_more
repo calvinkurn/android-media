@@ -1,5 +1,5 @@
-query getExploreAffiliate($keyword: String, $nextCursor: String) {
-  topadsExploreAffiliateProduct(keyword:$keyword, nextCursor:$nextCursor){
+query getExploreAffiliate($keyword: String, $nextCursor: String, $filter: [TopadsExploreAffiliateFilter]) {
+  topadsExploreAffiliateProduct(keyword:$keyword, nextCursor:$nextCursor, filter:$filter){
     products {
       adId
       productId

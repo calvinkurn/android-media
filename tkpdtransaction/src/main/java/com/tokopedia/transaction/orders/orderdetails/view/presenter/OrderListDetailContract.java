@@ -80,6 +80,10 @@ public interface OrderListDetailContract {
 
         void setShopInfo(ShopInfo shopInfo);
 
+        void showReplacementView(List<String> reasons);
+
+        void finishOrderDetail();
+
     }
 
     public interface Presenter extends CustomerPresenter<View>{

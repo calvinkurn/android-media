@@ -420,6 +420,16 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void showReplacementView(List<String> reasons) {
+
+    }
+
+    @Override
+    public void finishOrderDetail() {
+
+    }
+
+    @Override
     public void setMainViewVisible(int visibility) {
         mainView.setVisibility(visibility);
     }

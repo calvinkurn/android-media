@@ -1,11 +1,9 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -33,12 +31,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
@@ -60,13 +59,13 @@ import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ProductItemAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
-
-import org.w3c.dom.Text;
+import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -82,10 +81,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    public static final int REQUEST_CANCEL_ORDER = 101;
     @Inject
     OrderListDetailPresenter presenter;
-    OrderDetailsComponent orderListComponent;
-
     LinearLayout mainView;
     TextView statusLabel;
     TextView statusValue;
@@ -104,6 +102,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     LinearLayout actionBtnLayout;
     TextView primaryActionBtn;
     TextView secondaryActionBtn;
+    FrameLayout parentLayout;
     RecyclerView itemsRecyclerView;
     TextView productInformationTitle;
     LinearLayout paymentMethod;
@@ -116,6 +115,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Inject
     OrderListAnalytics orderListAnalytics;
     private ShopInfo shopInfo;
+    private Status status;
 
 
     @Override
@@ -141,6 +141,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_list_detail, container, false);
+        parentLayout = view.findViewById(R.id.parentLayout);
         mainView = view.findViewById(R.id.main_view);
         statusLabel = view.findViewById(R.id.status_label);
         statusValue = view.findViewById(R.id.status_value);
@@ -178,6 +179,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void setStatus(Status status) {
+        this.status = status;
         statusLabel.setText(status.statusLabel());
         statusValue.setText(status.statusText());
         if (!status.textColor().equals(""))
@@ -189,13 +191,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 String applink = "http://m.tokopedia.com/myorder/buyer/detail/history";
                 applink = applink + getArguments().get(KEY_ORDER_ID);
 
-                try {
-                    startActivity(((UnifiedOrderListRouter) getActivity()
-                            .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(applink, ORDER_LIST_URL_ENCODING)));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                Intent intent = OrderHistoryActivity
+                        .createInstance(getActivity(), (String) getArguments().get(KEY_ORDER_ID), 1);
+                startActivity(intent);
             }
         });
     }
@@ -329,21 +327,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void showDropshipperInfo(DropShipper dropShipper) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 20, 0, 20);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dropshipper_info, null);
         TextView dropShipperName = view.findViewById(R.id.dropShipper_name);
         TextView dropShipperNumber = view.findViewById(R.id.dropShipper_phone);
         dropShipperName.setText(dropShipper.getDropShipperName());
         dropShipperNumber.setText(dropShipper.getDropShipperPhone());
-        view.setLayoutParams(params);
         detailContent.addView(view);
     }
 
     @Override
     public void showDriverInfo(DriverDetails driverDetails) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 20, 0, 20);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.driver_info, null);
         driverLayout = view.findViewById(R.id.driverLayout);
         ImageView driverImage = view.findViewById(R.id.driver_img);
@@ -376,7 +369,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 driverlicense.setText(driverDetails.getLicenseNumber());
                 driverLayout.setVisibility(View.VISIBLE);
             }
-            view.setLayoutParams(params);
             detailContent.addView(view);
         }
     }
@@ -431,6 +423,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         this.shopInfo = shopInfo;
     }
 
+    @Override
+    public void showReplacementView(List<String> reasons) {
+    }
+
+    @Override
+    public void finishOrderDetail() {
+        getActivity().finish();
+    }
+
 
     private View.OnClickListener clickActionButton(ActionButton actionButton) {
         if (!TextUtils.isEmpty(actionButton.getKey())) {
@@ -476,7 +477,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                         @Override
                         public void onClick(View v) {
                             if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
-                                RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
+                                    presenter.finishOrder((String) getArguments().get(KEY_ORDER_ID));
+                                    dialog.dismiss();
+                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
+                                    Intent newIntent = InboxRouter.getCreateResCenterActivityIntent(getContext(),
+                                            (String) getArguments().get(KEY_ORDER_ID));
+                                    startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
+                                    dialog.dismiss();
+                                } else
+                                     RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
                             } else {
                                 dialog.dismiss();
                             }
@@ -506,11 +516,47 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                         applink = applink.concat("&shopId=" + shopId + "&shopName=" + shopName + "&shopLogo=" + shopLogo + "&shopUrl=" + shopUrl);
                         RouteManager.route(getContext(), applink);
                     }
+                } else if (!TextUtils.isEmpty(actionButton.getUri())) {
+                    Intent intent = new Intent(getContext(), RequestCancelActivity.class);
+                    intent.putExtra(KEY_ORDER_ID, (String) getArguments().get(KEY_ORDER_ID));
+                    if (this.status.status().equals("220") || this.status.status().equals("400")) {
+                        intent.putExtra("cancelFragment", 1);
+                        startActivityForResult(intent, REQUEST_CANCEL_ORDER);
+                    } else if (this.status.status().equals("11")) {
+                        intent.putExtra("cancelFragment", 0);
+                        startActivityForResult(intent, REQUEST_CANCEL_ORDER);
+                    } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
+                        String routingAppLink;
+                        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", (String) getArguments().get(KEY_ORDER_ID));
+
+                        String trackingUrl;
+                        Uri uri = Uri.parse(actionButton.getUri());
+                        trackingUrl = uri.getQueryParameter("trackingUrl");
+
+                        Uri.Builder uriBuilder = new Uri.Builder();
+                        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+                        routingAppLink += uriBuilder.toString();
+                        RouteManager.route(getContext(), routingAppLink);
+                    } else {
+                        RouteManager.route(getContext(), actionButton.getUri());
+                    }
                 } else {
                     RouteManager.route(getContext(), actionButton.getUri());
                 }
             }
         };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CANCEL_ORDER) {
+            if (resultCode == 1) {
+                String reason = data.getStringExtra("reason");
+                int reasonCode = data.getIntExtra("r_code", 1);
+                presenter.updateOrderCancelReason(reason, (String) getArguments().get(KEY_ORDER_ID), reasonCode);
+            }
+        }
     }
 
     void openDialCaller(String phoneNumber) {
@@ -614,15 +660,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
         return view -> {
-//            String newUri = uri;
-//            if (uri != null && uri.startsWith("tokopedia")) {
-//                Uri url = Uri.parse(newUri);
-//                if (newUri.contains("idem_potency_key")) {
-//                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-//                    newUri = newUri.replace("idem_potency_key=", "");
-//                }
-//                RouteManager.route(getActivity(), newUri);
-//            } else
             if (uri != null && !uri.equals("")) {
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()

@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,12 +32,13 @@ public class GeoLocationUtils {
             destination.setLatitude(String.valueOf(latitude));
             destination.setLongitude(String.valueOf(longitude));
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            // Possible improvement : Use observable create
             Observable.just(destination).map(new Func1<Destination, List<Address>>() {
                 @Override
                 public List<Address> call(Destination destination) {
                     try {
                         return geocoder.getFromLocation(latitude, longitude, 1);
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -50,10 +52,7 @@ public class GeoLocationUtils {
 
                         @Override
                         public void onError(Throwable e) {
-                            listener.getGeoCode(
-                                    String.valueOf(latitude) + ", "
-                                            + String.valueOf(longitude)
-                            );
+                            listener.onError(e.getMessage());
                         }
 
                         @Override
@@ -169,5 +168,6 @@ public class GeoLocationUtils {
 
     public interface GeoLocationListener {
         void getGeoCode(String resultAddress);
+        void onError(String message);
     }
 }
