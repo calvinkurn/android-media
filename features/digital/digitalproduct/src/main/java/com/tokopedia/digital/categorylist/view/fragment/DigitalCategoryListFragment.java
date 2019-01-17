@@ -551,6 +551,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         tickerView.setVisibility(View.VISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
+        tickerView.setTickerHeight(getResources().getDimensionPixelOffset(R.dimen.dp_200));
+        tickerView.setItemTextAppearance(R.style.TextView_Micro);
         tickerView.buildView();
 //
 //        tickerView.postDelayed(new Runnable() {
