@@ -69,7 +69,6 @@ class TrackingMapper {
             item.put("iris_session_id", sessionId)
             item.put("container", KEY_CONTAINER)
             item.put("event", KEY_EVENT_GA)
-            item.put("timestamp", Calendar.getInstance().timeInMillis)
             item
         } catch (e: JSONException) {
             JSONObject()
