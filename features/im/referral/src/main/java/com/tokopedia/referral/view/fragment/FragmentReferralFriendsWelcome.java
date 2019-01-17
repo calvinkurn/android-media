@@ -1,4 +1,4 @@
-package com.tokopedia.referral.fragment;
+package com.tokopedia.referral.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,9 +17,11 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.di.ReferralComponent;
-import com.tokopedia.referral.interfaces.ReferralRouter;
-import com.tokopedia.referral.listener.FriendsWelcomeView;
-import com.tokopedia.referral.presenter.ReferralFriendsWelcomePresenter;
+import com.tokopedia.referral.ReferralRouter;
+import com.tokopedia.referral.view.listener.FriendsWelcomeView;
+import com.tokopedia.referral.view.presenter.ReferralFriendsWelcomePresenter;
+
+import javax.inject.Inject;
 
 /**
  * Created by ashwanityagi on 06/12/17.
@@ -34,7 +36,8 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
     private ImageView imgTick;
     private TextView btnCopyReferralCode;
 
-    private ReferralFriendsWelcomePresenter presenter;
+    @Inject
+    ReferralFriendsWelcomePresenter presenter;
 
 
     public static FragmentReferralFriendsWelcome newInstance() {
@@ -49,7 +52,7 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
 
 
     protected void initialPresenter() {
-        presenter = new ReferralFriendsWelcomePresenter(this);
+        presenter.attachView(this);
         presenter.initialize();
     }
 
@@ -107,8 +110,6 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
         welcomeMessageHearer.setText(Html.fromHtml(getString(R.string.referral_welcome_header)));
         welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase()));
 
-        presenter.initialize();
-
     }
 
     @Override
@@ -150,5 +151,11 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
             btnCopyReferralCode.setTextColor(getResources().getColor(R.color.green_250));
             imgTick.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
     }
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.referral.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.referral.fragment.FragmentReferral
-import com.tokopedia.referral.fragment.FragmentReferralFriendsWelcome
+import com.tokopedia.referral.view.fragment.FragmentReferral
+import com.tokopedia.referral.view.fragment.FragmentReferralFriendsWelcome
 
 import dagger.Component
 

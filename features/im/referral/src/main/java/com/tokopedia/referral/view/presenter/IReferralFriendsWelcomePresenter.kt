@@ -1,4 +1,4 @@
-package com.tokopedia.referral.presenter
+package com.tokopedia.referral.view.presenter
 
 /**
  * Created by ashwanityagi on 04/12/17.

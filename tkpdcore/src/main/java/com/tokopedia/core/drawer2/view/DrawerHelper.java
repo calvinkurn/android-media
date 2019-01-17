@@ -26,7 +26,7 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.referral.ReferralActivity;
+import com.tokopedia.referral.view.activity.ReferralActivity;
 
 import java.util.ArrayList;
 

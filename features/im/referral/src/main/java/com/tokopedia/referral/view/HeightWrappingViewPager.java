@@ -1,4 +1,4 @@
-package com.tokopedia.referral;
+package com.tokopedia.referral.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

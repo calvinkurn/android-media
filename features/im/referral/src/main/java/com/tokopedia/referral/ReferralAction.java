@@ -1,6 +1,7 @@
 package com.tokopedia.referral;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
@@ -25,6 +26,11 @@ public class ReferralAction<T,V,W,X,Y,A,B> implements ActionExecutor<T,V,W,X,Y>,
     public void doAction(int actionId, T dataObj, ActionCreator<V,W> actionCreator, ActionUIDelegate<X,Y> actionUIDelegate) {
         switch (actionId){
             case Constants.Action.ACTION_GET_REFERRAL_CODE:
+                String referralCode = (String) getData(Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, (B) dataObj);
+                if (!TextUtils.isEmpty(referralCode)) {
+                    actionCreator.actionSuccess(Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, (V) referralCode);
+                    return;
+                }
                 GetReferralDataUseCase getReferralDataUseCase = new GetReferralDataUseCase();
                 if(actionUIDelegate != null) actionUIDelegate.waitForResult(actionId, (X)"");
                 if(dataObj != null) {

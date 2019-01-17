@@ -1,4 +1,4 @@
-package com.tokopedia.referral;
+package com.tokopedia.referral.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +10,11 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.referral.Constants;
+import com.tokopedia.referral.R;
 import com.tokopedia.referral.di.DaggerReferralComponent;
 import com.tokopedia.referral.di.ReferralComponent;
-import com.tokopedia.referral.fragment.FragmentReferralFriendsWelcome;
+import com.tokopedia.referral.view.fragment.FragmentReferralFriendsWelcome;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;

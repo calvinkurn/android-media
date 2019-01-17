@@ -1,4 +1,4 @@
-package com.tokopedia.referral.model
+package com.tokopedia.referral.domain.model
 
 /**
  * Created by ashwanityagi on 06/06/18.

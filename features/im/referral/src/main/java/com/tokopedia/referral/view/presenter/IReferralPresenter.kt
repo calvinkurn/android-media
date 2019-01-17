@@ -1,4 +1,4 @@
-package com.tokopedia.referral.presenter
+package com.tokopedia.referral.view.presenter
 
 import android.support.v4.app.FragmentManager
 

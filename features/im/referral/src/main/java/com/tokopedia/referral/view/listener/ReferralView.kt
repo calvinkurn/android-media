@@ -1,9 +1,9 @@
-package com.tokopedia.referral.listener
+package com.tokopedia.referral.view.listener
 
 import android.app.Activity
 
 import com.tokopedia.referral.data.ReferralCodeEntity
-import com.tokopedia.referral.model.ShareApps
+import com.tokopedia.referral.domain.model.ShareApps
 
 interface ReferralView : com.tokopedia.abstraction.base.view.listener.CustomerView {
 

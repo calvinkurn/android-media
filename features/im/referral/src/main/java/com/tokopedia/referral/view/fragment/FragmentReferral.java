@@ -1,4 +1,4 @@
-package com.tokopedia.referral.fragment;
+package com.tokopedia.referral.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,16 +23,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.referral.Constants;
-import com.tokopedia.referral.HeightWrappingViewPager;
+import com.tokopedia.referral.view.HeightWrappingViewPager;
 import com.tokopedia.referral.R;
-import com.tokopedia.referral.adapter.ReferralGuidePagerAdapter;
+import com.tokopedia.referral.view.adapter.ReferralGuidePagerAdapter;
 import com.tokopedia.referral.data.ReferralCodeEntity;
 import com.tokopedia.referral.di.ReferralComponent;
-import com.tokopedia.referral.interfaces.ReferralOtpRouter;
-import com.tokopedia.referral.interfaces.ReferralRouter;
-import com.tokopedia.referral.listener.ReferralView;
-import com.tokopedia.referral.model.ShareApps;
-import com.tokopedia.referral.presenter.ReferralPresenter;
+import com.tokopedia.referral.ReferralRouter;
+import com.tokopedia.referral.view.listener.ReferralView;
+import com.tokopedia.referral.domain.model.ShareApps;
+import com.tokopedia.referral.view.presenter.ReferralPresenter;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -203,8 +202,8 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
 
     @Override
     public void showVerificationPhoneNumberPage() {
-        if (getActivity().getApplicationContext() instanceof ReferralOtpRouter) {
-            ReferralOtpRouter referralOtpRouter = (ReferralOtpRouter) getActivity().getApplicationContext();
+        if (getActivity().getApplicationContext() instanceof ReferralRouter) {
+            ReferralRouter referralOtpRouter = (ReferralRouter) getActivity().getApplicationContext();
             startActivityForResult(referralOtpRouter.getReferralPhoneNumberActivityIntent(getActivity()),
                     REFERRAL_PHONE_VERIFY_REQUEST_CODE);
         }

@@ -1,4 +1,4 @@
-package com.tokopedia.referral.presenter;
+package com.tokopedia.referral.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
@@ -21,13 +20,12 @@ import com.tokopedia.referral.R;
 import com.tokopedia.referral.Util;
 import com.tokopedia.referral.data.ReferralCodeEntity;
 import com.tokopedia.referral.domain.GetReferralDataUseCase;
-import com.tokopedia.referral.interfaces.ReferralRouter;
-import com.tokopedia.referral.listener.ReferralView;
-import com.tokopedia.referral.model.ShareApps;
+import com.tokopedia.referral.ReferralRouter;
+import com.tokopedia.referral.view.listener.ReferralView;
+import com.tokopedia.referral.domain.model.ShareApps;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;

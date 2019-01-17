@@ -1,4 +1,4 @@
-package com.tokopedia.referral.interfaces
+package com.tokopedia.referral
 
 import android.app.Activity
 import android.content.Context
@@ -14,4 +14,5 @@ interface ReferralRouter {
     fun executeDefaultShare(activity: Activity, keyValueMap: HashMap<String, String>)
     fun executeShareSocmedHandler(activity: Activity, keyValueMap: HashMap<String, String>, packageName: String)
     fun sendAnalyticsToGTM(context: Context, type: String, channel: String)
+    fun getReferralPhoneNumberActivityIntent(activity: Activity): Intent
 }

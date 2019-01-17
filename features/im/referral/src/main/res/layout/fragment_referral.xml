@@ -255,7 +255,7 @@
                 android:layout_height="@dimen/margin_vs"
                 android:background="@drawable/shadow_background" />
 
-            <com.tokopedia.referral.HeightWrappingViewPager
+            <com.tokopedia.referral.view.HeightWrappingViewPager
                 android:id="@+id/view_pager_referral_guide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
