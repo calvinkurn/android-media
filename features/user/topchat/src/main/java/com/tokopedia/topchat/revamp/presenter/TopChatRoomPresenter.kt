@@ -64,7 +64,7 @@ class TopChatRoomPresenter @Inject constructor(
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
         private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
-        private var getShopFollowingUseCase: GetShopFollowingUseCase, )
+        private var getShopFollowingUseCase: GetShopFollowingUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
