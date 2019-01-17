@@ -3565,4 +3565,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
     }
 
+    @Override
+    public Intent getSaldoDepositIntent(Context context) {
+        return null;
+    }
 }
