@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/vgContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dp_4">
+
+        <com.tokopedia.flashsale.management.product.widget.FlashSaleProductWidget
+            android:id="@+id/flashSaleProductWidget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollViewContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/FlashSaleWidgetMarginStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_4"
+                    android:layout_marginTop="@dimen/dp_8">
+
+                    <TextView
+                        android:id="@+id/tvCategoryLabel"
+                        style="@style/TextView.Micro.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flash_sale_register_for_category" />
+
+                    <TextView
+                        android:id="@+id/tvCategoryText"
+                        style="@style/TextView.Title.BlackPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Elektronik" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/FlashSaleWidgetMarginStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/dp_8">
+
+                    <com.tokopedia.design.text.TkpdHintTextInputLayout
+                        android:id="@+id/tilPrice"
+                        style="@style/HintTextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/final_price"
+                        tools:helper="Kisaran Harga Rp100.000 - Rp25.000.000">
+
+                        <com.tokopedia.design.component.EditTextCompat
+                            android:id="@+id/etPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:textColor="@color/font_black_primary_70" />
+                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/dp_8">
+                    <LinearLayout
+                        style="@style/FlashSaleWidgetMarginStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
+
+                        <com.tokopedia.design.text.TkpdHintTextInputLayout
+                            android:id="@+id/tilDiscount"
+                            style="@style/HintTextInputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_discount">
+
+                            <com.tokopedia.design.component.EditTextCompat
+                                android:id="@+id/etDiscount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:textColor="@color/tkpd_main_green"
+                                android:text="@string/flash_sale_no_discount"
+                                android:enabled="false"/>
+                        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/FlashSaleWidgetMarginStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
+
+                        <com.tokopedia.design.text.TkpdHintTextInputLayout
+                            android:id="@+id/tilStock"
+                            style="@style/HintTextInputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_stock">
+
+                            <com.tokopedia.design.component.EditTextCompat
+                                android:id="@+id/etStock"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:maxLength="6"
+                                android:textColor="@color/font_black_primary_70" />
+                        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <Button
+            android:id="@+id/btnRequestProduct"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:text="@string/flash_sale_reserve_product" />
+
+    </LinearLayout>
+
+</LinearLayout>

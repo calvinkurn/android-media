@@ -251,7 +251,7 @@ public class TickerView extends BaseCustomView {
         setTextColor(defaultTextColor);
         setPageIndicatorOnColor(defaultPageIndicatorOnColor);
         setPageIndicatorOffColor(defaultPageIndicatorOffColor);
-        setTickerHeight(tickerHeight);
+        //setTickerHeight(tickerHeight);
         prepareView();
         invalidate();
         requestLayout();
@@ -370,7 +370,6 @@ public class TickerView extends BaseCustomView {
             public void run() {
                 if (tickerViewPager != null) {
                     tickerViewPager.setCurrentItem(0);
-                    tickerViewPager.measureCurrentView(tickerViewPager.getChildAt(0));
                     if(listMessage.size() > 0) {
                         setVisibility(VISIBLE);
                     }

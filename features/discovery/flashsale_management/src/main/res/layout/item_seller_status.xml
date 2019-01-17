@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TextView.Small"
+    android:id="@+id/text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_6"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_6"
+    android:layout_margin="@dimen/dp_4"
+    android:background="@drawable/selector_campaign_status"
+    android:ellipsize="end"
+    android:singleLine="true"
+    android:maxWidth="@dimen/dp_180"
+    android:textSize="@dimen/sp_13"
+    tools:text="Produk Kesehatan Wajah" />

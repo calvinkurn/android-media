@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.flashsale.management">
+
+    <application android:label="@string/app_name">
+
+        <activity
+            android:name=".view.activity.CampaignActivity"
+            android:label="@string/fm_flash_sale"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".view.activity.CampaignDetailActivity"
+            android:label="@string/fm_flash_sale"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".product.view.FlashSaleProductDetailActivity"
+            android:label="@string/flash_sale_reserve_product"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".product.view.FlashSaleTncActivity"
+            android:label="@string/flash_sale_term_and_condition"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".view.activity.FlashsaleWebViewActivity"
+            android:label="@string/fm_flash_sale"
+            android:theme="@style/Theme.White" />
+
+    </application>
+
+</manifest>

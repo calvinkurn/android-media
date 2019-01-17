@@ -28,6 +28,60 @@ import com.tokopedia.design.component.ToasterError;
 
 import java.util.List;
 
+/**
+ * Fragment that using recyclerview and has capability to show the data list,
+ * handle simple pagination when onscroll to bottom, can have swiperefresh to refresh the list,
+ * have capability to show loading, empty state, and error state
+ *
+ * To use, we have to extend the fragment
+ * class Fragment extends BaseListFragment<{Model}, {AdapterFactory}>
+ * {Model} are the data we want to show in the list. If there are many model type, we can extend the model.
+ * Generally, there are several main functions you need call on the fragment.
+ * 1. loadInitialData()
+ *    function to refresh the data from start (page 1).
+ *    As default this function will be called onViewCreated, onSwipeRefresh, and onRetry,
+ *    so most of time, no need to call this anymore.
+ * 2. loadData(page: Int)
+ *    override this function in the fragment.
+ *    Add the logic to retrieve the data for that page in this function.
+ *    In first time, page will be 1.
+ * 3. renderList(data, hasNextPage) to show the list. (generally this after onSuccess get Data)
+ * 4. showGetListError(Throwable) to show the error. (generally this after onError get Data)
+ *
+ * HOW TO CUSTOMIZE
+ * 1 change [[DEFAULT VIEW]]
+ *   As default, the view for this fragment are vertical recyclerview.
+ *   If we need to change the view, override onCreateView() function and supply the view we want.
+ *    -> You also need to override getRecyclerView(View view) and getSwipeRefreshLayout(View view)
+ *       if the view's is different with the default view's id.
+ * 2.Add/remove [[SWIPE REFRESH]]
+ *   override hasInitialSwipeRefresh() to true/false
+ * 3.[[LOAD INITIAL DATA CALL POINT]]
+ *   default will call loadInitialData() in onViewCreated
+ *   override callInitialLoadAutomatically() to false, then call loadInitialData() in place you want
+ * 4.enable/disable [[LOADMORE]]
+ *   override isLoadMoreEnabledByDefault to true/false
+ *   or
+ *   call enableLoadMore or disableLoadMore programmatically.
+ * 5.change recyclerview's [[LAYOUT_MANAGER]] to horizontal/vertical/grid
+ *   override getRecyclerViewLayoutManager()
+ * 6.Customize Error icon [[ERROR]] From Network
+ *   override fun createAdapterInstance(): BaseListAdapter<{Model}, {AdapterFactory}> {
+ *       val adapter =  super.createAdapterInstance()
+ *       adapter.errorNetworkModel = ErrorNetworkModel().apply {
+ *           iconDrawableRes = R.drawable.ic_error_cloud_green
+ *       }
+ *       return adapter
+ *   }
+ *   override getMessageFromThrowable(context, Throwable) to change the error message based on throwable
+ *   or call
+ *   super.showGetListError(MessageErrorException(getString(R.string.sorry_flash_sale_is_canceled)))
+ * 7.Customize [[EMPTY STATE]]
+ *   override getEmptyDataViewModel() and create new EmptyModel()
+ *   To manually show fullEmptyPage in adapter: call adapter.clearAllElements() and showEmpty(). Most of time, no need to call it.
+ * 8.Customize [[LOADING STATE]]
+ *   override getLoadingModel()
+ */
 public abstract class BaseListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
         implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T>,
         ErrorNetworkModel.OnRetryListener{
@@ -123,9 +177,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         loadInitialData();
     }
 
+    /***
+     * Load all from the beginning (page 1)
+     * Show Loading is automatically called.
+     * Also clear all data bewfore loading to avoid invalid data in case of error
+     */
     protected void loadInitialData() {
-        // Load all from the beginning / reset data
-        // Need to clear all data to avoid invalid data in case of error
         isLoadingInitialData = true;
         adapter.clearAllElements();
         showLoading();
@@ -137,6 +194,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
      */
     public abstract void loadData(int page);
 
+    /**
+     * It is recommended to never override this value when we have paging (to avoid error when load More Data)
+     */
     public int getDefaultInitialPage() {
         return DEFAULT_INITIAL_PAGE;
     }
@@ -203,6 +263,13 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return adapter;
     }
 
+    /**
+     * Function to show the list.
+     * Behavior is APPEND, means if there is 10 data already and we add another 10, will become 20,
+     *   * except loadInitialData() will clear the data and reset page to 0.
+     * @param list data to show for this page
+     * @param hasNextPage true if we want recyclerview to load more data at the bottom of recyclerview.
+     */
     @Override
     public void renderList(@NonNull List<T> list, boolean hasNextPage) {
         hideLoading();
@@ -217,8 +284,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         updateScrollListenerState(hasNextPage);
 
         if (isListEmpty()) {
-            // Note: add element should be the last in line.
-            adapter.addElement(getEmptyDataViewModel());
+            showEmpty();
         } else {
             //set flag to false, indicate that the initial data has been set.
             isLoadingInitialData = false;
@@ -227,6 +293,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     public boolean isListEmpty(){
         return adapter.getItemCount() == 0;
+    }
+
+    public void showEmpty(){
+        // Note: add element should be the last in line.
+        adapter.addElement(getEmptyDataViewModel());
     }
 
     public void updateScrollListenerState(boolean hasNextPage){
@@ -243,9 +314,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
     }
 
-    /**
-     * default hasNextData for this function is false.
-     */
     @Override
     public void renderList(@NonNull List<T> list) {
         renderList(list, false);
@@ -257,6 +325,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return emptyModel;
     }
 
+    /**
+     * show the default error
+     * If the error happen at loadmore, snackbar will be shown
+     * If error happens when data is empty, fullscreeen message will be shown instead.
+     * @param throwable
+     */
     @Override
     public void showGetListError(Throwable throwable) {
         hideLoading();
@@ -334,6 +408,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return ErrorHandler.getErrorMessage(context, t);
     }
 
+    /**
+     * Current page from the scroll listener.
+     * Return 0 if there is no data or even still loading first page.
+     * Will return 1 after rendering first page successfully
+     */
     protected int getCurrentPage(){
         return endlessRecyclerViewScrollListener.getCurrentPage();
     }

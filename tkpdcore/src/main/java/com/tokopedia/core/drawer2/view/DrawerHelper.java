@@ -172,6 +172,10 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         return adapter;
     }
 
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
     public void setAdapter(DrawerAdapter adapter) {
         this.adapter = adapter;
     }

@@ -47,6 +47,7 @@ ext {
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
             imageuploader     : ":libraries:imageuploader",
+            kotlinExtensions  : ":libraries:kotlin_extensions",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",
