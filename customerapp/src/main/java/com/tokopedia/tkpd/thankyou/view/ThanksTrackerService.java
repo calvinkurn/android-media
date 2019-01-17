@@ -3,11 +3,10 @@ package com.tokopedia.tkpd.thankyou.view;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.thankyou.di.component.DaggerThanksTrackerComponent;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 
