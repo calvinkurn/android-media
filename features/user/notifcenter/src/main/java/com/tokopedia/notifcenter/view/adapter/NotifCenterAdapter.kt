@@ -12,9 +12,7 @@ import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactory
 class NotifCenterAdapter(typeFactory: NotifCenterTypeFactoryImpl)
     : BaseAdapter<NotifCenterTypeFactoryImpl>(typeFactory) {
 
-    val emptyModel: EmptyResultViewModel = EmptyResultViewModel()
-
-    fun getList() = visitables
+    private val emptyModel: EmptyResultViewModel = EmptyResultViewModel()
 
     fun addEmpty(title: String, description: String, @DrawableRes icon: Int) {
         emptyModel.title = title

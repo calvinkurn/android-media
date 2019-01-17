@@ -3,12 +3,10 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
@@ -23,6 +21,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -54,13 +53,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final String OVO = "OVO";
-    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
-    private static final String KEY_AFFILIATE_FIRSTTIME = "KEY_AFFILIATE_FIRSTTIME";
-    public static final String BROADCAST_ACCOUNT = "BROADCAST_ACCOUNT";
-    public static final String PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED = "PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED";
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
+
+    abstract void notifyItemChanged(int position);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,7 +70,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             RouteManager.route(getContext(), applink);
         }
     }
-
 
     private boolean isApplink(String applink) {
         if (RouteManager.isSupportApplink(getContext(), applink)) {
@@ -157,7 +153,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onInfoCardClicked(InfoCardViewModel item) {
+    public void onInfoCardClicked(InfoCardViewModel item, int adapterPosition) {
 
         if (getContext() != null && getContext().getString(R.string.title_menu_loan)
                 .equalsIgnoreCase(item.getMainText())) {
@@ -168,7 +164,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         if (getActivity() != null
                 && item.getMainText().equals(
                         getActivity().getResources().getString(R.string.title_menu_affiliate))) {
-            handleChangeStateAffiliateItem();
+            item.setIconRes(R.drawable.ic_byme_card);
+            notifyItemChanged(adapterPosition);
+            AccountByMeHelper.setFirstTimeByme(getContext());
         }
         sendTracking(item.getTitleTrack(), item.getSectionTrack(),
                 item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
@@ -370,16 +368,5 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onShopStatusInfoButtonClicked() {
         RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
-    }
-
-    private void handleChangeStateAffiliateItem() {
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_PROFILE_BUYER);
-        if (cache.getBoolean(KEY_AFFILIATE_FIRSTTIME, true)) {
-            cache.putBoolean(KEY_AFFILIATE_FIRSTTIME, false);
-            cache.applyEditor();
-            Intent intent = new Intent(BROADCAST_ACCOUNT);
-            intent.putExtra(PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED, true);
-            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).sendBroadcast(intent);
-        }
     }
 }

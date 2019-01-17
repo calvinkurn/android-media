@@ -29,7 +29,7 @@ public interface AccountItemListener {
 
     void onMenuGridLinkClicked(MenuGridViewModel item);
 
-    void onInfoCardClicked(InfoCardViewModel item);
+    void onInfoCardClicked(InfoCardViewModel item, int adapterPosition);
 
     void onMenuListClicked(MenuListViewModel item);
 
