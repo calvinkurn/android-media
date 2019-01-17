@@ -30,7 +30,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.text.TextDrawable;
@@ -181,17 +180,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
         View broadcastLayout = parentView.findViewById(R.id.base_action);
-        if (GlobalConfig.isSellerApp()) {
-            sendBroadcast.setOnClickListener(v -> {
-                if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null) {
-                    startActivity(((BroadcastMessageRouter) getActivity().getApplication()).getBroadcastMessageListIntent(getContext()));
-                }
-            });
-            broadcastLayout.setVisibility(View.VISIBLE);
-        } else {
-            sendBroadcast.setVisibility(View.GONE);
-            broadcastLayout.setVisibility(View.GONE);
-        }
+        sendBroadcast.setVisibility(View.GONE);
+        broadcastLayout.setVisibility(View.GONE);
         parentView.findViewById(R.id.tv_organize_action).setOnClickListener(v -> setOptionsMenu());
 
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);

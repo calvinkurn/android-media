@@ -23,6 +23,8 @@ import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.sellerapp.SellerMainApplication;
 
+import java.util.Map;
+
 import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
@@ -115,4 +117,13 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
         return !data.getString(Constants.ARG_NOTIFICATION_APPLINK, "").equals("");
     }
 
+    @Override
+    public void onCampaignManagementNotificationReceived(RemoteMessage message) {
+
+    }
+
+    @Override
+    public boolean isFromCMNotificationPlatform(Map<String, String> extra) {
+        return false;
+    }
 }
