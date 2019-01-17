@@ -470,7 +470,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
                 showOverlayDialogOnScreen();
-        });
+        }, null);
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
