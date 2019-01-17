@@ -37,6 +37,7 @@ import com.tokopedia.user_identification_common.KycCommonUrl;
 import java.util.HashMap;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
@@ -129,6 +130,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onByMeClicked() {
+        sendTracking(PEMBELI, BY_ME_CURATION, "");
         openApplink(ApplinkConst.AFFILIATE_EXPLORE);
     }
 
