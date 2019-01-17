@@ -163,14 +163,23 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
         if (getContext() != null
                 && item.getMainText().equals(
-                        getContext().getResources().getString(R.string.title_menu_affiliate))
-                && AccountByMeHelper.isFirstTimeByme(getContext())) {
+                        getContext().getResources().getString(R.string.title_menu_affiliate))) {
             item.setIconRes(R.drawable.ic_byme_card);
             notifyItemChanged(adapterPosition);
             AccountByMeHelper.setFirstTimeByme(getContext());
+            sendTracking(
+                    item.getTitleTrack(),
+                    item.getSectionTrack(),
+                    TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText(),
+                    true
+            );
+        } else {
+            sendTracking(
+                    item.getTitleTrack(),
+                    item.getSectionTrack(),
+                    TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText()
+            );
         }
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
-                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
 
     }
@@ -334,6 +343,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     private void sendTracking(String title, String section, String item) {
+        sendTracking(title, section, item, false);
+    }
+
+    private void sendTracking(String title, String section, String item, boolean withUserId) {
         if (accountAnalytics == null)
             return;
 
@@ -343,7 +356,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         accountAnalytics.eventClickAccount(
                 title.toLowerCase(),
                 section.toLowerCase(),
-                item.toLowerCase());
+                item.toLowerCase(),
+                withUserId
+        );
     }
 
     private void sendTrackingOvoActivation() {
