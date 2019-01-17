@@ -38,6 +38,7 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.ticker.TickerView;
+import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
@@ -90,6 +91,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private DigitalItemHeaderHolder headerSubscription;
     private DigitalItemHeaderHolder headerFavNumber;
     private TickerView tickerView;
+    private WarningTickerView terminateAnnuoncementTicker;
+    private LinearLayout terminateAnnuoncementLayout;
     private View separatorForTicker;
 
     private CompositeSubscription compositeSubscription;
@@ -214,6 +217,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         headerFavNumber = view.findViewById(R.id.header_fav_number);
         tickerView = view.findViewById(R.id.ticker_view);
         separatorForTicker = view.findViewById(R.id.separator_for_ticker);
+        terminateAnnuoncementTicker = view.findViewById(R.id.ticker_terminate_announcement);
+        terminateAnnuoncementLayout = view.findViewById(R.id.terminate_announcement_view);
 
         refreshHandler = new RefreshHandler(getActivity(), view, this);
 
@@ -546,28 +551,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     private void renderTerminateTicker(){
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(getString(R.string.digital_terminate_announcement));
-        tickerView.setVisibility(View.VISIBLE);
-        tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
-        tickerView.setTickerHeight(getResources().getDimensionPixelOffset(R.dimen.dp_200));
-        tickerView.setItemTextAppearance(R.style.TextView_Micro);
-        tickerView.buildView();
-//
-//        tickerView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                tickerView.setItemPadding(
-//                        getResources().getDimensionPixelSize(R.dimen.dp_10),
-//                        getResources().getDimensionPixelSize(R.dimen.dp_15),
-//                        getResources().getDimensionPixelSize(R.dimen.dp_10),
-//                        getResources().getDimensionPixelSize(R.dimen.dp_15)
-//                );
-//                tickerView.setItemTextAppearance(R.style.TextView_Micro);
-//            }
-//        }, DEFAULT_DELAY_TIME);
-
-        separatorForTicker.setVisibility(View.VISIBLE);
+        terminateAnnuoncementLayout.setVisibility(View.VISIBLE);
+        terminateAnnuoncementTicker.setDescription(getString(R.string.digital_terminate_announcement));
     }
 }
