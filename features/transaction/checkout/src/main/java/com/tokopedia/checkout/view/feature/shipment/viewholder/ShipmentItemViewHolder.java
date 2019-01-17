@@ -467,8 +467,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isOfficialStore() || shipmentCartItemModel.isGoldMerchant()) {
-            ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
-            imgShopBadge.setVisibility(View.VISIBLE);
+            if (!shipmentCartItemModel.getShopBadge().isEmpty()) {
+                ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
+                imgShopBadge.setVisibility(View.VISIBLE);
+            }
         } else {
             imgShopBadge.setVisibility(View.GONE);
         }

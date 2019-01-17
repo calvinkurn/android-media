@@ -75,10 +75,10 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             boolean firstItemPosition
     ) {
         if (data.isOfficialStore()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_shop_official));
+            ImageHandler.LoadImage(imgShopBadge, data.getOfficialStoreLogoUrl());
             imgShopBadge.setVisibility(View.VISIBLE);
         } else if (data.isGoldMerchant()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_gold));
+            ImageHandler.LoadImage(imgShopBadge, data.getGoldMerchantLogoUrl());
             imgShopBadge.setVisibility(View.VISIBLE);
         } else {
             imgShopBadge.setVisibility(View.GONE);

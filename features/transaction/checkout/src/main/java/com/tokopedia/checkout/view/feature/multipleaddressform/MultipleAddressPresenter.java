@@ -178,7 +178,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             addressAdapterData.setCashBackInfo(cartItemDataList.get(i).getOriginData().getCashBackInfo());
             addressAdapterData.setSenderName(cartItemDataList.get(i).getOriginData().getShopName());
             addressAdapterData.setOfficialStore(cartItemDataList.get(i).getOriginData().isOfficialStore());
+            addressAdapterData.setOfficialStoreLogoUrl((cartItemDataList.get(i).getOriginData().getOfficialStoreLogoUrl()));
             addressAdapterData.setGoldMerchant(cartItemDataList.get(i).getOriginData().isGoldMerchant());
+            addressAdapterData.setGoldMerchantLogoUrl(cartItemDataList.get(i).getOriginData().getGoldMerchantLogoUrl());
             adapterModels.add(addressAdapterData);
         }
         return adapterModels;
