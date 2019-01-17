@@ -1,6 +1,7 @@
 package com.tokopedia.iris.data.db.mapper
 
 import com.tokopedia.iris.KEY_CONTAINER
+import com.tokopedia.iris.KEY_EVENT
 import com.tokopedia.iris.KEY_EVENT_GA
 import com.tokopedia.iris.data.db.table.Tracking
 import org.json.JSONArray
@@ -64,11 +65,11 @@ class TrackingMapper {
             var item = JSONObject(event)
             if (item.get("event") != null) {
                 item.put("event_ga", item.get("event"))
-                item.remove("event")
+                item.remove("event") // move this to actionSaveToDb
             }
             item.put("iris_session_id", sessionId)
             item.put("container", KEY_CONTAINER)
-            item.put("event", KEY_EVENT_GA)
+            item.put("event", KEY_EVENT)
             item
         } catch (e: JSONException) {
             JSONObject()
