@@ -59,7 +59,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     private static final int ORDER_ASC = 1;
     private static final String PARAMS = "params";
-    private static final String CHOOSE_ADDRESS_TRACE = "choose_another_address_trace";
+    private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;

@@ -31,21 +31,21 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
-            if (!view.isTraceStopped()) {
-                presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
-                view.stopTrace();
-            }
             view.renderHasNoWishList();
+            stopTrace();
+        }
+    }
+
+    private void stopTrace() {
+        if (!view.isAllTraceStopped()) {
+            presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
+            view.stopAllTrace();
         }
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
         if (view != null) {
-            if (!view.isTraceStopped()) {
-                presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
-                view.stopTrace();
-            }
             if (graphqlResponse != null && graphqlResponse.getData(GetWishlistResponse.class) != null) {
                 GetWishlistResponse getWishlistResponse = graphqlResponse.getData(GetWishlistResponse.class);
                 if (getWishlistResponse != null && getWishlistResponse.getGqlWishList() != null &&
@@ -59,6 +59,8 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
             } else {
                 view.renderHasNoWishList();
             }
+
+            stopTrace();
         }
     }
 

@@ -31,21 +31,14 @@ public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
-            if (!view.isTraceStopped()) {
-                presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
-                view.stopTrace();
-            }
             view.renderHasNoRecentView();
+            stopTrace();
         }
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
         if (view != null) {
-            if (!view.isTraceStopped()) {
-                presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
-                view.stopTrace();
-            }
             if (graphqlResponse != null && graphqlResponse.getData(GqlRecentViewResponse.class) != null) {
                 GqlRecentViewResponse gqlRecentViewResponse = graphqlResponse.getData(GqlRecentViewResponse.class);
                 if (gqlRecentViewResponse != null && gqlRecentViewResponse.getGqlRecentView() != null &&
@@ -59,6 +52,14 @@ public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
             } else {
                 view.renderHasNoRecentView();
             }
+            stopTrace();
+        }
+    }
+
+    private void stopTrace() {
+        if (!view.isAllTraceStopped()) {
+            presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
+            view.stopAllTrace();
         }
     }
 
