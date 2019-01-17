@@ -1,14 +1,15 @@
 package com.tokopedia.affiliate.feature.explore.view.viewmodel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by yfsx on 08/10/18.
  */
 public class ExploreParams {
     private String keyword;
-    private ArrayList<ExploreFilter> filter;
-    private ExploreSort sort;
+    private List<FilterViewModel> filters;
+    private SortViewModel sort;
     private boolean isCanLoadMore;
     private String cursor;
     private boolean isLoading;
@@ -19,13 +20,19 @@ public class ExploreParams {
 
     public void resetParams() {
         keyword = "";
-        filter = new ArrayList<>();
-        sort = new ExploreSort("", false);
+        filters = new ArrayList<>();
+        sort = new SortViewModel();
         isCanLoadMore = true;
         cursor = "";
     }
 
     public void setFirstData() {
+        isCanLoadMore = true;
+        cursor = "";
+        resetFilterSort();
+    }
+
+    public void setPullToRefreshData() {
         isCanLoadMore = true;
         cursor = "";
     }
@@ -50,15 +57,34 @@ public class ExploreParams {
         setFirstData();
     }
 
+    public void resetForFilterClick() {
+        isCanLoadMore = true;
+        this.cursor = "";
+    }
+
+
+    public void setSort(SortViewModel sort) {
+        this.sort = sort;
+    }
+
     public String getKeyword() {
         return keyword;
     }
 
-    public ArrayList<ExploreFilter> getFilter() {
-        return filter;
+    private void resetFilterSort() {
+        setSort(new SortViewModel());
+        setFilters(new ArrayList<>());
     }
 
-    public ExploreSort getSort() {
+    public List<FilterViewModel> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<FilterViewModel> filters) {
+        this.filters = filters;
+    }
+
+    public SortViewModel getSort() {
         return sort;
     }
 

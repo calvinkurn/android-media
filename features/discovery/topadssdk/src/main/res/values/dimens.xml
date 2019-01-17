@@ -52,4 +52,5 @@
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_32">32dp</dimen>
 
+    <dimen name="shop_recommendation_width">220dp</dimen>
 </resources>

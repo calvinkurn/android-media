@@ -378,6 +378,16 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
+    public String getPassengerTypeAdult() {
+        return getString(R.string.kai_homepage_adult_passenger);
+    }
+
+    @Override
+    public String getPassengerTypeChild() {
+        return getString(R.string.kai_homepage_infant_passenger);
+    }
+
+    @Override
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
         this.departureTripViewModel = departureTrip;
         this.returnTripViewModel = returnTrip;

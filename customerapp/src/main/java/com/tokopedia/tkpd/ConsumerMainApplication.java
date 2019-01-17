@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -113,6 +114,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import io.hansel.hanselsdk.Hansel;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -501,7 +504,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return md5StrBuff.toString();
     }
 
-    @Override
+
+    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
+
+    }
+
+
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }

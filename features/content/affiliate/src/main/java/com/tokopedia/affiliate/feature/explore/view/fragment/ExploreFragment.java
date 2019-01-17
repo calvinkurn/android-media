@@ -1,9 +1,11 @@
 package com.tokopedia.affiliate.feature.explore.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -32,19 +34,27 @@ import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
+import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
+import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -74,20 +84,30 @@ public class ExploreFragment
 
 
     private static final int TIME_DEBOUNCE_MILIS = 500;
+    public static final int REQUEST_DETAIL_FILTER = 1234;
 
-    private RecyclerView rvExplore, rvAutoComplete;
+
+    private ExploreAdapter adapter;
+    private ExploreParams exploreParams;
+    private FilterAdapter filterAdapter;
+    private EmptyModel emptyResultModel;
+    private int oldScrollY = 0;
+    private String firstCursor = "";
+    private List<Visitable> tempFirstData = new ArrayList<>();
+    private SortFilterModel tempLocalSortFilterData = new SortFilterModel();
+    private RemoteConfig remoteConfig;
+
+    private FrameLayout autoCompleteLayout;
+    private AutoCompleteSearchAdapter autoCompleteAdapter;
+    private ImageView ivBack, ivBantuan;
+    private RecyclerView rvExplore, rvAutoComplete, rvFilter;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
-    private ExploreAdapter adapter;
-    private ImageView ivBack, ivBantuan;
-    private ExploreParams exploreParams;
-    private EmptyModel emptyResultModel;
-    private FrameLayout autoCompleteLayout;
-    private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
-    private String firstCursor = "";
-    private List<Visitable> tempFirstData = new ArrayList<>();
+    private BottomActionView scrollToTopButton;
+    private LinearLayout layoutFilter;
+    private CardView btnFilterMore;
 
     private boolean isCanDoAction;
 
@@ -120,6 +140,10 @@ public class ExploreFragment
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
+        rvFilter = view.findViewById(R.id.rv_filter);
+        scrollToTopButton = view.findViewById(R.id.bottom_action_view);
+        layoutFilter = view.findViewById(R.id.layout_filter);
+        btnFilterMore = view.findViewById(R.id.btn_filter_more);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -128,6 +152,7 @@ public class ExploreFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         initView();
         initListener();
         exploreParams.setLoading(true);
@@ -139,6 +164,7 @@ public class ExploreFragment
         dropKeyboard();
         initEmptyResultModel();
         autoCompleteLayout.setVisibility(View.GONE);
+        layoutFilter.setVisibility(View.GONE);
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         searchView.setListener(this);
@@ -188,6 +214,24 @@ public class ExploreFragment
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
                 )
         );
+        rvExplore.getViewTreeObserver().addOnScrollChangedListener(
+                () -> {
+//                    showBottomActionWhenScrollingUp();
+                }
+        );
+        scrollToTopButton.setButton2OnClickListener(view -> {
+            rvExplore.scrollToPosition(0);
+        });
+    }
+
+    @NonNull
+    private void showBottomActionWhenScrollingUp() {
+        if (rvExplore.getScrollY() < oldScrollY && rvExplore.getScrollY() != 0) {
+            scrollToTopButton.setVisibility(View.VISIBLE);
+        } else {
+            scrollToTopButton.setVisibility(View.GONE);
+        }
+        oldScrollY = rvExplore.getScrollY();
     }
 
     @Override
@@ -225,7 +269,7 @@ public class ExploreFragment
 
     @Override
     public void onRefresh() {
-        exploreParams.setFirstData();
+        exploreParams.setPullToRefreshData();
         loadFirstData(true);
     }
 
@@ -255,6 +299,7 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
+        layoutFilter.setVisibility(View.GONE);
         exploreParams.setSearchParam(text);
         loadFirstData(false);
     }
@@ -289,6 +334,9 @@ public class ExploreFragment
     private void populateLocalDataToAdapter() {
         adapter.clearAllElements();
         adapter.addElement(getLocalFirstData());
+        filterAdapter.clearAllData();
+        filterAdapter.resetAllFilters();
+        filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
     }
 
     @Override
@@ -343,10 +391,47 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch) {
+    public void onSuccessGetFirstData(List<Visitable> itemList,
+                                      String cursor,
+                                      boolean isSearch,
+                                      boolean isPullToRefresh,
+                                      SortFilterModel sortFilterModel) {
+       populateFirstData(itemList, cursor);
+        if (!isPullToRefresh) {
+            populateFilter(sortFilterModel.getFilterList());
+            if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
+        }
+    }
+
+    @Override
+    public void onSuccessGetFilteredSortedFirstData(List<Visitable> itemList,
+                                                    String cursor,
+                                                    boolean isSearch,
+                                                    boolean isPullToRefresh) {
+        populateFirstData(itemList, cursor);
+    }
+
+    private void populateFirstData(List<Visitable> itemList, String cursor) {
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        searchView.addTextWatcherToSearch();
+        presenter.unsubscribeAutoComplete();
+        populateExploreItem(itemList, cursor);
+    }
+
+    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, SortFilterModel sortFilterModel) {
+        tempFirstData = itemList;
+        this.firstCursor = firstCursor;
+        this.tempLocalSortFilterData = sortFilterModel;
+    }
+
+    private List<Visitable> getLocalFirstData() {
+        exploreParams.setCursorForLoadMore(this.firstCursor);
+        return tempFirstData;
+    }
+
+    private void populateExploreItem(List<Visitable> itemList, String cursor) {
         if (itemList.size() == 0) {
             itemList = new ArrayList<>();
             itemList.add(emptyResultModel);
@@ -361,19 +446,38 @@ public class ExploreFragment
         adapter.addElement(itemList);
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
-        searchView.addTextWatcherToSearch();
-        presenter.unsubscribeAutoComplete();
-        if (!isSearch) saveFirstDataToLocal(itemList, cursor);
     }
 
-    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor) {
-        tempFirstData = itemList;
-        this.firstCursor = firstCursor;
+    private void populateFilter(List<FilterViewModel> filterList) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
+            layoutFilter.setVisibility(View.VISIBLE);
+            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            if (filterAdapter == null) {
+                filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener(), R.layout.item_explore_filter);
+            } else {
+                filterAdapter.clearAllData();
+                filterAdapter.addItem(filterList);
+            }
+            rvFilter.setAdapter(filterAdapter);
+            btnFilterMore.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
+                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
+            });
+        }
     }
 
-    private List<Visitable> getLocalFirstData() {
-        exploreParams.setCursorForLoadMore(this.firstCursor);
-        return tempFirstData;
+    private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
+        return filters -> {
+            getFilteredFirstData(filters);
+        };
+    }
+
+    private void getFilteredFirstData(List<FilterViewModel> filters) {
+        exploreParams.setFilters(filters);
+        exploreParams.resetForFilterClick();
+        exploreParams.setLoading(true);
+        presenter.getFirstData(exploreParams, false);
     }
 
     @Override
@@ -520,6 +624,18 @@ public class ExploreFragment
         searchView.getSearchTextView().setText(keyword);
         onSearchTextModified(keyword, true);
         autoCompleteAdapter.clearAdapter();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_DETAIL_FILTER) {
+                List<FilterViewModel> currentFilter = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                populateFilter(currentFilter);
+                getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
+            }
+        }
     }
 
     @Override
