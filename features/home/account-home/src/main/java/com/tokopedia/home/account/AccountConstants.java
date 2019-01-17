@@ -29,6 +29,7 @@ public class AccountConstants {
         public static final String LOAN = "modal usaha";
         public static final String PEMBELI = "pembeli";
         public static final String CLICK_CHALLENGE = "challenge";
+        public static final String BY_ME = "by.me";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";

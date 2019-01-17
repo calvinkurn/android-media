@@ -163,7 +163,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     new HashMap<>(), getContext());
         }
 
-        if (item.getMainText().equals(getActivity().getResources().getString(R.string.title_menu_affiliate))) {
+        if (getActivity() != null
+                && item.getMainText().equals(
+                        getActivity().getResources().getString(R.string.title_menu_affiliate))) {
             handleChangeStateAffiliateItem();
         }
         sendTracking(item.getTitleTrack(), item.getSectionTrack(),

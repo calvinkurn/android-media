@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_CHALLENGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 
@@ -276,6 +277,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
             infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
             infoCard.setTitleTrack(PEMBELI);
+            infoCard.setSectionTrack(BY_ME);
             items.add(infoCard);
         }
 
