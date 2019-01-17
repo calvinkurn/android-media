@@ -169,6 +169,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
+            getViewState().onSetCustomMessage(customMessage)
             presenter.getTemplate()
 
             activity?.run {
@@ -277,13 +278,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         super.onProductClicked(element)
-        if (activity!!.applicationContext is AbstractionRouter) {
-            val abstractionRouter = activity!!
-                    .applicationContext as AbstractionRouter
-            abstractionRouter.analyticTracker.sendEventTracking(
-                    AttachProductAnalytics.getEventClickChatAttachedProductImage().event
-            )
-        }
+        analytics.trackProductAttachmentClicked()
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -325,7 +320,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
             }
 
-            getViewState().onSetCustomMessage(customMessage)
+//            getViewState().onSetCustomMessage(customMessage)
 
             hideLoading()
         }

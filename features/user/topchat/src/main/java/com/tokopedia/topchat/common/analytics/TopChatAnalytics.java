@@ -2,6 +2,7 @@ package com.tokopedia.topchat.common.analytics;
 
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -168,5 +169,11 @@ public class TopChatAnalytics {
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
+    }
+
+    public void trackProductAttachmentClicked() {
+        analyticTracker.sendEventTracking(
+                AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
+        );
     }
 }
