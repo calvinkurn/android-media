@@ -1696,7 +1696,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
-        overlayDialog = CloseableBottomSheetDialog.createInstance(this);
+        overlayDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
+            analytics.eventClickCloseOverlayCloseButton(model.getChannelId());
+        }, () -> {
+            analytics.eventClickCloseOverlayBackButton(model.getChannelId());
+        });
         View view = createOverlayView(model);
         overlayDialog.setCustomContentView(view, "", model.isCloseable());
         overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
@@ -1709,9 +1713,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 BottomSheetBehavior.from(bottomSheet)
                         .setState(BottomSheetBehavior.STATE_EXPANDED);
             }
-        });
-        overlayDialog.setOnDismissListener(dialogInterface -> {
-            analytics.eventClickCloseOverlayCloseButton(model.getChannelId());
         });
         if (showDialogDirectly) {
             showOverlayDialogOnScreen();
