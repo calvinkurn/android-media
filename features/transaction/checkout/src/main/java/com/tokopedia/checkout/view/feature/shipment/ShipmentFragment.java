@@ -1408,7 +1408,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceTncClicked() {
-        startActivity(CheckoutWebViewActivity.newInstance(getContext(), CartConstant.TERM_AND_CONDITION_URL));
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(),
+                CartConstant.TERM_AND_CONDITION_URL,
+                getString(R.string.title_activity_checkout_tnc_webview));
+        startActivity(intent);
     }
 
     @Override
@@ -1753,7 +1756,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void navigateToProtectionMore(String url) {
         mTrackerPurchaseProtection.eventClickOnPelajari(url);
-        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
+                getString(R.string.title_activity_checkout_webview));
         startActivity(intent);
     }
 
