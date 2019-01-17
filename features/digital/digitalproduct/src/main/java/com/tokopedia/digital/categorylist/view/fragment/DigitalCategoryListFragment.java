@@ -91,8 +91,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private DigitalItemHeaderHolder headerSubscription;
     private DigitalItemHeaderHolder headerFavNumber;
     private TickerView tickerView;
-    private WarningTickerView terminateAnnuoncementTicker;
-    private LinearLayout terminateAnnuoncementLayout;
+    private WarningTickerView terminateAnnouncementTicker;
+    private LinearLayout terminateAnnouncementLayout;
     private View separatorForTicker;
 
     private CompositeSubscription compositeSubscription;
@@ -217,8 +217,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         headerFavNumber = view.findViewById(R.id.header_fav_number);
         tickerView = view.findViewById(R.id.ticker_view);
         separatorForTicker = view.findViewById(R.id.separator_for_ticker);
-        terminateAnnuoncementTicker = view.findViewById(R.id.ticker_terminate_announcement);
-        terminateAnnuoncementLayout = view.findViewById(R.id.terminate_announcement_view);
+        terminateAnnouncementTicker = view.findViewById(R.id.ticker_terminate_announcement);
+        terminateAnnouncementLayout = view.findViewById(R.id.terminate_announcement_view);
 
         refreshHandler = new RefreshHandler(getActivity(), view, this);
 
@@ -551,7 +551,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     private void renderTerminateTicker(){
-        terminateAnnuoncementLayout.setVisibility(View.VISIBLE);
-        terminateAnnuoncementTicker.setDescription(getString(R.string.digital_terminate_announcement));
+        terminateAnnouncementLayout.setVisibility(View.VISIBLE);
+        terminateAnnouncementTicker.setDescription(getString(R.string.digital_terminate_announcement));
     }
 }

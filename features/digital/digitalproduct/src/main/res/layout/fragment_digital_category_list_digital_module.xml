@@ -64,10 +64,7 @@
             android:id="@+id/terminate_announcement_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_margin="@dimen/dp_16"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -77,11 +74,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@drawable/bg_line_separator" />
         </LinearLayout>
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
