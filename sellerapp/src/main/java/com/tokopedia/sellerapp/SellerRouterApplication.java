@@ -1960,4 +1960,9 @@ public abstract class SellerRouterApplication extends MainApplication
         return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
                 true);
     }
+
+    @Override
+    public Intent getSaldoDepositIntent(Context context) {
+        return null;
+    }
 }
