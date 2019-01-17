@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginRight="-3dp"
+            android:layout_marginRight="-6dp"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
             tools:visibility="visible">
@@ -87,11 +87,11 @@
 
             <android.support.v7.widget.CardView
                 android:id="@+id/btn_filter_more"
-                android:layout_width="@dimen/dp_40"
+                android:layout_width="@dimen/dp_48"
                 android:layout_height="match_parent"
                 android:padding="@dimen/dp_2"
-                app:cardUseCompatPadding="false"
-                app:cardCornerRadius="2dp"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="@dimen/dp_6"
                 android:layout_gravity="end|center_vertical">
 
                 <android.support.v7.widget.AppCompatImageView
