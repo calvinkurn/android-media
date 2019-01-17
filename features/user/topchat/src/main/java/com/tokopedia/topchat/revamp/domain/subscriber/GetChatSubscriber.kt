@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.revamp.domain.subscriber
 
-import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
