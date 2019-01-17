@@ -51,12 +51,12 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
         }
     }
 
-    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-        super.onReceivedError(view, request, error)
-        if (activity is KelontongMainActivity) {
-            activity.onReceivedErrorView()
-        }
-    }
+//    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+//        super.onReceivedError(view, request, error)
+//        if (activity is KelontongMainActivity) {
+//            activity.onReceivedErrorView()
+//        }
+//    }
 
     fun checkPermission(): Boolean {
         val resultCamera = ContextCompat.checkSelfPermission(activity, CAMERA)
