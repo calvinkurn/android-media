@@ -192,8 +192,8 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
             var temp = true
-//            getChatUseCase.getCache(GetChatUseCase.generateParamCache(messageId),
-//                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
+            getChatUseCase.getCache(GetChatUseCase.generateParamCache(messageId),
+                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
         }
     }
 
