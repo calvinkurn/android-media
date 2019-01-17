@@ -88,4 +88,11 @@
     <string name="topads_dashboard_label_statistics">Statistik</string>
 
     <string name="action_more">Atur Bersamaan</string>
+    <string name="label_credit_history">Riwayat Kredit</string>
+    <string name="label_topads_automatic_topup">Tambah Kredit Otomatis</string>
+    <string name="topads_active">Aktif</string>
+    <string name="label_credit_addition">Total Penambahan</string>
+    <string name="label_credit_used">Total Terpakai</string>
+    <string name="title_top_ads_credit_history">Riwayat Kredit</string>
+    <string name="top_ads_no_credit_history">Belum Ada Transaksi</string>
 </resources>
