@@ -1767,7 +1767,20 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
         ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
-            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle());
+            ArrayList<EEPromotion> list = new ArrayList<>();
+            list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
+                    EEPromotion.NAME_GROUPCHAT,
+                    GroupChatAnalytics.DEFAULT_EE_POSITION,
+                    viewModel.getChannelInfoViewModel().getAdsName(),
+                    viewModel.getChannelInfoViewModel().getAdsImageUrl(),
+                    getAttributionTracking(GroupChatAnalytics
+                            .ATTRIBUTE_BANNER)
+            ));
+            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle(),
+                    GroupChatAnalytics.COMPONENT_BANNER,
+                    viewModel.getChannelInfoViewModel().getAdsName(),
+                    GroupChatAnalytics.ATTRIBUTE_BANNER,
+                    list );
             if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
                 startApplink(interuptViewModel.getBtnLink());
             }
