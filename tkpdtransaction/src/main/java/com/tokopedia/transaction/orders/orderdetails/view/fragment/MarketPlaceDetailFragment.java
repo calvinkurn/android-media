@@ -395,7 +395,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
             params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
             TextView textView = new TextView(getContext());
             textView.setText(actionButton.getLabel());
-            textView.setPadding(16, 20, 16, 20);
+            textView.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
             textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setGravity(Gravity.CENTER);
             GradientDrawable shape = new GradientDrawable();
