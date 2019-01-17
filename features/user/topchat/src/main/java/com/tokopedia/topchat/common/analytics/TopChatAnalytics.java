@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.common.analytics;
 
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import org.jetbrains.annotations.NotNull;
@@ -176,26 +177,30 @@ public class TopChatAnalytics {
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
     }
 
-//    public void eventClickProductThumbnailEE(String blastId, String productId, String productName, String productPrice){
-//        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-//                EVENT_NAME, Name.CHAT_DETAIL,
-//                EVENT_CATEGORY, Category.CHAT_DETAIL,
-//                EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
-//                EVENT_LABEL, String.format("%s - %s", blastId, productId),
-//                ECOMMERCE, getProductThumbnailEEDataLayer("", ""),
-//                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
-//        ));
-//    }
-//
-//    public static HashMap<String, Object> getProductThumbnailEEDataLayer() {
-//        HashMap<String, Object> hashMap = new HashMap<>();
-//        hashMap.put("click", getEEDataLayer());
-//        return hashMap;
-//    }
-//
-//    public Map<String, Object> getEEDataLayer(String eventName, String eventContent) {
-//        HashMap<String, Object> hashMap = new HashMap<>();
-//        hashMap.put(eventName, eventContent);
-//        return hashMap;
-//    }
+    public void eventClickProductThumbnailEE(int blastId, String productId, String productName, int productPrice, String category){
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, Name.CHAT_DETAIL,
+                EVENT_CATEGORY, Category.CHAT_DETAIL,
+                EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
+                EVENT_LABEL, String.format("chat - %s - %s", productId, String.valueOf(blastId)),
+                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
+                                                    "click", DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf("list", "/chat"),
+                                                        "products",DataLayer.listOf(
+                                                                DataLayer.mapOf(
+                                                                "name", productName,
+                                                                "id", productId,
+                                                                "price", productPrice,
+                                                                "brand", "none",
+                                                                "category", category,
+                                                                "variant", "none",
+                                                                "position", 0
+                                                                )
+                                                )
+                        )
+                )
+        ));
+    }
+
+
 }

@@ -96,7 +96,10 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.message.censoredReply,
                 pojo.startTime,
                 canShowFooterProductAttachment(pojo.isOpposite,
-                        pojo.fromRole)
+                        pojo.fromRole),
+                pojo.blastId,
+                pojoAttribute.productProfile.priceInt,
+                pojoAttribute.productProfile.category
         )
     }
 

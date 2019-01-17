@@ -2,8 +2,7 @@ package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
-
-import java.util.Date
+import java.util.*
 
 /**
  * @author by nisie on 5/14/18.
@@ -24,7 +23,12 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         private set
     var canShowFooter: Boolean = false
         private set
-
+    var blastId: Int = 0
+        private set
+    var priceInt: Int = 0
+        private set
+    var category: String = ""
+        private set
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
                 replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
@@ -57,7 +61,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
                 productId: Int, productName: String,
                 productPrice: String, productUrl: String,
                 productImage: String, isSender: Boolean, message: String,
-                canShowFooter : Boolean)
+                canShowFooter : Boolean, blastId: Int, productPriceInt: Int, category:String)
             : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message) {
         this.productId = productId
@@ -67,6 +71,9 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.productUrl = productUrl
         this.productImage = productImage
         this.canShowFooter = canShowFooter
+        this.blastId = blastId
+        this.priceInt = productPriceInt
+        this.category = category
     }
 
     /**
@@ -94,7 +101,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
                 productName: String, productPrice: String,
                 productUrl: String, productImage: String,
                 isSender: Boolean, message: String, startTime: String,
-                canShowFooter: Boolean)
+                canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category:String)
             : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             startTime, false, false, isSender, message) {
         this.productId = productId
@@ -104,6 +111,9 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.productUrl = productUrl
         this.productImage = productImage
         this.canShowFooter = canShowFooter
+        this.blastId = blastId
+        this.priceInt = productPriceInt
+        this.category = category
     }
 
     /**

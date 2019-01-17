@@ -278,10 +278,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             abstractionRouter.analyticTracker.sendEventTracking(
                     AttachProductAnalytics.getEventClickChatAttachedProductImage().event
             )
-//            analytics.eventClickProductThumbnailEE("",
-//                    element.productId.toString(),
-//                    element.productName,
-//                    element.productPrice)
+            analytics.eventClickProductThumbnailEE(element.blastId,
+                    element.productId.toString(),
+                    element.productName,
+                    element.priceInt,
+                    element.category)
         }
     }
 

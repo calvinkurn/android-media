@@ -43,5 +43,8 @@ data class ChatSocketPojo(
         var ratingStatus: Int = 0,
         @SerializedName("is_opposite")
         @Expose
-        var isOpposite: Boolean = false
+        var isOpposite: Boolean = false,
+        @SerializedName("blast_id")
+        @Expose
+        var blastId: Int = 0
 )

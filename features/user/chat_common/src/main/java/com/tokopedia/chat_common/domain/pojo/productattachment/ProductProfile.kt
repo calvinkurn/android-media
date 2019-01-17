@@ -17,4 +17,10 @@ class ProductProfile {
     @SerializedName("url")
     @Expose
     val url: String = ""
+    @SerializedName("price_int")
+    @Expose
+    val priceInt: Int = 0
+    @SerializedName("category_breadcrumb")
+    @Expose
+    val category: String = ""
 }

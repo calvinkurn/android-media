@@ -185,7 +185,10 @@ open class GetExistingChatMapper @Inject constructor() {
                 !chatItemPojoByDateByTime.isOpposite,
                 chatItemPojoByDateByTime.msg,
                 canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
-                        chatItemPojoByDateByTime.role)
+                        chatItemPojoByDateByTime.role),
+                chatItemPojoByDateByTime.blastId,
+                pojoAttribute.productProfile.priceInt,
+                pojoAttribute.productProfile.category
         )
     }
 
