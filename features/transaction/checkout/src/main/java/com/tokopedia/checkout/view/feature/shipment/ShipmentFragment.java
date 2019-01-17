@@ -1672,17 +1672,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void showShippingDurationBottomsheet(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, List<ShopShipment> shopShipmentList, int cartPosition) {
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
+        int codHistory = -1;
+        if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
+            codHistory = shipmentPresenter.getCodData().getCounterCod();
+        }
         if (shipmentDetailData != null) {
-            if (shipmentPresenter.getCodData() != null) {
-                // if cod available
-                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                        recipientAddressModel, cartPosition, shipmentPresenter.getCodData().getCounterCod());
-            } else {
-                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                        recipientAddressModel, cartPosition);
-            }
+            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                    recipientAddressModel, cartPosition, codHistory);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {

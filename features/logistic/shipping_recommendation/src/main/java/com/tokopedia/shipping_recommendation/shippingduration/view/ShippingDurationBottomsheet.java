@@ -75,19 +75,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
-        if (codHistory > 0) bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
+        bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
-    }
-
-    public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
-                                                          int selectedServiceId,
-                                                          List<ShopShipment> shopShipmentList,
-                                                          RecipientAddressModel recipientAddressModel,
-                                                          int cartPosition) {
-        return newInstance(shipmentDetailData, selectedServiceId,
-                shopShipmentList, recipientAddressModel, cartPosition, -1);
     }
 
     public void setShippingDurationBottomsheetListener(ShippingDurationBottomsheetListener shippingDurationBottomsheetListener) {
