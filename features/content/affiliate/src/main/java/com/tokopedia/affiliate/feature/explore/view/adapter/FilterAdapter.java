@@ -72,7 +72,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private void initViewListener(Holder holder, FilterViewModel filter) {
         holder.cardView.setOnClickListener(v -> {
             enableCurrentItem(filter);
-            if (filter.isSelected()) {
+            if (layout ==  R.layout.item_explore_filter && filter.isSelected()) {
                 moveSelectedSingleItemToFront(filter);
             }
             filterClickedListener.onItemClicked(getOnlySelectedFilter());
