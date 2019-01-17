@@ -153,7 +153,7 @@ class ChatModule {
     fun provideOkHttpClient(@InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckInterceptor,
-                            fingerprintInterceptor: FingerprintInterceptor
+                            fingerprintInterceptor: FingerprintInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             xUserIdInterceptor: XUserIdInterceptor):
             OkHttpClient {
