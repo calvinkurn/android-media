@@ -22,7 +22,7 @@ const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"
 
 const val SHARED_PREFERENCES = "com.tokopedia.iris.SHARED_PREFERENCES"
-const val DOMAIN_HASH = "www.tokopedia.com"
+const val DOMAIN_HASH = "android-tokopedia"
 const val KEY_DOMAIN_HASH = "domain_hash"
 const val KEY_USER_ID = "user_id"
 const val KEY_DEVICE_ID = "device_id"
@@ -35,8 +35,8 @@ const val WORKER_SEND_DATA = "com.tokopedia.iris.WORKER_SEND_DATA"
 const val MAX_ROW = "MAX_ROW"
 
 const val KEY_CONTAINER = "gtm"
-//const val KEY_EVENT_GA = "default_app"
-const val KEY_EVENT_GA = "testing datahub Android"
+const val KEY_EVENT_GA = "default"
+//const val KEY_EVENT_GA = "testing datahub Android"
 
 const val DEFAULT_SERVICE_TIME: Long = 900000
 const val DEFAULT_MAX_ROW = 50
