@@ -43,35 +43,12 @@ class TravelCalendarPresenter @Inject constructor(private val getHolidayUseCase:
                                 }
 
                                 override fun onNext(holidayResults: List<HolidayResult>) {
-                                    view.hideLoading()
                                     view.renderAllHolidayEvent(holidayResults)
                                 }
                             })
             )
         } else {
-            view.hideLoading()
             view.renderAllHolidayEvent(ArrayList())
-        }
-    }
-
-    override fun getMonthsCalendarList(minDate: Date, maxDate: Date) {
-        view.showLoading()
-        val initCalendar = Calendar.getInstance()
-        val calendarMinDate = initCalendar.clone() as Calendar
-        calendarMinDate.time = minDate
-        val monthMinDate = calendarMinDate.get(Calendar.MONTH)
-        val yearMinDate = calendarMinDate.get(Calendar.YEAR)
-
-        val calendarMaxDate = initCalendar.clone() as Calendar
-        calendarMaxDate.time = maxDate
-        val monthMaxDate = calendarMaxDate.get(Calendar.MONTH)
-        val yearMaxDate = calendarMaxDate.get(Calendar.YEAR)
-
-        val yearDeviation = (yearMaxDate - yearMinDate) * 12 + 1
-        val monthDeviation = yearDeviation + monthMaxDate - monthMinDate
-
-        if (isViewAttached) {
-            view.renderCalendarMonthList(monthMinDate, yearMinDate, monthDeviation)
         }
     }
 
