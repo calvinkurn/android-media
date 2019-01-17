@@ -11,12 +11,6 @@ import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName
  */
 public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
 
-    public enum Event {
-        CLICK_PELAJARI,
-        CLICK_BAYAR,
-        IMPRESSION_PELAJARI
-    }
-
     public CheckoutAnalyticsPurchaseProtection(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
