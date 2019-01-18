@@ -508,6 +508,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
+        sortButton.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
