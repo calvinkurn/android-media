@@ -78,6 +78,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
+    private static final String TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
+    private static final String TAG_RETURN_CALENDAR = "flightCalendarReturn"
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
@@ -442,44 +444,38 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
-                .setMinDate(minDate)
-                .setMaxDate(maxDate)
-                .setSelectedDate(selectedDate)
-                .setShowHoliday(true)
-                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date))
-                .build();
-        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
-            @Override
-            public void onClickDate(@NotNull Date dateSelected) {
-                Calendar calendarSelected = Calendar.getInstance();
-                calendarSelected.setTime(dateSelected);
-                presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-            }
-        });
-        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar departure");
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
     }
 
     @Override
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
+    }
+
+    private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
+                                       String tagFragment) {
         TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
                 .setMinDate(minDate)
                 .setMaxDate(maxDate)
                 .setSelectedDate(selectedDate)
                 .setShowHoliday(true)
-                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date))
+                .setTitle(title)
                 .build();
         travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
             @Override
             public void onClickDate(@NotNull Date dateSelected) {
                 Calendar calendarSelected = Calendar.getInstance();
                 calendarSelected.setTime(dateSelected);
-                presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+                if (tagFragment.equals(TAG_DEPARTURE_CALENDAR)) {
+                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+                } else {
+                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+                }
             }
         });
-        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar return");
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), tagFragment);
     }
 
     @Override
@@ -632,20 +628,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 case REQUEST_CODE_LOGIN:
                     presenter.onLoginResultReceived();
                     break;
-//                case REQUEST_CODE_DATE_PICKER_DEPARTURE:
-//                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-//                    Calendar calendarSelected = Calendar.getInstance();
-//                    calendarSelected.setTime(dateString);
-//                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-//                    break;
-//                case REQUEST_CODE_DATE_PICKER_RETURN:
-//                    dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-//                    calendarSelected = Calendar.getInstance();
-//                    calendarSelected.setTime(dateString);
-//                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-//                    break;
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();

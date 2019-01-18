@@ -32,6 +32,7 @@ import static okhttp3.internal.Util.UTC;
 public class TimeFilterFragment extends Fragment {
     private static final String ARG_TIMERAMGE = "timerange";
     private static final String STARTDATE = "startdate";
+    private static final String TAG_CALENDAR = "calendarTimeFilter";
     @BindView(R2.id.tv_today)
     TextView tvToday;
     @BindView(R2.id.tv_tomorrow)
@@ -139,25 +140,7 @@ public class TimeFilterFragment extends Fragment {
             timeRange = EVERYDAY;
             resetStartDate();
         } else if (id == R.id.tv_from_date) {
-            TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
-                    .setShowHoliday(false)
-                    .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_date))
-                    .build();
-            travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
-                @Override
-                public void onClickDate(@NotNull Date dateSelected) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeZone(UTC);
-                    calendar.setTime(dateSelected);
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-                    calendar.set(Calendar.MINUTE, 0);
-                    calendar.set(Calendar.SECOND, 0);
-                    calendar.set(Calendar.MILLISECOND, 0);
-                    long timeMillis = calendar.getTimeInMillis();
-                    setSelectedDate(timeMillis);
-                }
-            });
-            travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar time filter");
+            showCalendar();
         } else if (id == R.id.iv_close_filter) {
             closeSelf.closeFragmentSelf();
         } else if (id == R.id.tv_reset) {
@@ -184,6 +167,28 @@ public class TimeFilterFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement ICloseFragement");
         }
+    }
+
+    private void showCalendar() {
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setShowHoliday(false)
+                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_date))
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeZone(UTC);
+                calendar.setTime(dateSelected);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                long timeMillis = calendar.getTimeInMillis();
+                setSelectedDate(timeMillis);
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), TAG_CALENDAR);
     }
 
     @Override
