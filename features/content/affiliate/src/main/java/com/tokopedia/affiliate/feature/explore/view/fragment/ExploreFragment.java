@@ -407,11 +407,12 @@ public class ExploreFragment
                                       boolean isPullToRefresh,
                                       SortFilterModel sortFilterModel) {
        populateFirstData(itemList, cursor);
-        if (!isPullToRefresh) {
+       sortButton.setVisibility(View.VISIBLE);
+       if (!isPullToRefresh) {
             populateFilter(sortFilterModel.getFilterList());
             populateSort(sortFilterModel.getSortList());
             if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
-        }
+       }
     }
 
     @Override
@@ -492,6 +493,8 @@ public class ExploreFragment
                 bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
                 startActivityForResult(SortActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_SORT);
             });
+        } else {
+            sortButton.setVisibility(View.GONE);
         }
     }
 
