@@ -560,7 +560,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-            } else if ( requestCode == CANCEL_BUYER_REQUEST) {
+            } else if ( resultCode == CANCEL_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
