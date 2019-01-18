@@ -667,10 +667,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                         .append(mJsHciCallbackFuncName)
                         .append("('")
                         .append(imagePath)
-                        .append(", ")
-                        .append(ImageHandler.encodeToBase64(imagePath))
                         .append("'")
-                        .append(")");
+                        .append(", ")
+                        .append("'")
+                        .append(ImageHandler.encodeToBase64(imagePath))
+                        .append("')");
                 scroogeWebView.loadUrl(jsCallbackBuilder.toString());
             }
         }

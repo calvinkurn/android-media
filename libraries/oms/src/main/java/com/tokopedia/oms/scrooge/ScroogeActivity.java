@@ -215,10 +215,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                         .append(mJsHciCallbackFuncName)
                         .append("('")
                         .append(imagePath)
-                        .append(", ")
-                        .append(ImageHandler.encodeToBase64(imagePath))
                         .append("'")
-                        .append(")");
+                        .append(", ")
+                        .append("'")
+                        .append(ImageHandler.encodeToBase64(imagePath))
+                        .append("')");
                 mWebView.loadUrl(jsCallbackBuilder.toString());
             }
         }
