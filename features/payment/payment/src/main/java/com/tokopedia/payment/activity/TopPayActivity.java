@@ -659,7 +659,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
-        } else if (requestCode == HCI_CAMERA_REQUEST_CODE) {
+        } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
