@@ -9,8 +9,6 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -48,9 +46,9 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemMo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
@@ -81,6 +79,7 @@ import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentSt
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,6 +120,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetRatesUseCase getRatesUseCase;
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
+    private final UserSessionInterface userSessionInterface;
     private final IVoucherCouponMapper voucherCouponMapper;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
@@ -157,10 +157,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetRatesUseCase getRatesUseCase,
                              GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                              ShippingCourierConverter shippingCourierConverter,
-                             IVoucherCouponMapper voucherCouponMapper,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
-                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection
-    ) {
+                             IVoucherCouponMapper voucherCouponMapper,
+                             UserSessionInterface userSessionInterface,
+                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
         this.checkPromoCodeFinalUseCase = checkPromoCodeFinalUseCase;
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
@@ -178,6 +178,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.voucherCouponMapper = voucherCouponMapper;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
         this.mTrackerPurchaseProtection = analyticsPurchaseProtection;
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
@@ -425,8 +426,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment) {
         getView().showLoading();
-        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm =
-                new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
+        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
 
         RequestParams requestParams = RequestParams.create();
@@ -463,7 +463,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             processCheckout(voucherCode, isOneClickShipment);
         } else {
             getView().showLoading();
-            com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
+            TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
             paramGetShipmentForm.put("lang", "id");
 
             RequestParams requestParams = RequestParams.create();
@@ -496,18 +496,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
                 ?
-                AuthUtil.generateParamsNetwork(
-                        getView().getActivityContext(), SessionHandler.getLoginID(getView().getActivityContext()),
-                        GCMHandler.getRegistrationId(getView().getActivityContext())
-                )
+                AuthUtil.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
                 :
                 AuthUtil.generateParamsNetwork(
-                        getView().getActivityContext(), originParams,
-                        SessionHandler.getLoginID(getView().getActivityContext()),
-                        GCMHandler.getRegistrationId(getView().getActivityContext())
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams
                 );
     }
 
@@ -547,6 +542,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<ShipmentCartItemModel> indexShopErrorList = new ArrayList<>();
         Map<ShipmentCartItemModel, List<CartItemModel>> indexShopItemErrorMap = new HashMap<>();
         for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
+            for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+                if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
+                    newShipmentCartItemModelList.get(i).setError(true);
+                }
+            }
             if (newShipmentCartItemModelList.get(i).isAllItemError()) {
                 cartListHasError = true;
                 indexShopErrorList.add(newShipmentCartItemModelList.get(i));
@@ -595,6 +595,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return false;
     }
 
+    @Deprecated
     @Override
     public void processVerifyPayment(String transactionId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -1051,7 +1052,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @NonNull
     private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel shipmentCartItemModel,
                                                            String addressLatitude, String addressLongitude) {
-        TKPDMapParam<String, String> params = getGeneratedAuthParamNetwork(null);
+        Map<String, String> params = getGeneratedAuthParamNetwork(null);
 
         String addressId = null;
         String addressName = null;
@@ -1109,8 +1110,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void cancelAutoApplyCoupon() {
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>());
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CancelAutoApplyCouponUseCase.PARAM_REQUEST_AUTH_MAP_STRING, authParam);
+
         compositeSubscription.add(
-                cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
+                cancelAutoApplyCouponUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
@@ -1159,10 +1166,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         param.put("carts", changeAddressRequestJsonString);
         RequestParams requestParam = RequestParams.create();
 
-        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
-                getView().getActivityContext(), param,
-                SessionHandler.getLoginID(getView().getActivityContext()),
-                GCMHandler.getRegistrationId(getView().getActivityContext()));
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
 
         requestParam.putAllString(authParam);
         requestParam.putBoolean(ChangeShippingAddressUseCase.PARAM_ONE_CLICK_SHIPMENT,

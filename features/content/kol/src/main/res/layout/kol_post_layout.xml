@@ -10,7 +10,7 @@
         android:id="@+id/container_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shadow_top_bottom"
+        android:background="@drawable/card_shadow_top_bottom"
         android:orientation="vertical">
 
         <com.tokopedia.kol.feature.post.view.widget.BaseKolView

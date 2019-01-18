@@ -185,6 +185,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public static ShipmentCartItemModel clone(ShipmentCartItemModel shipmentCartItemModel, List<CartItemModel> cartItemModels) {
         ShipmentCartItemModel newShipmentCartItemModel = new ShipmentCartItemModel();
+        newShipmentCartItemModel.setSelectedShipmentDetailData(shipmentCartItemModel.getSelectedShipmentDetailData());
         newShipmentCartItemModel.setCartItemModels(cartItemModels);
         newShipmentCartItemModel.setAllItemError(shipmentCartItemModel.isAllItemError());
         newShipmentCartItemModel.setErrorTitle(shipmentCartItemModel.getErrorTitle());

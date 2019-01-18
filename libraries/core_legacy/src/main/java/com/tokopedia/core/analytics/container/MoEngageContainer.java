@@ -24,7 +24,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Herdi_WORK on 21.02.17.
  */
-
+@Deprecated
 public class MoEngageContainer implements IMoengageContainer {
     private static final String DATE_FORMAT_1 = "yyyy-MM-dd";
 

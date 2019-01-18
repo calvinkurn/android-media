@@ -4,9 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -22,15 +24,19 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_QUERY = "query";
 
-    private final PeopleAddressRepository mPeopleAddressRepository;
+    private final PeopleAddressRepository peopleAddressRepository;
+    private final UserSessionInterface userSessionInterface;
 
-    public GetPeopleAddressUseCase(PeopleAddressRepository peopleAddressRepository) {
-        mPeopleAddressRepository = peopleAddressRepository;
+    public GetPeopleAddressUseCase(PeopleAddressRepository peopleAddressRepository,
+                                   UserSessionInterface userSessionInterface) {
+        this.peopleAddressRepository = peopleAddressRepository;
+        this.userSessionInterface = userSessionInterface;
+
     }
 
     @Override
     public Observable<PeopleAddressModel> createObservable(RequestParams requestParams) {
-        return mPeopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
+        return peopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
     }
 
     /**
@@ -55,12 +61,13 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
         // Create network auth params from plain params using auth util generator,
         // which will retrieve another params such as device id, os type and timestamp
         final HashMap<String, Object> authParams = new HashMap<String, Object>() {{
-            putAll(AuthUtil.generateParams(context, params));
+            putAll(AuthUtil.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>()));
         }};
 
         // Create request params which contains the auth params
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(authParams);
+        requestParams.putAllString(params);
 
         return requestParams;
     }

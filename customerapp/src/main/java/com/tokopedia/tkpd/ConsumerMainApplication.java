@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -13,7 +14,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
+import com.github.anrwatchdog.ANRWatchDog;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -112,6 +115,8 @@ import java.security.cert.X509Certificate;
 
 import io.hansel.hanselsdk.Hansel;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -144,6 +149,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
+        com.tokopedia.config.GlobalConfig.PREINSTALL_NAME = BuildConfig.PREINSTALL_NAME;
+        com.tokopedia.config.GlobalConfig.PREINSTALL_DESC = BuildConfig.PREINSTALL_DESC;
+        com.tokopedia.config.GlobalConfig.PREINSTALL_SITE = BuildConfig.PREINSTALL_SITE;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
 
@@ -163,6 +172,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
+
+        if (!GlobalConfig.DEBUG) {
+            new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+        }
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -495,7 +508,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return md5StrBuff.toString();
     }
 
-    @Override
+
+    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
+
+    }
+
+
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
