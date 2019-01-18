@@ -87,7 +87,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_help) {
-            ((TokopointRouter) getApplicationContext()).openTokoPoint(getApplicationContext(), CommonConstant.WebLink.INFO);
+            ((TokopointRouter) getApplicationContext()).openTokoPoint(this, CommonConstant.WebLink.INFO);
 
             AnalyticsTrackerUtil.sendEvent(this,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
