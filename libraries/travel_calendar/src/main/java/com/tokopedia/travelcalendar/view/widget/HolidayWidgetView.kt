@@ -7,10 +7,8 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.view.DateCalendarUtil
 import com.tokopedia.travelcalendar.view.adapter.HolidayAdapter
 import com.tokopedia.travelcalendar.view.model.HolidayResult
-import kotlinx.android.synthetic.main.view_holiday_calendar.view.*
 import java.util.*
 
 
@@ -26,13 +24,13 @@ class HolidayWidgetView @JvmOverloads constructor(context: Context, attrs: Attri
 
     init {
         val view = View.inflate(context, R.layout.view_holiday_calendar, this)
-        recyclerViewHoliday = view.recycler_view_holiday
+        recyclerViewHoliday = view.findViewById(R.id.recycler_view_holiday) as RecyclerView
     }
 
     fun setHolidayData(holidayYearList: List<HolidayResult>, month: Int, year: Int) {
         currentHolidayList.clear()
         for (i in holidayYearList.indices) {
-            val calendarHoliday = DateCalendarUtil.calendar
+            val calendarHoliday = Calendar.getInstance()
             calendarHoliday.time = holidayYearList[i].attributes.dateHoliday
 
             if (calendarHoliday.get(Calendar.MONTH) == month && calendarHoliday.get(Calendar.YEAR) == year) {

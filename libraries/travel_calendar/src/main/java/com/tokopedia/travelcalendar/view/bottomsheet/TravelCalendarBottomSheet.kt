@@ -3,8 +3,8 @@ package com.tokopedia.travelcalendar.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.view.DateCalendarUtil
 import com.tokopedia.travelcalendar.view.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.view.TravelCalendarContract
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet.Builder
@@ -128,7 +128,7 @@ class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
         private var minDate: Date = Date()
         private val _date: Date
             get() {
-                val now = DateCalendarUtil.calendar
+                val now = Calendar.getInstance()
                 now.add(Calendar.DAY_OF_MONTH, 90)
                 return now.time
             }

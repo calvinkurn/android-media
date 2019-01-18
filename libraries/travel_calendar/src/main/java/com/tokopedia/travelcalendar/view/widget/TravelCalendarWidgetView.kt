@@ -9,10 +9,11 @@ import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
 import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.view.DateCalendarUtil
+import com.tokopedia.travelcalendar.view.CALENDAR_MMMM
+import com.tokopedia.travelcalendar.view.CALENDAR_YYYY
+import com.tokopedia.travelcalendar.view.convertString
 import com.tokopedia.travelcalendar.view.model.CellDate
 import com.tokopedia.travelcalendar.view.model.HolidayResult
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -46,7 +47,6 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
         calendarPickerView = view.findViewById(R.id.calendar_picker_view) as CalendarPickerView
         tabLayout = view.findViewById(R.id.tab_layout) as TabLayout
         monthQuickFilter = view.findViewById(R.id.quick_filter_months) as CustomViewQuickFilterView
-        monthQuickFilter
         holidayWidgetView = view.findViewById(R.id.holiday_widget_view) as HolidayWidgetView
     }
 
@@ -76,7 +76,7 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
         val monthMaxDate = calendarMaxDate.get(Calendar.MONTH)
         val yearMaxDate = calendarMaxDate.get(Calendar.YEAR)
 
-        val yearDeviation = (yearMaxDate - yearMinDate) * 12 + 1
+        val yearDeviation = ((yearMaxDate - yearMinDate) * 12) + 1
         val monthDeviation = yearDeviation + monthMaxDate - monthMinDate
 
         addActionListener()
@@ -137,19 +137,19 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
         var year = year
         yearTabList.clear()
         mapDate.clear()
-        val loopCalendar = DateCalendarUtil.calendar
+        val loopCalendar = Calendar.getInstance()
         loopCalendar.set(Calendar.DATE, 1)
         yearSetTabList.add(year)
 
         for (i in 0 until monthDeviation) {
             loopCalendar.set(Calendar.MONTH, month)
             loopCalendar.set(Calendar.YEAR, year)
-            val monthName = SimpleDateFormat("MMMM", DateCalendarUtil.DEFAULT_LOCALE).format(loopCalendar.time)
+            val monthName = loopCalendar.time.convertString(CALENDAR_MMMM)
             mapDate[convertQuickFilterItems(month, monthName)] = year
+            yearSetTabList.add(year)
 
             if (month > 10) {
                 month = 0
-                yearSetTabList.add(year)
                 year++
             } else {
                 month++
@@ -173,12 +173,12 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
      * coloring the date that selected green on calendar
      */
     private fun renderInitalSelectedDateCalendar() {
-        val calendarNow = DateCalendarUtil.calendar
+        val calendarNow = Calendar.getInstance()
         calendarNow.time = selectedDate
 
         var selected: Boolean
-        val yearDateNow = SimpleDateFormat("yyyy", DateCalendarUtil.DEFAULT_LOCALE).format(calendarNow.time)
-        val monthDateNow = SimpleDateFormat("MMMM", DateCalendarUtil.DEFAULT_LOCALE).format(calendarNow.time)
+        val yearDateNow = calendarNow.time.convertString(CALENDAR_YYYY)
+        val monthDateNow = calendarNow.time.convertString(CALENDAR_MMMM)
         this.year = Integer.valueOf(yearDateNow)
         for (i in yearTabList.indices) {
             selected = yearDateNow == yearTabList[i].toString()
@@ -193,9 +193,7 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
             key.selectedView = monthView
 
             //reset month selected from onTabSelectedListener
-            if (key.type == "0") {
-                key.isSelected = false
-            }
+            key.isSelected = false
 
             if (key.name == monthDateNow) {
                 key.isSelected = true
@@ -221,9 +219,9 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
      */
     fun renderGridCalendar() {
         val cellDate = CellDate(selectedDate, true)
-        val calendarMaxDate = DateCalendarUtil.calendar
+        val calendarMaxDate = Calendar.getInstance()
         calendarMaxDate.time = maxDate
-        val calendarMinDate = DateCalendarUtil.calendar
+        val calendarMinDate = Calendar.getInstance()
         calendarMinDate.time = minDate
 
         if (holidayDataList.isEmpty()) {

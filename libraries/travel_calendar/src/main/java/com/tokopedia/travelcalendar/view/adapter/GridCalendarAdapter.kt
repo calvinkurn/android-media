@@ -1,17 +1,18 @@
 package com.tokopedia.travelcalendar.view.adapter
 
 import android.content.Context
+import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.view.DateCalendarUtil
-import com.tokopedia.travelcalendar.view.getColor
-import com.tokopedia.travelcalendar.view.getDrawable
+import com.tokopedia.travelcalendar.view.getColorCalendar
+import com.tokopedia.travelcalendar.view.getDrawableCalendar
+import com.tokopedia.travelcalendar.view.getZeroTime
 import com.tokopedia.travelcalendar.view.model.CellDate
 import com.tokopedia.travelcalendar.view.model.HolidayResult
-import kotlinx.android.synthetic.main.view_calendar_picker_day.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,6 +28,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
     : RecyclerView.Adapter<GridCalendarAdapter.ViewHolder>() {
 
     private lateinit var context: Context
+    private val calendar: Calendar = Calendar.getInstance()
 
     private val displayMonthInt: Int
         get() {
@@ -57,11 +59,11 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
      * today date compareTo today date = 0
      */
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        internal val cellNumber = view.date
-        internal var container = view.date_layout
+        internal val cellNumber = view.findViewById(R.id.date) as AppCompatTextView
+        internal var container = view.findViewById(R.id.date_layout) as RelativeLayout
 
         fun bind(cellDate: CellDate) {
-            val dateCal = DateCalendarUtil.calendar
+            val dateCal = calendar
             dateCal.time = cellDate.date
             val dayValue = dateCal.get(Calendar.DAY_OF_MONTH)
             val dateCalMonth = dateCal.get(Calendar.MONTH)
@@ -74,25 +76,25 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
             }
 
             if (cellDate.isSelected) {
-                cellNumber.background = getDrawable(context, R.drawable.bg_calendar_picker_today_selected)
-                cellNumber.setTextColor(getColor(context, R.color.white))
+                cellNumber.background = context.resources.getDrawableCalendar(context, R.drawable.bg_calendar_picker_today_selected)
+                cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.white))
             } else {
                 if (isDateOutOfRange(dateCal.time)) {
-                    cellNumber.setTextColor(getColor(context, R.color.grey_300))
+                    cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.grey_300))
                 } else {
-                    cellNumber.background = getDrawable(context, R.drawable.bg_calendar_picker_default)
-                    cellNumber.setTextColor(getColor(context, R.color.font_black_primary_70))
+                    cellNumber.background = context.resources.getDrawableCalendar(context, R.drawable.bg_calendar_picker_default)
+                    cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.font_black_primary_70))
 
                     //set holiday in sunday as red color
                     val dayAtDate = SimpleDateFormat(DAY_DATE_FORMAT, Locale.ENGLISH).format(dateCal.time)
                     if (dayAtDate.equals(SUNDAY, ignoreCase = true)) {
-                        cellNumber.setTextColor(getColor(context, R.color.red_a700))
+                        cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.red_a700))
                     }
-                    val dateNumber = DateCalendarUtil.calendar
+                    val dateNumber = calendar
                     for (i in holidayResultList.indices) {
                         dateNumber.time = holidayResultList[i].attributes.dateHoliday
                         if (dayValue == dateNumber.get(Calendar.DATE)) {
-                            cellNumber.setTextColor(getColor(context, R.color.red_a700))
+                            cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.red_a700))
                         }
                     }
                 }
@@ -100,7 +102,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
 
             container.setOnClickListener {
                 val dateSelected = cellDate.date
-                val calendarMonth = DateCalendarUtil.calendar
+                val calendarMonth = calendar
                 calendarMonth.time = dateSelected
                 if (calendarMonth.get(Calendar.MONTH) == displayMonthInt && isDateInRange(dateCal.time)) {
                     actionListener.onClickDate(cellDate)
@@ -109,17 +111,17 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
         }
 
         fun isDateOutOfRange(dateTime: Date): Boolean {
-            return DateCalendarUtil.getZeroTimeDate(dateTime).compareTo(
-                    DateCalendarUtil.getZeroTimeDate(minDate.time)) < 0 ||
-                    DateCalendarUtil.getZeroTimeDate(dateTime).compareTo(
-                            DateCalendarUtil.getZeroTimeDate(maxDate.time)) > 0
+            return calendar.getZeroTime(dateTime).compareTo(
+                    calendar.getZeroTime(minDate.time)) < 0 ||
+                    calendar.getZeroTime(dateTime).compareTo(
+                            calendar.getZeroTime(maxDate.time)) > 0
         }
 
         fun isDateInRange(dateTime: Date): Boolean {
-            return DateCalendarUtil.getZeroTimeDate(dateTime).compareTo(
-                    DateCalendarUtil.getZeroTimeDate(minDate.time)) >= 0 &&
-                    DateCalendarUtil.getZeroTimeDate(dateTime).compareTo(
-                            DateCalendarUtil.getZeroTimeDate(maxDate.time)) <= 0
+            return calendar.getZeroTime(dateTime).compareTo(
+                    calendar.getZeroTime(minDate.time)) >= 0 &&
+                    calendar.getZeroTime(dateTime).compareTo(
+                            calendar.getZeroTime(maxDate.time)) <= 0
         }
     }
 

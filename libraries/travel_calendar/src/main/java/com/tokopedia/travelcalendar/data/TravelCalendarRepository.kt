@@ -6,10 +6,13 @@ import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.travelcalendar.data.entity.HolidayEntity
 import com.tokopedia.travelcalendar.data.entity.HolidayResultEntity
 import com.tokopedia.travelcalendar.domain.ITravelCalendarRepository
-import com.tokopedia.travelcalendar.view.DateCalendarUtil
+import com.tokopedia.travelcalendar.view.CALENDAR_YYYYMMDD
+import com.tokopedia.travelcalendar.view.convertDate
+import com.tokopedia.travelcalendar.view.getZeroTime
 import com.tokopedia.travelcalendar.view.model.HolidayDetail
 import com.tokopedia.travelcalendar.view.model.HolidayResult
 import rx.Observable
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -50,8 +53,8 @@ class TravelCalendarRepository @Inject constructor(private val cacheManager: Cac
 
     private fun convertHolidayMapper(holidayResultEntities: List<HolidayResultEntity>): List<HolidayResult> {
         return holidayResultEntities.map {
-            val dateHoliday = DateCalendarUtil.convertStringToDate(DateCalendarUtil.CALENDAR_YYYYMMDD, it.attributes.date)
-            val zeroTimeHolidayDate = DateCalendarUtil.getZeroTimeDate(dateHoliday)
+            val dateHoliday =  it.attributes.date.convertDate(CALENDAR_YYYYMMDD)
+            val zeroTimeHolidayDate = Calendar.getInstance().getZeroTime(dateHoliday)
             val holidayDetail = HolidayDetail(it.attributes.date, it.attributes.label, zeroTimeHolidayDate)
 
             val holidayResult = HolidayResult(it.id, holidayDetail)

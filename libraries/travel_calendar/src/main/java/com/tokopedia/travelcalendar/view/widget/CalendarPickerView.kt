@@ -7,11 +7,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.view.DateCalendarUtil
 import com.tokopedia.travelcalendar.view.adapter.GridCalendarAdapter
+import com.tokopedia.travelcalendar.view.getZeroTime
 import com.tokopedia.travelcalendar.view.model.CellDate
 import com.tokopedia.travelcalendar.view.model.HolidayResult
-import kotlinx.android.synthetic.main.view_calendar_picker.view.*
 import java.util.*
 
 /**
@@ -23,6 +22,7 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
     : LinearLayout(context, attrs, defStyleAttr) {
 
     private val calendarGrid: RecyclerView
+    private val calendar: Calendar = Calendar.getInstance()
     private lateinit var adapter: GridCalendarAdapter
     private lateinit var actionListener: ActionListener
     private lateinit var holidayResultList: List<HolidayResult>
@@ -31,7 +31,7 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
     init {
         orientation = LinearLayout.VERTICAL
         val view = LayoutInflater.from(context).inflate(R.layout.view_calendar_picker, this, true)
-        calendarGrid = view.calendar_grid
+        calendarGrid = view.findViewById(R.id.calendar_grid) as RecyclerView
     }
 
     fun setActionListener(actionListener: ActionListener) {
@@ -39,11 +39,10 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun renderCalendar(month: Int, year: Int, maxDateCal: Calendar, minDateCal: Calendar) {
-        val calendarDateUser = DateCalendarUtil.calendar
-        calendarDateUser.time = cellDateUser.date
+        calendar.time = cellDateUser.date
         val cells = mutableListOf<CellDate>()
 
-        val mCal = DateCalendarUtil.calendar
+        val mCal = Calendar.getInstance()
         mCal.set(Calendar.DAY_OF_MONTH, 1)
         mCal.set(Calendar.MONTH, month)
         mCal.set(Calendar.YEAR, year)
@@ -52,8 +51,8 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
         mCal.add(Calendar.DAY_OF_MONTH, -firstDayOfTheMonth)
 
         while (cells.size < DAYS_COUNT) {
-            if (DateCalendarUtil.getZeroTimeDate(calendarDateUser.time).compareTo(
-                            DateCalendarUtil.getZeroTimeDate(mCal.time)) == 0) {
+            if (Calendar.getInstance().getZeroTime(calendar.time).compareTo(
+                            Calendar.getInstance().getZeroTime(mCal.time)) == 0) {
                 cells.add(cellDateUser)
             } else {
                 cells.add(CellDate(mCal.time, false))
