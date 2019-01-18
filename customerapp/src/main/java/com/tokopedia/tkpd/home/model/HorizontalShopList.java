@@ -42,14 +42,14 @@ public class HorizontalShopList extends RecyclerViewItem implements Parcelable {
 
     public static ShopItem fromData(TopAdsHome.Data data){
         ShopItem shopItem = new ShopItem();
-        shopItem.name = data.shop.name;// 1
-        shopItem.iconUri = data.shop.imageShop.xsUrl;// 2
-        shopItem.coverUri = data.shop.imageShop.cover;// 3
-        shopItem.location = data.shop.location;// 4
+        shopItem.name = data.getHeadline().getShop().getName();// 1
+        shopItem.iconUri = data.getHeadline().getShop().getImageShop().getXsUrl();// 2
+        shopItem.coverUri = data.getHeadline().getShop().getImageShop().getCover();// 3
+        shopItem.location = data.getHeadline().getShop().getLocation();// 4
         shopItem.isFav = Favorite.TOP_ADS_AD_SHOP_VALUE;// 5
-        shopItem.id = data.shop.id;// 6
-        shopItem.adKey = data.adRefKey;
-        shopItem.shopClickUrl = data.shopClickUrl;
+        shopItem.id = data.getHeadline().getShop().getId();// 6
+        shopItem.adKey = data.getAdRefKey();
+        shopItem.shopClickUrl = data.getAdClickUrl();
         return shopItem;
     }
 

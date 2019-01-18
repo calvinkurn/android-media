@@ -88,9 +88,27 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/by_me_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_button_white_border"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
+            android:text="@string/curate_product_by_me"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_11"
+            app:layout_constraintTop_toBottomOf="@+id/holder_title" />
+
         <android.support.constraint.ConstraintLayout
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/holder_title"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@+id/by_me_button"
             android:id="@+id/holder_tokopoint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

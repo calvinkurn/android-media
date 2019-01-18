@@ -815,6 +815,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void run() {
                     presenter.setResult(model);
+                    presenter.initialChatSettings();
                 }
             });
         }

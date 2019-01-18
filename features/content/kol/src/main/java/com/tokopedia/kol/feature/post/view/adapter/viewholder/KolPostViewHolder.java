@@ -94,7 +94,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         } else {
             containerView.setBackground(
-                    MethodChecker.getDrawable(context, R.drawable.shadow_top_bottom)
+                    MethodChecker.getDrawable(context, R.drawable.card_shadow_top_bottom)
             );
         }
 

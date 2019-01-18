@@ -7,6 +7,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 
 /**
  * @author by alvarisi on 8/11/17.
@@ -18,6 +19,8 @@ public class ReactUtils {
     ReactUtils reactUtils;
     private ReactInstanceManager reactInstanceManager;
 
+    private static PerformanceMonitoring perfMonitor;
+
     private ReactUtils(ReactInstanceManager reactInstanceManager) {
         this.reactInstanceManager = reactInstanceManager;
     }
@@ -27,6 +30,19 @@ public class ReactUtils {
             return reactInstanceManager.getCurrentReactContext();
         }
         return null;
+    }
+
+    public static void startTracing(String tracerName) {
+        if (perfMonitor == null) {
+            perfMonitor = PerformanceMonitoring.start(tracerName);
+        }
+    }
+
+    public static void stopTracing() {
+        if (perfMonitor != null) {
+            perfMonitor.stopTrace();
+            perfMonitor = null;
+        }
     }
 
     public void sendAddWishlistEmitter(String productId, String userId) {

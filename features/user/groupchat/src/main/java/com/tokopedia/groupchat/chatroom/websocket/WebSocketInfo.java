@@ -128,9 +128,8 @@ public class WebSocketInfo {
                 return mapToParticipant(data);
             case OverlayViewModel.TYPE:
                 return mapToOverlay(data);
-                //for next release
-//            case OverlayCloseViewModel.TYPE:
-//                return mapToOverlayClose(data);
+            case OverlayCloseViewModel.TYPE:
+                return mapToOverlayClose(data);
             default:
                 return null;
         }
@@ -506,7 +505,9 @@ public class WebSocketInfo {
             return true;
         } else if (mappedMessage instanceof OverlayViewModel) {
             return true;
-        }else {
+        } else if (mappedMessage instanceof OverlayCloseViewModel) {
+            return true;
+        } else {
             return false;
         }
     }

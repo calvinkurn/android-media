@@ -12,12 +12,14 @@
             android:name="com.tokopedia.district_recommendation.view.DistrictRecommendationActivity"
             android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
             android:name="com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity"
             android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
     </application>

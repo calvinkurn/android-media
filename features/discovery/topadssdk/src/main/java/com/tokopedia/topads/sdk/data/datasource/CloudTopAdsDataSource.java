@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.mapper.MerlinCategoryMapper;
 import com.tokopedia.topads.sdk.domain.mapper.PreferedCategoryMapper;
@@ -19,6 +20,7 @@ import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
 import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS_V1_3)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .setMethod(HttpMethod.GET)
                 .addParameters(params)
                 .build();
@@ -72,6 +75,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .setMethod(HttpMethod.GET)
                 .addParameters(params)
                 .build();
@@ -86,7 +90,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
                 .setMethod(HttpMethod.GET)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
                 .addHeader(TKPD_USER_ID, config.getUserId())
-                .addHeader(X_DEVICE, DEFAULT_X_DEVICE)
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .addParameter("pub_id", "14")
                 .build();
         RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
@@ -98,6 +102,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(URL_MERLIN)
                 .setMethod(HttpMethod.POST_RAW)
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Accept", "application/json")
                 .addJsonBodyParameter(String.format("{\"parcel\":[{\"data\":{\"product_title\":\"%s\"}}],\"size\":1,\"expect\":1}", query))
@@ -110,6 +115,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     public String clickTopAdsUrl(String url) {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(url)
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .setMethod(HttpMethod.GET)
                 .build();
         RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);

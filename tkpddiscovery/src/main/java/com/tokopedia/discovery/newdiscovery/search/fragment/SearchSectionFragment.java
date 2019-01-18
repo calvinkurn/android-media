@@ -594,6 +594,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected String removeValue(String mapValue, String removedValue) {
+        if (TextUtils.isEmpty(mapValue)) {
+            return "";
+        }
         return mapValue.replace(removedValue, "").replace(",,", ",");
     }
 }

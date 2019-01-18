@@ -286,6 +286,16 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageWithoutPlaceholderAndError(ImageView imageview, String url) {
+
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .into(imageview);
+        }
+    }
+
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
         Glide.with(context)
                 .load(url)

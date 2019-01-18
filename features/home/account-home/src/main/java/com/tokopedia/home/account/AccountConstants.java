@@ -29,6 +29,7 @@ public class AccountConstants {
         public static final String LOAN = "modal usaha";
         public static final String PEMBELI = "pembeli";
         public static final String CLICK_CHALLENGE = "challenge";
+        public static final String BY_ME = "by.me";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";
@@ -93,6 +94,7 @@ public class AccountConstants {
         public static final String OVO_PAY_LATER_CLICK = "ovo - pay later click";
         public static final String OVO_PAY_LATER_LABEL = "success - %s";
         public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
+        public static final String BY_ME_CURATION = "kurasi produk by.me";
     }
 
     public class ImageUrl {

@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @author by alvarisi on 10/27/16.
  */
-
+@Deprecated
 public interface IAppsflyerContainer {
     void initAppsFlyer(String key, String userID);
 
@@ -35,4 +35,6 @@ public interface IAppsflyerContainer {
     String getUniqueId();
 
     void sendDeeplinkData(Activity activity);
+
+    void updateFCMToken(String fcmToken);
 }
