@@ -522,15 +522,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (text.length() >= MINIMUM_CHARATERS_HIT_API) {
             searchedString = text;
             orderListAnalytics.sendSearchFilterClickEvent();
-        } else {
-            searchedString = "";
+            refreshHandler.startRefresh();
         }
-        refreshHandler.startRefresh();
+
     }
 
     @Override
     public void onSearchReset() {
         searchedString = "";
+        refreshHandler.startRefresh();
     }
 }
 
