@@ -622,12 +622,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun bindCurationQuota(affiliatePostQuota: AffiliatePostQuota) {
-        if (affiliatePostQuota.number == 0) {
-            addCuration.text = getString(R.string.profile_add_rec)
-        } else {
-            val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
-            addCuration.text = addCurationText
-        }
+        val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
+        addCuration.text = addCurationText
     }
 
     private fun showShowCaseDialog(view: View?) {
