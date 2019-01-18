@@ -34,12 +34,15 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private List<FilterViewModel> currentSelectedFilter = new ArrayList<>();
     private Context context;
     private int layout;
+    private static final int MAX_CHIP = 5;
+    private int PADDING_DEFAULT;
 
     public FilterAdapter(Context context, List<FilterViewModel> filterList, OnFilterClickedListener onFilterClickedListener, int layout) {
         this.filterList = filterList;
         this.context = context;
         this.filterClickedListener = onFilterClickedListener;
         this.layout = layout;
+        PADDING_DEFAULT = context.getResources().getDimensionPixelOffset(R.dimen.dp_16);
     }
 
     @NonNull
@@ -59,7 +62,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         holder.text.setText(filter.getName());
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
-        holder.cardView.setPadding(getPadding(16),0, getPadding(16),0);
+        holder.cardView.setPadding(getPadding(PADDING_DEFAULT), 0, getPadding(PADDING_DEFAULT), 0);
     }
 
     private int getPadding(int padding) {
@@ -69,6 +72,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private void initViewListener(Holder holder, FilterViewModel filter) {
         holder.cardView.setOnClickListener(v -> {
             enableCurrentItem(filter);
+            if (layout ==  R.layout.item_explore_filter && filter.isSelected()) {
+                moveSelectedSingleItemToFront(filter);
+            }
             filterClickedListener.onItemClicked(getOnlySelectedFilter());
         });
     }
@@ -120,7 +126,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     @Override
     public int getItemCount() {
-        if (layout ==  R.layout.item_explore_filter && filterList.size() > 5) return 5;
+        if (layout ==  R.layout.item_explore_filter && filterList.size() > MAX_CHIP) return MAX_CHIP;
         return filterList.size();
     }
 
@@ -180,6 +186,18 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         for (FilterViewModel item : getAllFilterList()) {
             item.setSelected(false);
         }
+        notifyDataSetChanged();
+    }
+
+    private void moveSelectedSingleItemToFront(FilterViewModel filter) {
+        List<FilterViewModel> items = new ArrayList<>();
+        items.add(filter);
+        for (FilterViewModel item : getAllFilterList()) {
+            if (!item.getName().equals(filter.getName())) {
+                items.add(item);
+            }
+        }
+        addItem(items);
         notifyDataSetChanged();
     }
 }

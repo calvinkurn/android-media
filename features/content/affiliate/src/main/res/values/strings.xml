@@ -34,6 +34,7 @@
     <string name="text_back_to_top">Kembali ke atas</string>
     <string name="text_button_apply">Terapkan</string>
     <string name="text_title_filter">Filter</string>
+    <string name="text_button_sort">Urutkan</string>
 
     <!--ONBOARDING-->
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
