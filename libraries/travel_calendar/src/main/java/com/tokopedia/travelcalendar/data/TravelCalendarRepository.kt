@@ -10,7 +10,6 @@ import com.tokopedia.travelcalendar.view.DateCalendarUtil
 import com.tokopedia.travelcalendar.view.model.HolidayDetail
 import com.tokopedia.travelcalendar.view.model.HolidayResult
 import rx.Observable
-import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -51,7 +50,7 @@ class TravelCalendarRepository @Inject constructor(private val cacheManager: Cac
 
     private fun convertHolidayMapper(holidayResultEntities: List<HolidayResultEntity>): List<HolidayResult> {
         return holidayResultEntities.map {
-            val dateHoliday = SimpleDateFormat("yyyy-MM-dd").parse(it.attributes.date)
+            val dateHoliday = DateCalendarUtil.convertStringToDate(DateCalendarUtil.CALENDAR_YYYYMMDD, it.attributes.date)
             val zeroTimeHolidayDate = DateCalendarUtil.getZeroTimeDate(dateHoliday)
             val holidayDetail = HolidayDetail(it.attributes.date, it.attributes.label, zeroTimeHolidayDate)
 

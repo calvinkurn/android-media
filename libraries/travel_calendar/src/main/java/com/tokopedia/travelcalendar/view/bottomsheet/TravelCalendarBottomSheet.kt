@@ -3,11 +3,11 @@ package com.tokopedia.travelcalendar.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travelcalendar.R
 import com.tokopedia.travelcalendar.view.DateCalendarUtil
 import com.tokopedia.travelcalendar.view.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.view.TravelCalendarContract
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet.Builder
 import com.tokopedia.travelcalendar.view.model.CellDate
 import com.tokopedia.travelcalendar.view.model.HolidayResult
 import com.tokopedia.travelcalendar.view.presenter.TravelCalendarPresenter
@@ -50,7 +50,7 @@ class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
     }
 
     private fun setAllData(showHoliday: Boolean, title: String, bottomSheetsState: BottomSheetsState,
-                   minDate: Date, maxDate: Date, selectedDate: Date) {
+                           minDate: Date, maxDate: Date, selectedDate: Date) {
         this.showHoliday = showHoliday
         this.bottomSheetsState = bottomSheetsState
         this.title = title
@@ -141,6 +141,7 @@ class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
         fun setMaxDate(maxDate: Date?) = apply {
             this.maxDate = maxDate ?: _date
         }
+
         fun setSelectedDate(selectedDate: Date) = apply { this.selectedDate = selectedDate }
         fun setBottomSheetState(bottomSheetsState: BottomSheetsState) =
                 apply { this.bottomSheetState = bottomSheetState }

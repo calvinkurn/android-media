@@ -1,5 +1,6 @@
 package com.tokopedia.travelcalendar.view
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -9,6 +10,9 @@ import java.util.Locale
  */
 object DateCalendarUtil {
 
+    val CALENDAR_YYYYMMDD = "yyyy-MM-dd"
+    val CALENDAR_MMMM = "MMMM"
+    val CALENDAR_YYYY = "YYYY"
     val DEFAULT_LOCALE = Locale("in", "ID")
 
     val calendar: Calendar
@@ -24,5 +28,9 @@ object DateCalendarUtil {
 
         val res = calendar.time
         return res
+    }
+
+    fun convertStringToDate(format: String, dateString: String): Date {
+        return SimpleDateFormat(format, DEFAULT_LOCALE).parse(date)
     }
 }
