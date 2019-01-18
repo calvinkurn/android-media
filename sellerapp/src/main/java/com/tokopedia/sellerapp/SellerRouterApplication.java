@@ -23,7 +23,9 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
@@ -67,6 +69,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -87,6 +90,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -150,6 +154,10 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -213,10 +221,9 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActiv
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.topchat.revamp.view.TopChatRoomActivity;
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -1109,7 +1116,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void showServerError(Response response) {
-        ServerErrorHandler.showServerErrorSnackbar();
         ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
     }
 
@@ -1222,6 +1228,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
+    }
+
+    @Override
+    public void startSaldoDepositIntent(Context context) {
+        SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
     }
 
     @Override
@@ -1921,6 +1932,37 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
+        return null;
+    }
+
+    @Override
+    public String getContactUsBaseURL() {
+        return TkpdBaseURL.ContactUs.URL_HELP;
+    }
+
+    @Override
+    public Class getDeeplinkClass() {
+        return DeepLinkActivity.class;
+    }
+
+    @Override
+    public void refereshFcmTokenToCMNotif(String token) {
+
+    }
+
+    @Override
+    public void onLoginSuccess() {
+
+    }
+
+    @Override
+    public boolean isSaldoNativeEnabled() {
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
+    }
+
+    @Override
+    public Intent getSaldoDepositIntent(Context context) {
         return null;
     }
 }

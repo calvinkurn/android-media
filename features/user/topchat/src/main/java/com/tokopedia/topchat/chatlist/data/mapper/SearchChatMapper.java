@@ -28,7 +28,6 @@ public class SearchChatMapper implements Func1<Response<DataResponse<SearchedMes
 
     @Override
     public InboxChatViewModel call(Response<DataResponse<SearchedMessage>> response) {
-        //TODO MAKE ERROR INTERCEPTOR
         if (response.isSuccessful() &&
                 response.body().getHeader() == null ||
                 (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()

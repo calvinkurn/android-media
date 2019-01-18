@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -104,12 +105,16 @@ class ChatbotPresenter @Inject constructor(
             }
 
             override fun onMessage(webSocketResponse: WebSocketResponse) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", "item")
+                try {
+                    if (GlobalConfig.isAllowDebuggingTools()) {
+                        Log.d("RxWebSocket Presenter", "item")
+                    }
+                    val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
+                    if (pojo.msgId.toString() != messageId) return
+                    mappingEvent(webSocketResponse, messageId)
+                } catch (e: JsonSyntaxException) {
+                    e.printStackTrace()
                 }
-                val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
-                if (pojo.msgId.toString() != messageId) return
-                mappingEvent(webSocketResponse, messageId)
             }
 
             override fun onMessage(byteString: ByteString) {
@@ -140,9 +145,6 @@ class ChatbotPresenter @Inject constructor(
                 ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
-    }
-
-    override fun clearEditText() {
     }
 
     override fun showErrorSnackbar(stringId: Int) {

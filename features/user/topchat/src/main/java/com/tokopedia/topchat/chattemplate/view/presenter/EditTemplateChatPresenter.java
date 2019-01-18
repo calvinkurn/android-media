@@ -1,14 +1,13 @@
 package com.tokopedia.topchat.chattemplate.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +72,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
                     } else {
-                        //TODO Correct Message Error
-                        getView().showError(new RuntimeException());
+                        getView().showError(new IOException());
                     }
                 }
             });
@@ -97,8 +95,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
                     } else {
-                        //TODO Correct Message Error
-                        getView().showError(new RuntimeException());
+                        getView().showError(new IOException());
                     }
                 }
             });
@@ -124,8 +121,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                     getView().onResult(editTemplateViewModel, index);
                     getView().finish();
                 } else {
-                    //TODO CORRECT MESSAGE ERROR
-                    getView().showError(new RuntimeException());
+                    getView().showError(new IOException());
                 }
             }
         });

@@ -153,24 +153,29 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void setFooter(View productContainer, ProductAttachmentViewModel element) {
         View separator = productContainer.findViewById(R.id.separator);
-        if (element.getCanShowFooter()) {
-            separator.setVisibility(View.VISIBLE);
-            footerLayout.setVisibility(View.VISIBLE);
-            tvBuy.setVisibility(View.VISIBLE);
-            ivATC.setVisibility(View.VISIBLE);
-            tvBuy.setOnClickListener(v -> {
-                viewListener.onClickBuyFromProductAttachment(element);
-            });
+//        if (element.getCanShowFooter()) {
+//            separator.setVisibility(View.VISIBLE);
+//            footerLayout.setVisibility(View.VISIBLE);
+//            tvBuy.setVisibility(View.VISIBLE);
+//            ivATC.setVisibility(View.VISIBLE);
+//            tvBuy.setOnClickListener(v -> {
+//                viewListener.onClickBuyFromProductAttachment(element);
+//            });
+//
+//            ivATC.setOnClickListener(v -> {
+//                viewListener.onClickATCFromProductAttachment(element);
+//            });
+//        } else {
+//            footerLayout.setVisibility(View.GONE);
+//            separator.setVisibility(View.GONE);
+//            tvBuy.setVisibility(View.GONE);
+//            ivATC.setVisibility(View.GONE);
+//        }
 
-            ivATC.setOnClickListener(v -> {
-                viewListener.onClickATCFromProductAttachment(element);
-            });
-        } else {
-            footerLayout.setVisibility(View.GONE);
-            separator.setVisibility(View.GONE);
-            tvBuy.setVisibility(View.GONE);
-            ivATC.setVisibility(View.GONE);
-        }
+        footerLayout.setVisibility(View.GONE);
+        separator.setVisibility(View.GONE);
+        tvBuy.setVisibility(View.GONE);
+        ivATC.setVisibility(View.GONE);
     }
 
 

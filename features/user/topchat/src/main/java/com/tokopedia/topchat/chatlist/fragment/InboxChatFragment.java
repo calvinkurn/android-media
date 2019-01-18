@@ -30,7 +30,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.text.TextDrawable;
@@ -48,16 +47,16 @@ import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
-import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
-import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
-import com.tokopedia.topchat.revamp.view.viewmodel.ReplyParcelableModel;
+import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant;
+import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatlist.presenter.WebSocketInterface;
+import com.tokopedia.topchat.chatlist.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
-import com.tokopedia.topchat.revamp.view.TopChatInternalRouter;
+import com.tokopedia.topchat.common.TopChatInternalRouter;
+import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,17 +180,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
         View broadcastLayout = parentView.findViewById(R.id.base_action);
-        if (GlobalConfig.isSellerApp()) {
-            sendBroadcast.setOnClickListener(v -> {
-                if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null) {
-                    startActivity(((BroadcastMessageRouter) getActivity().getApplication()).getBroadcastMessageListIntent(getContext()));
-                }
-            });
-            broadcastLayout.setVisibility(View.VISIBLE);
-        } else {
-            sendBroadcast.setVisibility(View.GONE);
-            broadcastLayout.setVisibility(View.GONE);
-        }
+        sendBroadcast.setVisibility(View.GONE);
+        broadcastLayout.setVisibility(View.GONE);
         parentView.findViewById(R.id.tv_organize_action).setOnClickListener(v -> setOptionsMenu());
 
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
@@ -499,8 +489,10 @@ public class InboxChatFragment extends BaseDaggerFragment
             else if (data.getExtras() != null &&
                     data.getExtras().getParcelable(PARCEL) != null) {
                 Bundle bundle = data.getExtras();
+                boolean isMoveToTop = bundle.getBoolean(TopChatInternalRouter.Companion
+                        .RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP, false);
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
-                adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
+                adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false, isMoveToTop);
                 adapter.updateListCache(model.getMessageId(), model.getMsg(), false,
                         presenter.getListCache());
             }
@@ -574,11 +566,14 @@ public class InboxChatFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
-                                response.getData().getMessage().getCensoredReply(), response,
-                                true);
-                        reloadNotifDrawer();
+                        if (!response.getData().isBot()) {
+                            adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
+                                    response.getData().getMessage().getCensoredReply(), response,
+                                    true, true);
+                            reloadNotifDrawer();
+                        }
                     });
+
                 }
                 break;
             default:
@@ -644,10 +639,6 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void reloadNotifDrawer() {
-        //TODO : GET NOTIF AND UPDATE TOOLBAR IF STILL USED
-//        if (getActivity() instanceof InboxChatActivity) {
-//            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
-//        }
     }
 
     @Override

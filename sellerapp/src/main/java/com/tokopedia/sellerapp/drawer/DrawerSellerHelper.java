@@ -18,7 +18,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
@@ -47,6 +46,7 @@ import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -564,9 +564,11 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void onGoToDeposit() {
-        Intent intent = new Intent(context, DepositActivity.class);
-        context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);
+        if (context.getApplicationContext() instanceof SellerModuleRouter) {
+            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) context.getApplicationContext();
+            sellerModuleRouter.getSaldoDepositIntent(context);
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
+        }
     }
 
     @Override

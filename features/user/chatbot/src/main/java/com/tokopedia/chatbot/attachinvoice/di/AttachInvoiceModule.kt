@@ -15,7 +15,7 @@ class AttachInvoiceModule {
 
     @AttachInvoiceScope
     @Provides
-    internal fun provideResources(@ApplicationContext context: Context): Resources {
+    fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
     }
 }

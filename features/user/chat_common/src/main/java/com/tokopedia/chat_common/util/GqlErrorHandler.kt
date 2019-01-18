@@ -7,13 +7,12 @@ import java.lang.reflect.Type
 
 /**
  * @author by nisie on 10/12/18.
+ * Please implement onError.
  */
-//TODO benerin error log
+
 fun handleError(graphqlResponse: GraphqlResponse,
-                type: Type, routingOnNext: (GraphqlResponse)-> Unit,
-                onError: (Throwable) -> Unit = {
-                    Log.d("ERR", it.toString())
-                }) {
+                type: Type, routingOnNext: (GraphqlResponse) -> Unit,
+                onError: (Throwable) -> Unit = { Log.d("ERR", it.toString()) }) {
     val graphqlErrorList = graphqlResponse.getError(type)
     if (graphqlErrorList == null || graphqlErrorList.isEmpty()) {
         routingOnNext(graphqlResponse)

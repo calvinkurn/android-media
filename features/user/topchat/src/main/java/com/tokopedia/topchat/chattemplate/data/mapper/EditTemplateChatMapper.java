@@ -22,7 +22,6 @@ public class EditTemplateChatMapper implements Func1<Response<DataResponse<Templ
 
     @Override
     public EditTemplateViewModel call(Response<DataResponse<TemplateData>> response) {
-        //TODO ADD ERROR INTERCEPTOR
         if (response.isSuccessful() &&
                 response.body().getHeader() == null ||
                 (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()

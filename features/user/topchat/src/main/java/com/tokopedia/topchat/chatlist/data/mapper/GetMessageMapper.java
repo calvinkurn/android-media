@@ -27,8 +27,6 @@ public class GetMessageMapper implements Func1<Response<DataResponse<MessageData
 
     @Override
     public InboxChatViewModel call(Response<DataResponse<MessageData>> response) {
-        //TODO MAKE ERROR INTERCEPTOR
-
         if (response.isSuccessful() &&
                 response.body().getHeader() == null ||
                 (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()

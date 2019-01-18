@@ -17,7 +17,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
         tools:text="13:16 wib"/>
 
     <TextView
@@ -83,7 +83,7 @@
             android:textColor="@color/white"
             android:textColorLink="@color/white"
             android:textIsSelectable="true"
-            android:textSize="@dimen/fonts"
+            android:textSize="@dimen/sp_14"
             tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
 
     </RelativeLayout>
@@ -112,7 +112,7 @@
         android:layout_toLeftOf="@+id/hour"
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
-        tools:src="@drawable/checked_thin"/>
+        tools:src="@drawable/ic_read_thin"/>
 
     <TextView
         android:id="@+id/hour"
@@ -123,7 +123,7 @@
         android:layout_below="@id/main"
         android:layout_marginTop="@dimen/dp_3"
         android:textColor="@color/time_color"
-        android:textSize="@dimen/fontvvs"
+        android:textSize="@dimen/sp_10"
         tools:text="10:13 pm"
         tools:visibility="visible"
         />

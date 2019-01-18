@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
+import com.github.anrwatchdog.ANRWatchDog;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -31,6 +33,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
+import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -90,7 +93,6 @@ import com.tokopedia.tkpdpdp.ProductDetailUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
@@ -110,6 +112,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import io.hansel.hanselsdk.Hansel;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -162,6 +166,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
+
+        if (!GlobalConfig.DEBUG) {
+            new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+        }
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -276,7 +284,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
-        TopChatUrl.TOPCHAT_JS_API = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
         TravelCalendarUrl.GQL_BASE_URL = ConsumerAppBaseUrl.TRAVEL_CALENDAR_BASE_URL;
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
@@ -312,6 +319,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         CMNotificationUrls.CAMPAIGN_MANAGEMENT_DOMAIN = ConsumerAppBaseUrl.CAMPAIGN_MANAGEMENT_DOMAIN;
         Config.TOPADS_BASE_URL = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
+        ChatUrl.Companion.setTOPCHAT(ConsumerAppBaseUrl.CHAT_DOMAIN);
     }
 
 

@@ -49,7 +49,8 @@
     <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
     <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
 
-    <string name="chat_blocked_text">Anda berhenti menerima %s dari %s hingga %s</string>
+    <string name="chat_blocked_text" formatted="false">Anda berhenti menerima %s dari %s hingga
+        %s</string>
     <string name="enable_chat_settings">Kembali Menerima Chat</string>
     <string name="chat_unblocked_text">Anda menerima chat dari %s</string>
 

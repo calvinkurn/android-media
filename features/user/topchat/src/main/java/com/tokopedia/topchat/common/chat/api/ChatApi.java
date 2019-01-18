@@ -31,11 +31,6 @@ public interface ChatApi {
     @GET(TkpdBaseURL.Chat.GET_MESSAGE)
     Observable<Response<DataResponse<MessageData>>> getMessage(@QueryMap Map<String, Object> requestParams);
 
-//    @FormUrlEncoded
-//    @Headers("Cookie:_SID_TOKOPEDIA_")
-//    @POST(TkpdBaseURL.Chat.REPLY)
-//    Observable<Response<TkpdResponse>> reply(@FieldMap Map<String, Object> requestParams);
-
     @Headers("Cookie:_SID_TOKOPEDIA_")
     @GET(TkpdBaseURL.Chat.SEARCH)
     Observable<Response<DataResponse<SearchedMessage>>> searchChat(@QueryMap Map<String, Object>
@@ -45,11 +40,6 @@ public interface ChatApi {
     @POST(TkpdBaseURL.Chat.DELETE)
     Observable<Response<DataResponse<DeleteChatListViewModel>>> deleteMessage(@Body JsonObject
                                                                                       parameters);
-
-//    @FormUrlEncoded
-//    @Headers("Cookie:_SID_TOKOPEDIA_")
-//    @POST(TkpdBaseURL.Chat.SEND_MESSAGE)
-//    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> requestParams);
 
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
     Observable<Response<DataResponse<TemplateData>>> getTemplate(@QueryMap Map<String, Object>

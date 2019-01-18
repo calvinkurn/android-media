@@ -3,8 +3,6 @@ package com.tokopedia.core.network.apiservices.accounts;
 import com.tokopedia.core.network.apiservices.accounts.apis.UploadImageApi;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
-import javax.inject.Inject;
-
 import retrofit2.Retrofit;
 
 /**
@@ -12,11 +10,6 @@ import retrofit2.Retrofit;
  */
 
 public class UploadImageService extends AuthService<UploadImageApi> {
-
-    @Inject
-    public UploadImageService() {
-    }
-
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(UploadImageApi.class);

@@ -1,4 +1,3 @@
-include ':websocket'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

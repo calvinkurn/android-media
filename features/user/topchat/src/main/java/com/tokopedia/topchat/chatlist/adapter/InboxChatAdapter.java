@@ -17,7 +17,7 @@ import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.EmptyChatModel;
-import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 
 import java.util.ArrayList;
@@ -234,7 +234,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void moveToTop(String messageId, String lastReply, WebSocketResponse response, boolean
-            showNotif) {
+            showNotif, boolean isMoveToTop) {
         boolean isNew = true;
         String currentId;
         for (int i = 0; i < list.size(); i++) {
@@ -242,9 +242,11 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 ChatListViewModel temp = (ChatListViewModel) list.get(i);
                 currentId = String.valueOf(temp.getId());
                 if (currentId.equals(messageId)) {
-                    if(lastReply.equals(temp.getMessage())){
+
+                    if(!isMoveToTop){
                         break;
                     }
+
                     if (showNotif) {
                         int unread = temp.getUnreadCounter();
                         unread++;

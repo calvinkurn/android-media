@@ -95,11 +95,14 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
         final String action = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_ACTION_TYPE, "unknown_action");
         final String addressID = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_ADDRESS_ID);
 
-        if (resultCode == ManagePeopleAddressService.STATUS_FINISHED) {
-            ((ManageAddressContract.View) getFragment()).refreshView();
-        } else {
-            String errorMessage = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_NETWORK_ERROR_MESSAGE);
-            ((ManageAddressContract.View) getFragment()).showErrorSnackbar(errorMessage);
+        if (getFragment() != null) {
+            ManageAddressContract.View view = (ManageAddressContract.View) getFragment();
+            if (resultCode == ManagePeopleAddressService.STATUS_FINISHED) {
+                view.refreshView();
+            } else {
+                String errorMessage = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_NETWORK_ERROR_MESSAGE);
+                view.showErrorSnackbar(errorMessage);
+            }
         }
     }
 }

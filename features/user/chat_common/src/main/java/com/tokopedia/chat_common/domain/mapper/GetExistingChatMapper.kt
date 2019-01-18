@@ -188,7 +188,8 @@ open class GetExistingChatMapper @Inject constructor() {
                         chatItemPojoByDateByTime.role),
                 chatItemPojoByDateByTime.blastId,
                 pojoAttribute.productProfile.priceInt,
-                pojoAttribute.productProfile.category
+                pojoAttribute.productProfile.category,
+                pojoAttribute.productProfile.variant.toString()
         )
     }
 

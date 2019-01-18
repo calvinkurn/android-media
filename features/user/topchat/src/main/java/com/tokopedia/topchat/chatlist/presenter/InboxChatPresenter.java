@@ -23,12 +23,11 @@ import com.tokopedia.topchat.chatlist.subscriber.GetMessageSubscriber;
 import com.tokopedia.topchat.chatlist.subscriber.SearchMessageSubscriber;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
-import com.tokopedia.topchat.revamp.view.TopChatRoomActivity;
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;

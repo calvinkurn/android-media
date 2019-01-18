@@ -3,6 +3,7 @@ package com.tokopedia.topchat.common.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +52,7 @@ public class TopChatAnalytics {
         public static final String CHAT_DETAIL = "ClickChatDetail";
 
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
+        String EVENT_NAME_PRODUCT_CLICK = "productClick";
 
     }
 
@@ -177,9 +179,10 @@ public class TopChatAnalytics {
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
     }
 
-    public void eventClickProductThumbnailEE(int blastId, String productId, String productName, int productPrice, String category){
+    public void eventClickProductThumbnailEE(int blastId, String productId, String productName,
+                                             int productPrice, String category, String variant){
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-                EVENT_NAME, Name.CHAT_DETAIL,
+                EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
                 EVENT_LABEL, String.format("chat - %s - %s", productId, String.valueOf(blastId)),
@@ -193,7 +196,7 @@ public class TopChatAnalytics {
                                                                 "price", productPrice,
                                                                 "brand", "none",
                                                                 "category", category,
-                                                                "variant", "none",
+                                                                "variant", variant,
                                                                 "position", 0
                                                                 )
                                                 )
@@ -203,4 +206,10 @@ public class TopChatAnalytics {
     }
 
 
+
+    public void trackProductAttachmentClicked() {
+        analyticTracker.sendEventTracking(
+                AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
+        );
+    }
 }

@@ -21,7 +21,6 @@ public class DeleteMessageMapper implements Func1<Response<DataResponse<DeleteCh
 
     @Override
     public DeleteChatListViewModel call(Response<DataResponse<DeleteChatListViewModel>> response) {
-        //TODO MAKE ERROR INTERCEPTOR
         if (response.isSuccessful() &&
                 response.body().getHeader() == null ||
                 (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()

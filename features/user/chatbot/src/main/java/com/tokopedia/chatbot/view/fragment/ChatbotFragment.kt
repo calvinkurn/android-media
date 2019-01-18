@@ -293,10 +293,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onSendButtonClicked() {
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableViewModel.generateStartTime()
-        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                .name, sendMessage, startTime)
-        getViewState().scrollToBottom()
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId)
+        presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
+                onSendingMessage(sendMessage, startTime))
+    }
+
+    private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
+        return {
+            getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
+                    .name, sendMessage, startTime)
+            getViewState().scrollToBottom()
+        }
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {

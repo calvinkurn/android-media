@@ -18,7 +18,7 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.tkpd.ConsumerMainApplication;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 
 import java.util.Map;
 

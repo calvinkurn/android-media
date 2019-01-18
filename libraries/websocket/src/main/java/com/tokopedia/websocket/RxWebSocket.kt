@@ -29,7 +29,6 @@ object RxWebSocket {
         try {
             getInstance(interceptors)?.send(msg)
         }catch(ignore : WebSocketException){
-            //TODO HANDLE ERROR WEBSOCKET CLOSED
         }
     }
 

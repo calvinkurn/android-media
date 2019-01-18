@@ -39,10 +39,6 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepository;
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepository;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepositoryImpl;
-import com.tokopedia.topchat.chatroom.data.mapper.GetUserStatusMapper;
-import com.tokopedia.topchat.chatroom.data.network.TopChatApi;
-import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
-import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
@@ -52,7 +48,6 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
-import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
 import com.tokopedia.topchat.common.network.XUserIdInterceptor;
@@ -262,20 +257,6 @@ public class InboxChatModule {
     }
 
     @InboxChatScope
-    @RetrofitJsDomainQualifier
-    @Provides
-    Retrofit provideChatRetrofitJsDomain(OkHttpClient okHttpClient,
-                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TopChatUrl.TOPCHAT_JS_API)
-                .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .build();
-    }
-
-    @InboxChatScope
     @RetrofitWsDomainQualifier
     @Provides
     Retrofit provideWsRetrofitDomain(OkHttpClient okHttpClient,
@@ -311,12 +292,6 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    TopChatApi provideTopChatApi(@RetrofitJsDomainQualifier Retrofit retrofit) {
-        return retrofit.create(TopChatApi.class);
-    }
-
-    @InboxChatScope
-    @Provides
     UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
@@ -331,18 +306,6 @@ public class InboxChatModule {
     GetChatBlastSellerMetaDataUseCase provideGetChatBlastSellerMetaDataUseCase(GraphqlUseCase graphqlUseCase,
                                                                                @ApplicationContext Context context) {
         return new GetChatBlastSellerMetaDataUseCase(graphqlUseCase, context);
-    }
-
-    @InboxChatScope
-    @Provides
-    GetUserStatusMapper provideGetUserStatusMapper() {
-        return new GetUserStatusMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    GetUserStatusUseCase provideUserStatusUseCase(TopChatApi topChatApi, GetUserStatusMapper mapper) {
-        return new GetUserStatusUseCase(topChatApi, mapper);
     }
 
     @InboxChatScope

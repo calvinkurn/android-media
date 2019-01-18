@@ -23,4 +23,7 @@ class ProductProfile {
     @SerializedName("category_breadcrumb")
     @Expose
     val category: String = ""
+    @SerializedName("variant")
+    @Expose
+    val variant: Any? = null
 }

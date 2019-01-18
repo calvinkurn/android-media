@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.domain.pojo
 
+import com.google.gson.JsonObject
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -34,7 +35,7 @@ data class ChatSocketPojo(
         var imageUri: String = "",
         @SerializedName("attachment")
         @Expose
-        var attachment: Attachment?,
+        var attachment: AttachmentPojo? = null,
         @SerializedName("show_rating")
         @Expose
         var showRating: Boolean = false,
@@ -47,4 +48,20 @@ data class ChatSocketPojo(
         @SerializedName("blast_id")
         @Expose
         var blastId: Int = 0
+)
+
+
+data class AttachmentPojo(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+        @SerializedName("type")
+        @Expose
+        val type: String = "",
+        @SerializedName("attributes")
+        @Expose
+        val attributes: JsonObject? = null,
+        @SerializedName("fallback_attachment")
+        @Expose
+        val fallbackAttachment: Fallback = Fallback()
 )

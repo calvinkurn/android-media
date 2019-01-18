@@ -33,9 +33,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsR
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.util.Utils;
-import com.tokopedia.topchat.revamp.di.DaggerChatComponent;
-import com.tokopedia.topchat.revamp.view.TopChatInternalRouter;
-
+import com.tokopedia.topchat.chatroom.di.DaggerChatComponent;
+import com.tokopedia.topchat.common.TopChatInternalRouter;
 
 import javax.inject.Inject;
 

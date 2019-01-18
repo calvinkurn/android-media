@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -21,7 +20,7 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
 import com.tokopedia.topchat.chatlist.fragment.InboxChatFragment;
 import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
@@ -84,8 +83,6 @@ public class InboxChatActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO IS STILL USED?
-//        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
     }
 
     @Override
@@ -157,24 +154,6 @@ public class InboxChatActivity extends BaseSimpleActivity
     public void onGetNotif(Bundle data) {
 
     }
-
-    //TODO IF STILL USED, CONVERT TO USE CASE
-//    @Override
-//    public void onSuccessGetTopChatNotification(int notifUnreads) {
-//
-//        if (notifUnreads > 0) {
-//            setTitleToolbar(String.format(getString(R.string.chat_title), notifUnreads));
-//        } else {
-//            setTitleToolbar(getString(R.string.chat_title_without_notif));
-//        }
-//
-//        indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
-//    }
-
-//    private void setTitleToolbar(String titleToolbar) {
-//        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
-//        titleTextView.setText(titleToolbar);
-//    }
 
     @Override
     public void onIndicatorClicked(int position) {
