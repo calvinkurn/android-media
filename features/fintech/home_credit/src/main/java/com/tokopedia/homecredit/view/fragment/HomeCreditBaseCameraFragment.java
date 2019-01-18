@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +21,11 @@ import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Facing;
 import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
@@ -41,7 +42,6 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     public CameraListener cameraListener;
     public boolean isCameraOpen;
-    //    public String imagePath;
     public TextView retakePhoto;
     public TextView continueUpload;
     public View captureImage;
@@ -124,7 +124,6 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             @Override
             public void onCameraOpened(CameraOptions options) {
                 initialFlash();
-//                setPreviewCameraLayout();
                 isCameraOpen = true;
             }
 
@@ -137,26 +136,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             @Override
             public void onPictureTaken(byte[] imageByte) {
                 try {
-
                     generateImage(imageByte);
-
-                    /*imagePath = Environment.getExternalStorageState() + Calendar.getInstance().getTimeInMillis() + "_photo.jpg";
-                    File file = new File(imagePath);
-
-                    OutputStream outputStream = new FileOutputStream(file);
-                    outputStream.write(imageByte);
-                    outputStream.close();
-
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
-                    if (bitmap != null) {
-                        if (cameraView.getFacing() == Facing.FRONT) {
-                            imageCaptured.setImageBitmap(ImageHandler.flip(ImageHandler.rotatedBitmap(bitmap, file.getAbsolutePath()), true, false));
-                        } else {
-                            imageCaptured.setImageBitmap(ImageHandler.rotatedBitmap(bitmap, file.getAbsolutePath()));
-                        }
-
-                        hideCameraProp();
-                    }*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -190,12 +170,10 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private void generateImage(byte[] imageByte) {
 
-        // This can happen if picture was taken with a gesture.
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
         try {
-            //rotate the bitmap using the library
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
@@ -209,11 +187,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
     }
 
-    private void onSuccessImageTakenFromCamera(File file) {
-        onFinishEditAfterTakenFromCamera(file.getAbsolutePath());
-    }
+    private void onSuccessImageTakenFromCamera(File imgFile) {
+        String imagePath = imgFile.getAbsolutePath();
 
-    public void onFinishEditAfterTakenFromCamera(String imagePath) {
         finalCameraResultFilePath = imagePath;
         try {
             File file = new File(imagePath);
@@ -221,42 +197,25 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
                 Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
                 if (myBitmap != null) {
-                    /*if (cameraView.getFacing() == Facing.FRONT) {
+                    if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
                         imageCaptured.setImageBitmap(ImageHandler.flip(myBitmap, true, false));
                     } else {
                         imageCaptured.setImageBitmap(myBitmap);
-                    }*/
-                    imageCaptured.setImageBitmap(myBitmap);
+                    }
                 }
-                imageCaptured.setImageBitmap(myBitmap);
             }
             hideCameraProp();
         } catch (Throwable e) {
 
         }
         reset();
+
     }
 
     private void reset() {
         mCapturingPicture = false;
         mCaptureNativeSize = null;
         hideLoading();
-    }
-
-    private void setPreviewCameraLayout() {
-
-        ViewGroup.LayoutParams params = cameraLayout.getLayoutParams();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        cameraLayout.setLayoutParams(params);
-
-        params = imageCaptured.getLayoutParams();
-        //noinspection SuspiciousNameCombination
-        params.height = params.width;
-        imageCaptured.setLayoutParams(params);
-
-        imageCaptured.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
     }
 
     private void capturePicture() {
@@ -316,7 +275,6 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             cameraView.addCameraListener(cameraListener);
             cameraView.start();
         } catch (Throwable e) {
-            // no-op
         }
     }
 

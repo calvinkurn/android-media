@@ -65,10 +65,6 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
             for (int result : grantResults) {
                 if (result == PackageManager.PERMISSION_DENIED) {
                     isPermissionGotDenied = true;
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissionsToRequest.get(grantCount))) {
-                        //Never ask again selected, or device policy prohibits the app from having that permission.
-                        //Toast.makeText(getContext(), getString(R.string.permission_enabled_needed), Toast.LENGTH_LONG).show();
-                    }
                     break;
                 }
                 grantCount++;
@@ -100,11 +96,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
             if (!permissionsToRequest.isEmpty()) {
                 ActivityCompat.requestPermissions(this,
                         permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-            } else {
-//                initView();
             }
-        } else { // under jellybean, no need to check runtime permission
-            //initView();
         }
     }
 
@@ -118,8 +110,5 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
         } else {
             return HomeCreditSelfieFragment.createInstance();
         }
-
-
     }
-
 }
