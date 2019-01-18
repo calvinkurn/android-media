@@ -78,16 +78,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
-    private static final String TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
-    private static final String TAG_RETURN_CALENDAR = "flightCalendarReturn"
+    private static final String TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture";
+    private static final String TAG_RETURN_CALENDAR = "flightCalendarReturn";
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
-    private static final int REQUEST_CODE_DATE_PICKER_DEPARTURE = 7;
-    private static final int REQUEST_CODE_DATE_PICKER_RETURN = 8;
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;

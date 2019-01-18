@@ -28,7 +28,6 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
     : RecyclerView.Adapter<GridCalendarAdapter.ViewHolder>() {
 
     private lateinit var context: Context
-    private val calendar: Calendar = Calendar.getInstance()
 
     private val displayMonthInt: Int
         get() {
@@ -63,7 +62,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
         internal var container = view.findViewById(R.id.date_layout) as RelativeLayout
 
         fun bind(cellDate: CellDate) {
-            val dateCal = calendar
+            val dateCal = Calendar.getInstance()
             dateCal.time = cellDate.date
             val dayValue = dateCal.get(Calendar.DAY_OF_MONTH)
             val dateCalMonth = dateCal.get(Calendar.MONTH)
@@ -90,7 +89,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
                     if (dayAtDate.equals(SUNDAY, ignoreCase = true)) {
                         cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.red_a700))
                     }
-                    val dateNumber = calendar
+                    val dateNumber = Calendar.getInstance()
                     for (i in holidayResultList.indices) {
                         dateNumber.time = holidayResultList[i].attributes.dateHoliday
                         if (dayValue == dateNumber.get(Calendar.DATE)) {
@@ -102,7 +101,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
 
             container.setOnClickListener {
                 val dateSelected = cellDate.date
-                val calendarMonth = calendar
+                val calendarMonth = Calendar.getInstance()
                 calendarMonth.time = dateSelected
                 if (calendarMonth.get(Calendar.MONTH) == displayMonthInt && isDateInRange(dateCal.time)) {
                     actionListener.onClickDate(cellDate)
@@ -111,6 +110,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
         }
 
         fun isDateOutOfRange(dateTime: Date): Boolean {
+            val calendar = Calendar.getInstance()
             return calendar.getZeroTime(dateTime).compareTo(
                     calendar.getZeroTime(minDate.time)) < 0 ||
                     calendar.getZeroTime(dateTime).compareTo(
@@ -118,6 +118,7 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
         }
 
         fun isDateInRange(dateTime: Date): Boolean {
+            val calendar = Calendar.getInstance()
             return calendar.getZeroTime(dateTime).compareTo(
                     calendar.getZeroTime(minDate.time)) >= 0 &&
                     calendar.getZeroTime(dateTime).compareTo(

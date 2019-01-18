@@ -22,7 +22,6 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
     : LinearLayout(context, attrs, defStyleAttr) {
 
     private val calendarGrid: RecyclerView
-    private val calendar: Calendar = Calendar.getInstance()
     private lateinit var adapter: GridCalendarAdapter
     private lateinit var actionListener: ActionListener
     private lateinit var holidayResultList: List<HolidayResult>
@@ -39,6 +38,7 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun renderCalendar(month: Int, year: Int, maxDateCal: Calendar, minDateCal: Calendar) {
+        val calendar = Calendar.getInstance()
         calendar.time = cellDateUser.date
         val cells = mutableListOf<CellDate>()
 
