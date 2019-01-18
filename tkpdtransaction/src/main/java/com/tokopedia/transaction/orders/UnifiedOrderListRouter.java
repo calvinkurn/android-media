@@ -8,5 +8,4 @@ public interface UnifiedOrderListRouter {
     Intent getWebviewActivityWithIntent(Context context, String url);
     Fragment getFlightOrderListFragment();
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
-    void goToHome(Context context);
 }

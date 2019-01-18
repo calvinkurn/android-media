@@ -8,25 +8,30 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.component.BottomSheets;
 
-public class SaveDateBottomSheetActivity extends BaseSimpleActivity implements SaveDateBottomSheet.DateFilterResult{
+public class SaveDateBottomSheetActivity extends BaseSimpleActivity implements SaveDateBottomSheet.DateFilterResult {
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
 
-    public static Intent getInstance(Context context) {
-        return new Intent(context,SaveDateBottomSheetActivity.class);
+    public static Intent getInstance(Context context, String startDate, String endDate) {
+        Intent intent = new Intent(context, SaveDateBottomSheetActivity.class);
+        intent.putExtra(START_DATE, startDate);
+        intent.putExtra(END_DATE, endDate);
+        return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SaveDateBottomSheet saveDateBottomSheet = new SaveDateBottomSheet();
-        saveDateBottomSheet.show(getSupportFragmentManager(), "");
-        saveDateBottomSheet.setDismissListener(new BottomSheets.BottomSheetDismissListener() {
-            @Override
-            public void onDismiss() {
-                SaveDateBottomSheetActivity.this.finish();
-            }
-        });
+        if (getIntent() != null) {
+            SaveDateBottomSheet saveDateBottomSheet = SaveDateBottomSheet.newInstance(getIntent().getExtras());
+            saveDateBottomSheet.show(getSupportFragmentManager(), "");
+            saveDateBottomSheet.setDismissListener(new BottomSheets.BottomSheetDismissListener() {
+                @Override
+                public void onDismiss() {
+                    SaveDateBottomSheetActivity.this.finish();
+                }
+            });
+        }
     }
 
     @Override
@@ -41,8 +46,8 @@ public class SaveDateBottomSheetActivity extends BaseSimpleActivity implements S
     @Override
     public void setResult(String startDate, String endDate) {
         Intent i = new Intent();
-        i.putExtra(START_DATE,startDate);
-        i.putExtra(END_DATE,endDate);
-        setResult(RESULT_OK,i);
+        i.putExtra(START_DATE, startDate);
+        i.putExtra(END_DATE, endDate);
+        setResult(RESULT_OK, i);
     }
 }

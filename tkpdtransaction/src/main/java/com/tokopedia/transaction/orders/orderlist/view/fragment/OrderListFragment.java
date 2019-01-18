@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,20 +18,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
-import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheet;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
-import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
@@ -246,7 +242,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         tryAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((UnifiedOrderListRouter) getActivity().getApplication()).goToHome(getContext());
+                RouteManager.route(getContext(), ApplinkConst.HOME);
             }
         });
         if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
@@ -256,7 +252,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         filterDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(SaveDateBottomSheetActivity.getInstance(getContext()), FILTER_DATE_REQUEST);
+                startActivityForResult(SaveDateBottomSheetActivity.getInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
             }
         });
 

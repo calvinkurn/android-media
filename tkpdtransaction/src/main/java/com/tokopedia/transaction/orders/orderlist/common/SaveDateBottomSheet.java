@@ -3,12 +3,16 @@ package com.tokopedia.transaction.orders.orderlist.common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.text.DateFormat;
@@ -36,6 +40,12 @@ public class SaveDateBottomSheet extends BottomSheets {
 
     }
 
+    public static SaveDateBottomSheet newInstance(Bundle extras) {
+        SaveDateBottomSheet fragment = new SaveDateBottomSheet();
+        fragment.setArguments(extras);
+        return fragment;
+    }
+
     @Override
     public int getLayoutResourceId() {
         return R.layout.select_filter_date;
@@ -49,14 +59,24 @@ public class SaveDateBottomSheet extends BottomSheets {
 
     }
 
+
     @Override
     public void initView(View view) {
         startDate = view.findViewById(R.id.set_current_date);
         endDate = view.findViewById(R.id.set_end_date);
         TextView saveDate = view.findViewById(R.id.save_date);
         Calendar now = Calendar.getInstance();
-        filterStartDate = MIN_DATE;
-        filterFinalDate = formatDate(DATE_FORMAT,now.getTime());
+        if (TextUtils.isEmpty(getArguments().getString(SaveDateBottomSheetActivity.START_DATE))) {
+            filterStartDate = MIN_DATE;
+        } else {
+            filterStartDate = getArguments().getString(SaveDateBottomSheetActivity.START_DATE);
+        }
+
+        if (TextUtils.isEmpty(getArguments().getString(SaveDateBottomSheetActivity.END_DATE))) {
+            filterFinalDate = formatDate(DATE_FORMAT,now.getTime());
+        } else {
+            filterFinalDate = getArguments().getString(SaveDateBottomSheetActivity.END_DATE);
+        }
         setDateText();
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +101,6 @@ public class SaveDateBottomSheet extends BottomSheets {
     }
 
     private void setDateText() {
-
         startDate.setText(filterStartDate);
         endDate.setText(filterFinalDate);
     }
@@ -132,7 +151,7 @@ public class SaveDateBottomSheet extends BottomSheets {
     }
 
     public interface  DateFilterResult{
-        public void setResult(String startDate,String endDate);
+        void setResult(String startDate,String endDate);
     }
 
 }

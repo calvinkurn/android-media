@@ -171,6 +171,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
         setMainViewVisible(View.GONE);
+        itemsRecyclerView.setNestedScrollingEnabled(false);
         presenter.attachView(this);
         return view;
     }

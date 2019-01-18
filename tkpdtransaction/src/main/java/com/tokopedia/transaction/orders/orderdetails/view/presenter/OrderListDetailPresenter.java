@@ -26,6 +26,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -104,6 +105,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
+                if (getView().getAppContext() == null)
+                    return;
                 CommonUtils.dumper("error occured" + e);
                 getView().hideProgressBar();
             }
@@ -170,6 +173,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private void setDetailsData(OrderDetails details) {
+        if (getView().getAppContext() == null)
+            return;
         getView().hideProgressBar();
         getView().setStatus(details.status());
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
@@ -182,10 +187,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setOrderToken(details.orderToken());
         for (int i = 0; i < details.detail().size(); i++) {
             if (i == 2) {
+                if (details.getDriverDetails() != null) {
+                    getView().showDriverInfo(details.getDriverDetails());
+                }
+            } else if (i == 3) {
                 if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
                     getView().showDropshipperInfo(details.getDropShipper());
-                } else if (details.getDriverDetails() != null) {
-                    getView().showDriverInfo(details.getDriverDetails());
                 }
             }
             getView().setDetail(details.detail().get(i));
@@ -217,7 +224,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setPaymentData(details.paymentData());
 //        getView().setContactUs(details.contactUs());
 
-        if (!(orderCategory.equalsIgnoreCase("belanja") || orderCategory.equalsIgnoreCase("marketplace"))) {
+        if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
                 ActionButton leftActionButton = details.actionButtons().get(0);
                 ActionButton rightActionButton = details.actionButtons().get(1);
@@ -286,6 +293,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public void finishOrder(String orderId, String url) {
+        if (getView().getAppContext() == null)
+            return;
         UserSession userSession = new UserSession(getView().getAppContext());
         String userId = userSession.getUserId();
 
@@ -306,12 +315,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
+                if (getView().getAppContext() == null)
+                    return;
                 CommonUtils.dumper(e.getStackTrace());
                 getView().hideProgressBar();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView().getAppContext() == null)
+                    return;
                 Type token = new TypeToken<DataResponse<JsonObject>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
