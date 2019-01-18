@@ -59,10 +59,6 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
             this.visitables[index] is LoadingMoreModel
         } else false
     }
-
-    fun getList(): MutableList<Visitable<Any>>? {
-        return visitables
-    }
 }
 
 
