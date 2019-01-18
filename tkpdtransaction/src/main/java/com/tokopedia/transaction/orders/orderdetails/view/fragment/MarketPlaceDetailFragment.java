@@ -523,11 +523,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals("220") || this.status.status().equals("400")) {
-                        intent.putExtra("cancelFragment", 1);
-                        startActivityForResult(intent, REQUEST_CANCEL_ORDER);
+                        startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
                     } else if (this.status.status().equals("11")) {
-                        intent.putExtra("cancelFragment", 0);
-                        startActivityForResult(intent, REQUEST_CANCEL_ORDER);
+                        startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
                         String routingAppLink;
                         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));

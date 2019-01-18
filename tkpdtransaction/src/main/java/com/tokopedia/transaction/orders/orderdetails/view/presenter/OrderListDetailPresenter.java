@@ -55,7 +55,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String INVOICE = "invoice";
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
+    @Inject
     PostCancelReasonUseCase postCancelReasonUseCase;
+    @Inject
     FinishOrderUseCase finishOrderUseCase;
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
@@ -265,8 +267,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
         getView().showProgressBar();
 
-        this.postCancelReasonUseCase = new PostCancelReasonUseCase(new TkpdOldAuthInterceptor(getView().getAppContext(),
-                (NetworkRouter) getView().getAppContext(), new UserSession(getView().getAppContext())), getView().getAppContext());
         postCancelReasonUseCase.setRequestParams(requestParams);
         postCancelReasonUseCase.cancelOrReplaceOrder(url);
         postCancelReasonUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -303,8 +303,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         requestParams.putString("order_id", orderId);
         getView().showProgressBar();
 
-        this.finishOrderUseCase = new FinishOrderUseCase(new TkpdOldAuthInterceptor(getView().getAppContext(),
-                (NetworkRouter) getView().getAppContext(), new UserSession(getView().getAppContext())), getView().getAppContext());
         finishOrderUseCase.setRequestParams(requestParams);
         finishOrderUseCase.setEndPoint(url);
         finishOrderUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {

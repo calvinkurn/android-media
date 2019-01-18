@@ -1,8 +1,8 @@
 package com.tokopedia.transaction.orders.orderdetails.view.activity;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -13,14 +13,10 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
-import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
-import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
-
-import javax.inject.Inject;
 
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.ACTION_BUTTON_URL;
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST;
@@ -29,11 +25,19 @@ import static com.tokopedia.transaction.orders.orderdetails.view.fragment.Market
 public class RequestCancelActivity extends BaseSimpleActivity implements HasComponent<OrderDetailsComponent>, RejectOrderBuyerRequest.RejectOrderBuyerRequestListener, CancelSearchFragment.CancelSearchReplacementListener {
 
     public static final String KEY_ORDER_ID = "OrderId";
+    public static final String CANCEL_ORDER_FRAGMENT = "cancelFragment";
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     String orderID;
-    MarketPlaceDetailFragment marketPlaceDetailFragment;
     private OrderDetailsComponent orderListComponent;
-    int fragmentToShow = 1;
+
+
+    public static Intent getInstance(Context context, String orderId, String uri, int cancelorderFragment) {
+        Intent intent = new Intent(context, RequestCancelActivity.class);
+        intent.putExtra(KEY_ORDER_ID, orderId);
+        intent.putExtra(ACTION_BUTTON_URL, uri);
+        intent.putExtra(CANCEL_ORDER_FRAGMENT, cancelorderFragment);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +76,15 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     }
 
     protected Fragment getSimpleFragment() {
-        if (getIntent().getIntExtra("cancelFragment", 1) == 1) {
-            return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
+        if (getIntent() != null) {
+            if (getIntent().getIntExtra(CANCEL_ORDER_FRAGMENT, 1) == 1) {
+                return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
+            } else {
+                return CancelSearchFragment.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
+            }
         } else {
-            return CancelSearchFragment.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
+            return null;
         }
-
     }
 
     @Override

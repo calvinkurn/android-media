@@ -453,16 +453,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         );
         menuGridItems.add(gridItem);
 
-//        gridItem = new MenuGridItemViewModel(
-//                R.drawable.ic_train,
-//                context.getString(R.string.title_menu_train),
-//                AccountConstants.Navigation.TRAIN_ORDER_LIST,
-//                0,
-//                PEMBELI,
-//                context.getString(R.string.title_menu_transaction)
-//        );
-//        menuGridItems.add(gridItem);
-
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
