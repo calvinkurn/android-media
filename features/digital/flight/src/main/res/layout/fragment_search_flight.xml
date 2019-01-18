@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_apps">
@@ -19,16 +18,6 @@
                 android:id="@+id/horizontal_progress_bar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/progress_bar_height" />
-
-            <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Micro.BlackDisabled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_8"
-                android:gravity="center_horizontal"
-                android:text="@string/flight_search_choose_departure_flight"
-                android:textSize="@dimen/sp_11" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"

@@ -25,6 +25,7 @@ import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.di.FlightSearchComponent
 import com.tokopedia.flight.search.presentation.activity.FlightSearchFilterActivity
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory
@@ -40,7 +41,6 @@ import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 
 /**
  * @author by furqan on 07/01/19
@@ -113,14 +113,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onResume() {
         super.onResume()
-        flightSearchPresenter.attachView(this)
-
         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
     }
 
     override fun onPause() {
         super.onPause()
-        flightSearchPresenter.detachView()
+        flightSearchPresenter.unsubscribeAll()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -626,7 +624,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             Math.ceil(number.toDouble() / pieces).toInt()
 
     private fun resetDateAndReload() {
-        flightSearchPresenter.detachView()
+        flightSearchPresenter.unsubscribeAll()
 
         onFlightSearchFragmentListener!!.changeDate(flightSearchPassData)
 

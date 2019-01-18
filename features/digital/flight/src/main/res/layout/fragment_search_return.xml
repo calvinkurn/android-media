@@ -16,17 +16,6 @@
         android:layout_height="wrap_content"
         app:dlv_icon="@drawable/ic_flight_round" />
 
-    <android.support.v7.widget.AppCompatTextView
-        style="@style/TextView.Micro.BlackDisabled"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/background_apps"
-        android:gravity="center_horizontal"
-        android:paddingTop="@dimen/dp_8"
-        android:text="@string/flight_search_choose_return_flight"
-        android:textSize="@dimen/sp_11" />
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

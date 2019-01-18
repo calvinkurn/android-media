@@ -340,7 +340,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         )
     }
 
-    override fun detachView() {
+    override fun unsubscribeAll() {
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe()
         }
@@ -350,8 +350,6 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         flightSearchCombinedUseCase.unsubscribe()
         flightSortAndFilterUseCase.unsubscribe()
         flightSearchUseCase.unsubscribe()
-
-        super.detachView()
     }
 
     private fun countProgress(): Int = FlightSearchFragment.MAX_PROGRESS / maxCall

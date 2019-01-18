@@ -110,5 +110,7 @@ interface FlightSearchContract {
 
         fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel)
 
+        fun unsubscribeAll()
+
     }
 }
