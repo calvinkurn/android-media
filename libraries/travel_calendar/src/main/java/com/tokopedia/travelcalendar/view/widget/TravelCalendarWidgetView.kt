@@ -22,11 +22,16 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
                                                          defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    var calendarPickerView: CalendarPickerView
-    var tabLayout: TabLayout
-    var monthQuickFilter: CustomViewQuickFilterView
-    var holidayWidgetView: HolidayWidgetView
-    var actionListener: ActionListener? = null
+    private val calendarPickerView: CalendarPickerView
+    private val tabLayout: TabLayout
+    private val monthQuickFilter: CustomViewQuickFilterView
+    private val holidayWidgetView: HolidayWidgetView
+
+    val holidayDataList = mutableListOf<HolidayResult>()
+    private val yearSetTabList = mutableSetOf<Int>()
+    private val yearTabList = mutableListOf<Int>()
+    private val quickFilterItemList = mutableListOf<QuickFilterItem>()
+    private val mapDate = mutableMapOf<CustomViewQuickFilterItem, Int>()
 
     private lateinit var selectedDate: Date
     private lateinit var maxDate: Date
@@ -34,12 +39,7 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
 
     private var month: Int = 0
     private var year: Int = 0
-
-    val holidayDataList = mutableListOf<HolidayResult>()
-    private val yearSetTabList = mutableSetOf<Int>()
-    private val yearTabList = mutableListOf<Int>()
-    private val quickFilterItemList = mutableListOf<QuickFilterItem>()
-    private val mapDate = mutableMapOf<CustomViewQuickFilterItem, Int>()
+    private var actionListener: ActionListener? = null
 
     init {
         val view = View.inflate(context, R.layout.view_travel_calendar_widget, this)
