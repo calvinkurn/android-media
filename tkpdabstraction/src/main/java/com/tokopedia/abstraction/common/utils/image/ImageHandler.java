@@ -25,6 +25,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +42,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -643,7 +645,7 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    public static void loadGifFromUrl(ImageView imageView, String url, int placeholder){
+    public static void loadGifFromUrl(ImageView imageView, String url, int placeholder) {
         Glide.with(imageView.getContext()).load(url)
                 .asGif()
                 .placeholder(placeholder)
@@ -720,5 +722,13 @@ public class ImageHandler {
         if (imageView != null) {
             Glide.clear(imageView);
         }
+    }
+
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }
