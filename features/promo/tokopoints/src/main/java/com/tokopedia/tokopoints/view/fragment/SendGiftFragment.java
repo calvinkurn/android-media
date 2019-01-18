@@ -94,7 +94,7 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
 
             mPresenter.sendGift(getArguments().getInt(CommonConstant.EXTRA_COUPON_ID),
                     mEditEmail.getText().toString(),
-                    mEditEmail.getText().toString());
+                    mEditNotes.getText().toString());
 
         }
     }

@@ -29,7 +29,9 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_post_entry;
 
+    private static final String SHOP_ID = "{shop_id}";
     private static final String USER_ID = "{user_id}";
+    private static final String DEFAULT_EMPTY_SHOP_ID = "0";
 
     public WhitelistViewHolder(View itemView, FeedPlus.View mainView) {
         super(itemView);
@@ -55,15 +57,31 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
                 ivPhoto,
                 model.getWhitelist().getImage()
         );
+
+        if (mainView.getUserSession().getShopId().equals(DEFAULT_EMPTY_SHOP_ID)) {
+            btnSeeProfile.setText(R.string.feed_see_profile);
+        } else {
+            btnSeeProfile.setText(R.string.feed_see_shop);
+        }
     }
 
     private void initViewListener(final WhitelistViewModel model) {
-        btnSeeProfile.setOnClickListener(v ->
-            RouteManager.route(
-                    btnSeeProfile.getContext(),
-                    ApplinkConst.PROFILE.replace(USER_ID, mainView.getUserSession().getUserId())
-            )
-        );
+        btnSeeProfile.setOnClickListener(v -> {
+            if (mainView.getUserSession().getShopId().equals(DEFAULT_EMPTY_SHOP_ID)) {
+                RouteManager.route(
+                        btnSeeProfile.getContext(),
+                        ApplinkConst.PROFILE.replace(USER_ID, mainView.getUserSession()
+                                .getUserId())
+                );
+
+            } else {
+                RouteManager.route(
+                        btnSeeProfile.getContext(),
+                        ApplinkConst.SHOP.replace(SHOP_ID, mainView.getUserSession()
+                                .getShopId())
+                );
+            }
+        });
 
         btnCreateContent.setOnClickListener(view ->
                 mainView.onWhitelistClicked(model.getWhitelist().getUrl())
