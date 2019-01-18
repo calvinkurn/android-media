@@ -19,7 +19,8 @@ import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
-import com.tokopedia.tkpd.R;
+
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -27,7 +28,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 
 
-public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
+public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
@@ -68,53 +69,18 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_react_native;
-    }
-
-    @Override
-    protected void initView() {
+    protected ReactNativeThankYouPageFragment getReactNativeFragment() {
         Bundle initialProps = getIntent().getExtras();
         initialProps.remove("android.intent.extra.REFERRER");
         initialProps.remove("is_deep_link_flag");
         initialProps.remove("deep_link_uri");
-        Log.i("ReactNative", initialProps.toString());
         sendAnalytics(initialProps);
-        ReactNativeThankYouPageFragment fragment = ReactNativeThankYouPageFragment.createInstance(initialProps);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        }
-        fragmentTransaction.commit();
+        return ReactNativeThankYouPageFragment.createInstance(initialProps);
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+    protected String getToolbarTitle() {
+        return "Tokopedia";
     }
 
     @Override
