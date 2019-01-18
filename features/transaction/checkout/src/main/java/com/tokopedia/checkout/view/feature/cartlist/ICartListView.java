@@ -111,4 +111,6 @@ public interface ICartListView extends IBaseView {
     void goToCouponList();
 
     void goToDetail(PromoData promoData);
+
+    void stopTrace();
 }

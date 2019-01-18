@@ -68,6 +68,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
         } else {
             view.showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
+        view.stopTrace();
     }
 
     @Override
@@ -86,6 +87,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
                 view.renderCheckoutPage(!isFromMultipleAddress, isFromPdp);
+                view.stopTrace();
             }
         }
     }

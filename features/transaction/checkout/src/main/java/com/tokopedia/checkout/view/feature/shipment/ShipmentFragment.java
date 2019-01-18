@@ -463,7 +463,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 promoData, cartPromoSuggestion, recipientAddressModel,
                 shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, isInitialRender
         );
+    }
 
+    @Override
+    public void stopTrace() {
         if (!isShipmentTraceStopped) {
             shipmentTracePerformance.stopTrace();
             isShipmentTraceStopped = true;

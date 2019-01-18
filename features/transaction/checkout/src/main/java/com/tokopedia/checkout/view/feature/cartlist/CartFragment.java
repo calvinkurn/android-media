@@ -439,6 +439,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 refreshHandler.startRefresh();
             } else {
                 renderInitialGetCartListDataSuccess(cartListData);
+                stopTrace();
             }
         }
     }
@@ -850,7 +851,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 getActivity().invalidateOptionsMenu();
             }
         }
+    }
 
+    @Override
+    public void stopTrace() {
         if (!isTraceStopped) {
             performanceMonitoring.stopTrace();
             isTraceStopped = true;
@@ -1148,6 +1152,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         dPresenter.setCartListData(cartListData);
                         renderLoadGetCartDataFinish();
                         renderInitialGetCartListDataSuccess(cartListData);
+                        stopTrace();
                     }
                 }
             }
