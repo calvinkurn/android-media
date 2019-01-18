@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -60,19 +59,10 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void initView(Holder holder, FilterViewModel filter) {
-        holder.layout.invalidate();
         holder.text.setText(filter.getName());
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
-        holder.layout.setLayoutParams(
-                new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        holder.layout.getLayoutParams().height));
-        holder.layer.setLayoutParams(
-                new RelativeLayout.LayoutParams(
-                        holder.layout.getLayoutParams().width,
-                        holder.layout.getLayoutParams().height));
-        holder.layout.requestLayout();
+        holder.cardView.setPadding(getPadding(PADDING_DEFAULT), 0, getPadding(PADDING_DEFAULT), 0);
     }
 
     private int getPadding(int padding) {
@@ -80,7 +70,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void initViewListener(Holder holder, FilterViewModel filter) {
-        holder.layout.setOnClickListener(v -> {
+        holder.cardView.setOnClickListener(v -> {
             enableCurrentItem(filter);
             if (layout ==  R.layout.item_explore_filter && filter.isSelected()) {
                 moveSelectedSingleItemToFront(filter);
@@ -144,15 +134,13 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         private ImageView imageView;
         private TextView text;
         private View layer;
-//        private CardView cardView;
-        private RelativeLayout layout;
+        private CardView cardView;
         public Holder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image);
             text = itemView.findViewById(R.id.category);
             layer = itemView.findViewById(R.id.backgroundView);
-//            cardView = itemView.findViewById(R.id.card_view);
-            layout = itemView.findViewById(R.id.layout);
+            cardView = itemView.findViewById(R.id.card_view);
         }
     }
 
