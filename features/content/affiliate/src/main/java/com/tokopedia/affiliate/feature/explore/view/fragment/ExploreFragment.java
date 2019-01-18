@@ -333,9 +333,11 @@ public class ExploreFragment
     private void populateLocalDataToAdapter() {
         adapter.clearAllElements();
         adapter.addElement(getLocalFirstData());
-        filterAdapter.clearAllData();
-        filterAdapter.resetAllFilters();
-        filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
+        if (filterAdapter != null) {
+            filterAdapter.clearAllData();
+            filterAdapter.resetAllFilters();
+            filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
+        }
     }
 
     @Override
