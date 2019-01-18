@@ -14,7 +14,7 @@ import com.tokopedia.checkout.view.feature.removecartitem.viewmodel.CartProductI
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_CART_REMOVE_PRODUCT =

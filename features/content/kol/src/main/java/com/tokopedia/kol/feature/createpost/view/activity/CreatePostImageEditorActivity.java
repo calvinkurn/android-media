@@ -209,7 +209,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (progressDialog.isShowing()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
         if (requestCode == CREATE_FORM_REQUEST) {

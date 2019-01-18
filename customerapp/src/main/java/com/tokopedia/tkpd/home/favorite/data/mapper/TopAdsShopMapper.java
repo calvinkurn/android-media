@@ -49,8 +49,8 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
         }
     }
 
-    private TopAdsShop mappingValidResponse(TopAdsHome.Data[] topAdsDataResponse) {
-        if (topAdsDataResponse != null && topAdsDataResponse.length > 0) {
+    private TopAdsShop mappingValidResponse(List<TopAdsHome.Data> topAdsDataResponse) {
+        if (topAdsDataResponse != null && topAdsDataResponse.size() > 0) {
             TopAdsShop favoriteShop = new TopAdsShop();
             favoriteShop.setDataValid(true);
             favoriteShop.setTopAdsShopItemList(mappingDataShopItem(topAdsDataResponse));
@@ -60,23 +60,21 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
         }
     }
 
-    private List<TopAdsShopItem> mappingDataShopItem(TopAdsHome.Data[] listShopItemResponse) {
+    private List<TopAdsShopItem> mappingDataShopItem(List<TopAdsHome.Data> listShopItemResponse) {
         ArrayList<TopAdsShopItem> topAdsShopItems = new ArrayList<>();
         for (TopAdsHome.Data dataResponse : listShopItemResponse) {
             TopAdsShopItem topAdsShopItem = new TopAdsShopItem();
-            topAdsShopItem.setAdRefKey(dataResponse.adRefKey);
-            topAdsShopItem.setRedirect(dataResponse.redirect);
-            topAdsShopItem.setId(dataResponse.id);
-            topAdsShopItem.setShopClickUrl(dataResponse.shopClickUrl);
+            topAdsShopItem.setAdRefKey(dataResponse.getAdRefKey());
+            topAdsShopItem.setRedirect(dataResponse.getRedirect());
+            topAdsShopItem.setId(dataResponse.getId());
+            topAdsShopItem.setShopClickUrl(dataResponse.getAdClickUrl());
 
-            TopAdsHome.Shop shopResponse = dataResponse.shop;
-            mappingShopResponse(topAdsShopItem, dataResponse.shop);
+            mappingShopResponse(topAdsShopItem, dataResponse.getHeadline().getShop());
 
-            TopAdsHome.ImageShop imageShopResponse = shopResponse.imageShop;
-            topAdsShopItem.setShopImageCover(imageShopResponse.cover);
-            topAdsShopItem.setShopImageCoverEcs(imageShopResponse.coverEcs);
-            topAdsShopItem.setShopImageUrl(imageShopResponse.sUrl);
-            topAdsShopItem.setSelected(dataResponse.isSelected);
+            topAdsShopItem.setShopImageCover(dataResponse.getHeadline().getShop().getImageShop().getCover());
+            topAdsShopItem.setShopImageCoverEcs(dataResponse.getHeadline().getShop().getImageShop().getCoverEcs());
+            topAdsShopItem.setShopImageUrl(dataResponse.getHeadline().getImage().getFullUrl());
+            topAdsShopItem.setShopImageEcs(dataResponse.getHeadline().getShop().getImageShop().getSEcs());
             topAdsShopItems.add(topAdsShopItem);
         }
 
@@ -84,12 +82,9 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
     }
 
     private void mappingShopResponse(TopAdsShopItem topAdsShopItem, TopAdsHome.Shop shopResponse) {
-        topAdsShopItem.setLuckyShop(shopResponse.luckyShop);
-        topAdsShopItem.setShopId(shopResponse.id);
-        topAdsShopItem.setGoldShop(shopResponse.goldShop);
-        topAdsShopItem.setShopLocation(shopResponse.location);
-        topAdsShopItem.setShopName(shopResponse.name);
-        topAdsShopItem.setShopUri(shopResponse.uri);
+        topAdsShopItem.setShopId(shopResponse.getId());
+        topAdsShopItem.setShopLocation(shopResponse.getLocation());
+        topAdsShopItem.setShopName(shopResponse.getName());
     }
 
     private TopAdsShop invalidResponse(String defaultErrorMessage) {

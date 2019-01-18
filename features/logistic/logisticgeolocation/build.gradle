@@ -29,10 +29,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactionanalytics)
-    implementation rootProject.ext.debugToolsDependencies.chuck
 
+    implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.places

@@ -132,7 +132,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         getView().showLoading();
         List<ChangeSeatMapRequest> requests = transformSeatRequest(getBookCode(),
                 getView().getOriginalPassenger(),
-                getView().getPassengers());
+                getView().getPassengers(), true);
         trainChangeSeatUseCase.execute(
                 trainChangeSeatUseCase.createRequest(requests), new Subscriber<List<TrainPassengerSeat>>() {
                     @Override
@@ -170,7 +170,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         getView().showLoading();
         List<ChangeSeatMapRequest> requests = transformSeatRequest(getBookCode(),
                 getView().getOriginalPassenger(),
-                getView().getPassengers());
+                getView().getPassengers(), false);
         if (requests.size() > 0) {
             getView().showPage();
             getView().hideLoading();
@@ -319,7 +319,8 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     private List<ChangeSeatMapRequest> transformSeatRequest(String bookCode,
                                                             List<TrainSeatPassengerViewModel> originalPassenger,
-                                                            List<TrainSeatPassengerViewModel> passengers) {
+                                                            List<TrainSeatPassengerViewModel> passengers,
+                                                            boolean includeOriginalPassenger) {
         List<ChangeSeatMapRequest> requests = new ArrayList<>();
         ChangeSeatMapRequest request;
         for (TrainSeatPassengerViewModel passenger : originalPassenger) {
@@ -335,6 +336,15 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                         request.setSeat(changeSeat.getRow() + changeSeat.getColumn());
                         request.setWagonCode(changeSeat.getWagonCode());
                         requests.add(request);
+                    } else {
+                        if (includeOriginalPassenger){
+                            request = new ChangeSeatMapRequest();
+                            request.setBookCode(bookCode);
+                            request.setName(passenger.getName());
+                            request.setSeat(originSeat.getRow() + originSeat.getColumn());
+                            request.setWagonCode(originSeat.getWagonCode());
+                            requests.add(request);
+                        }
                     }
                     break;
                 }

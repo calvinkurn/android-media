@@ -24,10 +24,16 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
     static final String KEY_PAGE = "page";
     static final String KEY_USER_ID = "user_id";
     static final String KEY_DEP_ID = "dep_id";
+    static final String KEY_EP = "ep";
+    static final String KEY_TEMPLATE_ID = "template_id";
+    static final String KEY_DEVICE = "device";
 
     static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
     static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
     static final String SRC_FAV_SHOP_VALUE = "fav_shop";
+    static final String EP_VALUE = "headline";
+    static final String DEVICE_VALUE = "android";
+    static final String TEMPLATE_ID_VALUE = "3";
 
     private FavoriteRepository favoriteRepository;
 
@@ -63,6 +69,9 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
         params.putString(GetTopAdsShopUseCase.KEY_ITEM,
                 GetTopAdsShopUseCase.TOPADS_ITEM_DEFAULT_VALUE);
         params.putString(KEY_SRC,SRC_FAV_SHOP_VALUE);
+        params.putString(KEY_EP,EP_VALUE);
+        params.putString(KEY_DEVICE,DEVICE_VALUE);
+        params.putString(KEY_TEMPLATE_ID,TEMPLATE_ID_VALUE);
         return params;
     }
 }

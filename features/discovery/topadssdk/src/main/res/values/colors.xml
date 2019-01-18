@@ -17,6 +17,7 @@
     <color name="green_buy">#3e9d43</color>
     <color name="tkpd_dark_gray">#999999</color>
     <color name="border_favorite">#e0e0e0</color>
+    <color name="topads_gray_default_bg">#eeeeee</color>
     <color name="green_500">#259b24</color>
     <color name="bottom_label_color">#42b549</color> <!-- Use with white text -->
 </resources>

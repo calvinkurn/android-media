@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import rx.Subscriber;
@@ -13,13 +12,12 @@ import rx.Subscriber;
 
 public class SendVoteSubscriber extends Subscriber<VoteStatisticDomainModel> {
     private int rowNumber;
-    private PollOptionViewModel optionViewModel;
+    private String optionId;
     private FeedPlus.View view;
 
-    public SendVoteSubscriber(int rowNumber, PollOptionViewModel optionViewModel,
-                              FeedPlus.View view) {
+    public SendVoteSubscriber(int rowNumber, String optionId, FeedPlus.View view) {
         this.rowNumber = rowNumber;
-        this.optionViewModel = optionViewModel;
+        this.optionId = optionId;
         this.view = view;
     }
 
@@ -38,7 +36,7 @@ public class SendVoteSubscriber extends Subscriber<VoteStatisticDomainModel> {
     @Override
     public void onNext(VoteStatisticDomainModel voteStatisticDomainModel) {
         if (view != null) {
-            view.onSuccessSendVote(rowNumber, optionViewModel, voteStatisticDomainModel);
+            view.onSuccessSendVote(rowNumber, optionId, voteStatisticDomainModel);
         }
     }
 }
