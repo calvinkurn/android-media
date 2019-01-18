@@ -129,6 +129,7 @@
     <string name="promo_tab_title">Promo</string>
     <string name="guide_tab_title">Panduan</string>
     <string name="digital_coupon_applied_ticker_message">Kode kupon telah dimasukkan. Silahkan pilih produk yang diinginkan, lalu check-out.</string>
+    <string name="digital_terminate_announcement">Mulai 01 Februari 2019 fitur "Produk Digital" di Aplikasi TopSeller resmi dinonaktifkan dan dipindahkan ke aplikasi Mitra Tokopedia. Ayo download di Google Play Store, aplikasinya hanya 1 MB!</string>
     <string name="digital_list_device_consumer_app_prefix">android-%s</string>
     <string name="digital_list_device_seller_app_prefix">seller_app-%s</string>
 

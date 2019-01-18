@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,10 +46,10 @@
             android:id="@+id/ticker_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_3"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_3"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_3"
             android:padding="@dimen/dp_10"
             app:tckv_indicator_off_color="@color/grey"
             app:tckv_indicator_on_color="@color/tkpd_main_green" />
@@ -58,6 +59,22 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@drawable/bg_line_separator" />
+
+        <LinearLayout
+            android:id="@+id/terminate_announcement_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.tokopedia.design.widget.WarningTickerView
+                android:id="@+id/ticker_terminate_announcement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4" />
+        </LinearLayout>
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
