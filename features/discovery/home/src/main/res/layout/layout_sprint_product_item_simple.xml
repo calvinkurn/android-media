@@ -16,7 +16,7 @@
     <TextView
         android:id="@+id/channel_price_1"
         style="@style/TextView.Micro.Orange.Bold"
-        android:layout_below="@id/channel_before_disc_price_1"
+        android:layout_below="@+id/channel_before_disc_price_1"
         android:lineSpacingExtra="@dimen/sp_4"
         android:fontFamily="sans-serif-medium"
         tools:text="Rp 1.399.500" />
