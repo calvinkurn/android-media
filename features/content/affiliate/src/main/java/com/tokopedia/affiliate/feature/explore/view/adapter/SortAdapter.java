@@ -23,17 +23,14 @@ import java.util.List;
  */
 public class SortAdapter extends RecyclerView.Adapter<SortAdapter.Holder> {
 
-
     public interface OnSortItemClicked {
         void onItemClicked(SortViewModel sort);
     }
 
-    private Context context;
     private List<SortViewModel> sortList = new ArrayList<>();
     private OnSortItemClicked listener;
 
-    public SortAdapter(Context context, OnSortItemClicked listener, List<SortViewModel> sortList, SortViewModel selectedSort) {
-        this.context = context;
+    public SortAdapter(OnSortItemClicked listener, List<SortViewModel> sortList, SortViewModel selectedSort) {
         this.sortList = sortList;
         this.listener = listener;
         setCurrentItemSelected(selectedSort);

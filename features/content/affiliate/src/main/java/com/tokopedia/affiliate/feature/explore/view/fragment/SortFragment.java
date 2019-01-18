@@ -70,7 +70,7 @@ public class SortFragment extends BaseDaggerFragment {
     }
 
     private void initView() {
-        adapter = new SortAdapter(getActivity(), getSortItemClickListener(), sortList, selectedSort);
+        adapter = new SortAdapter(getSortItemClickListener(), sortList, selectedSort);
         rvSort.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvSort.setAdapter(adapter);
         adapter.notifyDataSetChanged();
