@@ -52,15 +52,15 @@ public class CircleOverlayView extends LinearLayout {
 
         RectF mainRectangle = new RectF(0, 0, getWidth(), getHeight());
 
-        float ovalWidth = getWidth() / 2 + 100;
-        float ovalHeight = getHeight() / 2 - 195;
-        float ktpRectWidth = ovalWidth - 100;
-        float ktpRectHeight = 275;
+        float ovalWidth = getWidth() / 2 + getResources().getDimensionPixelSize(R.dimen.hc_oval_width);
+        float ovalHeight = getHeight() / 2 - getResources().getDimensionPixelSize(R.dimen.hc_oval_height);
+        float ktpRectWidth = ovalWidth - getResources().getDimensionPixelSize(R.dimen.hc_oval_width);
+        float ktpRectHeight = getResources().getDimensionPixelSize(R.dimen.hc_ktp_height);
 
 
-        float ovalAndKtpRectDiffHeight = 100;
-        float outerRectWidth = ovalWidth + 100;
-        float outerRectHeight = ovalHeight + ktpRectHeight + ovalAndKtpRectDiffHeight + 100;     //100px is gap b/w oval and ktprect
+        float ovalAndKtpRectDiffHeight = getResources().getDimensionPixelSize(R.dimen.hc_oval_width);
+        float outerRectWidth = ovalWidth + getResources().getDimensionPixelSize(R.dimen.hc_oval_width);
+        float outerRectHeight = ovalHeight + ktpRectHeight + ovalAndKtpRectDiffHeight + getResources().getDimensionPixelSize(R.dimen.hc_oval_width);     //100px is gap b/w oval and ktprect
         float ovalVerticleShift = Math.abs((ovalHeight + ktpRectHeight + ovalAndKtpRectDiffHeight) / 2 - ovalHeight);
         RectF outerRectangle = new RectF(
                 getWidth() / 2 - outerRectWidth / 2,

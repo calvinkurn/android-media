@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -207,7 +206,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
-        } else if (requestCode == HCI_CAMERA_REQUEST_CODE) {
+        } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
