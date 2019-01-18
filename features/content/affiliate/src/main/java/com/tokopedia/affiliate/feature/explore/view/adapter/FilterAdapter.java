@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -64,11 +65,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
         holder.cardView.setLayoutParams(
-                new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
                         holder.cardView.getLayoutParams().height));
         holder.layer.setLayoutParams(
-                new ViewGroup.LayoutParams(
+                new RelativeLayout.LayoutParams(
                         holder.cardView.getLayoutParams().width,
                         holder.cardView.getLayoutParams().height));
         holder.cardView.requestLayout();
