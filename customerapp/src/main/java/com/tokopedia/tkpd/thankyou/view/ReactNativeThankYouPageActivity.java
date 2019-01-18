@@ -83,22 +83,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         return "Tokopedia";
     }
 
-//    @Override
-//    protected void initView() {
-//        Bundle initialProps = getIntent().getExtras();
-//        initialProps.remove("android.intent.extra.REFERRER");
-//        initialProps.remove("is_deep_link_flag");
-//        initialProps.remove("deep_link_uri");
-//        Log.i("ReactNative", initialProps.toString());
-//        sendAnalytics(initialProps);
-//        ReactNativeThankYouPageFragment fragment = ReactNativeThankYouPageFragment.createInstance(initialProps);
-//        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-//        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-//            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-//        }
-//        fragmentTransaction.commit();
-//    }
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_OFFICIAL_STORE_REACT;
