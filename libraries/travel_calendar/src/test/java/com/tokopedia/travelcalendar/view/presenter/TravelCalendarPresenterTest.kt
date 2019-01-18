@@ -7,11 +7,8 @@ import com.tokopedia.travelcalendar.view.TravelCalendarContract
 import com.tokopedia.travelcalendar.view.model.HolidayDetail
 import com.tokopedia.travelcalendar.view.model.HolidayResult
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
-import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.TestInstance
 import rx.Observable
 import java.util.*
 
@@ -56,7 +53,6 @@ class TravelCalendarPresenterTest {
         holidayResultList.add(holidayResult)
         val requestParam = RequestParams.EMPTY
         every { getHolidayUseCase.createObservable(requestParam) } returns Observable.just(holidayResultList)
-
         //when
         presenter.getDataHolidayCalendar(true)
         //then
