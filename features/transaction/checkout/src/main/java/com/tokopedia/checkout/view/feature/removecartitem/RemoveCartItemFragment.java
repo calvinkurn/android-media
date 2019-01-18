@@ -9,7 +9,6 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
@@ -23,6 +22,7 @@ import com.tokopedia.checkout.view.feature.removecartitem.viewmodel.CartProductH
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public class RemoveCartItemFragment extends BaseCheckoutFragment
         implements RemoveCartItemContract.View, RemoveCartItemViewListener {
 

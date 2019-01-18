@@ -104,6 +104,13 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     private void setAFLog(boolean login) {
         AppsFlyerLib.getInstance().setDebugLog(login);
+        if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
+            AppsFlyerLib.getInstance().setPreinstallAttribution(
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_DESC,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_SITE
+            );
+        }
     }
 
     @Override

@@ -1,8 +1,7 @@
 package com.tokopedia.checkout.view.feature.shippingoptions;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
@@ -13,12 +12,8 @@ import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentOptionData;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTickerInfoData;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTypeData;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,17 +69,7 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideLoading();
-                    String message;
-                    if (e instanceof UnknownHostException || e instanceof ConnectException ||
-                            e instanceof SocketTimeoutException) {
-                        message = getView().getContext().getResources().getString(R.string.msg_no_connection);
-                    } else if (e instanceof UnProcessableHttpException) {
-                        message = TextUtils.isEmpty(e.getMessage()) ?
-                                getView().getContext().getResources().getString(R.string.msg_no_connection) :
-                                e.getMessage();
-                    } else {
-                        message = getView().getContext().getResources().getString(R.string.default_request_error_unknown);
-                    }
+                    String message = ErrorHandler.getErrorMessage(getView().getContext(), e);
                     getView().showNoConnection(message);
                 }
             }
