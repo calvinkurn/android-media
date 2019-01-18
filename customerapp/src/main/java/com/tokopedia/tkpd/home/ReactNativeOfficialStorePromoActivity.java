@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -91,6 +92,12 @@ public class ReactNativeOfficialStorePromoActivity extends ReactFragmentActivity
         }
 
         return "";
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // No super to avoid crash transactionTooLarge
     }
 }
 
