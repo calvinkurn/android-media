@@ -410,24 +410,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                     trainHomepagePresenterImpl.onTrainPassengerChange(passengerViewModel);
                 }
                 break;
-//            case DATE_PICKER_DEPARTURE_REQUEST_CODE:
-//                if (resultCode == Activity.RESULT_OK) {
-//                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-//                    Calendar calendarSelected = Calendar.getInstance();
-//                    calendarSelected.setTime(dateString);
-//                    trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
-//                }
-//                break;
-//            case DATE_PICKER_RETURN_REQUEST_CODE:
-//                if (resultCode == Activity.RESULT_OK) {
-//                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.Companion.getDATE_SELECTED());
-//                    Calendar calendarSelected = Calendar.getInstance();
-//                    calendarSelected.setTime(dateString);
-//                    trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
-//                }
-//                break;
             case REQUEST_CODE_LOGIN:
                 trainHomepagePresenterImpl.onLoginRecieved();
                 break;
