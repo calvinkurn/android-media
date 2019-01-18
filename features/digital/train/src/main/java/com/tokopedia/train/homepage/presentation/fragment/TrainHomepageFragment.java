@@ -55,6 +55,8 @@ import javax.inject.Inject;
 public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHomepageView {
 
     private static final String PROMO_PATH = "promo";
+    private static final String TAG_DEPARTURE_CALENDAR = "trainCalendarDeparture"
+    private static final String TAG_RETURN_CALENDAR = "trainCalendarReturn"
     private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
     private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
     private static final int PASSENGER_REQUEST_CODE = 1004;
@@ -302,44 +304,38 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
-                .setMinDate(minDate)
-                .setMaxDate(maxDate)
-                .setSelectedDate(selectedDate)
-                .setShowHoliday(true)
-                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date))
-                .build();
-        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
-            @Override
-            public void onClickDate(@NotNull Date dateSelected) {
-                Calendar calendarSelected = Calendar.getInstance();
-                calendarSelected.setTime(dateSelected);
-                trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
-            }
-        });
-        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar train departure");
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
     }
 
     @Override
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
+    }
+
+    private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
+                                       String tagFragment) {
         TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
                 .setMinDate(minDate)
                 .setMaxDate(maxDate)
                 .setSelectedDate(selectedDate)
                 .setShowHoliday(true)
-                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date))
+                .setTitle(title)
                 .build();
         travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
             @Override
             public void onClickDate(@NotNull Date dateSelected) {
                 Calendar calendarSelected = Calendar.getInstance();
                 calendarSelected.setTime(dateSelected);
-                trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+                if (tagFragment.equals(TAG_DEPARTURE_CALENDAR)) {
+                    trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+                } else {
+                    trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+                }
             }
         });
-        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "calendar train return");
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), tagFragment);
     }
 
     @Override
