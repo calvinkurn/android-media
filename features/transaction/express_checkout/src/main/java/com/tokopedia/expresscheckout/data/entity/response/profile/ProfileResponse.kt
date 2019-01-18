@@ -9,8 +9,11 @@ import com.tokopedia.expresscheckout.data.entity.response.Header
 
 data class ProfileResponse(
         @SerializedName("header")
-    val header: Header,
+        val header: Header,
+
+        @SerializedName("status")
+        val status: String,
 
         @SerializedName("data")
-    val data: ProfileData
+        val data: ProfileData
 )

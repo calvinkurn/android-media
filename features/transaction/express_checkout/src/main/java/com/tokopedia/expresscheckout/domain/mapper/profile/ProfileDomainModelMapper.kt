@@ -13,20 +13,10 @@ class ProfileDomainModelMapper : ProfileDataMapper {
 
     override fun convertToDomainModel(profileResponse: ProfileResponse): ProfileResponseModel {
         val profileResponseModel = ProfileResponseModel()
-        profileResponseModel.headerModel = getHeaderModel(profileResponse.header)
+        profileResponseModel.status = profileResponse.status
         profileResponseModel.profileDataModel = getProfileDataModel(profileResponse.data)
 
         return profileResponseModel
-    }
-
-    private fun getHeaderModel(header: Header): HeaderModel {
-        val headerModel = HeaderModel()
-        headerModel.processTime = header.processTime
-        headerModel.reason = header.reason
-        headerModel.errors = header.errors
-        headerModel.errorCode = header.errorCode
-
-        return headerModel
     }
 
     private fun getProfileDataModel(profileData: ProfileData): ProfileDataModel {

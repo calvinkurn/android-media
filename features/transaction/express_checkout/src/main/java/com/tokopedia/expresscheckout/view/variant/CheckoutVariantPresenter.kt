@@ -20,7 +20,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
@@ -61,11 +60,6 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
     }
 
     override fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam) {
-//        var json = FileUtils().readRawTextFile(view.getActivityContext(), R.raw.response_ok_triple_variant)
-//        var response: ExpressCheckoutResponse = Gson().fromJson(json, ExpressCheckoutResponse::class.java)
-//        val dataMapper: DataMapper = ViewModelMapper()
-//        view.showData(dataMapper.convertToViewModels(response.data))
-
         view.showLoading()
 
         val variables = getAtcParams(atcRequestParam)

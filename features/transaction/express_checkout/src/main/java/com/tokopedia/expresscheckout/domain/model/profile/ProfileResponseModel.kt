@@ -7,6 +7,6 @@ import com.tokopedia.expresscheckout.domain.model.HeaderModel
  */
 
 data class ProfileResponseModel(
-        var headerModel: HeaderModel? = null,
+        var status: String? = null,
         var profileDataModel: ProfileDataModel? = null
 )
