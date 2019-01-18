@@ -65,8 +65,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
         holder.cardView.setLayoutParams(
-                new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
                         holder.cardView.getLayoutParams().height));
         holder.layer.setLayoutParams(
                 new RelativeLayout.LayoutParams(
