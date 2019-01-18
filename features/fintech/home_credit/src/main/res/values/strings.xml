@@ -6,5 +6,5 @@
     <string name="hc_selfie_title">Ambil Foto Diri Bersama KTP</string>
     <string name="hc_selfie_desc">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
     <string name="hc_camera_recapture_text">Foto Ulang</string>
-    <string name="hc_image_upload">Foto Ulang</string>
+    <string name="hc_image_upload">Lanjut</string>
 </resources>
