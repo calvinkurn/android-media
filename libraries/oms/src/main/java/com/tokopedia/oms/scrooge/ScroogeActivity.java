@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -207,16 +208,19 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE) {
-            StringBuilder jsCallbackBuilder = new StringBuilder();
-            jsCallbackBuilder.append("javascript:")
-                    .append(mJsHciCallbackFuncName)
-                    .append("('")
-                    .append(intent.getStringExtra(HCI_KTP_IMAGE_PATH))
-                    .append(", ")
-                    .append((String) null)
-                    .append("'")
-                    .append(")");
-            mWebView.loadUrl(jsCallbackBuilder.toString());
+            String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
+            if (imagePath != null) {
+                StringBuilder jsCallbackBuilder = new StringBuilder();
+                jsCallbackBuilder.append("javascript:")
+                        .append(mJsHciCallbackFuncName)
+                        .append("('")
+                        .append(imagePath)
+                        .append(", ")
+                        .append(ImageHandler.encodeToBase64(imagePath))
+                        .append("'")
+                        .append(")");
+                scroogeWebView.loadUrl(jsCallbackBuilder.toString());
+            }
         }
     }
 }
