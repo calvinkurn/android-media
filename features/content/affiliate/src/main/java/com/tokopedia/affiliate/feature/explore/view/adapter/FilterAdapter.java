@@ -67,6 +67,10 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         holder.cardView.getLayoutParams().height));
+        holder.layer.setLayoutParams(
+                new ViewGroup.LayoutParams(
+                        holder.cardView.getLayoutParams().width,
+                        holder.cardView.getLayoutParams().height));
         holder.cardView.requestLayout();
     }
 
