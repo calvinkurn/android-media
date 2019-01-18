@@ -170,14 +170,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             sendTracking(
                     item.getTitleTrack(),
                     item.getSectionTrack(),
-                    TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText(),
+                    !TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText(),
                     true
             );
         } else {
             sendTracking(
                     item.getTitleTrack(),
                     item.getSectionTrack(),
-                    TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText()
+                    !TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText()
             );
         }
         openApplink(item.getApplink());
