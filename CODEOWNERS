@@ -120,6 +120,7 @@
 
 /features/fintech/instant_loan          @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
+/features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 
