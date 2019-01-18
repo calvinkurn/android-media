@@ -55,8 +55,8 @@ import javax.inject.Inject;
 public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHomepageView {
 
     private static final String PROMO_PATH = "promo";
-    private static final String TAG_DEPARTURE_CALENDAR = "trainCalendarDeparture"
-    private static final String TAG_RETURN_CALENDAR = "trainCalendarReturn"
+    private static final String TAG_DEPARTURE_CALENDAR = "trainCalendarDeparture";
+    private static final String TAG_RETURN_CALENDAR = "trainCalendarReturn";
     private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
     private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
     private static final int PASSENGER_REQUEST_CODE = 1004;
