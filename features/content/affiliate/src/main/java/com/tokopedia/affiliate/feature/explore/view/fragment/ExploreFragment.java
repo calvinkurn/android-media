@@ -482,16 +482,17 @@ public class ExploreFragment
     private void populateSort(List<SortViewModel> sortList) {
         //1. show button sort
         //2. handle onclick and passing sortlist and current selected sort (default is first data)
-        // current selected sort can b
-        sortButton.setVisibility(View.VISIBLE);
-        sortList.get(0).setSelected(true);
-        exploreParams.setSort(sortList.get(0));
-        sortButton.setButton2OnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST, new ArrayList<>(sortList));
-            bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
-            startActivityForResult(SortActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_SORT);
-        });
+        if (sortList.size() > 0) {
+            sortButton.setVisibility(View.VISIBLE);
+            sortList.get(0).setSelected(true);
+            exploreParams.setSort(sortList.get(0));
+            sortButton.setButton2OnClickListener(view -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST, new ArrayList<>(sortList));
+                bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
+                startActivityForResult(SortActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_SORT);
+            });
+        }
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
