@@ -60,19 +60,19 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void initView(Holder holder, FilterViewModel filter) {
-        holder.cardView.invalidate();
+        holder.layout.invalidate();
         holder.text.setText(filter.getName());
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
-        holder.cardView.setLayoutParams(
+        holder.layout.setLayoutParams(
                 new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
-                        holder.cardView.getLayoutParams().height));
+                        holder.layout.getLayoutParams().height));
         holder.layer.setLayoutParams(
                 new RelativeLayout.LayoutParams(
-                        holder.cardView.getLayoutParams().width,
-                        holder.cardView.getLayoutParams().height));
-        holder.cardView.requestLayout();
+                        holder.layout.getLayoutParams().width,
+                        holder.layout.getLayoutParams().height));
+        holder.layout.requestLayout();
     }
 
     private int getPadding(int padding) {
@@ -80,7 +80,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void initViewListener(Holder holder, FilterViewModel filter) {
-        holder.cardView.setOnClickListener(v -> {
+        holder.layout.setOnClickListener(v -> {
             enableCurrentItem(filter);
             if (layout ==  R.layout.item_explore_filter && filter.isSelected()) {
                 moveSelectedSingleItemToFront(filter);
@@ -144,13 +144,15 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         private ImageView imageView;
         private TextView text;
         private View layer;
-        private CardView cardView;
+//        private CardView cardView;
+        private RelativeLayout layout;
         public Holder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image);
             text = itemView.findViewById(R.id.category);
             layer = itemView.findViewById(R.id.backgroundView);
-            cardView = itemView.findViewById(R.id.card_view);
+//            cardView = itemView.findViewById(R.id.card_view);
+            layout = itemView.findViewById(R.id.layout);
         }
     }
 
