@@ -59,6 +59,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void initView(Holder holder, FilterViewModel filter) {
+        holder.cardView.invalidate();
         holder.text.setText(filter.getName());
         ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
         holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
