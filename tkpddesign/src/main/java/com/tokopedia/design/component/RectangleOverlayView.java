@@ -53,10 +53,10 @@ public class RectangleOverlayView extends LinearLayout {
         RectF mainRectangle = new RectF(0, 0, getWidth(), getHeight());
 
         RectF ktpRectangle = new RectF(
-                getWidth() / 2 - 475,
-                getHeight() / 2 - 300,
-                getWidth() / 2 + 475,
-                getHeight() / 2 + 300);
+                getWidth() / 2 - getResources().getDimensionPixelSize(R.dimen.ktp_view_width),
+                getHeight() / 2 - getResources().getDimensionPixelSize(R.dimen.ktp_view_height),
+                getWidth() / 2 + getResources().getDimensionPixelSize(R.dimen.ktp_view_width),
+                getHeight() / 2 + getResources().getDimensionPixelSize(R.dimen.ktp_view_height));
 
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);

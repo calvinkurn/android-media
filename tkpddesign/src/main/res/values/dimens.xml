@@ -94,4 +94,6 @@
     <dimen name="dep_64">64dp</dimen>
     <integer name="int_3">3</integer>
     <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="ktp_view_width" >170dp</dimen>
+    <dimen name="ktp_view_height" >110dp</dimen>
 </resources>
