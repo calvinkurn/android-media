@@ -219,7 +219,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                         .append(ImageHandler.encodeToBase64(imagePath))
                         .append("'")
                         .append(")");
-                scroogeWebView.loadUrl(jsCallbackBuilder.toString());
+                mWebView.loadUrl(jsCallbackBuilder.toString());
             }
         }
     }
