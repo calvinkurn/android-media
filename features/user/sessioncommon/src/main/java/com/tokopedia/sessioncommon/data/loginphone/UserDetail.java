@@ -1,5 +1,5 @@
 
-package com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp;
+package com.tokopedia.sessioncommon.data.loginphone;
 
 import android.os.Parcel;
 import android.os.Parcelable;

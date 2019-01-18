@@ -3,6 +3,7 @@ package com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 
 import java.util.List;
 

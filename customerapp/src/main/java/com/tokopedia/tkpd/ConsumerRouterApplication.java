@@ -83,6 +83,13 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
+import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
+import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
+import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
+import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -388,7 +395,6 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
-import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -415,6 +421,8 @@ import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActiv
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -521,7 +529,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalRouter,
         TrackingPromoCheckoutRouter,
         TopAdsRouter,
-        CMRouter{
+        CMRouter,
+        LoginRegisterPhoneRouter{
 
 
     private static final String EXTRA = "extra";
@@ -3565,5 +3574,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+    }
+
+    @Override
+    public Intent getNoTokocashAccountIntent(Context context, String phoneNumber) {
+        return NotConnectedTokocashActivity.getNoTokocashAccountIntent(context, phoneNumber);
+    }
+
+    @NotNull
+    @Override
+    public Intent getCheckRegisterPhoneNumberIntent(@NotNull Context context) {
+        return CheckRegisterPhoneNumberActivity.getCallingIntent(context);
+    }
+
+    @NotNull
+    @Override
+    public Intent getChooseTokocashAccountIntent(@NotNull Context context, @NotNull ChooseTokoCashAccountViewModel data) {
+        return ChooseTokocashAccountActivity.getCallingIntent(context, data);
+    }
+
+    @NotNull
+    @Override
+    public Intent getTokoCashOtpIntent(@NotNull Context context, @NotNull String phoneNumber,
+                                       boolean canUseOtherMethod, @NotNull String defaultRequestMode) {
+        return TokoCashOtpActivity.getCallingIntent(context, phoneNumber, canUseOtherMethod, defaultRequestMode);
+    }
+
+    @NotNull
+    @Override
+    public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
+        return CheckLoginPhoneNumberActivity.getCallingIntent(context);
     }
 }

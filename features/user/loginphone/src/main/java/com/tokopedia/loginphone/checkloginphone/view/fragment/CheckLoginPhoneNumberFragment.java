@@ -31,7 +31,7 @@ import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNum
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkloginphone.view.listener.CheckLoginPhoneNumberContract;
 import com.tokopedia.loginphone.checkloginphone.view.presenter.CheckLoginPhoneNumberPresenter;
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
@@ -223,9 +223,9 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
             if (requestCode == REQUEST_VERIFY_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
-                    && data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA) != null) {
+                    && data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA) != null) {
                 ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel =
-                        data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
+                        data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA);
                 if (!chooseTokoCashAccountViewModel.getListAccount().isEmpty()) {
                     goToChooseAccountPage(chooseTokoCashAccountViewModel);
                 } else {

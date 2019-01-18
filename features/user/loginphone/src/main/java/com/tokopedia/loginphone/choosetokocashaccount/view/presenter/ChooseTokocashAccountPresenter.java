@@ -1,15 +1,13 @@
 package com.tokopedia.loginphone.choosetokocashaccount.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
 import com.tokopedia.loginphone.choosetokocashaccount.domain.LoginPhoneNumberUseCase;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 import com.tokopedia.loginphone.choosetokocashaccount.view.subscriber.LoginPhoneNumberSubscriber;
-import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
+import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

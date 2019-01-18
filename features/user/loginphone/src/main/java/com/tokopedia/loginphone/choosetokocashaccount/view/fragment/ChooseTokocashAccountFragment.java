@@ -30,9 +30,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.loginphone.R;
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.di.DaggerChooseAccountComponent;
-import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.choosetokocashaccount.view.adapter.TokocashAccountAdapter;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 import com.tokopedia.loginphone.choosetokocashaccount.view.presenter.ChooseTokocashAccountPresenter;
@@ -40,7 +39,7 @@ import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
-import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
+import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
@@ -122,11 +121,9 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(ChooseTokocashAccountActivity
-                    .ARGS_DATA);
+            viewModel = savedInstanceState.getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
         } else if (getArguments() != null) {
-            viewModel = getArguments().getParcelable(ChooseTokocashAccountActivity
-                    .ARGS_DATA);
+            viewModel = getArguments().getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
         } else if (getActivity() != null) {
             getActivity().finish();
         }
@@ -298,7 +295,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA, viewModel);
+        outState.putParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA, viewModel);
 
     }
 

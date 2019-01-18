@@ -26,5 +26,4 @@ public interface LoginRegisterRouter {
     void sendBranchRegisterEvent(String email, String phone);
 
     void onLoginSuccess();
-
 }
