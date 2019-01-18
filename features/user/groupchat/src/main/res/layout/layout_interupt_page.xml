@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/dp_16"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textSize="@dimen/sp_14"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/black_70"
+        android:lineSpacingExtra="4sp"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="Mau Iphone x gratis?"
+        app:layout_constraintTop_toBottomOf="@+id/ivImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:textSize="@dimen/sp_12"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/black_54"
+        android:lineSpacingExtra="6sp"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="Mau Iphone x gratismenangkan hadiah"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/btnCta"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_24"
+        android:fontFamily="roboto-medium"
+        android:textStyle="normal"
+        android:gravity="center"
+        android:textAllCaps="false"
+        tools:text="coba disini"
+        app:layout_constraintTop_toBottomOf="@+id/tvDesc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:buttonCompatType="primary"
+        />
+
+</android.support.constraint.ConstraintLayout>

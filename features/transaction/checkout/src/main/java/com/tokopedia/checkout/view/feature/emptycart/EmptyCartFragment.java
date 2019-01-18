@@ -40,7 +40,6 @@ import com.tokopedia.checkout.view.feature.emptycart.adapter.WishlistAdapter;
 import com.tokopedia.checkout.view.feature.emptycart.di.DaggerEmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartModule;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -550,11 +549,6 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onAddFavorite(int position, Data data) {
-
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
 
     }
 

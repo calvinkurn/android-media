@@ -90,6 +90,7 @@
     <string name="submission_history_menu_item">Riwayat Pengajuan Dana Instan</string>
     <string name="payment_method_menu_item">Cara Pembayaran Dana Instan</string>
     <string name="help_menu_item">Bantuan</string>
+    <string name="instant_loan_clickable_link">syarat dan ketentuan</string>
 
 
 </resources>

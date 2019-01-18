@@ -57,6 +57,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
                 new GetExploreFirstSubscriber(
                         getView(),
                         !TextUtils.isEmpty(exploreParams.getKeyword()),
+                        isPullToRefresh,
                         exploreParams)
         );
     }
@@ -92,4 +93,5 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     public void unsubscribeAutoComplete() {
         autoCompleteUseCase.unsubscribe();
     }
+
 }

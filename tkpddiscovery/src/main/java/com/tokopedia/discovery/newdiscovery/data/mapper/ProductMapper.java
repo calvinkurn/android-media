@@ -102,6 +102,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             model.setBottomLabel(isContainItems(data.getBottomLabel()) ? data.getBottomLabel().get(0) : "");
             model.setCategoryId(data.getCategoryId());
             model.setCategoryName(data.getCategoryName());
+            model.setCategoryBreadcrumb(data.getCategoryBreadcrumb());
             list.add(model);
         }
         return list;

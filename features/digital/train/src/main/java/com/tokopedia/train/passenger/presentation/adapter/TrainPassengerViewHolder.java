@@ -42,7 +42,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
         if (trainPassengerViewModel.getName() != null) {
             passengerPaxTypeTv.setVisibility(View.VISIBLE);
             passengerPaxTypeTv.setText(trainPassengerViewModel.getPaxType() == TrainBookingPassenger.ADULT ?
-                    getString(R.string.kai_homepage_adult_passenger) : getString(R.string.kai_homepage_adult_infant));
+                    getString(R.string.kai_homepage_adult_passenger) : getString(R.string.kai_homepage_infant_passenger));
             headerLabel.setTitle(trainPassengerViewModel.getSalutationTitle() + " " + trainPassengerViewModel.getName());
             headerLabel.setContent(getString(R.string.train_btn_change_passenger_data));
             headerLabel.setPadding(0,16, 0, 0);
