@@ -66,7 +66,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         holder.cardView.getLayoutParams().height));
-        holder.cardView.setPadding(getPadding(PADDING_DEFAULT),0, getPadding(PADDING_DEFAULT),0);
+        holder.cardView.requestLayout();
     }
 
     private int getPadding(int padding) {
