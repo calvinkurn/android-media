@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -31,6 +30,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActiv
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;

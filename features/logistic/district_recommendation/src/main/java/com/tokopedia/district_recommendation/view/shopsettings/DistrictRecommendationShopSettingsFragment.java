@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.AddressViewModel;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 
-/** temporary implementation to avoid core module */
+/**
+ * temporary implementation to avoid core module
+ */
 public class DistrictRecommendationShopSettingsFragment extends DistrictRecommendationFragment {
     private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_recommendation_address_district_id";
     private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_recommendation_address_district_name";
@@ -29,16 +31,19 @@ public class DistrictRecommendationShopSettingsFragment extends DistrictRecommen
     }
 
     @Override
-    public void onItemClick(Address address) {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, address.getDistrictId());
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, address.getDistrictName());
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, address.getCityId());
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, address.getCityName());
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, address.getProvinceId());
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, address.getProvinceName());
-        resultIntent.putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, address.getZipCodes());
-        getActivity().setResult(Activity.RESULT_OK, resultIntent);
-        getActivity().finish();
+    public void onItemClicked(AddressViewModel addressViewModel) {
+        if (getActivity() != null) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, addressViewModel.getAddress().getDistrictId());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, addressViewModel.getAddress().getDistrictName());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, addressViewModel.getAddress().getCityId());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, addressViewModel.getAddress().getCityName());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, addressViewModel.getAddress().getProvinceId());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, addressViewModel.getAddress().getProvinceName());
+            resultIntent.putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, addressViewModel.getAddress().getZipCodes());
+            getActivity().setResult(Activity.RESULT_OK, resultIntent);
+            getActivity().finish();
+        }
     }
+
 }

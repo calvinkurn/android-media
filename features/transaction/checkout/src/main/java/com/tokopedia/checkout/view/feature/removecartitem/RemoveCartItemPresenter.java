@@ -38,7 +38,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemContract.View>
         implements RemoveCartItemContract.Presenter {
 

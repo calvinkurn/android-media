@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public interface RemoveCartItemContract {
 
     interface View extends CustomerView {

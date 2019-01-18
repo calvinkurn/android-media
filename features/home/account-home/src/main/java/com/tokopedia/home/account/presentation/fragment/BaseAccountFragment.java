@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
@@ -233,10 +234,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
 
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
-        sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
-                AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
-                String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
-
+        if (bsData != null) {
+            sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
+                    AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
+                    String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
+        }
         if (applink != null && applink.startsWith("http")) {
             openApplink(String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW,

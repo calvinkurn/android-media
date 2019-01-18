@@ -53,6 +53,9 @@ public class TkpdProgressDialog {
         }
     }
 
+    public Boolean isProgress() {
+        return isShow;
+    }
 
     public void showDialog() {
         showDialog("", msgLoading);

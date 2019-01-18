@@ -32,7 +32,12 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".feature.explore.view.activity.ExploreActivity"
-            android:label="@string/title_af_dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.explore.view.activity.FilterActivity"
+            android:label="@string/text_title_filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />

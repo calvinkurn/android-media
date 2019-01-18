@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/shadow_top"
+        android:background="@drawable/card_shadow_top"
         android:orientation="vertical"
         android:paddingLeft="@dimen/dp_8"
         android:paddingTop="@dimen/dp_16"

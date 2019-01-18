@@ -24,7 +24,6 @@ import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
-import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
@@ -33,12 +32,12 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListene
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
+import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
-import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
@@ -48,6 +47,8 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,15 +58,17 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Irfan Khoirul on 24/04/18.
  */
 
-@Module(includes = {ConverterDataModule.class, PeopleAddressModule.class, UtilModule.class, TrackingAnalyticsModule.class, PromoCheckoutModule.class})
+@Module(includes = {ConverterDataModule.class, UtilModule.class, TrackingAnalyticsModule.class, PromoCheckoutModule.class})
 public class ShipmentModule {
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
     private ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener;
+    private ShipmentContract.View view;
 
     public ShipmentModule(ShipmentFragment shipmentFragment) {
         this.shipmentAdapterActionListener = shipmentFragment;
         this.shipmentAnalyticsActionListener = shipmentFragment;
+        this.view = shipmentFragment;
     }
 
     @Provides
@@ -87,12 +90,6 @@ public class ShipmentModule {
             ICartRepository cartRepository,
             ICheckoutMapper checkoutMapper) {
         return new CheckoutUseCase(cartRepository, checkoutMapper, checkoutModuleRouter);
-    }
-
-    @Provides
-    @ShipmentScope
-    TXActService provideTXActService() {
-        return new TXActService();
     }
 
     @Provides
@@ -169,6 +166,12 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    UserSessionInterface provideUserSessionInterface() {
+        return new UserSession(view.getActivityContext());
+    }
+
+    @Provides
+    @ShipmentScope
     ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase,
                                                         CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
@@ -183,14 +186,14 @@ public class ShipmentModule {
                                                         GetRatesUseCase getRatesUseCase,
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                                                         ShippingCourierConverter shippingCourierConverter,
+                                                        UserSessionInterface userSessionInterface,
                                                         IVoucherCouponMapper voucherCouponMapper,
                                                         CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
-        return new ShipmentPresenter(checkPromoCodeFinalUseCase,
-                compositeSubscription, checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
-                getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
-                editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
-                saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-                shippingCourierConverter, voucherCouponMapper, shipmentAnalyticsActionListener, analyticsPurchaseProtection);
+        return new ShipmentPresenter(checkPromoCodeFinalUseCase, compositeSubscription, checkoutUseCase,
+                getThanksToppayUseCase, getShipmentAddressFormUseCase, getShipmentAddressFormOneClickShipementUseCase,
+                checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
+                saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase, shippingCourierConverter,
+                shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface, analyticsPurchaseProtection);
     }
 
     @Provides
