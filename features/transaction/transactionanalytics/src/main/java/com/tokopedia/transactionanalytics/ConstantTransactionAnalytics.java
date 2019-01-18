@@ -37,6 +37,7 @@ public interface ConstantTransactionAnalytics {
         String PRODUCT_VIEW = "productView";
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
+        String VIEW_CART = "viewCart";
     }
 
     interface EventCategory {
@@ -157,6 +158,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
+        String VIEW_CART_LIST = "view cart list";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -243,6 +245,7 @@ public interface ConstantTransactionAnalytics {
     interface ScreenName {
         String CART = "/cart";
         String CHECKOUT = "/cart/shipment";
+        String ONE_CLICK_SHIPMENT = "/cart/shipment/ocs";
         String SELECT_COURIER = "/selectcourier";
         String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart#voucher";
         String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart#coupon";
