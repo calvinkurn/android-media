@@ -294,7 +294,11 @@ public class RangeInputView extends BaseCustomView {
 
     private int getValueFromPosition(float x) {
         float valueStopPosition = (x - seekBarLeftOffset) / seekBarRange * (VALUE_STOP_COUNT - 1);
-        return valueList[Math.round(valueStopPosition)];
+        int index = Math.round(valueStopPosition);
+        if (index < 0 || index > VALUE_STOP_COUNT - 1) {
+            return 0;
+        }
+        return valueList[index];
     }
 
     @Override
