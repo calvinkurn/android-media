@@ -41,6 +41,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
 
     private int MAX_QUANTITY = 1;
+    private int MIN_QUANTITY = 1;
     private int CURRENT_QUANTITY = 1;
 
     private TextView tvContinue;
@@ -161,7 +162,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_subtract) {
-            if (CURRENT_QUANTITY > 1) {
+            if (CURRENT_QUANTITY > MIN_QUANTITY) {
                 CURRENT_QUANTITY--;
                 tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
             }
@@ -186,7 +187,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             packageViewModel.setDigitalCategoryID(dealDetails.getCatalog().getDigitalCategoryId());
             packageViewModel.setDigitalProductID(dealDetails.getCatalog().getDigitalProductId());
             mPresenter.verifyCart(packageViewModel);
-            if(dealDetails.getBrand()!=null){
+            if (dealDetails.getBrand() != null) {
                 dealsAnalytics.sendEcommerceQuantity(dealDetails.getId(), CURRENT_QUANTITY, dealDetails.getSalesPrice(),
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle());
             }
@@ -221,7 +222,9 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         }
 
         tvDealDetails.setText(dealDetails.getDisplayName());
-
+        MIN_QUANTITY = dealDetail.getMinQty() > 0 ? dealDetail.getMinQty() : MIN_QUANTITY;
+        MAX_QUANTITY = dealDetail.getMaxQty() > 0 ? dealDetail.getMaxQty() : MAX_QUANTITY;
+        CURRENT_QUANTITY = MIN_QUANTITY;
         tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
         if (dealDetails.getMrp() != 0 && dealDetail.getMrp() != dealDetail.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);

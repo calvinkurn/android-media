@@ -90,6 +90,10 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("min_qty")
+    private int minQty;
+    @SerializedName("max_qty")
+    private int maxQty;
     @SerializedName("min_start_time")
     @Expose
     private String minStartTime;
@@ -276,6 +280,22 @@ public class DealsDetailsResponse implements Parcelable {
 
     public void setImageWeb(String imageWeb) {
         this.imageWeb = imageWeb;
+    }
+
+    public int getMinQty() {
+        return minQty;
+    }
+
+    public void setMinQty(int minQty) {
+        this.minQty = minQty;
+    }
+
+    public int getMaxQty() {
+        return maxQty;
+    }
+
+    public void setMaxQty(int maxQty) {
+        this.maxQty = maxQty;
     }
 
     public String getThumbnailWeb() {
