@@ -6,27 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".view.activity.HomeCreditRegisterActivity">
 
-    <com.otaliastudios.cameraview.CameraView
-        android:id="@+id/camera"
+    <FrameLayout
+        android:id="@+id/hc_camera_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:keepScreenOn="true"
-        app:cameraAudio="on"
-        app:cameraGestureLongTap="none"
-        app:cameraGesturePinch="zoom"
-        app:cameraGestureScrollHorizontal="exposureCorrection"
-        app:cameraGestureScrollVertical="none"
-        app:cameraGestureTap="focusWithMarker"
-        app:cameraGrid="off"
-        app:cameraPlaySounds="true"
-        app:cameraSessionType="picture" />
+        android:layout_height="match_parent">
+
+        <com.otaliastudios.cameraview.CameraView
+            android:id="@+id/camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:keepScreenOn="true"
+            app:cameraAudio="on"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="exposureCorrection"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="focusWithMarker"
+            app:cameraGrid="off"
+            app:cameraPlaySounds="true"
+            app:cameraSessionType="picture" />
+
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/iv_image_captured"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:visibility="gone" />
 

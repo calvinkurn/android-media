@@ -24,6 +24,7 @@ import java.util.List;
 public class HomeCreditRegisterActivity extends BaseSimpleActivity {
 
     private final static String SHOW_KTP = "show_ktp";
+    public static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private List<String> permissionsToRequest;
     private boolean isPermissionGotDenied;
     protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
