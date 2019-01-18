@@ -847,6 +847,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 getActivity().invalidateOptionsMenu();
             }
         }
+
+        cartPageAnalytics.eventViewCartListFinishRender();
     }
 
     private void showErrorLayout(String message) {
