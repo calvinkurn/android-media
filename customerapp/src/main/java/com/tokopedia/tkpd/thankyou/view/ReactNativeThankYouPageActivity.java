@@ -20,6 +20,7 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -28,14 +29,18 @@ import java.util.Arrays;
 
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
+    private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
 
     private ReactInstanceManager reactInstanceManager;
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"

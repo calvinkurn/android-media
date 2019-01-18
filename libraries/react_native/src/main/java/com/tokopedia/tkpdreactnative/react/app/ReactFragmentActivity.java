@@ -17,7 +17,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
 
 /**
  *
@@ -27,26 +26,11 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 
 public abstract class ReactFragmentActivity<T extends ReactNativeFragment> extends BasePresenterActivity implements ReactNativeView {
 
-    private static final String REACT_NATIVE_TRACE = "react_native_trace";
-    private static PerformanceMonitoring perfMonitor = null;
-
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
     public static final String DEEP_LINK_URI = "deep_link_uri";
+
     private ProgressBar loaderBootingReact;
-
-    public static void startTracing() {
-        if (perfMonitor == null) {
-            perfMonitor = perfMonitor.start(REACT_NATIVE_TRACE);
-        }
-    }
-
-    public static void stopTracing() {
-        if (perfMonitor != null) {
-            perfMonitor.stopTrace();
-            perfMonitor = null;
-        }
-    }
 
     @Override
     protected int getLayoutId() {
@@ -61,12 +45,12 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
             ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
             return true;
         }
+
         return super.onKeyUp(keyCode, event);
     }
 
     @Override
     protected void initView() {
-        startTracing();
         actionSetToolbarTitle(getToolbarTitle());
         loaderBootingReact = (ProgressBar) findViewById(R.id.rn_progressbar);
         T fragment = getReactNativeFragment();

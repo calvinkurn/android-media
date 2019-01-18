@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -12,8 +11,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStorePromoFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
-import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 
 /**
@@ -27,10 +26,12 @@ public class ReactNativeOfficialStorePromoActivity extends ReactFragmentActivity
     public static final String EXTRA_URL = "EXTRA_URL";
     public static final String KEY_SLUG = "slug";
 
+    private static final String MP_OS_PROMO = "mp_os_promo";
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO})
     public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(context, OS_PROMO_PAGE);
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -42,6 +43,7 @@ public class ReactNativeOfficialStorePromoActivity extends ReactFragmentActivity
     @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
     public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(context, OS_PROMO_PAGE);
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -52,6 +54,7 @@ public class ReactNativeOfficialStorePromoActivity extends ReactFragmentActivity
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
     public static Intent getOfficialStoreTermsIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativeOfficialStorePromoActivity.createOfficialStoreTerms(
                 context,
                 ReactConst.Screen.PROMO,

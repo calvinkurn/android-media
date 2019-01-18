@@ -16,7 +16,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdreactnative.R;
-import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 import java.io.File;
@@ -134,6 +133,6 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void stopTracing() {
-        ReactFragmentActivity.stopTracing();
+        ReactUtils.stopTracing();
     }
 }
