@@ -58,6 +58,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
@@ -369,8 +370,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
     private String lastStateOnClickBuyWhileRequestVariant;
     private RemoteConfig firebaseRemoteConfig;
-    private String fireBaseShareMsgKey = "app_referral_product_share_format";
-    private String fireBaseGuestShareMsgKey = "app_pdp_share_msg_guest";
 
     private boolean isCodShown = false;
 
@@ -983,38 +982,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private void checkAndExecuteReferralAction(ProductData productData){
         UserSession userSession = new UserSession(getActivity());
-        String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(fireBaseGuestShareMsgKey, "");
+        String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
         if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
 
         if(userSession.isLoggedIn()) {
-            String fireBaseRemoteMsg = remoteConfig.getString(fireBaseShareMsgKey, "");
-            if (!TextUtils.isEmpty(fireBaseRemoteMsg)) {
-                if (fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                    productData.setProductShareDescription(fireBaseRemoteMsg);
-                    ActionCreator actionCreator = new ActionCreator<String, Integer>(){
-                        @Override
-                        public void actionSuccess(int actionId, String dataObj) {
-                            if(!TextUtils.isEmpty(dataObj)) {
-                                productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(productData.getProductShareDescription(),
-                                        ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
-                                TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
-
-                            }
-                            executeProductShare(productData);
-                        }
-
-                        @Override
-                        public void actionError(int actionId, Integer dataObj) {
-                            executeProductShare(productData);
-                        }
-                    };
-
-                    ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
-                            (ActionUIDelegate<String, String>) getActivity());
-                }
-                else {
-                    executeProductShare(productData);
-                }
+            String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
+            if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
+                    doReferralShareAction(productData, fireBaseRemoteMsg);
             }
             else {
                 executeProductShare(productData);
@@ -1023,6 +997,31 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         else {
             executeProductShare(productData);
         }
+    }
+
+    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
+        productData.setProductShareDescription(fireBaseRemoteMsg);
+        ActionCreator actionCreator = new ActionCreator<String, Integer>(){
+            @Override
+            public void actionSuccess(int actionId, String dataObj) {
+                if(!TextUtils.isEmpty(dataObj)) {
+                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(productData.getProductShareDescription(),
+                            ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
+                    TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
+
+                }
+                executeProductShare(productData);
+            }
+
+            @Override
+            public void actionError(int actionId, Integer dataObj) {
+                executeProductShare(productData);
+            }
+        };
+
+        ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
+                (ActionUIDelegate<String, String>) getActivity());
+
     }
 
 

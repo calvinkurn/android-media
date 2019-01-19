@@ -87,7 +87,7 @@
                             android:layout_alignBottom="@id/tv_referral_code"
                             android:layout_alignParentRight="true"
                             android:layout_alignTop="@id/tv_referral_code"
-                            android:background="@color/white"
+                            android:background="@drawable/rounded_corner_right"
                             android:gravity="center_vertical"
                             android:paddingLeft="@dimen/margin_xlarge"
                             android:paddingRight="@dimen/margin_large"
