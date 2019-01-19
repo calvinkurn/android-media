@@ -60,7 +60,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_small"
-                        android:background="@drawable/shape_copy_voucher_code_left_default"
+                        android:background="@drawable/shape_referral_code_copy"
                         android:padding="@dimen/dp_1">
 
                         <TextView
