@@ -525,7 +525,6 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-                // totalItemQty = totalItemQty + 1;
                 List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
                 boolean hasCalculateWholesalePrice = false;
                 if (wholesalePrices != null && wholesalePrices.size() > 0) {
