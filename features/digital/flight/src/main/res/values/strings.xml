@@ -456,16 +456,17 @@
     <string name="flight_change_search_content_button">Ganti Pencarian</string>
     <string name="flight_cancellation_less_than_6_hours_confirmation_dialog">OK</string>
     <string name="flight_search_best_pairing_tag">Best Pairing</string>
-    <string name="flight_search_selengkapnya_label">Lihat penerbangan selain Best Pairing</string>
-    <string name="flight_search_selengkapnya_desc">Anda dapat memilih opsi penerbangan lain namun biaya penerbangan pergi Anda akan mengalami perubahan.</string>
+    <string name="flight_search_selengkapnya_label">Pilih Penerbangan Pulang Lainnya</string>
+    <string name="flight_search_selengkapnya_desc"><![CDATA[Harga penerbangan pergi Anda berubah menjadi <font color="#ff5722">%s</font> karena memilih penerbangan selain Best Pairing.]]></string>
     <string name="flight_search_show_all_label">Lihat Selengkapnya</string>
-    <string name="flight_search_show_best_pairing_label">Lihat Sekarang</string>
+    <string name="flight_search_show_best_pairing_desc"><![CDATA[Dengan memilih Best Pairing, harga penerbangan pergi Anda berubah menjadi <font color="#ff5722">%s</font>.]]></string>
+    <string name="flight_search_show_best_pairing_label">Lihat Best Pairing</string>
     <string name="flight_search_dialog_proceed_button_text">Lanjutkan</string>
     <string name="flight_search_choose_except_best_pairing_dialog_title">Pilih Penerbangan Pulang Lainnya</string>
     <string name="flight_search_choose_except_best_pairing_dialog_description"><![CDATA[Dengan memilih opsi selain Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
     <string name="flight_search_choose_best_pairing_dialog_title">Pilih Penerbangan Best Pairing</string>
     <string name="flight_search_choose_best_pairing_dialog_description"><![CDATA[Dengan memilih kombinasi Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
-    <string name="flight_search_best_pairing_label">Lihat Penerbangan Best Pairing</string>
+    <string name="flight_search_best_pairing_label">Pilih Penerbangan Best Pairing</string>
     <string name="flight_search_return_dialog_abort">Batal</string>
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_cancellation_upload_percentage_label">sedang diupload %s</string>

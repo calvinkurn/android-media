@@ -153,12 +153,13 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     }
 
     override fun showSeeAllResultView() {
-        adapter.addElement(FlightSearchSeeAllResultViewModel())
+        adapter.addElement(FlightSearchSeeAllResultViewModel(priceViewModel.departurePrice.adult))
         isViewOnlyBestPairing = true
     }
 
     override fun showSeeBestPairingResultView() {
-        adapter.addElement(FlightSearchSeeOnlyBestPairingViewModel())
+        adapter.addElement(FlightSearchSeeOnlyBestPairingViewModel(
+                priceViewModel.departurePrice.adultCombo))
         isViewOnlyBestPairing = false
     }
 

@@ -54,9 +54,6 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
-import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
 
 import org.jetbrains.annotations.NotNull;

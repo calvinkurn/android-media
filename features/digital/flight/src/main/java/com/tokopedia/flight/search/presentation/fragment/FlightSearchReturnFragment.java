@@ -206,13 +206,15 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void showSeeAllResultView() {
-        getAdapter().addElement(new FlightSearchSeeAllResultViewModel());
+        getAdapter().addElement(new FlightSearchSeeAllResultViewModel(priceViewModel
+                .getDeparturePrice().getAdult()));
         isViewOnlyBestPairing = true;
     }
 
     @Override
     public void showSeeBestPairingResultView() {
-        getAdapter().addElement(new FlightSearchSeeOnlyBestPairingViewModel());
+        getAdapter().addElement(new FlightSearchSeeOnlyBestPairingViewModel(priceViewModel
+                .getDeparturePrice().getAdultCombo()));
         isViewOnlyBestPairing = false;
     }
 

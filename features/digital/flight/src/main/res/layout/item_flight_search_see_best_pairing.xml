@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_8"
     android:layout_marginLeft="@dimen/margin_16"
-    android:layout_marginRight="@dimen/margin_16"
     android:layout_marginTop="@dimen/margin_8"
+    android:layout_marginRight="@dimen/margin_16"
+    android:layout_marginBottom="@dimen/margin_8"
     android:background="@drawable/bg_flight_search_item"
     android:clickable="true"
     android:clipChildren="false"
@@ -18,23 +19,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <com.tokopedia.design.component.TextViewCompat
             style="@style/TextView.Small.Bold"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
             android:text="@string/flight_search_best_pairing_label" />
 
-        <android.support.v7.widget.AppCompatButton
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_flight_search_best_pairing_desc"
+            style="@style/TextView.Micro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            tools:text="@string/flight_search_show_best_pairing_desc" />
+
+        <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btn_show_best_pairing"
             style="@style/Button.Secondary.Green"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="@string/flight_search_show_best_pairing_label" />
 
     </LinearLayout>

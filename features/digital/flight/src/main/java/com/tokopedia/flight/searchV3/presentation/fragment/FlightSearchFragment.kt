@@ -34,8 +34,8 @@ import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
+import com.tokopedia.flight.searchV3.presentation.model.FlightSearchTitleRouteViewModel
 import com.tokopedia.flight.searchV3.presentation.presenter.FlightSearchPresenter
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
@@ -142,12 +142,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     }
                 }
                 REQUEST_CODE_CHANGE_DATE -> {
-                    flightSearchPresenter.attachView(this)
-                    val dateString: Date = data?.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED) as Date
-                    val calendarSelected: Calendar = Calendar.getInstance()
-                    calendarSelected.time = dateString
-                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE))
+//                    flightSearchPresenter.attachView(this)
+//                    val dateString: Date = data?.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED) as Date
+//                    val calendarSelected: Calendar = Calendar.getInstance()
+//                    calendarSelected.time = dateString
+//                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
+//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE))
                 }
             }
         }
@@ -254,6 +254,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
+        if (!flightSearchPassData.isOneWay && !adapter.isContainData) {
+            adapter.addElement(FlightSearchTitleRouteViewModel(getSearchRouteTitle()))
+        }
+
         if (!needRefresh || list.isNotEmpty()) {
             renderList(list.toMutableList())
         }
@@ -553,6 +557,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     open fun getArrivalAirport(): FlightAirportViewModel =
             flightSearchPassData.arrivalAirport
+
+    private fun getSearchRouteTitle(): Int = if (isReturning()) {
+        R.string.flight_search_choose_return_flight
+    } else {
+        R.string.flight_search_choose_departure_flight
+    }
 
     private fun setUpCombinationAirport() {
         val departureAirportCode: String? = getDepartureAirport().airportCode
