@@ -90,12 +90,13 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
             }
         });
         this.topAdsBannerView.loadTopAds();
-        isInit = true;
     }
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
-        if (!isInit)
+        if (!isInit) {
             initTopAds(categoryHeaderModel.getDepartementId());
+            isInit = true;
+        }
         activeChildren = new ArrayList<>();
         hideLayout.setVisibility(View.GONE);
         if (categoryHeaderModel.getChildCategoryModelList() != null && categoryHeaderModel.getChildCategoryModelList().size() > 6) {
