@@ -34,13 +34,15 @@
                 android:id="@+id/sp_new_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toEndOf="@+id/sp_title"
                 android:layout_toRightOf="@+id/sp_title"
-                android:background="@drawable/bg_rounded_corners_red"
-                android:gravity="center"
-                android:padding="@dimen/dp_2"
+                android:background="@drawable/sp_bg_rounded_corners_red"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_2"
                 android:text="@string/sp_label_new"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
@@ -49,9 +51,9 @@
             <Switch
                 android:id="@+id/sp_enable_switch"
                 style="@style/Switch"
-                android:padding="@dimen/dp_4"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentRight="true"
+                android:padding="@dimen/dp_4" />
 
             <TextView
                 android:id="@+id/sp_description"
@@ -95,8 +97,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dp_9"
                         android:layout_marginStart="@dimen/dp_9"
+                        android:layout_marginLeft="@dimen/dp_9"
                         android:layout_toEndOf="@+id/sp_status_info_icon"
                         android:layout_toRightOf="@+id/sp_status_info_icon"
                         android:fontFamily="sans-serif-medium"
@@ -123,7 +125,7 @@
                     android:id="@+id/sp_kyc_long_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/kyc_linear_layout"
+                    android:layout_below="@+id/kyc_linear_layout"
                     android:layout_marginTop="@dimen/dp_6"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="4sp"
@@ -151,9 +153,9 @@
                 android:id="@+id/sp_list_separator"
                 android:layout_width="match_parent"
                 android:layout_height="1.5dp"
-                android:layout_below="@id/sp_detail_list"
-                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_below="@+id/sp_detail_list"
                 android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"
                 android:background="@color/greyish_bg" />
 
             <LinearLayout

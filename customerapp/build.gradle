@@ -279,6 +279,7 @@ dependencies {
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.feed)
+    implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.explore)
@@ -512,8 +513,9 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.challenges)
+    implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
-
+    implementation rootProject.ext.serviceDependencies.anrWatchDogs
 }
 
 

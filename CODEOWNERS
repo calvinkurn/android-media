@@ -87,6 +87,7 @@
 /features/content/affiliate_common/     @tokopedia/minion-kevin
 /features/content/explore/              @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
+/features/content/feed_component/       @tokopedia/minion-kevin
 /features/content/interest_pick/        @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 /features/content/kol_common/           @tokopedia/minion-kevin

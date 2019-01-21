@@ -22,6 +22,7 @@
     <color name="medium_green_50">#8042b549</color>
     <color name="strong_green">#7cb211</color>
     <color name="yellow_green">#ecf7be</color>
+    <color name="tkpd_main_light_green">#d3f0d4</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
@@ -106,4 +107,7 @@
     <color name="grey_hint">#e0e0e0</color>
     <color name="grey_warm">#9e9e9e</color>
 
+
+    <color name="tkpd_light_green">#008000</color>
+    <color name="tkpd_prod_price">#B44141</color>
 </resources>

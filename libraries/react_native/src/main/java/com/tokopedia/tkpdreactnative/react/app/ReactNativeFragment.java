@@ -54,6 +54,8 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
+        ReactFragmentActivity.stopTracing();
         if(reactRootView != null) {
             reactRootView.unmountReactApplication();
             reactRootView = null;

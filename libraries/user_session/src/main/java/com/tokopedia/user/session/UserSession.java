@@ -44,6 +44,7 @@ public class UserSession implements UserSessionInterface {
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
     private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
+    private static final String HAS_SHOWN_SALDO_WARNING = "HAS_SHOWN_SALDO_WARNING";
 
     private Context context;
 
@@ -131,6 +132,7 @@ public class UserSession implements UserSessionInterface {
 
     /**
      * Saved from FCMCacheManager
+     *
      * @return gcm id / device id
      */
     public String getDeviceId() {
@@ -151,6 +153,11 @@ public class UserSession implements UserSessionInterface {
     public boolean isMsisdnVerified() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
+    }
+
+    public boolean hasShownSaldoWithdrawalWarning() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(HAS_SHOWN_SALDO_WARNING, false);
     }
 
     public String getPhoneNumber() {
@@ -319,6 +326,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(SHOP_NAME, shopName);
         editor.putString(EMAIL, email);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
+        editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
         editor.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         editor.putString(PHONE_NUMBER, phoneNumber);
 
@@ -360,6 +368,14 @@ public class UserSession implements UserSessionInterface {
     }
 
     @Override
+    public void setSaldoWithdrawalWaring(boolean value) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(HAS_SHOWN_SALDO_WARNING, value);
+        editor.apply();
+    }
+
+    @Override
     public void setProfilePicture(String profilePicture) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -376,6 +392,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(SHOP_NAME, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(REFRESH_TOKEN, null);
         editor.putString(TOKEN_TYPE, null);
