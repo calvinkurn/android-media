@@ -92,7 +92,7 @@ public class AccountConstants {
         public static final String OVO_PAY_LATER_CATEGORY = "fin - android main screen";
         public static final String OVO_PAY_LATER_CLICK = "ovo - pay later click";
         public static final String OVO_PAY_LATER_LABEL = "success - %s";
-        public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
+        public static final String CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
 
     public class ImageUrl {

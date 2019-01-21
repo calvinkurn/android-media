@@ -16,6 +16,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EMAIL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
@@ -67,7 +68,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_FINTECH_MICROSITE,
                 category,
                 action,
                 label
