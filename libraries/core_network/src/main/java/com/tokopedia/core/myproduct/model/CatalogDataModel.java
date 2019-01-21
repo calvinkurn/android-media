@@ -4,7 +4,6 @@ import android.util.Pair;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.database.model.CatalogItemDB;
 import com.tokopedia.core.myproduct.adapter.ItemImageAndText;
 
 import org.parceler.Parcel;
@@ -71,16 +70,6 @@ public class CatalogDataModel {
         @SerializedName("uri")
         @Expose
         String catalogUri;
-
-        public Catalog(CatalogItemDB catalogItemDB) {
-            catalogName = catalogItemDB.getCatalogName();
-            catalogDescription = catalogItemDB.getCatalogDescription();
-            catalogImage = catalogItemDB.getCatalogImage();
-            catalogCountShop = catalogItemDB.getCatalogCountShop();
-            catalogPrice = catalogItemDB.getCatalogPrice();
-            catalogId = catalogItemDB.getCatalogId();
-            catalogUri = catalogItemDB.getCatalogUri();
-        }
 
         public String getCatalogName() {
             return catalogName;

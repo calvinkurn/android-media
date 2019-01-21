@@ -10,14 +10,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 /**
  * Created by normansyahputa on 10/20/17.
  */
 
 public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
-    @Nullable
+    
     private SessionHandler sessionHandler;
 
     public TopAdsAuthInterceptor(SessionHandler sessionHandler){

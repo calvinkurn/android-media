@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.v4;
 
-import com.tkpd.library.kirisame.network.entity.OnNetworkResponseListener;
-
 /**
  * Created by m.normansyah on 03/11/2015.
  */

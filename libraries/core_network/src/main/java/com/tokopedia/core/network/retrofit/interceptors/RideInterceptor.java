@@ -2,7 +2,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Intent;
 
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
@@ -88,7 +88,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
     private void handleError(String bodyResponse, String errorMessage) throws IOException {
         if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
             Intent intent = new Intent();
-            intent.setAction(BaseActivity.FORCE_LOGOUT);
+            intent.setAction(ConstantCoreNetwork.FORCE_LOGOUT);
             MainApplication.getAppContext().sendBroadcast(intent);
             throw new SessionExpiredException(errorMessage);
         } else {

@@ -2,6 +2,9 @@ package com.tokopedia.core.util;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
+import android.text.Html;
+import android.text.Spanned;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +44,19 @@ public class GeneralUtils {
         if (GlobalConfig.isAllowDebuggingTools()) {
             Log.i("Dumper", str);
         }
+    }
+
+    public static Spanned fromHtml(String text) {
+        if (text == null) {
+            text = "";
+        }
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(text);
+        }
+        return result;
     }
 
 }
