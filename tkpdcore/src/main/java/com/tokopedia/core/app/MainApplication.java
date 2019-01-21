@@ -325,15 +325,7 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        try {
-            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
-            TagManager tagManager = TagManager.getInstance(context);
-            tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
-                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        TrackingUtils.runGTMFirstTime(this);
         TrackingUtils.runAppsFylerFirstTime(this);
         TrackingUtils.runMoengageFirstTime(this);
         TrackingUtils.enableDebugging(this, isDebug());
