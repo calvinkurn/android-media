@@ -140,11 +140,20 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     private void actionFetchEstimateRefund() {
         getView().showLoading();
 
+        FlightCancellationWrapperViewModel viewModel = getView().getCancellationWrapperViewModel();
+
+        String reason = (viewModel.getCancellationReasonAndAttachment() != null) ?
+                viewModel.getCancellationReasonAndAttachment().getReason() : null;
+        String reasonId = (viewModel.getCancellationReasonAndAttachment() != null) ?
+                viewModel.getCancellationReasonAndAttachment().getReasonId() : null;
+
         flightCancellationEstimateRefundUseCase.execute(
                 flightCancellationEstimateRefundUseCase.createRequestParam(
                         getView().getCancellationWrapperViewModel().getInvoice(),
                         userSession.getUserId(),
-                        getView().getCancellationWrapperViewModel().getGetCancellations()
+                        getView().getCancellationWrapperViewModel().getGetCancellations(),
+                        reason,
+                        Integer.parseInt(reasonId)
                 ),
                 new Subscriber<EstimateRefundResultEntity>() {
                     @Override

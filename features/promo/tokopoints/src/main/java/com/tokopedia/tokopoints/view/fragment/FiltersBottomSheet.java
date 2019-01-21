@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogFilterPointRange;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class FiltersBottomSheet extends BottomSheets {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mFilterDetails == null) {
+                    return;
+                }
+
                 if (lastCheckedPosition != Integer.MIN_VALUE) {
                     if (lastSavedPosition != Integer.MIN_VALUE)
                         mFilterDetails.get(lastSavedPosition).setSelected(false);
@@ -47,6 +52,12 @@ public class FiltersBottomSheet extends BottomSheets {
                 } else
                     onSaveFilterCallback.onSaveFilter(null, lastSavedPosition);
                 dismiss();
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_SAVE_FILTER,
+                        mFilterDetails.get(lastSavedPosition).getText());
             }
         });
         rvFilters.setAdapter(new FiltersAdapter(mFilterDetails));
@@ -113,6 +124,14 @@ public class FiltersBottomSheet extends BottomSheets {
                         lastCheckedPosition = getAdapterPosition();
                         fromInitView = false;
                         notifyDataSetChanged();
+
+                        if (mFilterDetails != null && mFilterDetails.get(getAdapterPosition()) != null) {
+                            AnalyticsTrackerUtil.sendEvent(getActivity(),
+                                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                                    AnalyticsTrackerUtil.ActionKeys.PILIH_FILTER,
+                                    mFilterDetails.get(getAdapterPosition()).getText());
+                        }
                     }
                 });
             }

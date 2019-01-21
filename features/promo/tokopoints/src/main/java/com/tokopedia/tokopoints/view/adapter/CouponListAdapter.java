@@ -109,12 +109,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
             holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
 
-            //TODO need to add transectinal ga
-            AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
-                    AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
+            sendClickEvent(holder.imgBanner.getContext(),item ,position);
         });
 
 
@@ -216,7 +211,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         promotions.put("promotions", Arrays.asList(item));
 
         Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-        promoClick.put("promoClick", promotions);
+        promoClick.put("promoView", promotions);
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,

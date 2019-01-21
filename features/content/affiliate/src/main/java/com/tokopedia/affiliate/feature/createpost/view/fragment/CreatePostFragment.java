@@ -28,7 +28,7 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivi
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
-import com.tokopedia.affiliate.feature.createpost.view.preference.CreatePostPreference;
+import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager;
@@ -53,7 +53,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Inject
     CreatePostContract.Presenter presenter;
     @Inject
-    CreatePostPreference createPostPreference;
+    AffiliatePreference affiliatePreference;
     @Inject
     AffiliateAnalytics affiliateAnalytics;
 
@@ -304,7 +304,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             affiliateAnalytics.onTambahGambarButtonClicked(viewModel.getProductId());
             if (shouldShowExample()) {
                 goToImageExample(true);
-                createPostPreference.setFirstTime(getUserSession().getUserId());
+                affiliatePreference.setFirstTimeCreatePost(getUserSession().getUserId());
             } else {
                 goToImagePicker();
             }
@@ -338,7 +338,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private boolean shouldShowExample() {
-        return createPostPreference.isFirstTimeUser(getUserSession().getUserId());
+        return affiliatePreference.isFirstTimeCreatePost(getUserSession().getUserId());
     }
 
     private void setupHeader(Guide guide) {

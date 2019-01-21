@@ -98,6 +98,8 @@ public interface GroupChatContract {
         void initVideoFragment();
 
         void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+
+        void showOverlayDialogOnScreen();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
