@@ -25,6 +25,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -85,6 +86,7 @@ public class SearchActivity extends DiscoveryActivity
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
     private ShopListFragment shopListFragment;
+    private ProfileListFragment profileListFragment;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -224,13 +226,13 @@ public class SearchActivity extends DiscoveryActivity
                 sendImageSearchFromGalleryGTM("");
                 ClipData clipData = intent.getClipData();
                 Uri uri = clipData.getItemAt(0).getUri();
-                SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, uri.toString());
+                onImageSuccess(uri.toString());
             } else if (intent.getData() != null &&
                     !TextUtils.isEmpty(intent.getData().toString()) &&
                     isValidMimeType(intent.getData().toString())) {
                 searchView.hideShowCaseDialog(true);
                 sendImageSearchFromGalleryGTM("");
-                SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, intent.getData().toString());
+                onImageSuccess(intent.getData().toString());
             }
         }
     }
@@ -283,8 +285,8 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SearchActivityPermissionsDispatcher.onRequestPermissionsResult(
-                SearchActivity.this, requestCode, grantResults);
+        onRequestPermissionsResult(
+                requestCode, permissions, grantResults);
 
     }
 
@@ -313,7 +315,7 @@ public class SearchActivity extends DiscoveryActivity
         if (productViewModel.isHasCatalog()) {
             populateFourTabItem(searchSectionItemList, productViewModel);
         } else {
-            populateTwoTabItem(searchSectionItemList, productViewModel);
+            populateThreeTabItem(searchSectionItemList, productViewModel);
         }
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
@@ -346,10 +348,12 @@ public class SearchActivity extends DiscoveryActivity
         productListFragment = getProductFragment(productViewModel);
         catalogFragment = getCatalogFragment(productViewModel.getQuery());
         shopListFragment = getShopFragment(productViewModel.getQuery());
+        profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
+        searchSectionItemList.add(new SearchSectionItem("Prolil", profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -397,14 +401,20 @@ public class SearchActivity extends DiscoveryActivity
         return ShopListFragment.newInstance(query);
     }
 
-    private void populateTwoTabItem(List<SearchSectionItem> searchSectionItemList,
+    private ProfileListFragment getProfileListFragment(String query, SearchNavigationListener searchNavigationListener) {
+        return ProfileListFragment.Companion.newInstance(query, searchNavigationListener);
+    }
+
+    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
                                     ProductViewModel productViewModel) {
 
         productListFragment = getProductFragment(productViewModel);
         shopListFragment = getShopFragment(productViewModel.getQuery());
+        profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
+        searchSectionItemList.add(new SearchSectionItem("Prolil", profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -637,6 +647,7 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
+        showBottomNavigation();
         if (isSortEnabled) {
             buttonSort.setVisibility(View.VISIBLE);
             searchNavDivider.setVisibility(View.VISIBLE);

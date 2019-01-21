@@ -1,0 +1,19 @@
+query aceSearchProfile($params: String) {
+    query
+    source
+    count
+    count_text
+    profiles {
+      id
+      name
+      avatar
+      username
+      bio
+      followed
+      thumbnails
+      iskol
+      isaffiliate
+      following
+      followers
+    }
+  }
