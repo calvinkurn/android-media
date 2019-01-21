@@ -2,7 +2,6 @@ package com.tkpd.library.utils.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.NetworkModel;
 
 import java.util.ArrayList;
@@ -111,21 +110,4 @@ public class ListShippingCity {
             this.districtId = districtId;
         }
     }
-
-    public static District fromShippingCity(Shipping_city shippingCity){
-        District district = new District();
-        district.setDistrictId(shippingCity.getDistrictId());
-        district.setDistrictName(shippingCity.getDistrictName());
-        district.setDistrictJneCode("-1");
-        return district;
-    }
-
-    public static List<District> fromShippingCities(List<Shipping_city> shipping_cities){
-        ArrayList<District> result = new ArrayList<>();
-        for(Shipping_city s : shipping_cities){
-            result.add(fromShippingCity(s));
-        }
-        return result;
-    }
-
 }
