@@ -23,7 +23,6 @@ public interface TravelCalendarContract {
         void showLoading();
 
         void hideLoading();
-
     }
 
     interface Presenter extends CustomerPresenter<View> {

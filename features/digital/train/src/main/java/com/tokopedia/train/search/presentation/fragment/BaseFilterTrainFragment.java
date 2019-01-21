@@ -22,6 +22,7 @@ public abstract class BaseFilterTrainFragment extends BaseDaggerFragment impleme
 
     public static final String TAG = FilterTrainDepartureFragment.class.getSimpleName();
     private static final String SAVE_FILTER_EXISTING = "filter_existing";
+    private static final String FILTER_SEARCH_DATA = "filter_search_data";
 
     private VerticalRecyclerView recyclerView;
     protected TrainFilterAdapter adapter;
@@ -42,11 +43,11 @@ public abstract class BaseFilterTrainFragment extends BaseDaggerFragment impleme
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null) {
             existingFilterSearchData = listener.getFilterSearchData().copy();
+            filterSearchData = listener.getFilterSearchData();
         } else {
             existingFilterSearchData = savedInstanceState.getParcelable(SAVE_FILTER_EXISTING);
+            filterSearchData = savedInstanceState.getParcelable(FILTER_SEARCH_DATA);
         }
-
-        filterSearchData = listener.getFilterSearchData();
 
         listener.setCloseButton(false);
         adapter = new TrainFilterAdapter();
@@ -72,6 +73,7 @@ public abstract class BaseFilterTrainFragment extends BaseDaggerFragment impleme
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(SAVE_FILTER_EXISTING, existingFilterSearchData);
+        outState.putParcelable(FILTER_SEARCH_DATA, filterSearchData);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.tokopedia.home.account;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.network.constant.TkpdBaseURL;
+
 /**
  * @author okasurya on 9/14/18.
  */
@@ -43,5 +46,10 @@ public class AccountHomeUrl {
 
     public static String EMAS_URL = WEB_DOMAIN + "emas/";
     public static String EMAS_TX_URL = WEB_DOMAIN + "emas/daftar-transaksi/";
+
+    public static String BASE_MOBILE_URL = TkpdBaseURL.MOBILE_DOMAIN;
+    public final static String URL_TOKOPEDIA_CORNER = BASE_MOBILE_URL + "tokopedia-corner";
+    public final static String APPLINK_TOKOPEDIA_CORNER = String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TOKOPEDIA_CORNER);
+  
     public static String GIFT_CARD_URL = BASE_MOBILE_DOMAIN + "order-list?tab=GIFTCARDS";
 }

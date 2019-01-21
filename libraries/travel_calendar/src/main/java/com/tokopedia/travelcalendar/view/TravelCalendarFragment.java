@@ -32,7 +32,6 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
     private RecyclerView recyclerViewHoliday;
     private HolidayAdapter holidayAdapter;
     private Calendar currentCalendar = Calendar.getInstance();
-    private Calendar maxDateCalendar;
     private int month;
     private int year;
 

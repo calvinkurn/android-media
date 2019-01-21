@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
@@ -51,13 +51,11 @@ public interface FeedPlus {
 
             void onSuccessLikeDislikeKolPost(int rowNumber);
 
-            void onFollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
+            void onFollowKolFromRecommendationClicked(int rowNumber, int id, int position);
 
-            void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
+            void onUnfollowKolFromRecommendationClicked(int rowNumber, int id, int position);
 
-            void onSuccessFollowKolFromRecommendation(int rowNumber, int position);
-
-            void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position);
+            void onSuccessFollowKolFromRecommendation(int rowNumber, int position, boolean isFollow);
 
             void onLikeKolClicked(int rowNumber, int id);
 
@@ -71,15 +69,12 @@ public interface FeedPlus {
         interface Polling {
             UserSessionInterface getUserSession();
 
-            void onVoteOptionClicked(int rowNumber, String pollId,
-                                     PollOptionViewModel optionViewModel);
+            void onVoteOptionClicked(int rowNumber, String pollId, String optionId);
 
             void onGoToLink(String link);
 
             void trackEEPoll(PollOptionViewModel element, String trackingPromoCode, int rowNumber, PollViewModel pollViewModel);
         }
-
-        void setFirstCursor(String firstCursor);
 
         void setLastCursorOnFirstPage(String lastCursor);
 
@@ -141,11 +136,7 @@ public interface FeedPlus {
 
         void onShowRetryGetFeed();
 
-        void onShowAddFeedMore();
-
-        void shouldLoadTopAds(boolean loadTopAds);
-
-        void hideTopAdsAdapterLoading();
+        void hideAdapterLoading();
 
         String getString(int msg_network_error);
 
@@ -184,7 +175,7 @@ public interface FeedPlus {
 
         void onGoToLogin();
 
-        void onSuccessSendVote(int rowNumber, PollOptionViewModel optionViewModel,
+        void onSuccessSendVote(int rowNumber, String optionId,
                                VoteStatisticDomainModel voteStatisticDomainModel);
 
         void onErrorSendVote(String message);
@@ -192,6 +183,11 @@ public interface FeedPlus {
         int getAdapterListSize();
 
         void onWhitelistClicked(String url);
+
+        void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition);
+
+        void onErrorToggleFavoriteShop(String message, int rowNumber, int adapterPosition,
+                                       String shopId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -200,9 +196,11 @@ public interface FeedPlus {
 
         void fetchNextPage();
 
+        void favoriteShop(final Data promotedShopViewModel, final int adapterPosition);
+
         void refreshPage();
 
-        void checkNewFeed(String cursor);
+        void setCursor(String cursor);
 
         void followKol(int id, int rowNumber, View.Kol kolListener);
 
@@ -212,12 +210,16 @@ public interface FeedPlus {
 
         void unlikeKol(int id, int rowNumber, View.Kol kolListener);
 
-        void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel);
+        void sendVote(int rowNumber, String pollId, String optionId);
 
         void followKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
 
         void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
+
+        void toggleFavoriteShop(int rowNumber, String shopId);
+
+        void toggleFavoriteShop(int rowNumber, int adapterPosition, String shopId);
     }
 }

@@ -23,16 +23,20 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
+import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.BannerAdsContract;
@@ -46,6 +50,8 @@ import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Created by errysuprayogi on 12/28/17.
  */
@@ -53,11 +59,12 @@ import java.util.ArrayList;
 public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.View {
 
     private static final String TAG = TopAdsBannerView.class.getSimpleName();
-    private BannerAdsPresenter presenter;
     private TopAdsListener adsListener;
     private TopAdsBannerClickListener topAdsBannerClickListener;
-    private ImageLoader imageLoader;
     private BannerAdsAdapter bannerAdsAdapter;
+
+    @Inject
+    BannerAdsPresenter bannerPresenter;
 
     public TopAdsBannerView(Context context) {
         super(context);
@@ -106,7 +113,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
                 ImageView badgeImg = new ImageView(context);
                 badgeImg.setLayoutParams(new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size_small),
                         context.getResources().getDimensionPixelSize(R.dimen.badge_size_small)));
-                Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
+                if (!activityIsFinishing(context)){
+                    Glide.with(context.getApplicationContext()).load(badge.getImageUrl()).into(badgeImg);
+                }
                 badgeContainer.addView(badgeImg);
             }
         } else {
@@ -174,7 +183,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     public void setConfig(Config config) {
-        presenter.setConfig(config);
+        bannerPresenter.setConfig(config);
     }
 
     public void setAdsListener(TopAdsListener adsListener) {
@@ -233,7 +242,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     @Override
     public void loadTopAds() {
-        presenter.loadTopAds();
+        bannerPresenter.loadTopAds();
     }
 
     @Override
@@ -244,9 +253,13 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     public void init() {
-        imageLoader = new ImageLoader(getContext());
-        presenter = new BannerAdsPresenter(getContext());
-        presenter.attachView(this);
+        BaseMainApplication application = ((BaseMainApplication) getContext().getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(bannerPresenter);
+        bannerPresenter.attachView(this);
     }
 
 }

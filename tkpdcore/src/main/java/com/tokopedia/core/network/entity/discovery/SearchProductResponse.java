@@ -317,6 +317,8 @@ public class SearchProductResponse {
             private int categoryId;
             @SerializedName("category_name")
             private String categoryName;
+            @SerializedName("category_breadcrumb")
+            private String categoryBreadcrumb;
 
             public String getId() {
                 return id;
@@ -501,6 +503,10 @@ public class SearchProductResponse {
 
             public void setCategoryName(String categoryName) {
                 this.categoryName = categoryName;
+            }
+
+            public String getCategoryBreadcrumb() {
+                return categoryBreadcrumb;
             }
 
             public static class Shop {

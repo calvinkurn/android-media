@@ -316,7 +316,16 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
                 ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
-                ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap
+                ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
+                ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void flushEnhancedECommerceGoToCheckoutStep2() {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.E_COMMERCE, null,
+                ConstantTransactionAnalytics.Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
     }

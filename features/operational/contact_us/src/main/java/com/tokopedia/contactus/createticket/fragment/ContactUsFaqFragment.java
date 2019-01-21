@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -27,7 +29,8 @@ import com.tokopedia.core.util.TkpdWebViewClient;
 
 import butterknife.BindView;
 
-import static com.tokopedia.contactus.createticket.ContactUsConstant.PARAM_URL;
+import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by nisie on 8/12/16.
@@ -39,6 +42,9 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private static final String ORDER_ID = "order_id";
     private static final String APPLINK_SCHEME = "tokopedia://";
     private static final String CHATBOT_SCHEME = "tokopedia://topchat";
+    private ValueCallback<Uri> uploadMessageBeforeLolipop;
+    public ValueCallback<Uri[]> uploadMessageAfterLolipop;
+    public final static int ATTACH_FILE_REQUEST = 1;
 
 
     @BindView(R2.id.scroll_view)
@@ -73,10 +79,10 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     protected void onFirstTimeLaunched() {
         String url;
-        if (getArguments().getString(PARAM_URL, "").equals("")) {
+        if (getArguments().getString(EXTRAS_PARAM_URL, "").equals("")) {
             url = TkpdBaseURL.ContactUs.URL_HELP;
         } else
-            url = getArguments().getString(PARAM_URL);
+            url = getArguments().getString(EXTRAS_PARAM_URL);
 
         webView.loadAuthUrlWithFlags(url);
 
@@ -148,6 +154,37 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     protected void setActionVar() {
 
     }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Uri[] results = null;
+            //Check if response is positive
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == ATTACH_FILE_REQUEST) {
+                    if (null == uploadMessageAfterLolipop) {
+                        return;
+                    }
+
+                    String dataString = intent.getDataString();
+                    if (dataString != null) {
+                        results = new Uri[]{Uri.parse(dataString)};
+
+                    }
+                }
+            }
+            uploadMessageAfterLolipop.onReceiveValue(results);
+            uploadMessageAfterLolipop = null;
+        } else {
+            if (requestCode == ATTACH_FILE_REQUEST) {
+                if (null == uploadMessageBeforeLolipop) return;
+                Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
+                uploadMessageBeforeLolipop.onReceiveValue(result);
+                uploadMessageBeforeLolipop = null;
+            }
+        }
+    }
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -163,6 +200,52 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             }
             super.onProgressChanged(view, newProgress);
         }
+
+        //For Android 3.0+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            openFileChooserBeforeLolipop(uploadMsg);
+        }
+
+        // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
+        public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
+            openFileChooserBeforeLolipop(uploadMsg);
+        }
+
+        //For Android 4.1+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            openFileChooserBeforeLolipop(uploadMsg);
+        }
+
+        //For Android 5.0+
+        public boolean onShowFileChooser(
+                WebView webView, ValueCallback<Uri[]> filePathCallback,
+                WebChromeClient.FileChooserParams fileChooserParams) {
+            if (uploadMessageAfterLolipop != null) {
+                uploadMessageAfterLolipop.onReceiveValue(null);
+            }
+            uploadMessageAfterLolipop = filePathCallback;
+
+            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            contentSelectionIntent.setType("*/*");
+            Intent[] intentArray = new Intent[0];
+
+            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+            chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+            startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
+            return true;
+
+        }
+    }
+
+    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage){
+        uploadMessageBeforeLolipop = uploadMessage;
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("*/*");
+        startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
     private class MyWebClient extends TkpdWebViewClient {

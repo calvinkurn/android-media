@@ -27,6 +27,7 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.libraries.datePickerRange)
@@ -43,7 +44,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
-    implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)

@@ -5,7 +5,7 @@ import com.google.firebase.perf.metrics.Trace;
 /**
  * Created by Herdi_WORK on 28.09.17.
  */
-
+@Deprecated
 public interface IPerformanceMonitoring {
 
 

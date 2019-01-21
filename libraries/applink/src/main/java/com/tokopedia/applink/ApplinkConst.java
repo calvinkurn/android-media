@@ -119,6 +119,7 @@ public interface ApplinkConst {
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
     String INTEREST_PICK ="tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
+    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
 
     String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";

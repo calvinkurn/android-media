@@ -36,19 +36,6 @@
         <item name="android:background">@drawable/bg_button_round_success</item>
     </style>
 
-    <style name="WidgetSelectPassengerView">
-        <item name="android:background">@color/white</item>
-        <item name="android:paddingLeft">@dimen/dp_10</item>
-        <item name="android:paddingRight">@dimen/dp_10</item>
-        <item name="android:paddingTop">@dimen/dp_20</item>
-        <item name="android:paddingBottom">@dimen/dp_10</item>
-    </style>
-
-    <style name="WidgetSelectPassengerViewIcon">
-        <item name="android:layout_width">36dp</item>
-        <item name="android:layout_height">36dp</item>
-    </style>
-
     <style name="FlightCalendarPicker" parent="android:Widget.CalendarView">
         <item name="android:focusedMonthDateColor">@color/colorPrimary</item>
         <item name="android:weekNumberColor">@color/red_500</item>

@@ -25,15 +25,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.VideoPickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.picker.main.view.VideoPickerActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentAdapterListener;
@@ -72,6 +72,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     private static final int COUNT_MAX_ATTACHMENT = 5;
     private static final int COUNT_MIN_STRING = 30;
     private static final int REQUEST_CODE_IMAGE_REPUTATION = 3479;
+    public static final int MAX_VIDEO_SIZE_IN_KB = 20000;
 
     private TkpdTextInputLayout tilInformation;
     private EditText etInformation;
@@ -289,28 +290,24 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void onAddAttachmentClicked() {
         if (adapter.getList().size() < COUNT_MAX_ATTACHMENT) {
-            if (TrackingUtils.getGtmString(getActivity(), AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(getActivity().getString(R.string.dialog_upload_option));
-                builder.setPositiveButton(getActivity().getString(R.string.title_video), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        AttachmentFragmentPermissionsDispatcher.actionVideoPickerWithCheck(AttachmentFragment.this);
-                    }
-                }).setNegativeButton(getActivity().getString(R.string.title_image), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        openImagePicker();
-                    }
-                });
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getActivity().getString(R.string.dialog_upload_option));
+            builder.setPositiveButton(getActivity().getString(R.string.title_video), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    actionVideoPicker();
+                }
+            }).setNegativeButton(getActivity().getString(R.string.title_image), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    openImagePicker();
+                }
+            });
 
-                Dialog dialog = builder.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
-            } else {
-                openImagePicker();
-            }
+            Dialog dialog = builder.create();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.show();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
         }
@@ -350,10 +347,11 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         uploadImageDialog.actionCamera();
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionVideoPicker() {
+        VideoPickerBuilder builder = new VideoPickerBuilder(getString(R.string.choose_video), MAX_VIDEO_SIZE_IN_KB,
+                0, null);
         startActivityForResult(
-                GalleryActivity.createIntent(getActivity(), GalleryType.ofVideoOnly()),
+                VideoPickerActivity.getIntent(getActivity(), builder),
                 REQUEST_CODE_VIDEO
         );
     }

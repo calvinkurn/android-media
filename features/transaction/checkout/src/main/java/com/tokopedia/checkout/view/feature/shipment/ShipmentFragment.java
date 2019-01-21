@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -61,7 +60,11 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticinsurance.view.InsuranceTnCActivity;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -558,6 +561,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
+    @Deprecated
     @Override
     public void renderThanksTopPaySuccess(String message) {
         showToastNormal(getString(R.string.message_payment_succeded_transaction_module));
@@ -808,6 +812,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap, String transactionId) {
         checkoutAnalyticsCourierSelection.enhancedECommerceGoToCheckoutStep2(stringObjectMap, transactionId);
+        checkoutAnalyticsCourierSelection.flushEnhancedECommerceGoToCheckoutStep2();
     }
 
     @Override
@@ -915,7 +920,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromCourierPinpoint(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
-            LocationPass locationPass = data.getExtras().getParcelable(EXTRA_EXISTING_LOCATION);
+            LocationPass locationPass = data.getExtras().getParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION);
             if (locationPass != null) {
                 int index = shipmentAdapter.getLastChooseCourierItemPosition();
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);
@@ -1271,15 +1276,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onFinishChoosingShipment
-            (List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData,
-             List<DataCheckoutRequest> checkoutRequestData) {
+    public void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData) {
         shipmentPresenter.setPromoCodeCartShipmentRequestData(promoRequestData);
-        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
         if (shipmentAdapter.getPromoData() != null &&
                 shipmentAdapter.hasAppliedPromoCode()) {
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }
+    }
+
+    @Override
+    public void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData) {
+        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
     }
 
     @Override

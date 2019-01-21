@@ -2,8 +2,8 @@ package com.tokopedia.district_recommendation.data.source;
 
 import com.google.gson.Gson;
 import com.tokopedia.district_recommendation.data.entity.AddressResponseEntity;
-import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.district_recommendation.data.service.KeroApi;
+import com.tokopedia.network.utils.TKPDMapParam;
 
 import javax.inject.Inject;
 
@@ -16,15 +16,15 @@ import rx.functions.Func1;
  */
 
 public class DistrictRecommendationDataStore {
-    private final KeroAuthService service;
+    private final KeroApi keroApi;
 
     @Inject
-    public DistrictRecommendationDataStore(KeroAuthService service) {
-        this.service = service;
+    public DistrictRecommendationDataStore(KeroApi keroApi) {
+        this.keroApi = keroApi;
     }
 
     public Observable<AddressResponseEntity> getAddresses(TKPDMapParam<String, String> params) {
-        return service.getApi().getDistrictRecommendation(params)
+        return keroApi.getDistrictRecommendation(params)
                 .map(new Func1<Response<String>, AddressResponseEntity>() {
                     @Override
                     public AddressResponseEntity call(Response<String> stringResponse) {

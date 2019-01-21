@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -10,7 +11,6 @@ import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
-import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightSearchCombinedUseCase;
@@ -355,7 +355,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh) {
+    public void fetchSortAndFilterLocalData(@TravelSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
                 new Subscriber<List<FlightJourneyViewModel>>() {

@@ -31,9 +31,12 @@
     <string name="text_full_affiliate_ok">Atur Kurasi</string>
     <string name="text_full_affiliate_no">Batal</string>
     <string name="text_item_commission">Komisi</string>
+    <string name="text_back_to_top">Kembali ke atas</string>
+    <string name="text_button_apply">Terapkan</string>
+    <string name="text_title_filter">Filter</string>
 
     <!--ONBOARDING-->
-    <string name="title_af_onboarding">Tokopedia By Me</string>
+    <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
     <string name="af_about_comission">Tentang Komisi</string>
     <string name="af_try_now">Selanjutnya</string>
     <string name="af_onboarding_make_profile_desc">Buat username By Me, kurasi produk, dan bagikan ke teman untuk meraih Komisi!</string>
@@ -66,5 +69,13 @@
     <string name="af_use_image_to_show">Gunakan foto yang menampilkan produk pilihanmu.</string>
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
+
+    <!--EDUCATION-->
+    <string name="af_skip">Lewatkan</string>
+    <string name="af_start_curating">Mulai Kurasi Produk</string>
+    <string name="af_share_and_commission">Bagikan By Me dan Raih Komisinya!</string>
+    <string name="af_choose_favorite_product">Pilih produk favoritmu</string>
+    <string name="af_curate_product_profile">Kurasi produknya di profilmu</string>
+    <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
 
 </resources>

@@ -20,6 +20,7 @@ import rx.functions.Func1;
 public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<PurchaseData>>, Boolean> {
     // apparently digital doesnt need shipping but this value seems to be mandatory on EE
     private static final String DEFAULT_DIGITAL_SHIPPING = "0";
+    private static final String TOKOPEDIA_DIGITAL = "tokopediadigital";
 
     private SessionHandler sessionHandler;
 
@@ -46,6 +47,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         purchase.setPaymentType(data.getPaymentType());
         purchase.setPaymentStatus(data.getPaymentStatus());
         purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setCurrentSite(TOKOPEDIA_DIGITAL);
         purchase.setItemPrice(String.valueOf(parseStringToInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
         if (isActionFieldValid(data)) {
             purchase.setTransactionID(data.getEcommerce().getPurchase().getActionField().getId());

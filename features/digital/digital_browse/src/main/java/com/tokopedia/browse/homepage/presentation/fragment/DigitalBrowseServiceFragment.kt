@@ -80,6 +80,8 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(KEY_SERVICE_DATA)
+        } else {
+            viewModel = DigitalBrowseServiceViewModel(null)
         }
 
         if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_ID)) {

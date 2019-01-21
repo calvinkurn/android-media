@@ -156,6 +156,8 @@ public class CartItemData implements Parcelable {
         private boolean goldMerchant;
         private boolean wishlisted;
         private int originalQty;
+        private String goldMerchantLogoUrl;
+        private String officialStoreLogoUrl;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -419,6 +421,22 @@ public class CartItemData implements Parcelable {
 
         public void setGoldMerchant(boolean goldMerchant) {
             this.goldMerchant = goldMerchant;
+        }
+
+        public String getGoldMerchantLogoUrl() {
+            return goldMerchantLogoUrl;
+        }
+
+        public void setGoldMerchantLogoUrl(String goldMerchantLogoUrl) {
+            this.goldMerchantLogoUrl = goldMerchantLogoUrl;
+        }
+
+        public String getOfficialStoreLogoUrl() {
+            return officialStoreLogoUrl;
+        }
+
+        public void setOfficialStoreLogoUrl(String officialStoreLogoUrl) {
+            this.officialStoreLogoUrl = officialStoreLogoUrl;
         }
 
         public boolean isWishlisted() {

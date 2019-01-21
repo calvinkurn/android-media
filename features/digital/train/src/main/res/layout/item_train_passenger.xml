@@ -1,52 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_passenger_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_arrow_right_grey" />
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/label_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_toLeftOf="@+id/image_arrow"
         android:background="@drawable/selectable_background_tokopedia"
-        android:paddingBottom="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"/>
+        android:paddingBottom="@dimen/dp_22" />
 
-    <LinearLayout
-        android:id="@+id/passenger_detail_layout"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_passenger_pax_type"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/dp_10">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_5"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_passenger_name"
-                style="@style/TextView.Small.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_3"
-                android:layout_weight="1"
-                tools:text="Nona Aisyah Sarasvati" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_passenger_identity_number"
-                style="@style/TextView.Small"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_3"
-                android:layout_weight="1"
-                tools:text="Nona Aisyah Sarasvati" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+        android:layout_below="@+id/label_header"
+        android:layout_marginBottom="@dimen/dp_3"
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/dp_16"
+        tools:text="Dewasa" />
+</RelativeLayout>

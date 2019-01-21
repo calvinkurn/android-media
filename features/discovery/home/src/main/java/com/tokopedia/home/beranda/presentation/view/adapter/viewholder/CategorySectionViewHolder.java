@@ -43,8 +43,6 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                itemView.getResources().getDimensionPixelSize(R.dimen.home_card_category_item_margin), true));
     }
 
     @Override

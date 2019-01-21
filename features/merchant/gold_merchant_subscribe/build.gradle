@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.baseListSeller)
 
     implementation rootProject.ext.miscDependencies.multiDex
 

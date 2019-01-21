@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
@@ -22,56 +22,124 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/iv_back"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:src="@drawable/ic_action_back"
-                    android:tint="@color/black_70" />
+                    android:orientation="horizontal">
 
-                <com.tokopedia.affiliate.common.widget.ExploreSearchView
-                    android:id="@+id/search_input_view"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fitsSystemWindows="true"
-                    app:siv_search_hint="@string/text_search_hint" />
+                    <ImageView
+                        android:id="@+id/iv_back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:src="@drawable/ic_action_back"
+                        android:tint="@color/black_70" />
 
-                <ImageView
-                    android:id="@+id/action_bantuan"
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:src="@drawable/ic_bantuan" />
+                    <com.tokopedia.affiliate.common.widget.ExploreSearchView
+                        android:id="@+id/search_input_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fitsSystemWindows="true"
+                        app:siv_search_hint="@string/text_search_hint" />
+
+                    <ImageView
+                        android:id="@+id/action_bantuan"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:src="@drawable/ic_bantuan" />
+                </LinearLayout>
             </LinearLayout>
+
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_explore"
+        <LinearLayout
+            android:id="@+id/layout_filter"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginRight="-3dp"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            tools:visibility="visible">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_filter"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/btn_filter_more"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_2"
+                app:cardUseCompatPadding="false"
+                app:cardCornerRadius="2dp"
+                android:layout_gravity="end|center_vertical">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_margin="@dimen/dp_4"
+                    android:src="@drawable/ic_see_list"
+                    android:layout_gravity="center"/>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="@dimen/dp_8"
-            app:layoutManager="android.support.v7.widget.GridLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:reverseLayout="false"
-            app:spanCount="1" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_explore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:reverseLayout="false"
+                app:spanCount="1" />
+
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+    </LinearLayout>
+
+
+
+    <com.tokopedia.design.button.BottomActionView
+        android:id="@+id/bottom_action_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_20"
+        app:bav_2_display="true"
+        app:bav_icon_2="@drawable/ic_arrow_up"
+        app:bav_label_2="@string/text_back_to_top"
+        app:layout_anchor="@+id/rv_explore"
+        app:layout_anchorGravity="bottom|center_horizontal"
+        android:visibility="gone"/>
 
     <FrameLayout
         android:layout_width="match_parent"

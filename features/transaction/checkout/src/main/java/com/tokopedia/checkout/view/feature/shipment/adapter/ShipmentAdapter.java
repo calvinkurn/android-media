@@ -216,13 +216,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .customView(R.layout.show_case_checkout)
                 .prevStringRes(R.string.show_case_prev)
                 .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
+                .spacingRes(R.dimen.dp_12)
+                .arrowWidth(R.dimen.dp_16)
                 .textColorRes(R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(R.color.black)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.fontvs)
+                .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)
@@ -396,13 +396,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (Object item : shipmentDataList) {
             if (item instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) item).getSelectedShipmentDetailData() != null) {
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setSelectedShipment(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setSelectedCourier(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUseDropshipper(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setDropshipperPhone(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setDropshipperName(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUseInsurance(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUsePartialOrder(false);
+                    ((ShipmentCartItemModel) item).setSelectedShipmentDetailData(null);
                 }
             } else if (item instanceof ShipmentCostModel) {
                 ((ShipmentCostModel) item).setAdditionalFee(0);
@@ -602,9 +596,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null);
                 if(!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
-                            requestData.getCheckoutRequestData());
+                    shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData());
                 }
+                shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;
             }
         }

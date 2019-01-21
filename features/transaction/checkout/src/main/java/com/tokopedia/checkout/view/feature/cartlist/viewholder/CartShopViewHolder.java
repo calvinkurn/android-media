@@ -89,8 +89,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         tvShopName.setOnClickListener(v -> cartAdapterListener.onCartShopNameClicked(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupData().isOfficialStore() || cartShopHolderData.getShopGroupData().isGoldMerchant()) {
-            ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, cartShopHolderData.getShopGroupData().getShopBadge());
-            imgShopBadge.setVisibility(View.VISIBLE);
+            if (!cartShopHolderData.getShopGroupData().getShopBadge().isEmpty()) {
+                ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, cartShopHolderData.getShopGroupData().getShopBadge());
+                imgShopBadge.setVisibility(View.VISIBLE);
+            }
         } else {
             imgShopBadge.setVisibility(View.GONE);
         }

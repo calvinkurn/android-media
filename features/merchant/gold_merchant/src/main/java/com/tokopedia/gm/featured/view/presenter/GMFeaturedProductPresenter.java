@@ -1,7 +1,7 @@
 package com.tokopedia.gm.featured.view.presenter;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 
 /**

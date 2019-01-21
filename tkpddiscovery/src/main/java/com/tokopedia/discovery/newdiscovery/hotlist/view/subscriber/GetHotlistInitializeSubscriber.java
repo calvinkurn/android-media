@@ -170,6 +170,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setPriceRange(domain.getPriceRange());
             model.setTopLabel(domain.getTopLabel());
             model.setBottomLabel(domain.getBottomLabel());
+            model.setCategoryBreadcrumb(domain.getCategoryBreadcrumb());
 
             list.add(model);
         }
