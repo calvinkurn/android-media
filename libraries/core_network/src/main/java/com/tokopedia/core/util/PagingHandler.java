@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.util.GeneralUtils;
 
 /**
  * @since 27/11/2015
@@ -16,7 +16,7 @@ public class PagingHandler extends com.tokopedia.core.database.model.PagingHandl
 		Gson gson = new GsonBuilder().create();
 		if(pagingHanderModel!=null){
 			Log.d("MNORMANSYAH", " check Paging : "+pagingHanderModel.toString());
-			if(CommonUtils.checkStringNotNull(pagingHanderModel.uriNext)){
+			if(GeneralUtils.checkStringNotNull(pagingHanderModel.uriNext)){
 				hasNext = true;
 			}else{
 				hasNext = false;

@@ -23,7 +23,7 @@ import android.webkit.WebSettings;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.util.GeneralUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 
@@ -70,7 +70,7 @@ public class MethodChecker {
             CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
                 @Override
                 public void onReceiveValue(Boolean value) {
-                    CommonUtils.dumper("Success Clear Cookie");
+                    GeneralUtils.dumper("Success Clear Cookie");
                 }
             });
         } else {

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.util.GeneralUtils;
 import com.tokopedia.core.network.apiservices.shop.NotesService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -109,7 +109,7 @@ public class GetShopNote {
                                     jsonObject = new JSONObject(response.getStringData());
 
                                     List<String> errorMessages = response.getErrorMessages();
-                                    if (CommonUtils.checkNullMessageError(errorMessages).size() > 0) {
+                                    if (GeneralUtils.checkNullMessageError(errorMessages).size() > 0) {
                                         onGetNoteListListener.onFailure();
                                         return;
                                     }

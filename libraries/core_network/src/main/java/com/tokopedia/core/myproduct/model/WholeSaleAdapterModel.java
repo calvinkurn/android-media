@@ -1,6 +1,6 @@
 package com.tokopedia.core.myproduct.model;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.util.GeneralUtils;
 
 import org.parceler.Parcel;
 
@@ -27,7 +27,7 @@ public class WholeSaleAdapterModel {
 
         this.quantityOne = Double.parseDouble(quantityOne);
         this.quantityTwo = Double.parseDouble(quantityTwo);
-        this.wholeSalePrice = CommonUtils.parsePriceToDouble(wholeSalePrice,currency);
+        this.wholeSalePrice = GeneralUtils.parsePriceToDouble(wholeSalePrice,currency);
     }
 
     public WholeSaleAdapterModel(double quantityOne, double quantityTwo, double wholeSalePrice) {

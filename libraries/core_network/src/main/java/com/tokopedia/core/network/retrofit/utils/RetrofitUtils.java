@@ -24,8 +24,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-
 /**
  * @author m.normansyah on 27/11/2015.
  */

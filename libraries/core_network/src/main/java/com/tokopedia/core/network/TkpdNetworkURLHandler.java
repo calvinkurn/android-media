@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.util.GeneralUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -32,8 +32,8 @@ public class TkpdNetworkURLHandler {
             if (!MainApplication.isDebug()) return url;
 
             Uri uri = Uri.parse(url);
-            CommonUtils.dumper("base: " + uri.getHost());
-            CommonUtils.dumper("path: " + uri.getPathSegments());
+            GeneralUtils.dumper("base: " + uri.getHost());
+            GeneralUtils.dumper("path: " + uri.getPathSegments());
 
             String newURL = DEFAULT_TRANSPORT + getHost(context);
 

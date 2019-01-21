@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tkpd.library.kirisame.Kirisame;
+import com.tokopedia.core.util.GeneralUtils;
 import com.tokopedia.core.network.R;
 
 /**
@@ -46,9 +47,9 @@ public class SnackbarManager {
         tv.setMaxLines(5);
 
         if (snack.isShownOrQueued())
-            CommonUtils.dumper("Shown " + text);
+            GeneralUtils.dumper("Shown " + text);
         else
-            CommonUtils.dumper("Queue " + text);
+            GeneralUtils.dumper("Queue " + text);
 
         Button snackBarAction = (Button) snack.getView().findViewById(android.support.design.R.id.snackbar_action);
         snackBarAction.setTextColor(ContextCompat.getColor(coordinatorLayout.getContext(), actionColorRes));
