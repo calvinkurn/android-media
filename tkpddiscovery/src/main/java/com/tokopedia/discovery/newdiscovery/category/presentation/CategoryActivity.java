@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
@@ -41,6 +42,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     public static final int TAB_SHOP_CATALOG = 1;
     public static final int TAB_PRODUCT = 0;
+    private static final String PERFORMANCE_TRACE_CATEGORY = "mp_category_list";
 
     private String departmentId;
     private String categoryName;
@@ -58,6 +60,8 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     CategoryPresenter categoryPresenter;
 
     private CategoryComponent categoryComponent;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStopped;
 
     public static void moveTo(Context context, String departmentId, String categoryName, boolean removeAnimation, String trackerAttribution) {
         if (context != null) {
@@ -107,6 +111,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_CATEGORY);
         initInjector();
         setPresenter(categoryPresenter);
         categoryPresenter.attachView(this);
@@ -158,6 +163,10 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     public void hideLoading() {
         showLoadingView(false);
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     private void loadInitialData() {

@@ -112,7 +112,6 @@ public class HotlistFragment extends BrowseSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 1111;
     private static final String PERFORMANCE_TRACE_HOTLIST = "mp_hotlist";
-    private static final String PERFORMANCE_TRACE_STATUS = "PERFORMANCE_TRACE_STATUS";
 
     protected BottomNavigationListener bottomNavigationListener;
     protected RefreshHandler refreshHandler;
@@ -326,7 +325,6 @@ public class HotlistFragment extends BrowseSectionFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         hotlistAdapter.onSaveInstanceState(outState);
-        outState.putBoolean(PERFORMANCE_TRACE_STATUS, isTraceStopped);
         outState.putString(EXTRA_ALIAS, getHotlistAlias());
         outState.putParcelable(EXTRA_QUERY_HOTLIST, getQueryModel());
         outState.putBoolean(EXTRA_DISABLE_TOPADS, isDisableTopads());
@@ -337,7 +335,6 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        isTraceStopped = savedInstanceState.getBoolean(PERFORMANCE_TRACE_STATUS);
         setHotlistAlias(savedInstanceState.getString(EXTRA_ALIAS));
         setQueryModel((HotlistQueryModel) savedInstanceState.getParcelable(EXTRA_QUERY_HOTLIST));
         setDisableTopads(savedInstanceState.getBoolean(EXTRA_DISABLE_TOPADS));
