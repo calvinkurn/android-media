@@ -65,7 +65,7 @@
             android:gravity="center"
             android:lineSpacingExtra="4sp"
             android:stateListAnimator="@null"
-            android:text="@string/feed_see_profile"
+            android:text="@string/feed_see_shop"
             android:textAllCaps="false"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_12"
