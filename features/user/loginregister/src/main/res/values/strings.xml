@@ -266,6 +266,10 @@
     <string name="error_incorrect_password">Kata sandi tidak benar</string>
     <string name="error_invalid_email">Email ini tidak valid.</string>
     <string name="code_error">Kode error :</string>
+    <string name="next">Selanjutnya</string>
+    <string name="span_not_have_tokopedia_account">Belum punya akun Tokopedia?
+        Daftar</string>
+
 
     <!-- ACTIVATION PAGE -->
     <string name="title_activity_activation">Aktivasi Akun</string>
@@ -296,5 +300,6 @@
     <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
         color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
     <string name="or_login_with_space">atau masuk dengan</string>
+    <string name="must_insert_email_or_phone">Email atau nomor ponsel harus diisi</string>
 
 </resources>

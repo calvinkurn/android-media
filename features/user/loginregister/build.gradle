@@ -37,7 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
 
     implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

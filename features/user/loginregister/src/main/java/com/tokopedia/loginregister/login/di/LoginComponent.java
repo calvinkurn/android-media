@@ -3,7 +3,7 @@ package com.tokopedia.loginregister.login.di;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
-import com.tokopedia.loginregister.login.view.fragment.LoginFragmentWithPhone;
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
 
 import dagger.Component;
 
@@ -19,7 +19,7 @@ public interface LoginComponent {
 
     public void inject(LoginFragment fragment);
 
-    public void inject(LoginFragmentWithPhone fragment);
+    public void inject(LoginEmailPhoneFragment fragment);
 
 
 }

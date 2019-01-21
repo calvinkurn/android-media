@@ -42,6 +42,7 @@ public class LoginRegisterAnalytics {
     private static final String CATEGORY_REGISTER_PAGE = "register page";
     private static final String CATEGORY_WELCOME_PAGE = "welcome page";
     private static final String CATEGORY_LOGIN_PAGE = "login page";
+    private static final String CATEGORY_LOGIN_WITH_PHONE = "login with phone";
 
     private static final String ACTION_CLICK = "Click";
     private static final String ACTION_REGISTER = "Register";

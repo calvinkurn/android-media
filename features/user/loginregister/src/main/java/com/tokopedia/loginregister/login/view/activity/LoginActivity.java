@@ -10,11 +10,13 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -60,7 +62,12 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
-        return LoginFragment.createInstance(bundle);
+
+        if (GlobalConfig.isSellerApp()) {
+            return LoginFragment.createInstance(bundle);
+        } else {
+            return LoginEmailPhoneFragment.Companion.createInstance(bundle);
+        }
     }
 
     public static Intent getCallingIntent(Context context) {
