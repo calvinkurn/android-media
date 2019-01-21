@@ -33,7 +33,7 @@ import com.tokopedia.gm.statistic.view.holder.GmStatisticBuyerViewHolder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 
 import java.util.List;
 
@@ -224,8 +224,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onViewNotGmClicked() {
-        Intent intent = new Intent(getActivity(), GmSubscribeHomeActivity.class);
-        startActivity(intent);
+        startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
     }
 
     private void showSnackbarRetry() {

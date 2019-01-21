@@ -299,6 +299,8 @@ dependencies {
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.flashsaleManagement)
+    implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation project(rootProject.ext.features.shopCommon)
@@ -308,6 +310,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
+
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.updateinactivephone)

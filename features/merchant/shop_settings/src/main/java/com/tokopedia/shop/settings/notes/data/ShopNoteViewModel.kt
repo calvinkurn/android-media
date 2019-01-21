@@ -8,7 +8,7 @@ import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.notes.view.adapter.factory.BaseShopNoteFactory
 
-class ShopNoteViewModel : Parcelable, Visitable<BaseShopNoteFactory> {
+class ShopNoteViewModel() : Parcelable, Visitable<BaseShopNoteFactory> {
     var id: String? = null
         private set
     var title: String? = null
@@ -18,9 +18,7 @@ class ShopNoteViewModel : Parcelable, Visitable<BaseShopNoteFactory> {
         private set
     var updateTimeUTC: Long = 0
 
-    constructor() {}
-
-    constructor(shopNoteModel: ShopNoteModel) {
+    constructor(shopNoteModel: ShopNoteModel) : this() {
         this.id = shopNoteModel.id
         this.title = shopNoteModel.title
         this.content = shopNoteModel.content
@@ -45,7 +43,7 @@ class ShopNoteViewModel : Parcelable, Visitable<BaseShopNoteFactory> {
         dest.writeLong(this.updateTimeUTC)
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel) : this() {
         this.id = `in`.readString()
         this.title = `in`.readString()
         this.content = `in`.readString()

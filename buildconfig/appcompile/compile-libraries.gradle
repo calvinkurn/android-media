@@ -15,6 +15,7 @@ include "libraries:cache_manager"
 //include "libraries:cache_manager_no_op"
 include "libraries:image_picker"
 include 'libraries:imageuploader'
+include "libraries:kotlin_extensions"
 include "libraries:network"
 include "libraries:pagination"
 include "libraries:oms"
