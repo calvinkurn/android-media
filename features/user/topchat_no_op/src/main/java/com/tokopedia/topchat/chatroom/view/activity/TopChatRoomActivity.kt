@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
@@ -27,13 +26,13 @@ class TopChatRoomActivity() {
         fun getCallingIntent(context: Context, messageId: String, name: String,
                              label: String, senderId: String, role: String, mode: Int,
                              keyword: String, image: String): Intent {
-            return null
+            return Intent()
         }
 
         @JvmStatic
         fun getAskSellerIntent(context: Context, toShopId: String,
                                shopName: String, source: String, avatar: String): Intent {
-            return null
+            return Intent()
 
         }
 
@@ -41,14 +40,14 @@ class TopChatRoomActivity() {
         fun getAskSellerIntent(context: Context, toShopId: String, shopName: String,
                                customSubject: String, customMessage: String, source: String,
                                avatar: String): Intent {
-            return null
+            return Intent()
         }
 
         @JvmStatic
         fun getAskUserIntent(context: Context, userId: String,
                              userName: String, source: String,
                              avatar: String): Intent {
-            return null
+            return Intent()
 
         }
 
@@ -56,7 +55,7 @@ class TopChatRoomActivity() {
         fun getAskBuyerIntent(context: Context, toUserId: String, customerName: String,
                               customSubject: String, customMessage: String, source: String,
                               avatar: String): Intent {
-            return null
+            return Intent()
         }
 
     }
@@ -65,7 +64,7 @@ class TopChatRoomActivity() {
         @JvmStatic
         @DeepLink(ApplinkConst.TOPCHAT)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            return null
+            return Intent()
         }
 
     }

@@ -10,5 +10,6 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation project(rootProject.ext.libraries.applink)
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

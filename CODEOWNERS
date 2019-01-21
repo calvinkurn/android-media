@@ -66,6 +66,7 @@
 /features/user/chatbot_no_op/                   @tokopedia/minion-kevin
 /features/user/chat_common/                     @tokopedia/minion-kevin
 /features/user/topchat/                         @tokopedia/minion-kevin
+/features/user/topchat_no_op/                   @tokopedia/minion-kevin
 /features/user/groupchat/                       @tokopedia/minion-kevin
 /features/user/profile/                         @tokopedia/minion-kevin
 /features/user/vote/                            @tokopedia/minion-kevin

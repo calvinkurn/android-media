@@ -13,15 +13,16 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.EmptyChatModel;
-import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -129,12 +130,22 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void removeWithMessageId(String messageId) {
         if (list != null && !list.isEmpty() && !TextUtils.isEmpty(messageId)) {
-            for (Visitable visitable : list) {
+//            for (Visitable visitable : list) {
+//                if (visitable instanceof ChatListViewModel
+//                        && messageId.equals(((ChatListViewModel) visitable).getId())) {
+//                    int position = list.indexOf(visitable);
+//                    list.remove(visitable);
+////                    notifyItemRemoved(position);
+//                }
+//            }
+
+            for (Iterator<Visitable> iterator = list.iterator(); iterator.hasNext(); ) {
+                Visitable visitable = iterator.next();
                 if (visitable instanceof ChatListViewModel
                         && messageId.equals(((ChatListViewModel) visitable).getId())) {
                     int position = list.indexOf(visitable);
-                    list.remove(visitable);
-//                    notifyItemRemoved(position);
+                    iterator.remove();
+                    notifyItemRemoved(position);
                 }
             }
         }

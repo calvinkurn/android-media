@@ -72,14 +72,17 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     }
 
     fun showTyping() {
-        this.visitables.add(0, typingModel)
-        notifyItemInserted(0)
+        if(this.visitables.any{it == typingModel}) {
+            this.visitables.add(0, typingModel)
+            notifyItemInserted(0)
+        }
     }
 
     fun removeTyping() {
+        var index = visitables.indexOf(typingModel)
         var isContainsTyping = this.visitables.remove(typingModel)
         if (isContainsTyping) {
-            notifyItemRemoved(0)
+            notifyItemRemoved(index)
         }
     }
 

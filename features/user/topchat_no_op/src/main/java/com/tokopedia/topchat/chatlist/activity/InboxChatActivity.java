@@ -13,4 +13,9 @@ public class InboxChatActivity {
         Log.d("ERR", "Please implement topchat instead of topchat no op");
         return null;
     }
+
+
+    public static Intent getChannelCallingIntent(Context context) {
+        return new Intent(context, InboxChatActivity.class);
+    }
 }
