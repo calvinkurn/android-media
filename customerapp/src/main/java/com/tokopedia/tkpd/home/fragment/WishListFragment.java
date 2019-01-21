@@ -421,11 +421,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             }
             ToasterNormal.make(getView(),
                     message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart),v -> {
-                        if (getActivity().getApplication() != null) {
-                            wishlistAnalytics.eventClickCartWishlist();
-                            getActivity().startActivity(((PdpRouter) getActivity().getApplication())
-                                    .getCartIntent(getActivity()));
-                        }
+                            if (getActivity() != null && getActivity().getApplication() != null) {
+                                wishlistAnalytics.eventClickCartWishlist();
+                                getActivity().startActivity(((PdpRouter) getActivity().getApplication())
+                                        .getCartIntent(getActivity()));
+                            }
                     }).show();
         }
     }

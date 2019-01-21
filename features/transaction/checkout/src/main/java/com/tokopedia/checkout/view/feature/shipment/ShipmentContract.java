@@ -112,6 +112,8 @@ public interface ShipmentContract {
         void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void showToastFailedTickerPromo(String text);
+
+        void stopTrace();
     }
 
     interface AnalyticsActionListener {

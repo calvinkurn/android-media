@@ -94,8 +94,13 @@
     <dimen name="dep_64">64dp</dimen>
     <integer name="int_3">3</integer>
     <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="ktp_view_width" >170dp</dimen>
+    <dimen name="ktp_view_height" >110dp</dimen>
+    <dimen name="hc_oval_width">33dp</dimen>
+    <dimen name="hc_oval_height">64dp</dimen>
+    <dimen name="hc_ktp_height">93dp</dimen>
 
-    
+
     <dimen name="fonts">14sp</dimen> <!-- not recommended from core-->
     <dimen name="page_with_pad">290dp</dimen> <!-- not recommended from core-->
     <dimen name="btn_height">44dp</dimen> <!-- not recommended from core-->

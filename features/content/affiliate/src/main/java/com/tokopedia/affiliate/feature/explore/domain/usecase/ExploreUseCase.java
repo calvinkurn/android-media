@@ -11,6 +11,7 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -31,6 +32,8 @@ public class ExploreUseCase extends GraphqlUseCase {
     private final static String PARAM_FILTER_KEY = "key";
     private final static String PARAM_FILTER_KEY_DATA = "d_id";
     private final static String PARAM_FILTER_VALUE = "value";
+    private final static String PARAM_SORT_KEY = "key";
+    private final static String PARAM_SORT_ASC = "asc";
 
     @Inject
     public ExploreUseCase(@ApplicationContext Context context) {
@@ -72,28 +75,45 @@ public class ExploreUseCase extends GraphqlUseCase {
         if (exploreParams.getFilters().size() != 0) {
             params.putObject(PARAM_FILTER, constructFilterParams(exploreParams.getFilters()));
         }
+        if (exploreParams.getSort() != null && !TextUtils.isEmpty(exploreParams.getSort().getText())) {
+            params.putObject(PARAM_SORT, constructSortParams(exploreParams.getSort()));
+        }
         return params;
     }
 
     private static JsonArray constructFilterParams(List<FilterViewModel> filterList) {
+        //array will be used for filter (id = 0), shop filter (id = 1), etc..
         JsonArray dataArray = new JsonArray();
-        for (FilterViewModel filter : filterList) {
+        if (filterList.size() != 0) {
             JsonObject object = new JsonObject();
             object.addProperty(PARAM_FILTER_KEY, PARAM_FILTER_KEY_DATA);
-            object.addProperty(PARAM_FILTER_VALUE, appendIdValue(filter.getIds()));
+            object.addProperty(PARAM_FILTER_VALUE, appendIdValue(filterList));
             dataArray.add(object);
         }
         return dataArray;
     }
 
-    private static String appendIdValue(List<Integer> idList) {
+    private static String appendIdValue(List<FilterViewModel> filterList) {
         StringBuilder value = new StringBuilder();
-        for(int i = 0; i <idList.size(); i++) {
-            value.append(idList.get(i));
-            if (i != idList.size() - 1) {
+        for (int j = 0; j < filterList.size() ; j++ ) {
+            List<Integer> idList = filterList.get(j).getIds();
+            for (int i = 0; i < idList.size(); i++) {
+                value.append(idList.get(i));
+                if (i != idList.size() - 1) {
+                    value.append(",");
+                }
+            }
+            if (j != filterList.size() - 1) {
                 value.append(",");
             }
         }
         return value.toString();
+    }
+
+    private static JsonObject constructSortParams(SortViewModel sort) {
+        JsonObject object = new JsonObject();
+        object.addProperty(PARAM_SORT_KEY, sort.getKey());
+        object.addProperty(PARAM_SORT_ASC, sort.isAsc());
+        return object;
     }
 }

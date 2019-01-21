@@ -186,6 +186,9 @@ public interface ApplinkConst {
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
+    String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
+    String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";

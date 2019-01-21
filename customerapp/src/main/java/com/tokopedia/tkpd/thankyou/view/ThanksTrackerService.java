@@ -3,11 +3,10 @@ package com.tokopedia.tkpd.thankyou.view;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.thankyou.di.component.DaggerThanksTrackerComponent;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 
@@ -23,7 +22,12 @@ public class ThanksTrackerService extends IntentService {
     public static void start(Context context, ThanksTrackerData data) {
         Intent intent = new Intent(context, ThanksTrackerService.class);
         intent.putExtra(DATA, data);
-        context.startService(intent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
     }
 
     public ThanksTrackerService() {
