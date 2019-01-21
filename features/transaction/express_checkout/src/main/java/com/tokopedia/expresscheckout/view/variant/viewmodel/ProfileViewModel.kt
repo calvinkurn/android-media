@@ -11,6 +11,8 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 
 data class ProfileViewModel(
         var addressId: Int,
+        var districtName: String,
+        var cityName: String,
         var addressTitle: String,
         var addressDetail: String,
         var paymentOptionImageUrl: String,
@@ -34,6 +36,8 @@ data class ProfileViewModel(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
             parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             parcel?.readByte() != 0.toByte(),
@@ -50,6 +54,8 @@ data class ProfileViewModel(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(addressId)
+        parcel.writeString(districtName)
+        parcel.writeString(cityName)
         parcel.writeString(addressTitle)
         parcel.writeString(addressDetail)
         parcel.writeString(paymentOptionImageUrl)

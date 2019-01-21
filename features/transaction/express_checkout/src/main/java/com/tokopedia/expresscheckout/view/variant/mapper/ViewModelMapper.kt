@@ -224,6 +224,8 @@ class ViewModelMapper : DataMapper {
         val userProfileModel: ProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
         val profileViewModel = ProfileViewModel()
         profileViewModel.addressId = userProfileModel?.addressModel?.addressId ?: 0
+        profileViewModel.districtName = userProfileModel?.addressModel?.districtName ?: ""
+        profileViewModel.cityName = userProfileModel?.addressModel?.cityName ?: ""
         profileViewModel.addressTitle = userProfileModel?.addressModel?.addressName ?: ""
         profileViewModel.addressDetail = userProfileModel?.addressModel?.addressStreet ?: ""
         profileViewModel.paymentOptionImageUrl = userProfileModel?.paymentModel?.image ?: ""

@@ -1,9 +1,11 @@
 package com.tokopedia.expresscheckout.view.variant
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +14,20 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
-import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import android.support.v7.widget.SimpleItemAnimator
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListener
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
@@ -63,9 +66,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var shippingDurationBottomsheet: ShippingDurationBottomsheet
     private lateinit var shippingCourierBottomsheet: ShippingCourierBottomsheet
     private lateinit var checkoutProfileBottomSheet: CheckoutProfileBottomSheet
+    private lateinit var router: ExpressCheckoutRouter
     var isDataLoaded = false
 
     companion object {
+        val REQUEST_CODE_GEOLOCATION = 63
+
         val ARGUMENT_ATC_REQUEST = "ARGUMENT_ATC_REQUEST"
 
         fun createInstance(atcRequestParam: AtcRequestParam): CheckoutVariantFragment {
@@ -108,6 +114,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         fragmentListener = context as CheckoutVariantFragmentListener
+        router = context.applicationContext as ExpressCheckoutRouter
     }
 
     override fun onDetach() {
@@ -191,6 +198,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onClickEditDuration() {
+        showDurationOptions()
+    }
+
+    private fun showDurationOptions() {
         val shippingParam = presenter.getShippingParam(fragmentViewModel.getQuantityViewModel()?.orderQuantity
                 ?: 0, fragmentViewModel.getProductViewModel()?.productPrice ?: 0)
         val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
@@ -486,7 +497,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 showBottomsheetError("Tandai Lokasi Pengiriman", productData.error.errorMessage, "Tandai Lokasi")
                 errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
                     override fun onActionButtonClicked() {
-                        // Todo : intent to geolocation
+                        val locationPass = LocationPass()
+                        locationPass.districtName = profileViewModel.districtName
+                        locationPass.cityName = profileViewModel.cityName
+                        startActivityForResult(router.getGeolocationIntent(contextView, locationPass), REQUEST_CODE_GEOLOCATION)
                     }
                 }
             } else {
@@ -619,6 +633,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                         }
                     }
                 }))
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_GEOLOCATION) {
+            showDurationOptions()
+        }
     }
 
     private interface ReloadRatesDebounceListener {
