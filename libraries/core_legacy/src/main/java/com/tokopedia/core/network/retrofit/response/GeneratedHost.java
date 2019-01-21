@@ -23,9 +23,6 @@ public class GeneratedHost implements Parcelable {
     @SerializedName("user_id")
     @Expose
     int userId;
-    @SerializedName("token")
-    @Expose
-    String token;
 
     @SerializedName("message")
     @Expose
@@ -59,18 +56,6 @@ public class GeneratedHost implements Parcelable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public void setMessage(String message) {
