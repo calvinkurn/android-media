@@ -171,60 +171,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         intentFiltersArray = new IntentFilter [] {isodep, };
 
         techListsArray = new String[][] { new String[] { IsoDep.class.getName(), NfcA.class.getName()} };
-
-        /*SmartcardMapper mapper = new SmartcardMapper();
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-        Retrofit.Builder  retrofitBuilder = new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.DIGITAL_API_DOMAIN + TkpdBaseURL.DigitalApi.VERSION)
-                .addConverterFactory(new DigitalResponseConverter())
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-
-        OkHttpClient.Builder okHttpbuilder = new OkHttpClient.Builder();
-        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingLevel = HttpLoggingInterceptor.Level.BODY;
-        }
-        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor().setLevel(loggingLevel);
-
-        NetworkRouter networkRouter =  ((NetworkRouter) getApplicationContext());
-        UserSession userSession = new UserSession(this);
-        UserSessionInterface userSessionInterceptor = userSession;
-        OkHttpRetryPolicy  okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
-        okHttpbuilder.addInterceptor(httpLoggingInterceptor);
-        OkHttpClient okHttpClient = okHttpbuilder
-                .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterceptor))
-                .addInterceptor(new DigitalHmacAuthInterceptor(
-                        this,
-                        networkRouter,
-                        userSession,
-                        TkpdBaseURL.DigitalApi.HMAC_KEY
-                ))
-                .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
-                .build();
-
-        Retrofit retrofit = retrofitBuilder.client(okHttpClient).build();
-        DigitalRestApi digitalEndpointService =  retrofit.create(DigitalRestApi.class);
-
-        SmartcardInquiryDataSource smartcardInquiryDataSource = new SmartcardInquiryDataSource(
-                digitalEndpointService, mapper);
-        SmartcardCommandDataSource smartcardCommandDataSource = new SmartcardCommandDataSource(
-                digitalEndpointService, mapper);
-        ETollRepository eTollRepository = new ETollRepository(smartcardInquiryDataSource,
-                smartcardCommandDataSource);
-        SmartcardInquiryUseCase smartcardInquiryUseCase = new SmartcardInquiryUseCase(eTollRepository);
-        SmartcardCommandUseCase smartcardCommandUseCase = new SmartcardCommandUseCase(eTollRepository);*/
-
-//        presenter = new ETollPresenter(this, smartcardInquiryUseCase, smartcardCommandUseCase);
-
         handleIntent(getIntent());
     }
 

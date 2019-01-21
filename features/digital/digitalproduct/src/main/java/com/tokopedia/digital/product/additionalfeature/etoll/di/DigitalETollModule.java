@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.additionalfeature.etoll.di;
 
+import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
@@ -10,6 +11,7 @@ import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.S
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 @Module
 public class DigitalETollModule {
@@ -42,5 +44,12 @@ public class DigitalETollModule {
     @DigitalETollScope
     SmartcardCommandUseCase provideSmartcardCommandUseCase(ETollRepository repository){
         return new SmartcardCommandUseCase(repository);
+    }
+
+
+    @Provides
+    @DigitalETollScope
+    DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
+        return retrofit.create(DigitalRestApi.class);
     }
 }
