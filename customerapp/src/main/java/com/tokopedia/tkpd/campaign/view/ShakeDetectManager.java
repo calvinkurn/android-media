@@ -13,6 +13,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -120,6 +121,10 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     }
 
+    private boolean isReactNativeOnReleaseMode() {
+        SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(DeveloperOptions.SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
+        return reactSharedPreferences.getBoolean(DeveloperOptions.SP_REACT_ENABLE_SHAKE, true);
+    }
 
     @Override
     public void hearShake() {
@@ -134,7 +139,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             return;
         }
 
-        if (isShakeShakeEnable && isShakeShakeEnable()) {
+        if (isShakeShakeEnable && isShakeShakeEnable() && isReactNativeOnReleaseMode()) {
            /* mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);*/
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);

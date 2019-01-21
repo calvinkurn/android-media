@@ -34,6 +34,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_CHUCK_ENABLED = "is_enable";
     public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
+    public static final String SP_REACT_ENABLE_SHAKE = "SP_REACT_ENABLE_SHAKE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String RN_DEV_LOGGER = "rn_dev_logger";
     private static final String IP_GROUPCHAT = "ip_groupchat";
