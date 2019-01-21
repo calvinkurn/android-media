@@ -32,9 +32,12 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
+import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
+import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
+import com.tokopedia.affiliate.feature.explore.view.activity.SortActivity;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
@@ -46,6 +49,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
@@ -85,7 +89,7 @@ public class ExploreFragment
 
     private static final int TIME_DEBOUNCE_MILIS = 500;
     public static final int REQUEST_DETAIL_FILTER = 1234;
-
+    public static final int REQUEST_DETAIL_SORT = 2345;
 
     private ExploreAdapter adapter;
     private ExploreParams exploreParams;
@@ -108,6 +112,7 @@ public class ExploreFragment
     private BottomActionView scrollToTopButton;
     private LinearLayout layoutFilter;
     private CardView btnFilterMore;
+    private BottomActionView sortButton;
 
     private boolean isCanDoAction;
 
@@ -119,6 +124,9 @@ public class ExploreFragment
 
     @Inject
     AffiliateAnalytics affiliateAnalytics;
+
+    @Inject
+    AffiliatePreference affiliatePreference;
 
     public static ExploreFragment getInstance(Bundle bundle) {
         ExploreFragment fragment = new ExploreFragment();
@@ -144,6 +152,7 @@ public class ExploreFragment
         scrollToTopButton = view.findViewById(R.id.bottom_action_view);
         layoutFilter = view.findViewById(R.id.layout_filter);
         btnFilterMore = view.findViewById(R.id.btn_filter_more);
+        sortButton = view.findViewById(R.id.bav);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -157,6 +166,10 @@ public class ExploreFragment
         initListener();
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
+
+        if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
+            goToEducation();
+        }
     }
 
     private void initView() {
@@ -213,11 +226,6 @@ public class ExploreFragment
                         getContext(),
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
                 )
-        );
-        rvExplore.getViewTreeObserver().addOnScrollChangedListener(
-                () -> {
-//                    showBottomActionWhenScrollingUp();
-                }
         );
         scrollToTopButton.setButton2OnClickListener(view -> {
             rvExplore.scrollToPosition(0);
@@ -334,9 +342,11 @@ public class ExploreFragment
     private void populateLocalDataToAdapter() {
         adapter.clearAllElements();
         adapter.addElement(getLocalFirstData());
-        filterAdapter.clearAllData();
-        filterAdapter.resetAllFilters();
-        filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
+        if (filterAdapter != null) {
+            filterAdapter.clearAllData();
+            filterAdapter.resetAllFilters();
+            filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
+        }
     }
 
     @Override
@@ -397,10 +407,12 @@ public class ExploreFragment
                                       boolean isPullToRefresh,
                                       SortFilterModel sortFilterModel) {
        populateFirstData(itemList, cursor);
-        if (!isPullToRefresh) {
+       sortButton.setVisibility(View.VISIBLE);
+       if (!isPullToRefresh) {
             populateFilter(sortFilterModel.getFilterList());
+            populateSort(sortFilterModel.getSortList());
             if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
-        }
+       }
     }
 
     @Override
@@ -412,6 +424,7 @@ public class ExploreFragment
     }
 
     private void populateFirstData(List<Visitable> itemList, String cursor) {
+        rvExplore.scrollTo(0,0);
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
@@ -467,9 +480,28 @@ public class ExploreFragment
         }
     }
 
+    private void populateSort(List<SortViewModel> sortList) {
+        //1. show button sort
+        //2. handle onclick and passing sortlist and current selected sort (default is first data)
+        if (sortList.size() > 0) {
+            sortButton.setVisibility(View.VISIBLE);
+            sortList.get(0).setSelected(true);
+            exploreParams.setSort(sortList.get(0));
+            sortButton.setButton2OnClickListener(view -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST, new ArrayList<>(sortList));
+                bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
+                startActivityForResult(SortActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_SORT);
+            });
+        } else {
+            sortButton.setVisibility(View.GONE);
+        }
+    }
+
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
             getFilteredFirstData(filters);
+            rvFilter.scrollTo(0,0);
         };
     }
 
@@ -480,8 +512,16 @@ public class ExploreFragment
         presenter.getFirstData(exploreParams, false);
     }
 
+    private void getSortedData(SortViewModel sort) {
+        exploreParams.setSort(sort);
+        exploreParams.resetForFilterClick();
+        exploreParams.setLoading(true);
+        presenter.getFirstData(exploreParams, false);
+    }
+
     @Override
     public void onErrorGetFirstData(String error) {
+        sortButton.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
@@ -635,6 +675,10 @@ public class ExploreFragment
                 populateFilter(currentFilter);
                 getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
             }
+            else if (requestCode == REQUEST_DETAIL_SORT) {
+                SortViewModel selectedSort = data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
+                getSortedData(selectedSort);
+            }
         }
     }
 
@@ -658,5 +702,12 @@ public class ExploreFragment
         ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
                 .setAction(R.string.title_try_again, listener)
                 .show();
+    }
+
+    private void goToEducation() {
+        if (getContext() != null) {
+            startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
+            affiliatePreference.setFirstTimeEducation(userSession.getUserId());
+        }
     }
 }

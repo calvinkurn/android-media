@@ -346,12 +346,17 @@ public class GroupChatAnalytics {
         );
     }
 
-    public void eventClickOverlayButton(String channelId, String btnString) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
-                EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_OVERLAY_BUTTON,
-                channelId + " - " + btnString
-                );
+    public void eventClickOverlayButton(String channelId, String btnString,
+                                        String attributeName, String channelUrl,
+                                        String channelName, List<EEPromotion> listPromotion) {
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_CLICK_OVERLAY_BUTTON,
+                EVENT_LABEL, channelId + " - " + btnString,
+                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_CLICK),
+                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
+        ));
     }
 
     public void eventClickCloseOverlayCloseButton(String channelId) {
@@ -359,6 +364,14 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_OVERLAY_CLOSE,
                 channelId + " - " + "button x"
+        );
+    }
+
+    public void eventClickCloseOverlayBackButton(String channelId) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_OVERLAY_CLOSE,
+                channelId + " - " + "back button"
         );
     }
 

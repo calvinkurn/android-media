@@ -653,6 +653,9 @@ public class SearchProductGqlResponse {
         @SerializedName("department_id")
         @Expose
         private String departmentId;
+        @SerializedName("redirect_applink")
+        @Expose
+        private String redirectApplink;
 
         public String getRedirectUrl() {
             return redirectUrl;
@@ -660,6 +663,10 @@ public class SearchProductGqlResponse {
 
         public String getDepartmentId() {
             return departmentId;
+        }
+
+        public String getRedirectApplink() {
+            return redirectApplink;
         }
     }
 

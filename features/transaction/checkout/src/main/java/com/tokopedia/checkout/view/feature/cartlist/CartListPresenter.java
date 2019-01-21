@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -30,6 +29,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -48,6 +48,7 @@ import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -106,9 +107,9 @@ public class CartListPresenter implements ICartListPresenter {
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
     private final TopAdsGqlUseCase topAdsUseCase;
+    private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
-    private final UserSession userSession;
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
 
     @Inject
@@ -125,8 +126,8 @@ public class CartListPresenter implements ICartListPresenter {
                              AddWishListUseCase addWishListUseCase,
                              RemoveWishListUseCase removeWishListUseCase,
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
-                             TopAdsGqlUseCase topAdsUseCase,
-                             UserSession userSession) {
+                             UserSessionInterface userSessionInterface,
+                             TopAdsGqlUseCase topAdsUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -140,8 +141,8 @@ public class CartListPresenter implements ICartListPresenter {
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
+        this.userSessionInterface = userSessionInterface;
         this.topAdsUseCase = topAdsUseCase;
-        this.userSession = userSession;
     }
 
     @Override
@@ -223,7 +224,7 @@ public class CartListPresenter implements ICartListPresenter {
         adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
         adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
         adsParam.put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(model));
-        adsParam.put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+        adsParam.put(TopAdsParams.KEY_USER_ID, userSessionInterface.getUserId());
         adsParam.put(TopAdsParams.KEY_SRC, CART_SRC);
         List<String> paramList = new ArrayList<>();
         for (Map.Entry<String, String> entry : adsParam.entrySet()) {
@@ -926,6 +927,7 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 handleErrorinitCartList(e);
+                view.stopTrace();
             }
 
             @Override
@@ -941,6 +943,7 @@ public class CartListPresenter implements ICartListPresenter {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }
                 }
+                view.stopTrace();
             }
         };
     }
@@ -996,7 +999,13 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processCancelAutoApply() {
-        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new com.tokopedia.network.utils.TKPDMapParam<>());
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CancelAutoApplyCouponUseCase.PARAM_REQUEST_AUTH_MAP_STRING, authParam);
+
+        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
