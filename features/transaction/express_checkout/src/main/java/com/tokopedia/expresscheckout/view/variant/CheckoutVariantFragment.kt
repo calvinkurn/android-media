@@ -457,6 +457,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
         rl_bottom_action_container.visibility = View.VISIBLE
         bt_buy.setOnClickListener { presenter.checkout(fragmentViewModel) }
+        img_total_payment_info.setOnClickListener {
+            recyclerView.smoothScrollToPosition(adapter.data.size - 1)
+        }
     }
 
     override fun setShippingError() {
