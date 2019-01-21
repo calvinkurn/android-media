@@ -48,22 +48,6 @@ public class FriendsWelcomeActivity extends BaseSimpleActivity implements HasCom
         return WELCOME_SCREEN;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     private   Boolean isappShowReferralButtonActivated(Context context){
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         return remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);

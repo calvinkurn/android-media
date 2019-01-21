@@ -29,7 +29,6 @@ import javax.inject.Inject;
 
 public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implements FriendsWelcomeView{
     private TextView btnReferralExplore;
-    private TextView welcomeMessageHearer;
     private TextView welcomeMessageSubHearer;
     private TextView TextViewHelpLink;
     private TextView referralCodeTextView;
@@ -86,7 +85,6 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
         btnCopyReferralCode = view.findViewById(R.id.btn_copy);
         imgTick = view.findViewById(R.id.img_check);
         btnReferralExplore = view.findViewById(R.id.btn_referral_explore);
-        welcomeMessageHearer = view.findViewById(R.id.tv_referral_header);
         welcomeMessageSubHearer = view.findViewById(R.id.tv_referral_subheader);
         TextViewHelpLink = view.findViewById(R.id.tv_referral_help_link);;
 
@@ -107,7 +105,6 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
                     Constants.Action.Companion.CLICK_KNOW_MORE,"");
             showOnBoardingTooltip(presenter.getHelpButtonContentTitle(), presenter.getHelpButtonContentSubtitle());
         });
-        welcomeMessageHearer.setText(Html.fromHtml(getString(R.string.referral_welcome_header)));
         welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase()));
 
     }

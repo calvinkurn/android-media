@@ -20,7 +20,7 @@
             android:paddingBottom="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_24">
+            android:paddingTop="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/img_app_share"
@@ -39,24 +39,13 @@
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/tv_referral_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:gravity="center_horizontal"
-                android:text="@string/referral_welcome_header"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal" />
-
-            <TextView
                 android:id="@+id/tv_referral_subheader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:gravity="center_horizontal"
                 android:text="@string/referral_welcome_desc"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_14" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -163,7 +152,6 @@
                 android:id="@+id/btn_referral_explore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/rounded_corners"
                 android:gravity="center_horizontal|center_vertical"
                 android:padding="@dimen/dp_15"

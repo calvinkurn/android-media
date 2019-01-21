@@ -27,7 +27,7 @@ public class RemoteConfigKey {
     public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
     public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
     public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
-    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message";
+    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
 

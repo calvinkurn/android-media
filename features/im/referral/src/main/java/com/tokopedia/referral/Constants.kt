@@ -47,6 +47,14 @@ interface Constants {
             const val URL = "URL"
             const val MEDIA = "MEDIA"
             const val CODE = "code"
+            const val OWNER = "owner";
+        }
+    }
+
+    interface Placeholder {
+        companion object {
+            const val USER = "%user";
+            const val OWNER = "%sender"
         }
     }
 
@@ -56,11 +64,13 @@ interface Constants {
             const val SELECT_CHANNEL = "select channel"
             const val APP_SHARE_TYPE = "App"
             const val REFERRAL_TYPE = "Referral"
+            const val ENCODING = "UTF-8"
             /**
              * Format for twitter : "http://www.twitter.com/intent/tweet?url=YOURURL&text=YOURTEXT"
              */
             const val TWITTER_DEFAULT = "http://www.twitter.com/intent/tweet?"
             const val WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd"
+            const val GUEST_USER_ADDRESSAL = "memberi";
         }
     }
 

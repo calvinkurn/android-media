@@ -4,16 +4,19 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.referral.view.listener.FriendsWelcomeView;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.inject.Inject;
 
@@ -28,13 +31,13 @@ public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<Friends
     private RemoteConfig remoteConfig;
 
     @Inject
-    public ReferralFriendsWelcomePresenter() {
+    public ReferralFriendsWelcomePresenter(UserSession userSession, RemoteConfig remoteConfig) {
+        this.userSession = userSession;
+        this.remoteConfig = remoteConfig;
     }
 
     @Override
     public void initialize() {
-        userSession = new UserSession(getView().getActivity());
-        remoteConfig = new FirebaseRemoteConfigImpl(getView().getActivity());
         if (getView().getActivity().getIntent() != null && getView().getActivity().getIntent().getExtras() != null) {
             String code = getView().getActivity().getIntent().getExtras().getString(CODE_KEY);
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), Constants.Values.Companion.REFERRAL);
@@ -55,8 +58,17 @@ public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<Friends
 
     @Override
     public String getSubHeaderFromFirebase() {
-
-        return remoteConfig.getString(RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, getView().getActivity().getString(R.string.referral_welcome_desc));
+        String subHeaderMessage = remoteConfig.getString(RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, getView().getActivity().getString(R.string.referral_welcome_desc));
+        String user = Constants.Values.GUEST_USER_ADDRESSAL;
+        if(userSession.isLoggedIn()) user = userSession.getName();
+        String owner = getView().getActivity().getIntent().getExtras().getString(Constants.Key.OWNER);
+        try {
+            owner = URLDecoder.decode(owner, Constants.Values.ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return FindAndReplaceHelper.findAndReplacePlaceHolders(subHeaderMessage, Constants.Placeholder.USER, user,
+                Constants.Placeholder.OWNER, owner != null ? owner : "");
     }
 
     @Override

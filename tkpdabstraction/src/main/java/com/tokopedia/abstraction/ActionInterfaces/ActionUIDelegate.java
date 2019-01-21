@@ -1,6 +1,6 @@
 package com.tokopedia.abstraction.ActionInterfaces;
 
-public interface ActionUIDelegate<T,V> {
-    void waitForResult(int actionId, T dataObj);
-    void stopWaiting(int actionId, V dataObj);
+public interface ActionUIDelegate<WAIT_DATA, STOPWAIT_DATA> {
+    void waitForResult(int actionId, WAIT_DATA dataObj);
+    void stopWaiting(int actionId, STOPWAIT_DATA dataObj);
 }

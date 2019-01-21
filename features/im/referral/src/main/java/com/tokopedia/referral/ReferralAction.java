@@ -20,32 +20,33 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-public class ReferralAction<T,V,W,X,Y,A,B> implements ActionExecutor<T,V,W,X,Y>, ActionDataProvider<A,B> {
+public class ReferralAction<ACTION_DATA,RESULT_DATA,ERROR_DATA,WAIT_DATA,STOPWAIT_DATA,OUTPUT_DATA,INPUT_DATA>
+        implements ActionExecutor<ACTION_DATA,RESULT_DATA, ERROR_DATA,WAIT_DATA, STOPWAIT_DATA>, ActionDataProvider<OUTPUT_DATA,INPUT_DATA> {
 
     @Override
-    public void doAction(int actionId, T dataObj, ActionCreator<V,W> actionCreator, ActionUIDelegate<X,Y> actionUIDelegate) {
+    public void doAction(int actionId, ACTION_DATA dataObj, ActionCreator<RESULT_DATA,ERROR_DATA> actionCreator, ActionUIDelegate<WAIT_DATA,STOPWAIT_DATA> actionUIDelegate) {
         switch (actionId){
             case Constants.Action.ACTION_GET_REFERRAL_CODE:
-                String referralCode = (String) getData(Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, (B) dataObj);
+                String referralCode = (String) getData(Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, (INPUT_DATA) dataObj);
                 if (!TextUtils.isEmpty(referralCode)) {
-                    actionCreator.actionSuccess(Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, (V) referralCode);
+                    actionCreator.actionSuccess(Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST, (RESULT_DATA) referralCode);
                     return;
                 }
                 GetReferralDataUseCase getReferralDataUseCase = new GetReferralDataUseCase();
-                if(actionUIDelegate != null) actionUIDelegate.waitForResult(actionId, (X)"");
+                if(actionUIDelegate != null) actionUIDelegate.waitForResult(actionId, (WAIT_DATA)"");
                 if(dataObj != null) {
                     getReferralDataUseCase.execute(Util.getPostRequestBody(new UserSession((Context) dataObj)), new Subscriber<Map<Type, RestResponse>>() {
                         @Override
                         public void onCompleted() {
                             if (actionUIDelegate != null)
-                                actionUIDelegate.stopWaiting(actionId, (Y) "");
+                                actionUIDelegate.stopWaiting(actionId, (STOPWAIT_DATA) "");
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
                             if (actionCreator != null)
-                                actionCreator.actionError(actionId, (W) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
+                                actionCreator.actionError(actionId, (ERROR_DATA) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
                         }
 
                         @Override
@@ -61,26 +62,26 @@ public class ReferralAction<T,V,W,X,Y,A,B> implements ActionExecutor<T,V,W,X,Y>,
                                 localCacheHandler.applyEditor();
                             }
                             if (actionUIDelegate != null)
-                                actionUIDelegate.stopWaiting(actionId, (Y) "");
+                                actionUIDelegate.stopWaiting(actionId, (STOPWAIT_DATA) "");
                             if (actionCreator != null)
-                                actionCreator.actionSuccess(actionId, (V) referralCodeEntity.getPromoContent().getCode());
+                                actionCreator.actionSuccess(actionId, (RESULT_DATA) referralCodeEntity.getPromoContent().getCode());
                         }
                     });
                 }
                 else {
-                    if(actionUIDelegate != null) actionUIDelegate.stopWaiting(actionId, (Y) "");
-                    if (actionCreator != null) actionCreator.actionError(actionId, (W) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
+                    if(actionUIDelegate != null) actionUIDelegate.stopWaiting(actionId, (STOPWAIT_DATA) "");
+                    if (actionCreator != null) actionCreator.actionError(actionId, (ERROR_DATA) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
                 }
                 break;
         }
     }
 
     @Override
-    public A getData(int actionId, B dataObject) {
+    public OUTPUT_DATA getData(int actionId, INPUT_DATA dataObject) {
         switch (actionId){
             case Constants.Action.ACTION_GET_REFERRAL_CODE_IF_EXIST:
                 LocalCacheHandler localCacheHandler = new LocalCacheHandler((Context) dataObject, Constants.Values.Companion.REFERRAL);
-                return (A)localCacheHandler.getString(Constants.Key.Companion.REFERRAL_CODE);
+                return (OUTPUT_DATA)localCacheHandler.getString(Constants.Key.Companion.REFERRAL_CODE);
         }
         return null;
     }

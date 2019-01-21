@@ -1,5 +1,5 @@
 package com.tokopedia.abstraction.ActionInterfaces;
 
-public interface ActionDataProvider<T,V> {
-    T getData(int actionId, V dataObject);
+public interface ActionDataProvider<OUTPUT_DATA,INPUT_DATA> {
+    OUTPUT_DATA getData(int actionId, INPUT_DATA dataObject);
 }

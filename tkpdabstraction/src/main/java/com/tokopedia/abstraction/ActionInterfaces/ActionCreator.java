@@ -1,6 +1,6 @@
 package com.tokopedia.abstraction.ActionInterfaces;
 
-public interface ActionCreator <T, V>{
-    void actionSuccess(int actionId, T dataObj);
-    void actionError(int actionId, V dataObj);
+public interface ActionCreator <RESULT_DATA, ERROR_DATA>{
+    void actionSuccess(int actionId, RESULT_DATA dataObj);
+    void actionError(int actionId, ERROR_DATA dataObj);
 }
