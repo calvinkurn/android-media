@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.thankyou.view;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -32,6 +33,14 @@ public class ThanksTrackerService extends IntentService {
 
     public ThanksTrackerService() {
         super("ThanksTrackerService");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForeground(1, new Notification());
+        }
     }
 
     @Override
