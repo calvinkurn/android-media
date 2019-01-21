@@ -12,7 +12,7 @@ interface LoginEmailPhoneContract : LoginContract {
         fun onErrorValidateRegister(throwable: Throwable)
         fun onErrorEmptyEmailPhone()
         fun goToLoginPhoneVerifyPage(phoneNumber: String)
-        fun onEmailExist(email: String?)
+        fun onEmailExist(email: String)
     }
 
     interface Presenter : LoginContract.Presenter {

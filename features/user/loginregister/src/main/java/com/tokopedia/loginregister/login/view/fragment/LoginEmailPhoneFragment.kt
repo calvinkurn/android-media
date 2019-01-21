@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.TextPaint
@@ -101,6 +102,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var loginLayout: LinearLayout
     private lateinit var loginButtonsContainer: LinearLayout
+    private lateinit var emailPhoneEditText: EditText
+    private lateinit var partialActionButton: TextView
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
@@ -179,6 +182,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialRegisterInputView = view.findViewById(R.id.login_input_view)
         loginLayout = view.findViewById(R.id.ll_layout)
         loginButtonsContainer = view.findViewById(R.id.login_container)
+        emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
+        partialActionButton = partialRegisterInputView.findViewById(R.id.register_btn)
         return view
     }
 
@@ -207,14 +212,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun prepareView() {
-        partialRegisterInputView.setListener {
-            presenter.checkLoginEmailPhone(it)
+        partialActionButton.text = getString(R.string.next)
+        partialActionButton.setOnClickListener {
+            presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
         }
 
-        val buttonLogin = partialRegisterInputView.findViewById<TextView>(R.id.register_btn)
-        buttonLogin.text = getString(R.string.next)
+        partialRegisterInputView.findViewById<TextView>(R.id.change_button).setOnClickListener { it ->
+            partialActionButton.text = getString(R.string.next)
+            partialActionButton.setOnClickListener { presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString()) }
+            partialRegisterInputView.showDefaultView()
+        }
 
-        activity?.let {
+        activity?.let { it ->
             val sourceString = it.resources.getString(R.string
                     .span_not_have_tokopedia_account)
 
@@ -235,8 +244,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }, sourceString.indexOf("Daftar"), sourceString.length, 0)
 
             register_button.setText(spannable, TextView.BufferType.SPANNABLE)
+
+            val forgotPassword = partialRegisterInputView.findViewById<TextView>(R.id.forgot_pass)
+            forgotPassword.setOnClickListener { goToForgotPassword() }
         }
 
+    }
+
+    private fun goToForgotPassword() {
+        if (activity != null && activity!!.applicationContext is LoginRegisterRouter) {
+            val intent = (activity!!.applicationContext as LoginRegisterRouter)
+                    .getForgotPasswordIntent(activity, emailPhoneEditText.text.toString().trim())
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            startActivity(intent)
+            analytics.eventClickForgotPasswordFromLogin(activity!!.applicationContext)
+        }
     }
 
     override fun onSuccessDiscoverLogin(listProvider: ArrayList<DiscoverItemViewModel>) {
@@ -489,20 +511,19 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onEmailExist(email: String?) {
-        //TODO
-        //showPasswordBox()
 
-        partialRegisterInputView.setListener {
-            presenter.login(email, "")
+    override fun onEmailExist(email: String) {
+
+        partialRegisterInputView.showLoginEmailView(email)
+        partialActionButton.setOnClickListener {
+            val passwordEditText = partialRegisterInputView.findViewById<TextInputEditText>(R.id.password)
+            presenter.login(email, passwordEditText.text.toString())
         }
 
-        val buttonLogin = partialRegisterInputView.findViewById<TextView>(R.id.register_btn)
-        buttonLogin.text = getString(R.string.login)
     }
 
     override fun resetError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        partialRegisterInputView.resetErrorWrapper()
     }
 
     override fun showErrorPassword(resId: Int) {
@@ -605,8 +626,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     && data.extras != null
                     && data.extras!!.getString(SmartLockActivity.USERNAME) != null
                     && data.extras!!.getString(SmartLockActivity.PASSWORD) != null) run {
-                partialRegisterInputView.findViewById<EditText>(R.id.input_register)
-                        .setText(data.extras!!.getString(SmartLockActivity.USERNAME))
+                emailPhoneEditText.setText(data.extras!!.getString(SmartLockActivity.USERNAME))
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
             } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) run {
@@ -627,8 +647,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 if (!chooseTokoCashAccountViewModel.listAccount.isEmpty()) {
                     goToChooseAccountPage(chooseTokoCashAccountViewModel)
                 } else {
-                    val phoneNumber = partialRegisterInputView.findViewById<EditText>(R.id
-                            .input_register).text.toString()
+                    val phoneNumber = emailPhoneEditText.text.toString()
                     goToNoTokocashAccountPage(phoneNumber)
                 }
             } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode ==

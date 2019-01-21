@@ -460,7 +460,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onRegisterClick(String id) {
+    public void onActionPartialClick(String id) {
         presenter.validateRegister(id);
     }
 

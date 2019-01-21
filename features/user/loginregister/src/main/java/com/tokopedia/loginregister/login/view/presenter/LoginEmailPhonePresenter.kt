@@ -7,11 +7,13 @@ import android.text.TextUtils
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.view.listener.LoginContract
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.subscriber.LoginSubscriber
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWithSosmedUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
@@ -19,6 +21,7 @@ import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySub
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*
@@ -33,7 +36,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    private val loginWithSosmedUseCase:
                                                    LoginWithSosmedUseCase,
                                                    private val registerValidationUseCase:
-                                                   RegisterValidationUseCase)
+                                                   RegisterValidationUseCase,
+                                                   private val loginEmailUseCase: LoginEmailUseCase)
     : BaseDaggerPresenter<LoginContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
@@ -142,10 +146,45 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                         email, view, LoginRegisterAnalytics.GOOGLE))
     }
 
+    override fun login(email: String, password: String) {
+        view.resetError()
+        if (isValid(email, password)) {
+            view.showLoadingLogin()
+            view.disableArrow()
+            loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password),
+                    LoginSubscriber(view.context, view.loginRouter,
+                            email, view))
+        }
+    }
+
+    private fun isValid(email: String, password: String): Boolean {
+        var isValid = true
+
+        if (TextUtils.isEmpty(password)) {
+            view.showErrorPassword(R.string.error_field_required)
+            isValid = false
+        } else if (password.length < 4) {
+            view.showErrorPassword(R.string.error_incorrect_password)
+            isValid = false
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            view.showErrorEmail(R.string.error_field_required)
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            view.showErrorEmail(R.string.error_invalid_email)
+            isValid = false
+        }
+
+        return isValid
+    }
+
     override fun detachView() {
         super.detachView()
         discoverUseCase.unsubscribe()
         loginWithSosmedUseCase.unsubscribe()
+        registerValidationUseCase.unsubscribe()
+        loginEmailUseCase.unsubscribe()
     }
 
     //IGNORE FOR NOW
@@ -158,9 +197,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         //use the other method
     }
 
-    override fun login(email: String?, password: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+
 
     override fun saveLoginEmail(email: String?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
