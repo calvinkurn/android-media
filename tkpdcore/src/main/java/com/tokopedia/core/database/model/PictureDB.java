@@ -26,7 +26,7 @@ public class PictureDB extends BaseModel implements DatabaseConstant {
     public static final String GAMBAR_PRODUCT = "gambar_product";
 
     private ProductDB productDB;
-
+    SessionHandler
     public PictureDB() {
     }
 
