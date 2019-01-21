@@ -100,7 +100,7 @@ public class TrainHomepageCache {
         } else {
             if (!TextUtils.isEmpty(originCityName)) {
                 originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                        null, originCityName, originIslandName
+                        "", originCityName, originIslandName
                 );
             } else {
                 originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
@@ -120,7 +120,7 @@ public class TrainHomepageCache {
         } else {
             if (!TextUtils.isEmpty(destinationCityName)) {
                 destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                        null, destinationCityName, destinationIslandName
+                        "", destinationCityName, destinationIslandName
                 );
             } else {
                 destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(

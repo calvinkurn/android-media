@@ -27,6 +27,7 @@ import com.tokopedia.tokopoints.view.contract.CouponActivityContract;
 import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
 import com.tokopedia.tokopoints.view.model.CouponFilterItem;
 import com.tokopedia.tokopoints.view.presenter.CouponActivityPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
 
@@ -83,7 +84,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
             ApplinkConstant.COUPON_LISTING2,
             ApplinkConstant.COUPON_LISTING3,
             ApplinkConstant.COUPON_LISTING4})
-    public static Intent getCallingIntent(Context context,@NonNull Bundle extras) {
+    public static Intent getCallingIntent(Context context, @NonNull Bundle extras) {
         Intent intent = new Intent(context, MyCouponListingActivity.class);
         intent.putExtras(extras);
         return intent;
@@ -150,6 +151,12 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
                         fragment.getPresenter().setCategoryId(data.get(position).getId());
                         fragment.getPresenter().getCoupons(fragment.getPresenter().getCategoryId());
                     }
+
+                    AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                            "click " + data.get(position),
+                            "");
                 }
             }
 

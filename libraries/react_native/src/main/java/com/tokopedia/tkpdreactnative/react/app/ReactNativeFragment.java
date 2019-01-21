@@ -12,6 +12,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 /**
  * @author ricoharisin .
@@ -54,6 +55,8 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
+        ReactUtils.stopTracing();
         if(reactRootView != null) {
             reactRootView.unmountReactApplication();
             reactRootView = null;

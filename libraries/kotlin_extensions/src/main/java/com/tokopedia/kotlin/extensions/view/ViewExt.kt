@@ -14,7 +14,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
 
 /**
- * @author by milhamj on 15/11/18.
+ * @author by milhamj on 30/11/18.
  */
 
 fun View.show() {
@@ -27,6 +27,15 @@ fun View.hide() {
 
 fun View.invisible() {
     this.visibility = View.INVISIBLE
+}
+
+fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
+    if (shouldShow) {
+        show()
+        action()
+    } else {
+        hide()
+    }
 }
 
 fun View.showLoading() {

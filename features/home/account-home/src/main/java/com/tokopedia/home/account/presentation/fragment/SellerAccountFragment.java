@@ -180,4 +180,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onDestroyView();
         presenter.detachView();
     }
+
+    @Override
+    void notifyItemChanged(int position) {
+        adapter.notifyItemChanged(position);
+    }
 }

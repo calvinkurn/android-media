@@ -23,6 +23,7 @@ public class GetFilterSearchParamDataUseCase extends UseCase<FilterSearchData> {
 
     private TrainRepository trainRepository;
     private FilterParam filterParam;
+    private int scheduleVariant;
 
     public GetFilterSearchParamDataUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
@@ -32,9 +33,13 @@ public class GetFilterSearchParamDataUseCase extends UseCase<FilterSearchData> {
         this.filterParam = filterParam;
     }
 
+    public void setScheduleVariant(int scheduleVariant) {
+        this.scheduleVariant = scheduleVariant;
+    }
+
     @Override
     public Observable<FilterSearchData> createObservable(RequestParams requestParams) {
-        return trainRepository.getFilteredAndSortedSchedule(filterParam, TravelSortOption.NO_PREFERENCE)
+        return trainRepository.getFilteredAndSortedSchedule(filterParam, TravelSortOption.NO_PREFERENCE, scheduleVariant)
                 .map(new Func1<List<TrainScheduleViewModel>, FilterSearchData>() {
                     @Override
                     public FilterSearchData call(List<TrainScheduleViewModel> trainScheduleViewModels) {

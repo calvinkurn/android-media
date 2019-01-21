@@ -323,6 +323,10 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
             cartItemDataOrigin.setCategory(data.getProduct().getCategory());
             cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
+            cartItemDataOrigin.setGoldMerchant(data.getShop().getGoldMerchant().isGoldBadge());
+            cartItemDataOrigin.setGoldMerchantLogoUrl(data.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
+            cartItemDataOrigin.setOfficialStore(data.getShop().getOfficialStore().isOfficial() == 1);
+            cartItemDataOrigin.setOfficialStoreLogoUrl(data.getShop().getOfficialStore().getOsLogoUrl());
             if (data.getProduct().getWholesalePrice() != null) {
                 List<WholesalePrice> wholesalePrices = new ArrayList<>();
                 for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
