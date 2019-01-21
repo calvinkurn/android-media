@@ -52,6 +52,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private AppCompatButton remoteConfigCheckBtn;
     private AppCompatButton remoteConfigSaveBtn;
     private ToggleButton toggleReactDeveloperMode;
+    private ToggleButton toggleReactEnableDeveloperOptions;
     private SharedPreferences sharedPreferences;
 
     private TextView vGoTochuck;
@@ -102,6 +103,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
 
         toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
+        toggleReactEnableDeveloperOptions = findViewById(R.id.toggle_reactnative_dev_options);
+        toggleReactEnableDeveloperOptions.setChecked(false);
 
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
@@ -171,6 +174,28 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                     Toast.makeText(DeveloperOptions.this, "React Native set to development mode", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(IS_RELEASE_MODE, false);
+                    editor.apply();
+                }
+            }
+        });
+
+        if (sharedPreferences.contains(SP_REACT_ENABLE_SHAKE)){
+            boolean stateDeveloperOptions = sharedPreferences.getBoolean(SP_REACT_ENABLE_SHAKE, false);
+            toggleReactEnableDeveloperOptions.setChecked(stateDeveloperOptions);
+        }
+
+        toggleReactEnableDeveloperOptions.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    Toast.makeText(DeveloperOptions.this, "React Native Dev Options is enabled", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(SP_REACT_ENABLE_SHAKE, true);
+                    editor.apply();
+                } else {
+                    Toast.makeText(DeveloperOptions.this, "React Native Dev Options is disabled", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(SP_REACT_ENABLE_SHAKE, false);
                     editor.apply();
                 }
             }
