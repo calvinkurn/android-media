@@ -961,7 +961,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductShareClicked(@NonNull ProductDetailData data) {
-        ProductShare productShare = new ProductShare(getActivity());
+        ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
 
         ProductData productData = new ProductData();
         productData.setPriceText(data.getInfo().getProductPrice());
