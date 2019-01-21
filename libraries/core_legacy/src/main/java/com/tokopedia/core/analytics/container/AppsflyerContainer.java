@@ -11,6 +11,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.gcm.FCMCacheManager;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -58,7 +59,9 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setUserID(userID);
         setAFLog(BuildConfig.DEBUG);
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
+        initUninstallTracking(key);
         setAppsFlyerKey(key);
+        updateFCMToken(FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     @Override
@@ -69,6 +72,15 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     private void setAppsFlyerKey(String key) {
         AppsFlyerLib.getInstance().startTracking(context, key);
+    }
+
+    private void initUninstallTracking(String key) {
+        AppsFlyerLib.getInstance().enableUninstallTracking(key);
+    }
+
+    @Override
+    public void updateFCMToken(String fcmToken) {
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, fcmToken);
     }
 
     private void setCurrencyCode(String code) {
@@ -87,10 +99,18 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     private void setGCMId(String gcmID) {
         AppsFlyerLib.getInstance().setGCMProjectNumber(gcmID);
+        AppsFlyerLib.getInstance().setGCMProjectID(gcmID);
     }
 
     private void setAFLog(boolean login) {
         AppsFlyerLib.getInstance().setDebugLog(login);
+        if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
+            AppsFlyerLib.getInstance().setPreinstallAttribution(
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_DESC,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_SITE
+            );
+        }
     }
 
     @Override

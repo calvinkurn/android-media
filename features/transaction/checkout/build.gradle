@@ -33,11 +33,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
-
     implementation project(rootProject.ext.libraries.applink)
+
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.logisticdata)
@@ -45,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.logisticdistrictrecommendation)
     implementation project(rootProject.ext.features.logisticinsurance)
+
     implementation project(rootProject.ext.features.wishlistCommon)
 
     implementation rootProject.ext.playServicesDependencies.perfMon
@@ -55,6 +57,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.debugToolsDependencies.chuck
 
@@ -63,9 +66,6 @@ dependencies {
     }
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
