@@ -42,7 +42,6 @@
     <color name="font_white_primary_70">#FFFFFFFF</color>
     <color name="font_white_secondary_54">#B3FFFFFF</color>
     <color name="font_white_disabled_38">#88FFFFFF</color>
-    <color name="white_four">@color/font_white_disabled_38</color>
     <color name="light_grey">#FAFBFC</color>
     <color name="label_text_color">#9B9B9B</color>
 
@@ -79,6 +78,7 @@
     <color name="bg_button_border_outline">#E0E0E0</color>
     <color name="white_two">#e0e0e0</color>
     <color name="gray_background">#fff2f3f4</color>
+    <color name="white_four">@color/white_two</color> <!-- not recommended -->
 
     <color name="pinkish_grey">#bdbdbd</color>
     <color name="widget_card_with_action_separator">#cfcfcf</color>
