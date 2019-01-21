@@ -5,7 +5,7 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
@@ -106,9 +106,9 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context,
-                                                    @Named(DeveloperOptions.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
+                                                    @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
         return new ChuckInterceptor(context)
-                .showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false));
+                .showNotification(localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false));
     }
 
     @ApplicationScope
@@ -117,11 +117,11 @@ public class InterceptorModule {
         return new DebugInterceptor();
     }
 
-    @Named(DeveloperOptions.CHUCK_ENABLED)
+    @Named(ConstantCoreNetwork.CHUCK_ENABLED)
     @ApplicationScope
     @Provides
     public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
+        return new LocalCacheHandler(context, ConstantCoreNetwork.CHUCK_ENABLED);
     }
 
     @ApplicationScope
