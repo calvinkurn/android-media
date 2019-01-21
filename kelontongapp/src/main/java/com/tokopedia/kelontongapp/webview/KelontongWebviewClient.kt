@@ -45,6 +45,9 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
         return if (uri.scheme.startsWith(APPSFLYER_URL_SCHEME)) {
             handleAppsFlyer(uri)
             false
+        } else if (uri.scheme.startsWith(MOENGAGE_URL_SCHEME)) {
+            handleMoengage(uri)
+            false
         } else {
             view.loadUrl(uri.toString())
             true
@@ -121,6 +124,41 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     companion object {
 
         private val PERMISSION_REQUEST_CODE = 2312
+    }
+
+    private fun handleMoengage(uri: Uri) {
+        // user loginn
+        // MoEHelper.getInstance(getApplicationContext()).setUniqueId(UNIQUE_ID);
+        // user logout
+        // MoEHelper.getInstance(getApplicationContext()).logoutUser();
+        // set tracking user attribute
+        // helper = MoEHelper.getInstance(this);
+        // Helper method to set User uniqueId. Can be String,int,long,float,double
+//        helper.setUniqueId("abc@moengage.com");
+//        // If you have first and last name separately
+//        helper.setFirstName("Aaron");
+//        helper.setLastName("Finch");
+//        // If you have full name
+//        helper.setFullName("Aaron Finch");
+//        helper.setBirthDate("01/01/1990");
+//        helper.setUserLocation(40.77,73.98);
+//        helper.setEmail("abc@moengage.com");
+//        helper.setGender("Male");
+//        //Helper method to set mobile number
+//        helper.setNumber("12345612345");
+
+        // MoEHelper.getInstance(mCurrentContext).setUserAttribute("locality", "SF");
+        // https://docs.moengage.com/docs/identifying-user
+
+        // tracking event
+//        PayloadBuilder builder = new PayloadBuilder();
+//        builder.putAttrInt("quantity", 2)
+//                .putAttrString("product", "iPhone")
+//                .putAttrDate("purchaseDate", new Date())
+//                .putAttrDouble("price", 5999.99)
+//                .putAttrString("currency", "dollar");
+//        MoEHelper.getInstance(mCurrentContext).trackEvent("Purchase", builder.build());
+        // https://docs.moengage.com/docs/track-event
     }
 
     private fun handleAppsFlyer(uri: Uri) {
