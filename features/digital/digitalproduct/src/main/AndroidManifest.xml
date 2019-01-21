@@ -9,29 +9,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".cart.presentation.activity.CartDigitalActivity"
-            android:label="@string/title_activity_cart_digital_module"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".product.view.activity.DigitalProductActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.White"/>
         <activity
-            android:name=".cart.presentation.activity.InstantCheckoutActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".product.view.activity.DigitalChooserActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".product.view.activity.DigitalWebActivity"
-            android:theme="@style/Toolbar.White"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".categorylist.view.activity.DigitalCategoryListActivity"
             android:label="@string/title_activity_category_list_digital_module"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
@@ -39,12 +28,14 @@
             android:theme="@style/Theme.White"/>
         <activity
             android:name=".product.view.activity.DigitalUssdActivity"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.view.activity.DigitalSearchNumberActivity"
             android:label="Nomor Favorit"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
-        <activity android:name=".product.view.activity.DigitalYoutubeActivity"></activity>
+        <activity android:name=".product.view.activity.DigitalYoutubeActivity" />
 
         <activity
             android:name=".newcart.presentation.activity.DigitalCartActivity"

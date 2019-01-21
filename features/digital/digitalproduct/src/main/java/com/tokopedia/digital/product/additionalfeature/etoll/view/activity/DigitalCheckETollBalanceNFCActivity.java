@@ -34,12 +34,16 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
+import com.tokopedia.digital.common.di.DigitalComponent;
+import com.tokopedia.digital.common.di.DigitalComponentInstance;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
+import com.tokopedia.digital.product.additionalfeature.etoll.di.DaggerDigitalETollComponent;
+import com.tokopedia.digital.product.additionalfeature.etoll.di.DigitalETollComponent;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardCommandUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.ETollUpdateBalanceResultView;
@@ -62,6 +66,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -97,7 +103,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
-    private ETollPresenter presenter;
+    @Inject
+    ETollPresenter presenter;
 
     private TapETollCardView tapETollCardView;
     private NFCDisabledView nfcDisabledView;
@@ -143,7 +150,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initInjector();
         super.onCreate(savedInstanceState);
+        presenter.attachView(this);
 
         remoteConfig = new FirebaseRemoteConfigImpl(this);
 
@@ -163,7 +172,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
         techListsArray = new String[][] { new String[] { IsoDep.class.getName(), NfcA.class.getName()} };
 
-        SmartcardMapper mapper = new SmartcardMapper();
+        /*SmartcardMapper mapper = new SmartcardMapper();
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
@@ -212,11 +221,17 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         ETollRepository eTollRepository = new ETollRepository(smartcardInquiryDataSource,
                 smartcardCommandDataSource);
         SmartcardInquiryUseCase smartcardInquiryUseCase = new SmartcardInquiryUseCase(eTollRepository);
-        SmartcardCommandUseCase smartcardCommandUseCase = new SmartcardCommandUseCase(eTollRepository);
+        SmartcardCommandUseCase smartcardCommandUseCase = new SmartcardCommandUseCase(eTollRepository);*/
 
-        presenter = new ETollPresenter(this, smartcardInquiryUseCase, smartcardCommandUseCase);
+//        presenter = new ETollPresenter(this, smartcardInquiryUseCase, smartcardCommandUseCase);
 
         handleIntent(getIntent());
+    }
+
+    private void initInjector() {
+        DigitalComponent digitalComponent = DigitalComponentInstance.getInstance(getApplication());
+        DigitalETollComponent component = DaggerDigitalETollComponent.builder().digitalComponent(digitalComponent).build();
+        component.inject(this);
     }
 
     @Override
@@ -547,4 +562,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
     }
 
+    @Override
+    protected void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

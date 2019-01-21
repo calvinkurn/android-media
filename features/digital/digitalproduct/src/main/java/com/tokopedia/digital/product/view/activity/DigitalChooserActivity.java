@@ -135,7 +135,7 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     }
 
     private void invalidateTitleToolBar() {
-        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+        if (!TextUtils.isEmpty(titleToolbar)) updateTitle(titleToolbar);
     }
 
     @Override
