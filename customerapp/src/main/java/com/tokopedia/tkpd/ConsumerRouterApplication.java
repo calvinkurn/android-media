@@ -410,7 +410,6 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
-import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -501,7 +500,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NotifCenterRouter,
         EventModuleRouter,
         ChallengesModuleRouter,
-        TravelCalendarRouter,
         com.tokopedia.tkpdpdp.ProductDetailRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
