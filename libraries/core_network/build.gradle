@@ -41,4 +41,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 }

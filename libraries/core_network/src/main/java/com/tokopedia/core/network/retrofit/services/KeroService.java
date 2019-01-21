@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;

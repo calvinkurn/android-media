@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.tkpd.library.utils.Logger;
-import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.network.TkpdNetworkURLHandler;
 
 import org.json.JSONArray;

@@ -1,5 +1,11 @@
 package com.tokopedia.core.util;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class GeneralUtils {
 
     public static Double parsePriceToDouble(String price, String currency) {
