@@ -27,7 +27,7 @@ import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.core2.R;
+import com.tokopedia.core.network.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
 import java.io.File;

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core2.BuildConfig;
-import com.tokopedia.core2.R;
+import com.tokopedia.core.network.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;

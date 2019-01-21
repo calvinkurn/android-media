@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.core.network.R;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tkpd.library.kirisame.Kirisame;
-import com.tokopedia.core2.R;
+import com.tokopedia.core.network.R;
 
 /**
  * Created by Tkpd_Eka on 12/23/2015.

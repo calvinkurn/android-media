@@ -1,6 +1,6 @@
 package com.tokopedia.core.network;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core.network.R;
 import com.tokopedia.core.app.MainApplication;
 
 /**
