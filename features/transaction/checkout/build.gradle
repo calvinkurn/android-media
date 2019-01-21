@@ -67,9 +67,6 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 

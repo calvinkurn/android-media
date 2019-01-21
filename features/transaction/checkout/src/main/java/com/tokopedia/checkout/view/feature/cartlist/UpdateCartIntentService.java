@@ -34,15 +34,19 @@ public class UpdateCartIntentService extends IntentService {
 
     public UpdateCartIntentService() {
         super(UpdateCartIntentService.class.getSimpleName());
-        if (getApplication() != null) {
-            updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
-            userSession = new UserSession(getApplicationContext());
-//            userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
-        }
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        if (getApplication() != null) {
+            if (updateCartUseCase == null) {
+                updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
+            }
+            if (userSession == null) {
+                userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
+            }
+        }
+
         if (userSession != null && updateCartUseCase != null && intent != null && intent.hasExtra(EXTRA_CART_ITEM_DATA_LIST)) {
             List<CartItemData> cartItemDataList = intent.getParcelableArrayListExtra(EXTRA_CART_ITEM_DATA_LIST);
             List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();

@@ -67,6 +67,8 @@
         android:layout_below="@id/productLayout"
         android:fontFamily="sans-serif"
         android:gravity="bottom"
+        android:paddingLeft="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/orange_red"
         android:textSize="@dimen/sp_12"

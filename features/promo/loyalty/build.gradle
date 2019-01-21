@@ -14,9 +14,6 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT') {
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
