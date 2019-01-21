@@ -1,7 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.support.annotation.DrawableRes
-import android.support.annotation.DrawableRes
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.R
