@@ -514,6 +514,7 @@ public class CartListPresenter implements ICartListPresenter {
                 String parentId = data.getCartItemData().getOriginData().getParentId();
                 String productId = data.getCartItemData().getOriginData().getProductId();
                 int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
+                totalItemQty += itemQty;
                 if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
                     for (CartItemHolderData dataForQty : allCartItemDataList) {
                         if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
@@ -525,7 +526,6 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-                totalItemQty = totalItemQty + 1;
                 List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
                 boolean hasCalculateWholesalePrice = false;
                 if (wholesalePrices != null && wholesalePrices.size() > 0) {
