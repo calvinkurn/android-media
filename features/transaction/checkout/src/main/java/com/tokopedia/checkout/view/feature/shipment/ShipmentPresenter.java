@@ -38,8 +38,6 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;

@@ -10,8 +10,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.promocheckout.common.view.model.PromoData;

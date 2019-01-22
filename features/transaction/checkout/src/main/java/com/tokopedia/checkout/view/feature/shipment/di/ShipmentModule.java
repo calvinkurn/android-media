@@ -35,8 +35,6 @@ import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
