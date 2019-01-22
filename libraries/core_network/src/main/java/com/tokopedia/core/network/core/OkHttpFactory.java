@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.core;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -27,14 +28,12 @@ import com.tokopedia.core.network.retrofit.interceptors.UserAgentInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 
 /**
  * Created by ricoharisin on 2/27/17.
@@ -465,11 +464,11 @@ public class OkHttpFactory {
     }
 
     @Deprecated
-    public OkHttpClient buildClientTopAdsAuth(SessionHandler sessionHandler) {
+    public OkHttpClient buildClientTopAdsAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new TopAdsAuthInterceptor(sessionHandler))
+                .addInterceptor(new TopAdsAuthInterceptor())
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()

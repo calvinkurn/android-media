@@ -5,13 +5,14 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.constant.ConstantCoreNetwork;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
@@ -25,7 +26,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Named;
 
@@ -72,14 +73,15 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public BearerInterceptor provideBearerInterceptor(SessionHandler sessionHandler) {
-        return new BearerInterceptor(sessionHandler);
+    public BearerInterceptor provideBearerInterceptor() {
+        return new BearerInterceptor();
     }
 
     @ApplicationScope
     @Provides
     public StandardizedInterceptor provideStandardizedInterceptor() {
-        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        String oAuthString = "Bearer " + userSession.getAccessToken();
         return new StandardizedInterceptor(oAuthString);
     }
 
@@ -138,9 +140,8 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public TopAdsAuthInterceptor provideTopAdsAuthInterceptor(
-            SessionHandler sessionHandler) {
-        return new TopAdsAuthInterceptor(sessionHandler);
+    public TopAdsAuthInterceptor provideTopAdsAuthInterceptor() {
+        return new TopAdsAuthInterceptor();
     }
 
     @TopAdsQualifier

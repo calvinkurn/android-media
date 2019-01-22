@@ -1,9 +1,8 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,12 +14,6 @@ import java.util.Map;
  */
 
 public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
-    
-    private SessionHandler sessionHandler;
-
-    public TopAdsAuthInterceptor(SessionHandler sessionHandler){
-        this.sessionHandler = sessionHandler;
-    }
 
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
         String contentType = "";
@@ -38,14 +31,10 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH);
         String date = dateFormat.format(new Date());
         headerMap.put("X-Date", date);
-        // headerMap.put("Tkpd-UserId", SessionHandler.getLoginID(CoreNetworkApplication.getAppContext()));
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerMap.get("Authorization"));
-        if(sessionHandler == null) {
-            headerMap.put("Authorization", "Bearer " + SessionHandler.getAccessToken());
-        }else{
-            headerMap.put("Authorization", "Bearer " + sessionHandler.getAuthAccessToken());
-        }
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        headerMap.put("Authorization", "Bearer " + userSession.getAccessToken());
         return headerMap;
     }
 }
