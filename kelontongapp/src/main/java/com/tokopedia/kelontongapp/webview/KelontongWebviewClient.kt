@@ -19,7 +19,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.webkit.WebResourceError
 import com.appsflyer.AppsFlyerLib
-import com.moe.pushlibrary.MoEHelper
 import com.tokopedia.kelontongapp.*
 import org.json.JSONObject
 import org.json.JSONArray
@@ -45,9 +44,6 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     private fun handleUri(view: WebView, uri: Uri): Boolean {
         return if (uri.scheme.startsWith(APPSFLYER_URL_SCHEME)) {
             handleAppsFlyer(uri)
-            false
-        } else if (uri.scheme.startsWith(MOENGAGE_URL_SCHEME)) {
-            handleMoengage(uri)
             false
         } else {
             view.loadUrl(uri.toString())
@@ -122,18 +118,9 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
                 .show()
     }
 
-    private fun handleMoengage(uri: Uri) {
-        if(uri.host == MOENGAGE_LOGIN) {
-            if(uri.getQueryParameter(ID) != null) {
-                with (sharedPref.edit()) {
-                    putString(MOENGAGE_USER_ID, uri.getQueryParameter(MOENGAGE_USER_ID))
-                    apply()
-                }
-                MoEHelper.getInstance(activity).setUniqueId(MOENGAGE_USER_ID)
-            }
-        } else if (uri.host == MOENGAGE_LOGOUT) {
-            MoEHelper.getInstance(activity).logoutUser()
-        }
+    companion object {
+
+        private val PERMISSION_REQUEST_CODE = 2312
     }
 
     private fun handleAppsFlyer(uri: Uri) {
@@ -146,7 +133,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
                 AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter(ID))
             }
         } else {
-            val eventName: String? = uri.getQueryParameter(EVENT_NAME)
+            var eventName: String? = uri.getQueryParameter(EVENT_NAME)
             val eventValue: MutableMap<String, Any> = HashMap()
 
             val event: JSONObject
@@ -163,9 +150,5 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
             AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
         }
-    }
-
-    companion object {
-        private const val PERMISSION_REQUEST_CODE = 2312
     }
 }

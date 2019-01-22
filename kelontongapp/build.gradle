@@ -48,7 +48,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("debug.keystore")
+//            storeFile file("debug.keystore")
         }
     }
 
@@ -65,6 +65,7 @@ android {
         release {
             signingConfig signingConfigs.debug
             minifyEnabled true
+            debuggable false
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             } else {
