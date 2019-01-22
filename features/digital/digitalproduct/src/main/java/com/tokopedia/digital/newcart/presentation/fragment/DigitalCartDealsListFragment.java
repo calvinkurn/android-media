@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartDealsComponent;

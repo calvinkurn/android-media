@@ -5,10 +5,10 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
-import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
-import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
+import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
+import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
+import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
+import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;

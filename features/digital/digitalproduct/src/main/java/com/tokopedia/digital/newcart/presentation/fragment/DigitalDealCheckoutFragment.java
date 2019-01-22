@@ -28,7 +28,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;

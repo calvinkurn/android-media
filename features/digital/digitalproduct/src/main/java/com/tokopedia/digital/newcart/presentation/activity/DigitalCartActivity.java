@@ -17,7 +17,7 @@ import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent;
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
-import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;

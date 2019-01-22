@@ -26,14 +26,14 @@ import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
-import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
-import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
-import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
-import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
-import com.tokopedia.digital.cart.presentation.model.VoucherAttributeDigital;
-import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
+import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
+import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.newcart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
+import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
+import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
+import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
+import com.tokopedia.digital.newcart.domain.model.VoucherAttributeDigital;
+import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
@@ -466,7 +466,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         getView().renderAdditionalInfo(new ArrayList<>(getView().getCartInfoData().getAdditionalInfos()));
         getView().disableVoucherCheckoutDiscount();
         RequestBodyCancelVoucher requestBodyCancelVoucher = new RequestBodyCancelVoucher();
-        com.tokopedia.digital.cart.data.entity.requestbody.voucher.Attributes attributes = new com.tokopedia.digital.cart.data.entity.requestbody.voucher.Attributes();
+        com.tokopedia.digital.newcart.data.entity.requestbody.voucher.Attributes attributes = new com.tokopedia.digital.newcart.data.entity.requestbody.voucher.Attributes();
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         requestBodyCancelVoucher.setAttributes(attributes);
         cartDigitalInteractor.cancelVoucher(requestBodyCancelVoucher, new Subscriber<String>() {
@@ -545,8 +545,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         RequestBodyOtpSuccess requestBodyOtpSuccess = new RequestBodyOtpSuccess();
         requestBodyOtpSuccess.setType("cart");
         requestBodyOtpSuccess.setId(checkoutDataParameter.getCartId());
-        com.tokopedia.digital.cart.data.entity.requestbody.otpcart.Attributes attributes =
-                new com.tokopedia.digital.cart.data.entity.requestbody.otpcart.Attributes();
+        com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.Attributes attributes =
+                new com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.Attributes();
         attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());

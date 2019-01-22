@@ -2,9 +2,9 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
-import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
-import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
+import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
+import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
+import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
