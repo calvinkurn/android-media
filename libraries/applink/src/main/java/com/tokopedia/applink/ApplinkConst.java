@@ -191,6 +191,9 @@ public interface ApplinkConst {
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
 
+    String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
+    String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";

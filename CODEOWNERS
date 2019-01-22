@@ -91,6 +91,7 @@
 /features/content/affiliate_common/     @tokopedia/minion-kevin
 /features/content/explore/              @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
+/features/content/feed_component/       @tokopedia/minion-kevin
 /features/content/interest_pick/        @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 /features/content/kol_common/           @tokopedia/minion-kevin
@@ -124,6 +125,7 @@
 
 /features/fintech/instant_loan          @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
+/features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 

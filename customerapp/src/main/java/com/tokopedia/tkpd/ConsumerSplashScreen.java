@@ -60,7 +60,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
         super.onCreate(savedInstanceState);
 
-        mainLayout = findViewById(R.id.layout_splash);
         renderDynamicImage();
 
         finishWarmStart();
@@ -97,7 +96,8 @@ public class ConsumerSplashScreen extends SplashScreen {
         if (TextUtils.isEmpty(imageUrl)) {
             return;
         }
-
+        setContentView(R.layout.activity_splash);
+        mainLayout = findViewById(R.id.layout_splash);
         Glide.with(this)
                 .load(imageUrl)
                 .asBitmap()

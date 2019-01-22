@@ -154,7 +154,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     private static final String YOUTUBE_URL = "{youtube_url}";
-    private static final String FEED_TRACE = "feed_trace";
+    private static final String FEED_TRACE = "mp_feed";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -172,6 +172,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private PerformanceMonitoring performanceMonitoring;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private int loginIdInt;
+    private boolean isLoadedOnce;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -399,9 +400,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void setLastCursorOnFirstPage(String lastCursor) {
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_FEED);
-        cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
-        cache.applyEditor();
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            LocalCacheHandler cache = new LocalCacheHandler(
+                    getActivity().getApplicationContext(),
+                    KEY_FEED
+            );
+            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
+            cache.applyEditor();
+        }
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,
@@ -851,30 +857,40 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void registerNewFeedReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_FEED);
-        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).registerReceiver(newFeedReceiver, intentFilter);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(BROADCAST_FEED);
+
+            LocalBroadcastManager
+                    .getInstance(getActivity().getApplicationContext())
+                    .registerReceiver(newFeedReceiver, intentFilter);
+        }
     }
 
     private void unRegisterNewFeedReceiver() {
-        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            LocalBroadcastManager
+                    .getInstance(getActivity().getApplicationContext())
+                    .unregisterReceiver(newFeedReceiver);
+        }
     }
-
-
-    private boolean isLoadedOnce = false;
 
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
                 && getActivity() != null && presenter != null) {
             if (!isLoadedOnce) {
                 presenter.fetchFirstPage();
-                performanceMonitoring.stopTrace();
 
                 isLoadedOnce = !isLoadedOnce;
             }
 
             analytics.trackScreen(getActivity(), getScreenName());
         }
+    }
+
+    @Override
+    public void stopTracePerformanceMon() {
+        performanceMonitoring.stopTrace();
     }
 
     @Override
@@ -1395,10 +1411,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
                     pollContentViewModel.setVoted(true);
 
-                    int totalVoter = 0;
+                    int totalVoter;
                     try {
-                        Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
+                        totalVoter = Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
                     } catch (NumberFormatException ignored) {
+                        totalVoter = 0;
                     }
                     pollContentViewModel.setTotalVoterNumber(totalVoter);
 
