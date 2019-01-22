@@ -19,6 +19,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.webkit.WebResourceError
 import com.appsflyer.AppsFlyerLib
+import com.moe.pushlibrary.MoEHelper
 import com.tokopedia.kelontongapp.*
 import org.json.JSONObject
 import org.json.JSONArray
@@ -54,12 +55,10 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
         }
     }
 
-//    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-//        super.onReceivedError(view, request, error)
-//        if (activity is KelontongMainActivity) {
-//            activity.onReceivedErrorView()
-//        }
-//    }
+    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+        super.onReceivedError(view, request, error)
+        // handle crashlitics
+    }
 
     fun checkPermission(): Boolean {
         val resultCamera = ContextCompat.checkSelfPermission(activity, CAMERA)
@@ -121,44 +120,18 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
                 .show()
     }
 
-    companion object {
-
-        private val PERMISSION_REQUEST_CODE = 2312
-    }
-
     private fun handleMoengage(uri: Uri) {
-        // user loginn
-        // MoEHelper.getInstance(getApplicationContext()).setUniqueId(UNIQUE_ID);
-        // user logout
-        // MoEHelper.getInstance(getApplicationContext()).logoutUser();
-        // set tracking user attribute
-        // helper = MoEHelper.getInstance(this);
-        // Helper method to set User uniqueId. Can be String,int,long,float,double
-//        helper.setUniqueId("abc@moengage.com");
-//        // If you have first and last name separately
-//        helper.setFirstName("Aaron");
-//        helper.setLastName("Finch");
-//        // If you have full name
-//        helper.setFullName("Aaron Finch");
-//        helper.setBirthDate("01/01/1990");
-//        helper.setUserLocation(40.77,73.98);
-//        helper.setEmail("abc@moengage.com");
-//        helper.setGender("Male");
-//        //Helper method to set mobile number
-//        helper.setNumber("12345612345");
-
-        // MoEHelper.getInstance(mCurrentContext).setUserAttribute("locality", "SF");
-        // https://docs.moengage.com/docs/identifying-user
-
-        // tracking event
-//        PayloadBuilder builder = new PayloadBuilder();
-//        builder.putAttrInt("quantity", 2)
-//                .putAttrString("product", "iPhone")
-//                .putAttrDate("purchaseDate", new Date())
-//                .putAttrDouble("price", 5999.99)
-//                .putAttrString("currency", "dollar");
-//        MoEHelper.getInstance(mCurrentContext).trackEvent("Purchase", builder.build());
-        // https://docs.moengage.com/docs/track-event
+        if(uri.host == MOENGAGE_LOGIN) {
+            if(uri.getQueryParameter(ID) != null) {
+                with (sharedPref.edit()) {
+                    putString(MOENGAGE_USER_ID, uri.getQueryParameter(MOENGAGE_USER_ID))
+                    apply()
+                }
+                MoEHelper.getInstance(activity).setUniqueId(MOENGAGE_USER_ID)
+            }
+        } else if (uri.host == MOENGAGE_LOGOUT) {
+            MoEHelper.getInstance(activity).logoutUser()
+        }
     }
 
     private fun handleAppsFlyer(uri: Uri) {
@@ -171,7 +144,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
                 AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter(ID))
             }
         } else {
-            var eventName: String? = uri.getQueryParameter(EVENT_NAME)
+            val eventName: String? = uri.getQueryParameter(EVENT_NAME)
             val eventValue: MutableMap<String, Any> = HashMap()
 
             val event: JSONObject
@@ -188,5 +161,9 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
             AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
         }
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 2312
     }
 }
