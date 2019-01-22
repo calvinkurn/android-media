@@ -1,5 +1,6 @@
 package com.tokopedia.digital.common.util;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -121,12 +122,31 @@ public class DigitalAnalytics {
 
 
     public void eventProceedToPayment(CartDigitalInfoData cartDataInfo, String voucherCode) {
-        analyticTracker.sendEventTracking(
-                DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                DigitalEventTracking.Category.DIGITAL_CHECKOUT,
-                DigitalEventTracking.Action.CLICK_PROCEED_PAYMENT,
-                cartDataInfo.getAttributes().getCategoryName().toLowerCase() + " - " +
-                        (voucherCode != null && voucherCode.length() > 0 ? "promo" : "no promo")
+        String productName = cartDataInfo.getAttributes().getOperatorName().toLowerCase() + " " +
+                cartDataInfo.getAttributes().getPrice().toLowerCase();
+        List<Object> products = new ArrayList<>();
+        products.add(constructProductEnhanceEcommerce(cartDataInfo, productName));
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "event", DigitalEventTracking.Event.CHECKOUT,
+                        "eventCategory", DigitalEventTracking.Category.DIGITAL_CHECKOUT,
+                        "eventAction", DigitalEventTracking.Action.CLICK_PROCEED_PAYMENT,
+                        "eventLabel", cartDataInfo.getAttributes().getCategoryName().toLowerCase(),
+                        "ecommerce", DataLayer.mapOf(
+                                "checkout", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()]))
+                                )
+                        ),
+                        "currentSite", DigitalEventTracking.Label.SITE
+                )
+        );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "ecommerce", null,
+                        "currentSite", null
+                )
         );
     }
 
@@ -213,8 +233,24 @@ public class DigitalAnalytics {
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
                                 )
-                        )
+                        ),
+                        "currentSite", DigitalEventTracking.Label.SITE
                 )
         );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "ecommerce", null,
+                        "currentSite", null
+                )
+        );
+    }
+
+    public void sendCategoryScreen(Activity activity, String name) {
+        analyticTracker.sendScreen(activity, DigitalEventTracking.Screen.DIGITAL_CATEGORY + name);
+    }
+
+    public void sendCartScreen(Activity activity) {
+        analyticTracker.sendScreen(activity, DigitalEventTracking.Screen.DIGITAL_CHECKOUT);
     }
 }

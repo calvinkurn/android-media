@@ -43,4 +43,9 @@ public interface DigitalEventTracking {
         String SITE = "tokopediadigital";
     }
 
+
+    interface Screen {
+        String DIGITAL_CATEGORY = "/digital/";
+        String DIGITAL_CHECKOUT = "/digital/checkout";
+    }
 }
