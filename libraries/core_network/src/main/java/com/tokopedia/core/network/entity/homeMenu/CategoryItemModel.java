@@ -10,6 +10,8 @@ package com.tokopedia.core.network.entity.homeMenu;
 /**
  * @author by mady on 9/23/16.
  */
+
+@Deprecated
 public class CategoryItemModel {
 
 

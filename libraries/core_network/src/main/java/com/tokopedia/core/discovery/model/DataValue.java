@@ -12,6 +12,8 @@ import java.util.List;
 /**
  * @author kulomady on 12/22/16.
  */
+
+@Deprecated
 public class DataValue implements Parcelable {
 
 

@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by noiz354 on 3/2/16.
  */
+
+@Deprecated
 public class TopAdsHome {
     @SerializedName("data")
     Data[] data;

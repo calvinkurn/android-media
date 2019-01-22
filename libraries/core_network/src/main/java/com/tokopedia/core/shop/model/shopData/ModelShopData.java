@@ -4,6 +4,7 @@ package com.tokopedia.core.shop.model.shopData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class ModelShopData {
 
     @SerializedName("config")

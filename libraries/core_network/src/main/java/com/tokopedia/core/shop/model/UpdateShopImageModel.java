@@ -8,6 +8,8 @@ import org.parceler.Parcel;
 /**
  * Created by Toped10 on 5/26/2016.
  */
+
+@Deprecated
 @Parcel
 public class UpdateShopImageModel {
 

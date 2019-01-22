@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * Created by Tkpd_Eka on 12/7/2015.
  */
+
+@Deprecated
 public class ActionService extends AuthService<ActionApi> {
 
     public ActionService(){}

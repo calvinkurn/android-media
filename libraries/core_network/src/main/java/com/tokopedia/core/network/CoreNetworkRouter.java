@@ -10,6 +10,7 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 
+@Deprecated
 public interface CoreNetworkRouter {
 
     Intent getMaintenancePageIntent();

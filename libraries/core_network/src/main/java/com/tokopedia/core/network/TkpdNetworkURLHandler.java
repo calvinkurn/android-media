@@ -15,6 +15,8 @@ import java.util.List;
 /**
  * Created by ricoharisin on 2/10/15.
  */
+
+@Deprecated
 public class TkpdNetworkURLHandler {
 
     private static final String DEFAULT_URL = "www.tokopedia.com";

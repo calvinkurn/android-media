@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by alifa on 9/13/17.
  */
 
+@Deprecated
 public class Galadrielservice extends BaseService<GaladrielApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

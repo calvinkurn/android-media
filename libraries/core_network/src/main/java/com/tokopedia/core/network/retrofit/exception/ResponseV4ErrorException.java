@@ -7,6 +7,7 @@ import java.util.List;
  * @author sebastianuskh on 5/2/17.
  */
 
+@Deprecated
 public class ResponseV4ErrorException extends IOException {
     private List<String> errorList;
 

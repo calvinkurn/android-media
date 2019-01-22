@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by nisie on 4/26/17.
  */
 
+@Deprecated
 public class SearchData {
 
     @SerializedName("searchable")

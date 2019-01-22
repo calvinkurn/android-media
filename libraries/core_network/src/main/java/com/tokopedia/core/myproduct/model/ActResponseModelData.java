@@ -8,6 +8,8 @@ import org.parceler.Parcel;
 /**
  * Created by noiz354 on 6/2/16.
  */
+
+@Deprecated
 @Parcel
 public class ActResponseModelData {
 

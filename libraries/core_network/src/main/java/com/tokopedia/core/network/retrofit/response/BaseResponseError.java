@@ -6,6 +6,7 @@ import java.io.IOException;
  * Created by Hendry on 3/1/2017.
  */
 
+@Deprecated
 public abstract class BaseResponseError {
 
     /**

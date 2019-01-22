@@ -23,6 +23,8 @@ import rx.Observable;
  * Created by m.normansyah on 26/11/2015.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public interface ProductFeedApi {
 
     String GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";

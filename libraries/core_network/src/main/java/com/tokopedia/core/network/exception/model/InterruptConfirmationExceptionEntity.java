@@ -9,6 +9,7 @@ import java.util.List;
  * Created by alvarisi on 3/29/17.
  */
 
+@Deprecated
 public class InterruptConfirmationExceptionEntity {
     @SerializedName("message")
     @Expose

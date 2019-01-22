@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Toped18 on 7/1/2016.
  */
+
+@Deprecated
 public class SearchSuggestionService extends AuthService<SearchSuggestionApi> {
     private static final String TAG = SearchSuggestionService.class.getSimpleName();
 

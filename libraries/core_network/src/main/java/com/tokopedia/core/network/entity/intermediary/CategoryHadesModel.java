@@ -8,6 +8,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.model.ObjContainer;
 
+@Deprecated
 public class CategoryHadesModel implements Parcelable {
 
     @SerializedName("server_process_time")

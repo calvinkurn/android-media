@@ -38,6 +38,7 @@ import retrofit2.Retrofit;
  * Created by ricoharisin on 3/23/17.
  */
 
+@Deprecated
 @Module(includes = {OkHttpClientModule.class, RetrofitModule.class})
 public class NetModule {
 

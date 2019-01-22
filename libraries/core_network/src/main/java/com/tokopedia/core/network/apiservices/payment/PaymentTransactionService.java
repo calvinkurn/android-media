@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by kris on 9/12/17. Tokopedia
  */
 
+@Deprecated
 public class PaymentTransactionService extends AuthService<PaymentTransactionApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

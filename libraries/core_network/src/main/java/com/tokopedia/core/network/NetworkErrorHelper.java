@@ -27,6 +27,8 @@ import com.tokopedia.design.component.ToasterError;
 /**
  * Created by ricoharisin on 5/30/16.
  */
+
+@Deprecated
 public class NetworkErrorHelper {
 
     public static void showDialog(Context context, final RetryClickedListener listener) {

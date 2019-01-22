@@ -5,6 +5,8 @@ import javax.inject.Qualifier;
 /**
  * @author ricoharisin .
  */
+
+@Deprecated
 @Qualifier
 public @interface NoAuthNoFingerprint {
 }

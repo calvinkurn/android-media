@@ -3,6 +3,8 @@ package com.tokopedia.core.network.constants;
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public class TkpdBaseURL {
 
     public static final String URL_TOKOCASH = "https://tokocash.com/";

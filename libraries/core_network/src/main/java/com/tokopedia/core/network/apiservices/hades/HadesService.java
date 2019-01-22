@@ -12,6 +12,7 @@ import retrofit2.Retrofit;
  * Created by Alifa on 2/22/2017.
  */
 
+@Deprecated
 public class HadesService extends AuthService<HadesApi> {
     private static final String TAG = HadesService.class.getSimpleName();
 

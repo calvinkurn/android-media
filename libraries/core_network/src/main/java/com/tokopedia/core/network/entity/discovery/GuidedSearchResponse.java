@@ -8,6 +8,7 @@ import java.util.List;
  * Created by henrypriyono on 14/02/18.
  */
 
+@Deprecated
 public class GuidedSearchResponse {
     @SerializedName("data")
     private List<GuidedSearchItem> data;

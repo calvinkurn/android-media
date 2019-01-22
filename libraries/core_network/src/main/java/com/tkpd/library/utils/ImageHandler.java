@@ -33,7 +33,7 @@ import com.tokopedia.core.gcm.BuildAndShowNotification;
 import java.io.File;
 import java.io.IOException;
 
-
+@Deprecated
 public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.ImageHandler {
 
     public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {

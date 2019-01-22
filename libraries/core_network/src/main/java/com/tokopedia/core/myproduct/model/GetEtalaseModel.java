@@ -11,6 +11,8 @@ import java.util.List;
 /**
  * Created by m.normansyah on 17/12/2015.
  */
+
+@Deprecated
 @Parcel
 public class GetEtalaseModel {
     /**

@@ -10,6 +10,8 @@ import com.tokopedia.core.util.GeneralUtils;
 /**
  * Created by Angga.Prasetiyo on 13/11/2015.
  */
+
+@Deprecated
 public class Etalase implements Parcelable {
     private static final String TAG = Etalase.class.getSimpleName();
 

@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient;
  * Created by ricoharisin on 2/28/17.
  */
 
+@Deprecated
 public class TkpdOkHttpBuilder {
 
     private OkHttpClient.Builder builder;

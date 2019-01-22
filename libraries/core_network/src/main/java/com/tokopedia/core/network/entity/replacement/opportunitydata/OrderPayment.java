@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.replacement.opportunitydata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class OrderPayment {
 
     @SerializedName("payment_process_due_date")

@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.tokocash;
  * Created by nabillasabbaha on 10/9/17.
  */
 
+@Deprecated
 public class WalletTokenEntity {
 
     private String token;

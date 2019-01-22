@@ -10,6 +10,8 @@ import java.util.List;
 /**
  * Created by Toped10 on 5/25/2016.
  */
+
+@Deprecated
 @Parcel
 public class ResponseEdit {
     /**

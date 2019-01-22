@@ -24,6 +24,7 @@ import rx.Observable;
  * Created by stevenfredian on 8/31/17.
  */
 
+@Deprecated
 public interface ChatApi {
     @GET(TkpdBaseURL.Chat.GET_EXISTING_CHAT)
     Observable<Response<TkpdResponse>> getExistingChat(@QueryMap Map<String, Object> requestParams);

@@ -12,6 +12,7 @@ import java.io.IOException;
  * This class handles 422 http error codes
  */
 
+@Deprecated
 public class UnProcessableHttpException extends IOException {
     private static final String DEFAULT_MESSAGE = "Sorry, Please try again later";
 

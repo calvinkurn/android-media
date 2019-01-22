@@ -12,6 +12,7 @@ import com.tokopedia.core.var.Badge;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class List implements Parcelable {
 
     @SerializedName("shop_lucky")

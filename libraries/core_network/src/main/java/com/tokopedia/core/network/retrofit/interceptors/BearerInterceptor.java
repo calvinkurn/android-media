@@ -8,6 +8,7 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
+@Deprecated
 public class BearerInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_DEVICE = "X-Device";
     public static final String ANDROID = "android";

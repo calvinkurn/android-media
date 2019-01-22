@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author noiz354 on 3/17/16.
  */
+
+@Deprecated
 public class DiscoveryService extends BaseService<BrowseApi> {
     public static final String TAG = DiscoveryService.class.getSimpleName();
 

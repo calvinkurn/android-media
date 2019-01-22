@@ -12,6 +12,7 @@ import rx.Observable;
  * Created by kris on 10/13/17. Tokopedia
  */
 
+@Deprecated
 public interface CreditCardAuthApi {
 
     @POST(TkpdBaseURL.Payment.PATH_ZEUS_CHECK_WHITELIST)

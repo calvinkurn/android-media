@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by sachinbansal on 5/29/18.
  */
 
+@Deprecated
 public class ImageSearchProductResponse {
 
     @SerializedName("image_search")

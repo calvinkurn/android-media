@@ -14,6 +14,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 04/12/2015.
  */
+
+@Deprecated
 public interface WishListActionApi {
 
     @FormUrlEncoded
