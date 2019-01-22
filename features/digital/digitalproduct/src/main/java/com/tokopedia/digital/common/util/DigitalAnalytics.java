@@ -247,7 +247,7 @@ public class DigitalAnalytics {
     }
 
     public void sendCategoryScreen(Activity activity, String name) {
-        analyticTracker.sendScreen(activity, DigitalEventTracking.Screen.DIGITAL_CATEGORY + name);
+        analyticTracker.sendScreen(activity, DigitalEventTracking.Screen.DIGITAL_CATEGORY + name.toLowerCase());
     }
 
     public void sendCartScreen(Activity activity) {
