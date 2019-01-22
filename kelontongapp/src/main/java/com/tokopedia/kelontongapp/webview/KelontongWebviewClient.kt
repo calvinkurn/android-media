@@ -82,7 +82,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     }
 
     fun requestPermission() {
-        ActivityCompat.requestPermissions(activity, arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE),
+        ActivityCompat.requestPermissions(activity, arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE, ACCESS_FINE_LOCATION),
                 PERMISSION_REQUEST_CODE)
     }
 
@@ -91,17 +91,19 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
             PERMISSION_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
                 val cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                val locationAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED
 
                 if (!(writeAccepted && cameraAccepted))
                     Toast.makeText(activity, "Mohon untuk memberikan izin akses kamera dan menulis file.", Toast.LENGTH_SHORT).show()
 
+                if (!locationAccepted)
+                    Toast.makeText(activity, "Mohon untuk memberikan izin lokasi.", Toast.LENGTH_SHORT).show()
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (activity.shouldShowRequestPermissionRationale(CAMERA)) {
-                        showMessageOKCancel("Mohon untuk memberikan izin akses kamera dan menulis file.", object : DialogInterface.OnClickListener {
-                            override fun onClick(dialog: DialogInterface?, which: Int) {
-                                requestPermission()
-                            }
-                        })
+                    if (activity.shouldShowRequestPermissionRationale(CAMERA) && activity.shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
+                        showMessageOKCancel("Mohon untuk memberikan izin akses kamera dan menulis file.",
+                                DialogInterface.OnClickListener { _, _ ->
+                                    requestPermission() })
                         return
                     }
                 }

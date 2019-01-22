@@ -58,11 +58,8 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     private fun loadWebViewPage() {
         if (ConnectionManager.isNetworkConnected(this)) {
             setContentView(R.layout.activity_main_kelontong)
-            initializeWebview()
 
-            if (Preference.isFirstTime(this)) {
-                requestPermission()
-            }
+            initializeWebview()
         } else {
             noInternetConnection()
         }
@@ -74,14 +71,6 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         val btnTryAgain = findViewById<Button>(R.id.btn_retry)
         btnTryAgain.setOnClickListener { loadWebViewPage() }
     }
-
-//    fun onReceivedErrorView() {
-//        setContentView(R.layout.activity_no_internet)
-//        findViewById<TextView>(R.id.tv_msg_medium).visibility = View.GONE
-//        findViewById<TextView>(R.id.tv_msg_large).visibility = View.VISIBLE
-//        val btnTryAgain = findViewById<Button>(R.id.btn_retry)
-//        btnTryAgain.setOnClickListener { loadWebViewPage() }
-//    }
 
     private fun initializeWebview() {
         webView = findViewById(R.id.webview)
@@ -146,6 +135,11 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         } else {
             CookieManager.getInstance().setAcceptCookie(true)
         }
+
+        if (Preference.isFirstTime(this)) {
+            requestPermission()
+        }
+
         loadHome()
     }
 
