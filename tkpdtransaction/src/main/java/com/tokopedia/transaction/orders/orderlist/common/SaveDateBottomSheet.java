@@ -82,13 +82,13 @@ public class SaveDateBottomSheet extends BottomSheets {
             @Override
             public void onClick(View v) {
 
-                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getMinimumDate(), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 1);
+                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getDate(startDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 1);
             }
         });
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getMinimumDate(), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 2);
+                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getDate(endDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 2);
             }
         });
         saveDate.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +98,10 @@ public class SaveDateBottomSheet extends BottomSheets {
                 dismiss();
             }
         });
+    }
+
+    private Date getMinimumDate() {
+        return  getDate(MIN_DATE);
     }
 
     private void setDateText() {
@@ -119,11 +123,16 @@ public class SaveDateBottomSheet extends BottomSheets {
         return TITLE;
     }
 
-    private Date getMinimumDate() {
+
+    private Date getDate(String date) {
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, LOCALE);
         Date minDate = new Date();
         try {
-            minDate = dateFormat.parse(MIN_DATE);
+            if(date == null ) {
+                minDate = dateFormat.parse(MIN_DATE);
+            }else {
+                minDate = dateFormat.parse(date);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -5,13 +5,11 @@
     android:id="@+id/dropshipperLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_20"
     android:layout_marginBottom="@dimen/dp_20"
     app:cardBackgroundColor="#2ef5a623"
     app:cardCornerRadius="@dimen/dp_4"
     app:cardUseCompatPadding="true"
-    app:cardElevation="4dp"
     tools:visibility="visible">
 
     <android.support.constraint.ConstraintLayout
@@ -42,24 +40,22 @@
             android:id="@+id/dropShipper_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_24"
             android:text="Tukul Arwana"
             android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@+id/guideLine"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteY="16dp" />
 
 
         <TextView
             android:id="@+id/dropShipper_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_24"
             android:text="08123456789"
             android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@+id/guideLine"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dropShipper_name" />

@@ -220,6 +220,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(title.label());
         doubleTextView.setBottomText(title.value());
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
         statusDetail.addView(doubleTextView);
     }
 

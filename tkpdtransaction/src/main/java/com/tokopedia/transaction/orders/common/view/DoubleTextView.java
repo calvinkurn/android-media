@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +34,10 @@ public class DoubleTextView extends LinearLayout {
         topTextView = (TextView) layout.findViewById(R.id.top_text);
         bottomTextView = (TextView) layout.findViewById(R.id.bottom_text);
 
+    }
+
+    public void setBottonTextViewGravity(int gravity) {
+        bottomTextView.setGravity(gravity);
     }
 
     public DoubleTextView(Context context, AttributeSet attrs) {
