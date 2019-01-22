@@ -8,7 +8,7 @@ import android.util.Log;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.network.R;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 
@@ -84,7 +84,7 @@ public class ErrorHandler {
     }
 
     public static String getErrorMessage(Throwable e) {
-        return getErrorMessage(e, MainApplication.getAppContext());
+        return getErrorMessage(e, CoreNetworkApplication.getAppContext());
     }
 
     public static String getErrorMessage(Throwable e, final Context context) {
@@ -189,7 +189,7 @@ public class ErrorHandler {
     }
 
     public static String getDefaultErrorCodeMessage(int errorCode) {
-        return MainApplication.getAppContext().getString(R.string.default_request_error_unknown)
+        return CoreNetworkApplication.getAppContext().getString(R.string.default_request_error_unknown)
                 + " (" + errorCode + ")";
     }
 

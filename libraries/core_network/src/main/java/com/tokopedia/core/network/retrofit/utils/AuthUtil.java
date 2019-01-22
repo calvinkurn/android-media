@@ -11,7 +11,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -103,9 +103,9 @@ public class AuthUtil {
         );
 
         finalHeader.put("X-APP-VERSION", "\"" + GlobalConfig.VERSION_NAME + "\"");
-        finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
+        finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(CoreNetworkApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android");
-        finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(MainApplication.getAppContext()));
+        finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(CoreNetworkApplication.getAppContext()));
         return finalHeader;
     }
 
@@ -136,7 +136,7 @@ public class AuthUtil {
     ) {
         String date = generateDate(DATE_FORMAT);
         String contentMD5 = generateContentMd5(strParam);
-        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+        String userId = SessionHandler.getLoginID(CoreNetworkApplication.getAppContext());
 
         String authString = method
                 + "\n" + contentMD5
@@ -167,7 +167,7 @@ public class AuthUtil {
             String msisdn
     ) {
         String date = generateDate(DATE_FORMAT);
-        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+        String userId = SessionHandler.getLoginID(CoreNetworkApplication.getAppContext());
 
         String authString = method
                 + "\n" + ""
@@ -219,7 +219,7 @@ public class AuthUtil {
         );
         finalHeader.put(
                 HEADER_TKPD_SESSION_ID,
-                FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext())
+                FCMCacheManager.getRegistrationIdWithTemp(CoreNetworkApplication.getAppContext())
         );
         finalHeader.put(
                 HEADER_TKPD_USER_AGENT,
@@ -264,7 +264,7 @@ public class AuthUtil {
 
     public static Map<String, String> generateHeaders(String path, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
-        finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
+        finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(CoreNetworkApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return finalHeader;
     }
@@ -275,7 +275,7 @@ public class AuthUtil {
                                                           String contentType, String authKey, String dateFormat) {
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
-        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+        String userId = SessionHandler.getLoginID(CoreNetworkApplication.getAppContext());
 
         String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
         String signature = calculateRFC2104HMAC(authString, authKey);
@@ -300,7 +300,7 @@ public class AuthUtil {
                                                              String contentType, String authKey, String dateFormat) {
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
-        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+        String userId = SessionHandler.getLoginID(CoreNetworkApplication.getAppContext());
 
         String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
         String signature = calculateRFC2104HMAC(authString, authKey);

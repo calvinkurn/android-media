@@ -3,8 +3,8 @@ package com.tokopedia.core.network.retrofit.utils;
 import android.content.Context;
 import android.util.Base64;
 
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.BuildConfig;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -121,7 +121,7 @@ public class AccountsUtil extends AuthUtil{
         finalHeader.put(HEADER_DATE, date);
         finalHeader.put(HEADER_CONTENT_MD5, contentMD5);
         finalHeader.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
-        finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
+        finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(CoreNetworkApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android-"+ GlobalConfig.VERSION_NAME);
 
         return finalHeader;

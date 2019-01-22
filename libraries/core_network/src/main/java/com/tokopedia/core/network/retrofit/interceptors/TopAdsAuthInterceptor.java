@@ -38,7 +38,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH);
         String date = dateFormat.format(new Date());
         headerMap.put("X-Date", date);
-        // headerMap.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
+        // headerMap.put("Tkpd-UserId", SessionHandler.getLoginID(CoreNetworkApplication.getAppContext()));
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerMap.get("Authorization"));
         if(sessionHandler == null) {

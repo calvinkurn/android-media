@@ -3,7 +3,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 import android.content.Intent;
 
 import com.tokopedia.core.constant.ConstantCoreNetwork;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
@@ -89,7 +89,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
             Intent intent = new Intent();
             intent.setAction(ConstantCoreNetwork.FORCE_LOGOUT);
-            MainApplication.getAppContext().sendBroadcast(intent);
+            CoreNetworkApplication.getAppContext().sendBroadcast(intent);
             throw new SessionExpiredException(errorMessage);
         } else {
             throw new UnProcessableHttpException(bodyResponse);
@@ -134,7 +134,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         SimpleDateFormat dateFormat = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.ENGLISH);
         String date = dateFormat.format(new Date());
         headerMap.put(HEADER_DATE, date);
-        headerMap.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
+        headerMap.put(HEADER_USER_ID, SessionHandler.getLoginID(CoreNetworkApplication.getAppContext()));
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
 
         headerMap.put(HEADER_X_AUTHORIZATION, headerMap.get(HEADER_AUTHORIZATION));

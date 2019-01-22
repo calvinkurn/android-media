@@ -17,7 +17,7 @@ import com.tokopedia.core.router.SellerRouter;
 /**
  * this code is bridging for old code and latest codes.
  */
-public abstract class MainRouterApplication extends BaseMainApplication implements TkpdCoreRouter {
+public abstract class MainRouterApplication extends CoreNetworkApplication implements TkpdCoreRouter {
     GCMHandler gcmHandler;
     SessionHandler sessionHandler;
 

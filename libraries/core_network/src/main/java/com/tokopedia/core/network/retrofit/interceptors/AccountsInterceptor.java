@@ -2,7 +2,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -73,11 +73,11 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
 
 
     protected String getToken() {
-        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        SessionHandler sessionHandler = new SessionHandler(CoreNetworkApplication.getAppContext());
         if (!TextUtils.isEmpty(sessionHandler
-                .getAccessToken(MainApplication.getAppContext())))
-            return sessionHandler.getTokenType(MainApplication.getAppContext()) + " " +
-                    sessionHandler.getAccessToken(MainApplication.getAppContext());
+                .getAccessToken(CoreNetworkApplication.getAppContext())))
+            return sessionHandler.getTokenType(CoreNetworkApplication.getAppContext()) + " " +
+                    sessionHandler.getAccessToken(CoreNetworkApplication.getAppContext());
         else
             return authKey;
     }

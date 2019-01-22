@@ -3,7 +3,7 @@ package com.tokopedia.core.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
@@ -37,7 +37,7 @@ public class SessionRefresh {
     }
 
     public String refreshLogin() throws IOException {
-        Context context = MainApplication.getAppContext();
+        Context context = CoreNetworkApplication.getAppContext();
         SessionHandler sessionHandler = new SessionHandler(context);
 
         String authKey;
@@ -54,12 +54,12 @@ public class SessionRefresh {
         Call<String> responseCall = getRetrofit(authKey)
                 .create(AccountsApi.class).makeLoginsynchronous(
                         AuthUtil.generateParamsNetwork2(
-                                MainApplication.getAppContext(), params.getParameters()));
+                                CoreNetworkApplication.getAppContext(), params.getParameters()));
         return responseCall.execute().body();
     }
 
     public String gcmUpdate() throws IOException {
-        Context context = MainApplication.getAppContext();
+        Context context = CoreNetworkApplication.getAppContext();
         SessionHandler sessionHandler = new SessionHandler(context);
 
         String authKey;
@@ -77,7 +77,7 @@ public class SessionRefresh {
         Call<String> responseCall = getRetrofit(authKey)
                 .create(AccountsApi.class).gcmUpdate(
                         AuthUtil.generateParamsNetwork2(
-                                MainApplication.getAppContext(), params.getParameters()));
+                                CoreNetworkApplication.getAppContext(), params.getParameters()));
         return responseCall.execute().body();
     }
 

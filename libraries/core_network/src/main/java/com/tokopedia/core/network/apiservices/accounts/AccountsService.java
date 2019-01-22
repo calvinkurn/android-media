@@ -3,7 +3,6 @@ package com.tokopedia.core.network.apiservices.accounts;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -220,35 +220,35 @@ abstract class AuthHmacInterceptor implements Interceptor {
     }
 
     private void showMaintenancePage() {
-        MainApplication.getAppContext().startActivity(
-                MaintenancePage.createIntentFromNetwork(MainApplication.getAppContext()));
+        CoreNetworkApplication.getAppContext().startActivity(
+                MaintenancePage.createIntentFromNetwork(CoreNetworkApplication.getAppContext()));
     }
 
     private void showForceLogoutDialog() {
         Intent intent = new Intent();
         intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
-        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
     private void sendForceLogoutAnalytics(Response response) {
-        Context appContext = MainApplication.getAppContext();
+        Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logForceLogout(appContext,
-                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
                 response.request().url().toString());
     }
 
     private void showServerErrorSnackbar() {
         Intent intent = new Intent();
         intent.setAction("com.tokopedia.tkpd.SERVER_ERROR");
-        MainApplication.getAppContext().sendBroadcast(intent);
+        CoreNetworkApplication.getAppContext().sendBroadcast(intent);
     }
 
     private void sendErrorNetworkAnalytics(Response response) {
-        Context appContext = MainApplication.getAppContext();
+        Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logNetworkError(appContext,
-                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
                 response.request().url().toString(), response.code());
     }
 }

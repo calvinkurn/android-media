@@ -10,7 +10,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -50,7 +50,7 @@ public abstract class KeroService<T> {
     private String alterURL(String baseUrl) {
         if (baseUrl.startsWith("https://ws") & BuildConfig.DEBUG) {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
-            SharedPreferences pref = MainApplication.getAppContext()
+            SharedPreferences pref = CoreNetworkApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
             baseUrl = pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN) + path;
         }
@@ -86,9 +86,9 @@ public abstract class KeroService<T> {
 
     private void setInterceptorDebug(OkHttpClient.Builder client) {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), ConstantCoreNetwork.CHUCK_ENABLED);
+            LocalCacheHandler cache = new LocalCacheHandler(CoreNetworkApplication.getAppContext(), ConstantCoreNetwork.CHUCK_ENABLED);
             Boolean allowLogOnNotification = cache.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false);
-            client.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+            client.addInterceptor(new ChuckInterceptor(CoreNetworkApplication.getAppContext())
                     .showNotification(allowLogOnNotification));
         }
     }

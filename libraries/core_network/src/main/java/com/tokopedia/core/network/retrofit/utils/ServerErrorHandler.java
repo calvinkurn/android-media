@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 
@@ -25,55 +26,55 @@ public class ServerErrorHandler {
     public static final String STATUS_FORBIDDEN = "FORBIDDEN";
     
     public static void showMaintenancePage() {
-        MainApplication.getAppContext().startActivity(
-                MaintenancePage.createIntentFromNetwork(MainApplication.getAppContext()));
+        CoreNetworkApplication.getAppContext().startActivity(
+                MaintenancePage.createIntentFromNetwork(CoreNetworkApplication.getAppContext()));
     }
 
     public static void showForceLogoutDialog() {
         Intent intent = new Intent();
         intent.setAction(ACTION_FORCE_LOGOUT);
-        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
     public static void sendForceLogoutAnalytics(String url) {
         AnalyticsLog.logForceLogout(
-                MainApplication.getAppContext(),
-                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getAppContext(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
                 url);
     }
 
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {
         AnalyticsLog.logNetworkError(
-                MainApplication.getAppContext(),
-                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getAppContext(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
                 url, errorCode);
     }
 
     public static void showServerErrorSnackbar() {
         Intent intent = new Intent();
         intent.setAction(ACTION_SERVER_ERROR);
-        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
     public static void showTimezoneErrorSnackbar() {
         Intent intent = new Intent();
         intent.setAction(ACTION_TIMEZONE_ERROR);
-        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
     public static void showForceHockeyAppDialog() {
         Intent intent = new Intent();
         intent.setAction(ACTION_FORCE_HOCKEYAPP);
-        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
     public static void sendForceLogoutTokenAnalytics(String url) {
-        Context appContext = MainApplication.getAppContext();
+        Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logForceLogoutToken(appContext,
-                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
                 url);
     }
 }

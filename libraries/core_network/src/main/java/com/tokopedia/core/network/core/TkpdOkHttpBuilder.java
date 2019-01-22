@@ -3,7 +3,7 @@ package com.tokopedia.core.network.core;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
@@ -42,9 +42,9 @@ public class TkpdOkHttpBuilder {
 
     public TkpdOkHttpBuilder addDebugInterceptor() {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), ConstantCoreNetwork.CHUCK_ENABLED);
+            LocalCacheHandler cache = new LocalCacheHandler(CoreNetworkApplication.getAppContext(), ConstantCoreNetwork.CHUCK_ENABLED);
             Boolean allowLogOnNotification = cache.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false);
-            this.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+            this.addInterceptor(new ChuckInterceptor(CoreNetworkApplication.getAppContext())
                     .showNotification(allowLogOnNotification));
             this.addInterceptor(new DebugInterceptor());
         }

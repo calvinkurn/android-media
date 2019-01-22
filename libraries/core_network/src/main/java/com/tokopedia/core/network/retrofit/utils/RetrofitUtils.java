@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.network.BuildConfig;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -46,7 +46,7 @@ public class RetrofitUtils {
         String baseUrl = url;
         if (baseUrl.startsWith("https://ws") & BuildConfig.DEBUG) {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
-            SharedPreferences pref = MainApplication.getAppContext()
+            SharedPreferences pref = CoreNetworkApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
             baseUrl = pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN) + path;
         }

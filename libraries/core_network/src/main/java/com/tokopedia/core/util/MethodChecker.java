@@ -23,9 +23,9 @@ import android.webkit.WebSettings;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.util.GeneralUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
 
 import java.io.File;
 
@@ -136,11 +136,11 @@ public class MethodChecker {
     public static boolean isTimezoneNotAutomatic() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return android.provider.Settings.Global.getInt(
-                    MainApplication.getAppContext().getContentResolver(),
+                    CoreNetworkApplication.getAppContext().getContentResolver(),
                     android.provider.Settings.Global.AUTO_TIME, 0) == 0;
         } else {
             return android.provider.Settings.System.getInt(
-                    MainApplication.getAppContext().getContentResolver(),
+                    CoreNetworkApplication.getAppContext().getContentResolver(),
                     android.provider.Settings.System.AUTO_TIME, 0) == 0;
         }
     }

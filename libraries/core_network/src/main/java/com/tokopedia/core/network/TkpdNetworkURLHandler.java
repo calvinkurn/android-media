@@ -4,10 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.util.GeneralUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class TkpdNetworkURLHandler {
         if (urlGTM != null && !urlGTM.equals("")) {
             return urlGTM;
         } else {
-            if (!MainApplication.isDebug()) return url;
+            if (!GlobalConfig.DEBUG) return url;
 
             Uri uri = Uri.parse(url);
             GeneralUtils.dumper("base: " + uri.getHost());
@@ -91,7 +92,7 @@ public class TkpdNetworkURLHandler {
     }
 
     private static int getStateURL(Context context) {
-        if (!MainApplication.isDebug()) {
+        if (!GlobalConfig.DEBUG) {
             return STATE_PROD;
         }
 
@@ -119,13 +120,13 @@ public class TkpdNetworkURLHandler {
         Log.i("GTM TKPD", "KEY: "+key+" STATE: "+state);
         switch (state) {
             case STATE_PROD:
-                return TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                return TrackingUtils.getGtmString(CoreNetworkApplication.getAppContext(),
                         key+"_production");
             case STATE_BETA:
-                return TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                return TrackingUtils.getGtmString(CoreNetworkApplication.getAppContext(),
                         key+"_staging");
             case STATE_DEV:
-                return TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                return TrackingUtils.getGtmString(CoreNetworkApplication.getAppContext(),
                         key+"_dev");
             default:
                 return null;
