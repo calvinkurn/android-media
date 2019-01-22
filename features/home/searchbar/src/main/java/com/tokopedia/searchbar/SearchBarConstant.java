@@ -15,6 +15,8 @@ public class SearchBarConstant {
 
     public static final String WISHLIST = "wishlist";
 
+    public static final String INBOX = "inbox";
+
     public static final String NOTIFICATION = "notification";
 
     public static final String SCAN_QR = "scan qr";
