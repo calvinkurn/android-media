@@ -40,6 +40,7 @@ const val ANDROID = "tkpd/mitra/android"
 const val MOBILE = "mobile"
 const val X_REQUESTED_WITH = "X-Requested-With"
 const val EXIT_DELAY_MILLIS = 2000
+const val URL = "base_url"
 
 const val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
 const val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
