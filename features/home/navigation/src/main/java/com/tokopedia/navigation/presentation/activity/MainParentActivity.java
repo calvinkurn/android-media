@@ -242,7 +242,6 @@ public class MainParentActivity extends BaseActivity implements
 
         initHockeyBroadcastReceiver();
         initNewFeedClickReceiver();
-        initAffiliateClickReceiver();
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
