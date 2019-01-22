@@ -221,12 +221,7 @@ public class ExploreFragment
 
     private void initListener() {
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
-        ivBantuan.setOnClickListener(view ->
-                RouteManager.route(
-                        getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
-                )
-        );
+        ivBantuan.setOnClickListener(view -> goToEducation());
         scrollToTopButton.setButton2OnClickListener(view -> {
             rvExplore.scrollToPosition(0);
         });
