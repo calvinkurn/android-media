@@ -285,7 +285,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         Intent intent = TopChatRoomActivity.Companion.getCallingIntent(getView().getActivity()
                 , String.valueOf(listMessage.getId())
                 , listMessage.getName(),
-                listMessage.getLabel(),
+                listMessage.getLabel().toString(),
                 listMessage.getSenderId(),
                 listMessage.getRole(),
                 viewModel.getMode(),

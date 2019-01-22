@@ -297,6 +297,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             temp.setTime(response.getData().getMessage().getTimeStampUnix());
             temp.setName(response.getData().getFrom());
             temp.setRole(response.getData().getFromRole());
+            temp.setLabel(response.getData().getFromRole());
             temp.setImage(response.getData().getImageUri());
             if (this.list.size() == 1 && list.get(0) instanceof EmptyChatModel) {
                 this.list.clear();

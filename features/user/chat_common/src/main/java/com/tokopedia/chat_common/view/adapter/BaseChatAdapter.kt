@@ -72,7 +72,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     }
 
     fun showTyping() {
-        if(this.visitables.any{it == typingModel}) {
+        if(!this.visitables.any{it == typingModel}) {
             this.visitables.add(0, typingModel)
             notifyItemInserted(0)
         }
