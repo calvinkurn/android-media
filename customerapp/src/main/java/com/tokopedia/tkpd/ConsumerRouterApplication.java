@@ -114,6 +114,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -520,7 +521,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingPromoCheckoutRouter,
         TopAdsRouter,
         CMRouter,
-        SaldoDetailsRouter {
+        SaldoDetailsRouter,
+        ILoyaltyRouter {
 
     private static final String EXTRA = "extra";
 
