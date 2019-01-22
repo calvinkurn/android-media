@@ -33,7 +33,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
-import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
@@ -256,7 +255,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
-        if (afterPost && !onlyOnePost) {
+        if (afterPost && !onlyOnePost && affiliatePostQuota?.number != 0) {
             ToasterNormal
                     .make(view,
                             getString(R.string.profile_recommend_success),
