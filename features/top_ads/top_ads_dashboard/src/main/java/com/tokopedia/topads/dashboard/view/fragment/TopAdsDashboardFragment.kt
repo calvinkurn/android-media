@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.design.component.Tooltip
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
@@ -56,6 +58,8 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
@@ -73,6 +77,7 @@ import javax.inject.Inject
 
 class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var isShowAutoAddPromo = false
+    internal var isAutoTopUpActive = false
 
     val shopInfoLayout: View?
         get() = view_group_deposit
@@ -340,6 +345,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun loadData() {
         ticker_view.clearMessage()
         swipe_refresh_layout.isRefreshing = true
+        topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
@@ -370,7 +376,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
 
     private fun goToCreditHistory() {
         context?.let {
-            startActivity(TopAdsCreditHistoryActivity.createInstance(it))
+            startActivityForResult(TopAdsCreditHistoryActivity.createInstance(it), REQUEST_CODE_SET_AUTO_TOPUP)
         }
     }
 
@@ -444,6 +450,9 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         } else if (requestCode == REQUEST_CODE_ADD_KEYWORD && data != null) {
             checkAdChanged(data)
             onSummaryKeywordClicked()
+        } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK){
+            topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper
+                    .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
         }
     }
 
@@ -607,6 +616,28 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
 
     override fun onErrorGetTicker(e: Throwable) {}
 
+    override fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
+        isAutoTopUpActive = (data.status.toIntOrNull() ?: 0) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
+        text_view_deposit_desc.setDrawableRight(if (isAutoTopUpActive) R.drawable.ic_repeat_green else R.drawable.ic_repeat_grey)
+        text_view_deposit_desc.setOnClickListener {
+            Tooltip(it.context).apply {
+                setTitle(getString(R.string.label_topads_automatic_topup) + ": " + data.statusDesc)
+                setDesc(getString(R.string.tooltip_auto_topup_descr))
+                setWithIcon(false)
+                setTextButton(getString(R.string.label_manage))
+                btnAction.setOnClickListener { gotoAutoTopup(); dismiss() }
+            }.show()
+        }
+    }
+
+    private fun gotoAutoTopup() {
+        activity?.let {
+            startActivityForResult(TopAdsAutoTopUpActivity.createInstance(it), REQUEST_CODE_SET_AUTO_TOPUP)
+        }
+    }
+
+    override fun onErrorGetAutoTopUpStatus(throwable: Throwable) {}
+
     private fun getTotalAd(totalAd: TotalAd): Int {
         return totalAd.totalShopAd + totalAd.totalKeyword + totalAd.totalProductAd + totalAd.totalProductGroupAd
     }
@@ -756,6 +787,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         val REQUEST_CODE_AD_OPTION = 3
         val REQUEST_CODE_ADD_PRODUCT = 4
         val REQUEST_CODE_ADD_KEYWORD = 5
+        private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
 
         fun createInstance(): TopAdsDashboardFragment {
             return TopAdsDashboardFragment()
