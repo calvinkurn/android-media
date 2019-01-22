@@ -105,22 +105,15 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     }
 
     private fun onSuccessValidate(model: RegisterValidationPojo) {
-        //TODO
         if (TextUtils.equals(model.type, PHONE_TYPE)) {
-//            view.setTempPhoneNumber(model.view)
-            if (model.exist) {
-                viewEmailPhone.goToLoginPhoneVerifyPage(model.view)
-            } else {
-//                view.showNotRegisteredPhoneDialog(model.view)
-                viewEmailPhone.goToLoginPhoneVerifyPage(model.view)
-            }
+            viewEmailPhone.goToLoginPhoneVerifyPage(model.view)
         }
 
         if (TextUtils.equals(model.type, EMAIL_TYPE)) {
             if (model.exist) {
                 viewEmailPhone.onEmailExist(model.view)
             } else {
-//                viewEmailPhone.showNotRegisteredEmailDialog(model.view)
+                viewEmailPhone.showNotRegisteredEmailDialog(model.view)
             }
         }
     }
@@ -187,8 +180,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         loginEmailUseCase.unsubscribe()
     }
 
-    //IGNORE FOR NOW
-
     override fun discoverLogin() {
         //use the other method
     }
@@ -197,14 +188,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         //use the other method
     }
 
-
-
     override fun saveLoginEmail(email: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //NOT USED
     }
 
     override fun getLoginIdList(): ArrayList<String> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //NOT USED
+        return ArrayList()
     }
 
     override fun loginWebview(data: Intent?) {

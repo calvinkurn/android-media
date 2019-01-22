@@ -14,20 +14,18 @@
         android:layout_marginRight="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_30">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/email_phone_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/input_layout"
                 style="@style/HintTextInputLayout"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_3"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_weight="1"
                 android:hint="@string/phone_or_email_input"
                 android:inputType="phone"
                 android:paddingLeft="-5dp">
@@ -45,16 +43,19 @@
                 android:id="@+id/change_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_5"
                 android:gravity="center"
+                android:layout_marginTop="@dimen/dp_20"
+                android:padding="@dimen/dp_10"
                 android:text="@string/change_2"
-                android:visibility="gone"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 />
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/message"
@@ -91,8 +92,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/error_message"
-            android:paddingLeft="-5dp"
             android:hint="@string/title_password"
+            android:paddingLeft="-5dp"
             android:visibility="gone"
             app:passwordToggleDrawable="@drawable/asl_password_visibility"
             app:passwordToggleEnabled="true">
@@ -115,19 +116,19 @@
             android:id="@+id/forgot_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@id/wrapper_password"
             android:layout_gravity="end"
-            android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_5"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:lineSpacingExtra="9sp"
             android:padding="@dimen/dp_10"
+            android:layout_marginRight="-10dp"
             android:text="@string/title_forgot_password"
             android:textColor="@color/medium_green"
             android:textSize="12sp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:textStyle="normal"
             android:visibility="gone"
             />
@@ -136,7 +137,6 @@
             android:id="@+id/register_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
-
             android:layout_below="@+id/forgot_pass"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_16"

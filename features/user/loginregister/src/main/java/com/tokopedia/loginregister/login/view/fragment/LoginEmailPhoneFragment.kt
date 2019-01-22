@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
@@ -48,6 +49,7 @@ import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
+import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
@@ -221,9 +223,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         partialRegisterInputView.findViewById<TextView>(R.id.change_button).setOnClickListener { it ->
-            partialActionButton.text = getString(R.string.next)
-            partialActionButton.setOnClickListener { presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString()) }
-            partialRegisterInputView.showDefaultView()
+            onChangeButtonClicked()
         }
 
         activity?.let { it ->
@@ -241,17 +241,26 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     ds.color = MethodChecker.getColor(
                             activity, R.color.tkpd_main_green
                     )
-                    ds.typeface = Typeface.create("sans-serif-medium", Typeface
+                    ds.typeface = Typeface.create("sans-serif", Typeface
                             .NORMAL)
                 }
             }, sourceString.indexOf("Daftar"), sourceString.length, 0)
 
             register_button.setText(spannable, TextView.BufferType.SPANNABLE)
+            register_button.setOnClickListener{
+                goToRegisterInitial()
+            }
 
             val forgotPassword = partialRegisterInputView.findViewById<TextView>(R.id.forgot_pass)
             forgotPassword.setOnClickListener { goToForgotPassword() }
         }
 
+    }
+
+    private fun onChangeButtonClicked() {
+        partialActionButton.text = getString(R.string.next)
+        partialActionButton.setOnClickListener { presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString()) }
+        partialRegisterInputView.showDefaultView()
     }
 
     private fun goToForgotPassword() {
@@ -399,6 +408,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
 
             override fun onErrorLogin(errorMessage: String) {
+                dismissLoadingLogin()
                 NetworkErrorHelper.showSnackbar(activity, errorMessage)
             }
 
@@ -533,7 +543,33 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
         }
+    }
 
+    override fun showNotRegisteredEmailDialog(email: String) {
+        dismissLoadingLogin()
+
+        if (activity != null) {
+            val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            dialog.setTitle(getString(R.string.email_not_registered))
+            dialog.setDesc(
+                    String.format(resources.getString(
+                            R.string.email_not_registered_info), email))
+            dialog.setBtnOk(getString(R.string.not_registered_yes))
+            dialog.setOnOkClickListener { v ->
+                context?.let {
+                    dialog.dismiss()
+                    startActivity(RegisterEmailActivity.getCallingIntentWithEmail(it, email))
+                    activity!!.finish()
+                }
+            }
+            dialog.setBtnCancel(getString(R.string.already_registered_no))
+            dialog.setOnCancelClickListener { v ->
+                dialog.dismiss()
+                onChangeButtonClicked()
+                emailPhoneEditText.setText(email)
+            }
+            dialog.show()
+        }
     }
 
     override fun resetError() {
@@ -548,18 +584,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialRegisterInputView.onErrorValidate(getString(resId))
     }
 
-    override fun setAutoCompleteAdapter(listId: ArrayList<String>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun disableArrow() {
-        //NOT IMPLEMENTED
-    }
-
-    override fun enableArrow() {
-        //NOT IMPLEMENTED
-    }
-
     override fun onGoToAddName() {
         if (activity != null) {
             val intent = (activity!!.applicationContext as ApplinkRouter)
@@ -570,10 +594,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun setSmartLock() {
         val passwordET = partialRegisterInputView.findViewById<EditText>(R.id.password)
-        if(emailPhoneEditText.text.isNotBlank() && passwordET.text.isNotBlank()) {
-        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-                emailPhoneEditText.text.toString(),
-                passwordET.text.toString())
+        if (emailPhoneEditText.text.isNotBlank() && passwordET.text.isNotBlank()) {
+            saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                    emailPhoneEditText.text.toString(),
+                    passwordET.text.toString())
         }
     }
 
@@ -681,6 +705,19 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+
+    override fun setAutoCompleteAdapter(listId: ArrayList<String>?) {
+        //NOT IMPLEMENTED
+    }
+
+    override fun disableArrow() {
+        //NOT IMPLEMENTED
+    }
+
+    override fun enableArrow() {
+        //NOT IMPLEMENTED
     }
 
 }

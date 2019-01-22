@@ -269,6 +269,9 @@
     <string name="next">Selanjutnya</string>
     <string name="span_not_have_tokopedia_account">Belum punya akun Tokopedia?
         Daftar</string>
+    <string name="email_not_registered">Email Belum Terdaftar</string>
+    <string name="email_not_registered_info">Lanjut daftar dengan email ini %1$s?</string>
+    <string name="not_registered_yes">Ya, Daftar</string>
 
 
     <!-- ACTIVATION PAGE -->

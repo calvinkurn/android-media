@@ -139,7 +139,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     private void hideError() {
-        tvError.setVisibility(GONE);
+        tvError.setText("");
     }
 
     private void showError() {

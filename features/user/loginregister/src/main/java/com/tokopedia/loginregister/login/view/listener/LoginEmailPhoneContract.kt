@@ -13,6 +13,7 @@ interface LoginEmailPhoneContract : LoginContract {
         fun onErrorEmptyEmailPhone()
         fun goToLoginPhoneVerifyPage(phoneNumber: String)
         fun onEmailExist(email: String)
+        fun showNotRegisteredEmailDialog(email: String)
     }
 
     interface Presenter : LoginContract.Presenter {
