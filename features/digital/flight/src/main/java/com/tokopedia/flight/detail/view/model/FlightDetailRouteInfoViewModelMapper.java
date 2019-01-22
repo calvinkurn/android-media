@@ -1,7 +1,7 @@
 package com.tokopedia.flight.detail.view.model;
 
 import com.tokopedia.flight.orderlist.data.cloud.entity.AmenityEntity;
-import com.tokopedia.flight.search.data.cloud.model.response.Info;
+import com.tokopedia.flight.search.data.api.single.response.Info;
 
 import java.util.ArrayList;
 import java.util.List;

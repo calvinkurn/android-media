@@ -1,231 +1,99 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
-import android.app.Activity;
-import android.content.Context;
+
 import android.support.annotation.LayoutRes;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.viewpager.WrapContentViewPager;
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
-import com.tokopedia.digital.widget.view.model.category.Category;
+import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
+import com.tokopedia.digital.widget.view.fragment.DigitalWidgetFragment;
+import com.tokopedia.digital.widget.view.listener.DigitalChannelFragmentInteraction;
 import com.tokopedia.home.R;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.home.constant.ConstantKey;
-import com.tokopedia.home.recharge.adapter.RechargeViewPagerAdapter;
-import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenter;
-import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenterImpl;
-import com.tokopedia.home.recharge.view.RechargeCategoryView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements
-        RechargeCategoryView, View.OnClickListener {
+public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements DigitalChannelFragmentInteraction {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
-    TextView titleTxt;
-    TabLayout tabLayout;
-    WrapContentViewPager viewPager;
-    View pulsaPlaceHolder;
-    LinearLayout container;
 
-    private LocalCacheHandler cacheHandler;
-    private RechargeViewPagerAdapter rechargeViewPagerAdapter;
-    private Context context;
-    private HomeCategoryListener listener;
-    private RechargeCategoryPresenter rechargeCategoryPresenter;
     private FragmentManager fragmentManager;
-    private List<Category> mRechargeCategory;
-    private final DigitalWidgetRepository digitalWidgetRepository;
+    private HomeCategoryListener listener;
+    private WrapContentViewPager viewPagerChannel;
+    private WrapContentViewPager viewPagerWidget;
+    private DigitalsHomePagerAdapter digitalsHomePagerAdapter;
+    private DigitalsHomePagerAdapter widgetHomePagerAdapter;
+    private TextView titleTextView;
+    private TextView seeMoreTextView;
+    private boolean isDigitalWidget;
+    private static final String APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2";
 
-    public DigitalsViewHolder(FragmentManager fragmentManager, View itemView, HomeCategoryListener listener,
-                              DigitalWidgetRepository digitalWidgetRepository) {
+
+    public DigitalsViewHolder(HomeCategoryListener listener, FragmentManager fragmentManager, View itemView) {
         super(itemView);
         this.listener = listener;
-        this.context = itemView.getContext();
+        viewPagerChannel = itemView.findViewById(R.id.view_pager_channel);
+        viewPagerWidget = itemView.findViewById(R.id.view_pager_widget);
+        seeMoreTextView = itemView.findViewById(R.id.see_more);
+        titleTextView = itemView.findViewById(R.id.title);
         this.fragmentManager = fragmentManager;
-        this.mRechargeCategory = new ArrayList<>();
-        this.digitalWidgetRepository = digitalWidgetRepository;
-        titleTxt = itemView.findViewById(R.id.title);
-        tabLayout = itemView.findViewById(R.id.tab_layout_widget);
-        viewPager = itemView.findViewById(R.id.view_pager_widget);
-        pulsaPlaceHolder = itemView.findViewById(R.id.pulsa_place_holders);
-        container = itemView.findViewById(R.id.container);
-        itemView.findViewById(R.id.see_more).setOnClickListener(this);
-        cacheHandler = new LocalCacheHandler(context, ConstantKey.TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
-
-        DigitalWidgetUseCase digitalWidgetUseCase = new DigitalWidgetUseCase(context,
-                digitalWidgetRepository);
-
-        rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(context, this,
-                digitalWidgetUseCase);
     }
+
 
     @Override
-    public void renderDataRechargeCategory(List<Category> rechargeCategory) {
-        this.mRechargeCategory = rechargeCategory;
-        List<Integer> newRechargePositions = new ArrayList<>();
-        if (mRechargeCategory.size() == 0) {
-            return;
-        }
-
-        showDigitalWidget();
-        tabLayout.removeAllTabs();
-        addChildTablayout(mRechargeCategory, newRechargePositions);
-        getPositionFlagNewRecharge(newRechargePositions);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-
-        if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, mRechargeCategory);
-            viewPager.setAdapter(rechargeViewPagerAdapter);
+    public void bind(DigitalsViewModel element) {
+        if (isDigitalWidget) {
+            viewPagerChannel.setVisibility(View.GONE);
+            viewPagerWidget.setVisibility(View.VISIBLE);
+            if (widgetHomePagerAdapter == null) {
+                widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalWidgetFragment.Companion.newInstance());
+                viewPagerWidget.setAdapter(widgetHomePagerAdapter);
+                viewPagerWidget.setOffscreenPageLimit(1);
+            }
+            viewPagerWidget.setCurrentItem(0);
+            widgetHomePagerAdapter.notifyDataSetChanged();
         } else {
-            rechargeViewPagerAdapter.addFragments(mRechargeCategory);
-        }
-        addTablayoutListener(rechargeViewPagerAdapter);
-        viewPager.setOffscreenPageLimit(mRechargeCategory.size());
-        setTabSelected(mRechargeCategory.size());
-        rechargeViewPagerAdapter.notifyDataSetChanged();
-    }
-
-    public void hideDigitalWidget() {
-        container.setVisibility(View.GONE);
-        ((LinearLayout) tabLayout.getParent()).setVisibility(View.GONE);
-    }
-
-    private void showDigitalWidget() {
-        container.setVisibility(View.VISIBLE);
-        ((LinearLayout) tabLayout.getParent()).setVisibility(View.VISIBLE);
-    }
-
-    private void addChildTablayout(List<Category> rechargeCategory, List<Integer> newRechargePositions) {
-        for (int i = 0; i < rechargeCategory.size(); i++) {
-            pulsaPlaceHolder.setVisibility(View.GONE);
-            Category category = rechargeCategory.get(i);
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setText(category.getAttributes().getName());
-            tabLayout.addTab(tab);
-            if (category.getAttributes().isNew()) {
-                newRechargePositions.add(i);
-
+            if (digitalsHomePagerAdapter == null) {
+                digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalChannelFragment.Companion.newInstance(this));
+                viewPagerChannel.setAdapter(digitalsHomePagerAdapter);
+                viewPagerChannel.setOffscreenPageLimit(1);
             }
+            viewPagerWidget.setVisibility(View.GONE);
+            viewPagerChannel.setVisibility(View.VISIBLE);
+            digitalsHomePagerAdapter.notifyDataSetChanged();
+            viewPagerWidget.setCurrentItem(0);
         }
-    }
 
-    private void getPositionFlagNewRecharge(List<Integer> newRechargePositions) {
-        for (int positionRecharge : newRechargePositions) {
-            TextView tv = (TextView) (((LinearLayout) ((LinearLayout) tabLayout.getChildAt(0))
-                    .getChildAt(positionRecharge)).getChildAt(1));
-            if (tv != null) tv.setCompoundDrawablesWithIntrinsicBounds(
-                    null, null,
-                    ResourcesCompat.getDrawable(context.getResources(), R.drawable.recharge_circle, null)
-                    , null
-            );
-        }
-    }
 
-    private void addTablayoutListener(final RechargeViewPagerAdapter rechargeViewPagerAdapter) {
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        seeMoreTextView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition(), false);
-                rechargeViewPagerAdapter.notifyDataSetChanged();
-                if (tab.getText() != null) {
-                    HomePageTracking.eventClickWidgetBar(context,
-                            tab.getText().toString());
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                View focus = CommonUtils.getActivity(context).getCurrentFocus();
-                if (focus != null) {
-                    hideKeyboard(com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
-                            focus);
-                }
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                View focus = CommonUtils.getActivity(context).getCurrentFocus();
-                if (focus != null) {
-                    hideKeyboard(com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
-                            focus);
-                }
+            public void onClick(View view) {
+                RouteManager.route(itemView.getContext(), APPLINK_DIGITAL_BROWSE_PAGE);
+                listener.onDigitalMoreClicked(getAdapterPosition());
             }
         });
     }
 
-    private void setTabSelected(int categorySize) {
-        final int positionTab = cacheHandler.getInt(ConstantKey.TkpdCache.WIDGET_RECHARGE_TAB_LAST_SELECTED);
-        if (positionTab != -1 && positionTab < categorySize) {
-            viewPager.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    viewPager.setCurrentItem(positionTab);
-                }
-            }, 300);
-            tabLayout.getTabAt(positionTab).select();
-        } else {
-            viewPager.setCurrentItem(0);
+    @Override
+    public void changeToDigitalWidget() {
+        isDigitalWidget = true;
+        viewPagerChannel.setVisibility(View.GONE);
+        viewPagerWidget.setVisibility(View.VISIBLE);
+        if (widgetHomePagerAdapter == null) {
+            widgetHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager, DigitalWidgetFragment.Companion.newInstance());
+            viewPagerWidget.setAdapter(widgetHomePagerAdapter);
         }
     }
 
     @Override
-    public void failedRenderDataRechargeCategory() {
-        hideDigitalWidget();
+    public void updateHeaderText(int stringRes) {
+        titleTextView.setText(stringRes);
     }
-
-    @Override
-    public void renderErrorNetwork() {
-        listener.showNetworkError(context.getString(R.string.msg_network_error));
-    }
-
-    @Override
-    public void renderErrorMessage() {
-
-    }
-
-    @Override
-    public void bind(DigitalsViewModel element) {
-        titleTxt.setText(element.getTitle());
-        if (mRechargeCategory.isEmpty()) {
-            rechargeCategoryPresenter.fetchDataRechargeCategory();
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        int i = view.getId();
-        if (i == R.id.see_more) {
-            HomePageTracking.eventClickLihatSemua(context);
-            listener.onDigitalMoreClicked(getAdapterPosition());
-
-        }
-    }
-
-    public static void hideKeyboard(Activity activity, View view) {
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
 }

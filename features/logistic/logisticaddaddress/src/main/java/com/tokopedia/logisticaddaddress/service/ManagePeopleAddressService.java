@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.service;
 
+import android.accounts.NetworkErrorException;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -7,15 +8,23 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.network.apiservices.user.PeopleActService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.logisticaddaddress.model.datamanager.NetworkParam;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.di.AddressModule;
+import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
+import com.tokopedia.logisticaddaddress.utils.NetworkParam;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.SocketTimeoutException;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -47,18 +56,27 @@ public class ManagePeopleAddressService extends IntentService {
 
     public static final int STATUS_TIME_OUT = 98;
 
-    public static final String MESSAGE_TIMEOUT_INFO = "Network Timeout";
-    public static final String MESSAGE_UNKNOWN_INFO = "Network Error";
-    public static final String MESSAGE_SERVER_INFO = "Network Server Error";
-    public static final String MESSAGE_BAD_REQUEST_INFO = "Network Bad Request";
-    public static final String MESSAGE_FORBIDDEN_INFO = "Network Forbidden";
-
     private String action;
     private String addressID;
     private ResultReceiver receiver;
 
+    @Inject
+    @LogisticPeopleActApiQualifier
+    PeopleActApi peopleActApi;
+    @Inject
+    @LogisticUserSessionQualifier
+    UserSessionInterface userSession;
+
     public ManagePeopleAddressService() {
         super("ManagePeopleAddressService");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        DaggerAddressComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .addressModule(new AddressModule()).build().inject(this);
     }
 
     public static void startActionSetDefaultAddress(Context context,
@@ -107,25 +125,27 @@ public class ManagePeopleAddressService extends IntentService {
      * parameters.
      */
     private void handleActionSetDefaultAddress(String addressId) {
-        PeopleActService actService = new PeopleActService();
-        actService.getApi()
-                .editDefaultAddress(AuthUtil.generateParams(getApplicationContext(), NetworkParam.paramEditDefaultAddress(addressId)))
+        peopleActApi
+                .editDefaultAddress(AuthUtil.generateParamsNetwork(
+                        userSession.getUserId(), userSession.getDeviceId(), NetworkParam.paramEditDefaultAddress(addressId))
+                )
                 .subscribeOn(Schedulers.newThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(getDefaultSubscriber());
     }
 
     private void handleActionDeleteAddress(String addressId) {
-        PeopleActService actService = new PeopleActService();
-        actService.getApi()
-                .deleteAddress(AuthUtil.generateParams(getApplicationContext(), NetworkParam.paramDeleteAddress(addressId)))
+        peopleActApi
+                .deleteAddress(AuthUtil.generateParamsNetwork(
+                        userSession.getUserId(), userSession.getDeviceId(), NetworkParam.paramDeleteAddress(addressId))
+                )
                 .subscribeOn(Schedulers.newThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(getDefaultSubscriber());
     }
 
-    private Subscriber<Response<TkpdResponse>> getDefaultSubscriber() {
-        return new Subscriber<Response<TkpdResponse>>() {
+    private Subscriber<Response<TokopediaWsV4Response>> getDefaultSubscriber() {
+        return new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
 
@@ -154,7 +174,7 @@ public class ManagePeopleAddressService extends IntentService {
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         switch (action) {
@@ -175,32 +195,7 @@ public class ManagePeopleAddressService extends IntentService {
                         throw new RuntimeException(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            throw new RuntimeException(MESSAGE_UNKNOWN_INFO);
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            throw new RuntimeException(MESSAGE_TIMEOUT_INFO);
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            throw new RuntimeException(MESSAGE_SERVER_INFO);
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            throw new RuntimeException(MESSAGE_BAD_REQUEST_INFO);
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            throw new RuntimeException(MESSAGE_FORBIDDEN_INFO);
-                        }
-                    }, response.code());
+                    ErrorHandler.getErrorMessage(getApplicationContext(), new NetworkErrorException());
                 }
             }
         };

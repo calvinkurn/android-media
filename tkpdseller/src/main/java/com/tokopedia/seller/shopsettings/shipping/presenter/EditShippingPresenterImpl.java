@@ -5,7 +5,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
@@ -449,11 +449,11 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public boolean editShippingParamsValid() {
         if (view.getZipCode().isEmpty()) {
-            UnifyTracking.eventCreateShopFillLogisticError();
+            UnifyTracking.eventCreateShopFillLogisticError(view.getMainContext());
             view.zipCodeEmpty();
             return false;
         } else if (activatedServices.isEmpty()) {
-            UnifyTracking.eventCreateShopFillLogisticError();
+            UnifyTracking.eventCreateShopFillLogisticError(view.getMainContext());
             view.noServiceChosen();
             return false;
         } else {

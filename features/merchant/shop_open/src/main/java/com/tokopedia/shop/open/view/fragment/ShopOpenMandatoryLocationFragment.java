@@ -14,8 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -76,6 +75,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     RequestParams requestParams;
     private TkpdProgressDialog tkpdProgressDialog;
+    private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     public static ShopOpenMandatoryLocationFragment getInstance() {
         return new ShopOpenMandatoryLocationFragment();
@@ -237,12 +237,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
             locationPass.setCityName(locationShippingViewHolder.getCityName());
         }
-        logisticRouter.navigateToGeoLocationActivityRequest(
-                ShopOpenMandatoryLocationFragment.this,
-                REQUEST_CODE_GOOGLE_MAP,
-                generatedMap,
-                locationPass
-        );
+        Intent intent = logisticRouter.navigateToGeoLocationActivityRequest(getContext(), locationPass);
+        startActivityForResult(intent, REQUEST_CODE_GOOGLE_MAP);
     }
 
     @Override
@@ -317,7 +313,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                     }
                     break;
                 case REQUEST_CODE_GOOGLE_MAP:
-                    LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    LocationPass locationPass = data.getParcelableExtra(EXTRA_EXISTING_LOCATION);
                     if (locationPass != null && locationPass.getLatitude() != null) {
 
                         GoogleLocationViewModel locationViewModel = new GoogleLocationViewModel();

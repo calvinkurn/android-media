@@ -1,4 +1,5 @@
 # Obfuscation parameters:
+-dontoptimize
 -dontwarn java.nio.file.Files
 -dontwarn java.nio.file.Path
 -dontwarn java.nio.file.OpenOption
@@ -353,3 +354,5 @@
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
+-keep class kotlinx.coroutines.experimental.android.AndroidExceptionPreHandler { *; }
+-keep class kotlinx.coroutines.experimental.JobSupport { *; }

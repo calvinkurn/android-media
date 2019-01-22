@@ -203,6 +203,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                     trackingEventLabel = trackingEventLabel.substring(0, trackingEventLabel.length
                             () - 1);
                 UnifyTracking.eventOpportunity(
+                        v.getContext(),
                         OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
                         OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                         AppEventTracking.Action.SUBMIT,

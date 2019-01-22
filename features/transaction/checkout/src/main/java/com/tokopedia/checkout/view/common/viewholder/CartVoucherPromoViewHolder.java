@@ -5,9 +5,8 @@ import android.view.View;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
-import com.tokopedia.checkout.view.common.compoundview.VoucherPromoView;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
-import com.tokopedia.design.voucher.VoucherCartHachikoView;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -15,55 +14,39 @@ import com.tokopedia.design.voucher.VoucherCartHachikoView;
 public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_PROMO = R.layout.holder_item_cart_promo;
     private final CartAdapterActionListener actionListener;
-    private VoucherPromoView voucherCartHachikoView;
+    private TickerCheckoutView tickerCheckoutView;
 
     public CartVoucherPromoViewHolder(View itemView, CartAdapterActionListener actionListener) {
         super(itemView);
         this.actionListener = actionListener;
-        this.voucherCartHachikoView = itemView.findViewById(R.id.voucher_cart_holder_view);
+        this.tickerCheckoutView = itemView.findViewById(R.id.voucher_cart_holder_view);
     }
 
-    public void bindData(final CartItemPromoHolderData data, final int position) {
-        if (data.isVisible()) {
-            this.voucherCartHachikoView.setActionListener(new VoucherCartHachikoView.ActionListener() {
-                @Override
-                public void onClickUseVoucher() {
-                    actionListener.onCartPromoUseVoucherPromoClicked(data, position);
-                }
-
-                @Override
-                public void disableVoucherDiscount() {
-                    actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
-                }
-
-                @Override
-                public void trackingSuccessVoucher(String voucherName) {
-                    actionListener.onCartPromoTrackingSuccess(data, position);
-                }
-
-                @Override
-                public void trackingCancelledVoucher() {
-                    actionListener.onCartPromoTrackingCancelled(data, position);
-                }
-            });
-
-            if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
-                voucherCartHachikoView.setCoupon(data.getCouponTitle(),
-                        data.getCouponMessage(),
-                        data.getCouponCode()
-                );
-            } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
-                voucherCartHachikoView.setVoucher(data.getVoucherCode(),
-                        data.getVoucherMessage()
-                );
-            } else {
-                voucherCartHachikoView.setPromoAndCouponLabel();
-                voucherCartHachikoView.resetView();
+    public void bindData(final PromoData data, final int position) {
+        tickerCheckoutView.setActionListener(new TickerCheckoutView.ActionListener() {
+            @Override
+            public void onClickUsePromo() {
+                actionListener.onCartPromoUseVoucherPromoClicked(data, position);
             }
-            voucherCartHachikoView.setVisibility(View.VISIBLE);
-        } else {
-            voucherCartHachikoView.setVisibility(View.GONE);
+
+            @Override
+            public void onDisablePromoDiscount() {
+                actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
+                actionListener.onCartPromoTrackingCancelled(data, position);
+            }
+
+            @Override
+            public void onClickDetailPromo() {
+                actionListener.onClickDetailPromo(data, position);
+            }
+        });
+        if(data.getState() != TickerCheckoutView.State.FAILED){
+            actionListener.onCartPromoTrackingImpression(data, position);
         }
+        tickerCheckoutView.setState(data.getState());
+        tickerCheckoutView.setDesc(data.getDescription());
+        tickerCheckoutView.setTitle(data.getTitle());
+        tickerCheckoutView.setVisibility(View.VISIBLE);
     }
 
 }

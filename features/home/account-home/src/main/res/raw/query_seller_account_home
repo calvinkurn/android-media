@@ -38,6 +38,7 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
   }
   le_preapprove(merchantID: $merchantID) {
     fieldData {
+        url
         preApp {
             valid
             partnerName

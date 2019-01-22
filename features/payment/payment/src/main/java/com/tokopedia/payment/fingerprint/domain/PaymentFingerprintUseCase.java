@@ -1,14 +1,15 @@
 package com.tokopedia.payment.fingerprint.domain;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
-import com.tokopedia.payment.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -39,21 +40,23 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
 
     @Override
     public Observable<ResponsePaymentFingerprint> createObservable(final RequestParams requestParams) {
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<String, String>());
+        Map<String, String> params = AuthUtil.generateParamsNetwork(
+                userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()
+        );
         requestParams.putAllString(params);
         return fingerprintRepository.getPostDataOtp(requestParams.getString(TRANSACTION_ID, ""))
-                .flatMap(new Func1<HashMap<String, String>, Observable<ResponsePaymentFingerprint>>() {
-                    @Override
-                    public Observable<ResponsePaymentFingerprint> call(HashMap<String, String> stringStringHashMap) {
-                        HashMap<String, Object> params = requestParams.getParameters();
-                        params.remove(TRANSACTION_ID);
-                        params.putAll(stringStringHashMap);
-                        return fingerprintRepository.paymentWithFingerPrint(params);
-                    }
+                .flatMap((Func1<HashMap<String, String>, Observable<ResponsePaymentFingerprint>>) stringStringHashMap
+                        -> {
+                    HashMap<String, Object> params1 = requestParams.getParameters();
+                    params1.remove(TRANSACTION_ID);
+                    params1.putAll(stringStringHashMap);
+                    return fingerprintRepository.paymentWithFingerPrint(params1);
                 });
     }
 
-    public RequestParams createRequestParams(String transactionId, String publicKey, String date, String accountSignature, String userId) {
+    public RequestParams createRequestParams(
+            String transactionId, String publicKey, String date, String accountSignature, String userId
+    ) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(TRANSACTION_ID, transactionId);
         requestParams.putString(PUBLIC_KEY, publicKey);

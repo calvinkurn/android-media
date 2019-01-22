@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
@@ -21,6 +21,8 @@ import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+
+import java.util.HashMap;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -38,19 +40,25 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
 
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_CHECKOUT_CART";
+    public static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
 
     private Bundle bundleData;
     private Uri uriData;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-//    public static Intent createInstance(@NonNull Context context, @Nullable LocationPass locationPass) {
-//        Intent intent = new Intent(context, GeolocationActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
-//        intent.putExtras(bundle);
-//        return intent;
-//    }
+    // Address -> Router
+    public static Intent createInstanceFromAddress(@NonNull Context context,
+                                                   @Nullable HashMap<String, String> locationPass,
+                                                   boolean isFromMarketPlaceCart) {
+        Intent intent = new Intent(context, GeolocationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EXTRA_HASH_LOCATION, locationPass);
+        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
+        intent.putExtras(bundle);
+        return intent;
+    }
 
+    // Shop Open -> Router
     public static Intent createInstanceIntent(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
@@ -59,6 +67,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         return intent;
     }
 
+    // Shipment Fragment -> Direct dep
     public static Intent createInstanceFromMarketplaceCart(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();

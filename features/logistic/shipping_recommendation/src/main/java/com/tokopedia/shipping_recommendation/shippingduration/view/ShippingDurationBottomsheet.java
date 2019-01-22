@@ -1,6 +1,7 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -9,20 +10,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
-import com.tokopedia.shipping_recommendation.shippingduration.di.DaggerShippingDurationComponent;
-import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationComponent;
-import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.shipping_recommendation.shippingduration.di.DaggerShippingDurationComponent;
+import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationComponent;
+import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +44,17 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
     public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
 
+    private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
+
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llContent;
     private RecyclerView rvDuration;
 
     private ShippingDurationBottomsheetListener shippingDurationBottomsheetListener;
+
+    private PerformanceMonitoring chooseCourierTracePerformance;
+    private boolean isChooseCourierTraceStopped;
 
     @Inject
     ShippingDurationContract.Presenter presenter;
@@ -92,6 +99,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     protected String title() {
         return getString(R.string.title_bottomsheet_shipment_duration);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
     }
 
     @Override
@@ -207,6 +220,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public void showNoCourierAvailable(String message) {
         shippingDurationBottomsheetListener.onNoCourierAvailable(message);
         dismiss();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isChooseCourierTraceStopped) {
+            chooseCourierTracePerformance.stopTrace();
+            isChooseCourierTraceStopped = true;
+        }
     }
 
     @Override

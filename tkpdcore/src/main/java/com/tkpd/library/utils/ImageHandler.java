@@ -17,7 +17,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -27,8 +26,8 @@ import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
+import com.tokopedia.core2.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +82,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    private static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
         Matrix matrix = new Matrix();
         matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);

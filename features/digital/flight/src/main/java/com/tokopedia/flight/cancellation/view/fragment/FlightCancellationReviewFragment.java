@@ -280,6 +280,11 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
+    public void viewImage(String filePath) {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 

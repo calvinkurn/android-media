@@ -33,7 +33,7 @@ import com.tokopedia.gm.statistic.view.holder.GmStatisticBuyerViewHolder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 
 import java.util.List;
 
@@ -100,7 +100,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
                 // if diff is zero, then the bottom has been reached
                 if (diff == 0) {
-                    UnifyTracking.eventScrollGMStat();
+                    UnifyTracking.eventScrollGMStat(getActivity());
                 }
             }
         });
@@ -156,7 +156,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessLoadProductGraph(GetProductGraph getProductGraph) {
         gmStatisticSummaryViewHolder.setData(getProductGraph);
-        UnifyTracking.eventLoadGMStat();
+        UnifyTracking.eventLoadGMStat(getActivity());
     }
 
     @Override
@@ -224,8 +224,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onViewNotGmClicked() {
-        Intent intent = new Intent(getActivity(), GmSubscribeHomeActivity.class);
-        startActivity(intent);
+        startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
     }
 
     private void showSnackbarRetry() {

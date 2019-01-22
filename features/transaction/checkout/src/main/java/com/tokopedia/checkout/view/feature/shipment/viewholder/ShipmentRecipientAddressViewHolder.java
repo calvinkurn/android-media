@@ -1,9 +1,9 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -69,12 +69,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-        if (recipientAddress.isStateExtraPaddingTop()) {
-            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_16));
-        } else {
-            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_0));
-        }
-
         if (recipientAddress.isFromPdp()) {
             tvSendToMultipleAddress.setVisibility(View.GONE);
         } else {

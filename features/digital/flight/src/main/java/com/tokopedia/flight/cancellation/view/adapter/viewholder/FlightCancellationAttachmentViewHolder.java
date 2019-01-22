@@ -34,6 +34,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     private AppCompatImageView ivAttachment;
     private AppCompatTextView tvFilename;
     private AppCompatTextView tvPassengerName;
+    private AppCompatTextView tvViewImage;
     private RelativeLayout imageContainer;
     private LinearLayout tvChangeImage;
 
@@ -57,6 +58,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
         tvFilename = view.findViewById(R.id.tv_filename);
         tvPassengerName = view.findViewById(R.id.tv_passenger_name);
         tvChangeImage = view.findViewById(R.id.tv_change_image);
+        tvViewImage = view.findViewById(R.id.tv_view_image);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -75,7 +77,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
             ivAttachment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // do nothing
+                    interactionListener.viewImage(element.getFilepath());
                 }
             });
 
@@ -83,8 +85,10 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
 
             if (showChangeButton) {
                 tvChangeImage.setVisibility(View.VISIBLE);
+                tvViewImage.setVisibility(View.VISIBLE);
             } else {
                 tvChangeImage.setVisibility(View.GONE);
+                tvViewImage.setVisibility(View.GONE);
             }
 
             tvChangeImage.setOnClickListener(new View.OnClickListener() {

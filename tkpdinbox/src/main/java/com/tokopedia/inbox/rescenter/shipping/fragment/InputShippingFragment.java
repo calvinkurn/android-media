@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
@@ -109,9 +109,9 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     public void setOnConfirmButtonClick() {
         if (paramsModel.isFromChat()) {
             if (paramsModel.isEdit())
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSaveEditAWB(paramsModel.getResolutionID()));
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSaveEditAWB(paramsModel.getResolutionID()));
             else
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSaveInputAWB(paramsModel.getResolutionID()));
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSaveInputAWB(paramsModel.getResolutionID()));
         }
         presenter.onConfirrmButtonClick();
     }
@@ -423,7 +423,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
                 @Override
                 public void onFailed() {
-                    showErrorMessage(getActivity().getString(com.tokopedia.core.R.string.error_gallery_valid));
+                    showErrorMessage(getActivity().getString(com.tokopedia.core2.R.string.error_gallery_valid));
                 }
             });
         }

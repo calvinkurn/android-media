@@ -16,12 +16,12 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.tokopedia.digital.cart.compoundview.ItemCartHolderView
+            <com.tokopedia.digital.cart.presentation.compoundview.ItemCartHolderView
                 android:id="@+id/item_cart_holder_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.tokopedia.digital.cart.compoundview.InputPriceHolderView
+            <com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView
                 android:id="@+id/input_price_holder_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.tokopedia.digital.cart.compoundview.CheckoutHolderView
+            <com.tokopedia.digital.cart.presentation.compoundview.CheckoutHolderView
                 android:id="@+id/checkout_cart_holder_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

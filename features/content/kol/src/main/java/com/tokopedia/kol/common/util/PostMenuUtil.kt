@@ -17,7 +17,7 @@ fun createBottomMenu(context: Context,
     if (model.isDeletable) {
         menuList.add(
                 Menus.ItemMenus(
-                        context.getString(R.string.kol_delete),
+                        context.getString(R.string.kol_delete_post),
                         -1
                 )
         )
@@ -35,7 +35,7 @@ fun createBottomMenu(context: Context,
     menus.setOnActionClickListener { menus.dismiss() }
     menus.setOnItemMenuClickListener { itemMenus, _ ->
         when (itemMenus.title) {
-            context.getString(R.string.kol_delete) -> listener?.onDeleteClicked()
+            context.getString(R.string.kol_delete_post) -> listener?.onDeleteClicked()
             context.getString(R.string.kol_report) -> listener?.onReportClick()
         }
         menus.dismiss()

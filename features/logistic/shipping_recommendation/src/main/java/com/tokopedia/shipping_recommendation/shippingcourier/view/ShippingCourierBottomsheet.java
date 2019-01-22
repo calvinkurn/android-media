@@ -10,18 +10,18 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
-import com.tokopedia.shipping_recommendation.shippingcourier.di.DaggerShippingCourierComponent;
-import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierComponent;
-import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.shipping_recommendation.shippingcourier.di.DaggerShippingCourierComponent;
+import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierComponent;
+import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierModule;
 
 import java.util.ArrayList;
 import java.util.List;

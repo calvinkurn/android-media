@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
@@ -30,6 +32,7 @@ public class HomepagePagerAdapter extends PagerAdapter {
     private CouponListAdapter mCouponsAdapter;
     private HomepagePresenter mPresenter;
     private Map<String, String> mEmptyMessages;
+    private SwipeToRefresh swipeToRefresh[] = new SwipeToRefresh[2];
 
     public HomepagePagerAdapter(Context context, HomepagePresenter presenter,
                                 List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons) {
@@ -49,6 +52,13 @@ public class HomepagePagerAdapter extends PagerAdapter {
             if (mCatalogs != null && !mCatalogs.isEmpty()) {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
+                swipeToRefresh[position] = view.findViewById(R.id.swipe_refresh_layout);
+                swipeToRefresh[position].setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        mPresenter.getPromos();
+                    }
+                });
                 recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(R.dimen.dp_10),
                         container.getResources().getDimensionPixelOffset(R.dimen.dp_14),
                         container.getResources().getDimensionPixelOffset(R.dimen.dp_14)));
@@ -84,9 +94,16 @@ public class HomepagePagerAdapter extends PagerAdapter {
                         container.getResources().getDimensionPixelOffset(R.dimen.dp_16),
                         container.getResources().getDimensionPixelOffset(R.dimen.dp_16)));
                 recyclerView.setAdapter(mCouponsAdapter);
+                swipeToRefresh[position] = view.findViewById(R.id.swipe_refresh_layout);
+                swipeToRefresh[position].setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        mPresenter.getPromos();
+                    }
+                });
 
-                LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) view.findViewById(R.id.view_dummy).getLayoutParams();     //margin for bottom view
-                params.height=container.getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.findViewById(R.id.view_dummy).getLayoutParams();     //margin for bottom view
+                params.height = container.getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg);
             }
 
             view.findViewById(R.id.text_link_first).setOnClickListener(v -> {
@@ -125,5 +142,13 @@ public class HomepagePagerAdapter extends PagerAdapter {
 
     public void setEmptyMessages(Map<String, String> emptyMessages) {
         this.mEmptyMessages = emptyMessages;
+    }
+
+    public void setRefreshing(boolean refresh) {
+        for (SwipeToRefresh swipeToRefrsh : swipeToRefresh) {
+            if (swipeToRefrsh != null)
+                swipeToRefrsh.setRefreshing(refresh);
+
+        }
     }
 }

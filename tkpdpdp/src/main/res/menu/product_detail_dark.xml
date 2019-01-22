@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/icon_share"
+        android:icon="@drawable/ic_share_pdp_dark"
         android:orderInCategory="100"
         android:title="@string/title_share"
         app:showAsAction="ifRoom" />
@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/action_cart"
-        android:icon="@drawable/ic_cart_counter_dark"
+        android:icon="@drawable/ic_cart_counter_dark_pdp"
         android:orderInCategory="200"
         android:title="@string/title_activity_cart"
         app:showAsAction="always" />

@@ -11,12 +11,12 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Product;
 
 /**
  * @author anggaprasetiyo on 5/8/17.

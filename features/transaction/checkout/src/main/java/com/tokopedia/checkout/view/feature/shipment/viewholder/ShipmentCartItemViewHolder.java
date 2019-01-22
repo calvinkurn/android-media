@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -101,7 +101,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
 
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
-        if(cartItem.isProtectionAvailable()) {
+        if (cartItem.isProtectionAvailable()) {
             mTvPPPMore.setText(cartItem.getProtectionLinkText());
             mTvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override

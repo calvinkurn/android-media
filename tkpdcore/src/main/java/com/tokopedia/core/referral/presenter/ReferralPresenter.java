@@ -8,7 +8,9 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -19,7 +21,6 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.domain.GetReferralDataUseCase;
 import com.tokopedia.core.referral.listener.ReferralView;
@@ -83,7 +84,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     getReferralVoucherCode();
                 } else {
                     getView().showVerificationPhoneNumberPage();
-                    TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_phone_number_verify_screen_name));
+                    TrackingUtils.sendMoEngageReferralScreenOpen(activity, activity.getString(R.string.referral_phone_number_verify_screen_name));
                 }
             }
         } else {
@@ -107,7 +108,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .build();
 
         new DefaultShare(activity, shareData).show();
-        TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
+        TrackingUtils.sendMoEngageReferralScreenOpen(activity, activity.getString(R.string.referral_share_screen_name));
     }
 
     private String formatSharingContents() {
@@ -184,7 +185,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         } else {
             getView().showToastMessage(getView().getActivity().getString(R.string.copy_coupon_code_text) + " " + voucherCode);
         }
-        UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
+        UnifyTracking.eventReferralAndShare(getView().getActivity(), AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
 
     }
 
@@ -366,7 +367,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             actionShare(shareData, TkpdState.PackageName.Pinterest, AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
             shareApp(fragmentManager);
-            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, AppEventTracking.SOCIAL_MEDIA.OTHER);
+            UnifyTracking.eventReferralAndShare(MainApplication.getAppContext(), AppEventTracking.Action.SELECT_CHANNEL, AppEventTracking.SOCIAL_MEDIA.OTHER);
 
         }
     }
@@ -384,12 +385,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     private void sendAnalyticsToGTM(String type, String channel) {
         if (type.equals(ShareData.REFERRAL_TYPE)) {
-            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
-            TrackingUtils.sendMoEngageReferralShareEvent(channel);
+            UnifyTracking.eventReferralAndShare(MainApplication.getAppContext(), AppEventTracking.Action.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(MainApplication.getAppContext(), channel);
         } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
-            UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL, channel);
+            UnifyTracking.eventAppShareWhenReferralOff(MainApplication.getAppContext(), AppEventTracking.Action.SELECT_CHANNEL, channel);
         } else {
-            UnifyTracking.eventShare(channel);
+            UnifyTracking.eventShare(MainApplication.getAppContext(), channel);
         }
     }
 }

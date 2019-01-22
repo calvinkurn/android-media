@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.app.MainApplication;
 
 import java.util.List;
 
@@ -137,6 +138,6 @@ public class WishlistAnalytics {
                 AppEventTracking.Category.LONG_PRESS,
                 CLICK_WISHLIST,
                 LONG_PRESS_SHORTCUT_WISHLIST
-        ).setUserId().getEvent());
+        ).setUserId(MainApplication.getTkpdCoreRouter().legacySessionHandler().getUserId()).getEvent());
     }
 }

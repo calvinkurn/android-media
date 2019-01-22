@@ -32,7 +32,7 @@ abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<P
             alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), object : DialogInterface.OnClickListener {
                 override fun onClick(dialog: DialogInterface, which: Int) {
                     val doSave = saveProductToDraft()
-                    UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
+                    UnifyTracking.eventClickAddProduct(this@BaseProductAddEditActivity, AppEventTracking.Category.ADD_PRODUCT,
                             AppEventTracking.EventLabel.SAVE_DRAFT)
                     if (!doSave) {
                         backPressedHandleTaskRoot()

@@ -23,7 +23,8 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
  */
 
 public class UserIdentificationFormFaceFragment extends
-        BaseUserIdentificationStepperFragment<UserIdentificationStepperModel> {
+        BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>
+        implements UserIdentificationFormActivity.Listener {
 
     public static Fragment createInstance() {
         Fragment fragment = new UserIdentificationFormFaceFragment();
@@ -65,4 +66,8 @@ public class UserIdentificationFormFaceFragment extends
         }
     }
 
+    @Override
+    public void trackOnBackPressed() {
+        analytics.eventClickBackSelfiePage();
+    }
 }

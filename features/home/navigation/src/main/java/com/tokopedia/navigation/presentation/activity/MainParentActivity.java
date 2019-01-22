@@ -237,7 +237,7 @@ public class MainParentActivity extends BaseActivity implements
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdate();
-        checkIsHaveApplinkComeFromDeeplink(getIntent());
+        checkApplinkCouponCode(getIntent());
 
         initHockeyBroadcastReceiver();
         initNewFeedClickReceiver();
@@ -279,7 +279,7 @@ public class MainParentActivity extends BaseActivity implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
-        checkIsHaveApplinkComeFromDeeplink(intent);
+        checkApplinkCouponCode(intent);
     }
 
     private void initInjector() {
@@ -453,6 +453,7 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             bottomNavigation.setNotification(0, FEED_MENU);
         }
+
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
@@ -607,7 +608,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
+    private void checkApplinkCouponCode(Intent intent) {
         if (!presenter.isRecurringApplink() && !TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
 
@@ -623,6 +624,10 @@ public class MainParentActivity extends BaseActivity implements
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
             }
 
+            // Note: applink/deeplink router already in DeeplinkHandlerActivity.
+            // Applink should not be passed to home because the analytics at home might be triggered.
+            // It is better to use TaskStackBuilder to build taskstack for home, rather than passwing to home directly.
+            // Below code is still maintained to ensure no deeplink/applink uri is lost
             try {
                 Intent applinkIntent = new Intent(this, MainParentActivity.class);
                 applinkIntent.setData(Uri.parse(applink));
@@ -697,11 +702,12 @@ public class MainParentActivity extends BaseActivity implements
     }
 
 
+
     @Override
-    public void onCartEmpty(String autoApplyMessage) {
+    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc) {
         if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
             if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage);
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc);
             }
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));

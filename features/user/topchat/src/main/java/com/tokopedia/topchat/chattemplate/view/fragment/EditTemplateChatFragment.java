@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
 import com.tokopedia.topchat.common.InboxMessageConstant;
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.common.util.Events;
 
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import com.tokopedia.core.analytics.UnifyTracking;
 
 /**
  * Created by stevenfredian on 12/22/17.
@@ -235,6 +237,10 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
+        UnifyTracking.eventClickTemplate(getActivity(), TopChatAnalytics.Category.ADD_TEMPLATE,
+                TopChatAnalytics.Action.UPDATE_TEMPLATE,
+                TopChatAnalytics.Name.INBOX_CHAT);
+
         Intent intent = new Intent();
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
         intent.putExtra(TemplateChatFragment.LIST_RESULT, s);

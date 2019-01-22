@@ -209,6 +209,26 @@
     </declare-styleable>
 
     <declare-styleable name="TextViewCompat">
+        <attr name="fontSize" format="enum">
+            <enum name="headline" value="1" />
+            <enum name="subHeadline" value="2" />
+            <enum name="titleBig" value="3" />
+            <enum name="title" value="4" />
+            <enum name="small" value="5" />
+            <enum name="micro" value="6" />
+        </attr>
+        <attr name="weight" format="enum">
+            <enum name="regular" value="1" />
+            <enum name="medium" value="2" />
+        </attr>
+        <attr name="textViewTheme" format="enum">
+            <enum name="lightPrimary" value="1" />
+            <enum name="lightSecondary" value="2" />
+            <enum name="lightDisabled" value="3" />
+            <enum name="darkPrimary" value="4" />
+            <enum name="darkSecondary" value="5" />
+            <enum name="darkDisabled" value="6" />
+        </attr>
         <attr name="drawableLeftCompat" format="reference" />
         <attr name="drawableRightCompat" format="reference" />
         <attr name="drawableTopCompat" format="reference" />
@@ -223,10 +243,12 @@
     </declare-styleable>
 
     <declare-styleable name="ButtonCompat">
+        <attr name="buttonCompatTextAllCaps" format="boolean" />
         <attr name="buttonCompatType" format="enum">
             <enum name="primary" value="1" />
             <enum name="secondary" value="2" />
-            <enum name="disable" value="3" />
+            <enum name="transaction" value="3" />
+            <enum name="disable" value="4" />
         </attr>
         <attr name="buttonCompatSize" format="enum">
             <enum name="big" value="4" />

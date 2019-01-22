@@ -65,7 +65,7 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
                                 "creative", model.getCategoryName()
                         )
                 );
-                TrackingUtils.eventCategoryLifestyleClick(model.getCategoryUrl(), list);
+                TrackingUtils.eventCategoryLifestyleClick(v.getContext(), model.getCategoryUrl(), list);
                 listener.onCategoryRevampClick(model);
             }
         });

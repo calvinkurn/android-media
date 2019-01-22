@@ -14,11 +14,12 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
 project.ext {
-    artifactId = 'pms'
-    groupId = 'com.tokopedia.pms'
-    versionName = "${tkpdPaymentManagementSystem}"
-    artifactName ="pms-release"
+    artifactId = "${artifactIdPaymentManagementSystem}"
+    groupId = "${groupIdPayment}"
+    versionName = "${paymentGroupVersion}"
+    artifactName = "${artifactIdPaymentManagementSystem}-release"
 }
 
 dependencies {
@@ -31,7 +32,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
+
     implementation rootProject.ext.miscDependencies.reactNative
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

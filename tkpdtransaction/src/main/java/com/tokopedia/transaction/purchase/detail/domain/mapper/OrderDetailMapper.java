@@ -3,19 +3,19 @@ package com.tokopedia.transaction.purchase.detail.domain.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.transaction.common.data.order.ButtonData;
+import com.tokopedia.transaction.common.data.order.CourierServiceModel;
+import com.tokopedia.transaction.common.data.order.CourierViewModel;
+import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.CourierResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.Shipment;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierServiceModel;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.model.history.response.History;
 import com.tokopedia.transaction.purchase.detail.model.history.response.OrderHistoryResponse;
 import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
@@ -137,6 +137,7 @@ public class OrderDetailMapper {
             product.setCurrencyType(responseData.getProducts().get(i).getCurrencyType());
             product.setPriceUnformatted(responseData.getProducts().get(i).getPriceUnformatted());
             product.setWeightUnformatted(responseData.getProducts().get(i).getWeightUnformatted());
+            product.setNotes(responseData.getProducts().get(i).getNote());
             productList.add(product);
         }
         viewData.setItemList(productList);
@@ -161,6 +162,7 @@ public class OrderDetailMapper {
         buttonData.setReceiveConfirmationVisibility(buttons.getReceiveConfirmation());
         buttonData.setTrackVisibility(buttons.getTrack());
         buttonData.setRequestPickupVisibility(buttons.getRequestPickup());
+        buttonData.setBuyAgainVisibility(buttons.getBuyAgain());
         viewData.setButtonData(buttonData);
 
         if (responseData.getDetail().getShipment().getInfo() != null &&

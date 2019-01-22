@@ -152,6 +152,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                 @Override
                 public void onNext(final CampaignResponseEntity s) {
+                    if(!s.isEnable()) {
+                        CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
+                        return;
+                    }
                     if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
                             s.getUrl() != null && s.getUrl().isEmpty()) {
                         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");

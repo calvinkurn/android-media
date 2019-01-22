@@ -2,7 +2,7 @@ package com.tokopedia.digital.cart.data.entity.requestbody.voucher;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 
 /**
  * @author  by alvarisi on 4/3/18.

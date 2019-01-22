@@ -1,13 +1,15 @@
 package com.tokopedia.checkout.data.repository;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -21,12 +23,13 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
 
     private static final int FIRST_ELEMENT = 0;
 
-    private final PeopleService mPeopleService;
+    private final PeopleActApi peopleActApi;
     private final AddressModelMapper mAddressModelMapper;
 
-    public PeopleAddressRepositoryImpl(PeopleService peopleService, AddressModelMapper addressModelMapper) {
-        mPeopleService = peopleService;
-        mAddressModelMapper = addressModelMapper;
+    @Inject
+    public PeopleAddressRepositoryImpl(PeopleActApi peopleActApi, AddressModelMapper addressModelMapper) {
+        this.peopleActApi = peopleActApi;
+        this.mAddressModelMapper = addressModelMapper;
     }
 
     /**
@@ -37,11 +40,11 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
      */
     @Override
     public Observable<PeopleAddressModel> getAllAddress(Map<String, String> params) {
-        return mPeopleService.getApi()
+        return peopleActApi
                 .getAddress(params)
-                .map(new Func1<Response<TkpdResponse>, GetPeopleAddress>() {
+                .map(new Func1<Response<TokopediaWsV4Response>, GetPeopleAddress>() {
                     @Override
-                    public GetPeopleAddress call(Response<TkpdResponse> response) {
+                    public GetPeopleAddress call(Response<TokopediaWsV4Response> response) {
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
                                 GetPeopleAddress peopleAddress = response.body()

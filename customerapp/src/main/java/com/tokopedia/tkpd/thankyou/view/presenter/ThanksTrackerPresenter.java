@@ -1,11 +1,13 @@
 package com.tokopedia.tkpd.thankyou.view.presenter;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.domain.usecase.ThankYouPageTrackerUseCase;
 import com.tokopedia.tkpd.thankyou.view.ThanksTracker;
@@ -23,11 +25,13 @@ import rx.schedulers.Schedulers;
  */
 
 public class ThanksTrackerPresenter implements ThanksTracker.Presenter {
+    private Context context;
     private ThankYouPageTrackerUseCase thankYouPageTrackerUseCase;
     private Gson gson;
 
-    public ThanksTrackerPresenter(ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
+    public ThanksTrackerPresenter(Context context, ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
                                   Gson gson) {
+        this.context = context;
         this.thankYouPageTrackerUseCase = thankYouPageTrackerUseCase;
         this.gson = gson;
     }
@@ -73,6 +77,7 @@ public class ThanksTrackerPresenter implements ThanksTracker.Presenter {
                 cacheHandler.getArrayListString(Jordan.CACHE_AF_KEY_JSONIDS)
         );
         PaymentTracking.eventTransactionAF(
+                context,
             data.getId(),
             cacheHandler.getString(Jordan.CACHE_AF_KEY_REVENUE),
             productIds,

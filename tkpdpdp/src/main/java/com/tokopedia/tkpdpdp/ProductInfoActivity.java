@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,11 +21,11 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -322,12 +323,10 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(Bundle stateBundle) {
-        int osVersion = android.os.Build.VERSION.SDK_INT;
-        if ( osVersion < Build.VERSION_CODES.N) {
-            super.onSaveInstanceState(stateBundle);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {

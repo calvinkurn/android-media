@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_notif_center">Info Pengguna</string>
+    <string name="title_notif_center">Update</string>
     <string name="notif_today">Hari Ini</string>
     <string name="notif_yesterday">Kemarin</string>
     <string name="notif_filter">Filter</string>

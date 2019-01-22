@@ -5,7 +5,7 @@ import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.FlightPassengerDataListDbSource;
-import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
+import com.tokopedia.flight.search.data.api.single.response.FlightDataResponse;
 import com.tokopedia.flight_dbflow.FlightPassengerDB;
 
 import java.util.HashMap;

@@ -1,10 +1,9 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
@@ -13,23 +12,25 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativePromoSaleFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
-import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 /**
  * Created by yogieputra on 08/01/18.
  */
 
 public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNativePromoSaleFragment> {
+
     private static final String SALE_PROMO = "Promo Sale";
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String KEY_SLUG = "slug";
-
+    private static final String MP_OS_PROMO = "mp_os_promo";
 
     @DeepLink({ApplinkConst.PROMO_SALE, ApplinkConst.PROMO_SALE_NO_SLASH})
     public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(SALE_PROMO);
+        ScreenTracking.screen(context, SALE_PROMO);
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -38,13 +39,15 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
         );
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        // no-op
+    protected void onSaveInstanceState(Bundle outState) {
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
     public static Intent getPromoSaleTermsIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createPromoSaleTerms(
                 context,
                 ReactConst.Screen.PROMO,

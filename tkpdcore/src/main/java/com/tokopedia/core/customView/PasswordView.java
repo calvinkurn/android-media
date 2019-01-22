@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import static android.graphics.Typeface.SANS_SERIF;
 

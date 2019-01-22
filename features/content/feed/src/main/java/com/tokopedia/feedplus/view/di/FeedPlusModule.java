@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -109,15 +108,6 @@ public class FeedPlusModule {
                 .client(okHttpClient)
                 .build()
                 .create(FeedApi.class);
-    }
-
-    @FeedPlusScope
-    @Provides
-    ApolloClient providesApolloClient(OkHttpClient okHttpClient) {
-        return ApolloClient.builder()
-                .okHttpClient(okHttpClient)
-                .serverUrl(FeedUrl.GRAPHQL_DOMAIN)
-                .build();
     }
 
     @FeedPlusScope

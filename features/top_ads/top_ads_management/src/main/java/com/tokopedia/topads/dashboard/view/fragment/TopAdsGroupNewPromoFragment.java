@@ -35,14 +35,14 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
-        UnifyTracking.eventTopAdsProductNewPromo(AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_NEW_GROUP);
+        UnifyTracking.eventTopAdsProductNewPromo(getActivity(), AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_NEW_GROUP);
         Intent intent = TopAdsCreatePromoNewGroupActivity.createIntent(getActivity(),groupName, itemIdToAdd, source);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
-        UnifyTracking.eventTopAdsProductNewPromo(AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_WITHOUT_GROUP);
+        UnifyTracking.eventTopAdsProductNewPromo(getActivity(), AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_WITHOUT_GROUP);
         Intent intent = TopAdsCreatePromoWithoutGroupActivity.createIntent(getActivity(), itemIdToAdd, source);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
@@ -50,7 +50,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     @Override
     protected void onSubmitFormChooseGroup(String choosenId) {
         if (!inputChooseGroup.isEnabled()) { // has already been locked
-            UnifyTracking.eventTopAdsProductNewPromo(AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_EXISTING_GROUP);
+            UnifyTracking.eventTopAdsProductNewPromo(getActivity(), AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_EXISTING_GROUP);
             String groupName = inputChooseGroup.getText().toString();
             if (!TextUtils.isEmpty(groupName)) {
                 startActivityForResult(TopAdsCreatePromoExistingGroupActivity.createIntent(getActivity(),

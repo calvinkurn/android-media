@@ -1,11 +1,13 @@
 package com.tokopedia.gm.subscribe.view.widget.checkout;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.subscribe.R;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmAutoSubscribeViewModel;
 
@@ -28,10 +30,13 @@ public class AutoSubscribeViewHolder {
 
     public AutoSubscribeViewHolder(AutoSubscribeViewHolderCallback callback, View view, boolean isOpened) {
         this.callback = callback;
+        Context context = view.getContext();
         checkbox = (CheckBox) view.findViewById(R.id.check_box_to_open_auto_subscribe);
         checkCheckBox(isOpened);
         title = (TextView) view.findViewById(R.id.open_auto_subscribe_title);
         subtitle = (TextView) view.findViewById(R.id.open_auto_subscribe_subtitle);
+        subtitle.setText(context.getString(R.string.gmsubscribe_auto_subscribe_subtitle,
+                context.getString(GMConstant.getGMTitleResource(context))));
         detailLayout = (LinearLayout) view.findViewById(R.id.gm_subscribe_auto_detail);
         autoSubscribePackageTitle = (TextView) view.findViewById(R.id.text_view_current_auto_package_title);
         autoSubscribePackagePrice = (TextView) view.findViewById(R.id.text_view_current_auto_package_price);

@@ -79,6 +79,10 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         return visitables.get(position).type(adapterTypeFactory);
     }
 
+    public List<Visitable> getList() {
+        return visitables;
+    }
+
     public boolean isLoading() {
         int lastIndex = getLastIndex();
         if (lastIndex > -1) {
@@ -176,7 +180,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
-    public void setElements( List< Visitable> data) {
+    public void setElements(List<Visitable> data) {
         visitables = data;
         notifyDataSetChanged();
     }
@@ -220,6 +224,12 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         } else {
             notifyItemRangeInserted(positionStart, data.size());
         }
+    }
+
+
+    public void removeElement(Visitable visitable) {
+        visitables.remove(visitable);
+        notifyDataSetChanged();
     }
 
     public void setLoadingModel(LoadingModel loadingModel) {

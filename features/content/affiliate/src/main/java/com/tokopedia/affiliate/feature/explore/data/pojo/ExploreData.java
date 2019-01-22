@@ -12,6 +12,13 @@ public class ExploreData {
     @Expose
     private ExploreQuery exploreProduct;
 
+    @SerializedName("topadsGetExploreCategory")
+    @Expose
+    private FilterQuery filter;
+
+    @SerializedName("topadsGetExploreSort")
+    private SortQuery sort;
+
     public ExploreQuery getExploreProduct() {
         return exploreProduct;
     }
@@ -19,4 +26,21 @@ public class ExploreData {
     public void setExploreProduct(ExploreQuery exploreProduct) {
         this.exploreProduct = exploreProduct;
     }
+
+    public FilterQuery getFilter() {
+        return filter;
+    }
+
+    public void setFilter(FilterQuery filter) {
+        this.filter = filter;
+    }
+
+    public SortQuery getSort() {
+        return sort;
+    }
+
+    public void setSort(SortQuery sort) {
+        this.sort = sort;
+    }
+
 }

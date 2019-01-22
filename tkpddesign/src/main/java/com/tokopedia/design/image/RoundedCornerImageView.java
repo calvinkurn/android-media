@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 
 public class RoundedCornerImageView extends SquareImageView {
 
-    private float radius = 5.0f;
+    private float radius = 8.0f;
     private Path path;
     private RectF rect;
 

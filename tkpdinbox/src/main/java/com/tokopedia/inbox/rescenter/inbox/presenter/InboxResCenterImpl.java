@@ -71,7 +71,7 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
             //current user as seller, need buyer username
             context.startActivity(DetailResChatActivity.newSellerInstance(context, resolutionID, username));
         }
-        UnifyTracking.eventResolutionDetail(getResCenterTabModel().titleFragment);
+        UnifyTracking.eventResolutionDetail(listener.getRootView().getContext(), getResCenterTabModel().titleFragment);
     }
 
     @Override

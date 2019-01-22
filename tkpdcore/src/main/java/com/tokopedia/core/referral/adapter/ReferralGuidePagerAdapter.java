@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -65,12 +65,12 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
             tvHelpLink.setText(getHelpButtonText());
             btnShare.setOnClickListener(view1 -> {
                 listener.onShareClick();
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_TEMAN, "");
+                UnifyTracking.eventReferralAndShare(view.getContext(), AppEventTracking.Action.CLICK_SHARE_TEMAN, "");
             });
 
             tvHelpLink.setOnClickListener(view1 -> {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
-                showOnBoardingTooltip(getHelpButtonContentTitle(), getHelpButtonContentSubtitle());
+                UnifyTracking.eventReferralAndShare(view.getContext(),AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
+                showOnBoardingTooltip(getHelpButtonContentTitle(), getHelpButtonContentSubtitle() );
             });
 
         } else {

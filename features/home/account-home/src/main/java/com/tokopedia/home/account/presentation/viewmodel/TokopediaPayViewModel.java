@@ -22,6 +22,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     private TokopediaPayBSModel bsDataRight;
     private boolean isLinked;
     private String walletType;
+    private String vccUserStatus;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -132,6 +133,14 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.walletType = walletType;
     }
 
+    public String getVccUserStatus() {
+        return vccUserStatus;
+    }
+
+    public void setVccUserStatus(String vccUserStatus) {
+        this.vccUserStatus = vccUserStatus;
+    }
+
     public TokopediaPayViewModel() {
     }
 
@@ -155,6 +164,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         dest.writeParcelable(this.bsDataRight, flags);
         dest.writeByte(this.isLinked ? (byte) 1 : (byte) 0);
         dest.writeString(this.walletType);
+        dest.writeString(this.vccUserStatus);
     }
 
     protected TokopediaPayViewModel(Parcel in) {
@@ -171,6 +181,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.bsDataRight = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
         this.isLinked = in.readByte() != 0;
         this.walletType = in.readString();
+        this.vccUserStatus = in.readString();
     }
 
     public static final Creator<TokopediaPayViewModel> CREATOR = new Creator<TokopediaPayViewModel>() {

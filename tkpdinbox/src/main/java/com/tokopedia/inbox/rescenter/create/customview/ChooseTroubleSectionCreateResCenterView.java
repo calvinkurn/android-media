@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.rescenter.create.customadapter.TroubleSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFormData;

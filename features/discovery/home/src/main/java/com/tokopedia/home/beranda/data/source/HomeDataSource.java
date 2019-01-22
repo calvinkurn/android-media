@@ -29,7 +29,7 @@ import rx.functions.Func1;
  */
 
 public class HomeDataSource {
-    public static final int DEFAULT_DURATION = 0;
+    public static final long ONE_YEAR = TimeUnit.DAYS.toSeconds(365);
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
@@ -81,7 +81,7 @@ public class HomeDataSource {
                     cacheManager.save(
                             ConstantKey.TkpdCache.HOME_DATA_CACHE,
                             gson.toJson(homeData),
-                            DEFAULT_DURATION
+                            ONE_YEAR
                     );
                 }
                 return response;

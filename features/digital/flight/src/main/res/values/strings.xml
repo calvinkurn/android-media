@@ -170,7 +170,7 @@
     <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
     <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
     <string name="flight_booking_passenger_first_name_empty_error">Nama depan harus diisi</string>
-    <string name="flight_bookingpassenger_title_error">Title Penumpang harus dipilih</string>
+    <string name="flight_bookingpassenger_title_error">Titel Penumpang harus dipilih</string>
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years">Umur penumpang dewasa harus lebih besar dari 12 tahun</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
@@ -430,6 +430,7 @@
     <string name="flight_insurance_additional_benefits_prefix" formatted="false">Termasuk %d Proteksi Lain</string>
     <string name="flight_insurance_learn_more_label"> Info Selengkapnya</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
+    <string name="flight_passenger_choose_salutation_title">Titel</string>
     <string name="flight_review_minus_discount_prefix">- %1$s</string>
     <string name="flight_passenger_passport_number_secondary_hint">Isi nomor passport</string>
     <string name="flight_passenger_passport_expiration_secondary_hint">Pilih tanggal</string>
@@ -451,7 +452,7 @@
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
     <string name="flight_detail_facility_label">Fasilitas</string>
     <string name="flight_detail_facility_separator">:</string>
-    <string name="flight_cancellation_support_docs_description">Pembatalan tiket tidak dapat diproses jika foto identitas diri (KTP/SIM/Paspor) tidak sesuai dengan penumpang terkait</string>
+    <string name="flight_cancellation_support_docs_description">Harap unggah KTP/SIM (untuk penerbangan domestik) atau Paspor (untuk penerbangan internasional).</string>
     <string name="flight_change_search_content_button">Ganti Pencarian</string>
     <string name="flight_cancellation_less_than_6_hours_confirmation_dialog">OK</string>
     <string name="flight_search_best_pairing_tag">Best Pairing</string>
@@ -478,4 +479,6 @@
     <string name="flight_cancellation_auto_check_dialog_title">Kebijakan Maskapai</string>
     <string name="flight_cancellation_auto_check_dialog_desc">Berdasarkan kebijakan maskapai, terdapat penumpang yang harus kami batalkan secara otomatis. Silakan periksa ulang daftar penumpang Anda.</string>
     <string name="flight_cancellation_auto_check_dialog_button">OK, Mengerti</string>
+    <string name="flight_cancellation_reason_view_image_label">Lihat</string>
+    <string name="flight_bottom_sheet_tag">Flight Sort</string>
 </resources>

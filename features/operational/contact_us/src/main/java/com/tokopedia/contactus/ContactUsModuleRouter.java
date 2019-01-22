@@ -12,6 +12,8 @@ import okhttp3.Interceptor;
  */
 
 public interface ContactUsModuleRouter {
+    String getContactUsBaseURL();
+
     Intent getChatBotIntent(Context context, String messageId);
 
     Interceptor getChuckInterceptor();
@@ -27,6 +29,8 @@ public interface ContactUsModuleRouter {
     void actionNavigateByApplinksUrl(Activity activity, String s, Bundle bundle);
 
     Intent getTopProfileIntent(Context context, String loginID);
+
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     String ACTION_CLOSE_ACTIVITY = "action_close_activity";
 }

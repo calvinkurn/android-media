@@ -1,11 +1,14 @@
 package com.tokopedia.topchat.chatlist.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -37,6 +40,7 @@ import javax.inject.Inject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
+import rx.Subscriber;
 
 import static com.tokopedia.topchat.chatlist.domain.usecase.SearchMessageUseCase.PARAM_BY_REPLY;
 
@@ -53,6 +57,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private SearchMessageUseCase searchMessageUseCase;
     private DeleteMessageListUseCase deleteMessageListUseCase;
     private PagingHandler pagingHandler;
+    private GetChatBlastSellerMetaDataUseCase getChatBlastSellerMetaDataUseCase;
     private boolean isRequesting;
     private InboxChatViewModel viewModel;
     private int contactSize;
@@ -70,6 +75,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
                        SearchMessageUseCase searchMessageUseCase,
                        DeleteMessageListUseCase deleteMessageListUseCase,
+                       GetChatBlastSellerMetaDataUseCase getChatBlastSellerMetaDataUseCase,
                        SessionHandler sessionHandler,
                        WebSocketMapper webSocketMapper) {
         this.getMessageListUseCase = getMessageListUseCase;
@@ -77,6 +83,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         this.deleteMessageListUseCase = deleteMessageListUseCase;
         this.sessionHandler = sessionHandler;
         this.webSocketMapper = webSocketMapper;
+        this.getChatBlastSellerMetaDataUseCase = getChatBlastSellerMetaDataUseCase;
     }
 
     @Override
@@ -233,6 +240,24 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getView().setMenuEnabled(false);
     }
 
+    public void getBlastMetaData(){
+        getChatBlastSellerMetaDataUseCase.execute(new Subscriber<TopChatBlastSellerMetaData>() {
+            @Override
+            public void onCompleted() {
+                //no-op
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                //no-op
+            }
+
+            @Override
+            public void onNext(TopChatBlastSellerMetaData topChatBlastSellerMetaData) {
+                getView().handleBroadcastChatMetaData(topChatBlastSellerMetaData);
+            }
+        });
+    }
 
     @Override
     public void detachView() {
@@ -240,6 +265,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getMessageListUseCase.unsubscribe();
         searchMessageUseCase.unsubscribe();
         deleteMessageListUseCase.unsubscribe();
+        getChatBlastSellerMetaDataUseCase.unsubscribe();
         if (countDownTimer != null) countDownTimer.cancel();
     }
 
@@ -258,7 +284,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         return getView().getAdapter().getListMove().size();
     }
 
-    public void goToDetailMessage(int position, ChatListViewModel listMessage) {
+    public void goToDetailMessage(Context context, int position, ChatListViewModel listMessage) {
 
         if (viewModel == null)
             return;
@@ -266,7 +292,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         ws.close(1000, "");
         getView().dropKeyboard();
 
-        UnifyTracking.eventOpenTopChat(TopChatAnalytics.Category.INBOX_CHAT,
+        UnifyTracking.eventOpenTopChat(context, TopChatAnalytics.Category.INBOX_CHAT,
                 TopChatAnalytics.Action.INBOX_CHAT_CLICK,
                 TopChatAnalytics.Name.INBOX_CHAT);
 
@@ -307,6 +333,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             pagingHandler.resetPage();
             getView().getRefreshHandler().setRefreshing(true);
             getView().getRefreshHandler().setIsRefreshing(true);
+            if (GlobalConfig.isSellerApp())
+                getBlastMetaData();
             getMessage();
         } else {
             getView().getRefreshHandler().finishRefresh();

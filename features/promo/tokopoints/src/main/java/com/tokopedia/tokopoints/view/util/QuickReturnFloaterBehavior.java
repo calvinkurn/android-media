@@ -24,7 +24,7 @@ public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View>
     private void slideUp(View child) {
         if (child.getVisibility() != View.VISIBLE) {
             Animation bottomUp = AnimationUtils.loadAnimation(child.getContext(),
-                    R.animator.tp_bottom_up);
+                    R.anim.tp_bottom_up);
             child.startAnimation(bottomUp);
             child.setVisibility(View.VISIBLE);
         }
@@ -34,7 +34,7 @@ public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View>
     private void slideDown(View child) {
         if (child.getVisibility() != View.GONE) {
             Animation slideDown = AnimationUtils.loadAnimation(child.getContext(),
-                    R.animator.tp_bottom_down);
+                    R.anim.tp_bottom_down);
             child.startAnimation(slideDown);
             child.setVisibility(View.GONE);
         }

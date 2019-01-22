@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <TextView android:id="@+id/title_gm_sub_features"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:lineSpacingExtra="@dimen/gmsubscribe_line_height_textview"
         android:gravity="center_horizontal"
-        android:text="@string/gmsubscribe_subfeature_title"
+        tools:text="@string/gmsubscribe_subfeature_title"
         android:textAlignment="center"
         android:textSize="16sp" />
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/gmsubscribe_subfeature_container_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginLeft="15dp"
@@ -48,7 +49,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/gmsubscribe_subfeature_container_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginBottom="38dp"
@@ -63,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:feature_desc="@string/gmsubscribe_feature_filter_gold_merchant"
+            
             app:feature_img="@drawable/ic_filter_gm" />
 
         <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView

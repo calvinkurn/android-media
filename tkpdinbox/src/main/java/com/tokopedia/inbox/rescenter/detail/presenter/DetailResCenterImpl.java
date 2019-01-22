@@ -10,7 +10,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -303,7 +304,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
                     view.refreshPage();
                     break;
                 case DetailResCenterService.ACTION_REPLY_CONVERSATION:
-                    UnifyTracking.eventResolutionSendSuccess();
+                    UnifyTracking.eventResolutionSendSuccess(MainApplication.getAppContext());
                     view.refreshPage();
                     break;
                 case DetailResCenterService.ACTION_ACCEPT_ADMIN_SOLUTION:
@@ -338,7 +339,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
             switch (typePostData) {
                 case DetailResCenterService.ACTION_REPLY_CONVERSATION:
-                    UnifyTracking.eventResolutionSendError();
+                    UnifyTracking.eventResolutionSendError(MainApplication.getAppContext());
                     break;
             }
         }

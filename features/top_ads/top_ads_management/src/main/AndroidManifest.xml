@@ -5,28 +5,7 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name">
-        <activity
-            android:name=".dashboard.view.activity.TopAdsDashboardActivity"
-            android:label="@string/top_ads_title_dashboard"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/headline"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/keyword/insight"/>
-            </intent-filter>
-        </activity>
+
         <activity
             android:name=".product.view.activity.TopAdsProductAdListActivity"
             android:label="@string/top_ads_title_product"
@@ -67,14 +46,7 @@
             android:name=".dashboard.view.activity.TopAdsFilterProductPromoActivity"
             android:label="@string/title_top_ads_filter"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".dashboard.view.activity.TopAdsAddCreditActivity"
-            android:label="@string/title_top_ads_add_credit"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".dashboard.view.activity.TopAdsPaymentCreditActivity"
-            android:label="@string/title_top_ads_add_credit"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".dashboard.view.activity.TopAdsGroupNewPromoActivity"
             android:label="@string/title_top_ads_new_promo_product"
@@ -112,10 +84,6 @@
             android:name=".dashboard.view.activity.TopAdsAddProductListActivity"
             android:label="@string/title_activity_top_ads_list"
             android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".keyword.view.activity.TopAdsOldKeywordListActivity"
-            android:label="@string/title_top_ads_keyword"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordCurrentListActivity"
             android:label="@string/title_top_ads_keyword"
@@ -160,12 +128,6 @@
             android:name=".keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity"
             android:label="@string/top_ads_keyword_title_keyword_edit_keyword"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".keyword.view.activity.TopAdsKeywordOldNewChooseGroupActivity"
-            android:exported="true"
-            android:label="@string/top_ads_title_keyword_add_keyword"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
             android:exported="true"
@@ -256,11 +218,6 @@
             android:label="@string/label_add_promo"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".dashboard.view.activity.SellerCenterActivity"
-            android:label="@string/topads_menu_seller_centre"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

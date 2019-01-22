@@ -1,76 +1,59 @@
 package com.tokopedia.district_recommendation.view;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.view.MotionEvent;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
-import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-
-import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DISTRICT_RECOMMENDATION_ADDRESS;
 
+/**
+ * Created by Irfan Khoirul on 17/11/18.
+ */
+
 public class DistrictRecommendationFragment
-        extends BasePresenterFragment<DistrictRecommendationContract.Presenter> implements
-        DistrictRecommendationContract.View,
-        DistrictRecommendationAdapter.Listener {
+        extends BaseSearchListFragment<AddressViewModel, DistrictRecommendationTypeFactory>
+        implements DistrictRecommendationContract.View {
 
-    private static final int THRESHOLD = 3;
-
-    private SearchView searchAddress;
-    private RecyclerView rvAddressSuggestion;
-    private ProgressBar pbLoading;
-    private TextView tvMessage;
-    private LinearLayout networkErrorView;
-
-    private int maxItemPosition;
-    private OnQueryListener queryListener;
-    private DistrictRecommendationAdapter adapter;
-    private CompositeSubscription compositeSubscription;
+    private static final String ARGUMENT_DATA_TOKEN = "token";
+    private static final long DEBOUNCE_DELAY_IN_MILIS = 700;
+    private static final int MINIMUM_SEARCH_KEYWORD_CHAR = 3;
 
     private ITransactionAnalyticsDistrictRecommendation transactionAnalyticsDistrictRecommendation;
 
+    private TextView tvMessage;
+    private SwipeToRefresh swipeRefreshLayout;
+
     @Inject
-    DistrictRecommendationContract.Presenter presenter;
+    UserSessionInterface userSession;
 
     @Inject
     AddressMapper addressMapper;
 
-    public DistrictRecommendationFragment() {
-        // Required empty public constructor
-    }
+    @Inject
+    DistrictRecommendationContract.Presenter presenter;
 
     public static DistrictRecommendationFragment newInstance(Token token) {
         DistrictRecommendationFragment fragment = new DistrictRecommendationFragment();
@@ -81,288 +64,148 @@ public class DistrictRecommendationFragment
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        initializeInjector();
-        presenter.attachView(this);
-        presenter.setToken((Token) getArguments().getParcelable(ARGUMENT_DATA_TOKEN));
-    }
-
-    private void initializeInjector() {
-        AppComponent component = ((DistrictRecommendationActivity) getActivity()).getApplicationComponent();
+    protected void initInjector() {
+        BaseAppComponent appComponent = getComponent(BaseAppComponent.class);
         DistrictRecommendationComponent districtRecommendationComponent =
                 DaggerDistrictRecommendationComponent.builder()
-                        .appComponent(component)
+                        .baseAppComponent(appComponent)
                         .build();
         districtRecommendationComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        transactionAnalyticsDistrictRecommendation = (ITransactionAnalyticsDistrictRecommendation) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        transactionAnalyticsDistrictRecommendation = (ITransactionAnalyticsDistrictRecommendation) context;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_district_recommendation, container, false);
+        tvMessage = view.findViewById(R.id.tv_message);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        return view;
     }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_search_address;
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    protected void initView(View view) {
-        this.searchAddress = view.findViewById(R.id.search_address);
-        this.rvAddressSuggestion = view.findViewById(R.id.recycler_view_suggestion);
-        this.pbLoading = view.findViewById(R.id.pb_loading);
-        this.tvMessage = view.findViewById(R.id.tv_message);
-        this.networkErrorView = view.findViewById(R.id.network_error_view);
-
-        this.searchAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                submitQuery(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                submitQuery(newText);
-                return true;
-            }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showMessageSection();
+        showInitialLoadMessage();
+        searchInputView.setSearchHint(getString(R.string.hint_district_recommendation_search));
+        searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS);
+        searchInputView.getCloseImageButton().setOnClickListener(v -> {
+            searchInputView.setSearchText("");
+            transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput();
         });
-
-
-        ImageView closeButton = searchAddress.findViewById(R.id.search_close_btn);
-        if (closeButton != null) closeButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP)
-                    transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput();
-                return false;
-            }
-        });
-
-    }
-
-    private void submitQuery(String text) {
-        try {
-            View networkError = networkErrorView.findViewById(R.id.main_retry);
-            if (networkError != null) {
-                networkErrorView.removeAllViewsInLayout();
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        if (text.length() == 0) {
-            hideLoading();
-            presenter.clearData();
-        } else {
-            if (text.length() >= THRESHOLD) {
-                if (queryListener != null) {
-                    maxItemPosition = 0;
-                    queryListener.onQuerySubmit(text);
-                }
-            }
-        }
+        swipeRefreshLayout.setEnabled(false);
     }
 
     @Override
-    protected void setViewListener() {
-    }
-
-    @Override
-    protected void initialVar() {
-        adapter = new DistrictRecommendationAdapter(presenter.getAddresses(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.VERTICAL, false);
-        rvAddressSuggestion.setLayoutManager(linearLayoutManager);
-        rvAddressSuggestion.setAdapter(adapter);
-
-        rvAddressSuggestion.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                RecyclerView.Adapter adapter = recyclerView.getAdapter();
-                int totalItemCount = adapter.getItemCount();
-                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                        .findLastVisibleItemPosition();
-
-                if (maxItemPosition < lastVisibleItemPosition) {
-                    maxItemPosition = lastVisibleItemPosition;
-                }
-
-                if ((maxItemPosition + 1) == totalItemCount) {
-                    if (pbLoading.getVisibility() == View.GONE) {
-                        presenter.searchNextIfAvailable(searchAddress.getQuery().toString());
-                    }
-                }
-            }
-        });
-
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(final Subscriber<? super String> subscriber) {
-                queryListener = new OnQueryListener() {
-                    @Override
-                    public void onQuerySubmit(String query) {
-                        subscriber.onNext(String.valueOf(query));
-                    }
-                };
-            }
-        }).debounce(700, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.from(new JobExecutor()))
-                .observeOn(new UIThread().getScheduler()).subscribe(queryAutoCompleteSubscriber()));
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public void updateRecommendation() {
-        if (searchAddress.getQuery().toString().length() == 0) {
-            showMessage(getString(R.string.hint_advice_search_address));
-        } else {
-            if (adapter.getItemCount() == 0) {
-                showMessage(getString(R.string.hint_search_address_no_result));
-            } else {
-                hideMessage();
-            }
-        }
-    }
-
-    @Override
-    public void notifyUpdateAdapter() {
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showMessage(String message) {
-        rvAddressSuggestion.setVisibility(View.GONE);
-        tvMessage.setText(message);
-        tvMessage.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideMessage() {
-        tvMessage.setVisibility(View.GONE);
-        rvAddressSuggestion.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showLoading() {
-        tvMessage.setVisibility(View.GONE);
-        pbLoading.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setInitialLoading() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.CENTER_VERTICAL);
-            params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            pbLoading.setLayoutParams(params);
-        }
-    }
-
-    @Override
-    public void setLoadMoreLoading() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            params.removeRule(RelativeLayout.CENTER_VERTICAL);
-            pbLoading.setLayoutParams(params);
-        }
-    }
-
-    @Override
-    public void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showNoConnection(@NonNull String message) {
-        NetworkErrorHelper.showEmptyState(getActivity(), networkErrorView, message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        submitQuery(searchAddress.getQuery().toString());
-                    }
-                });
-    }
-
-    private Subscriber<String> queryAutoCompleteSubscriber() {
-        return new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(String query) {
-                if (isAdded()) {
-                    presenter.searchAddress(query);
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onItemClick(Address address) {
-        transactionAnalyticsDistrictRecommendation.sendAnalyticsOnDistrictDropdownSelectionItemClicked(address.getDistrictName());
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(INTENT_DATA_ADDRESS, address);
-        resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address));
-        getActivity().setResult(Activity.RESULT_OK, resultIntent);
-        getActivity().finish();
+    public void onDetach() {
+        transactionAnalyticsDistrictRecommendation = null;
+        super.onDetach();
     }
 
     @Override
     public void onDestroy() {
+        if (presenter != null) {
+            presenter.detachView();
+        }
         super.onDestroy();
-        compositeSubscription.unsubscribe();
-        presenter.detachView();
     }
 
-    private interface OnQueryListener {
-        void onQuerySubmit(String query);
+    @Override
+    public void loadData(int page) {
+        if (getArguments() != null) {
+            if (!TextUtils.isEmpty(searchInputView.getSearchText()) &&
+                    searchInputView.getSearchText().length() >= MINIMUM_SEARCH_KEYWORD_CHAR) {
+                hideMessageSection();
+                Token token = getArguments().getParcelable(ARGUMENT_DATA_TOKEN);
+                presenter.loadData(searchInputView.getSearchText(), token, page);
+            } else {
+                showMessageSection();
+                showInitialLoadMessage();
+            }
+        }
+    }
+
+    @Override
+    protected DistrictRecommendationTypeFactory getAdapterTypeFactory() {
+        return new DistrictRecommendationAdapterTypeFactory();
+    }
+
+    @Override
+    public void onItemClicked(AddressViewModel addressViewModel) {
+        if (getActivity() != null) {
+            transactionAnalyticsDistrictRecommendation.sendAnalyticsOnDistrictDropdownSelectionItemClicked(addressViewModel.getAddress().getDistrictName());
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(INTENT_DATA_ADDRESS, addressViewModel.getAddress());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(addressViewModel.getAddress()));
+            getActivity().setResult(Activity.RESULT_OK, resultIntent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+        clearAllData();
+        loadData(getDefaultInitialPage());
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        clearAllData();
+        loadData(getDefaultInitialPage());
+    }
+
+    @Override
+    public void renderList(@NonNull List<AddressViewModel> list, boolean hasNextPage) {
+        super.renderList(list, hasNextPage);
+        if (getCurrentPage() == getDefaultInitialPage() && hasNextPage) {
+            int page = getCurrentPage() + getDefaultInitialPage();
+            loadData(page);
+        }
+    }
+
+    @Override
+    public void showLoading() {
+        hideMessageSection();
+        super.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideMessageSection();
+        super.hideLoading();
+    }
+
+    @Override
+    public void showNoResultMessage() {
+        tvMessage.setText(getString(R.string.message_search_address_no_result));
+        showMessageSection();
+    }
+
+    @Override
+    public void showInitialLoadMessage() {
+        tvMessage.setText(getString(R.string.message_advice_search_address));
+        showMessageSection();
+    }
+
+    private void hideMessageSection() {
+        tvMessage.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void showMessageSection() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+        tvMessage.setVisibility(View.VISIBLE);
     }
 }

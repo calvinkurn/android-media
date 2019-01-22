@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
@@ -99,16 +100,21 @@
 
     <TextView
         android:id="@+id/text_my_points_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/tp_margin_small"
         android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginRight="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/tp_label_see_point"
         android:textColor="@color/black_38"
         android:textSize="@dimen/tp_text_size_xsmall"
         app:layout_constraintBottom_toBottomOf="@+id/text_my_points_value"
-        app:layout_constraintStart_toEndOf="@+id/text_my_points_value" />
+        app:layout_constraintRight_toRightOf="@+id/line_separator_points_vertical"
+        app:layout_constraintStart_toEndOf="@+id/text_my_points_value"
+        tools:text="Points Points" />
 
     <TextView
         android:id="@+id/text_my_points_value"
@@ -121,7 +127,8 @@
         android:textSize="@dimen/tp_text_size_regular"
         app:layout_constraintBottom_toBottomOf="@+id/img_points_stack"
         app:layout_constraintStart_toEndOf="@+id/img_points_stack"
-        app:layout_constraintTop_toTopOf="@+id/img_points_stack" />
+        app:layout_constraintTop_toTopOf="@+id/img_points_stack"
+        tools:text="100.087" />
 
     <View
         android:id="@+id/line_separator_points_vertical"
@@ -146,15 +153,20 @@
 
     <TextView
         android:id="@+id/text_loyalty_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/tp_margin_small"
         android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/tp_label_see_loyalty"
         android:textColor="@color/black_38"
         android:textSize="@dimen/tp_text_size_xsmall"
         app:layout_constraintBottom_toBottomOf="@+id/text_loyalty_value"
+        app:layout_constraintRight_toRightOf="@+id/view_loyalty_saya"
         app:layout_constraintStart_toEndOf="@+id/text_loyalty_value" />
 
     <TextView
@@ -168,7 +180,8 @@
         android:textSize="@dimen/tp_text_size_regular"
         app:layout_constraintBottom_toBottomOf="@+id/img_loyalty_stack"
         app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
-        app:layout_constraintTop_toTopOf="@+id/img_loyalty_stack" />
+        app:layout_constraintTop_toTopOf="@+id/img_loyalty_stack"
+        tools:text="20.099" />
 
     <View
         android:id="@+id/line_separator_points_horizontal"

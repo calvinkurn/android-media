@@ -1,13 +1,16 @@
 package com.tokopedia.digital.tokocash;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
+import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -18,19 +21,17 @@ import rx.Subscriber;
 public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashContract.View>
         implements TopupTokoCashContract.Presenter {
 
-    private GetCategoryByIdUseCase getCategoryByIdUseCase;
-    private TopupTokoCashContract.View view;
+    private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
-    public TopupTokoCashPresenter(GetCategoryByIdUseCase getCategoryByIdUseCase,
-                                  TopupTokoCashContract.View view) {
-        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
-        this.view = view;
+    @Inject
+    public TopupTokoCashPresenter(GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
+        this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }
 
     @Override
     public void processGetDataProductTokoCash() {
-        RequestParams requestParams = getCategoryByIdUseCase.createRequestParam("103");
-        getCategoryByIdUseCase.execute(requestParams, new Subscriber<ProductDigitalData>() {
+        RequestParams requestParams = getDigitalCategoryByIdUseCase.createRequestParam("103");
+        getDigitalCategoryByIdUseCase.execute(requestParams, new Subscriber<ProductDigitalData>() {
             @Override
             public void onCompleted() {
 
@@ -38,12 +39,12 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
 
             @Override
             public void onError(Throwable e) {
-                view.showErrorLoadProductTokoCash(e);
+                getView().showErrorLoadProductTokoCash(e);
             }
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
-                view.renderProductTokoCash(productDigitalData.getCategoryData());
+                getView().renderProductTokoCash(productDigitalData.getCategoryData());
             }
         });
     }
@@ -59,19 +60,20 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
                 .operatorId(preCheckoutProduct.getOperatorId())
                 .productId(preCheckoutProduct.getProductId())
                 .utmCampaign((preCheckoutProduct.getCategoryName()))
-                .utmContent(view.getVersionInfoApplication())
+                .utmContent(getView().getVersionInfoApplication())
                 .idemPotencyKey(generateATokenRechargeCheckout())
                 .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                 .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                 .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
+                .source(DigitalCheckoutPassData.PARAM_NATIVE)
                 .build();
 
-        if (view.getMainApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter =
-                    (IDigitalModuleRouter) view.getMainApplication();
-            view.navigateToActivityRequest(
+        if (getView().getMainApplication() instanceof DigitalRouter) {
+            DigitalRouter digitalModuleRouter =
+                    (DigitalRouter) getView().getMainApplication();
+            getView().navigateToActivityRequest(
                     digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                    DigitalRouter.REQUEST_CODE_CART_DIGITAL
             );
         }
     }
@@ -79,11 +81,11 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
     private String generateATokenRechargeCheckout() {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
-        return view.getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
+        return getView().getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
     @Override
     public void destroyView() {
-        if (getCategoryByIdUseCase != null) getCategoryByIdUseCase.unsubscribe();
+        if (getDigitalCategoryByIdUseCase != null) getDigitalCategoryByIdUseCase.unsubscribe();
     }
 }

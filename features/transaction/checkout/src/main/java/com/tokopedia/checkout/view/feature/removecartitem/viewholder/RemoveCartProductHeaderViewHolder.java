@@ -11,7 +11,7 @@ import com.tokopedia.checkout.view.feature.removecartitem.viewmodel.CartProductH
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public class RemoveCartProductHeaderViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_REMOVE_ALL_CHECKBOX =

@@ -79,6 +79,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
+                List<Object> legoAndCuratedAndSprintSaleBannerList = new ArrayList<>();
+
                 for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout() != null) {
                         if(!homeData.isCache()) {
@@ -91,26 +93,30 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                        context,
-                                        channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination()
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        context,
-                                        channel.getEnhanceImpressionLegoBannerHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
+                                channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
+                                channel.setHomeAttribution(String.format("%s - sprintSaleProduct - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
+                                        channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
                                 );
                             } else {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        context,
-                                        channel.getEnhanceImpressionDynamicChannelHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
                                 );
                             }
                         }
+
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
                             list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
                         } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
@@ -121,6 +127,10 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                     list.size(),channel);
                         }
                     }
+                }
+
+                if (!legoAndCuratedAndSprintSaleBannerList.isEmpty()){
+                    HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(context, legoAndCuratedAndSprintSaleBannerList);
                 }
             }
 

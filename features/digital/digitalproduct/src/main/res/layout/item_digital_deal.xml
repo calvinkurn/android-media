@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_image"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        tools:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:id="@+id/info_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_weight="1"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_brand_name"
+            style="@style/TextView.Micro.Black40"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Diva Karaoke" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            style="@style/TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            tools:text="Gratis 1 jam Karaoke Large Room for amazing alvarisi" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_slashed_price"
+                style="@style/TextView.Small.Black40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                android:background="@drawable/digital_bg_textview_strikethrough"
+                tools:text="Rp.100" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_price"
+                style="@style/TextView.Small.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Rp.200" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_close"
+        android:layout_width="@dimen/dp_26"
+        android:layout_height="@dimen/dp_26"
+        android:layout_gravity="top"
+        android:paddingStart="@dimen/dp_5"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_10"
+        android:src="@drawable/ic_close"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_check"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_4"
+        android:layout_weight="0.2"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_buy"
+        style="@style/DigitalDealBuy"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_30"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="0.2"
+        android:gravity="center"
+        android:text="@string/digital_deal_buy_label" />
+</LinearLayout>

@@ -8,6 +8,7 @@ ext {
     tkpdCommonNetworkVersion = '2.22'
     tkpdDesignVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
+    tkpdCacheManagerVersion = '2.22'
     tkpdOmsVersion = '2.22'
     tkpdPaginationVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
@@ -25,15 +26,19 @@ ext {
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
+            cachemanager          : "com.tokopedia.cachemanager:cachemanager:${tkpdCacheManagerVersion}",
     ]
 
     // Sort and categorize alphabetically by folder name
     libraries = [
             analytics         : ":libraries:analytics",
             applink           : ":libraries:applink",
-            baseAdapter           : ":libraries:base_adapter",
+            baseAdapter       : ":libraries:base_adapter",
+            baseListSeller    : ":libraries:base_list_seller",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
+            cacheManager      : ":libraries:cache_manager",
+//            cacheManager      : ":libraries:cache_manager_no_op",
             cameraView        : ":libraries:camera_view",
             commonNetwork     : ":libraries:common_network",
             datePickerRange   : ":libraries:date_picker_range",
@@ -42,6 +47,7 @@ ext {
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
             imageuploader     : ":libraries:imageuploader",
+            kotlinExtensions  : ":libraries:kotlin_extensions",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",
@@ -54,8 +60,11 @@ ext {
             williamchart      : ":libraries:williamchart",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil       : ":libraries:youtubeutil",
-
+            core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
+            track             : ":track",
+            trackinterface    : ":trackinterface",
+            cmnotification    :":libraries:cm_push_notifications"
     ]
 }

@@ -72,6 +72,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Inject
     public CouponDetailPresenter mPresenter;
+    private View llBottomBtn;
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CouponDetailFragment();
@@ -181,6 +182,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
+        llBottomBtn = view.findViewById(R.id.ll_bottom_button);
     }
 
     private void initListener() {
@@ -551,11 +553,21 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                     } else {
                         mPresenter.swipeMyCoupon(data.getRealCode(), ""); //Empty for online partner
                     }
+
+                    AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
+                            "");
                 }
 
                 @Override
                 public void onPartialSwipe() {
-
+                    AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
+                            "");
                 }
             });
 
@@ -621,6 +633,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         pager.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
+        llBottomBtn.setVisibility(View.VISIBLE);
 
         //excluding extra padding from tabs
         TabUtil.wrapTabIndicatorToTitle(tabs,

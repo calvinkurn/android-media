@@ -38,6 +38,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     private ImageLoader imageLoader;
     private TopAdsItemImpressionListener itemImpressionListener;
     private boolean enableWishlist;
+    private int offset;
 
     public AdsAdapterTypeFactory(Context context) {
         this(context, -1);
@@ -50,6 +51,10 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 
     public void setEnableWishlist(boolean enableWishlist) {
@@ -126,7 +131,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
             holder = new ProductFeedViewHolder(view, itemClickListener);
         } else if (viewType == ProductCarouselListViewHolder.LAYOUT) {
             holder = new ProductCarouselListViewHolder(view, itemClickListener, clickPosition,
-                    itemImpressionListener);
+                    itemImpressionListener, enableWishlist, offset);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

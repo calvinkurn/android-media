@@ -25,6 +25,9 @@ public class FlightAttribute {
     @SerializedName("voucher")
     @Expose
     private Voucher voucher;
+    @SerializedName("mandatory_dob")
+    @Expose
+    private boolean mandatoryDob;
 
     public FlightAttribute() {
     }
@@ -47,5 +50,9 @@ public class FlightAttribute {
 
     public Voucher getVoucher() {
         return voucher;
+    }
+
+    public boolean isMandatoryDob() {
+        return mandatoryDob;
     }
 }

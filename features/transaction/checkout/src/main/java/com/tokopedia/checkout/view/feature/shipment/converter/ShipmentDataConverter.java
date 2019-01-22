@@ -136,6 +136,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setShopName(shop.getShopName());
         shipmentCartItemModel.setOfficialStore(shop.isOfficial());
         shipmentCartItemModel.setGoldMerchant(shop.isGold());
+        shipmentCartItemModel.setShopBadge(shop.getShopBadge());
 
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());
         shipmentCartItemModel.setSpId(groupShop.getSpId());
@@ -195,7 +196,7 @@ public class ShipmentDataConverter {
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
 
-        if(product.getPurchaseProtectionPlanData() != null) {
+        if (product.getPurchaseProtectionPlanData() != null) {
             PurchaseProtectionPlanData ppp = product.getPurchaseProtectionPlanData();
             cartItemModel.setProtectionAvailable(ppp.isProtectionAvailable());
             cartItemModel.setProtectionPricePerProduct(ppp.getProtectionPricePerProduct());

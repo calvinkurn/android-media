@@ -78,7 +78,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
                     @Override
                     public void onClick(View v) {
                         onBackPressed();
-                    CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);}
+                    CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);}
                 });topBarTitle = (TextView) findViewById(R.id.top_bar_title);
         topBarTitle.setText(getString(R.string.title_category));
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -118,7 +118,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
             Intent intent = new Intent(fragmentActivity, CategoryNavigationActivity.class);
             intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, departmentId);
             fragmentActivity.startActivityForResult(intent,DESTROY_BROWSE_PARENT);
-            fragmentActivity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
+            fragmentActivity.overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 
@@ -138,7 +138,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core.R.anim.push_down);
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core2.R.anim.push_down);
     }
 
 

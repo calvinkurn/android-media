@@ -16,7 +16,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
@@ -111,7 +111,7 @@ public class DialogLogoutFragment extends DialogFragment {
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
                                         DbManagerImpl.getInstance().removeAllEtalase();
-                                        TrackingUtils.eventMoEngageLogoutUser();
+                                        TrackingUtils.eventMoEngageLogoutUser(getActivity());
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
                                         notif.dismissAllActivedNotifications();

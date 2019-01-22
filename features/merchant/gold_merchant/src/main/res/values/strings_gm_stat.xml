@@ -25,7 +25,7 @@
     <string name="gm_statistic_no_market_insight_in_this_period">Belum ada data wawasan pasar di toko Anda</string>
     <string name="gm_statistic_plus_add_product">+ Tambah Produk</string>
     <string name="gm_statistic_get_access_to_see_gm_stat">Dapatkan akses untuk melihat data lengkap statistik produk</string>
-    <string name="gm_statistic_upgrade_to_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="gm_statistic_upgrade_to_gold_merchant">Upgrade ke %1$s</string>
     <string name="gm_statistic_buyer_data">Data Pembeli</string>
     <string name="gm_statistic_buyer_count">Jumlah Pembeli</string>
     <string name="gm_statistic_product_data">Data Produk</string>

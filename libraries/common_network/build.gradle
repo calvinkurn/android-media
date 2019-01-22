@@ -33,14 +33,17 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
-    implementation rootProject.ext.miscDependencies.gson
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.network)
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
-    implementation project(rootProject.ext.libraries.network)
+    implementation rootProject.ext.miscDependencies.gson
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply from: '../../publish_local.gradle'

@@ -9,7 +9,7 @@ import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -56,7 +56,7 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
+        TrackingUtils.sendMoEngageReferralScreenOpen(this, getString(R.string.referral_screen_name));
     }
 
     @Override

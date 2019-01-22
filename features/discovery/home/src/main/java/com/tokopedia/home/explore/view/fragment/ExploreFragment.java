@@ -122,7 +122,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void onMarketPlaceItemClicked(LayoutRows data) {
-        TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), data.getName());
         ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(
                 getActivity(),
                 String.valueOf(data.getCategoryId()),
@@ -144,7 +144,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         } else {
             onGimickItemClicked(data);
         }
-        TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), data.getName());
     }
 
     @Override

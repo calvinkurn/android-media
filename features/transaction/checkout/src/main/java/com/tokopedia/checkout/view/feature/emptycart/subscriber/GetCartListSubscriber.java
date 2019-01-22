@@ -31,33 +31,29 @@ public class GetCartListSubscriber extends Subscriber<CartListData> {
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
-            if (!view.isTraceStopped()) {
-                presenter.setLoadApiStatus(EmptyCartApi.CART_LIST, true);
-                view.stopTrace();
-            }
             view.hideLoading();
             view.showErrorToast(ErrorHandler.getErrorMessage(view.getContext(), e));
+            stopTrace();
+        }
+    }
+
+    private void stopTrace() {
+        if (!view.isCartTraceStopped()) {
+            presenter.setLoadApiStatus(EmptyCartApi.CART_LIST, true);
+            view.stopCartTrace();
         }
     }
 
     @Override
     public void onNext(CartListData cartListData) {
         if (view != null) {
-            if (!view.isTraceStopped()) {
-                presenter.setLoadApiStatus(EmptyCartApi.CART_LIST, true);
-                view.stopTrace();
-            }
             view.hideLoading();
             if (!cartListData.getShopGroupDataList().isEmpty()) {
                 view.navigateToCartFragment(cartListData);
             } else {
-                String autoApplyMessage = null;
-                if (cartListData.getAutoApplyData() != null &&
-                        cartListData.getAutoApplyData().isSuccess()) {
-                    autoApplyMessage = cartListData.getAutoApplyData().getTitleDescription();
-                }
-                view.renderEmptyCart(autoApplyMessage);
+                view.renderEmptyCart(cartListData.getAutoApplyData());
             }
+            stopTrace();
         }
     }
 }

@@ -43,9 +43,9 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
 
     private void trackerBudgetShop() {
         if(detailAd.isBudget()) {
-            UnifyTracking.eventTopAdsShopAddPromoBudget(AppEventTracking.EventLabel.BUDGET_PER_DAY);
+            UnifyTracking.eventTopAdsShopAddPromoBudget(getActivity(), AppEventTracking.EventLabel.BUDGET_PER_DAY);
         }else{
-            UnifyTracking.eventTopAdsShopAddPromoBudget(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
+            UnifyTracking.eventTopAdsShopAddPromoBudget(getActivity(), AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
 

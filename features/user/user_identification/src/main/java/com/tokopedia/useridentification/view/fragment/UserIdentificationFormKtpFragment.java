@@ -23,7 +23,8 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
  */
 
 public class UserIdentificationFormKtpFragment extends
-        BaseUserIdentificationStepperFragment<UserIdentificationStepperModel> {
+        BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>
+        implements UserIdentificationFormActivity.Listener {
 
     public static Fragment createInstance() {
         Fragment fragment = new UserIdentificationFormKtpFragment();
@@ -63,5 +64,10 @@ public class UserIdentificationFormKtpFragment extends
             ((UserIdentificationFormActivity) getActivity())
                     .updateToolbarTitle(getString(R.string.title_kyc_form_ktp));
         }
+    }
+
+    @Override
+    public void trackOnBackPressed() {
+        analytics.eventClickBackKtpPage();
     }
 }

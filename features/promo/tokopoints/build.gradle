@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.session)
+    implementation project(rootProject.ext.features.tokopointsNotification)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -42,6 +43,9 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

@@ -4,10 +4,9 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +26,8 @@ public interface ICartListPresenter {
     void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList, boolean isLastItem);
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList);
+
+    void processUpdateCartDataPromo(List<CartItemData> cartItemDataList, PromoData promoData, int goToDetail);
 
     void processToUpdateAndReloadCartData();
 

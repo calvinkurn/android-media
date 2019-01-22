@@ -118,7 +118,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
                 );
             }
             model.setDoneTrackImpression(true);
-            UnifyTracking.eventCategoryLifestyleImpression(list);
+            UnifyTracking.eventCategoryLifestyleImpression(itemView.getContext(), list);
         }
     }
 

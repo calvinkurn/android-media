@@ -8,13 +8,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Inbox;
@@ -26,6 +26,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
+import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import java.util.ArrayList;
@@ -126,9 +127,20 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
                 break;
             case DISCUSSION_MENU:
-                if (getActivity().getApplication() instanceof GlobalNavRouter) {
-                    startActivity(((GlobalNavRouter) getActivity().getApplication())
-                            .getInboxTalkCallingIntent(getActivity()));
+                if (getActivity() != null
+                        && getActivity().getApplicationContext() != null) {
+                    if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
+                        ((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker().
+                                sendEventTracking("clickInboxChat",
+                                        "inbox - talk",
+                                        "click on diskusi product",
+                                        "");
+                    }
+
+                    if (getActivity().getApplication() instanceof GlobalNavRouter) {
+                        startActivity(((GlobalNavRouter) getActivity().getApplication())
+                                .getInboxTalkCallingIntent(getActivity()));
+                    }
                 }
                 break;
             case REVIEW_MENU:
@@ -146,7 +158,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onResume() {
         super.onResume();
-        if(isVisible()) presenter.onResume();
+        if (isVisible()) presenter.onResume();
     }
 
     @Override
@@ -237,5 +249,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void setPresenter(GlobalNavComponent presenter) { }
+    public void setPresenter(GlobalNavComponent presenter) {
+    }
 }

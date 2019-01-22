@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="0dp"
-    android:paddingLeft="0dp"
-    android:paddingRight="@dimen/padding_vs"
-    android:paddingTop="0dp"
-    android:textSize="@dimen/font_medium" />
+    android:paddingLeft="@dimen/dp_0"
+    android:paddingRight="@dimen/dp_5"
+    android:paddingTop="@dimen/dp_0"
+    android:textSize="@dimen/sp_16" />

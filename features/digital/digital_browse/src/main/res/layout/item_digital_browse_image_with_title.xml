@@ -29,7 +29,7 @@
             android:duplicateParentState="true"
             tools:src="@drawable/status_no_result" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_product"
             style="@style/TextView.Micro"
             android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.design.component.TextViewCompat
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_new_label"
         style="@style/TextView.Micro.WhitePrimary"
         android:layout_width="wrap_content"

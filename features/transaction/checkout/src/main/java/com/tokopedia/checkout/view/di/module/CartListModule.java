@@ -1,7 +1,9 @@
 package com.tokopedia.checkout.view.di.module;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -18,9 +20,17 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
@@ -31,7 +41,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class})
+@Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class, PromoCheckoutModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;
@@ -64,6 +74,18 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    UserSessionInterface provideUserSessionInterface() {
+        return new UserSession(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    TopAdsGqlUseCase topAdsUseCase(Context context){
+        return new TopAdsGqlUseCase(context);
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
@@ -75,13 +97,15 @@ public class CartListModule {
                                                  CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                  AddWishListUseCase addWishListUseCase,
                                                  RemoveWishListUseCase removeWishListUseCase,
-                                                 UpdateAndReloadCartUseCase updateAndReloadCartUseCase) {
+                                                 UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
+                                                 UserSessionInterface userSessionInterface,
+                                                 TopAdsGqlUseCase topAdsGqlUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase
-        );
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                userSessionInterface, topAdsGqlUseCase);
     }
 
     @Provides
@@ -96,4 +120,20 @@ public class CartListModule {
         return new CartAdapter(cartActionListener, cartItemActionListener);
     }
 
+    @Provides
+    @CartListScope
+    @ApplicationContext
+    Context provideContextAbstraction(Context context){
+        return context;
+    }
+
+    @Provides
+    @CartListScope
+    TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
+        if(context instanceof TrackingPromoCheckoutRouter){
+            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
+        }else{
+            return new TrackingPromoCheckoutUtil(null);
+        }
+    }
 }

@@ -158,7 +158,7 @@ public class GmCheckoutFragment
 
     @Override
     public void changeCurrentSelected() {
-        UnifyTracking.eventClickChangePackageGoldMerchant();
+        UnifyTracking.eventClickChangePackageGoldMerchant(getActivity());
         callback.changeCurrentSelected(selectedProduct);
     }
 
@@ -245,7 +245,7 @@ public class GmCheckoutFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickSubscribeCheckoutGoldMerchant();
+                UnifyTracking.eventClickSubscribeCheckoutGoldMerchant(getActivity());
                 goToCheckout();
             }
         };

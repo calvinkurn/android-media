@@ -18,4 +18,8 @@
     <string name="payment_authentication_title_2">Verifikasi oleh Bank</string>
     <string name="payment_authentication_description_1">Anda akan diminta memasukkan angka CVV disetiap transaksi. Verifikasi via SMS atau sidik jari hanya diperlukan untuk transaksi tertentu.</string>
     <string name="payment_authentication_description_2">Anda akan diminta memasukkan angka CVV dan verifikasi via SMS untuk setiap transaksi.</string>
+    <string name="payment_label_title_dialog_verif_phone">Nomor Ponsel Belum Diverifikasi</string>
+    <string name="payment_label_desc_dialog_verif">Untuk mengubah pengaturan verifikasi Anda harus melakukan verifikasi nomor ponsel terlebih dahulu</string>
+    <string name="payment_label_continue_dialog_verif">Lanjutkan</string>
+    <string name="payment_label_cancel_dialog_verif">Batal</string>
 </resources>

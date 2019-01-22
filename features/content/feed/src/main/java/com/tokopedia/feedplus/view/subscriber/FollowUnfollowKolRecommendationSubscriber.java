@@ -30,12 +30,12 @@ public class FollowUnfollowKolRecommendationSubscriber extends FollowUnfollowKol
         FollowKolQuery query = response.getData(FollowKolQuery.class);
         if (query.getData() != null) {
             FollowKolDomain followKolDomain = new FollowKolDomain(query.getData().getData().getStatus());
-            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS
-                    && status == FollowKolPostGqlUseCase.PARAM_FOLLOW)
-                kolListener.onSuccessFollowKolFromRecommendation(rowNumber, position);
-            else if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS
-                    && status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW) {
-                kolListener.onSuccessUnfollowKolFromRecommendation(rowNumber, position);
+            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
+                kolListener.onSuccessFollowKolFromRecommendation(
+                        rowNumber,
+                        position,
+                        status == FollowKolPostGqlUseCase.PARAM_FOLLOW
+                );
             } else if (status == FollowKolPostGqlUseCase.PARAM_FOLLOW) {
                 kolListener.onErrorFollowKol(view.getContext().getString(R.string
                         .failed_to_follow), id, status, rowNumber);

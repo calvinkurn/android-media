@@ -55,7 +55,18 @@
             app:layout_constraintLeft_toRightOf="@+id/image_shop"
             app:layout_constraintStart_toEndOf="@+id/image_shop"
             app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
-            tools:text="Kelengkapan Profile 75%"/>
+            tools:text="Gagal Verifikasi"/>
+
+        <ImageView
+            android:id="@+id/shop_status_info_button"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
+            android:src="@drawable/ic_info_black"
+            app:layout_constraintTop_toTopOf="@+id/text_shop_verification_status"
+            app:layout_constraintBottom_toBottomOf="@+id/text_shop_verification_status"
+            app:layout_constraintLeft_toRightOf="@+id/text_shop_verification_status"/>
 
         <ImageView
             android:id="@+id/shop_reputation"
@@ -87,42 +98,57 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/verification_warning_ticker"/>
 
-        <LinearLayout
-            android:id="@+id/layout_deposit"
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_saldo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_8"
+            app:lv_image="@drawable/ic_saldo_green"
+            app:lv_image_width="@dimen/dp_24"
+            app:lv_image_height="@dimen/dp_24"
+            app:lv_image_margin_right="@dimen/dp_8"
+            app:lv_title="@string/title_saldo_setting"
+            app:lv_title_text_size="@dimen/sp_12"
+            app:lv_title_color="@color/light_secondary"
+            app:lv_content="Rp 2.000.000"
+            app:lv_content_text_size="@dimen/sp_14"
+            app:lv_content_text_style="bold"
+            app:lv_content_color="@color/light_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/separator">
+            app:layout_constraintTop_toBottomOf="@+id/separator"/>
 
-            <ImageView
-                android:id="@+id/image_saldo"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:src="@drawable/ic_saldo_green"/>
+        <View
+            android:id="@+id/separator_2"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/grey_300"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_view_saldo"/>
 
-            <TextView
-                android:id="@+id/text_saldo_label"
-                style="@style/TextView.Micro.BlackDisabled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:text="@string/title_saldo_setting"/>
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_topads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:lv_image="@drawable/ic_top_ads_speaker_green"
+            app:lv_image_width="@dimen/dp_24"
+            app:lv_image_height="@dimen/dp_24"
+            app:lv_image_margin_right="@dimen/dp_8"
+            app:lv_title="@string/title_saldo_setting"
+            app:lv_title_text_size="@dimen/sp_12"
+            app:lv_title_color="@color/light_secondary"
+            app:lv_sub_title_color="@color/light_disabled"
+            app:lv_sub_title_text_size="@dimen/sp_10"
+            app:lv_content="Rp 2.000.000"
+            app:lv_content_text_size="@dimen/sp_14"
+            app:lv_content_text_style="bold"
+            app:lv_content_color="@color/light_primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/separator_2"/>
 
-            <TextView
-                android:id="@+id/text_saldo_amount"
-                style="@style/TextView.Small.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:textAlignment="viewEnd"
-                tools:text="Rp 2.000.000"/>
-        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

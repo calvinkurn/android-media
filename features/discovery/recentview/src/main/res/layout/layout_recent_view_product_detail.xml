@@ -116,7 +116,7 @@
         android:layout_toRightOf="@id/product_image"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.tokopedia.gm.resource.GMImageView
             android:id="@+id/gold_merchant"
             android:layout_width="@dimen/dp_11"
             android:layout_height="@dimen/dp_11"
@@ -124,9 +124,7 @@
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/dp_5"
             android:layout_toRightOf="@id/product_image"
-            app:srcCompat="@drawable/ic_badge_gold"
             android:visibility="gone"
-
             tools:visibility="visible"/>
 
         <ImageView

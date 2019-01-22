@@ -1,6 +1,6 @@
 package com.tokopedia.core.drawer2.view.subscriber;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;

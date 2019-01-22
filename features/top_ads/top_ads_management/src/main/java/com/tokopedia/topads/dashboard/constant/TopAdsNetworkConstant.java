@@ -63,8 +63,6 @@ public class TopAdsNetworkConstant {
     public static final String ACTION_BULK_COPY_KEYWORD = "change_group";
     public static final String ACTION_BULK_CHANGE_BID_KEYWORD = "change_bid";
 
-    public static final String SOURCE_DASHBOARD_USER_MAIN = "dashboard_user_main";
-
     public static final int TYPE_PRODUCT_STAT = 1;
     public static final int TYPE_PRODUCT_SHOP = 2;
 

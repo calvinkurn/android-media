@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.mitra.digitalcategory.presentation.compoundview.MitraClientNumberInputView
+        android:id="@+id/client_number_input_view"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:visibility="gone"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.mitra.digitalcategory.presentation.compoundview.DigitalWidgetDropdownInputView
+        android:id="@+id/dropdown_input_view"
+        android:visibility="gone"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.mitra.digitalcategory.presentation.compoundview.DigitalWidgetRadioInputView
+        android:id="@+id/radio_input_view"
+        android:visibility="gone"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</merge>

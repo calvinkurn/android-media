@@ -70,4 +70,11 @@ public class GmSubFeatureView extends FrameLayout {
         invalidate();
         requestLayout();
     }
+
+    public void setDescSubFeature(String descSubFeature) {
+        this.descSubFeature = descSubFeature;
+        textViewDescSubFeature.setText(descSubFeature);
+        invalidate();
+        requestLayout();
+    }
 }

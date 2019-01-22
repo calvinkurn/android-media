@@ -26,6 +26,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core2.R;
 
 @DeepLink("tokopedia://setting/dev-opts")
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {

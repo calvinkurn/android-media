@@ -28,6 +28,7 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachem
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
+import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationViewImageDialogFragment;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReasonAndProofPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
@@ -50,6 +51,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private static final String EXTRA_IMAGE_LOCAL = "EXTRA_IMAGE_LOCAL";
     private static final String EXTRA_CANCELLATION_REASON = "EXTRA_CANCELLATION_REASON";
     private static final String EXTRA_CHANGED_IMAGE_INDEX = "EXTRA_CHANGED_IMAGE_INDEX";
+    private static final String DIALOG_FRAGMENT_TAG = "DIALOG_FRAGMENT_TAG";
     private static final int REQUEST_CODE_IMAGE = 1001;
     private static final int CHOOSE_REASON_REQUEST_CODE = 1111;
 
@@ -168,7 +170,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 startActivityForResult(FlightCancellationChooseReasonActivity.createIntent(getContext(), selectedReason),
                         CHOOSE_REASON_REQUEST_CODE);
-                getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+                getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
             }
         });
 
@@ -332,6 +334,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void viewImage(String filePath) {
+        showImageInFragment(filePath);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
@@ -391,5 +398,10 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         } else {
             hideAttachmentContainer();
         }
+    }
+
+    private void showImageInFragment(String filePath) {
+        FlightCancellationViewImageDialogFragment dialogFragment = FlightCancellationViewImageDialogFragment.newInstance(filePath);
+        dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
     }
 }

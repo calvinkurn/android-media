@@ -8,6 +8,7 @@ import com.tokopedia.core.fragment.shopstatistic.ShopStatisticResponse;
 import com.tokopedia.core.fragment.shopstatistic.ShopStatisticReview;
 import com.tokopedia.core.fragment.shopstatistic.ShopStatisticSatisfaction;
 import com.tokopedia.core.fragment.shopstatistic.ShopStatisticTransaction;
+import com.tokopedia.core2.R;
 
 
 /**

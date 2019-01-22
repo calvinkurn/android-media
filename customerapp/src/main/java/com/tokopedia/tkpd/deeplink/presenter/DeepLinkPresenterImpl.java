@@ -74,14 +74,13 @@ import rx.Subscriber;
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
-    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
+    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
+    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
-    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
-
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -456,33 +455,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(campaign);
-        UnifyTracking.eventCampaign(campaignUri);
+        UnifyTracking.eventCampaign(activity, campaign);
+        UnifyTracking.eventCampaign(activity, campaignUri);
     }
 
-    private boolean isExcludedUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
-            for (String excludedString : listExcludedString) {
-                if (uriData.getPath().endsWith(excludedString)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean isExcludedHostUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST).split(","));
-            for (String excludedString : listExcludedString) {
-                if (uriData.getPath().startsWith(excludedString)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     private void prepareOpenWebView(Uri uriData) {
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {

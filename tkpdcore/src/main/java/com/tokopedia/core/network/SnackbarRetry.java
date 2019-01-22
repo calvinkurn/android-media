@@ -4,7 +4,7 @@ import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by ricoharisin on 6/2/16.

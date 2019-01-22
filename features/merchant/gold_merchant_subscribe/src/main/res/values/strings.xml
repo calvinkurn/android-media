@@ -15,9 +15,10 @@
     <string name="gmsubscribe_auto_extend_withdrawal"><![CDATA[<b>Penarikan Saldo</b> perpanjang otomatis akan dilakukan pada <b>%s</b> dengan metode pembayaran Saldo Tokopedia.]]></string>
 
     <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
-    <string name="gmsubscribe_feature_gold_badge_desc">Dapatkan Gold Badge dengan performa toko min. 75 poin, toko Anda akan terlihat semakin terpercaya.</string>
+    <string name="gmsubscribe_feature_gold_badge_desc">Dapatkan %1$s dengan performa toko min. 75 poin, toko Anda akan terlihat semakin terpercaya.</string>
     <string name="gmsubscribe_feature_topads">TopAds</string>
     <string name="gmsubscribe_feature_topads_desc">Promosi produk dan toko jadi lebih efektif dan efisien</string>
+    <string name="gmsubscribe_feature_wawasan_desc">Lihat tren terbaru seputar toko dan produk-produk terkini</string>
     <string name="gmsubscribe_feature_statistic">Statistik Toko</string>
     <string name="gmsubscribe_feature_statistic_desc">Pantau perkembangan toko hingga detail penjualan jadi lebih mudah</string>
     <string name="gmsubscribe_feature_ticket">Gold Ticket</string>
@@ -25,7 +26,7 @@
     <string name="gmsubscribe_feature_cover">Sampul Toko</string>
     <string name="gmsubscribe_feature_cover_desc">Jadikan halaman toko Anda lebih menarik dengan upload kreasi sampul foto Anda sendiri</string>
 
-    <string name="gmsubscribe_subfeature_title">Fitur-fitur Gold Merchant ini juga dapat\nmembantu memaksimalkan penjualanmu</string>
+    <string name="gmsubscribe_subfeature_title">Fitur-fitur %1$s ini juga dapat\nmembantu memaksimalkan penjualanmu</string>
     <string name="gmsubscribe_subfeature_etalase">Tambahan\n150 Etalase</string>
     <string name="gmsubscribe_feature_admin">Gratis\n1 Admin Toko</string>
     <string name="gmsubscribe_feature_cashback">Cashback</string>
@@ -45,7 +46,7 @@
     <string name="gmsubscribe_button_change">Ubah</string>
 
     <string name="gmsubscribe_auto_subscribe_title">Aktifkan Perpanjangan Otomatis</string>
-    <string name="gmsubscribe_auto_subscribe_subtitle">Keanggotaan Gold Merchant Anda dapat diperpanjang secara otomatis menggunakan Saldo Tokopedia</string>
+    <string name="gmsubscribe_auto_subscribe_subtitle">Keanggotaan %1$s Anda dapat diperpanjang secara otomatis menggunakan Saldo Tokopedia</string>
 
     <string name="gmsubscribe_auto_package_title">Paket Perpanjangan</string>
     <string name="gmsubscribe_auto_package_price">Harga</string>
@@ -57,7 +58,7 @@
     <string name="gmsubscribe_voucher_code_check_button">Cek</string>
     <string name="gm_subscribe_no_product_selected">Silahkan Pilih Produk Terlebih Dahulu</string>
     <string name="gmsubscribe_featured_product">Produk Unggulan</string>
-    <string name="gmsubscribe_feature_filter_gold_merchant">Filter Gold Merchant</string>
+    <string name="gmsubscribe_feature_filter_gold_merchant">Filter %1$s</string>
     <string name="gmsubscribe_feature_statistic_home">Statistik</string>
     <string name="gmsubscribe_feature_wawasan_pasar">Wawasan Pasar</string>
 </resources>

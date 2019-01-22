@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.product.manage.item.common.util.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 
 /**
  * Created by Nathaniel on 12/28/2016.

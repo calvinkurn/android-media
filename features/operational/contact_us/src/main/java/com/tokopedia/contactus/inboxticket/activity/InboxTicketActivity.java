@@ -10,7 +10,7 @@ import android.os.Bundle;
 import com.tokopedia.contactus.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketPresenter;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketPresenterImpl;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.NotificationModHandler;

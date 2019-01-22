@@ -15,13 +15,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.adapter.ShareAdapter;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
@@ -330,25 +330,25 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     private void shareCategory(ShareData data, String media) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(shareParam[0], shareParam[1] + "-" + media);
+            UnifyTracking.eventShareCategory(getContext(), shareParam[0], shareParam[1] + "-" + media);
         }
     }
 
     private void sendAnalyticsToGtm(String type, String channel) {
         switch (type) {
             case ShareData.REFERRAL_TYPE:
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
-                TrackingUtils.sendMoEngageReferralShareEvent(channel);
+                UnifyTracking.eventReferralAndShare(getContext(), AppEventTracking.Action.SELECT_CHANNEL, channel);
+                TrackingUtils.sendMoEngageReferralShareEvent(getContext(), channel);
                 break;
             case ShareData.APP_SHARE_TYPE:
-                UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL,
+                UnifyTracking.eventAppShareWhenReferralOff(getContext(), AppEventTracking.Action.SELECT_CHANNEL,
                         channel);
                 break;
             case ShareData.HOTLIST_TYPE:
-                HotlistPageTracking.eventShareHotlist(channel);
+                HotlistPageTracking.eventShareHotlist(getContext(), channel);
                 break;
             default:
-                UnifyTracking.eventShare(channel);
+                UnifyTracking.eventShare(getContext(), channel);
                 break;
         }
     }

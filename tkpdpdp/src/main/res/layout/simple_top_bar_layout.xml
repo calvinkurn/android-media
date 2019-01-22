@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:background="@color/white"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-    <ImageButton
-        android:id="@+id/simple_top_bar_close_button"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="16dp"
-        android:background="@null"
-        app:srcCompat="@drawable/icon_close_black" />
+    <LinearLayout
 
-    <TextView
-        android:id="@+id/simple_top_bar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Title"
-        android:textSize="18sp"
-        android:textColor="@color/black_70"
-        android:layout_marginLeft="32dp"
-        style="@style/MediumTextStyle" />
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_20"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/simple_top_bar_close_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_close_pdp" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/simple_top_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/black_70"
+            android:layout_marginLeft="32dp"
+            style="@style/MediumTextStyle" />
+    </LinearLayout>
+
+    <View
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:background="@color/white_two"
+        android:layout_height="@dimen/dp_1"/>
+
+</FrameLayout>

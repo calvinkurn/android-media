@@ -32,8 +32,6 @@ public class CreatePostExampleFragment extends BaseDaggerFragment {
     private String imageUrl = "";
     private String titleText = "";
 
-    @Inject
-    AffiliateAnalytics affiliateAnalytics;
 
     public static CreatePostExampleFragment createInstance(@NonNull Bundle bundle) {
         CreatePostExampleFragment fragment = new CreatePostExampleFragment();
@@ -48,7 +46,7 @@ public class CreatePostExampleFragment extends BaseDaggerFragment {
 
     @Override
     protected String getScreenName() {
-        return AffiliateEventTracking.Screen.BYME_CREATE_POST;
+        return null;
     }
 
     @Override
@@ -60,7 +58,6 @@ public class CreatePostExampleFragment extends BaseDaggerFragment {
     @Override
     public void onStart() {
         super.onStart();
-        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
     }
 
     @Nullable

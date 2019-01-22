@@ -25,8 +25,9 @@ public class PaymentData {
     @SerializedName("payment_amount")
     @Expose
     private float paymentAmount;
-
-    private String coupon;
+    @SerializedName("voucher")
+    @Expose
+    private Voucher voucher;
 
     public int getPaymentId() {
         return paymentId;
@@ -60,19 +61,19 @@ public class PaymentData {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getCoupon() {
-        return coupon;
-    }
-
-    public void setCoupon(String coupon) {
-        this.coupon = coupon;
-    }
-
     public float getPaymentAmount() {
         return paymentAmount;
     }
 
     public void setPaymentAmount(float paymentAmount) {
         this.paymentAmount = paymentAmount;
+    }
+
+    public Voucher getVoucher() {
+        return voucher;
+    }
+
+    public void setVoucher(Voucher voucher) {
+        this.voucher = voucher;
     }
 }

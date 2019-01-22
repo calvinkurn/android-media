@@ -49,7 +49,13 @@ public interface SellerModuleRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
+    void startSaldoDepositIntent(Context context);
+
+    boolean isSaldoNativeEnabled();
+
     Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getGMHomeIntent(Context context);
 
     void gotoTopAdsDashboard(Context context);
 

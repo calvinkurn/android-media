@@ -2,7 +2,7 @@ package com.tokopedia.flight.booking.di;
 
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCase;
+import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase;
 
 import dagger.Module;
 import dagger.Provides;

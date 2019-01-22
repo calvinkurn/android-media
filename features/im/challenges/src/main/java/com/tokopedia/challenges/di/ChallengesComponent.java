@@ -11,6 +11,7 @@ import com.tokopedia.challenges.view.fragments.MySubmissionsFragment;
 import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
 import com.tokopedia.challenges.view.service.UploadChallengeService;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.share.ShareInstagramBottomSheet;
 
 import dagger.Component;
 
@@ -35,5 +36,4 @@ public interface ChallengesComponent {
 
     void inject(ShareBottomSheet shareBottomSheet);
 
-    PostMapBranchUrlUseCase getPostMapBranchUrlUseCase();
 }

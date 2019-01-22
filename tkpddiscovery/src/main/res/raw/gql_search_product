@@ -10,6 +10,7 @@ searchProduct(params: $params) {
   additional_params
   redirection {
      redirect_url
+     redirect_applink
      department_id
    }
    suggestion {
@@ -29,6 +30,10 @@ searchProduct(params: $params) {
      image_url
      image_url_700
      price
+     price_range
+     top_label
+     bottom_label
+     wishlist
      whole_sale_price {
       quantity_min
       quantity_max
@@ -48,6 +53,7 @@ searchProduct(params: $params) {
      badges {
        title
        image_url
+       show
      }
      is_featured
      rating

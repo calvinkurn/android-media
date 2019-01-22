@@ -83,6 +83,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private ScrollView scrollView;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
+    private final static String SCREEN_NAME = "challenges/submission_detail";
+
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -171,6 +173,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             if (challengeImage != null)
                 challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         super.onResume();
 
     }

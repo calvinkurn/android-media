@@ -7,6 +7,7 @@ package com.tokopedia.applink;
  */
 
 public interface ApplinkConst {
+    String APPLINK_CUSTOMER_SCHEME = "tokopedia";
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
@@ -53,6 +54,7 @@ public interface ApplinkConst {
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
+    String PROMO_DETAIL = "tokopedia://promo/{slug}";
     String DISCOVERY_CATEGORY = "tokopedia://category";
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
@@ -117,6 +119,7 @@ public interface ApplinkConst {
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
     String INTEREST_PICK ="tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
+    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
 
     String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
@@ -182,6 +185,9 @@ public interface ApplinkConst {
 
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
+
+    String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
+    String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

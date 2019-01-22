@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -21,6 +22,10 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     boolean isSourceSeller;
 
+    public interface Listener {
+        void onTrackBackPressed();
+    }
+
     @DeepLink(ApplinkConst.KYC)
     public static Intent getDeeplinkIntent(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
@@ -33,6 +38,20 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
         intent.putExtras(extras);
 
         return intent;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (getFragment() != null &&
+                getFragment() instanceof Listener) {
+            ((Listener) getFragment()).onTrackBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

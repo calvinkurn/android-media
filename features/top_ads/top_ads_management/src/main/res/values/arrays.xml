@@ -120,22 +120,6 @@
         <item>@drawable/ic_top_ads_keyword</item>
     </integer-array>
 
-    <string-array name="top_ads_dashboard_menu_more">
-        <item>@string/topads_menu_help</item>
-        <item>@string/topads_menu_seller_centre</item>
-    </string-array>
-
-    <string-array name="top_ads_tab_statistics_labels">
-        <item>@string/label_top_ads_impression</item>
-        <item>@string/label_top_ads_click</item>
-        <item>@string/label_top_ads_cost</item>
-        <item>@string/label_top_ads_income</item>
-        <item>@string/label_top_ads_ctr</item>
-        <item>@string/label_top_ads_conversion</item>
-        <item>@string/label_top_ads_average</item>
-        <item>@string/label_top_ads_sold</item>
-    </string-array>
-
     <string-array name="top_ads_list_menu_more">
         <item>@string/topads_menu_help</item>
         <item>@string/action_more</item>

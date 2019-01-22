@@ -1,7 +1,6 @@
 package com.tokopedia.flight.airline.data;
 
 import com.tokopedia.abstraction.base.data.source.DataListSource;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.airline.data.cache.FlightAirlineDataCacheSource;
 import com.tokopedia.flight.airline.data.cloud.FlightAirlineDataListCloudSource;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
@@ -15,7 +14,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func0;
 import rx.functions.Func1;
 
 /**
@@ -24,19 +22,14 @@ import rx.functions.Func1;
 
 public class FlightAirlineDataListSource extends DataListSource<AirlineData, FlightAirlineDB> {
     private static final String DEFAULT_EMPTY_VALUE = "";
-    private final FlightModuleRouter flightModuleRouter;
-    private FlightAirlineDataCacheSource flightAirlineDataListCacheSource;
     private FlightAirlineDataListDBSource flightAirlineDataListDBSource;
     private FlightAirlineDataListCloudSource flightAirlineDataListCloudSource;
 
     @Inject
-    public FlightAirlineDataListSource(FlightModuleRouter flightModuleRouter,
-                                       FlightAirlineDataCacheSource flightAirlineDataListCacheSource,
+    public FlightAirlineDataListSource(FlightAirlineDataCacheSource flightAirlineDataListCacheSource,
                                        FlightAirlineDataListDBSource flightAirlineDataListDBSource,
                                        FlightAirlineDataListCloudSource flightAirlineDataListCloudSource) {
         super(flightAirlineDataListCacheSource, flightAirlineDataListDBSource, flightAirlineDataListCloudSource);
-        this.flightModuleRouter = flightModuleRouter;
-        this.flightAirlineDataListCacheSource = flightAirlineDataListCacheSource;
         this.flightAirlineDataListDBSource = flightAirlineDataListDBSource;
         this.flightAirlineDataListCloudSource = flightAirlineDataListCloudSource;
     }
@@ -50,89 +43,39 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
         return getDataList(map);
     }
 
-    public Observable<List<FlightAirlineDB>> getAirlineList() {
-        return Observable.defer(new Func0<Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call() {
-                if (flightModuleRouter.getLongConfig("flight_airline") > flightAirlineDataListCacheSource.getVersion()){
-                    flightAirlineDataListCacheSource.updateVersion(flightModuleRouter.getLongConfig("flight_airline"));
-                    return flightAirlineDataListCacheSource.setExpired();
-                }
-                return Observable.just(true);
-            }
-        }).flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
-            @Override
-            public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
-                return getDataList(null);
-            }
-        });
-    }
-
     public Observable<FlightAirlineDB> getAirline(final String airlineId) {
-        return flightAirlineDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirlineDB>>() {
-            @Override
-            public Observable<FlightAirlineDB> call(Boolean aBoolean) {
-                if (aBoolean) {
-                    return flightAirlineDataListDBSource.getAirline(airlineId)
-                            .flatMap(new Func1<FlightAirlineDB, Observable<FlightAirlineDB>>() {
-                                @Override
-                                public Observable<FlightAirlineDB> call(FlightAirlineDB flightAirlineDB) {
-                                    if (flightAirlineDB == null)
-                                        return getFlightAirlineFromCloud(airlineId);
-                                    else
-                                        return Observable.just(flightAirlineDB);
-                                }
-                            });
-                } else {
-                    return getFlightAirlineFromCloud(airlineId);
-                }
-            }
-        });
-    }
-
-    private Observable<FlightAirlineDB> getFlightAirlineFromCloud(final String airlineId) {
-        return flightAirlineDataListCloudSource.getAirline(airlineId)
-                .flatMap(new Func1<AirlineData, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(AirlineData airlineData) {
-                        return flightAirlineDataListDBSource.insert(airlineData);
-                    }
-                }).flatMap(new Func1<Boolean, Observable<FlightAirlineDB>>() {
-                    @Override
-                    public Observable<FlightAirlineDB> call(Boolean aBoolean) {
-                        return flightAirlineDataListDBSource.getAirline(airlineId);
-                    }
-                }).onErrorReturn(new Func1<Throwable, FlightAirlineDB>() {
-                    @Override
-                    public FlightAirlineDB call(Throwable throwable) {
-                        return new FlightAirlineDB(
-                                airlineId,
-                                DEFAULT_EMPTY_VALUE,
-                                DEFAULT_EMPTY_VALUE,
-                                DEFAULT_EMPTY_VALUE,
-                                0,
-                                1);
+        return flightAirlineDataListDBSource.isDataAvailable().flatMap((Func1<Boolean, Observable<FlightAirlineDB>>)
+                aBoolean -> {
+                    if (aBoolean) {
+                        return flightAirlineDataListDBSource.getAirline(airlineId)
+                                .flatMap((Func1<FlightAirlineDB, Observable<FlightAirlineDB>>)
+                                        flightAirlineDB -> {
+                                            if (flightAirlineDB == null)
+                                                return getFlightAirlineFromCloud(airlineId);
+                                            else
+                                                return Observable.just(flightAirlineDB);
+                                        });
+                    } else {
+                        return getFlightAirlineFromCloud(airlineId);
                     }
                 });
     }
 
-    public Observable<FlightAirlineDB> getCacheAirline(final String airlineId) {
-        return flightAirlineDataListDBSource
-                .getAirline(airlineId)
-                .map(new Func1<FlightAirlineDB, FlightAirlineDB>() {
-            @Override
-            public FlightAirlineDB call(FlightAirlineDB flightAirlineDB) {
-                if (flightAirlineDB == null){
-                    return new FlightAirlineDB(
-                            airlineId,
-                            DEFAULT_EMPTY_VALUE,
-                            DEFAULT_EMPTY_VALUE,
-                            DEFAULT_EMPTY_VALUE,
-                            0,
-                            1);
-                }
-                return flightAirlineDB;
-            }
-        });
+    private Observable<FlightAirlineDB> getFlightAirlineFromCloud(final String airlineId) {
+        return flightAirlineDataListCloudSource.getAirline(airlineId)
+                .flatMap((Func1<AirlineData, Observable<Boolean>>) airlineData ->
+                        flightAirlineDataListDBSource.insert(airlineData)).flatMap(new Func1<Boolean, Observable<FlightAirlineDB>>() {
+                    @Override
+                    public Observable<FlightAirlineDB> call(Boolean aBoolean) {
+                        return flightAirlineDataListDBSource.getAirline(airlineId);
+                    }
+                }).onErrorReturn(throwable -> new FlightAirlineDB(
+                        airlineId,
+                        DEFAULT_EMPTY_VALUE,
+                        DEFAULT_EMPTY_VALUE,
+                        DEFAULT_EMPTY_VALUE,
+                        0,
+                        1));
     }
+
 }

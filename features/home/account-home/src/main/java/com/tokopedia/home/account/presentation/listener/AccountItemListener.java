@@ -21,13 +21,15 @@ public interface AccountItemListener {
 
     void onBuyerVoucherClicked(BuyerCardViewModel element);
 
+    void onByMeClicked();
+
     void onTokopediaPayLinkClicked();
 
     void onMenuGridItemClicked(MenuGridItemViewModel item);
 
     void onMenuGridLinkClicked(MenuGridViewModel item);
 
-    void onInfoCardClicked(InfoCardViewModel item);
+    void onInfoCardClicked(InfoCardViewModel item, int adapterPosition);
 
     void onMenuListClicked(MenuListViewModel item);
 
@@ -40,7 +42,7 @@ public interface AccountItemListener {
     void onTokopediaPayLeftItemClicked(String label, String applink, TokopediaPayBSModel bsData,
                                        boolean isLinked, String walletType);
 
-    void onTokopediaPayRightItemClicked(String label, String applink, TokopediaPayBSModel bsData);
+    void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData);
 
     void onDepositClicked(ShopCardViewModel element);
 
@@ -59,4 +61,8 @@ public interface AccountItemListener {
     void onTickerLinkClicked(String url);
 
     void onTickerClosed();
+
+    void onTopAdsMenuClicked();
+
+    void onShopStatusInfoButtonClicked();
 }

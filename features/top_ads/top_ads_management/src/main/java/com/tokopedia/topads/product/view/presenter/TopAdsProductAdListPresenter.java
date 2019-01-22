@@ -11,7 +11,7 @@ import com.tokopedia.topads.dashboard.data.model.data.ProductAdAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.group.domain.usecase.TopAdsSearchGroupAdUseCase;
 import com.tokopedia.topads.product.domain.usecase.TopAdsGetProductAdUseCase;
 import com.tokopedia.topads.product.domain.usecase.TopAdsToggleStatusUseCase;

@@ -7,10 +7,15 @@ import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 
 interface SettingListPaymentContract {
     interface View : BaseListViewListener<SettingListPaymentModel>{
+        fun showLoadingDialog()
+        fun hideLoadingDialog()
+        fun onSuccessVerifPhone()
+        fun onNeedVerifPhone()
 
     }
 
     interface Presenter : CustomerPresenter<View>{
         fun getCreditCardList(resources : Resources)
+        fun checkVerificationPhone()
     }
 }

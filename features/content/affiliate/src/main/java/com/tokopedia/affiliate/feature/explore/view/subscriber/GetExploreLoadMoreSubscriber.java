@@ -29,6 +29,8 @@ public class GetExploreLoadMoreSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        if (mainView == null)
+            return;
         mainView.hideLoading();
         mainView.onErrorGetMoreData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
     }

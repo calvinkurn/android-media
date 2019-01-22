@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.notification.listener.ManageNotificationFragmentView;
 import com.tokopedia.core.manage.people.notification.model.SettingNotification;

@@ -14,6 +14,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 
 /**
  * @author by nisie on 2/7/18.
@@ -42,4 +44,8 @@ public interface GroupChatTypeFactory {
     int type(VibrateViewModel vibrateViewModel);
 
     int type(GeneratedMessageViewModel generatedMessageViewModel);
+
+    int type(OverlayViewModel viewModel);
+
+    int type(OverlayCloseViewModel overlayCloseViewModel);
 }

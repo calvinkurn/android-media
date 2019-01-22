@@ -4,7 +4,7 @@ import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 
-import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
+import com.tokopedia.loyalty.common.PopUpNotif;
 
 /**
  * @author anggaprasetiyo on 08/12/17.

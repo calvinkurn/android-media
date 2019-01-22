@@ -11,30 +11,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by ashwanityagi on on 5/6/17.
  */
 public class CheckPulsaBalanceView extends LinearLayout {
 
-    @BindView(R2.id.btn_check_client_balance)
-    TextView btnCheckBalance;
-    @BindView(R2.id.tv_check_balance)
-    TextView tvOperatorName;
-    @BindView(R2.id.tv_label_check_credit)
-    TextView tvPhoneNumber;
-    @BindView(R2.id.rl_holder_check_balance)
-    RelativeLayout checkBalanceLayout;
-    @BindView(R2.id.ll_holder_check_balance_wait)
-    LinearLayout checkBalanceWaitLayout;
-    @BindView(R2.id.check_balance_progressbar)
-    ProgressBar checkBalanceProgressbar;
-    @BindView(R2.id.tv_error_operator)
-    TextView errorOperator;
+    private TextView btnCheckBalance;
+    private TextView tvOperatorName;
+    private TextView tvPhoneNumber;
+    private RelativeLayout checkBalanceLayout;
+    private LinearLayout checkBalanceWaitLayout;
+    private ProgressBar checkBalanceProgressbar;
+    private TextView errorOperator;
 
     private ActionListener actionListener;
     private Context context;
@@ -57,9 +46,16 @@ public class CheckPulsaBalanceView extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_holder_client_check_balance, this, true);
-        ButterKnife.bind(this);
 
+        btnCheckBalance = findViewById(R.id.btn_check_client_balance);
+        tvOperatorName = findViewById(R.id.tv_check_balance);
+        tvPhoneNumber = findViewById(R.id.tv_label_check_credit);
+        checkBalanceLayout = findViewById(R.id.rl_holder_check_balance);
+        checkBalanceWaitLayout = findViewById(R.id.ll_holder_check_balance_wait);
+        checkBalanceProgressbar = findViewById(R.id.check_balance_progressbar);
+        errorOperator = findViewById(R.id.tv_error_operator);
+
+        LayoutInflater.from(context).inflate(R.layout.view_holder_client_check_balance, this, true);
     }
 
     public void hideProgressbar() {
@@ -105,15 +101,11 @@ public class CheckPulsaBalanceView extends LinearLayout {
 
     @NonNull
     private OnClickListener getButtonCheckBalanceClicked(final int simPosition, final String ussdCode) {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onButtonCheckBalanceClicked(simPosition, ussdCode , CheckPulsaBalanceView.this);
-            }
-        };
+        return v -> actionListener.onButtonCheckBalanceClicked(simPosition, ussdCode , CheckPulsaBalanceView.this);
     }
 
     public interface ActionListener {
+
         void onButtonCheckBalanceClicked(int simPosition, String ussdCode, CheckPulsaBalanceView checkPulsaBalanceView);
 
     }

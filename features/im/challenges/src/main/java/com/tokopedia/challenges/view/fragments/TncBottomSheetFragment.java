@@ -14,7 +14,10 @@ import android.webkit.WebView;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.utils.MarkdownProcessor;
+
+import javax.inject.Inject;
 
 public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
 
@@ -25,7 +28,8 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
     public final static String TEXT = "TEXT";
     private String toolBarTitle;
     private String text;
-
+    private final static String SCREEN_NAME = "challenges/tnc";
+    public ChallengesGaAnalyticsTracker analytics;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new TncBottomSheetFragment();
@@ -52,9 +56,15 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
             String html = m.markdown(text);
             webView.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
         }
+        analytics = new ChallengesGaAnalyticsTracker(getActivity());
         return view;
     }
 
+    @Override
+    public void onResume() {
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+        super.onResume();
+    }
 
     @Override
     public void onAttach(Activity activity) {

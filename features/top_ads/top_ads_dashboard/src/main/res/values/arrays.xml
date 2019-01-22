@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="top_ads_tab_statistics_labels">
+        <item>@string/label_top_ads_impression</item>
+        <item>@string/label_top_ads_click</item>
+        <item>@string/label_top_ads_cost</item>
+        <item>@string/label_top_ads_income</item>
+        <item>@string/label_top_ads_ctr</item>
+        <item>@string/label_top_ads_conversion</item>
+        <item>@string/label_top_ads_average</item>
+        <item>@string/label_top_ads_sold</item>
+    </string-array>
+
+    <string-array name="top_ads_dashboard_menu_more">
+        <item>@string/topads_menu_help</item>
+        <item>@string/topads_menu_seller_centre</item>
+    </string-array>
+</resources>

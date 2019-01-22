@@ -46,12 +46,12 @@ public class NextActionActivity
     public void inflateFragment(Fragment fragment, String TAG) {
         if (getFragmentManager().findFragmentByTag(TAG) != null) {
             getFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core.R.id.container,
+                    .replace(com.tokopedia.core2.R.id.container,
                             getFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
                     .commit();
         }
     }

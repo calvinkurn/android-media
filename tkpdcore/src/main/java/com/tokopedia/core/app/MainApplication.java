@@ -5,16 +5,18 @@ import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
-
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -23,7 +25,11 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -41,7 +47,7 @@ import java.util.List;
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends BaseMainApplication {
+public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -254,7 +260,6 @@ public abstract class MainApplication extends BaseMainApplication {
         //CommonUtils.dumper("asdasas");
         MainApplication.context = getApplicationContext();
         init();
-        initFacebook();
         initCrashlytics();
         initStetho();
         PACKAGE_NAME = getPackageName();
@@ -276,7 +281,25 @@ public abstract class MainApplication extends BaseMainApplication {
         initBranch();
         initializeAnalytics();
         NotificationUtils.setNotificationChannel(this);
+        upgradeSecurityProvider();
+    }
 
+    private void upgradeSecurityProvider() {
+        try {
+            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+                @Override
+                public void onProviderInstalled() {
+                    // Do nothing
+                }
+
+                @Override
+                public void onProviderInstallFailed(int i, Intent intent) {
+                    // Do nothing
+                }
+            });
+        } catch (Throwable t) {
+            // Do nothing
+        }
     }
 
 
@@ -295,20 +318,10 @@ public abstract class MainApplication extends BaseMainApplication {
         }
     }
 
-    /**
-     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
-     */
-
-    private void initFacebook() {
-
-    }
-
     protected void initializeAnalytics() {
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
-        TrackingUtils.setMoEngageExistingUser();
-        TrackingUtils.enableDebugging(isDebug());
+        TrackingUtils.runAppsFylerFirstTime(this);
+        TrackingUtils.runMoengageFirstTime(this);
+        TrackingUtils.enableDebugging(this, isDebug());
     }
 
     public void initCrashlytics() {
@@ -361,4 +374,47 @@ public abstract class MainApplication extends BaseMainApplication {
             FirebaseApp.initializeApp(this, builder.build());
         }
     }
+
+    @Override
+    public Intent getSellerHomeActivityReal(Context context) {
+        return SellerAppRouter.getSellerHomeActivity(context);
+    }
+
+    @Override
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return SellerAppRouter.getAppNotificationReceiver();
+    }
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        return InboxRouter.getInboxMessageActivityClass();
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        return InboxRouter.getInboxResCenterActivityClass();
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
+        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
+    }
+
+    @Override
+    public Class getSellingActivityClassReal() {
+        return SellerRouter.getSellingActivityClass();
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionListReal(Context mContext) {
+        return SellerRouter.getActivitySellingTransactionList(mContext);
+    }
+	
+    @Override
+    public Intent getInboxTalkCallingIntent(Context mContext){
+        return null;
+    }
+
+
+
 }

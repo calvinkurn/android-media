@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.campaign.analytics;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.app.MainApplication;
 
 /**
  * Created by sandeepgoyal on 03/01/18.
@@ -10,7 +11,7 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 public class CampaignTracking extends UnifyTracking {
 
     public static void eventShakeShake(String status,String screenName,String campaignId,String url) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
                 CampaignAppEventTracking.Event.GenericCampaignEvent,
                 CampaignAppEventTracking.Category.EventTriggerBasedCampaign,
                 String.format(CampaignAppEventTracking.Action.EventShakeDevice,screenName,status),
@@ -19,7 +20,7 @@ public class CampaignTracking extends UnifyTracking {
     }
 
     public static void eventQRButtonClick() {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
                 CampaignAppEventTracking.Event.GenericCampaignHomeClickEvent,
                 CampaignAppEventTracking.Category.EventTriggerHomeCategory,
                 CampaignAppEventTracking.Action.EventClickTopNav,
@@ -28,7 +29,7 @@ public class CampaignTracking extends UnifyTracking {
     }
 
     public static void eventScanQRCode(String status,String campaignId,String url) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
                 CampaignAppEventTracking.Event.GenericCampaignEvent,
                 CampaignAppEventTracking.Category.EventTriggerBasedCampaign,
                 String.format(CampaignAppEventTracking.Action.EventScanQRCode,status),

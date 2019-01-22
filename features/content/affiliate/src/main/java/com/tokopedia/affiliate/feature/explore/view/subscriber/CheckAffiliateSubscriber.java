@@ -30,6 +30,8 @@ public class CheckAffiliateSubscriber extends Subscriber<Boolean> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        if (view == null)
+            return;
         view.hideLoading();
         view.onErrorCheckAffiliate(
                 ErrorHandler.getErrorMessage(view.getContext(), e), productId, adId

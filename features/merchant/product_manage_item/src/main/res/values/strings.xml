@@ -142,11 +142,11 @@
     <string name="product_group_notification">com.tokopedia</string>
     <string name="product_title_confirmation_change_wholesale_price">Harga Produk Terkunci</string>
     <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus. Anda yakin untuk mengubah harga Produk?</string>
-    <string name="add_product_title_alert_dialog_dollar">Saat ini Anda belum menjadi Gold Merchant!</string>
+    <string name="add_product_title_alert_dialog_dollar_dynamic">Saat ini Anda belum menjadi %1$s!</string>
     <string name="add_product_label_alert_save_as_draft_dollar_and_video">%s Jika ya, produk akan disimpan sebagai Draft</string>
 
-    <string name="product_add_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
-    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
+    <string name="product_add_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk %1$s. Berlangganan %1$s sekarang?</string>
+    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan %1$s</string>
 
     <!-- product score -->
     <string name="product_title_activity_product_score">Skor Produk</string>

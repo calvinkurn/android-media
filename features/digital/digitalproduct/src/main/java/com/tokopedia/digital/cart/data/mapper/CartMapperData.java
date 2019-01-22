@@ -1,152 +1,32 @@
 package com.tokopedia.digital.cart.data.mapper;
 
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.core.otp.data.RequestOtpModel;
 import com.tokopedia.core.otp.data.ValidateOtpModel;
-import com.tokopedia.digital.cart.data.entity.response.AdditionalInfo;
-import com.tokopedia.digital.cart.data.entity.response.AutoApplyVoucher;
-import com.tokopedia.digital.cart.data.entity.response.Detail;
-import com.tokopedia.digital.cart.data.entity.response.MainInfo;
-import com.tokopedia.digital.cart.data.entity.response.RelationshipsCart;
-import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
-import com.tokopedia.digital.cart.data.entity.response.ResponseCheckoutData;
-import com.tokopedia.digital.cart.data.entity.response.ResponseInstantCheckoutData;
-import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
-import com.tokopedia.digital.cart.model.AttributesDigital;
-import com.tokopedia.digital.cart.model.CartAdditionalInfo;
-import com.tokopedia.digital.cart.model.CartAutoApplyVoucher;
-import com.tokopedia.digital.cart.model.CartDigitalInfoData;
-import com.tokopedia.digital.cart.model.CartItemDigital;
-import com.tokopedia.digital.cart.model.CheckoutDigitalData;
-import com.tokopedia.digital.cart.model.InstantCheckoutData;
-import com.tokopedia.digital.cart.model.OtpData;
-import com.tokopedia.digital.cart.model.Relation;
-import com.tokopedia.digital.cart.model.RelationData;
-import com.tokopedia.digital.cart.model.Relationships;
-import com.tokopedia.digital.cart.model.UserInputPriceDigital;
-import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
-import com.tokopedia.digital.cart.model.VoucherDigital;
+import com.tokopedia.digital.cart.data.entity.response.voucher.ResponseVoucherData;
+import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
+import com.tokopedia.digital.cart.presentation.model.OtpData;
+import com.tokopedia.digital.cart.presentation.model.VoucherAttributeDigital;
+import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.exception.MapperDataException;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author anggaprasetiyo on 3/2/17.
  */
 
 public class CartMapperData implements ICartMapperData {
-    @Override
-    public CartDigitalInfoData transformCartInfoData(
-            ResponseCartData responseCartData
-    ) throws MapperDataException {
-        try {
-            CartDigitalInfoData cartDigitalInfoData = new CartDigitalInfoData();
-            List<CartItemDigital> cartItemDigitalList = new ArrayList<>();
-            List<CartAdditionalInfo> cartAdditionalInfoList = new ArrayList<>();
-            for (MainInfo mainInfo : responseCartData.getAttributes().getMainInfo()) {
-                cartItemDigitalList.add(
-                        new CartItemDigital(mainInfo.getLabel(), mainInfo.getValue())
-                );
-            }
-            for (AdditionalInfo additionalInfo : responseCartData.getAttributes().getAdditionalInfo()) {
-                List<CartItemDigital> cartItemDigitalList1 = new ArrayList<>();
-                for (Detail detail : additionalInfo.getDetail()) {
-                    cartItemDigitalList1.add(new CartItemDigital(detail.getLabel(), detail.getValue()));
-                }
-                cartAdditionalInfoList.add(
-                        new CartAdditionalInfo(additionalInfo.getTitle(), cartItemDigitalList1)
-                );
-            }
-            AttributesDigital attributesDigital = new AttributesDigital();
-            attributesDigital.setCategoryName(responseCartData.getAttributes().getCategoryName());
-            attributesDigital.setOperatorName(responseCartData.getAttributes().getOperatorName());
-            attributesDigital.setClientNumber(responseCartData.getAttributes().getClientNumber());
-            attributesDigital.setIcon(responseCartData.getAttributes().getIcon());
-            attributesDigital.setInstantCheckout(responseCartData.getAttributes().isInstantCheckout());
-            attributesDigital.setNeedOtp(responseCartData.getAttributes().isNeedOtp());
-            attributesDigital.setSmsState(responseCartData.getAttributes().getSmsState());
-            attributesDigital.setPrice(responseCartData.getAttributes().getPrice());
-            attributesDigital.setPricePlain(responseCartData.getAttributes().getPricePlain());
-            attributesDigital.setEnableVoucher(responseCartData.getAttributes().isEnableVoucher());
-            attributesDigital.setIsCouponActive(responseCartData.getAttributes().isCouponActive());
-            attributesDigital.setVoucherAutoCode(responseCartData.getAttributes().getVoucherAutoCode());
-            if (responseCartData.getAttributes().getUserInputPrice() != null) {
-                UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
-                userInputPriceDigital.setMaxPaymentPlain(
-                        responseCartData.getAttributes().getUserInputPrice().getMaxPaymentPlain()
-                );
-                userInputPriceDigital.setMinPaymentPlain(
-                        responseCartData.getAttributes().getUserInputPrice().getMinPaymentPlain()
-                );
-                userInputPriceDigital.setMinPayment(responseCartData.getAttributes()
-                        .getUserInputPrice().getMinPayment());
-                userInputPriceDigital.setMaxPayment(responseCartData.getAttributes()
-                        .getUserInputPrice().getMaxPayment());
-                attributesDigital.setUserInputPrice(userInputPriceDigital);
-            }
-
-            if (responseCartData.getAttributes().getAutoApply() != null){
-                AutoApplyVoucher entity = responseCartData.getAttributes().getAutoApply();
-                CartAutoApplyVoucher applyVoucher = new CartAutoApplyVoucher();
-                applyVoucher.setCode(entity.getCode());
-                applyVoucher.setSuccess(entity.isSuccess());
-                applyVoucher.setDiscountAmount(entity.getDiscountAmount());
-                applyVoucher.setIsCoupon(entity.getIsCoupon());
-                applyVoucher.setPromoId(entity.getPromoId());
-                applyVoucher.setTitle(entity.getTitle());
-                applyVoucher.setMessageSuccess(entity.getMessageSuccess());
-                attributesDigital.setAutoApplyVoucher(applyVoucher);
-            }
-            attributesDigital.setDefaultPromoTab(responseCartData.getAttributes().getDefaultPromoTab());
-
-            attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
-
-            RelationshipsCart relationshipsResponse =
-                    responseCartData.getRelationships();
-
-
-            RelationData relationDataProduct =
-                    new RelationData();
-            relationDataProduct.setType(relationshipsResponse.getProduct().getData().getType());
-            relationDataProduct.setId(relationshipsResponse.getProduct().getData().getId());
-
-            RelationData relationDataCategory =
-                    new RelationData();
-            relationDataCategory.setType(relationshipsResponse.getCategory().getData().getType());
-            relationDataCategory.setId(relationshipsResponse.getCategory().getData().getId());
-
-
-            RelationData relationDataOperator =
-                    new RelationData();
-            relationDataOperator.setType(relationshipsResponse.getOperator().getData().getType());
-            relationDataOperator.setId(relationshipsResponse.getOperator().getData().getId());
-
-
-            Relationships relationships = new Relationships();
-            relationships.setRelationCategory(new Relation(relationDataCategory));
-            relationships.setRelationOperator(new Relation(relationDataOperator));
-            relationships.setRelationProduct(new Relation(relationDataProduct));
-
-
-            cartDigitalInfoData.setAdditionalInfos(cartAdditionalInfoList);
-            cartDigitalInfoData.setAttributes(attributesDigital);
-            cartDigitalInfoData.setId(responseCartData.getId());
-            cartDigitalInfoData.setMainInfo(cartItemDigitalList);
-            cartDigitalInfoData.setInstantCheckout(
-                    responseCartData.getAttributes().isInstantCheckout()
-            );
-            cartDigitalInfoData.setNeedOtp(responseCartData.getAttributes().isNeedOtp());
-            cartDigitalInfoData.setSmsState(responseCartData.getAttributes().getSmsState());
-            cartDigitalInfoData.setTitle(responseCartData.getAttributes().getTitle());
-            cartDigitalInfoData.setType(responseCartData.getType());
-            cartDigitalInfoData.setRelationships(relationships);
-
-            return cartDigitalInfoData;
-        } catch (Exception e) {
-            throw new MapperDataException(e.getMessage(), e);
-        }
-    }
+/*
+            if (responseCartData.getAttributes().getPostPaidPopUp() != null &&
+            responseCartData.getAttributes().getPostPaidPopUp().getAction() != null &&
+            responseCartData.getAttributes().getPostPaidPopUp().getAction().getConfirmAction() != null){
+        PostPaidPopup postPaidPopup = responseCartData.getAttributes().getPostPaidPopUp();
+        PostPaidPopupAttribute postPaidPopupAttribute = new PostPaidPopupAttribute();
+        postPaidPopupAttribute.setTitle(postPaidPopup.getTitle());
+        postPaidPopupAttribute.setContent(postPaidPopup.getContent());
+        postPaidPopupAttribute.setImageUrl(postPaidPopup.getImageUrl());
+        postPaidPopupAttribute.setConfirmButtonTitle(postPaidPopup.getAction().getConfirmAction().getTitle());
+        attributesDigital.setPostPaidPopupAttribute(postPaidPopupAttribute);
+    }*/
 
     @Override
     public VoucherDigital transformVoucherDigitalData(
@@ -154,20 +34,6 @@ public class CartMapperData implements ICartMapperData {
     ) throws MapperDataException {
         try {
             VoucherDigital voucherDigital = new VoucherDigital();
-
-            voucherDigital.setId(responseVoucherData.getId());
-            voucherDigital.setType(responseVoucherData.getType());
-
-            RelationData relationDataCart = new RelationData();
-            relationDataCart.setId(
-                    responseVoucherData.getRelationships().getCart().getData().getId()
-            );
-            relationDataCart.setType(
-                    responseVoucherData.getRelationships().getCart().getData().getType()
-            );
-
-            Relation relationCart = new Relation(relationDataCart);
-            voucherDigital.setCart(relationCart);
 
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
             voucherAttributeDigital.setMessage(responseVoucherData.getAttributes().getMessage());
@@ -214,29 +80,6 @@ public class CartMapperData implements ICartMapperData {
             return checkoutDigitalData;
         } catch (Exception e) {
             throw new MapperDataException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public InstantCheckoutData transformInstantCheckoutData(
-            ResponseInstantCheckoutData responseCheckoutData) throws MapperDataException {
-        try {
-            InstantCheckoutData instantCheckoutData = new InstantCheckoutData();
-            instantCheckoutData.setRedirectUrl(
-                    responseCheckoutData.getAttributes().getThanksUrl()
-            );
-            instantCheckoutData.setFailedCallbackUrl(
-                    responseCheckoutData.getAttributes().getCallbackUrlFailed()
-            );
-            instantCheckoutData.setSuccessCallbackUrl(
-                    responseCheckoutData.getAttributes().getCallbackUrlSuccess()
-            );
-            instantCheckoutData.setTransactionId(
-                    MessageFormat.format("{0}", responseCheckoutData.getId())
-            );
-            return instantCheckoutData;
-        } catch (Exception e) {
-            throw new MapperDataException(e.getMessage(), e.getCause());
         }
     }
 

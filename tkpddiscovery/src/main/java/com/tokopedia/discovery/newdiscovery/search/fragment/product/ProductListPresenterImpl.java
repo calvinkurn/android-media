@@ -301,6 +301,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         getView().setProductList(list);
                         getView().addLoading();
                         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
+                        getView().stopTracePerformanceMonitoring();
                     }
                     getView().storeTotalData(productViewModel.getTotalData());
                     getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());

@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -12,8 +11,11 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.data.repository.AddressRepository;
 import com.tokopedia.checkout.data.repository.AddressRepositoryImpl;
+import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
+import com.tokopedia.checkout.data.repository.PeopleAddressRepositoryImpl;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartApiOkHttpClientQualifier;
@@ -27,7 +29,6 @@ import com.tokopedia.checkout.view.di.qualifier.CartQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
@@ -62,6 +63,9 @@ public class DataModule {
     private static final int NET_WRITE_TIMEOUT = 60;
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 0;
+
+    public DataModule() {
+    }
 
     @Provides
     @CartQualifier
@@ -265,4 +269,19 @@ public class DataModule {
         return new AddressRepositoryImpl(peopleActApi);
     }
 
+    @Provides
+    AddressModelMapper providePeopleAddressMapper() {
+        return new AddressModelMapper();
+    }
+
+    @Provides
+    PeopleAddressRepository providePeopleAddressRepository(@CartQualifier PeopleActApi peopleActApi,
+                                                           AddressModelMapper addressModelMapper) {
+        return new PeopleAddressRepositoryImpl(peopleActApi, addressModelMapper);
+    }
+
+//    @Provides
+//    UserSessionInterface provideUserSessionInterface() {
+//        return new com.tokopedia.user.session.UserSession(context);
+//    }
 }

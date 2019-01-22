@@ -61,13 +61,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8">
 
-                    <ImageView
+                    <com.tokopedia.gm.resource.GMImageView
                         android:id="@+id/image_view_gm_icon"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
                         android:layout_gravity="center_vertical"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_shop_gold"
                         android:layout_marginRight="@dimen/dp_5"
                         android:layout_marginEnd="@dimen/dp_5"
                         tools:visibility="visible" />

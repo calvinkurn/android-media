@@ -19,33 +19,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".search.view.activity.FlightSearchFilterActivity"
+            android:name=".search.presentation.activity.FlightSearchFilterActivity"
             android:label="@string/filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".search.view.activity.FlightSearchActivity"
+            android:name=".search.presentation.activity.FlightSearchActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".search.view.activity.FlightSearchReturnActivity"
+            android:name=".search.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".searchV2.presentation.activity.FlightSearchActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".searchV2.presentation.activity.FlightSearchReturnActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".searchV2.presentation.activity.FlightSearchV2FilterActivity"
-            android:label="@string/filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity

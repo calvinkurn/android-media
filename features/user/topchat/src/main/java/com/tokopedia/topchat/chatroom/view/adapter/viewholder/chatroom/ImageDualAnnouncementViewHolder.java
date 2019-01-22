@@ -39,6 +39,7 @@ public class ImageDualAnnouncementViewHolder extends BaseChatViewHolder<ImageDua
         ImageHandler.loadImageChat(top, viewModel.getImageUrlTop(), new ChatGlideImageRequestListener());
         top.setOnClickListener((View v) -> {
             TrackingUtils.sendGTMEvent(
+                    v.getContext(),
                     new EventTracking(
                             "clickInboxChat",
                             "inbox-chat",
@@ -54,6 +55,7 @@ public class ImageDualAnnouncementViewHolder extends BaseChatViewHolder<ImageDua
         ImageHandler.loadImageChat(bottom, viewModel.getImageUrlBottom(), new ChatGlideImageRequestListener());
         bottom.setOnClickListener((View v) -> {
             TrackingUtils.sendGTMEvent(
+                    v.getContext(),
                     new EventTracking(
                             "clickInboxChat",
                             "inbox-chat",

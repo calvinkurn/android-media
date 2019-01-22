@@ -2,13 +2,9 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'payment'
-    groupId = 'com.tokopedia.payment'
-    versionName = "${tkpdPaymentVersion}"
-    artifactName ="payment-release"
+repositories {
+    maven { url 'https://hansel.io/maven' }
 }
-
 buildscript {
     repositories {
         mavenCentral()
@@ -19,22 +15,32 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = "${artifactIdPayment}"
+    groupId = "${groupIdPayment}"
+    versionName = "${paymentGroupVersion}"
+    artifactName = "${groupIdPayment}-release"
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.useCase)
-    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../../../publish_local.gradle'

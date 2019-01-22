@@ -1,6 +1,7 @@
 package com.tokopedia.seller.base.view.adapter;
 
-import com.tokopedia.product.manage.item.common.util.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
 
 /**

@@ -29,7 +29,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -394,33 +396,54 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         tvFloatingTimer.setVisibility(View.GONE);
 
         if (!TextUtils.isEmpty(imageUrl)) {
-            Glide.with(getContext())
-                    .load(imageUrl)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .signature(new StringSignature(String.valueOf(tokenFloating.getTokenAsset().getVersion())))
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            ivFloatingEgg.setImageBitmap(resource);
+            if (imageUrl.endsWith(".gif")) {
+                Glide.with(getContext())
+                        .load(imageUrl)
+                        .asGif()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .signature(new StringSignature(String.valueOf(tokenFloating.getTokenAsset().getVersion())))
+                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
+                            @Override
+                            protected void setResource(GifDrawable resource) {
+                                ivFloatingEgg.setImageDrawable(resource);
+                                resource.start();
+                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
 
-                            if (TextUtils.isEmpty(sumTokenString)) {
-                                tvFloatingCounter.setVisibility(View.GONE);
-                            } else {
-                                tvFloatingCounter.setText(sumTokenString);
-                                tvFloatingCounter.setVisibility(View.VISIBLE);
                             }
+                        });
+            } else {
+                Glide.with(getContext())
+                        .load(imageUrl)
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .signature(new StringSignature(String.valueOf(tokenFloating.getTokenAsset().getVersion())))
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                ivFloatingEgg.setImageBitmap(resource);
+                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+                            }
+                        });
 
-                            if (isShowTime && timeRemainingSeconds > 0) {
-                                setUIFloatingTimer(timeRemainingSeconds);
-                                startCountdownTimer(timeRemainingSeconds);
-                                tvFloatingTimer.setVisibility(View.VISIBLE);
-                            } else {
-                                stopCountdownTimer();
-                                tvFloatingTimer.setVisibility(View.GONE);
-                            }
-                        }
-                    });
+            }
+        }
+    }
+
+    private void onFloatingEggLoaded(String sumTokenString, boolean isShowTime, long timeRemainingSeconds) {
+        if (TextUtils.isEmpty(sumTokenString)) {
+            tvFloatingCounter.setVisibility(View.GONE);
+        } else {
+            tvFloatingCounter.setText(sumTokenString);
+            tvFloatingCounter.setVisibility(View.VISIBLE);
+        }
+
+        if (isShowTime && timeRemainingSeconds > 0) {
+            setUIFloatingTimer(timeRemainingSeconds);
+            startCountdownTimer(timeRemainingSeconds);
+            tvFloatingTimer.setVisibility(View.VISIBLE);
+        } else {
+            stopCountdownTimer();
+            tvFloatingTimer.setVisibility(View.GONE);
         }
     }
 

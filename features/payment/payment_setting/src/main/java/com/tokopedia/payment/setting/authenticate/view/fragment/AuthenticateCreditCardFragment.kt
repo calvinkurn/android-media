@@ -2,6 +2,7 @@ package com.tokopedia.payment.setting.authenticate.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -22,6 +23,7 @@ import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAda
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCContract
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCPresenter
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
+import com.tokopedia.payment.setting.util.PaymentSettingRouter
 import kotlinx.android.synthetic.main.fragment_authenticate_credit_card.*
 import javax.inject.Inject
 
@@ -30,7 +32,14 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
 
     @Inject
     lateinit var authenticateCCPresenter: AuthenticateCCPresenter
+    var paymentSettingRouter: PaymentSettingRouter? = null
+
     val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        paymentSettingRouter = activity?.application as PaymentSettingRouter
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_authenticate_credit_card, container, false)
@@ -40,7 +49,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonUse.setOnClickListener{
-            authenticateCCPresenter.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(), resources)
+            authenticateCCPresenter.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(), resources, true)
         }
         context?.let {
             val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
@@ -122,6 +131,17 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         progressDialog.hide()
     }
 
+    override fun goToOtpPage(phoneNumber: String) {
+        startActivityForResult(paymentSettingRouter?.getIntentOtpPageVerifCreditCard(activity, phoneNumber), REQUEST_CODE_OTP_PAYMENT)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_OTP_PAYMENT){
+            authenticateCCPresenter.updateWhiteList(AuthenticateCCPresenter.SINGLE_AUTH_VALUE, resources)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onDestroy() {
         authenticateCCPresenter.detachView()
         super.onDestroy()
@@ -136,6 +156,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     companion object {
+        val REQUEST_CODE_OTP_PAYMENT = 1273
         fun createInstance(): AuthenticateCreditCardFragment {
             return AuthenticateCreditCardFragment()
         }

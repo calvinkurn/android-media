@@ -44,7 +44,6 @@ public class CountDownView extends FrameLayout {
     private Handler refreshCounterHandler;
     private Runnable runnableRefreshCounter;
 
-
     public CountDownView(@NonNull Context context) {
         super(context);
         init(context, null);
@@ -147,6 +146,7 @@ public class CountDownView extends FrameLayout {
     public void stopAutoRefreshCounter() {
         if (refreshCounterHandler != null && runnableRefreshCounter != null) {
             refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
+            this.runnableRefreshCounter = null;
         }
     }
 

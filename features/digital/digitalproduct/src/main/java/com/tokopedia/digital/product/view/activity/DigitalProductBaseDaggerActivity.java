@@ -3,7 +3,7 @@ package com.tokopedia.digital.product.view.activity;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.digital.product.DigitalProductComponentInstance;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.di.DigitalProductComponent;
 
 /**
@@ -30,4 +30,5 @@ public abstract class DigitalProductBaseDaggerActivity extends BaseSimpleActivit
         }
         return component;
     }
+
 }

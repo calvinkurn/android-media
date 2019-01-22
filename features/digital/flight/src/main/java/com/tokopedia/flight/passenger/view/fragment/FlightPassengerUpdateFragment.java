@@ -176,7 +176,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public String getPassengerTitle() {
         return spPassengerTitle.getSpinnerValue().equalsIgnoreCase(
-                String.valueOf(SpinnerTextView.DEFAULT_INDEX_NOT_SELECTED)) ? "" :
+                getString(R.string.flight_passenger_choose_salutation)) ? "" :
                 spPassengerTitle.getSpinnerValue();
     }
 
@@ -192,14 +192,14 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.adult_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
         spPassengerTitle.setEntries(entries);
         spPassengerTitle.setValues(entries);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
-        String[] entries = getResources().getStringArray(R.array.child_infant_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
         spPassengerTitle.setEntries(entries);
         spPassengerTitle.setValues(entries);
     }

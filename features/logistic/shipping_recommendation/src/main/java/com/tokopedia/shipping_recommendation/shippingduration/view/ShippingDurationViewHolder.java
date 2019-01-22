@@ -10,12 +10,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.shipping_recommendation.R;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel;
 
 import java.util.ArrayList;
 
@@ -144,13 +144,13 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         return new ShowCaseBuilder()
                 .customView(R.layout.show_case_checkout)
                 .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
+                .spacingRes(R.dimen.dp_12)
+                .arrowWidth(R.dimen.dp_16)
                 .textColorRes(R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(R.color.black)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.fontvs)
+                .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.label_shipping_show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)

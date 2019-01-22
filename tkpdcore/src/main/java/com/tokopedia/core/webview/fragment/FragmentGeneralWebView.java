@@ -27,7 +27,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -378,8 +378,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     }
                 }
             }
-            callbackAfterL.onReceiveValue(results);
-            callbackAfterL = null;
+            if (callbackAfterL!= null) {
+                callbackAfterL.onReceiveValue(results);
+                callbackAfterL = null;
+            }
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
                 if (null == callbackBeforeL) return;

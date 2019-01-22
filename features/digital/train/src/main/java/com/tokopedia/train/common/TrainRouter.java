@@ -17,7 +17,7 @@ import rx.Observable;
  */
 public interface TrainRouter {
 
-    String TRAIN_ENABLE_REMOTE_CONFIG = "mainapp_kai_native_enable";
+    String TRAIN_ENABLE_REMOTE_CONFIG = "mainapp_kai_native";
 
     Observable<ProfileBuyerInfo> getProfileInfo();
 

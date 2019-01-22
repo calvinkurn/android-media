@@ -1,52 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:background="@color/white">
 
     <include layout="@layout/simple_top_bar_layout" />
 
-    <RelativeLayout
+    <ScrollView
+        android:id="@id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <View
+        android:layout_height="match_parent"
+        android:layout_below="@id/product_video_horizontal_scroll"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@drawable/top_bar_shadow" />
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="@dimen/dp_4"
+            app:cardCornerRadius="@dimen/dp_5">
+            <android.support.constraint.ConstraintLayout
+                android:padding="@dimen/dp_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.design.image.SquareImageView
+                    android:id="@+id/img_product"
+                    android:layout_width="@dimen/dp_96"
+                    android:layout_height="@dimen/dp_96"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:textColor="@color/pdp_text_color"
+                    android:textSize="@dimen/font_small"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/img_product"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText"
+                    tools:text="Product Name" />
+
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/price_pdp"
+                    android:textSize="@dimen/font_small"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/img_product"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name"
+                    tools:ignore="HardcodedText"
+                    tools:text="Rp 0,00,-" />
+
+                <ImageView
+                    android:id="@+id/iv_official"
+                    android:layout_width="@dimen/med_dp"
+                    android:layout_height="@dimen/med_dp"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/img_product"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_price"
+                    app:srcCompat="@drawable/ic_official_store_pdp"
+                    tools:ignore="ContentDescription" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_shop_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pdp_text_color"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/font_small"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_official"
+                    app:layout_constraintStart_toEndOf="@+id/iv_official"
+                    app:layout_constraintTop_toTopOf="@+id/iv_official"
+                    tools:text="Toko Sembarang" />
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
 
         <com.tokopedia.tkpdpdp.customview.ProductVideoHorizontalScroll
             android:id="@id/product_video_horizontal_scroll"
+            android:transitionName="@string/transition_video_horizontal_scroll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_marginTop="@dimen/dp_30" />
 
-        <ScrollView
-            android:id="@id/tv_desc"
+        <com.tokopedia.tkpdpdp.customview.DescriptionTextView
+            android:paddingTop="@dimen/dp_16"
+            android:transitionName="@string/transition_description"
+            android:id="@id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/product_video_horizontal_scroll"
-            android:visibility="gone"
-            android:orientation="vertical"
-            android:layout_marginBottom="45dp"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10">
+            tools:text="@string/descriptions"
+            android:textColor="@color/pdp_text_color"
+            android:textSize="@dimen/font_normal"
+            android:textIsSelectable="true"
+            android:paddingBottom="@dimen/dp_16"
+            android:autoLink="all" />
+    </LinearLayout>
 
-            <com.tokopedia.tkpdpdp.customview.DescriptionTextView
-                android:id="@id/tv_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/descriptions"
-                android:textColor="@color/black_70"
-                android:textIsSelectable="true"
-                android:textSize="@dimen/fonts"
-                android:autoLink="all" />
-
-        </ScrollView>
-
-    </RelativeLayout>
-
+    </ScrollView>
 </LinearLayout>

@@ -8,9 +8,17 @@ import com.google.gson.annotations.SerializedName;
  */
 public class FieldDataModel {
 
+    @SerializedName("url")
+    @Expose
+    private String url;
+
     @SerializedName("preApp")
     @Expose
     private PreAppModel preApp;
+
+    public String getUrl() {
+        return url;
+    }
 
     public PreAppModel getPreApp() {
         return preApp;
