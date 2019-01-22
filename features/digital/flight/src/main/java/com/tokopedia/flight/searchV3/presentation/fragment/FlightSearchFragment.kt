@@ -214,6 +214,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
     }
 
+    override fun isLoadMoreEnabledByDefault(): Boolean = false
+
     override fun isListEmpty(): Boolean = !adapter.isContainData
 
     open fun getLayout(): Int = R.layout.fragment_search_flight
