@@ -65,6 +65,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+//import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
+
 /**
  * @author by nathan on 10/19/17.
  * modified by al
@@ -594,7 +596,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
 //        startActivityForResult(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+        startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
+                getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
     }
 
     @Override

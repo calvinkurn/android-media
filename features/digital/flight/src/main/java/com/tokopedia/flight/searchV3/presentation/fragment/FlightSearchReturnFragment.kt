@@ -204,22 +204,20 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     override fun onShowAllClicked() {
         super.onShowAllClicked()
 
-        showSeeAllResultDialog(priceViewModel.departurePrice.adultCombo,
-                priceViewModel.departurePrice.adult)
+        showSeeAllResultDialog(priceViewModel.departurePrice.adult)
     }
 
     override fun onShowBestPairingClicked() {
         super.onShowBestPairingClicked()
 
-        showSeeBestPairingDialog(priceViewModel.departurePrice.adult,
-                priceViewModel.departurePrice.adultCombo)
+        showSeeBestPairingDialog(priceViewModel.departurePrice.adultCombo)
     }
 
-    private fun showSeeAllResultDialog(bestPairPrice: String, normalPrice: String) {
+    private fun showSeeAllResultDialog(normalPrice: String) {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.flight_search_choose_except_best_pairing_dialog_title))
+        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog))
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_choose_except_best_pairing_dialog_description, bestPairPrice, normalPrice)
+                getString(R.string.flight_search_return_price_change_desc_dialog, normalPrice)
         ))
         dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text))
         dialog.setOnOkClickListener {
@@ -233,11 +231,11 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         dialog.show()
     }
 
-    private fun showSeeBestPairingDialog(normalPrice: String, bestPairPrice: String) {
+    private fun showSeeBestPairingDialog(bestPairPrice: String) {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.flight_search_choose_best_pairing_dialog_title))
+        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog))
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_choose_best_pairing_dialog_description, normalPrice, bestPairPrice)
+                getString(R.string.flight_search_return_price_change_desc_dialog, bestPairPrice)
         ))
         dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text))
         dialog.setOnOkClickListener {

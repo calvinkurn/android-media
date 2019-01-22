@@ -124,12 +124,12 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                 val returnDepartureTime = FlightDateUtil.stringToDate(
                         FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, firstReturnRoute.arrivalTimestamp)
                 val different = returnDepartureTime.time - departureArrivalTime.time
-                if (different >= 0) {
+                return if (different >= 0) {
                     val hours: Long = different / ONE_HOUR
                     CommonUtils.dumper("diff : $hours")
-                    return hours >= MIN_DIFF_HOURS
+                    hours >= MIN_DIFF_HOURS
                 } else {
-                    return false
+                    false
                 }
             }
         }

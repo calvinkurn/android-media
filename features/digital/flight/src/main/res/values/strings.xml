@@ -462,10 +462,8 @@
     <string name="flight_search_show_best_pairing_desc"><![CDATA[Dengan memilih Best Pairing, harga penerbangan pergi Anda berubah menjadi <font color="#ff5722">%s</font>.]]></string>
     <string name="flight_search_show_best_pairing_label">Lihat Best Pairing</string>
     <string name="flight_search_dialog_proceed_button_text">Lanjutkan</string>
-    <string name="flight_search_choose_except_best_pairing_dialog_title">Pilih Penerbangan Pulang Lainnya</string>
-    <string name="flight_search_choose_except_best_pairing_dialog_description"><![CDATA[Dengan memilih opsi selain Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
-    <string name="flight_search_choose_best_pairing_dialog_title">Pilih Penerbangan Best Pairing</string>
-    <string name="flight_search_choose_best_pairing_dialog_description"><![CDATA[Dengan memilih kombinasi Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
+    <string name="flight_search_return_price_change_title_dialog">Terjadi Perubahan Harga</string>
+    <string name="flight_search_return_price_change_desc_dialog"><![CDATA[Harga penerbangan pergi Anda berubah menjadi <b>%s</b>. Lanjutkan pesanan dengan harga terbaru?]]></string>
     <string name="flight_search_best_pairing_label">Pilih Penerbangan Best Pairing</string>
     <string name="flight_search_return_dialog_abort">Batal</string>
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>

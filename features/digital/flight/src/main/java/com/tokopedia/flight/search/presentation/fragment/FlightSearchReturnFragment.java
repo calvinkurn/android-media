@@ -7,10 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.common.travel.widget.DepartureTripLabelView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
@@ -25,7 +25,6 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultVi
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchReturnPresenter;
-import com.tokopedia.common.travel.widget.DepartureTripLabelView;
 
 import java.util.List;
 
@@ -279,9 +278,9 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     private void showSeeAllResultDialog(String bestPairPrice, String normalPrice) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_search_choose_except_best_pairing_dialog_title));
+        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog));
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_choose_except_best_pairing_dialog_description, bestPairPrice, normalPrice)));
+                getString(R.string.flight_search_return_price_change_desc_dialog, normalPrice)));
         dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -304,9 +303,9 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     private void showSeeBestPairingDialog(String normalPrice, String bestPairPrice) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_search_choose_best_pairing_dialog_title));
+        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog));
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_choose_best_pairing_dialog_description, normalPrice, bestPairPrice)));
+                getString(R.string.flight_search_return_price_change_desc_dialog, bestPairPrice)));
         dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
