@@ -242,17 +242,19 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         alert.setTitle(title)
         layout.addView(edittext)
         alert.setView(layout)
-        alert.setPositiveButton(getString(R.string.dialog_yes)) {
+        alert.setPositiveButton("OK") {
             _, _ ->
             run {
                 val url = edittext.text.toString()
                 BASE_URL = url
+                loadHome()
             }
         }
-        alert.setNegativeButton(getString(R.string.dialog_no)) {
+        alert.setNegativeButton("cancel") {
             dialog, _ ->
             run {
                 dialog.dismiss()
+                loadHome()
             }
         }
 
