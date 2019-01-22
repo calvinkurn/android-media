@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
@@ -25,8 +25,8 @@ public abstract class TkpdBearerWithAuthInterceptor extends TkpdAuthInterceptor{
         headerMap.put(X_TKPD_HEADER_AUTHORIZATION, xTkpdAuthorization);
 
         headerMap.remove(HEADER_AUTHORIZATION);
-        SessionHandler sessionHandler = new SessionHandler(CoreNetworkApplication.getAppContext());
-        String bearerAutorization = BEARER + sessionHandler.getAccessToken(CoreNetworkApplication.getAppContext());
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        String bearerAutorization = BEARER + userSession.getAccessToken();
         headerMap.put(HEADER_AUTHORIZATION, bearerAutorization);
 
         return headerMap;

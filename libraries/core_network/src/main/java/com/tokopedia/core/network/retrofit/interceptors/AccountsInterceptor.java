@@ -1,10 +1,12 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -73,13 +75,14 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
 
 
     protected String getToken() {
-        SessionHandler sessionHandler = new SessionHandler(CoreNetworkApplication.getAppContext());
-        if (!TextUtils.isEmpty(sessionHandler
-                .getAccessToken(CoreNetworkApplication.getAppContext())))
-            return sessionHandler.getTokenType(CoreNetworkApplication.getAppContext()) + " " +
-                    sessionHandler.getAccessToken(CoreNetworkApplication.getAppContext());
-        else
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        if (!TextUtils.isEmpty(userSession.getAccessToken())) {
+            SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+            String tokenType = sharedPrefs.getString("TOKEN_TYPE", "");
+            return tokenType + " " + userSession.getAccessToken();
+        } else {
             return authKey;
+        }
     }
 
 }

@@ -6,7 +6,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidgetResponse;
-import com.tokopedia.core.util.SessionHandler;
 
 import retrofit2.Response;
 import retrofit2.http.GET;

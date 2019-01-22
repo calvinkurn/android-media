@@ -1,7 +1,8 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.Map;
@@ -57,7 +58,8 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
                 .getPath(), originRequest.method(), authKey);
 
         if (originRequest.url().toString().contains("/o2o/")) {
-            Headers.put(AUTHORIZATION, BEARER + SessionHandler.getAccessToken());
+            UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+            Headers.put(AUTHORIZATION, BEARER + userSession.getAccessToken());
         }
 
         return Headers;

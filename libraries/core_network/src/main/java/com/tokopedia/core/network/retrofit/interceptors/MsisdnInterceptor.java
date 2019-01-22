@@ -1,7 +1,8 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
@@ -17,8 +18,9 @@ public class MsisdnInterceptor extends TkpdAuthInterceptor {
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
         return AuthUtil.generateHeadersWithXUserIdXMsisdn(path, method, authKey, contentTypeHeader,
-                SessionHandler.getPhoneNumber());
+                userSession.getPhoneNumber());
     }
 
 }

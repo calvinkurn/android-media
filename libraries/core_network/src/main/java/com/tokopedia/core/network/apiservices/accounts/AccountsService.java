@@ -8,7 +8,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
-import com.tokopedia.core.util.SessionHandler;
 
 import org.w3c.dom.Text;
 

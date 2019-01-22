@@ -6,7 +6,7 @@ import android.content.Context;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.network.v4.NetworkConfigUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -194,7 +194,8 @@ public class NetworkCalculator {
     }
 
     public static String getUserId(Context context){
-        return SessionHandler.getLoginID(context);
+        UserSession userSession = new UserSession(context);
+        return userSession.getUserId();
     }
 
     public static String getDeviceId(Context context){

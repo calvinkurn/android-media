@@ -4,10 +4,9 @@ import android.content.Context;
 import android.util.Base64;
 
 import com.tokopedia.core.CoreNetworkApplication;
-import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -59,7 +58,8 @@ public class AccountsUtil extends AuthUtil{
     public static HeaderParam getHeaderParam(Context context, String path, Map<String, String> params, String method) {
 
         String deviceId = GCMHandler.getRegistrationId(context);
-        String userId = SessionHandler.getLoginID(context);
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        String userId = userSession.getUserId();
         String hash = md5(userId + "~" + deviceId);
 
         params.put(PARAM_USER_ID, userId);
@@ -114,6 +114,8 @@ public class AccountsUtil extends AuthUtil{
         String authString = method + "\n" + contentMD5 + "\n" + CONTENT_TYPE_JSON + "\n" + date + "\n" + path;
         String signature = calculateRFC2104HMAC(authString, authKey);
 
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        String userId = userSession.getUserId();
         Map<String, String> finalHeader = new HashMap<>();
         finalHeader.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
         finalHeader.put(HEADER_X_METHOD, method);
@@ -121,7 +123,7 @@ public class AccountsUtil extends AuthUtil{
         finalHeader.put(HEADER_DATE, date);
         finalHeader.put(HEADER_CONTENT_MD5, contentMD5);
         finalHeader.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
-        finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(CoreNetworkApplication.getAppContext()));
+        finalHeader.put(HEADER_USER_ID, userId);
         finalHeader.put(HEADER_DEVICE, "android-"+ GlobalConfig.VERSION_NAME);
 
         return finalHeader;
@@ -130,7 +132,8 @@ public class AccountsUtil extends AuthUtil{
     public static Map<String, String> generateParams(Context context, Map<String, String> params) {
 
         String deviceId = GCMHandler.getRegistrationId(context);
-        String userId = SessionHandler.getLoginID(context);
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        String userId = userSession.getUserId();
         String hash = md5(userId + "~" + deviceId);
 
         params.put(PARAM_USER_ID, userId);

@@ -8,8 +8,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -415,7 +415,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);
-        String freshAccessToken = SessionHandler.getAccessToken();
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        String freshAccessToken = userSession.getAccessToken();
         newestRequestBuilder
                 .header(AUTHORIZATION, BEARER + " " + freshAccessToken)
                 .header(ACCOUNTS_AUTHORIZATION, BEARER + " " + freshAccessToken);
@@ -426,7 +427,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);
-        String freshAccessToken = SessionHandler.getAccessToken();
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        String freshAccessToken = userSession.getAccessToken();
         newestRequestBuilder
                 .header(ACCOUNTS_AUTHORIZATION, BEARER + " " + freshAccessToken);
         return newestRequestBuilder.build();

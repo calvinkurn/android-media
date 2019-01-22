@@ -5,8 +5,11 @@ import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 
+import com.tkpd.library.kirisame.Kirisame;
+import com.tkpd.library.kirisame.network.entity.NetError;
+import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -18,9 +21,6 @@ import java.util.Locale;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.tkpd.library.kirisame.Kirisame;
-import com.tkpd.library.kirisame.network.entity.NetError;
 
 /**
  * Created by ricoharisin on 8/24/2015.
@@ -36,7 +36,8 @@ public class NetworkHandlerAuth extends NetworkHandler {
         super(context, url);
         deviceId = GCMHandler.getRegistrationId(context);
         date = generateDate();
-        userId = SessionHandler.getLoginID(context);
+        UserSession userSession = new UserSession(context);
+        userId = userSession.getUserId();
         setHMACHeader();
         setTokopediaDefaultParam();
     }
@@ -44,7 +45,8 @@ public class NetworkHandlerAuth extends NetworkHandler {
     public void setData(){
         deviceId = GCMHandler.getRegistrationId(context);
         date = generateDate();
-        userId = SessionHandler.getLoginID(context);
+        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
+        userId = userSession.getUserId();
         setHMACHeader();
         setTokopediaDefaultParam();
     }

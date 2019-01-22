@@ -6,10 +6,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.CoreNetworkApplication;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import org.json.JSONArray;
