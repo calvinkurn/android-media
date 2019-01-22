@@ -47,16 +47,14 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    protected HomePresenter homePresenter(PagingHandler pagingHandler,
-                                          UserSession userSession,
+    protected HomePresenter homePresenter(UserSession userSession,
                                           GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
-        return realHomePresenter(pagingHandler, userSession, getShopInfoByDomainUseCase);
+        return realHomePresenter(userSession, getShopInfoByDomainUseCase);
     }
 
-    protected HomePresenter realHomePresenter(PagingHandler pagingHandler,
-                                              UserSession userSession,
+    protected HomePresenter realHomePresenter(UserSession userSession,
                                               GetShopInfoByDomainUseCase getShopInfoByDomainUseCase){
-        return new HomePresenter(pagingHandler, userSession, getShopInfoByDomainUseCase);
+        return new HomePresenter(userSession, getShopInfoByDomainUseCase);
     }
 
     @HomeScope

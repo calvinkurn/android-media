@@ -13,6 +13,7 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,6 +53,7 @@ import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.SectionContainer;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
@@ -92,7 +94,7 @@ import rx.Observable;
  * @author by errysuprayogi on 11/27/17.
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
-        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, HomeFeedListener,
+        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener,
         NotificationListener, FragmentListener {
 
@@ -115,18 +117,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private TabLayout tabLayout;
     private CoordinatorLayout root;
     private SectionContainer tabContainer;
-    private SwipeRefreshLayout refreshLayout;
+    //private SwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
     private PerformanceMonitoring performanceMonitoring;
     private SnackbarRetry messageSnackbar;
     private String[] tabSectionTitle;
-    private EndlessRecyclerViewScrollListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
+    private ViewPager homeFeedsViewPager;
+    private TabLayout homeFeedsTabLayout;
 
     private MainToolbar mainToolbar;
 
@@ -214,18 +217,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mainToolbar = view.findViewById(R.id.toolbar);
         recyclerView = view.findViewById(R.id.list);
-        refreshLayout = view.findViewById(R.id.sw_refresh_layout);
+        //refreshLayout = view.findViewById(R.id.sw_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
+        homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
+        homeFeedsTabLayout = view.findViewById(R.id.tab_layout_home_feeds);
         if (isUserLoggedIn()) {
             if (getArguments() != null) {
                 scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
             }
         }
         presenter.attachView(this);
-        presenter.setFeedListener(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         return view;
     }
@@ -236,8 +240,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.onFirstLaunch();
         initTabNavigation();
         initAdapter();
+        initHomeFeedsViewPager();
         initRefreshLayout();
-        initFeedLoadMoreTriggerListener();
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
@@ -281,8 +285,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
     }
 
+    private void initHomeFeedsViewPager() {
+        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(getFragmentManager(), 10);
+        homeFeedsViewPager.setOffscreenPageLimit(10);
+        homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
+        homeFeedsTabLayout.setupWithViewPager(homeFeedsViewPager);
+        homeFeedsTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+    }
+
     private void scrollToRecommendList() {
-        recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+        recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
         scrollToRecommendList = false;
     }
 
@@ -319,13 +331,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         adapter = null;
         recyclerView.setLayoutManager(null);
         layoutManager = null;
-        feedLoadMoreTriggerListener = null;
         presenter = null;
         unRegisterBroadcastReceiverTokoCash();
     }
 
     private void initRefreshLayout() {
-        refreshLayout.post(new Runnable() {
+        /*refreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 if (presenter != null) {
@@ -334,29 +345,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         });
-        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setOnRefreshListener(this);*/
+        if (presenter != null) {
+            presenter.getHomeData();
+            presenter.getHeaderData(true);
+        }
     }
 
     private void loadEggData() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
             floatingEggButtonFragment.loadEggData();
-        }
-    }
-
-    private void initFeedLoadMoreTriggerListener() {
-        feedLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (isAllowLoadMore()) {
-                    adapter.showLoading();
-                    presenter.fetchNextPageFeed();
-                }
-            }
-        };
-
-        if (isUserLoggedIn()) {
-            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         }
     }
 
@@ -388,14 +387,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return null;
     }
 
-    private boolean isAllowLoadMore() {
-        return presenter.hasNextPageFeed()
-                && !adapter.isLoading()
-                && !adapter.isRetryShown()
-                && !refreshLayout.isRefreshing()
-                && !isErrorMessageShown();
-    }
-
     private boolean isErrorMessageShown() {
         return messageSnackbar != null && messageSnackbar.isShown();
     }
@@ -407,7 +398,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
                 this,
-                this,
+                null,
                 this
         );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
@@ -621,9 +612,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void resetFeedState() {
         presenter.resetPageFeed();
-        if (getContext() != null && isUserLoggedIn() && feedLoadMoreTriggerListener != null) {
-            feedLoadMoreTriggerListener.resetState();
-        }
     }
 
     @Override
@@ -635,17 +623,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isLoading() {
-        return refreshLayout.isRefreshing();
+        //return refreshLayout.isRefreshing();
+        return false;
     }
 
     @Override
     public void showLoading() {
-        refreshLayout.setRefreshing(true);
+        //refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-        refreshLayout.setRefreshing(false);
+        //refreshLayout.setRefreshing(false);
         if (performanceMonitoring != null && !isTraceStopped) {
             performanceMonitoring.stopTrace();
             isTraceStopped = true;
@@ -661,9 +650,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
-        if (scrollToRecommendList) {
-            presenter.fetchNextPageFeed();
-        }
     }
 
     @Override
@@ -800,14 +786,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    @Override
-    public void onGoToProductDetailFromInspiration(String productId,
-                                                   String imageSource,
-                                                   String name,
-                                                   String price) {
-        goToProductDetail(productId, imageSource, name, price);
-    }
-
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
         if (getActivity().getApplication() instanceof IHomeRouter) {
             ((IHomeRouter) getActivity().getApplication()).goToProductDetail(
@@ -818,55 +796,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     price
             );
         }
-    }
-
-    @Override
-    public void updateCursor(String currentCursor) {
-        presenter.setCursor(currentCursor);
-    }
-
-    @Override
-    public void onSuccessGetFeed(ArrayList<Visitable> visitables) {
-        if (feedLoadMoreTriggerListener != null) {
-            feedLoadMoreTriggerListener.updateStateAfterGetData();
-            feedLoadMoreTriggerListener.setHasNextPage(presenter.hasNextPageFeed());
-        }
-        adapter.hideLoading();
-        int posStart = adapter.getItemCount();
-        adapter.addItems(visitables);
-        adapter.notifyItemRangeInserted(posStart, visitables.size());
-        if (scrollToRecommendList) {
-            scrollToRecommendList();
-        }
-
-    }
-
-    @Override
-    public void onRetryClicked() {
-        if (!isErrorMessageShown()) {
-            adapter.removeRetry();
-            adapter.showLoading();
-            presenter.fetchCurrentPageFeed();
-        } else {
-            onRefresh();
-        }
-    }
-
-    @Override
-    public void onShowRetryGetFeed() {
-        if (feedLoadMoreTriggerListener != null) {
-            feedLoadMoreTriggerListener.updateStateAfterGetData();
-        }
-        if (adapter != null) {
-            adapter.hideLoading();
-            adapter.showRetry();
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void updateCursorNoNextPageFeed() {
-        presenter.setCursorNoNextPageFeed();
     }
 
     public void openWebViewURL(String url, Context context) {

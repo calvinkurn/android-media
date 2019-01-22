@@ -13,30 +13,58 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <com.tokopedia.searchbar.MainToolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapse_toolbar_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentInsetStart="0dp"
-            app:contentInsetLeft="0dp"
-            app:screenName="/"/>
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <FrameLayout
+                android:id="@+id/home_content_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="?actionBarSize"
+                android:layout_marginBottom="?actionBarSize">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:descendantFocusability="beforeDescendants"
+                    android:tag="home_list"/>
+
+            </FrameLayout>
+
+            <com.tokopedia.searchbar.MainToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:layout_marginBottom="?actionBarSize"
+                app:contentInsetStart="0dp"
+                app:contentInsetLeft="0dp"
+                app:layout_anchor="@id/home_content_container"
+                app:layout_collapseMode="pin"
+                app:screenName="/"/>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout_home_feeds"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="bottom"
+                app:tabBackground="@color/white"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                app:tabIndicatorColor="@color/tkpd_green_header"
+                app:tabSelectedTextColor="@color/tkpd_green_header" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
-        android:id="@+id/sw_refresh_layout"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager_home_feeds"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
-            android:tag="home_list"/>
-
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+        android:layout_height="match_parent" />
 
     <com.tokopedia.home.beranda.presentation.view.SectionContainer
         android:id="@+id/tab_container"

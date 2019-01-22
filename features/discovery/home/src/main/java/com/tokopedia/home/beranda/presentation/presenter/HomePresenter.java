@@ -6,18 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
@@ -64,19 +61,15 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetHomeFeedUseCase getHomeFeedUseCase;
 
     private String currentCursor = "";
-    private PagingHandler pagingHandler;
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
-    private HomeFeedListener feedListener;
     private HeaderViewModel headerViewModel;
     private boolean fetchFirstData;
     private long REQUEST_DELAY = 180000;// 3 minutes
     private static long lastRequestTime;
 
-    public HomePresenter(PagingHandler pagingHandler,
-                         UserSession userSession,
+    public HomePresenter(UserSession userSession,
                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         this.userSession = userSession;
-        this.pagingHandler = pagingHandler;
         this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
 
         compositeSubscription = new CompositeSubscription();
@@ -319,31 +312,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    public void setFeedListener(HomeFeedListener feedListener) {
-        this.feedListener = feedListener;
-    }
-
     public void resetPageFeed() {
-        currentCursor = "";
-        pagingHandler.setPage(0);
-        if (getHomeFeedUseCase != null) {
-            getHomeFeedUseCase.unsubscribe();
-        }
-    }
-
-    public void fetchNextPageFeed() {
-        pagingHandler.nextPage();
-        fetchCurrentPageFeed();
-    }
-
-    public void fetchCurrentPageFeed() {
-        if (currentCursor == null)
-            return;
-        getHomeFeedUseCase.execute(
-                getHomeFeedUseCase.getFeedPlusParam(
-                        userSession.getUserId(),
-                        currentCursor),
-                new GetHomeFeedsSubscriber(getView().getContext(), feedListener, pagingHandler.getPage()));
+        //TODO will be implemented
     }
 
     public void setCursor(String currentCursor) {
