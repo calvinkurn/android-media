@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.feature.shipment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -18,11 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -71,8 +72,6 @@ import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticinsurance.view.InsuranceTnCActivity;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -152,6 +151,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
 
+    SaveInstanceCacheManager saveInstanceCacheManager;
+    CartPromoSuggestion savedCartPromoSuggestion;
+    List<ShipmentCartItemModel> savedShipmentCartItemModelList;
+    ShipmentCostModel savedShipmentCostModel;
+    RecipientAddressModel savedRecipientAddressModel;
+    PromoData savedPromoData;
+    ShipmentDonationModel savedShipmentDonationModel;
+
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
@@ -186,6 +193,28 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getContext() != null) {
+            saveInstanceCacheManager = new SaveInstanceCacheManager(getContext(), savedInstanceState);
+        }
+        if (savedInstanceState != null) {
+            savedShipmentCartItemModelList = saveInstanceCacheManager.get(ShipmentCartItemModel.class.getSimpleName(),
+                    (new TypeToken<ArrayList<ShipmentCartItemModel>>() {
+                    }).getType());
+            if (savedShipmentCartItemModelList != null) {
+                savedCartPromoSuggestion = saveInstanceCacheManager.get(CartPromoSuggestion.class.getSimpleName(), CartPromoSuggestion.class);
+                savedRecipientAddressModel = saveInstanceCacheManager.get(RecipientAddressModel.class.getSimpleName(), RecipientAddressModel.class);
+                savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
+                savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
+                savedPromoData = saveInstanceCacheManager.get(PromoData.class.getSimpleName(), PromoData.class);
+            }
+            ArrayList<ShipmentSelectionStateData> shipmentSelectionStateData =
+                    saveInstanceCacheManager.get(EXTRA_STATE_SHIPMENT_SELECTION,
+                            (new TypeToken<ArrayList<ShipmentSelectionStateData>>() {
+                            }).getType(), null);
+            if (shipmentSelectionStateData != null) {
+                shipmentSelectionStateDataHashSet = new HashSet<>(shipmentSelectionStateData);
+            }
+        }
         shipmentPresenter.attachView(this);
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
     }
@@ -202,21 +231,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-        if (!shipmentSelectionStateDataHashSet.isEmpty()) {
-            state.putParcelableArrayList(
-                    EXTRA_STATE_SHIPMENT_SELECTION, new ArrayList<>(shipmentSelectionStateDataHashSet
-                    ));
-        }
-    }
-
-    @Override
     public void onRestoreState(Bundle savedState) {
-        ArrayList<ShipmentSelectionStateData> shipmentSelectionStateData =
-                savedState.getParcelableArrayList(EXTRA_STATE_SHIPMENT_SELECTION);
-        if (shipmentSelectionStateData != null) {
-            shipmentSelectionStateDataHashSet = new HashSet<>(shipmentSelectionStateData);
-        }
+        // no op, already in onCreate()
     }
 
     @Override
@@ -262,9 +278,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
             shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
         } else {
+            shipmentPresenter.setShipmentCartItemModelList(savedShipmentCartItemModelList);
+            shipmentPresenter.setCartPromoSuggestion(savedCartPromoSuggestion);
+            shipmentPresenter.setRecipientAddressModel(savedRecipientAddressModel);
+            shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
+            shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
+            shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
+            shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
+            shipmentAdapter.addPromoVoucherData(savedPromoData);
+            renderCheckoutPage(true, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
         }
     }
@@ -272,36 +297,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        saveInstanceCacheManager.onSave(outState);
         if (shipmentPresenter.getShipmentCartItemModelList() != null) {
-            outState.putParcelable(CartPromoSuggestion.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestion());
-            outState.putParcelable(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
-            outState.putParcelableArrayList(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
-            outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
-            outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
+            saveInstanceCacheManager.put(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
+            saveInstanceCacheManager.put(CartPromoSuggestion.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestion());
+            saveInstanceCacheManager.put(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
+            saveInstanceCacheManager.put(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
+            saveInstanceCacheManager.put(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
+            saveInstanceCacheManager.put(PromoData.class.getSimpleName(), shipmentAdapter.getPromoData());
             outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
             outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.getLastServiceId());
-            outState.putParcelable(PromoData.class.getSimpleName(), shipmentAdapter.getPromoData());
+        } else {
+            saveInstanceCacheManager.put(ShipmentCartItemModel.class.getSimpleName(), null);
+        }
+        if (!shipmentSelectionStateDataHashSet.isEmpty()) {
+            saveInstanceCacheManager.put(EXTRA_STATE_SHIPMENT_SELECTION, new ArrayList<>(shipmentSelectionStateDataHashSet));
         }
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getParcelableArrayList(ShipmentCartItemModel.class.getSimpleName()) != null) {
-                shipmentPresenter.setCartPromoSuggestion(savedInstanceState.getParcelable(CartPromoSuggestion.class.getSimpleName()));
-                shipmentPresenter.setRecipientAddressModel(savedInstanceState.getParcelable(RecipientAddressModel.class.getSimpleName()));
-                shipmentPresenter.setShipmentCartItemModelList(savedInstanceState.getParcelableArrayList(ShipmentCartItemModel.class.getSimpleName()));
-                shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
-                shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
-                shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
-                shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
-                shipmentAdapter.addPromoVoucherData(savedInstanceState.getParcelable(PromoData.class.getSimpleName()));
-                renderCheckoutPage(true, isOneClickShipment());
-            } else {
-                shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
-            }
-        }
+    public void onSaveState(Bundle state) {
+        // no op, already in onSaveInstanceState
     }
 
     @Override
