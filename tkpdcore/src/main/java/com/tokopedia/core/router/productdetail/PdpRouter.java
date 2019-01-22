@@ -8,13 +8,13 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam;
 
-import rx.Observable;
-
 import java.util.ArrayList;
+
+import rx.Observable;
 
 /**
  * @author madi on 5/15/17.

@@ -57,6 +57,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.transactioncommon)
+
     implementation project(rootProject.ext.features.saldodetails)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer

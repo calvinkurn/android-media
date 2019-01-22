@@ -11,7 +11,7 @@
     <string name="kai_homepage_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
 
     <string name="kai_homepage_adult_passenger">Dewasa</string>
-    <string name="kai_homepage_adult_infant">Bayi</string>
+    <string name="kai_homepage_infant_passenger">Bayi</string>
     <string name="train_homepage_toolbar_title">Tiket Kereta</string>
     <string name="train_homepage_origin_station_hint">Kota/Stasiun Asal</string>
     <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>

@@ -29,6 +29,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.gm.common.constant.GMParamConstant;
 import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -41,7 +42,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
@@ -416,7 +416,7 @@ public class DrawerSellerHelper extends DrawerHelper
                                 .sendClickHamburgerMenuEvent(item.label);
                     }
                     UnifyTracking.eventClickGoldMerchantViaDrawer(context);
-                    context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));
+                    context.startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);

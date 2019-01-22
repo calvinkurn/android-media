@@ -214,10 +214,17 @@
     <string name="label_empty_cart_see_others">Lihat Lainnya</string>
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
+    <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
+    <string name="label_text_promo_potency">Potensi Promo</string>
+    <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
+    <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
+    <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
+    <string name="title_activity_cart">Keranjang</string>
     <string name="ppp_more">Pelajari</string>
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
     <string name="checkout_ppp_label">Proteksi Gadget (3 Barang)</string>
     <string name="title_activity_checkout_webview">Proteksi Gadget</string>
+    <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
 
 </resources>

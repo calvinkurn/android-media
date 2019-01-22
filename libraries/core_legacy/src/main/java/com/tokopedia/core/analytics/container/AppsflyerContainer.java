@@ -11,6 +11,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.gcm.FCMCacheManager;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import rx.schedulers.Schedulers;
  * Modified by Alvarisi 29/11/2016
  * appsflyer get commented.
  */
+@Deprecated
 public class AppsflyerContainer implements IAppsflyerContainer {
 
     private static final String TAG = AppsflyerContainer.class.getSimpleName();
@@ -57,7 +59,9 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setUserID(userID);
         setAFLog(BuildConfig.DEBUG);
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
+        initUninstallTracking(key);
         setAppsFlyerKey(key);
+        updateFCMToken(FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     @Override
@@ -70,35 +74,43 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         AppsFlyerLib.getInstance().startTracking(context, key);
     }
 
+    private void initUninstallTracking(String key) {
+        AppsFlyerLib.getInstance().enableUninstallTracking(key);
+    }
+
+    @Override
+    public void updateFCMToken(String fcmToken) {
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, fcmToken);
+    }
+
     private void setCurrencyCode(String code) {
         AppsFlyerLib.getInstance().setCurrencyCode(code);
     }
 
     @Override
     public void setUserID(String userID) {
-        HashMap<String, Object> addData = initAdditionalData();
-        addData.put(KEY_INSTALL_SOURCE, getInstallSource());
+        HashMap<String, Object> addData = new HashMap<>();
+        addData.put(KEY_INSTALL_SOURCE, context.getPackageManager().getInstallerPackageName(
+                context.getPackageName()));
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
         AppsFlyerLib.getInstance().setAdditionalData(addData);
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
     }
 
-    private HashMap<String, Object> initAdditionalData(){
-        return new HashMap<>();
-    }
-
-    private String getInstallSource() {
-        String installer = context.getPackageManager().getInstallerPackageName(
-                context.getPackageName());
-        return installer;
-    }
-
     private void setGCMId(String gcmID) {
         AppsFlyerLib.getInstance().setGCMProjectNumber(gcmID);
+        AppsFlyerLib.getInstance().setGCMProjectID(gcmID);
     }
 
     private void setAFLog(boolean login) {
         AppsFlyerLib.getInstance().setDebugLog(login);
+        if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
+            AppsFlyerLib.getInstance().setPreinstallAttribution(
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_DESC,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_SITE
+            );
+        }
     }
 
     @Override

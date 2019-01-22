@@ -8,13 +8,11 @@ import android.os.Bundle;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE;
 
 /**
  * @author Irfan Khoirul on 05/02/18
@@ -139,7 +137,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 Intent intent = ((ICheckoutModuleRouter) getApplication()).getAddAddressIntent(
                         this, null, token, false, true);
                 startActivityForResult(intent,
-                        REQUEST_CODE_PARAM_CREATE);
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 break;
 
             default:
@@ -164,7 +162,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PARAM_CREATE) {
+        if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE) {
             if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
             finish();
         }
