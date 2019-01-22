@@ -450,9 +450,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun goToSettingTemplate() {
         val intent = TemplateChatActivity.createInstance(context)
-        activity?.run {
+        activity?.let {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
-            overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
+            it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
         }
     }
 
