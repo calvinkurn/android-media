@@ -16,6 +16,7 @@ ext {
     tkpdExploreVersion = '2.22'
     tkpdEventVersion = '2.22'
     tkpdFeedVersion = '2.22'
+    tkpdFeedComponentVersion = '2.22'
     tkpdFlightVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -108,6 +109,7 @@ ext {
             explore                 : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                  : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                    : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            feedComponent           : "com.tokopedia.feedcomponent:feedComponent:${tkpdFeedComponentVersion}",
             affiliate               : "com.tokopedia.affiliate:affiliate:${tkpdAffiliateVersion}",
             affiliateCommon         : "com.tokopedia.affiliatecommon:affiliatecommon:${tkpdAffiliateCommonVersion}",
             flight                  : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
@@ -171,6 +173,7 @@ ext {
             broadcastMessageCommon        : ":features:communication:broadcast_message_common",
 
             feed                          : ":features:content:feed",
+            feedComponent                 : ":features:content:feed_component",
             explore                       : ":features:content:explore",
             interestPick                  : ":features:content:interest_pick",
             kol                           : ":features:content:kol",
@@ -191,14 +194,18 @@ ext {
             train                         : ":features:digital:train",
 
             home                          : ":features:discovery:home",
+            //home                          : ":features:discovery:home_no_op",
             recentview                    : ":features:discovery:recentview",
+            //recentview                    : ":features:discovery:recentview_no_op",
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
 
+            homecredit                    : ":features:fintech:home_credit",
             instantLoan                   : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                  : ":features:fintech:mitra_toppers",
             saldodetails                  : ":features:fintech:saldo_details",
+//            saldodetails                  : ":features:fintech:saldo_details_no_op",
             tokoCash                      : ":features:fintech:tokocash",
 
             accountHome                   : ":features:home:account-home",
@@ -264,6 +271,7 @@ ext {
             tokopoints                    : ":features:promo:tokopoints",
             tokopointsNotification        : ":features:promo:tokopoints_notification",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
+            tokopointsNotification        : ":features:promo:tokopoints_notification",
             promoCheckout                 : ":features:promo:promo_checkout",
             promoCheckoutCommon           : ":features:promo:promo_checkout_common",
 

@@ -13,6 +13,7 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
@@ -30,7 +31,7 @@ import java.util.Map;
  */
 public class Jordan {
 
-    private Context context;
+    private Application context;
     public static final String GCM_PROJECT_NUMBER = "692092518182";
     private static boolean isAppsflyerCallbackHandled;
 
@@ -46,19 +47,29 @@ public class Jordan {
         context = application;
     }
 
+    private Jordan(Application application) {
+        context = application;
+    }
+
     public static Jordan init(Context context) {
         return new Jordan(context);
     }
 
     public static Jordan init(Application application) {
-        return new Jordan(application.getApplicationContext());
+        return new Jordan(application);
     }
 
+    /**
+     * latest release codes. {@link AppsflyerAnalytics#initialize()}
+     * @param userID
+     * @return
+     */
+    @Deprecated
     public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
-        if(!(context instanceof Application)){
+        if(context == null){
             return null;
         }
-        AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance((Application)context);
+        AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
         CommonUtils.dumper("Appsflyer login userid " + userID);
 
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
@@ -112,15 +123,15 @@ public class Jordan {
     }
 
     public IAppsflyerContainer getAFContainer(){
-        if(context instanceof Application)
-            return AppsflyerContainer.newInstance((Application)context);
+        if(context != null)
+            return AppsflyerContainer.newInstance(context);
         else
             return null;
     }
 
     public IMoengageContainer getMoEngageContainer() {
-        if(context instanceof Application)
-            return MoEngageContainer.getMoEngageContainer((Application)context);
+        if(context != null)
+            return MoEngageContainer.getMoEngageContainer(context);
         else
             return null;
     }

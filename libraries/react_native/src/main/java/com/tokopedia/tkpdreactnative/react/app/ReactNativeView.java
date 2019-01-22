@@ -5,5 +5,9 @@ package com.tokopedia.tkpdreactnative.react.app;
  */
 
 public interface ReactNativeView {
+
     void actionSetToolbarTitle(String title);
+    void showLoaderReactPage();
+    void hideLoaderReactPage();
+
 }
