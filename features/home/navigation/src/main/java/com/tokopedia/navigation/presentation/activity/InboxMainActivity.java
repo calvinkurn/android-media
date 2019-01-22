@@ -13,7 +13,6 @@ import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 /**
  * Created by meta on 10/01/19.
  */
-@DeepLink(ApplinkConst.INBOX)
 public class InboxMainActivity extends BaseSimpleActivity {
 
     public static Intent start(Context context) {

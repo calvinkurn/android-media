@@ -17,4 +17,6 @@ public interface SearchBarRouter {
     Intent gotoQrScannerPage(boolean needResult);
 
     Intent gotoSearchPage(Context context);
+
+    Intent gotoInboxMainPage(Context context);
 }

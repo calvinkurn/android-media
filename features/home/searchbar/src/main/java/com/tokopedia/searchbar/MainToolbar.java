@@ -105,7 +105,8 @@ public class MainToolbar extends Toolbar {
                 if (btnWishlist.getTag() != null && btnWishlist.getTag().toString()
                         .equalsIgnoreCase(TAG_INBOX)) {
                     searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
-                    RouteManager.route(context, ApplinkConst.INBOX);
+                    getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                            .gotoInboxMainPage(getContext()));
                 } else {
                     searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
                     getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
