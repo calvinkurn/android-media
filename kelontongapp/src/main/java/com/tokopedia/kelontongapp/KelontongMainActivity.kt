@@ -75,13 +75,13 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         btnTryAgain.setOnClickListener { loadWebViewPage() }
     }
 
-//    fun onReceivedErrorView() {
-//        setContentView(R.layout.activity_no_internet)
-//        findViewById<TextView>(R.id.tv_msg_medium).visibility = View.GONE
-//        findViewById<TextView>(R.id.tv_msg_large).visibility = View.VISIBLE
-//        val btnTryAgain = findViewById<Button>(R.id.btn_retry)
-//        btnTryAgain.setOnClickListener { loadWebViewPage() }
-//    }
+    fun onReceivedErrorView() {
+        setContentView(R.layout.activity_no_internet)
+        findViewById<TextView>(R.id.tv_msg_medium).visibility = View.GONE
+        findViewById<TextView>(R.id.tv_msg_large).visibility = View.VISIBLE
+        val btnTryAgain = findViewById<Button>(R.id.btn_retry)
+        btnTryAgain.setOnClickListener { loadWebViewPage() }
+    }
 
     private fun initializeWebview() {
         webView = findViewById(R.id.webview)

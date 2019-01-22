@@ -57,7 +57,9 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
         super.onReceivedError(view, request, error)
-        // handle crashlitics
+        if (activity is KelontongMainActivity) {
+            activity.onReceivedErrorView()
+        }
     }
 
     fun checkPermission(): Boolean {
