@@ -377,7 +377,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         @Override
                         public Observable<InputAWBRequest> call(ShippingParamsPostModel shippingParamsPostModel) {
                             for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
-                                imageList.add(attachment.imagePath);
+                                imageList.add(attachment.picObj);
                             awbRequest.setPictures(imageList);
                             return Observable.just(awbRequest);
                         }
