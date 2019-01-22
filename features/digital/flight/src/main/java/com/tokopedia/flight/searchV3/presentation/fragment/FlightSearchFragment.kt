@@ -254,7 +254,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
-        if (!flightSearchPassData.isOneWay && !adapter.isContainData) {
+        if (!flightSearchPassData.isOneWay && !adapter.isLoading
+                && !adapter.isContainData) {
             adapter.addElement(FlightSearchTitleRouteViewModel(getSearchRouteTitle()))
         }
 
