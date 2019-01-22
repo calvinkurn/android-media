@@ -30,7 +30,7 @@ public class UpdateCartIntentService extends IntentService {
     public static final String EXTRA_CART_ITEM_DATA_LIST = "EXTRA_CART_ITEM_DATA_LIST";
 
     private UpdateCartUseCase updateCartUseCase;
-    private UserSessionInterface userSession;
+    private com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
 
     public UpdateCartIntentService() {
         super(UpdateCartIntentService.class.getSimpleName());
