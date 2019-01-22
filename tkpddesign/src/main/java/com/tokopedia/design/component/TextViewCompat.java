@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatTextView;
@@ -145,6 +146,13 @@ public class TextViewCompat extends AppCompatTextView {
                 drawableTop = AppCompatResources.getDrawable(context, drawableTopId);
         }
         setCompoundDrawablesWithIntrinsicBounds(drawableLeft, drawableTop, drawableRight, drawableBottom);
+    }
+
+    public void setDrawableRight(@DrawableRes int drawableRight){
+        if (drawableRight != -1){
+            Drawable drawable = AppCompatResources.getDrawable(getContext(), drawableRight);
+            setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+        }
     }
 
 

@@ -24,6 +24,8 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.credit.history.view.adapter.TopAdsCreditHistoryTypeFactory
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_topads_credit_history.*
@@ -40,6 +42,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
     companion object {
         private const val MAX_RANGE_DATE = 30
+        private const val REQUEST_CODE_SET_AUTO_TOPUP = 1
         fun createInstance() = TopAdsCreditHistoryFragment()
     }
 
@@ -66,6 +69,15 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
             is Success -> onSuccessGetCredit(it.data)
             is Fail -> onErrorGetCredit(it.throwable)
         } })
+        viewModel.getAutoTopUpStatus.observe(this, android.arch.lifecycle.Observer { when(it) {
+            is Success -> onSuccessGetAutoTopUpStatus(it.data)
+            is Fail -> {}
+        } })
+    }
+
+    private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
+        card_auto_topup_status.visibility = View.VISIBLE
+        auto_topup_status.text = data.statusDesc
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,17 +87,37 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getRecyclerView(view).addItemDecoration(DividerItemDecoration(activity))
+        card_auto_topup_status.setOnClickListener { gotoAutoTopUp() }
         selected_date.setOnClickListener { onDateClicked() }
         app_bar_layout.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
+        viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+    }
+
+    private fun gotoAutoTopUp() {
+        activity?.let {
+            startActivityForResult(TopAdsAutoTopUpActivity.createInstance(it), REQUEST_CODE_SET_AUTO_TOPUP)
+        }
+    }
+
+    private fun sendResultIntentOk() {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent())
+        }
     }
 
     override fun onDestroyView() {
         datePickerViewModel.dateRange.removeObservers(this)
         viewModel.creditsHistory.removeObservers(this)
+        viewModel.getAutoTopUpStatus.removeObservers(this)
         super.onDestroyView()
     }
 
     override fun hasInitialSwipeRefresh() = true
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+    }
 
     override fun getEmptyDataViewModel() = EmptyModel().apply { contentRes = R.string.top_ads_no_credit_history }
 
@@ -166,6 +198,9 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
                 datePickerViewModel.saveSelectionDatePicker(selectionType, lastSelection)
                 datePickerViewModel.saveDate(Date(sDate), Date(eDate))
             }
+        } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK){
+            sendResultIntentOk()
+            viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
         }
     }
 
@@ -194,7 +229,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     }
 
     override fun onDestroy() {
-        viewModel.clearJob()
+        viewModel.clear()
         super.onDestroy()
     }
 }
