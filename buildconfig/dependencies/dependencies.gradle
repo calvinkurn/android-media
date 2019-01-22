@@ -6,7 +6,7 @@ ext {
     buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.2.40"
+    kotlinVersion = "1.2.71"
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
@@ -30,6 +30,8 @@ ext {
     roomVersion = '1.1.1'
 
     JunitVersion = '4.12'
+    JunitJupiterVersion = '5.1.1'
+    MockkVersion = '1.9.kotlin12'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
 
@@ -106,7 +108,7 @@ ext {
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.2.2@aar",
             hockeyApp   : "net.hockeyapp.android:HockeySDK:4.1.3",
-            anrWatchDogs: "com.github.anrwatchdog:anrwatchdog:1.1.+"
+            anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 
     analyticsDependencies = [
@@ -121,14 +123,6 @@ ext {
     deeplinkDispatchDependencies = [
             deeplinkDispatch         : "com.airbnb:deeplinkdispatch:${deeplinkDispatchVersion}",
             deeplinkDispatchProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkDispatchVersion}"
-    ]
-
-    apolloDependencies = [
-            apolloPlugin        : "com.apollographql.apollo:gradle-plugin:$apolloVersion",
-            apolloAndroidSupport: "com.apollographql.apollo:apollo-android-support:$apolloVersion",
-            apolloRuntime       : "com.apollographql.apollo:apollo-runtime:$apolloVersion",
-            apolloRxSupport     : "com.apollographql.apollo:apollo-rx-support:$apolloVersion",
-            apolloRx2Support    : "com.apollographql.apollo:apollo-rx2-support:$apolloVersion",
     ]
 
     miscDependencies = [
@@ -151,11 +145,11 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
-            hansel                : "io.hansel.preprocessor:preprocessor:7.0.4",
+            hansel                : "io.hansel.preprocessor:preprocessor:7.0.8",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -165,6 +159,9 @@ ext {
 
     testDependencies = [
             junit              : "junit:junit:4.12",
+            junitJupiterApi    : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
+            junitJupiterEngine : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
+            mockk              : "io.mockk:mockk:$MockkVersion",
             mockitorCore       : "org.mockito:mockito-core:1.10.19",
             uiautomator        : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon              : 'com.squareup.spoon:spoon-client:1.6.4',

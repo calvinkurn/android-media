@@ -84,9 +84,12 @@ public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<Depa
 
     @Override
     public void loadData(int page) {
-        List<DepartureStat> airlineStatList = listener.getFlightSearchStatisticModel().getDepartureTimeStatList();
-        renderList(airlineStatList);
+        if (listener != null && listener.getFlightSearchStatisticModel() != null) {
+            List<DepartureStat> airlineStatList = listener.getFlightSearchStatisticModel().getDepartureTimeStatList();
+            renderList(airlineStatList);
+        }
     }
+
 
     @Override
     protected FlightFilterDepartureTimeAdapterTypeFactory getAdapterTypeFactory() {

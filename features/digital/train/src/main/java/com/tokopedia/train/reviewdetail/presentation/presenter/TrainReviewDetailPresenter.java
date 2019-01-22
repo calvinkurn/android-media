@@ -77,9 +77,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                             -> {
                         String passengerType = null;
                         if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT) {
-                            passengerType = "Dewasa";
+                            passengerType = getView().getPassengerTypeAdult();
                         } else if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.INFANT) {
-                            passengerType = "Infant";
+                            passengerType = getView().getPassengerTypeChild();
                         }
                         return new TrainReviewPassengerInfoViewModelBuilder()
                                 .name(departureTrainPaxPassenger.getName())
@@ -102,9 +102,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     .map(departureTrainPaxPassenger -> {
                         String passengerType = null;
                         if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT) {
-                            passengerType = "Dewasa";
+                            passengerType = getView().getPassengerTypeAdult();
                         } else if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.INFANT) {
-                            passengerType = "Bayi";
+                            passengerType = getView().getPassengerTypeChild();
                         }
                         return new TrainReviewPassengerInfoViewModelBuilder()
                                 .name(departureTrainPaxPassenger.getName())

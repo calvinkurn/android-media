@@ -36,7 +36,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -91,6 +89,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @BindView(R2.id.tv_count_current)
     TextView currentRes;
 
+
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
     private LinearLayoutManager layoutManager;
@@ -123,6 +122,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
         edMessage.getText().clear();
+        setSubmitButtonEnabled(false);
 
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
@@ -160,6 +160,11 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvIdNum.setVisibility(View.VISIBLE);
         } else
             tvIdNum.setVisibility(View.GONE);
+        if(!TextUtils.isEmpty(ticketDetail.getInvoice())){
+            viewTransaction.setText(ticketDetail.getInvoice());
+            viewTransaction.setVisibility(View.VISIBLE);
+        } else
+            viewTransaction.setVisibility(View.GONE);
 
         if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
             detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(), ticketDetail.isNeedAttachment(),
@@ -175,6 +180,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void updateAddComment() {
         edMessage.getText().clear();
+        setSubmitButtonEnabled(false);
         imageUploadAdapter.clearAll();
         imageUploadAdapter.notifyDataSetChanged();
         rvSelectedImages.setVisibility(View.GONE);
@@ -224,6 +230,11 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     int getMenuRes() {
         return R.menu.contactus_menu_details;
+    }
+
+    @Override
+    int getBottomSheetLayoutRes() {
+        return R.layout.layout_bad_csat;
     }
 
     @Override
@@ -291,13 +302,8 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
-        if (!isCustomReason)
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
-        else {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendCustomReason(edMessage.getText().toString().trim());
-            isCustomReason = false;
-            ivUploadImg.setVisibility(View.VISIBLE);
-        }
+        ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
+        edMessage.setHint(R.string.type_here);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickSubmitReply,
@@ -390,7 +396,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void askCustomReason() {
         ivUploadImg.setVisibility(View.GONE);
         rvSelectedImages.setVisibility(View.GONE);
-        edMessage.clearComposingText();
+        edMessage.getText().clear();
+        setSubmitButtonEnabled(false);
+        edMessage.setHint(R.string.type_here);
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,

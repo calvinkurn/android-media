@@ -1,16 +1,10 @@
 package com.tokopedia.tokocash.activation.presentation.fragment;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,26 +27,16 @@ import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.activation.presentation.contract.RequestOtpTokoCashContract;
 import com.tokopedia.tokocash.activation.presentation.presenter.RequestOTPWalletPresenter;
-import com.tokopedia.tokocash.activation.presentation.util.IncomingSmsReceiver;
-import com.tokopedia.tokocash.activation.presentation.util.RequestPermissionUtil;
 import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
 /**
  * Created by nabillasabbaha on 7/24/17.
  */
 
-@RuntimePermissions
 public class RequestOTPWalletFragment extends BaseDaggerFragment implements RequestOtpTokoCashContract.View {
 
     private static final String FORMAT = "%02d";
@@ -72,7 +56,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
     private LocalCacheHandler cacheHandler;
     private CountDownTimer countDownTimer;
     private ProgressBar progressBar;
-    private IncomingSmsReceiver incomingSmsReceiver;
+//    private IncomingSmsReceiver incomingSmsReceiver;
 
     @Inject
     RequestOTPWalletPresenter presenter;
@@ -106,9 +90,9 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
         }
 
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_PHONE_VERIF_TIMER);
-        incomingSmsReceiver = new IncomingSmsReceiver();
-        incomingSmsReceiver.setListener(getReceiverSMSListener());
-        incomingSmsReceiver.registerSmsReceiver(getActivity());
+//        incomingSmsReceiver = new IncomingSmsReceiver();
+//        incomingSmsReceiver.setListener(getReceiverSMSListener());
+//        incomingSmsReceiver.registerSmsReceiver(getActivity());
 
         listener.setTitlePage(getResources().getString(R.string.tokocash_toolbar_verification));
         walletPhoneNumber.setText(presenter.getUserPhoneNumber());
@@ -118,44 +102,44 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
     @Override
     public void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            showCheckSMSPermission();
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            showCheckSMSPermission();
+//        }
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @TargetApi(Build.VERSION_CODES.M)
-    private void showCheckSMSPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED
-                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
-            new android.support.v7.app.AlertDialog.Builder(getActivity())
-                    .setMessage(
-                            RequestPermissionUtil
-                                    .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
-                    )
-                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            RequestOTPWalletFragmentPermissionsDispatcher
-                                    .checkSmsPermissionWithCheck(RequestOTPWalletFragment.this);
-
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            RequestPermissionUtil.onPermissionDenied(getActivity(),
-                                    Manifest.permission.RECEIVE_SMS);
-                        }
-                    })
-                    .show();
-        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
-            RequestOTPWalletFragmentPermissionsDispatcher
-                    .checkSmsPermissionWithCheck(RequestOTPWalletFragment.this);
-        }
-    }
+//
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    @TargetApi(Build.VERSION_CODES.M)
+//    private void showCheckSMSPermission() {
+//        if (ContextCompat.checkSelfPermission(getActivity(),
+//                Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED
+//                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
+//            new android.support.v7.app.AlertDialog.Builder(getActivity())
+//                    .setMessage(
+//                            RequestPermissionUtil
+//                                    .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
+//                    )
+//                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            RequestOTPWalletFragmentPermissionsDispatcher
+//                                    .checkSmsPermissionWithCheck(RequestOTPWalletFragment.this);
+//
+//                        }
+//                    })
+//                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            RequestPermissionUtil.onPermissionDenied(getActivity(),
+//                                    Manifest.permission.RECEIVE_SMS);
+//                        }
+//                    })
+//                    .show();
+//        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
+//            RequestOTPWalletFragmentPermissionsDispatcher
+//                    .checkSmsPermissionWithCheck(RequestOTPWalletFragment.this);
+//        }
+//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -277,48 +261,48 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
         inputOtp.requestFocus();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RequestOTPWalletFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                RequestOTPWalletFragment.this, requestCode, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        RequestOTPWalletFragmentPermissionsDispatcher.onRequestPermissionsResult(
+//                RequestOTPWalletFragment.this, requestCode, grantResults);
+//    }
 
-    private IncomingSmsReceiver.ReceiveSMSListener getReceiverSMSListener() {
-        return new IncomingSmsReceiver.ReceiveSMSListener() {
-            @Override
-            public void onReceiveOTP(String otpCode) {
-                validateCodeOTP(otpCode);
-            }
-        };
-    }
-
-    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
-    public void validateCodeOTP(String otpCode) {
-        inputOtp.setText(otpCode);
-        verificationButton.performClick();
-    }
-
-    @OnShowRationale(Manifest.permission.RECEIVE_SMS)
-    void showRationaleForReadSms(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.RECEIVE_SMS);
-    }
-
-    @OnPermissionDenied(Manifest.permission.RECEIVE_SMS)
-    void showDeniedForReadSms() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.RECEIVE_SMS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.RECEIVE_SMS)
-    void showNeverAskForReadSms() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.RECEIVE_SMS);
-    }
-
-    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
-    public void checkSmsPermission() {
-
-    }
+//    private IncomingSmsReceiver.ReceiveSMSListener getReceiverSMSListener() {
+//        return new IncomingSmsReceiver.ReceiveSMSListener() {
+//            @Override
+//            public void onReceiveOTP(String otpCode) {
+////                validateCodeOTP(otpCode);
+//            }
+//        };
+//    }
+//
+//    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
+//    public void validateCodeOTP(String otpCode) {
+//        inputOtp.setText(otpCode);
+//        verificationButton.performClick();
+//    }
+//
+//    @OnShowRationale(Manifest.permission.RECEIVE_SMS)
+//    void showRationaleForReadSms(final PermissionRequest request) {
+//        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.RECEIVE_SMS);
+//    }
+//
+//    @OnPermissionDenied(Manifest.permission.RECEIVE_SMS)
+//    void showDeniedForReadSms() {
+//        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.RECEIVE_SMS);
+//    }
+//
+//    @OnNeverAskAgain(Manifest.permission.RECEIVE_SMS)
+//    void showNeverAskForReadSms() {
+//        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.RECEIVE_SMS);
+//    }
+//
+//    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
+//    public void checkSmsPermission() {
+//
+//    }
 
     @Override
     public void onDestroyView() {
@@ -327,8 +311,8 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
             countDownTimer.cancel();
             countDownTimer = null;
         }
-        if (incomingSmsReceiver != null)
-            getActivity().unregisterReceiver(incomingSmsReceiver);
+//        if (incomingSmsReceiver != null)
+//            getActivity().unregisterReceiver(incomingSmsReceiver);
 
         cacheHandler = null;
         presenter.onDestroyView();

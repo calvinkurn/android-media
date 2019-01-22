@@ -123,6 +123,10 @@ public class ProductInfo implements Parcelable {
     @Expose
     private Boolean hasVariant = false;
 
+    @SerializedName("is_cod")
+    @Expose
+    private boolean isCod = false;
+
     private String productStockWording;
     private boolean alwaysAvailable;
 
@@ -387,6 +391,14 @@ public class ProductInfo implements Parcelable {
         this.hasVariant = hasVariant;
     }
 
+    public boolean isCod() {
+        return isCod;
+    }
+
+    public void setCod(boolean cod) {
+        isCod = cod;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -423,6 +435,7 @@ public class ProductInfo implements Parcelable {
         productPriceUnformatted = in.readByte() == 0x00 ? null : in.readInt();
         byte hasVariantVal = in.readByte();
         hasVariant = hasVariantVal == 0x02 ? null : hasVariantVal != 0x00;
+        isCod = in.readInt() == 1;
         productStockWording = in.readString();
         limitedStock = in.readByte() != 0x00;
     }
@@ -492,6 +505,7 @@ public class ProductInfo implements Parcelable {
         } else {
             dest.writeByte((byte) (hasVariant ? 0x01 : 0x00));
         }
+        dest.writeInt(isCod? 1 : 0);
         dest.writeString(productStockWording);
         dest.writeByte((byte) (limitedStock ? 0x01 : 0x00));
     }

@@ -107,17 +107,4 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         adsWidgetView.setDisplayMode(mode);
     }
 
-    @Override
-    public void onAddWishList(int position, Data data) {
-        if(itemClickListener!=null){
-            com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem
-                    productItem = new com.tokopedia.discovery.newdiscovery.search.
-                    fragment.product.viewmodel.ProductItem();
-            productItem.setProductID(data.getProduct().getId());
-            productItem.setWishlisted(data.getProduct().isWishlist());
-            productItem.setProductWishlistUrl(data.getProductWishlistUrl());
-            itemClickListener.onWishlistButtonClicked(productItem);
-        }
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.listener;
 
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.RefreshHandler;
@@ -100,6 +101,8 @@ public class InboxChatContract {
         void saveResult();
 
         void reloadNotifDrawer();
+
+        void handleBroadcastChatMetaData(TopChatBlastSellerMetaData topChatBlastSellerMetaData);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

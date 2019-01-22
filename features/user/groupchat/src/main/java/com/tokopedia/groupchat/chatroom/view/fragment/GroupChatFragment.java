@@ -33,6 +33,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
@@ -59,6 +61,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
@@ -119,6 +123,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private Handler sprintSaleHandler;
     private Runnable sprintSaleRunnable;
+    private CloseableBottomSheetDialog pinnedMessageDialog;
 
     int newMessageCounter;
 
@@ -170,20 +175,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             @Override
             public void onClick(View v) {
                 scrollToBottom();
-            }
-        });
-        CloseableBottomSheetDialog channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
-
-                if (bottomSheet != null) {
-                    BottomSheetBehavior.from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
             }
         });
         login = view.findViewById(R.id.login);
@@ -309,7 +300,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             }
         });
     }
-
 
     private void goToLogin() {
         startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
@@ -473,9 +463,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
-        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        View view = createContentView(pinnedMessage);
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(getActivity(), () -> {
+            ((GroupChatContract.View) getActivity()).showOverlayDialogOnScreen();
+        }, null);
+
+        View view = createPinnedMessageView(pinnedMessage);
+        pinnedMessageDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
@@ -489,12 +482,19 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             }
         });
-        dialog.setContentView(view, "Pinned Chat");
+        pinnedMessageDialog.setContentView(view, "Pinned Chat");
         view.setOnClickListener(null);
-        dialog.show();
+        pinnedMessageDialog.show();
     }
 
-    private View createContentView(final PinnedMessageViewModel pinnedMessage) {
+    public boolean isPinnedMessageShowing() {
+        if (pinnedMessageDialog != null) {
+            return pinnedMessageDialog.isShowing();
+        }
+        return false;
+    }
+
+    private View createPinnedMessageView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
@@ -516,7 +516,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         view.findViewById(R.id.thumbnail).setVisibility(View.GONE);
         return view;
     }
-
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
@@ -874,7 +873,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onVoteComponentClicked(String type, String name) {
         if (getActivity() instanceof GroupChatActivity) {
-            ((GroupChatActivity) getActivity()).moveToVoteFragment();
+            ((GroupChatActivity) getActivity()).transitionToTabVote();
         }
         analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name);
     }
@@ -1063,6 +1062,5 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public List<Visitable> getList() {
         return adapter.getList();
     }
-
 
 }

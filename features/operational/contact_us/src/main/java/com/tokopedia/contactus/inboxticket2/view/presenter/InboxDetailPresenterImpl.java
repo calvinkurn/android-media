@@ -28,7 +28,6 @@ import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
-import com.tokopedia.contactus.inboxticket2.view.adapter.BadReasonAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
@@ -76,7 +75,6 @@ public class InboxDetailPresenterImpl
     private PostMessageUseCase postMessageUseCase;
     private PostMessageUseCase2 postMessageUseCase2;
     private PostRatingUseCase postRatingUseCase;
-    private BadReasonAdapter badReasonAdapter;
     private String NO = "NO";
     private String error;
     private static final int MESSAGE_WRONG_DIMENSION = 0;
@@ -87,6 +85,7 @@ public class InboxDetailPresenterImpl
     private int next;
     private Utils utils;
     private CreatedBy userData;
+    private ArrayList<String> reasonList;
 
     public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase,
                                     PostMessageUseCase messageUseCase,
@@ -101,6 +100,7 @@ public class InboxDetailPresenterImpl
     @Override
     public void attachView(InboxBaseContract.InboxBaseView view) {
         mView = (InboxDetailContract.InboxDetailView) view;
+        reasonList = new ArrayList<>(Arrays.asList(mView.getActivity().getResources().getStringArray(R.array.bad_reason_array)));
         getTicketDetails(mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID));
     }
 
@@ -125,9 +125,9 @@ public class InboxDetailPresenterImpl
     }
 
     @Override
-    public BottomSheetDialogFragment getBottomFragment() {
-        InboxBottomSheetFragment bottomFragment = new InboxBottomSheetFragment();
-        bottomFragment.setAdapter(getBadRatingAdapter(), R.string.select_bad_reason);
+    public BottomSheetDialogFragment getBottomFragment(int resID) {
+        InboxBottomSheetFragment bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID);
+        bottomFragment.setPresenter(this);
         return bottomFragment;
     }
 
@@ -465,21 +465,16 @@ public class InboxDetailPresenterImpl
 
     @Override
     public void setBadRating(int position) {
-        mView.hideBottomFragment();
-        if (position + 1 > 0 && position + 1 < 7) {
-            postRatingUseCase.setQueryMap(rateCommentID, NO, 1, position + 1, "");
+        if (position > 0 && position < 7) {
+            postRatingUseCase.setQueryMap(rateCommentID, NO, 1, position, "");
             mView.showProgressBar();
             mView.toggleTextToolbar(View.VISIBLE);
             sendRating();
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickReason,
-                    badReasonAdapter.getReason(position));
-        } else {
-            mView.askCustomReason();
+                    reasonList.get(position - 1));
         }
-
-
     }
 
     @Override
@@ -661,6 +656,8 @@ public class InboxDetailPresenterImpl
                 InboxDataResponse ticketListResponse = res1.getData();
                 RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
                 if (ratingResponse.getIsSuccess() > 0) {
+                    mView.hideBottomFragment();
+                    mView.showMessage(mView.getActivity().getString(R.string.thanks_input));
                     if (mTicketDetail.getStatus().equals(getUtils().OPEN) || mTicketDetail.getStatus().equals(getUtils().SOLVED)) {
                         mView.toggleTextToolbar(View.VISIBLE);
                     } else {
@@ -673,14 +670,6 @@ public class InboxDetailPresenterImpl
                 }
             }
         });
-    }
-
-    private BadReasonAdapter getBadRatingAdapter() {
-        if (badReasonAdapter == null) {
-            List<String> badReasons = new ArrayList<>(Arrays.asList(mView.getActivity().getResources().getStringArray(R.array.bad_reason_array)));
-            badReasonAdapter = new BadReasonAdapter(badReasons, this);
-        }
-        return badReasonAdapter;
     }
 
     private void search(String searchText) {

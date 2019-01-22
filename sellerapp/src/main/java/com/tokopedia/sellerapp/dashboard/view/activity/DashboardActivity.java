@@ -6,12 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.core.ManageGeneral;
+import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -20,9 +19,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
-
-//import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
-//import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
 /**
  * Created by nathan on 9/5/17.
@@ -90,7 +86,9 @@ public class DashboardActivity extends DrawerPresenterActivity
     protected void onResume() {
         super.onResume();
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        NotificationModHandler.showDialogNotificationIfNotShowing(this);
+        NotificationModHandler.showDialogNotificationIfNotShowing(this,
+                ManageGeneral.getCallingIntent(this, ManageGeneral.TAB_POSITION_MANAGE_APP)
+        );
     }
 
     @Override

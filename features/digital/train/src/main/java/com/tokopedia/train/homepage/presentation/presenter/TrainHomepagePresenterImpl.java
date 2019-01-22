@@ -1,6 +1,7 @@
 package com.tokopedia.train.homepage.presentation.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -269,11 +270,11 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         } else if (viewModel.getDestinationStation() == null) {
             getView().showDestinationStationEmptyError(R.string.train_homepage_destination_should_not_empty_error_message);
             isValid = false;
-        } else if ((viewModel.getOriginStation().getStationCode() != null &&
-                viewModel.getDestinationStation().getStationCode() != null &&
+        } else if ((!TextUtils.isEmpty(viewModel.getOriginStation().getStationCode()) &&
+                !TextUtils.isEmpty(viewModel.getDestinationStation().getStationCode()) &&
                 viewModel.getOriginStation().getStationCode().equalsIgnoreCase(viewModel.getDestinationStation().getStationCode())) ||
-                (viewModel.getOriginStation().getStationCode() == null &&
-                        viewModel.getDestinationStation().getStationCode() == null &&
+                (TextUtils.isEmpty(viewModel.getOriginStation().getStationCode()) &&
+                        TextUtils.isEmpty(viewModel.getDestinationStation().getStationCode()) &&
                         viewModel.getOriginStation().getCityName().equalsIgnoreCase(viewModel.getDestinationStation().getCityName()))
                 ) {
             getView().showOriginAndDestinationShouldNotSameError(R.string.train_homepage_origin_destination_should_not_same_error_message);
@@ -327,7 +328,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         if (passData.getAdult() > 0) {
             passengerFmt = passData.getAdult() + " " + getView().getActivity().getString(R.string.kai_homepage_adult_passenger);
             if (passData.getInfant() > 0) {
-                passengerFmt += ", " + passData.getInfant() + " " + getView().getActivity().getString(R.string.kai_homepage_adult_infant);
+                passengerFmt += ", " + passData.getInfant() + " " + getView().getActivity().getString(R.string.kai_homepage_infant_passenger);
             }
         }
         return passengerFmt;

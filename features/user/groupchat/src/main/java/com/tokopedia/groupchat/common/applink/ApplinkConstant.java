@@ -13,4 +13,5 @@ public class ApplinkConstant {
     public static final String GROUPCHAT_ROOM_VIA_LIST = "tokopedia://groupchat/list/{channel_id}";
     public static final String GROUPCHAT_VOTE_VIA_LIST = "tokopedia://groupchat/list/{channel_id}/vote";
     public static final String PARAM_CHANNEL_ID = "channel_id";
+    public static final String PARAM_TAB = "tab";
 }

@@ -53,6 +53,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         linearLayoutManager = new LinearLayoutManager(context);
         container = (LinearLayout) itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);
+        adapter.setEnableWishlist(true);
         adapter.setItemClickListener(itemClickListener);
         recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
                 .getDimensionPixelSize(R.dimen.dp_16)));

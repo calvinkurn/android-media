@@ -12,13 +12,11 @@ import java.util.List;
 
 public interface AdsView {
 
+    void initInjector();
+
     void initPresenter();
 
-    void setMaxItems(int items);
-
     void setDisplayMode(DisplayMode displayMode);
-
-    void loadTopAds();
 
     void displayAds(List<Item> list, int position);
 
@@ -28,4 +26,17 @@ public interface AdsView {
 
     void notifyShopClickListener(int position, Shop shop);
 
+    String getString(int resId);
+
+    void doLogin();
+
+    void notifyAdapter();
+
+    void showSuccessAddWishlist();
+
+    void showErrorAddWishlist();
+
+    void showSuccessRemoveWishlist();
+
+    void showErrorRemoveWishlist();
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -322,12 +323,10 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(Bundle stateBundle) {
-        int osVersion = android.os.Build.VERSION.SDK_INT;
-        if ( osVersion < Build.VERSION_CODES.N) {
-            super.onSaveInstanceState(stateBundle);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {

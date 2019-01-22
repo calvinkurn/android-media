@@ -33,7 +33,8 @@ ext {
     libraries = [
             analytics         : ":libraries:analytics",
             applink           : ":libraries:applink",
-            baseAdapter           : ":libraries:base_adapter",
+            baseAdapter       : ":libraries:base_adapter",
+            baseListSeller    : ":libraries:base_list_seller",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
             cacheManager      : ":libraries:cache_manager",
@@ -62,5 +63,8 @@ ext {
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
+            track             : ":track",
+            trackinterface    : ":trackinterface",
+            cmnotification    :":libraries:cm_push_notifications"
     ]
 }

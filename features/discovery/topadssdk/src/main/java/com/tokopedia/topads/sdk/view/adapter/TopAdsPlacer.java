@@ -1,12 +1,20 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.ObserverType;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -25,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author by errysuprayogi on 4/18/17.
  */
@@ -32,7 +42,6 @@ import java.util.List;
 public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsPlacer.class.getSimpleName();
-    private TopAdsPresenter presenter;
     private int ajustedPositionStart = 0;
     private int ajustedItemCount = 0;
     private int observerType;
@@ -50,13 +59,18 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     private static final int ROW_ADS_INDEX_FEED = 2;
+    private Context context;
+
+    @Inject
+    TopAdsPresenter presenter;
 
     public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
-        presenter = new TopAdsPresenter(context);
+        this.context = context;
         this.adapter = adapter;
         this.observer = observer;
         typeFactory.setItemClickListener(this);
+        initInjector();
         initPresenter();
     }
 
@@ -112,11 +126,20 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     @Override
+    public void initInjector() {
+        BaseMainApplication application = ((BaseMainApplication) context.getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
+    }
+
+    @Override
     public void initPresenter() {
         presenter.attachView(this);
     }
 
-    @Override
     public void setMaxItems(int items) {
         presenter.setMaxItems(items);
     }
@@ -169,7 +192,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         adsItems.clear();
     }
 
-    @Override
     public void loadTopAds() {
         presenter.getTopAdsParam().setAdsPosition(ajustedPositionStart == 0 ? ajustedPositionStart : getItemCount());
         presenter.getTopAdsParam().getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
@@ -309,12 +331,58 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if (adsItemClickListener != null) {
-            adsItemClickListener.onAddWishList(position, data);
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
     }
 
     public interface DataObserver {
         void onStreamLoaded(int type);
+    }
+
+    @Override
+    public String getString(int resId) {
+        return context.getString(resId);
+    }
+
+    @Override
+    public void doLogin() {
+        Intent intent = ((TopAdsRouter) context.getApplicationContext()).getLoginIntent(context);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void notifyAdapter() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showSuccessAddWishlist() {
+        SnackbarManager.makeGreen(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_success_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorAddWishlist() {
+        SnackbarManager.makeRed(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_error_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showSuccessRemoveWishlist() {
+        SnackbarManager.makeGreen(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_success_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorRemoveWishlist() {
+        SnackbarManager.makeRed(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_error_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
     }
 }

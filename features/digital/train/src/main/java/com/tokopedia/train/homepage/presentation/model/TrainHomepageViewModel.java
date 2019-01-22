@@ -152,7 +152,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         TrainStationAndCityViewModel trainStationViewModel = isDeparture ? originStation : destinationStation;
 
         SpannableStringBuilder text = new SpannableStringBuilder();
-        if (trainStationViewModel.getStationCode() == null) {
+        if (TextUtils.isEmpty(trainStationViewModel.getStationCode())) {
             text.append(trainStationViewModel.getCityName());
             return makeBold(context, text);
         } else {
@@ -160,7 +160,7 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         }
         makeBold(context, text);
         String cityName = trainStationViewModel.getCityName();
-        if (!TextUtils.isEmpty(cityName) && trainStationViewModel.getStationCode() != null) {
+        if (!TextUtils.isEmpty(cityName) && !TextUtils.isEmpty(trainStationViewModel.getStationCode())) {
             SpannableStringBuilder cityNameText = new SpannableStringBuilder(cityName);
             makeSmall(cityNameText);
             text.append("\n");

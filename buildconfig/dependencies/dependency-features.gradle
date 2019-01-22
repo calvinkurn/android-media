@@ -16,6 +16,7 @@ ext {
     tkpdExploreVersion = '2.22'
     tkpdEventVersion = '2.22'
     tkpdFeedVersion = '2.22'
+    tkpdFeedComponentVersion = '2.22'
     tkpdFlightVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -62,6 +63,8 @@ ext {
     promoCheckoutVersion = '2.22'
     tkpdUserIdentification = '2.22'
     tkpdUserIdentificationCommon = '2.22'
+    tkpdTravelVersion = '2.22'
+
 
     //SCOPE TRANSACTION
     groupIdTransaction = 'com.tokopedia.transaction'
@@ -106,6 +109,7 @@ ext {
             explore                 : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                  : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                    : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            feedComponent           : "com.tokopedia.feedcomponent:feedComponent:${tkpdFeedComponentVersion}",
             affiliate               : "com.tokopedia.affiliate:affiliate:${tkpdAffiliateVersion}",
             affiliateCommon         : "com.tokopedia.affiliatecommon:affiliatecommon:${tkpdAffiliateCommonVersion}",
             flight                  : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
@@ -121,8 +125,8 @@ ext {
             loginphone              : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister           : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon           : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
-            loyalty                     : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
-            loyaltyCommon               : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
+            loyalty                 : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            loyaltyCommon           : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
             mitraToppers            : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             payment                 : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             paymentSetting          : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
@@ -156,6 +160,7 @@ ext {
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon          : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
+            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -163,7 +168,12 @@ ext {
             nps                           : ":features:common:nps",
             developerOptions              : ":features:common:developer_options",
 
+            broadcastMessage              : ":features:communication:broadcast_message",
+//            broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
+            broadcastMessageCommon        : ":features:communication:broadcast_message_common",
+
             feed                          : ":features:content:feed",
+            feedComponent                 : ":features:content:feed_component",
             explore                       : ":features:content:explore",
             interestPick                  : ":features:content:interest_pick",
             kol                           : ":features:content:kol",
@@ -184,13 +194,18 @@ ext {
             train                         : ":features:digital:train",
 
             home                          : ":features:discovery:home",
+            //home                          : ":features:discovery:home_no_op",
             recentview                    : ":features:discovery:recentview",
+            //recentview                    : ":features:discovery:recentview_no_op",
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
 
+            homecredit                    : ":features:fintech:home_credit",
             instantLoan                   : ":features:fintech:instant_loan",
+//            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                  : ":features:fintech:mitra_toppers",
             saldodetails                  : ":features:fintech:saldo_details",
+//            saldodetails                  : ":features:fintech:saldo_details_no_op",
             tokoCash                      : ":features:fintech:tokocash",
 
             accountHome                   : ":features:home:account-home",
@@ -199,21 +214,15 @@ ext {
             searchbar                     : ":features:home:searchbar",
 
             challenges                    : ":features:im:challenges",
-
-
+//            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                  : ":features:logistic:logisticdata",
-//            logisticdata                : ":features:logistic:logisticdata_no_op",
             logisticanalytics             : ":features:logistic:logisticanalytics",
-//            logisticanalytics           : ":features:logistic:logisticanalytics_no_op",
             logisticinputreceiptshipment  : ":features:logistic:logisticinputreceiptshipment",
 //            logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment_no_op",
             logisticlistaddress           : ":features:logistic:logisticlistaddress",
-//            logisticlistaddress         : ":features:logistic:logisticlistaddress_no_op",
             logisticaddaddress            : ":features:logistic:logisticaddaddress",
-//            logisticaddaddress          : ":features:logistic:logisticaddaddress_no_op",
             logisticCommon                : ":features:logistic:logisticcommon",
-//            logisticCommon              : ":features:logistic:logisticcommon_no_op",
             tracking                      : ":features:logistic:tracking",
 //            tracking                    : ":features:logistic:tracking_no_op",
             logisticuploadawb             : ":features:logistic:logisticuploadawb",
@@ -221,7 +230,6 @@ ext {
             logisticgeolocation           : ":features:logistic:logisticgeolocation",
 //            logisticgeolocation         : ":features:logistic:logisticgeolocation_no_op",
             logisticdistrictrecommendation: ":features:logistic:district_recommendation",
-//            logisticdistrictrecommendation      : ":features:logistic:district_recommendation_no_op",
             logisticinsurance             : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
 
@@ -231,14 +239,14 @@ ext {
             goldMerchantResource          : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe         : ":features:merchant:gold_merchant_subscribe",
 //            goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe_no_op",
-            productDraftDatabase    : ":features:merchant:product_draft_database",
-            productManageItem       : ":features:merchant:product_manage_item",
-            productManageList       : ":features:merchant:product_manage_list",
-            productShare            : ":features:merchant:product_share",
-            reputation              : ":features:merchant:reputation",
-            reputationCommon        : ":features:merchant:reputation_common",
-            shopCommon              : ":features:merchant:shop_common",
-            shopOpen                : ":features:merchant:shop_open",
+            productDraftDatabase          : ":features:merchant:product_draft_database",
+            productManageItem             : ":features:merchant:product_manage_item",
+            productManageList             : ":features:merchant:product_manage_list",
+            productShare                  : ":features:merchant:product_share",
+            reputation                    : ":features:merchant:reputation",
+            reputationCommon              : ":features:merchant:reputation_common",
+            shopCommon                    : ":features:merchant:shop_common",
+            shopOpen                      : ":features:merchant:shop_open",
 //            shopOpen                    : ":features:merchant:shop_open_no_op",
             shopPage                      : ":features:merchant:shop_page",
 //            shopPage                    : ":features:merchant:shop_page_no_op",
@@ -246,6 +254,7 @@ ext {
 //            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
 
             contactUs                     : ":features:operational:contact_us",
+//            contactUs                     : ":features:operational:contact_us_no_op",
 
             payment                       : ":features:payment:payment",
 //            payment                     : ":features:payment:payment_no_op",
@@ -257,11 +266,14 @@ ext {
 
             gallery                       : ":features:product:gallery",
 
-            gamification           : ":features:promo:gamification",
-            merchantVoucher        : ":features:promo:merchant_voucher",
-            tokopoints             : ":features:promo:tokopoints",
-            promoCheckout           : ":features:promo:promo_checkout",
-            promoCheckoutCommon     : ":features:promo:promo_checkout_common",
+            gamification                  : ":features:promo:gamification",
+            merchantVoucher               : ":features:promo:merchant_voucher",
+            tokopoints                    : ":features:promo:tokopoints",
+            tokopointsNotification        : ":features:promo:tokopoints_notification",
+//            tokopoints             : ":features:promo:tokopoints_no_op",
+            tokopointsNotification        : ":features:promo:tokopoints_notification",
+            promoCheckout                 : ":features:promo:promo_checkout",
+            promoCheckoutCommon           : ":features:promo:promo_checkout_common",
 
             topAdsDashboard               : ":features:top_ads:top_ads_dashboard",
             //topAdsDashboard         : ":features:top_ads:top_ads_dashboard_no_op",
@@ -275,8 +287,8 @@ ext {
             transactionanalytics          : ":features:transaction:transactionanalytics",
             checkout                      : ":features:transaction:checkout",
             transactionInvoice            : ":features:transaction:transactioninvoice",
-            loyalty                     : ":features:promo:loyalty",
-            loyaltyCommon               : ":features:promo:loyalty_common",
+            loyalty                       : ":features:promo:loyalty",
+            loyaltyCommon                 : ":features:promo:loyalty_common",
 
             attachproduct                 : ":features:user:attachproduct",
             bankdb                        : ":features:user:bankdb",
@@ -290,6 +302,7 @@ ext {
             loginregister                 : ":features:user:loginregister",
             sessioncommon                 : ":features:user:sessioncommon",
             notifCenter                   : ":features:user:notifcenter",
+//            notifCenter                   : ":features:user:notifcenter_no_op",
             otp                           : ":features:user:otp",
             phoneVerification             : ":features:user:phoneverification",
             settingbank                   : ":features:user:settingbank",
@@ -308,6 +321,7 @@ ext {
             seller                        : ":tkpdseller",
             session                       : ":tkpdsession",
             transaction                   : ":tkpdtransaction",
-            transactioncommon             : ":tkpdtransaction-common"
+            transactioncommon             : ":tkpdtransaction-common",
+            commonTravel                  : ":features:digital:common_travel"
     ]
 }

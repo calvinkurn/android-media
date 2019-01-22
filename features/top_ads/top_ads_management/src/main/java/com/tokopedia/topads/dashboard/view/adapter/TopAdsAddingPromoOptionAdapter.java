@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsAddingPromoOptionViewHolder;
 import com.tokopedia.topads.dashboard.view.model.TopAdsAddingPromoOptionModel;

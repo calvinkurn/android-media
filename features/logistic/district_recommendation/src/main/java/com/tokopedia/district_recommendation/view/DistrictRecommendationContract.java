@@ -1,59 +1,37 @@
 package com.tokopedia.district_recommendation.view;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.district_recommendation.domain.model.Token;
 
-import java.util.ArrayList;
-
 /**
- * Created by Irfan Khoirul on 17/11/17.
+ * Created by Irfan Khoirul on 17/11/18.
  */
 
 public interface DistrictRecommendationContract {
 
-    interface View extends CustomerView {
-        Context getActivity();
-
-        void updateRecommendation();
-
-        void notifyUpdateAdapter();
-
-        void setInitialLoading();
-
-        void setLoadMoreLoading();
+    interface View extends BaseListViewListener<AddressViewModel> {
 
         void showLoading();
 
         void hideLoading();
 
-        void showMessage(String message);
+        void showGetListError(Throwable throwable);
 
-        void hideMessage();
+        void showNoResultMessage();
 
-        void showNoConnection(@NonNull String message);
+        void showInitialLoadMessage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void setToken(Token token);
 
-        void searchAddress(String keyword);
+        void loadData(String query, Token token, int page);
 
-        void searchNextIfAvailable(String keyword);
-
-        ArrayList<Address> getAddresses();
-
-        void clearData();
     }
 
     interface Constant {
         String INTENT_DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address";
         String INTENT_DATA_ADDRESS = "address";
         String ARGUMENT_DATA_TOKEN = "token";
-        String ARGUMENT_IS_FROM_MARKETPLACE_CART = "ARGUMENT_IS_FROM_MARKETPLACE_CART";
     }
 }

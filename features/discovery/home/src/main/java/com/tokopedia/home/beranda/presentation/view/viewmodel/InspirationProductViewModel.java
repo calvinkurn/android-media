@@ -13,9 +13,11 @@ public class InspirationProductViewModel {
     private String url;
     private int page;
     private String priceInt;
+    private String categoryBreadcrumb;
 
     public InspirationProductViewModel(String productId, String name, String price, String
-            imageSource, String url, int page, String priceInt, String recommendationType) {
+            imageSource, String url, int page, String priceInt, String recommendationType,
+                                       String categoryBreadcrumb) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -24,6 +26,7 @@ public class InspirationProductViewModel {
         this.page = page;
         this.priceInt = priceInt;
         this.recommedationType = recommendationType;
+        this.categoryBreadcrumb = categoryBreadcrumb;
     }
 
     public String getProductId() {
@@ -84,5 +87,13 @@ public class InspirationProductViewModel {
 
     public void setRecommedationType(String recommedationType) {
         this.recommedationType = recommedationType;
+    }
+
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
     }
 }

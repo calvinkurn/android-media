@@ -71,7 +71,12 @@ class VarianCourierSimulationView : BaseCustomView {
             showCourierRate(true)
             showShopLocationView(true)
             showShopDestination(true)
-            tv_courier_count.text = ratesModel.attributes.size.toString()
+          
+            when(productDetailData!!.shopInfo.shopShipments != null){
+                true -> tv_courier_count.text = productDetailData!!.shopInfo.shopShipments.size.toString()
+                false -> tv_courier_count.text = "-"
+            }
+
             tv_courier_est_cost.text = MethodChecker.fromHtml(ratesModel.texts.textMinPrice)
             tv_destination.text = ratesModel.texts.textDestination
             tv_shop_location.text = productDetailData!!.shopInfo.shopLocation;

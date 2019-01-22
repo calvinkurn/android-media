@@ -32,57 +32,10 @@ public class OrderDetailItemData implements Parcelable {
     private String priceUnformatted;
 
     private String weightUnformatted;
+    private String notes;
 
     public OrderDetailItemData() {
     }
-
-    protected OrderDetailItemData(Parcel in) {
-        productId = in.readString();
-        orderDetailId = in.readString();
-        itemName = in.readString();
-        itemQuantity = in.readString();
-        price = in.readString();
-        weight = in.readString();
-        description = in.readString();
-        imageUrl = in.readString();
-        currencyType = in.readInt();
-        currencyRate = in.readInt();
-        priceUnformatted = in.readString();
-        weightUnformatted = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productId);
-        dest.writeString(orderDetailId);
-        dest.writeString(itemName);
-        dest.writeString(itemQuantity);
-        dest.writeString(price);
-        dest.writeString(weight);
-        dest.writeString(description);
-        dest.writeString(imageUrl);
-        dest.writeInt(currencyType);
-        dest.writeInt(currencyRate);
-        dest.writeString(priceUnformatted);
-        dest.writeString(weightUnformatted);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<OrderDetailItemData> CREATOR = new Creator<OrderDetailItemData>() {
-        @Override
-        public OrderDetailItemData createFromParcel(Parcel in) {
-            return new OrderDetailItemData(in);
-        }
-
-        @Override
-        public OrderDetailItemData[] newArray(int size) {
-            return new OrderDetailItemData[size];
-        }
-    };
 
     public String getProductId() {
         return productId;
@@ -179,4 +132,62 @@ public class OrderDetailItemData implements Parcelable {
     public void setWeightUnformatted(String weightUnformatted) {
         this.weightUnformatted = weightUnformatted;
     }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.productId);
+        dest.writeString(this.orderDetailId);
+        dest.writeString(this.itemName);
+        dest.writeString(this.itemQuantity);
+        dest.writeString(this.price);
+        dest.writeString(this.weight);
+        dest.writeString(this.description);
+        dest.writeString(this.imageUrl);
+        dest.writeInt(this.currencyType);
+        dest.writeInt(this.currencyRate);
+        dest.writeString(this.priceUnformatted);
+        dest.writeString(this.weightUnformatted);
+        dest.writeString(this.notes);
+    }
+
+    protected OrderDetailItemData(Parcel in) {
+        this.productId = in.readString();
+        this.orderDetailId = in.readString();
+        this.itemName = in.readString();
+        this.itemQuantity = in.readString();
+        this.price = in.readString();
+        this.weight = in.readString();
+        this.description = in.readString();
+        this.imageUrl = in.readString();
+        this.currencyType = in.readInt();
+        this.currencyRate = in.readInt();
+        this.priceUnformatted = in.readString();
+        this.weightUnformatted = in.readString();
+        this.notes = in.readString();
+    }
+
+    public static final Creator<OrderDetailItemData> CREATOR = new Creator<OrderDetailItemData>() {
+        @Override
+        public OrderDetailItemData createFromParcel(Parcel source) {
+            return new OrderDetailItemData(source);
+        }
+
+        @Override
+        public OrderDetailItemData[] newArray(int size) {
+            return new OrderDetailItemData[size];
+        }
+    };
 }
