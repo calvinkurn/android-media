@@ -7,7 +7,7 @@ public class SearchBarConstant {
 
     public static final String CLICK_HOME_PAGE = "clickHomePage";
 
-    public static final String CLICK_WISHLIST = "clickWishlist";
+    public static final String CLICK_TOP_NAV = "clickTopNav";
 
     public static final String TOP_NAV = "top nav";
 
@@ -28,5 +28,7 @@ public class SearchBarConstant {
     public static final String EVENT_ACTION = "eventAction";
 
     public static final String EVENT_LABEL = "eventLabel";
+
+    public static final String KEY_OS_AB_TEST = "os_ab_test";
 
 }

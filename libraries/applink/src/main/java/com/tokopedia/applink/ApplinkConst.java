@@ -148,6 +148,7 @@ public interface ApplinkConst {
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
     String NOTIFICATION = "tokopedia://notification";
+    String INBOX = "tokopedia://inbox";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";

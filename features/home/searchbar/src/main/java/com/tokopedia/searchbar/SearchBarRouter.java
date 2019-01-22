@@ -12,13 +12,9 @@ public interface SearchBarRouter {
 
     AnalyticTracker getAnalyticTracker();
 
-    Intent getLoginIntent(Context context);
-
     Intent gotoWishlistPage(Context context);
 
-    Intent gotoNotificationPage(Context context);
-
-    Intent gotoQrScannerPage();
+    Intent gotoQrScannerPage(boolean needResult);
 
     Intent gotoSearchPage(Context context);
 }
