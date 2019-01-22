@@ -96,7 +96,7 @@ data class Reply(
         val msgId: Int = 0,
         @Expose
         @SerializedName("replyId")
-        val replyId: Int = 0,
+        val replyId: String,
         @Expose
         @SerializedName("senderId")
         val senderId: Int = 0,

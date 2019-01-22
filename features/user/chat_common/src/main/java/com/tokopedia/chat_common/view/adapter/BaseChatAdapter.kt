@@ -67,7 +67,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         notifyItemRangeChanged(positionStart - 10, 10)
     }
 
-    fun getList(): List<Visitable<*>> {
+    override fun getList(): List<Visitable<*>> {
         return visitables
     }
 
