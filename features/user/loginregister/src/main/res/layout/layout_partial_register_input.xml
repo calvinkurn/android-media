@@ -49,6 +49,7 @@
                 android:layout_marginBottom="@dimen/dp_10"
                 android:gravity="center"
                 android:text="@string/change_2"
+                android:visibility="gone"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -138,7 +139,7 @@
 
             android:layout_below="@+id/forgot_pass"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@drawable/green_button_rounded"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"

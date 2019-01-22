@@ -90,6 +90,10 @@ public class PartialRegisterInputView extends BaseCustomView {
         setWrapperError(wrapperEmailPhone, message);
     }
 
+    public void onErrorPassword(String message) {
+        setWrapperError(wrapperPassword, message);
+    }
+
     private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
         if (s == null) {
             wrapper.setError(null);

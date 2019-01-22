@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
@@ -75,6 +76,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_SMART_LOCK = 101
     private val REQUEST_SAVE_SMART_LOCK = 102
     private val REQUEST_SECURITY_QUESTION = 104
+    private val REQUESTS_CREATE_PASSWORD = 106
     private val REQUEST_VERIFY_PHONE = 108
     private val REQUEST_ADD_NAME = 109
     private val REQUEST_CHOOSE_ACCOUNT = 110
@@ -214,6 +216,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun prepareView() {
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
+            showLoadingLogin()
             presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
         }
 
@@ -400,11 +403,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
 
             override fun onGoToCreatePasswordPage(info: GetUserInfoData) {
-                // No need to implement
+                if (activity != null) {
+                    val intent = (activity!!.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
+                    intent.putExtra("name", info.fullName)
+                    intent.putExtra("user_id", info.userId.toString())
+                    startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
+                }
             }
 
             override fun onGoToPhoneVerification() {
-                // No need to implement
+                if (activity != null) {
+                    val intent = (activity!!.applicationContext as ApplinkRouter)
+                            .getApplinkIntent(activity, ApplinkConst.PHONE_VERIFICATION)
+                    startActivityForResult(intent, REQUEST_VERIFY_PHONE)
+                }
             }
 
             override fun onGoToSecurityQuestion(securityPojo: SecurityPojo, fullName: String, email: String, phone: String) {
@@ -494,6 +506,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onErrorValidateRegister(throwable: Throwable) {
+        dismissLoadingLogin()
         val message = ErrorHandlerSession.getErrorMessage(context, throwable)
         partialRegisterInputView.onErrorValidate(message)
     }
@@ -513,10 +526,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
 
     override fun onEmailExist(email: String) {
-
+        dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
             val passwordEditText = partialRegisterInputView.findViewById<TextInputEditText>(R.id.password)
+            KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
         }
 
@@ -527,11 +541,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun showErrorPassword(resId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        partialRegisterInputView.onErrorPassword(getString(resId))
     }
 
     override fun showErrorEmail(resId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        partialRegisterInputView.onErrorValidate(getString(resId))
     }
 
     override fun setAutoCompleteAdapter(listId: ArrayList<String>?) {
@@ -555,10 +569,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun setSmartLock() {
-        //TODO uncomment
-//        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-//                emailEditText.getText().toString(),
-//                passwordEditText.getText().toString())
+        val passwordET = partialRegisterInputView.findViewById<EditText>(R.id.password)
+        if(emailPhoneEditText.text.isNotBlank() && passwordET.text.isNotBlank()) {
+        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                emailPhoneEditText.text.toString(),
+                passwordET.text.toString())
+        }
     }
 
     private fun saveSmartLock(state: Int, email: String, password: String) {
@@ -612,11 +628,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    private fun getChooseAccountData(data: Intent): ChooseTokoCashAccountViewModel {
-        return data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA)
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data)
@@ -639,6 +650,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
+            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+                onSuccessLogin()
+            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+                dismissLoadingLogin()
+                activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -656,6 +672,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 onSuccessLoginPhoneNumber()
             } else {
+                dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
