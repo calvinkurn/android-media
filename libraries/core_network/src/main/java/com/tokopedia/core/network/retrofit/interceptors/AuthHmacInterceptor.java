@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import org.json.JSONArray;
@@ -219,7 +218,7 @@ abstract class AuthHmacInterceptor implements Interceptor {
 
     private void showMaintenancePage() {
         CoreNetworkApplication.getAppContext().startActivity(
-                MaintenancePage.createIntentFromNetwork(CoreNetworkApplication.getAppContext()));
+                CoreNetworkApplication.getCoreNetworkRouter().getMaintenancePageIntent());
     }
 
     private void showForceLogoutDialog() {
@@ -231,8 +230,8 @@ abstract class AuthHmacInterceptor implements Interceptor {
     private void sendForceLogoutAnalytics(Response response) {
         Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logForceLogout(appContext,
-                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 response.request().url().toString());
     }
 
@@ -245,8 +244,8 @@ abstract class AuthHmacInterceptor implements Interceptor {
     private void sendErrorNetworkAnalytics(Response response) {
         Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logNetworkError(appContext,
-                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 response.request().url().toString(), response.code());
     }
 }

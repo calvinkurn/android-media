@@ -607,7 +607,7 @@ public class DataManagerImpl implements DataManager {
                                                  city.setProvince(province);
                                                  city.save();
 
-                                                 for (District d : ListShippingCity.fromShippingCities(shippingCity)) {
+                                                 for (District d : fromShippingCities(shippingCity)) {
                                                      d.setDistrictCity(city);
                                                      d.save();
                                                  }

@@ -6,7 +6,6 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.MaintenancePage;
 
 /**
  * @author anggaprasetiyo on 5/23/17.
@@ -24,7 +23,7 @@ public class ServerErrorHandler {
     
     public static void showMaintenancePage() {
         CoreNetworkApplication.getAppContext().startActivity(
-                MaintenancePage.createIntentFromNetwork(CoreNetworkApplication.getAppContext()));
+                CoreNetworkApplication.getCoreNetworkRouter().getMaintenancePageIntent());
     }
 
     public static void showForceLogoutDialog() {
@@ -36,16 +35,16 @@ public class ServerErrorHandler {
     public static void sendForceLogoutAnalytics(String url) {
         AnalyticsLog.logForceLogout(
                 CoreNetworkApplication.getAppContext(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url);
     }
 
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {
         AnalyticsLog.logNetworkError(
                 CoreNetworkApplication.getAppContext(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url, errorCode);
     }
 
@@ -70,8 +69,8 @@ public class ServerErrorHandler {
     public static void sendForceLogoutTokenAnalytics(String url) {
         Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logForceLogoutToken(appContext,
-                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url);
     }
 }

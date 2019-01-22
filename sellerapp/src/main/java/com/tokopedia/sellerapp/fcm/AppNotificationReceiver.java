@@ -16,12 +16,15 @@ import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.sellerapp.SellerMainApplication;
+
+import java.util.Map;
 
 import rx.Observable;
 
@@ -102,6 +105,16 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
         PushManager.getInstance().getPushHandler().handlePushPayload(SellerMainApplication.getAppContext(), message.getData());
+    }
+
+    @Override
+    public void onCampaignManagementNotificationReceived(RemoteMessage message) {
+        CMPushNotificationManager.getInstance().handlePushPayload(message);
+    }
+
+    @Override
+    public boolean isFromCMNotificationPlatform(Map<String ,String > extra) {
+        return CMPushNotificationManager.getInstance().isFromCMNotificationPlatform(extra);
     }
 
     private boolean isAllowedNotification(Bundle data) {

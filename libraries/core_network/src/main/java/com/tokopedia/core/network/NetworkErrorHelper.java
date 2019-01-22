@@ -149,8 +149,8 @@ public class NetworkErrorHelper {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
-            View retryButon = retryLoad.findViewById(R.id.button_retry);
+            View retryLoad = inflater.inflate(R.layout.item_base_network_error, (ViewGroup) rootview);
+            View retryButon = retryLoad.findViewById(R.id.retry_but);
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {
 
@@ -183,11 +183,11 @@ public class NetworkErrorHelper {
             );
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
-            TextView retryButon = (TextView) retryLoad.findViewById(R.id.button_retry);
-            TextView tvTitleMessage = (TextView) retryLoad.findViewById(R.id.message_retry);
-            TextView tvSubTitleMessage = (TextView) retryLoad.findViewById(R.id.sub_message_retry);
-            ImageView ivIcon = (ImageView) retryLoad.findViewById(R.id.iv_icon);
+            View retryLoad = inflater.inflate(R.layout.item_base_network_error, (ViewGroup) rootview);
+            TextView retryButon = (TextView) retryLoad.findViewById(R.id.retry_but);
+            TextView tvTitleMessage = (TextView) retryLoad.findViewById(R.id.retry_text);
+            TextView tvSubTitleMessage = (TextView) retryLoad.findViewById(R.id.retry_description);
+            ImageView ivIcon = (ImageView) retryLoad.findViewById(R.id.image_error);
             if (subTitleMessage != null) tvSubTitleMessage.setText(subTitleMessage);
             if (titleMessage != null) tvTitleMessage.setText(titleMessage);
             if (titleRetry != null) retryButon.setText(titleRetry);
@@ -224,9 +224,9 @@ public class NetworkErrorHelper {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
-            View retryButon = retryLoad.findViewById(R.id.button_retry);
-            TextView msgRetry = (TextView) retryLoad.findViewById(R.id.message_retry);
+            View retryLoad = inflater.inflate(R.layout.item_base_network_error, (ViewGroup) rootview);
+            View retryButon = retryLoad.findViewById(R.id.retry_but);
+            TextView msgRetry = (TextView) retryLoad.findViewById(R.id.retry_text);
             if (message != null) {
                 msgRetry.setText(message);
             }

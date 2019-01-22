@@ -77,7 +77,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
     protected String getToken() {
         UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
         if (!TextUtils.isEmpty(userSession.getAccessToken())) {
-            SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+            SharedPreferences sharedPrefs = CoreNetworkApplication.getAppContext().getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
             String tokenType = sharedPrefs.getString("TOKEN_TYPE", "");
             return tokenType + " " + userSession.getAccessToken();
         } else {

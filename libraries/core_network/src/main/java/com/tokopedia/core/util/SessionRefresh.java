@@ -1,6 +1,7 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.CoreNetworkApplication;
@@ -11,6 +12,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 
@@ -38,19 +40,20 @@ public class SessionRefresh {
 
     public String refreshLogin() throws IOException {
         Context context = CoreNetworkApplication.getAppContext();
-        SessionHandler sessionHandler = new SessionHandler(context);
-
+        UserSession userSession = new UserSession(context);
+        SharedPreferences sharedPrefs = context.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
+        String tokenType = sharedPrefs.getString("TOKEN_TYPE", "");
         String authKey;
         if (TextUtils.isEmpty(accessToken)) {
-            authKey = sessionHandler.getTokenType(context)
-                    + " " + sessionHandler.getAccessToken(context);
+            authKey = tokenType + " " + userSession.getAccessToken();
         } else {
             authKey = accessToken;
         }
-
+        sharedPrefs = context.getSharedPreferences("LOGIN_UUID_KEY", Context.MODE_PRIVATE);
+        String uuid = sharedPrefs.getString("uuid", "");
         RequestParams params = RequestParams.create();
-        params.putString(UUID_KEY, sessionHandler.getUUID());
-        params.putString(USER_ID, sessionHandler.getLoginID());
+        params.putString(UUID_KEY, uuid);
+        params.putString(USER_ID, userSession.getUserId());
         Call<String> responseCall = getRetrofit(authKey)
                 .create(AccountsApi.class).makeLoginsynchronous(
                         AuthUtil.generateParamsNetwork2(
@@ -60,12 +63,12 @@ public class SessionRefresh {
 
     public String gcmUpdate() throws IOException {
         Context context = CoreNetworkApplication.getAppContext();
-        SessionHandler sessionHandler = new SessionHandler(context);
-
+        UserSession userSession = new UserSession(context);
+        SharedPreferences sharedPrefs = context.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
+        String tokenType = sharedPrefs.getString("TOKEN_TYPE", "");
         String authKey;
         if (TextUtils.isEmpty(accessToken)) {
-            authKey = sessionHandler.getTokenType(context)
-                    + " " + sessionHandler.getAccessToken(context);
+            authKey = tokenType + " " + userSession.getAccessToken();
         } else {
             authKey = accessToken;
         }
@@ -73,7 +76,7 @@ public class SessionRefresh {
         RequestParams params = RequestParams.create();
         params.putString(DEVICE_ID_NEW, FCMCacheManager.getRegistrationId(context));
         params.putString(OS_TYPE, DEFAULT_ANDROID_OS_TYPE);
-        params.putString(USER_ID, sessionHandler.getLoginID());
+        params.putString(USER_ID, userSession.getUserId());
         Call<String> responseCall = getRetrofit(authKey)
                 .create(AccountsApi.class).gcmUpdate(
                         AuthUtil.generateParamsNetwork2(

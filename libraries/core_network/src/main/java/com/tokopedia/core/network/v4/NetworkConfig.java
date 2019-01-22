@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.v4;
 
+import com.android.volley.Request;
+
 /**
  * Created by m.normansyah on 03/11/2015.
  */
@@ -9,8 +11,8 @@ public interface NetworkConfig {
     int STAGING_HOST_TYPE = 1;
     int RELEASE_HOST_TYPE = 2;
 
-    int GET = VolleyNetwork.METHOD_GET;
-    int POST = VolleyNetwork.METHOD_POST;
+    int GET = Request.Method.GET;
+    int POST = Request.Method.POST;
 
     int LOGIN_UNSPECIFIED = 0;
     int LOGIN_NEEDED = 1;

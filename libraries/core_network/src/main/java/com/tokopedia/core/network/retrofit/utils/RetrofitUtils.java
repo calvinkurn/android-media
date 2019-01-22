@@ -12,6 +12,7 @@ import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.util.GeneralUtils;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.net.InetSocketAddress;
@@ -70,7 +71,7 @@ public class RetrofitUtils {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             client.interceptors().add(logging);
         }
-        if (checkNotNull(urlProxy))
+        if (GeneralUtils.checkNotNull(urlProxy))
             client.proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(urlProxy, port)));
 
         client.connectTimeout(timeout, TimeUnit.SECONDS);

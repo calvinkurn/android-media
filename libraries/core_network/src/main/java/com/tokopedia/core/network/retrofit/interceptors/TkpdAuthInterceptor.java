@@ -111,8 +111,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     private void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(CoreNetworkApplication.getAppContext(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getTkpdCoreRouter().legacySessionHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
+                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 response.request().url().toString());
     }
 

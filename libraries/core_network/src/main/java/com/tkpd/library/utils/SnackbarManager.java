@@ -30,7 +30,7 @@ public class SnackbarManager {
         Button snackBarAction = (Button) snack.getView().findViewById(android.support.design.R.id.snackbar_action);
         if (activity != null) {
             snackBarAction.setTextColor(ContextCompat.getColor(activity, R.color.tkpd_main_green));
-            snack.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.black_seventy_percent_));
+            snack.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.black_70));
         }
         return snack;
     }
@@ -66,7 +66,7 @@ public class SnackbarManager {
             @Snackbar.Duration int duration
     ) {
 
-        return make(coordinatorLayout, text, duration, R.color.tkpd_main_green, R.color.black_seventy_percent_);
+        return make(coordinatorLayout, text, duration, R.color.tkpd_main_green, R.color.black_70);
     }
 
 }

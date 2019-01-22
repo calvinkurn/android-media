@@ -11,6 +11,7 @@ import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.session.model.TokenModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,13 +35,12 @@ public class AccessTokenRefresh {
 
     public String refreshToken() throws IOException {
         Context context = CoreNetworkApplication.getAppContext();
-
-        SessionHandler sessionHandler = new SessionHandler(context);
+        UserSession userSession = new UserSession(context);
         Map<String, String> params = new HashMap<>();
 
         params.put(GRANT_TYPE, REFRESH_TOKEN);
-        params.put(ACCESS_TOKEN, SessionHandler.getAccessToken());
-        params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context)));
+        params.put(ACCESS_TOKEN, userSession.getAccessToken());
+        params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
 
         Call<String> responseCall = getRetrofit().create(AccountsBasicApi.class).getTokenSynchronous(params);
 
@@ -68,7 +68,7 @@ public class AccessTokenRefresh {
         TokenModel model = null;
         if (tokenResponse != null) {
             model = new GsonBuilder().create().fromJson(tokenResponse, TokenModel.class);
-            sessionHandler.setToken(model.getAccessToken(), model.getTokenType());
+            userSession.setToken(model.getAccessToken(), model.getTokenType());
         }
 
         if (model != null) {
