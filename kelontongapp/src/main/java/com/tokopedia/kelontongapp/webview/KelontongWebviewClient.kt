@@ -19,6 +19,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.webkit.WebResourceError
 import com.appsflyer.AppsFlyerLib
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
 import com.moe.pushlibrary.MoEHelper
 import com.tokopedia.kelontongapp.*
 import org.json.JSONObject
@@ -57,7 +59,19 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
         super.onReceivedError(view, request, error)
-        // handle crashlitics
+        val customEvent = CustomEvent("onReceivedError Webview")
+        if (error != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                customEvent.putCustomAttribute("errorCode", "${error.errorCode}")
+                customEvent.putCustomAttribute("message", "${error.description}")
+            }
+        }
+        if (request != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                customEvent.putCustomAttribute("url", "${request.url}")
+            }
+        }
+        Answers.getInstance().logCustom(customEvent)
     }
 
     fun checkPermission(): Boolean {
