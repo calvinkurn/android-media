@@ -2902,18 +2902,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent gotoNotificationPage(Context context) {
-        return new Intent(context, NotificationActivity.class);
-    }
-
-    @Override
     public Intent gotoSearchPage(Context context) {
         return new Intent(context, SearchActivity.class);
-    }
-
-    @Override
-    public Intent gotoQrScannerPage() {
-        return gotoQrScannerPage(false);
     }
 
     @Override
