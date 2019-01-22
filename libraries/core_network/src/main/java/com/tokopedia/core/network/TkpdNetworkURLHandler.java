@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.CoreNetworkApplication;
 import com.tokopedia.core.util.GeneralUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.TrackingUtils;

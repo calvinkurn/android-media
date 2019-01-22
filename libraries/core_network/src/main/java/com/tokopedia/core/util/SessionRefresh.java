@@ -3,7 +3,7 @@ package com.tokopedia.core.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;

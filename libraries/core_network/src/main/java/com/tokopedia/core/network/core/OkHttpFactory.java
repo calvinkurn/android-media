@@ -3,7 +3,7 @@ package com.tokopedia.core.network.core;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsBasicInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;

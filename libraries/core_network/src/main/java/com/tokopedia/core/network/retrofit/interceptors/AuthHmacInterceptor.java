@@ -6,7 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 

@@ -5,10 +5,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.network.R;
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 

@@ -1,8 +1,5 @@
 package com.tokopedia.core.network;
 
-import com.tokopedia.core.network.R;
-import com.tokopedia.core.CoreNetworkApplication;
-
 /**
  * Created by nisie on 3/14/17.
  */

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.tkpd.library.kirisame.Kirisame;
 import com.tkpd.library.kirisame.network.entity.NetError;
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.user.session.UserSession;
 

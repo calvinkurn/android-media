@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.core.network;
 
 import android.content.Context;
 

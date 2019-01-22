@@ -2,7 +2,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Intent;
 
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;

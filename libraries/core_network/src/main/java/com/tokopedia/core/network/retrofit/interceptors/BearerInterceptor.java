@@ -3,7 +3,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;

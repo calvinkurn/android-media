@@ -5,7 +5,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;

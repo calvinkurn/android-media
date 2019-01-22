@@ -1,9 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.util.Log;
-
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;

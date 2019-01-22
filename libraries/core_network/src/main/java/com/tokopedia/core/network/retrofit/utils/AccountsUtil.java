@@ -3,7 +3,7 @@ package com.tokopedia.core.network.retrofit.utils;
 import android.content.Context;
 import android.util.Base64;
 
-import com.tokopedia.core.CoreNetworkApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.user.session.UserSession;

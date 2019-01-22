@@ -23,8 +23,7 @@ import android.webkit.WebSettings;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.core.CoreNetworkApplication;
-import com.tokopedia.core.util.GeneralUtils;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tkpd.library.utils.ImageHandler;
 
 import java.io.File;
