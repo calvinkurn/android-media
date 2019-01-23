@@ -150,12 +150,15 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setShopImage(groupShop.getShop().getShopImage());
                             shopResult.setShopUrl(groupShop.getShop().getShopUrl());
                             shopResult.setShopStatus(groupShop.getShop().getShopStatus());
-                            shopResult.setGold(groupShop.getShop().getIsGold() == 1);
-                            shopResult.setGoldBadge(groupShop.getShop().isGoldBadge());
+                            // shopResult.setGold(groupShop.getShop().getIsGold() == 1);
+                            shopResult.setGold(groupShop.getShop().getGoldMerchant().isGoldBadge());
+                            // shopResult.setGoldBadge(groupShop.getShop().isGoldBadge());
+                            shopResult.setGoldBadge(groupShop.getShop().getGoldMerchant().isGoldBadge());
                             shopResult.setOfficial(groupShop.getShop().getIsOfficial() == 1);
                             if (groupShop.getShop().getIsOfficial() == 1) {
                                 shopResult.setShopBadge(groupShop.getShop().getOfficialStore().getOsLogoUrl());
-                            } else if (groupShop.getShop().getIsGold() == 1) {
+                            // } else if (groupShop.getShop().getIsGold() == 1) {
+                            } else if (groupShop.getShop().getGoldMerchant().getIsGold() == 1) {
                                 shopResult.setShopBadge(groupShop.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
                             }
                             shopResult.setFreeReturns(groupShop.getShop().getIsFreeReturns() == 1);
@@ -368,7 +371,8 @@ public class ShipmentMapper implements IShipmentMapper {
     private String generateShopType(com.tokopedia.transactiondata.entity.response.shippingaddressform.Shop shop) {
         if (shop.getIsOfficial() == 1)
             return SHOP_TYPE_OFFICIAL_STORE;
-        else if (shop.getIsGold() == 1)
+        // else if (shop.getIsGold() == 1)
+        else if (shop.getGoldMerchant().isGoldBadge())
             return SHOP_TYPE_GOLD_MERCHANT;
         else return SHOP_TYPE_REGULER;
     }
