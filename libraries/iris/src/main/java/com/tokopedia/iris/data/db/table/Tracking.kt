@@ -10,7 +10,8 @@ import java.util.*
 data class Tracking (
     val event: String,
     val userId: String,
-    val deviceId: String
+    val deviceId: String,
+    val timeStamp: Long = Calendar.getInstance().timeInMillis
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") var trackingId: Int = 0
