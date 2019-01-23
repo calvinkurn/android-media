@@ -7,9 +7,6 @@ import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
-/**
- * Created by Rizky on 23/07/18.
- */
 public class TrainCheckVoucherUseCase extends UseCase<TrainCheckVoucherModel> {
 
     private TrainRepository trainRepository;

@@ -12,9 +12,6 @@ import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import okhttp3.Interceptor;
 import rx.Observable;
 
-/**
- * Created by nabillasabbaha on 28/06/18.
- */
 public interface TrainRouter {
 
     String TRAIN_ENABLE_REMOTE_CONFIG = "mainapp_kai_native";
