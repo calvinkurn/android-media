@@ -48,7 +48,8 @@ public class FlightCancellationRefundDetailPresenter extends BaseDaggerPresenter
                 flightCancellationEstimateRefundUseCase.createRequestParam(
                         getView().getCancellationViewModel().getInvoice(),
                         userSession.getUserId(),
-                        getView().getCancellationViewModel().getGetCancellations()
+                        getView().getCancellationViewModel().getGetCancellations(),
+                        "", 0
                 ),
                 new Subscriber<EstimateRefundResultEntity>() {
                     @Override

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    android:id="@+id/item_sort"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_64"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="@dimen/dp_16"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/black_70"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
+        tools:text="test"/>
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintTop_toTopOf="@+id/tv_sort"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_sort"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/ic_check"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/grey_300"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
@@ -358,10 +359,10 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     public void onSubmitPointer(Activity activity) {
         if (isAllowGenerateAddress) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+            bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
             Intent intent = new Intent();
             intent.putExtras(bundle);
-            intent.putExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+            intent.putExtra(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }
