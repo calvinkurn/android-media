@@ -36,7 +36,7 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
                     1, 3 -> view?.navigateToOcs()
                     2, 4 -> view?.navigateToNcf()
                     else -> {
-                        view?.finishWithError(expressCheckoutResponse.atcExpress.data.errors.joinToString(". "))
+                        view?.finishWithError(expressCheckoutResponse.atcExpress.data.errors.joinToString(" "))
                     }
                 }
             } else {
@@ -51,7 +51,7 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
                         ?: 0, false)
             }
         } else {
-            view?.finishWithError(expressCheckoutResponse.atcExpress.errorMessage.joinToString(". "))
+            view?.finishWithError(expressCheckoutResponse.atcExpress.errorMessage.joinToString(" "))
         }
     }
 

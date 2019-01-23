@@ -18,6 +18,8 @@ interface CheckoutProfileContract {
 
         fun hideLoading()
 
+        fun showErrorPage(message: String)
+
         fun getActivityContext(): Context?
 
         fun setData(data: ArrayList<ProfileViewModel>)

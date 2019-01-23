@@ -14,6 +14,9 @@ data class ProfileResponse(
         @SerializedName("status")
         val status: String,
 
+        @SerializedName("error_message")
+        val errorMessage: ArrayList<String>,
+
         @SerializedName("data")
         val data: ProfileData
 )

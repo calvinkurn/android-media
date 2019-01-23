@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.profile.subscriber
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.expresscheckout.data.entity.response.profile.ProfileListGqlResponse
 import com.tokopedia.expresscheckout.domain.mapper.profile.ProfileDataMapper
 import com.tokopedia.expresscheckout.domain.mapper.profile.ProfileDomainModelMapper
@@ -22,7 +23,7 @@ class GetProfileListSubscriber(val view: CheckoutProfileContract.View?, val pres
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideLoading()
-        // Todo : show error
+        view?.showErrorPage(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
     }
 
     override fun onNext(response: GraphqlResponse) {
@@ -33,7 +34,7 @@ class GetProfileListSubscriber(val view: CheckoutProfileContract.View?, val pres
             val profileResponseModel = domainModelMapper.convertToDomainModel(profileResponse.data)
             presenter.prepareViewModel(profileResponseModel)
         } else {
-            // todo : show error
+            view?.showErrorPage(profileResponse.data.errorMessage.joinToString { " " })
         }
     }
 

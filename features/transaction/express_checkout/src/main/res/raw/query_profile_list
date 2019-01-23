@@ -1,6 +1,7 @@
 query get_profile_expresscheckout {
   get_profile_expresscheckout {
     status
+    error_message
     data {
       profiles {
         id

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
@@ -33,5 +34,13 @@
         android:layout_gravity="center"
         android:padding="@dimen/dp_16"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/ll_network_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="gone" />
 
 </LinearLayout>

@@ -8,5 +8,6 @@ import com.tokopedia.expresscheckout.domain.model.HeaderModel
 
 data class ProfileResponseModel(
         var status: String? = null,
+        var errorMessage: ArrayList<String>? = null,
         var profileDataModel: ProfileDataModel? = null
 )

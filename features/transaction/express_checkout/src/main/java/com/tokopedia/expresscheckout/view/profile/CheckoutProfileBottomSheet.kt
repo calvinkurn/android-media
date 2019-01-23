@@ -2,14 +2,14 @@ package com.tokopedia.expresscheckout.view.profile
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.profile.adapter.CheckoutProfileAdapter
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
@@ -26,6 +26,7 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
     private lateinit var tvContinueWithoutTemplate: TextView
     private lateinit var pbLoading: ProgressBar
     private lateinit var rvProfile: RecyclerView
+    private lateinit var llNetworkErrorView: LinearLayout
 
     companion object {
         val ARGUMENT_DEFAULT_PROFILE_VIEW_MODEL = "ARGUMENT_DEFAULT_PROFILE_VIEW_MODEL"
@@ -57,6 +58,7 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         tvContinueWithoutTemplate = view?.findViewById<View>(R.id.tv_continue_without_template) as TextView
         pbLoading = view.findViewById<View>(R.id.pb_loading) as ProgressBar
         rvProfile = view.findViewById<View>(R.id.rv_profile) as RecyclerView
+        llNetworkErrorView = view.findViewById<View>(R.id.ll_network_error_view) as LinearLayout
 
         presenter = CheckoutProfilePresenter()
         presenter.attachView(this)
@@ -84,6 +86,14 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         pbLoading.visibility = View.GONE
         rvProfile.visibility = View.VISIBLE
         tvContinueWithoutTemplate.visibility = View.VISIBLE
+    }
+
+    override fun showErrorPage(message: String) {
+        rvProfile.visibility = View.GONE
+        tvContinueWithoutTemplate.visibility = View.GONE
+        llNetworkErrorView.visibility = View.VISIBLE
+        NetworkErrorHelper.showEmptyState(context, llNetworkErrorView, message, presenter::loadData)
+        updateHeight()
     }
 
     override fun setData(data: ArrayList<ProfileViewModel>) {
