@@ -14,12 +14,8 @@ import rx.Subscriber;
 public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         extends Subscriber<GraphqlResponse> {
 
-    private static final int DISCOVERY_URL_HOTLIST = 1;
-    private static final int DISCOVERY_URL_CATEGORY = 2;
-    private static final int DISCOVERY_URL_SEARCH = 3;
-    private static final int DISCOVERY_URL_CATALOG = 4;
-    private static final int DISCOVERY_URL_IMAGE_SEARCH = 4;
-    private static final int DISCOVERY_URL_UNKNOWN = -1;
+    private static final int DISCOVERY_URL_SEARCH = 1;
+    private static final int DISCOVERY_APPLINK = 2;
 
     private final SearchParameter searchParameter;
 
@@ -32,11 +28,6 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         this.forceSearch = forceSearch;
         this.discoveryView = discoveryView;
         this.imageSearch = imageSearch;
-    }
-
-    public DefaultGqlSearchSubscriber(D2 discoveryView) {
-        this.searchParameter = null;
-        this.discoveryView = discoveryView;
     }
 
     @Override
@@ -55,18 +46,12 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
         SearchProductGqlResponse gqlResponse = graphqlResponse.getData(SearchProductGqlResponse.class);
 
-        switch (defineResponse(gqlResponse.getSearchProduct())) {
-            case DISCOVERY_URL_HOTLIST:
-                onHandleHotlist(gqlResponse);
-                break;
-            case DISCOVERY_URL_CATEGORY:
-                onHandleIntermediary(gqlResponse);
-                break;
+        switch (defineRedirectApplink(gqlResponse.getSearchProduct().getRedirection().getRedirectApplink())) {
             case DISCOVERY_URL_SEARCH:
                 onHandleSearch(gqlResponse);
                 break;
-            case DISCOVERY_URL_CATALOG:
-                onHandleCatalog(gqlResponse);
+            case DISCOVERY_APPLINK:
+                onHandleApplink(gqlResponse.getSearchProduct().getRedirection().getRedirectApplink());
                 break;
             default:
                 discoveryView.onHandleResponseUnknown();
@@ -74,19 +59,11 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         }
     }
 
-    protected void onHandleHotlist(SearchProductGqlResponse gqlResponse) {
-        discoveryView.onHandleResponseHotlist(gqlResponse.getSearchProduct().getRedirection().getRedirectUrl(), gqlResponse.getSearchProduct().getQuery());
+    private void onHandleApplink(String applink){
+        discoveryView.onHandleApplink(applink);
     }
 
-    protected void onHandleIntermediary(SearchProductGqlResponse gqlResponse) {
-        discoveryView.onHandleResponseIntermediary(gqlResponse.getSearchProduct().getRedirection().getDepartmentId());
-    }
-
-    protected void onHandleCatalog(SearchProductGqlResponse gqlResponse) {
-        discoveryView.onHandleResponseCatalog(gqlResponse.getSearchProduct().getRedirection().getRedirectUrl());
-    }
-
-    protected void onHandleSearch(SearchProductGqlResponse gqlResponse) {
+    private void onHandleSearch(SearchProductGqlResponse gqlResponse) {
         ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPageGql(gqlResponse);
         model.setSearchParameter(searchParameter);
         model.setForceSearch(forceSearch);
@@ -94,24 +71,11 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         discoveryView.onHandleResponseSearch(model);
     }
 
-    private int defineResponse(SearchProductGqlResponse.SearchProduct searchProduct) {
-        if (!TextUtils.isEmpty(searchProduct.getRedirection().getRedirectUrl())) {
-            return defineRedirectUrl(searchProduct.getRedirection().getRedirectUrl());
-        } else {
+    private int defineRedirectApplink(String applink){
+        if (TextUtils.isEmpty(applink)){
             return DISCOVERY_URL_SEARCH;
-        }
-    }
-
-    private int defineRedirectUrl(String redirectUrl) {
-        if (redirectUrl.contains("/p/")) {
-            return DISCOVERY_URL_CATEGORY;
-        } else if (redirectUrl.contains("/hot/")) {
-            return DISCOVERY_URL_HOTLIST;
-        } else if (redirectUrl.contains("/catalog/")) {
-            return DISCOVERY_URL_CATALOG;
         } else {
-            return DISCOVERY_URL_UNKNOWN;
+            return DISCOVERY_APPLINK;
         }
     }
-
 }
