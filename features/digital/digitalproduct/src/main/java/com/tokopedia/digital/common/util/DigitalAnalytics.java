@@ -96,17 +96,24 @@ public class DigitalAnalytics {
                 cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
+        String label = cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase() + " - " + cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase();
 
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(
                         "event", DigitalEventTracking.Event.CHECKOUT,
                         "eventCategory", DigitalEventTracking.Category.DIGITAL_CHECKOUT,
                         "eventAction", DigitalEventTracking.Action.VIEW_CHECKOUT,
-                        "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase(),
+                        "eventLabel", label,
                         "ecommerce", DataLayer.mapOf(
                                 "checkout", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(
-                                                products.toArray(new Object[products.size()]))
+                                        DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf(
+                                                        "step", "1",
+                                                        "option", "cart page loaded"
+                                                ),
+                                                "products", DataLayer.listOf(
+                                                        products.toArray(new Object[products.size()]))
+                                        )
                                 )
                         ),
                         "currentSite", DigitalEventTracking.Label.SITE
@@ -128,9 +135,9 @@ public class DigitalAnalytics {
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName));
         String label = cartDataInfo.getAttributes().getCategoryName().toLowerCase() + " - " + cartDataInfo.getAttributes().getOperatorName().toLowerCase();
-        if (TextUtils.isEmpty(voucherCode)){
+        if (TextUtils.isEmpty(voucherCode)) {
             label += " - no promo";
-        }else {
+        } else {
             label += " - promo";
         }
 
@@ -144,8 +151,8 @@ public class DigitalAnalytics {
                         "ecommerce", DataLayer.mapOf(
                                 "checkout", DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf(
-                                                "step", "1",
-                                                "option", "cart page loaded"
+                                                "step", "2",
+                                                "option", "click payment option button"
                                         ),
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
