@@ -106,14 +106,13 @@ public class DigitalAnalytics {
                         "eventLabel", label,
                         "ecommerce", DataLayer.mapOf(
                                 "checkout", DataLayer.mapOf(
-                                        DataLayer.mapOf(
-                                                "actionField", DataLayer.mapOf(
-                                                        "step", "1",
-                                                        "option", "cart page loaded"
-                                                ),
-                                                "products", DataLayer.listOf(
-                                                        products.toArray(new Object[products.size()]))
-                                        )
+                                        "actionField", DataLayer.mapOf(
+                                                "step", "1",
+                                                "option", "cart page loaded"
+                                        ),
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()]))
+
                                 )
                         ),
                         "currentSite", DigitalEventTracking.Label.SITE
