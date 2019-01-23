@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
@@ -534,7 +535,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             }
         });
-        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+
+        //appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(new MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener() {
             @Override
             public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel, int position) {
@@ -651,7 +653,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(View.GONE);
+        labelCod.setVisibility(View.INVISIBLE);
     }
 
     private void expandedAppBar() {
