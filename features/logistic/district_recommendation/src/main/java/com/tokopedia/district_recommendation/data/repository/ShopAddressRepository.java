@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.district_recommendation.data.source.ShopAddressDataSource;
 import com.tokopedia.network.utils.TKPDMapParam;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import retrofit2.Response;
@@ -22,7 +24,7 @@ public class ShopAddressRepository {
         this.dataStore = dataStore;
     }
 
-    public Observable<Response<TokopediaWsV4Response>> getLocation(TKPDMapParam<String, String> parameters) {
+    public Observable<Response<TokopediaWsV4Response>> getLocation(Map<String, String> parameters) {
         return dataStore.getLocation(parameters);
     }
 

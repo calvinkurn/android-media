@@ -6,6 +6,8 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import retrofit2.Response;
@@ -30,7 +32,7 @@ public class GetShopAddressUseCase extends UseCase<Response<TokopediaWsV4Respons
     @Override
     @SuppressWarnings("unchecked")
     public Observable<Response<TokopediaWsV4Response>> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> param = (TKPDMapParam<String, String>) requestParams.getObject(PARAM_AUTH);
+        Map<String, String> param = (Map<String, String>) requestParams.getObject(PARAM_AUTH);
         return repository.getLocation(param);
     }
 
