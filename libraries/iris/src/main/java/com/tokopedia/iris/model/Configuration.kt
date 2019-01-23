@@ -9,6 +9,6 @@ import java.util.concurrent.TimeUnit
  */
 data class Configuration(
         val maxRow: Int = DEFAULT_MAX_ROW,
-        val intervals: Long = TimeUnit.MINUTES.toMillis(DEFAULT_SERVICE_TIME), // default 15minutes
+        val intervals: Long =  TimeUnit.SECONDS.toMillis(DEFAULT_SERVICE_TIME), // TimeUnit.MINUTES.toMillis(DEFAULT_SERVICE_TIME) default 15minutes
         val isEnabled: Boolean = true
 )
