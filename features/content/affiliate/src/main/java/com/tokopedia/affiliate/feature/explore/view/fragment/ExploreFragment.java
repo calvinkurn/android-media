@@ -407,7 +407,6 @@ public class ExploreFragment
                                       boolean isPullToRefresh,
                                       SortFilterModel sortFilterModel) {
        populateFirstData(itemList, cursor);
-       sortButton.setVisibility(View.VISIBLE);
        if (!isPullToRefresh) {
             populateFilter(sortFilterModel.getFilterList());
             populateSort(sortFilterModel.getSortList());
@@ -430,6 +429,7 @@ public class ExploreFragment
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
+        sortButton.setVisibility(View.VISIBLE);
         populateExploreItem(itemList, cursor);
     }
 
