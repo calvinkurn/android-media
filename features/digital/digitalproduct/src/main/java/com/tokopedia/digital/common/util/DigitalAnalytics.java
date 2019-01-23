@@ -2,6 +2,7 @@ package com.tokopedia.digital.common.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
@@ -126,12 +127,18 @@ public class DigitalAnalytics {
                 cartDataInfo.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName));
+        String label = cartDataInfo.getAttributes().getCategoryName().toLowerCase() + " - " + cartDataInfo.getAttributes().getOperatorName().toLowerCase();
+        if (TextUtils.isEmpty(voucherCode)){
+            label += " - no promo";
+        }else {
+            label += " - promo";
+        }
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(
                         "event", DigitalEventTracking.Event.CHECKOUT,
                         "eventCategory", DigitalEventTracking.Category.DIGITAL_CHECKOUT,
                         "eventAction", DigitalEventTracking.Action.CLICK_PROCEED_PAYMENT,
-                        "eventLabel", cartDataInfo.getAttributes().getCategoryName().toLowerCase(),
+                        "eventLabel", label,
                         "ecommerce", DataLayer.mapOf(
                                 "checkout", DataLayer.mapOf(
                                         "products", DataLayer.listOf(
