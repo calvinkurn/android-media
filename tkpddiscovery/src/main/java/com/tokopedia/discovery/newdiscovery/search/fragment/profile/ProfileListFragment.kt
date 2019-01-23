@@ -1,24 +1,31 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListAdapter
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListTypeFactoryImpl
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.FollowActionListener
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.ProfileListListener
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileListViewModel
 
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.TotalSearchCountViewModel
 import com.tokopedia.profile.di.DaggerProfileListComponent
+import com.tokopedia.user.session.UserSessionInterface
+import java.text.DecimalFormat
 import javax.inject.Inject
 
-class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListAdapter>(),
+class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFactoryImpl>(),
         ProfileContract.View,
         ProfileListListener,
         FollowActionListener{
@@ -26,9 +33,20 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListAdapte
     @Inject
     lateinit var presenter: ProfileContract.Presenter
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     lateinit var searchNavigationListener: SearchNavigationListener
 
+    lateinit var redirectionListener: RedirectionListener
+
+    var totalProfileCount : Int = Integer.MAX_VALUE
+
+    var isHasNextPage : Boolean = isLoadMoreEnabledByDefault
+
     var query : String = ""
+
+    var nextPage : Int = 1
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -58,9 +76,34 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListAdapte
     }
 
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
-        renderList(profileListViewModel.profileModelList, false)
-        updateScrollListenerState(profileListViewModel.isHasNextPage)
+        totalProfileCount = profileListViewModel.totalSearchCount
+        renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)
         activity!!.invalidateOptionsMenu()
+    }
+
+    override fun renderList(list: List<ProfileViewModel>, hasNextPage: Boolean) {
+        hideLoading()
+        if (isLoadingInitialData) {
+            clearAllData()
+        } else {
+            adapter.clearAllNonDataElement()
+        }
+        if (nextPage == 1 && totalProfileCount != 0) {
+            adapter.addElement(TotalSearchCountViewModel(createTotalCountText(totalProfileCount)))
+        }
+        adapter.addElement(list)
+        updateScrollListenerState(hasNextPage)
+
+        if (isListEmpty) {
+            adapter.addElement(emptyDataViewModel)
+        } else {
+            isLoadingInitialData = false
+        }
+    }
+
+    fun createTotalCountText(totalCount : Int) : String {
+        val formatter = DecimalFormat("#,###,###")
+        return formatter.format(totalCount)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -71,8 +114,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListAdapte
         return true
     }
 
-    override fun getAdapterTypeFactory(): ProfileListAdapter {
-        return ProfileListAdapter(this)
+    override fun getAdapterTypeFactory(): ProfileListTypeFactoryImpl {
+        return ProfileListTypeFactoryImpl(this)
     }
 
     override fun onItemClicked(t: ProfileViewModel?) {
@@ -93,6 +136,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListAdapte
 
     override fun loadData(page: Int) {
         presenter.requestProfileListData(query, page)
+        this.nextPage = page
     }
 
     override fun onSuccessToggleFollow(adapterPosition: Int, isEnabled: Boolean) {
@@ -110,21 +154,26 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListAdapte
         this.searchNavigationListener = searchNavigationListener
     }
 
-    override fun onFavoriteButtonClicked(adapterPosition: Int, profileModel: ProfileViewModel) {
-        //this will call api
-        //testing purpose
-        onSuccessToggleFollow(adapterPosition, !profileModel.followed)
+    override fun attachRedirectionListener(redirectionListener: RedirectionListener) {
+        this.redirectionListener = redirectionListener
+    }
+
+    override fun onFollowButtonClicked(adapterPosition: Int, profileModel: ProfileViewModel) {
+        presenter.handleFollowAction(adapterPosition, profileModel)
     }
 
     companion object {
         private val EXTRA_QUERY = "EXTRA_QUERY"
 
-        fun newInstance(query: String, searchhNavigationListener: SearchNavigationListener): ProfileListFragment {
+        fun newInstance(query: String,
+                        searchhNavigationListener: SearchNavigationListener,
+                        redirectionListener: RedirectionListener): ProfileListFragment {
             val args = Bundle()
             args.putString(EXTRA_QUERY, query)
             val profileListFragment = ProfileListFragment()
             profileListFragment.arguments = args
             profileListFragment.attachNavigationListener(searchhNavigationListener)
+            profileListFragment.attachRedirectionListener(redirectionListener)
             return profileListFragment
         }
     }
@@ -135,5 +184,55 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListAdapte
 
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
         query = savedInstanceState.getString(EXTRA_QUERY)
+    }
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        return createProfileEmptySearchModel(
+                context!!,
+                query,
+                "Prolil"
+        )
+    }
+
+    private fun createProfileEmptySearchModel(context: Context, query: String, sectionTitle: String): EmptySearchProfileModel {
+        val emptySearchModel = EmptySearchProfileModel()
+        emptySearchModel.imageRes = R.drawable.ic_empty_search
+        emptySearchModel.title = getEmptySearchTitle(context, sectionTitle)
+        emptySearchModel.content = String.format(context.getString(R.string.empty_search_content_template), query)
+        emptySearchModel.buttonText = context.getString(R.string.empty_search_button_text)
+        return emptySearchModel
+    }
+
+    private fun getEmptySearchTitle(context: Context, sectionTitle: String): String {
+        val templateText = context.getString(R.string.msg_empty_search_with_filter_1)
+        return String.format(templateText, sectionTitle)
+    }
+
+    override fun onErrorGetProfileListData(e: Throwable) {
+        NetworkErrorHelper.createSnackbarWithAction(
+                activity
+        ) {
+            loadData(nextPage)
+        }
+    }
+
+    override fun onEmptyButtonClicked() {
+        redirectionListener.showSearchInputView()
+    }
+
+    override fun onBannerAdsClicked(appLink: String?) {
+
+    }
+
+    override fun onSelectedFilterRemoved(uniqueId: String?) {
+
+    }
+
+    override fun isUserHasLogin(): Boolean {
+        return userSessionInterface.isLoggedIn
+    }
+
+    override fun getUserId(): String {
+        return userSessionInterface.userId
     }
 }

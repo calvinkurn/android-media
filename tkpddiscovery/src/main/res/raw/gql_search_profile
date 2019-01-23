@@ -1,8 +1,12 @@
-query aceSearchProfile($params: String) {
+query SearchProfile(
+ $params: String
+) {
+aceSearchProfile(params: $params) {
     query
     source
     count
     count_text
+    has_next
     profiles {
       id
       name
@@ -15,5 +19,7 @@ query aceSearchProfile($params: String) {
       isaffiliate
       following
       followers
+      post_count
     }
   }
+}

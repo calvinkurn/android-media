@@ -402,7 +402,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private ProfileListFragment getProfileListFragment(String query, SearchNavigationListener searchNavigationListener) {
-        return ProfileListFragment.Companion.newInstance(query, searchNavigationListener);
+        return ProfileListFragment.Companion.newInstance(query, searchNavigationListener, this);
     }
 
     private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,

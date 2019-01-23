@@ -10,6 +10,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileListViewModel
 
 import java.util.ArrayList
@@ -21,9 +22,11 @@ open class GetProfileListUseCase(private val context: Context?,
                                  private val graphqlUseCase: GraphqlUseCase) : UseCase<ProfileListViewModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<ProfileListViewModel>? {
+        val variables = HashMap<String, Any>()
+        variables[KEY_PARAMS] = UrlParamHelper.generateUrlParamString(requestParams.paramsAllValueInString)
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context?.resources,
-                R.raw.gql_search_profile), SearchProfileListGqlResponse::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context!!.getResources(),
+                R.raw.gql_search_profile), SearchProfileListGqlResponse::class.java, variables)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
@@ -32,7 +35,8 @@ open class GetProfileListUseCase(private val context: Context?,
                     val profileListGqlResponse = graphqlResponse.getData<SearchProfileListGqlResponse>(SearchProfileListGqlResponse::class.java)
                     ProfileListViewModel(
                             convertToProfileListViewModel(profileListGqlResponse),
-                            profileListGqlResponse!!.aceSearchProfile!!.hasNext
+                            profileListGqlResponse!!.aceSearchProfile!!.hasNext,
+                            profileListGqlResponse.aceSearchProfile.count
                     )
                 }
     }
@@ -70,17 +74,23 @@ open class GetProfileListUseCase(private val context: Context?,
 
         val KEY_MOBILE = "mobile"
         val KEY_SEARCH = "search"
-        val VALUE_ROWS_PER_PAGE = 6;
+
+        val VALUE_ROWS_PER_PAGE = 12
+        val KEY_PARAMS = "params"
+
 
         fun createRequestParams(query: String,
                                 page: Int): RequestParams {
 
             val requestParams = RequestParams.create()
+            val startRows : Int = (page - 1) * VALUE_ROWS_PER_PAGE
+
             requestParams.putString(KEY_QUERY, query)
             requestParams.putString(KEY_DEVICE, KEY_MOBILE)
             requestParams.putString(KEY_SOURCE, KEY_SEARCH)
-            requestParams.putInt(KEY_ROWS, VALUE_ROWS_PER_PAGE)
-            requestParams.putInt(KEY_START, page)
+            requestParams.putString(KEY_ROWS, VALUE_ROWS_PER_PAGE.toString())
+
+            requestParams.putString(KEY_START, startRows.toString())
             return requestParams
         }
     }

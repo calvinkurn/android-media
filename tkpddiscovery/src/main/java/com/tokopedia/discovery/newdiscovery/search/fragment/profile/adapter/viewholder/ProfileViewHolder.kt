@@ -18,12 +18,41 @@ class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListLis
         when(profileData!!.imgUrl != ""){
             true -> ImageHandler.loadImageCircle2(itemView.context, itemView.img_profile, profileData!!.imgUrl)
         }
-        itemView.tv_name.text = profileData!!.name
-        itemView.tv_username.text = profileData!!.username
-        itemView.tv_post_count.text = String.format(
-                itemView.context.getString(R.string.post_count_value),
-                profileData!!.post_count.toString()
-        )
+        itemView.tv_name.text = profileData.name
+        itemView.tv_username.text = profileData.username
+
+        when(profileData.isKol) {
+            true -> {
+                itemView.tv_name.setCompoundDrawables(
+                        itemView.context.resources.getDrawable(R.drawable.search_kol_badge),
+                        null,
+                        null,
+                        null
+                )
+            }
+        }
+
+        when(profileData.post_count != 0) {
+            true -> {
+                itemView.tv_post_count.text = String.format(
+                        itemView.context.getString(R.string.post_count_value),
+                        profileData!!.post_count.toString()
+                )
+                itemView.tv_post_count.visibility = View.VISIBLE
+            }
+            false -> {
+                itemView.tv_post_count.visibility = View.GONE
+            }
+        }
+
+        when(profileData!!.isKol || profileData.isAffiliate) {
+            true -> {
+                itemView.btn_follow.visibility = View.VISIBLE
+            }
+            false -> {
+                itemView.btn_follow.visibility = View.GONE
+            }
+        }
 
         when(profileData!!.followed){
             true -> {
@@ -39,7 +68,7 @@ class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListLis
         }
 
         itemView.btn_follow.setOnClickListener {
-            profileListListener.onFavoriteButtonClicked(adapterPosition, profileData)
+            profileListListener.onFollowButtonClicked(adapterPosition, profileData)
         }
     }
 }

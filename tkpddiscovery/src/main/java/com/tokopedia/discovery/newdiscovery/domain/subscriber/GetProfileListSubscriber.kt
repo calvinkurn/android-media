@@ -11,7 +11,7 @@ open class GetProfileListSubscriber(val profileView: ProfileContract.View) : Sub
     }
 
     override fun onError(e: Throwable) {
-//        profileView.handleErrorResult(e)
+        profileView.onErrorGetProfileListData(e)
     }
 
     override fun onNext(profileListViewModel: ProfileListViewModel) {

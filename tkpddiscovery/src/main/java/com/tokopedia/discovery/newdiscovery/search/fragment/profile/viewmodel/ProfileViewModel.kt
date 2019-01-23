@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListAdapter
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListTypeFactoryImpl
 
 data class ProfileViewModel (
         var id: String,
@@ -15,8 +15,8 @@ data class ProfileViewModel (
         var following: Int,
         var followers: Int,
         var post_count: Int
-        ) : Visitable<ProfileListAdapter> {
-        override fun type(typeFactory: ProfileListAdapter?): Int {
+        ) : Visitable<ProfileListTypeFactoryImpl> {
+        override fun type(typeFactory: ProfileListTypeFactoryImpl?): Int {
                 return typeFactory!!.type(this)
         }
 }

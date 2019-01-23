@@ -5,9 +5,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListF
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListPresenter
 import dagger.Component
 
-/**
- * @author by milhamj on 9/21/18.
- */
 @ProfileListScope
 @Component(
         modules = arrayOf(ProfileListModule::class),

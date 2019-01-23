@@ -4,10 +4,14 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.discovery.newdiscovery.domain.subscriber.GetProfileListSubscriber
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProfileListUseCase
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.FollowActionListener
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileListViewModel
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.subscriber.FollowUnfollowKolSubscriber
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 
-class ProfileListPresenter(val getProfileListUseCase: GetProfileListUseCase) : BaseDaggerPresenter<ProfileContract.View>() , ProfileContract.Presenter{
+class ProfileListPresenter(
+        val getProfileListUseCase: GetProfileListUseCase,
+        val followKolPostGqlUseCase : FollowKolPostGqlUseCase)
+    : BaseDaggerPresenter<ProfileContract.View>() , ProfileContract.Presenter{
     lateinit var followActionListener: FollowActionListener
 
     override fun attachView(view: ProfileContract.View?) {
@@ -18,21 +22,32 @@ class ProfileListPresenter(val getProfileListUseCase: GetProfileListUseCase) : B
         this.followActionListener = followActionListener
     }
 
-    override fun handleFollowAction(adapterPosition: Int, profileModel: ProfileViewModel) {
-        //for testing purpose
-        val isSuccess = true
-        if (isSuccess){
-            followActionListener.onSuccessToggleFollow(adapterPosition, !profileModel.followed)
-        } else {
-            followActionListener.onErrorToggleFollow(adapterPosition, "500")
-        }
+    override fun handleFollowAction(adapterPosition: Int,
+                                    profileModel: ProfileViewModel) {
+        val requestedAction : Int =
+                when(profileModel.followed) {
+                    true -> FollowKolPostGqlUseCase.PARAM_UNFOLLOW
+                    false -> FollowKolPostGqlUseCase.PARAM_FOLLOW
+                }
+
+        followKolPostGqlUseCase.execute(
+                FollowKolPostGqlUseCase.createRequestParams(
+                        profileModel.id.toInt(),
+                        requestedAction
+                ), FollowUnfollowKolSubscriber(
+                adapterPosition,
+                view,
+                profileModel.followed,
+                followActionListener
+        ))
     }
 
     override fun requestProfileListData(query: String, page: Int) {
         getProfileListUseCase.execute(
                 GetProfileListUseCase.createRequestParams(
                         query,
-                        page), GetProfileListSubscriber(view))
+                        page
+                        ), GetProfileListSubscriber(view))
 //        when(page) {
 //            1 -> {
 //                val prof1 = ProfileViewModel(
