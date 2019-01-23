@@ -107,6 +107,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             adapter.clearAllElements();
             adapter.setElement(model.getItems());
         }
+
+        // TODO: 23/1/19 show showcase dialog for saldo toko
+
     }
 
     @Override

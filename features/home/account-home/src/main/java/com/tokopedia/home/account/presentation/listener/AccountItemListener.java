@@ -5,6 +5,7 @@ import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 
@@ -44,7 +45,7 @@ public interface AccountItemListener {
 
     void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData);
 
-    void onDepositClicked(ShopCardViewModel element);
+    void onDepositClicked(SellerSaldoViewModel element);
 
     void onTopadsInfoClicked();
 

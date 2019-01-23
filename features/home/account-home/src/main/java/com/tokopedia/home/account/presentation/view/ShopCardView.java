@@ -39,7 +39,7 @@ public class ShopCardView extends BaseCustomView {
     private ImageView badge;
     private TextView textShopName;
     private ImageView shopReputation;
-    private LabelView labelViewDeposit;
+    //    private LabelView labelViewDeposit;
     private WarningTickerView warningTickerView;
     private TextView shopStatus;
     private View infoButton;
@@ -62,7 +62,7 @@ public class ShopCardView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_shop_card, this);
-        labelViewDeposit = view.findViewById(R.id.label_view_saldo);
+//        labelViewDeposit = view.findViewById(R.id.label_view_saldo);
         imageShop = view.findViewById(R.id.image_shop);
         badge = view.findViewById(R.id.image_badge);
         textShopName = view.findViewById(R.id.text_shop_name);
@@ -72,7 +72,7 @@ public class ShopCardView extends BaseCustomView {
         infoButton = view.findViewById(R.id.shop_status_info_button);
         labelViewTopAds = view.findViewById(R.id.label_view_topads);
         labelViewTopAds.setVisibility(GONE);
-        view.findViewById(R.id.separator_2).setVisibility(GONE);
+        view.findViewById(R.id.separator).setVisibility(GONE);
     }
 
     public void setShopImage(String url) {
@@ -104,9 +104,9 @@ public class ShopCardView extends BaseCustomView {
         textShopName.setText(MethodChecker.fromHtml(shopName));
     }
 
-    public void setBalance(String balance) {
+    /*public void setBalance(String balance) {
         labelViewDeposit.setContent(balance);
-    }
+    }*/
 
     public void setShopReputation(String url) {
         if (!TextUtils.isEmpty(url)) {
@@ -129,11 +129,11 @@ public class ShopCardView extends BaseCustomView {
         textShopName.setOnClickListener(listener);
     }
 
-    public void setOnClickDeposit(View.OnClickListener listener) {
+    /*public void setOnClickDeposit(View.OnClickListener listener) {
         labelViewDeposit.setOnClickListener(listener);
-    }
+    }*/
 
-    public void setOnClickTopAdsView(View.OnClickListener listener){
+    public void setOnClickTopAdsView(View.OnClickListener listener) {
         labelViewTopAds.setOnClickListener(listener);
     }
 
@@ -174,7 +174,7 @@ public class ShopCardView extends BaseCustomView {
             return;
 
         FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
-        if (freeDeposit.getStatus() == 1 && freeDeposit.getNominal() > 0){
+        if (freeDeposit.getStatus() == 1 && freeDeposit.getNominal() > 0) {
             labelViewTopAds.setContentClick(v -> {
                 if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                     openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_FREE_CLAIM_URL));
@@ -187,8 +187,8 @@ public class ShopCardView extends BaseCustomView {
             labelViewTopAds.setContent(getContext().getString(R.string.topads_claim_label));
             labelViewTopAds.setContentColorValue(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
             String nDays = getContext().getString(R.string.template_claim_n_days, freeDeposit.getRemainingDays());
-            SpannableString subtitle = new SpannableString(getContext().getString(R.string.claim_expired)+" "+nDays);
-            subtitle.setSpan(new StyleSpan(Typeface.BOLD), getContext().getString(R.string.claim_expired).length()+1,
+            SpannableString subtitle = new SpannableString(getContext().getString(R.string.claim_expired) + " " + nDays);
+            subtitle.setSpan(new StyleSpan(Typeface.BOLD), getContext().getString(R.string.claim_expired).length() + 1,
                     subtitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             labelViewTopAds.setSubTitle(subtitle);
@@ -197,10 +197,10 @@ public class ShopCardView extends BaseCustomView {
             labelViewTopAds.setContent(dataDeposit.getAmountFmt());
             labelViewTopAds.setContentColorValue(ContextCompat.getColor(getContext(), R.color.light_primary));
             labelViewTopAds.setContentClick(null);
-            if (freeDeposit.getStatus() == 2 && freeDeposit.getUsage() > 0){
+            if (freeDeposit.getStatus() == 2 && freeDeposit.getUsage() > 0) {
                 String bonusTopAds = getContext().getString(R.string.bonus_expired, freeDeposit.getUsageFmt());
                 String nDays = getContext().getString(R.string.template_claim_n_days, freeDeposit.getRemainingDays());
-                SpannableString subtitle = new SpannableString(bonusTopAds+" berlaku "+nDays);
+                SpannableString subtitle = new SpannableString(bonusTopAds + " berlaku " + nDays);
                 subtitle.setSpan(new StyleSpan(Typeface.BOLD), bonusTopAds.length() - freeDeposit.getUsageFmt().length(),
                         bonusTopAds.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 subtitle.setSpan(new StyleSpan(Typeface.BOLD), subtitle.length() - nDays.length(),
@@ -211,7 +211,7 @@ public class ShopCardView extends BaseCustomView {
             }
         }
         if (getRootView() != null) {
-            getRootView().findViewById(R.id.separator_2).setVisibility(VISIBLE);
+            getRootView().findViewById(R.id.separator).setVisibility(VISIBLE);
         }
         labelViewTopAds.setVisibility(VISIBLE);
     }

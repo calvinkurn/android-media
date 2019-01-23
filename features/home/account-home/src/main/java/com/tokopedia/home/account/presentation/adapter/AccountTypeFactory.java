@@ -9,6 +9,7 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.SellerEmptyViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.SellerSaldoViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TickerViewHolder;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
@@ -23,6 +24,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
@@ -41,7 +43,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == TickerViewHolder.LAYOUT) {
             return new TickerViewHolder(parent, listener);
-        }else if (type == BuyerCardViewHolder.LAYOUT) {
+        } else if (type == BuyerCardViewHolder.LAYOUT) {
             return new BuyerCardViewHolder(parent, listener);
         } else if (type == TokopediaPayViewHolder.LAYOUT) {
             return new TokopediaPayViewHolder(parent, listener);
@@ -55,6 +57,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new InfoCardViewHolder(parent, listener);
         } else if (type == ShopCardViewHolder.LAYOUT) {
             return new ShopCardViewHolder(parent, listener);
+        } else if (type == SellerSaldoViewHolder.LAYOUT) {
+            return new SellerSaldoViewHolder(parent, listener);
         } else if (type == AddProductViewHolder.LAYOUT) {
             return new AddProductViewHolder(parent, listener);
         } else if (type == SellerEmptyViewHolder.LAYOUT) {
@@ -93,6 +97,10 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(ShopCardViewModel vm) {
         return ShopCardViewHolder.LAYOUT;
+    }
+
+    public int type(SellerSaldoViewModel vm) {
+        return SellerSaldoViewHolder.LAYOUT;
     }
 
     public int type(AddProductViewModel viewModel) {

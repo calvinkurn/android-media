@@ -12,6 +12,7 @@ import java.util.List;
 public class SellerViewModel implements Parcelable {
     private List<ParcelableViewModel> items = new ArrayList<>();
     private Boolean isSeller;
+    private boolean hasSaldoBalance = false;
 
     public List<ParcelableViewModel> getItems() {
         return items;
@@ -41,6 +42,14 @@ public class SellerViewModel implements Parcelable {
     }
 
     public SellerViewModel() {
+    }
+
+    public boolean hasSaldoBalance() {
+        return hasSaldoBalance;
+    }
+
+    public void setHasSaldoBalance(boolean hasSaldoBalance) {
+        this.hasSaldoBalance = hasSaldoBalance;
     }
 
     protected SellerViewModel(Parcel in) {

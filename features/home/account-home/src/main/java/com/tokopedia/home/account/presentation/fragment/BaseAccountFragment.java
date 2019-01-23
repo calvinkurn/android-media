@@ -29,6 +29,7 @@ import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
@@ -274,7 +275,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onDepositClicked(ShopCardViewModel element) {
+    public void onDepositClicked(SellerSaldoViewModel element) {
         openApplink(ApplinkConst.DEPOSIT);
     }
 

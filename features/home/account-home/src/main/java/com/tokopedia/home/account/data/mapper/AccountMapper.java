@@ -17,6 +17,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
@@ -293,9 +294,13 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
-        shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
+//        shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
         items.add(shopCard);
+
+        SellerSaldoViewModel sellerSaldoViewModel = new SellerSaldoViewModel();
+        sellerSaldoViewModel.setBalance(accountModel.getDeposit().getDepositFmt());
+        items.add(sellerSaldoViewModel);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));

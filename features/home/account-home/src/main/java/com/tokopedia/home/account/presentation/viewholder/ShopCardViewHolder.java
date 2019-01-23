@@ -34,12 +34,12 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
             shopCardView.setBadgeImage(GMConstant.getGMDrawableResource(itemView.getContext()));
         }
         shopCardView.setShopReputation(element.getReputationImageUrl());
-        shopCardView.setBalance(element.getBalance());
+//        shopCardView.setBalance(element.getBalance());
 
         shopCardView.setOnClickShopAvatar(v -> listener.onShopAvatarClicked(element));
         shopCardView.setOnClickShopName(v -> listener.onShopNameClicked(element));
         shopCardView.setOnClickShopStatusInfo(v -> listener.onShopStatusInfoButtonClicked());
-        shopCardView.setOnClickDeposit(v -> listener.onDepositClicked(element));
+//        shopCardView.setOnClickDeposit(v -> listener.onDepositClicked(element));
 
         shopCardView.setKyc(element.getVerificationStatus(), element.getVerificationStatusName(),
                 () -> listener.onKycLinkClicked(element.getVerificationStatus()));

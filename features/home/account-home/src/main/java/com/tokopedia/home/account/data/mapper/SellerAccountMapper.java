@@ -17,10 +17,12 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.navigation_common.model.DepositModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -108,6 +110,11 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if (accountModel.getShopInfo() != null && accountModel.getShopInfo().getInfo() != null) {
             items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
+
+        if (accountModel.getDeposit().getDeposit() != null) {
+            items.add(getSaldoInfo(accountModel.getDeposit()));
+        }
+        sellerViewModel.setHasSaldoBalance(accountModel.getDeposit().getDeposit() != null);
 
         if (showPinjamanModalOnTop) {
             if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0") && !mitraTopperUrl.isEmpty()) {
@@ -265,9 +272,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
         shopCard.setDataDeposit(dataDeposit);
 
-        if (accountModel.getDeposit() != null) {
+        /*if (accountModel.getDeposit() != null) {
             shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
-        }
+        }*/
 
         if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
             shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
@@ -276,6 +283,15 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         setKycToModel(shopCard, accountModel);
 
         return shopCard;
+    }
+
+    private SellerSaldoViewModel getSaldoInfo(DepositModel depositModel) {
+        SellerSaldoViewModel sellerSaldoCard = new SellerSaldoViewModel();
+        if (depositModel.getDeposit() != null) {
+            sellerSaldoCard.setBalance(depositModel.getDepositFmt());
+        }
+
+        return sellerSaldoCard;
     }
 
     private List<MenuGridItemViewModel> getSellerOrderMenu(Boolean isNotNull, AccountModel accountModel) {
