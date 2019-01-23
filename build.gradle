@@ -18,7 +18,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.uber:okbuck:0.40.1'
+        classpath 'com.uber:okbuck:0.46.2'
         classpath ('com.android.tools.build:gradle:3.2.0') {
             exclude module: 'proguard-gradle'
         }
@@ -107,6 +107,10 @@ okbuck {
 
     lint {
         version = "26.0.1"
+    }
+
+    externalDependencies {
+        downloadInBuck = false
     }
 
 }
