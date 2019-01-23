@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
