@@ -36,6 +36,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
     public static final String SP_REACT_ENABLE_SHAKE = "SP_REACT_ENABLE_SHAKE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
+    public static final String IS_ENABLE_SHAKE_REACT = "IS_ENABLE_SHAKE_REACT";
     public static final String RN_DEV_LOGGER = "rn_dev_logger";
     private static final String IP_GROUPCHAT = "ip_groupchat";
     private static final String LOG_GROUPCHAT = "log_groupchat";
@@ -104,7 +105,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
         toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
         toggleReactEnableDeveloperOptions = findViewById(R.id.toggle_reactnative_dev_options);
-        toggleReactEnableDeveloperOptions.setChecked(false);
+        toggleReactEnableDeveloperOptions.setChecked(true);
 
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
@@ -149,6 +150,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
             }
         });
+        
         testOnBoarding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,8 +181,9 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             }
         });
 
-        if (sharedPreferences.contains(SP_REACT_ENABLE_SHAKE)){
-            boolean stateDeveloperOptions = sharedPreferences.getBoolean(SP_REACT_ENABLE_SHAKE, false);
+        sharedPreferences = getSharedPreferences(SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(IS_ENABLE_SHAKE_REACT)){
+            boolean stateDeveloperOptions = sharedPreferences.getBoolean(IS_ENABLE_SHAKE_REACT, false);
             toggleReactEnableDeveloperOptions.setChecked(stateDeveloperOptions);
         }
 
@@ -188,14 +191,14 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
-                    Toast.makeText(DeveloperOptions.this, "React Native Dev Options is enabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeveloperOptions.this, "RN Dev Options is disabled", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean(SP_REACT_ENABLE_SHAKE, true);
+                    editor.putBoolean(IS_ENABLE_SHAKE_REACT, true);
                     editor.apply();
                 } else {
-                    Toast.makeText(DeveloperOptions.this, "React Native Dev Options is disabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeveloperOptions.this, "RN Dev Options is enabled", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean(SP_REACT_ENABLE_SHAKE, false);
+                    editor.putBoolean(IS_ENABLE_SHAKE_REACT, false);
                     editor.apply();
                 }
             }

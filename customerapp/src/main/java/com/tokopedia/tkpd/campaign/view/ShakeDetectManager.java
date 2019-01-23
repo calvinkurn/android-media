@@ -123,7 +123,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     private boolean isReactNativeOnReleaseMode() {
         SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(DeveloperOptions.SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
-        return reactSharedPreferences.getBoolean(DeveloperOptions.SP_REACT_ENABLE_SHAKE, true);
+        return reactSharedPreferences.getBoolean(DeveloperOptions.IS_ENABLE_SHAKE_REACT, true);
     }
 
     @Override
