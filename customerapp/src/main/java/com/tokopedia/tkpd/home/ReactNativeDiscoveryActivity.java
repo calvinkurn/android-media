@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -13,6 +12,7 @@ import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
@@ -21,12 +21,17 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
  */
 
 public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralReactNativeFragment> implements PermissionAwareActivity {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String PAGE_ID = "page_id";
+
+    private static final String MP_FLASHSALE = "mp_flashsale";
+
     private PermissionListener mPermissionListener;
 
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(MP_FLASHSALE);
         return ReactNativeDiscoveryActivity.createApplinkCallingIntent(
                 context, ReactConst.Screen.DISCOVERY_PAGE,
                 "",
@@ -66,6 +71,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
                                              String reactScreenName,
                                              String pageTitle,
                                              String pageId) {
+        ReactUtils.startTracing(MP_FLASHSALE);
         Intent intent = new Intent(context, ReactNativeDiscoveryActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);

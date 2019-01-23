@@ -1,10 +1,17 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -40,6 +47,7 @@ import javax.inject.Inject;
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
         InboxView, NotificationListener {
 
+    public static final String KEY_TOOLBAR = "key_toolbar";
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
@@ -51,19 +59,22 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Inject
     GlobalNavAnalytics globalNavAnalytics;
 
-    private List<Inbox> inboxes;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
     private ImageButton menuItemNotification;
     private TextView toolbarTitle;
     private BadgeView badgeView;
     private View emptyLayout;
+    private AppBarLayout appBarLayout;
 
     private int badgeNumber;
 
-    public static InboxFragment newInstance() {
-        return new InboxFragment();
+    public static InboxFragment newInstance(boolean isWithToolbar) {
+        InboxFragment fragment = new InboxFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(KEY_TOOLBAR, isWithToolbar);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -76,7 +87,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.intiInjector();
         presenter.setView(this);
 
-        inboxes = getData();
+        List<Inbox> dataInbox = getData();
 
         adapter = new InboxAdapter(getActivity());
 
@@ -89,7 +100,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
-        adapter.addAll(inboxes);
+        adapter.addAll(dataInbox);
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
@@ -174,13 +185,23 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void setupToolbar(View view) {
-        super.setupToolbar(view);
-        toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-        menuItemNotification = toolbar.findViewById(R.id.action_notification);
-        menuItemNotification.setOnClickListener(v -> {
-            globalNavAnalytics.eventTrackingNotification();
-            startActivity(NotificationActivity.start(getActivity()));
-        });
+        boolean isWithToolbar = false;
+        if (getArguments() != null) {
+            isWithToolbar = getArguments().getBoolean(KEY_TOOLBAR);
+        }
+        appBarLayout = view.findViewById(R.id.app_bar);
+        if (isWithToolbar) {
+            super.setupToolbar(view);
+            toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+            menuItemNotification = toolbar.findViewById(R.id.action_notification);
+            menuItemNotification.setOnClickListener(v -> {
+                globalNavAnalytics.eventTrackingNotification();
+                startActivity(NotificationActivity.start(getActivity()));
+            });
+            appBarLayout.setVisibility(View.VISIBLE);
+        } else {
+            appBarLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

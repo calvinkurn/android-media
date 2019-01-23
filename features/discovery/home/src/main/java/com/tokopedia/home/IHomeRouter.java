@@ -66,7 +66,11 @@ public interface IHomeRouter {
 
     Intent getInstantLoanIntent(Context context);
 
-    Intent getTopAdsProductDetailIntentForHome(Context context, Product product);
+    Intent getTopAdsProductDetailIntentForHome(Context context,
+                                                      String id,
+                                                      String name,
+                                                      String priceFormat,
+                                                      String imageMUrl);
 
     Intent getLoginIntent(Context context);
 
