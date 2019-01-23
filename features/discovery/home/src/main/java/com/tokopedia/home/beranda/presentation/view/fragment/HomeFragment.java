@@ -66,6 +66,7 @@ import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
@@ -127,6 +128,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
+    private AbTestingOfficialStore abTestingOfficialStore;
 
     private MainToolbar mainToolbar;
 
@@ -152,6 +154,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
+        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
     }
 
     @Override
@@ -302,6 +305,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
             ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
         }
+        notifyToolbarForAbTesting();
         presenter.onResume();
     }
 
@@ -1093,5 +1097,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchTokopointsNotification(String type) {
         TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
+    }
+
+    public void notifyToolbarForAbTesting() {
+        if (mainToolbar != null) {
+            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
+        }
     }
 }

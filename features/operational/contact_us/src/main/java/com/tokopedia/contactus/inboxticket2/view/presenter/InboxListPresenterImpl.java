@@ -207,9 +207,9 @@ public class InboxListPresenterImpl
     }
 
     @Override
-    public BottomSheetDialogFragment getBottomFragment() {
-        InboxBottomSheetFragment bottomFragment = new InboxBottomSheetFragment();
-        bottomFragment.setAdapter(getFilterAdapter(), R.string.filter);
+    public BottomSheetDialogFragment getBottomFragment(int resID) {
+        InboxBottomSheetFragment bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID);
+        bottomFragment.setAdapter(getFilterAdapter());
         return bottomFragment;
     }
 

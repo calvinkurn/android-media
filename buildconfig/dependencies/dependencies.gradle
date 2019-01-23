@@ -115,6 +115,7 @@ ext {
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:9.1.04",
+            moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
             moengageMSG: "com.moengage:addon-messaging:2.0.03",
             branch     : "io.branch.sdk.android:library:2.+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
