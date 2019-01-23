@@ -133,6 +133,8 @@ public class DigitalAnalytics {
         }else {
             label += " - promo";
         }
+
+
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(
                         "event", DigitalEventTracking.Event.CHECKOUT,
@@ -141,6 +143,10 @@ public class DigitalAnalytics {
                         "eventLabel", label,
                         "ecommerce", DataLayer.mapOf(
                                 "checkout", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf(
+                                                "step", "1",
+                                                "option", "cart page loaded"
+                                        ),
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
                                 )
