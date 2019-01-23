@@ -51,9 +51,13 @@ public interface EmptyCartContract {
 
         void navigateToCartFragment(CartListData cartListData);
 
-        void stopTrace();
+        void stopCartTrace();
 
-        boolean isTraceStopped();
+        boolean isCartTraceStopped();
+
+        void stopAllTrace();
+
+        boolean isAllTraceStopped();
 
     }
 

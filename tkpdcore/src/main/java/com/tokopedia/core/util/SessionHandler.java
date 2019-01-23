@@ -440,12 +440,12 @@ public class SessionHandler {
 
     public static String getAccessToken() {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getRefreshToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public static String getRefreshTokenIV(Context context) {
@@ -480,12 +480,12 @@ public class SessionHandler {
 
     public static String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getAccessTokenTokoCash() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TOKOCASH_SESSION);
-        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "");
+        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "").trim();
     }
 
     public void clearToken() {
@@ -549,12 +549,12 @@ public class SessionHandler {
 
     public String getAuthAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public String getAuthRefreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public boolean isUserHasShop() {
@@ -702,7 +702,7 @@ public class SessionHandler {
 
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TOKEN_TYPE, "");
+        return sharedPrefs.getString(TOKEN_TYPE, "").trim();
     }
 
     public String getUUID() {

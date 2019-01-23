@@ -22,7 +22,6 @@ import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
@@ -30,7 +29,10 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.transactiondata.repository.ICartRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -136,7 +138,8 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase(ICartRepository iCartRepository, Context context) {
-        return new CancelAutoApplyCouponUseCase(iCartRepository, context);
+    CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase(ICartRepository iCartRepository) {
+        return new CancelAutoApplyCouponUseCase(iCartRepository);
     }
+
 }

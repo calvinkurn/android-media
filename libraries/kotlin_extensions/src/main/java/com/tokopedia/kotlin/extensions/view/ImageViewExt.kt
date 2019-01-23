@@ -25,6 +25,10 @@ fun ImageView.loadImageWithoutPlaceholder(@DrawableRes drawableId: Int) {
     ImageHandler.loadImageWithIdWithoutPlaceholder(this, drawableId)
 }
 
+fun ImageView.loadImageWithoutPlaceholder(url: String) {
+    ImageHandler.loadImageWithoutPlaceholderAndError( this, url)
+}
+
 fun ImageView.clearImage() {
     ImageHandler.clearImage(this)
 }

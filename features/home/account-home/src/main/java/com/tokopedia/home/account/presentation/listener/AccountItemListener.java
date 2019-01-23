@@ -21,13 +21,15 @@ public interface AccountItemListener {
 
     void onBuyerVoucherClicked(BuyerCardViewModel element);
 
+    void onByMeClicked();
+
     void onTokopediaPayLinkClicked();
 
     void onMenuGridItemClicked(MenuGridItemViewModel item);
 
     void onMenuGridLinkClicked(MenuGridViewModel item);
 
-    void onInfoCardClicked(InfoCardViewModel item);
+    void onInfoCardClicked(InfoCardViewModel item, int adapterPosition);
 
     void onMenuListClicked(MenuListViewModel item);
 

@@ -44,6 +44,20 @@ def allowDistribution() {
     return "false";
 }
 
+def isPreInstall() {
+    if (project.hasProperty('isPreInstall') && isPreInstall == "true") {
+        return "true"
+    }
+    return "false"
+}
+
+def getDynamicProperty(param) {
+    if (project.hasProperty(param)) {
+        return project.property(param)
+    }
+    return ""
+}
+
 def allowProguard() {
     return project.hasProperty('tkpdBuildType')
 }
@@ -159,6 +173,10 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
+            buildConfigField "boolean", "IS_PREINSTALL", "false"
+            buildConfigField "String", "PREINSTALL_NAME", "\"\""
+            buildConfigField "String", "PREINSTALL_DESC", "\"\""
+            buildConfigField "String", "PREINSTALL_SITE", "\"\""
             ext.enableHansel=false
         }
         release {
@@ -170,6 +188,10 @@ android {
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
+            buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
+            buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
+            buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
             multiDexKeepFile file('multidex-config.txt')
             multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
@@ -317,6 +339,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
