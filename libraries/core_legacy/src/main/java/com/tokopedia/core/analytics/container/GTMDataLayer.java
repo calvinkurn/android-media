@@ -126,7 +126,7 @@ public class GTMDataLayer {
         if (iris != null) {
             if (!eventName.isEmpty())
                 values.put("event", eventName);
-            iris.sendEvent(values);
+            iris.saveEvent(values);
         }
     }
 }
