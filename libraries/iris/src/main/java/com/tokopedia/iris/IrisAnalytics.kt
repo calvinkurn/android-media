@@ -3,6 +3,7 @@ package com.tokopedia.iris
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.iris.data.TrackingRepository
+import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.SendDataWorker
 import kotlinx.coroutines.experimental.Dispatchers
@@ -34,7 +35,9 @@ class IrisAnalytics(context: Context) : Iris {
     override fun saveEvent(map: Map<String, Any>) {
         GlobalScope.launch(context = Dispatchers.IO) {
             // convert map to json then save as string
-            trackingRepository.saveEvent(JSONObject(map).toString(), session)
+            val event = JSONObject(map).toString()
+            val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+            trackingRepository.saveEvent(resultEvent.toString(), session)
         }
     }
 
@@ -55,7 +58,7 @@ class IrisAnalytics(context: Context) : Iris {
     private fun setWorkManager(config: Configuration) {
         val data: Data = Data.Builder().putInt(MAX_ROW, config.maxRow).build()
         val irisConstraint = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-        val workRequest = PeriodicWorkRequestBuilder<SendDataWorker>(config.intervals, TimeUnit.MILLISECONDS)
+        val workRequest = PeriodicWorkRequestBuilder<SendDataWorker>(config.intervals, TimeUnit.MINUTES)
                 .setInputData(data)
                 .addTag(WORKER_SEND_DATA)
                 .setConstraints(irisConstraint)

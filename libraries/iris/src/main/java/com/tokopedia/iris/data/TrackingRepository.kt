@@ -20,7 +20,7 @@ class TrackingRepository (
 
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
 
-    fun saveEvent(data: String, session: Session) = trackingDao.insert(Tracking(data, session.getSessionId(), session.getUserId(), session.getDeviceId()))
+    fun saveEvent(data: String, session: Session) = trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
 
     fun getFromOldest(maxRow: Int) = trackingDao.getFromOldest(maxRow)
 

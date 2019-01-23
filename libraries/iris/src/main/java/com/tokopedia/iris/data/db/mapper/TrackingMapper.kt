@@ -20,8 +20,7 @@ class TrackingMapper {
         val row = JSONObject()
         val event = JSONArray()
 
-        val timeStamp = Calendar.getInstance().timeInMillis
-        event.put(addSessionToEvent(track, sessionId, timeStamp))
+        event.put(reformatEvent(track, sessionId))
 
         row.put("device_id", deviceId)
         row.put("user_id", userId)
@@ -40,7 +39,7 @@ class TrackingMapper {
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
-            event.put(addSessionToEvent(item.event, item.sessionId, item.timeStamp))
+            event.put(item.event)
             val nextItem: Tracking? = try {
                 tracking[i+1]
             } catch (e: IndexOutOfBoundsException) {
@@ -64,22 +63,23 @@ class TrackingMapper {
         return result.toString()
     }
 
-    fun addSessionToEvent(event: String, sessionId: String, timeStamp: Long) : JSONObject {
-        return try {
-            val item = JSONObject(event)
-            if (item.get("event") != null) {
-                item.put("event_ga", item.get("event"))
-                item.remove("event")
+    companion object {
+
+        fun reformatEvent(event: String, sessionId: String) : JSONObject {
+            return try {
+                val item = JSONObject(event)
+                if (item.get("event") != null) {
+                    item.put("event_ga", item.get("event"))
+                    item.remove("event")
+                }
+                item.put("iris_session_id", sessionId)
+                item.put("container", KEY_CONTAINER)
+                item.put("event", KEY_EVENT)
+                item.put("hits_time", Calendar.getInstance().timeInMillis)
+                item
+            } catch (e: JSONException) {
+                JSONObject()
             }
-            item.put("iris_session_id", sessionId)
-            item.put("container", KEY_CONTAINER)
-            item.put("event", KEY_EVENT)
-            item.put("hits_time", timeStamp.toString())
-            item
-        } catch (e: JSONException) {
-            JSONObject()
         }
     }
-
-
 }
