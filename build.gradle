@@ -81,10 +81,10 @@ okbuck {
             ]
             ,'sellerappDebug': [
                     "android_binary": ["trim_resource_ids = True"] as Set
-    ]
+            ]
             ,'posappDebug': [
                     "android_binary": ["trim_resource_ids = True"] as Set
-    ]
+            ]
     ]
 
     primaryDexPatterns = [
