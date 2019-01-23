@@ -1,9 +1,11 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +28,9 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
@@ -42,14 +47,16 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+    private AccountTypeFactory accountTypeFactory;
     private SellerAccountAdapter adapter;
 
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
+    private boolean hasShownShowCase;
 
-    public static Fragment newInstance() {
-        Fragment fragment = new SellerAccountFragment();
+    public static SellerAccountFragment newInstance() {
+        SellerAccountFragment fragment = new SellerAccountFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
@@ -77,7 +84,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
+        accountTypeFactory = new AccountTypeFactory(this);
+        adapter = new SellerAccountAdapter(accountTypeFactory, new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
         if (getContext() != null) {
@@ -93,7 +101,38 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         if (isVisibleToUser && !isLoaded) {
             getData();
             isLoaded = !isLoaded;
+        } else if (isVisibleToUser) {
+            setShowCase(getContext());
         }
+    }
+
+    private void setShowCase(Context context) {
+        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, SellerAccountFragment.class.getName())) {
+
+            hasShownShowCase = true;
+            createShowCaseDialog().show((Activity) context,
+                    SellerAccountFragment.class.getName(),
+                    accountTypeFactory.getShowCaseObjectList()
+            );
+        }
+    }
+
+    @SuppressLint("PrivateResource")
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.show_case_saldo)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.dp_12)
+                .arrowWidth(R.dimen.dp_16)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .textSizeRes(R.dimen.sp_12)
+                .finishStringRes(R.string.intro_seller_saldo_finish_string)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .build();
     }
 
     private void getData() {
@@ -107,9 +146,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             adapter.clearAllElements();
             adapter.setElement(model.getItems());
         }
-
-        // TODO: 23/1/19 show showcase dialog for saldo toko
-
     }
 
     @Override

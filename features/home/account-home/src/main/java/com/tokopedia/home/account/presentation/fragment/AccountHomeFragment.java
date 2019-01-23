@@ -18,17 +18,14 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
@@ -59,6 +56,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private int counterNumber = 0;
 
     private AccountAnalytics accountAnalytics;
+    private SellerAccountFragment sellerAccountFragment;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -106,8 +104,9 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             item.setTitle(getContext().getString(R.string.label_account_buyer));
             fragmentItems.add(item);
 
+            sellerAccountFragment = SellerAccountFragment.newInstance();
             item = new AccountFragmentItem();
-            item.setFragment(SellerAccountFragment.newInstance());
+            item.setFragment(sellerAccountFragment);
             item.setTitle(getContext().getString(R.string.label_account_seller));
             fragmentItems.add(item);
 
@@ -168,6 +167,26 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (sellerAccountFragment != null && sellerAccountFragment.isVisible()) {
+                    sellerAccountFragment.setUserVisibleHint(true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         onNotifyBadgeNotification(counterNumber);
     }
