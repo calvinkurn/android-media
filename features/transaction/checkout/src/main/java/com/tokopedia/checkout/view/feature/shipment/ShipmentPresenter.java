@@ -170,7 +170,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
                              IVoucherCouponMapper voucherCouponMapper,
                              UserSessionInterface userSessionInterface,
-                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection
+                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics) {
         this.checkPromoCodeFinalUseCase = checkPromoCodeFinalUseCase;
         this.compositeSubscription = compositeSubscription;
