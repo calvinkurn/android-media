@@ -522,6 +522,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onErrorEmptyEmailPhone() {
+        dismissLoadingLogin()
         partialRegisterInputView.onErrorValidate(getString(R.string.must_insert_email_or_phone))
     }
 
