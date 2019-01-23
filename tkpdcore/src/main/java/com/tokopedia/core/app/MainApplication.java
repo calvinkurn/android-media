@@ -12,6 +12,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -318,10 +319,8 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.GTM, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.APPSFLYER, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.MOENGAGE, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.setMoEngageExistingUser(this, getTkpdCoreRouter().legacySessionHandler().isLoggedIn());
+        TrackingUtils.runAppsFylerFirstTime(this);
+        TrackingUtils.runMoengageFirstTime(this);
         TrackingUtils.enableDebugging(this, isDebug());
     }
 

@@ -10,21 +10,25 @@ import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by meta on 22/06/18.
  */
 public class MainToolbar extends Toolbar {
 
+    private final static String TAG_INBOX = "inbox";
+
     private ImageButton btnNotification;
     private ImageButton btnWishlist;
     private BadgeView badgeView;
 
     private SearchBarAnalytics searchBarAnalytics;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     private String screenName = "";
 
@@ -54,9 +58,19 @@ public class MainToolbar extends Toolbar {
         }
     }
 
+    public void showInboxIconForAbTest(boolean shouldShowInbox) {
+        if (shouldShowInbox) {
+            btnWishlist.setTag(TAG_INBOX);
+            btnWishlist.setImageResource(R.drawable.ic_inbox_searcbar);
+        } else {
+            btnWishlist.setTag("");
+            btnWishlist.setImageResource(R.drawable.ic_wishlist_searchbar);
+        }
+    }
+
     private void init(Context context, @Nullable AttributeSet attrs) {
 
-        userSession = ((AbstractionRouter) this.getContext().getApplicationContext()).getSession();
+        userSession = new UserSession(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
         inflate(context, R.layout.main_toolbar, this);
@@ -83,17 +97,23 @@ public class MainToolbar extends Toolbar {
         btnQrCode.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSqanQr();
             getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoQrScannerPage());
+                    .gotoQrScannerPage(false));
         });
 
         btnWishlist.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingWishlist(screenName);
             if (userSession.isLoggedIn()) {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoWishlistPage(getContext()));
+                if (btnWishlist.getTag() != null && btnWishlist.getTag().toString()
+                        .equalsIgnoreCase(TAG_INBOX)) {
+                    searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
+                    getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                            .gotoInboxMainPage(getContext()));
+                } else {
+                    searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
+                    getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                            .gotoWishlistPage(getContext()));
+                }
             } else {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .getLoginIntent(getContext()));
+                RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
 
@@ -105,11 +125,9 @@ public class MainToolbar extends Toolbar {
         btnNotification.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingNotification(screenName);
             if (userSession.isLoggedIn()) {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoNotificationPage(getContext()));
+                RouteManager.route(context, ApplinkConst.NOTIFICATION);
             } else {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .getLoginIntent(getContext()));
+                RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
     }

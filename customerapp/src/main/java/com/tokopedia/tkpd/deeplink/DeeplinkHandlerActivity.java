@@ -62,6 +62,8 @@ import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
@@ -184,7 +186,8 @@ import io.branch.referral.BranchError;
         PhoneVerificationApplinkModule.class,
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
-        SaldoDetailsAppLinkModule.class
+        SaldoDetailsAppLinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -244,7 +247,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new PhoneVerificationApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
-                    new SaldoDetailsAppLinkModuleLoader()
+                    new SaldoDetailsAppLinkModuleLoader(),
+                    new HomeCreditAppLinkModuleLoader()
             );
         }
 

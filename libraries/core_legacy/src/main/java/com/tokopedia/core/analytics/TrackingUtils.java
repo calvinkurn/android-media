@@ -497,10 +497,6 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine(context).sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
     }
 
-    public static String eventHTTP(Context context) {
-        return getGTMEngine(context).eventHTTP();
-    }
-
     public static void eventError(Context context,String className, String errorMessage) {
         getGTMEngine(context)
                 .eventError(className, errorMessage);
@@ -574,22 +570,6 @@ public class TrackingUtils extends TrackingConfig {
         return getGTMEngine(context).getClientIDString();
     }
 
-    public static String getGtmString(Context context, String key) {
-        return getGTMEngine(context).getString(key);
-    }
-
-    public static boolean getBoolean(Context context, String key) {
-        return getGTMEngine(context).getBoolean(key);
-    }
-
-    public static long getLong(Context context, String key) {
-        return 0;
-    }
-
-    public static double getDouble(Context context, String key) {
-        return getGTMEngine(context).getDouble(key);
-    }
-
     public static String getAfUniqueId(Context context) {
         return getAFEngine(context).getUniqueId();
     }
@@ -657,6 +637,12 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrObject(entry.getKey(), entry.getValue());
         }
         getMoEngine(context).sendEvent(builder.build(), eventName);
+    }
+
+    public static void sendInstallSourceEvent(Context context) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.PARTNER_SOURCE, "source_apk");
+        getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.PARTNER_REFERRAL);
     }
 }
 

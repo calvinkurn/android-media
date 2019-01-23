@@ -71,14 +71,13 @@ import rx.Subscriber;
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
-    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
+    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
+    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
-    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
-
 
     private final Activity context;
     private final DeepLinkView viewListener;

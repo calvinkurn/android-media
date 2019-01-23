@@ -890,37 +890,6 @@ public interface AppEventTracking {
 
     interface GTM {
         String GA_ID = "GA_ID";
-        String GTM_ID = "GTM_ID";
-        String GTM_RESOURCE = "GTM_RESOURCE";
-
-        String LUCKY_BUYER = "msg_lucky_buyer";
-        String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
-        String LUCKY_BUYER_VALID = "msg_lucky_valid";
-
-        String LUCKY_MERCHANT = "msg_lucky_merchant";
-        String LUCKY_MERCHANT_DETAIL = "msg_lucky_merchant_detail";
-        String OVERRIDE_BANNER = "is_override_url_banner";
-        String CREATE_TICKET = "is_create_ticket";
-        String REPORT = "enable_report";
-        String CONTACT_US = "disable_contactus";
-        String TICKER_SEARCH = "is_show_ticker_search";
-        String TICKER_SEARCH_TEXT = "ticker_text_search";
-        String FILTER_SORT = "sort_filter_data";
-        String EXCLUDED_URL = "excluded-url";
-        String EXCLUDED_HOST = "excluded-host";
-
-        String TICKER_PDP = "is_show_ticker_pdp";
-        String TICKER_PDP_TEXT = "ticker_text_pdp";
-        String TICKER_CART = "is_show_ticker_cart";
-        String TICKER_CART_TEXT = "ticker_text_cart";
-        String TICKER_ATC = "is_show_ticker_atc";
-        String TICKER_ATC_TEXT = "ticker_text_atc";
-
-        String SEARCH_RECENT = "recent_search";
-        String SEARCH_POPULAR = "popular_search";
-        String SEARCH_AUTOCOMPLETE = "autocomplete";
-        String SEARCH_HOTLIST = "hotlist";
-        String SEARCH_AUTOCOMPLETE_IN_CAT = "in_category";
 
         String UTM_SOURCE = "utm_source";
         String UTM_MEDIUM = "utm_medium";
@@ -935,8 +904,6 @@ public interface AppEventTracking {
         String UTM_CONTENT_APPEND = "&" + UTM_CONTENT + "=";
         String UTM_TERM_APPEND = "&" + UTM_TERM + "=";
         String UTM_GCLID_APPEND = "&" + UTM_GCLID + "=";
-
-        String RESOLUTION_CENTER_UPLOAD_VIDEO = "upload_video_resolution_center";
     }
 
     interface MOENGAGE {
@@ -998,6 +965,7 @@ public interface AppEventTracking {
         String HOTLIST_ID = "hotlist_id";
         String CITY = "city";
 
+        String PARTNER_SOURCE = "partner_source";
     }
 
     interface EventMoEngage {
@@ -1024,6 +992,7 @@ public interface AppEventTracking {
         String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
         String REFERRAL_SHARE_EVENT = "Share_Event";
         String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";
+        String PARTNER_REFERRAL = "Partner_Referred";
     }
 
 

@@ -17,42 +17,54 @@ import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class InboxBottomSheetFragment extends BottomSheetDialogFragment {
-    @BindView(R2.id.rv_filter)
-    VerticalRecyclerView rvBottomSheet;
+public abstract class InboxBottomSheetFragment extends BottomSheetDialogFragment {
+
     @BindView(R2.id.tv_bottom_sheet_title)
     TextView title;
 
-    private int titleID;
+    private static String RESID = "RES_ID";
 
-    RecyclerView.Adapter mAdapter;
+    private int layoutID;
 
 
     public InboxBottomSheetFragment() {
     }
 
-    public void setAdapter(RecyclerView.Adapter adapter, int titleid) {
-        mAdapter = adapter;
-        titleID = titleid;
+    abstract public void setAdapter(RecyclerView.Adapter adapter);
+    abstract public void setPresenter(InboxBaseContract.InboxBasePresenter presenter);
+
+    public static InboxBottomSheetFragment getBottomSheetFragment(int resID) {
+        InboxBottomSheetFragment fragment = null;
+        if (resID == R.layout.layout_bottom_sheet_fragment) {
+            fragment = new BottomSheetListFragment();
+        } else if (resID == R.layout.layout_bad_csat) {
+            fragment = new BottomSheetButtonsFragment();
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(RESID, resID);
+        if (fragment != null)
+            fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        layoutID = getArguments().getInt(RESID, R.layout.layout_bottom_sheet_fragment);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.layout_bottom_sheet_fragment, container, false);
+        View contentView = inflater.inflate(layoutID, container, false);
         ButterKnife.bind(this, contentView);
-        rvBottomSheet.setAdapter(mAdapter);
-        title.setText(titleID);
         getDialog().setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
             View bottomSheetInternal = d.findViewById(R.id.design_bottom_sheet);

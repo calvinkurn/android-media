@@ -18,6 +18,11 @@ fun ProductData.getShareContent(shortUrl: String):String{
                 PLACEHOLDER_LINK, if(shortUrl != null) shortUrl else "",
                 PLACEHOLDER_NEW_LINE, "\r\n")
     }
-    else
-        return shortUrl
+    else {
+        var content = ""
+        if (!productName.isNullOrEmpty()){
+            content = "Temukan $productName seharga $priceText hanya di Tokopedia!\n"
+        }
+        return "$content$shortUrl"
+    }
 }
