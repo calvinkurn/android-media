@@ -5,6 +5,7 @@
         <service
             android:name=".worker.SendDataService"
             android:exported="false" />
-    </application>
 
+        <receiver android:name=".TestingService" />
+    </application>
 </manifest>

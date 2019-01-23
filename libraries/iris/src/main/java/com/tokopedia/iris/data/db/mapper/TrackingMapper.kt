@@ -45,7 +45,7 @@ class TrackingMapper {
             } catch (e: IndexOutOfBoundsException) {
                 null
             }
-            val userId: String = nextItem?.userId ?: ""
+            val userId : String = nextItem?.userId ?: ""
             if (userId != item.userId) {
                 if (event.length() > 0) {
                     row.put("event_data", event)

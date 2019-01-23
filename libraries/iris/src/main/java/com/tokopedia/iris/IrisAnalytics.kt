@@ -11,17 +11,29 @@ import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import android.widget.Toast
+import android.app.AlarmManager
+import android.content.Context.ALARM_SERVICE
+import android.app.PendingIntent
+import android.content.Intent
+
+
 
 /**
  * @author okasurya on 10/2/18.
  */
-class IrisAnalytics(context: Context) : Iris {
+class IrisAnalytics(private val context: Context) : Iris {
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {
         GlobalScope.launch {
-            setWorkManager(config)
+//            setWorkManager(config)
+
+            val intent = Intent(context, TestingService::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(context, 234, intent, 0)
+            val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5 * 1000, pendingIntent)
         }
     }
 
