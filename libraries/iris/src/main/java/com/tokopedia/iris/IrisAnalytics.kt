@@ -28,12 +28,7 @@ class IrisAnalytics(private val context: Context) : Iris {
 
     override fun setService(config: Configuration) {
         GlobalScope.launch {
-//            setWorkManager(config)
-
-            val intent = Intent(context, TestingService::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(context, 234, intent, 0)
-            val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5 * 1000, pendingIntent)
+            setWorkManager(config)
         }
     }
 
