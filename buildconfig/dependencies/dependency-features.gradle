@@ -192,6 +192,7 @@ ext {
             flightDbFlow                  : ":features:digital:flight_dbflow",
 //            flight_no_op                : ":features:digital:flight_no_op",
             train                         : ":features:digital:train",
+//            train                         : ":features:digital:train_no_op",
 
             home                          : ":features:discovery:home",
             //home                          : ":features:discovery:home_no_op",
