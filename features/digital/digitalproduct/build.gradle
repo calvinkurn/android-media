@@ -49,7 +49,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.gson

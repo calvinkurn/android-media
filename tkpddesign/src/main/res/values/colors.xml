@@ -111,4 +111,9 @@
 
     <color name="tkpd_light_green">#008000</color>
     <color name="tkpd_prod_price">#B44141</color>
+
+    <!-- will be deleted, ampasan dari core -->
+    <color name="grey_title">#888888</color>
+    <color name="shadow_1">#00CCCCCC</color>
+    <color name="grey_400">#bdbdbd</color>
 </resources>

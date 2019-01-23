@@ -31,7 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply from: '../../../publish_local.gradle'
