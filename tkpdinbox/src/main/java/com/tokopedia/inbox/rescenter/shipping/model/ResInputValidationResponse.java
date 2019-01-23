@@ -19,10 +19,6 @@ public class ResInputValidationResponse {
     @Expose
     private ResInputResponseData resInputResponseData;
 
-    @SerializedName("cache_key")
-    @Expose
-    private String cacheKey;
-
     public String getStatus() {
         return status;
     }
@@ -45,13 +41,5 @@ public class ResInputValidationResponse {
 
     public void setResInputResponseData(ResInputResponseData resInputResponseData) {
         this.resInputResponseData = resInputResponseData;
-    }
-
-    public String getCacheKey() {
-        return cacheKey;
-    }
-
-    public void setCacheKey(String cacheKey) {
-        this.cacheKey = cacheKey;
     }
 }

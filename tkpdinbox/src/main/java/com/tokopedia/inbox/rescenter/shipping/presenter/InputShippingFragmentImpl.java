@@ -309,6 +309,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         inputAWBRequest.setAwbNum(params.getShippingNumber());
         inputAWBRequest.setCourierId(Integer.parseInt(params.getShippingID()));
 
+        if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0)
+            inputAWBRequest.setAttachmentCount(params.getAttachmentList().size());
+
         AWBRequest = inputAWBRequest;
 
         Map<String, Object> variables = new HashMap<>();
@@ -335,6 +338,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         editAWBRequest.setAwbNum(params.getShippingNumber());
         editAWBRequest.setConversationId(Integer.parseInt(params.getConversationID()));
         editAWBRequest.setCourierId(Integer.parseInt(params.getShippingID()));
+
+        if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0)
+            editAWBRequest.setAttachmentCount(params.getAttachmentList().size());
 
         AWBRequest = editAWBRequest;
 
@@ -621,7 +627,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                     if (!messageError.isEmpty())
                         throw new RuntimeException(messageError.get(0));
                     else
-                        cacheKey = editAWBResponse.getResInputValidationResponse().getCacheKey();
+                        cacheKey = editAWBResponse.getResInputValidationResponse().getResInputResponseData().getCacheKey();
                 }
             } else {
                 InputAWBResponse inputAWBResponse = graphqlResponse.getData(InputAWBResponse.class);
@@ -630,7 +636,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                     if (!messageError.isEmpty())
                         throw new RuntimeException(messageError.get(0));
                     else
-                        cacheKey = inputAWBResponse.getResInputValidationResponse().getCacheKey();
+                        cacheKey = inputAWBResponse.getResInputValidationResponse().getResInputResponseData().getCacheKey();
                 }
             }
             AWBRequest.setCacheKey(cacheKey);
