@@ -2,6 +2,7 @@ package com.tokopedia.iris.data.network
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.iris.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by meta on 21/11/18.
  */
-class ApiService(context: Context) {
+class ApiService(private val context: Context) {
 
     private val session: Session = IrisSession(context)
 
@@ -27,7 +28,7 @@ class ApiService(context: Context) {
     }
 
     private fun createClient(): OkHttpClient {
-        return OkHttpClient.Builder()
+         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
                 .addInterceptor {
                     val original = it.request()
                     val request = original.newBuilder()
@@ -44,7 +45,11 @@ class ApiService(context: Context) {
                 .connectTimeout(15000, TimeUnit.MILLISECONDS)
                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
-                .build()
+
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(ChuckInterceptor(context))
+        }
+        return builder.build()
     }
 
     companion object {

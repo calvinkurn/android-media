@@ -36,7 +36,6 @@ const val MAX_ROW = "MAX_ROW"
 
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app" // default_app
-//const val KEY_EVENT_GA = "testing datahub Android"
 
 const val DEFAULT_SERVICE_TIME: Long = 900000
 const val DEFAULT_MAX_ROW = 50

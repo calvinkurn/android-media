@@ -2,11 +2,11 @@ package com.tokopedia.iris.data.db.mapper
 
 import com.tokopedia.iris.KEY_CONTAINER
 import com.tokopedia.iris.KEY_EVENT
-import com.tokopedia.iris.KEY_EVENT_GA
 import com.tokopedia.iris.data.db.table.Tracking
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 
 /**
  * Created by meta on 23/11/18.
@@ -20,7 +20,8 @@ class TrackingMapper {
         val row = JSONObject()
         val event = JSONArray()
 
-        event.put(addSessionToEvent(track, sessionId))
+        val timeStamp = Calendar.getInstance().timeInMillis
+        event.put(addSessionToEvent(track, sessionId, timeStamp))
 
         row.put("device_id", deviceId)
         row.put("user_id", userId)
@@ -39,7 +40,7 @@ class TrackingMapper {
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
-            event.put(addSessionToEvent(item.event, item.sessionId))
+            event.put(addSessionToEvent(item.event, item.sessionId, item.timeStamp))
             val nextItem: Tracking? = try {
                 tracking[i+1]
             } catch (e: IndexOutOfBoundsException) {
@@ -60,16 +61,17 @@ class TrackingMapper {
         return result.toString()
     }
 
-    fun addSessionToEvent(event: String, sessionId: String) : JSONObject {
+    fun addSessionToEvent(event: String, sessionId: String, timeStamp: Long) : JSONObject {
         return try {
-            var item = JSONObject(event)
+            val item = JSONObject(event)
             if (item.get("event") != null) {
                 item.put("event_ga", item.get("event"))
-                item.remove("event") // move this to actionSaveToDb
+                item.remove("event")
             }
             item.put("iris_session_id", sessionId)
             item.put("container", KEY_CONTAINER)
             item.put("event", KEY_EVENT)
+            item.put("hits_time", timeStamp.toString())
             item
         } catch (e: JSONException) {
             JSONObject()
