@@ -1731,7 +1731,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
         InteruptViewModel interuptViewModel = model.getInteruptViewModel();
         if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
-            ImageHandler.loadImageRounded2(this, (ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl());
+            ImageHandler.loadImage2((ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl(), R.drawable.loading_page);
             view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
                 if (!TextUtils.isEmpty(interuptViewModel.getImageLink())) {
                     startApplink(interuptViewModel.getImageLink());
