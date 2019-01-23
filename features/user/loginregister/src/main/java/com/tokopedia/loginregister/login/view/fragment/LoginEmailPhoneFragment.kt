@@ -247,7 +247,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }, sourceString.indexOf("Daftar"), sourceString.length, 0)
 
             register_button.setText(spannable, TextView.BufferType.SPANNABLE)
-            register_button.setOnClickListener{
+            register_button.setOnClickListener {
                 goToRegisterInitial()
             }
 
@@ -718,6 +718,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun enableArrow() {
         //NOT IMPLEMENTED
+    }
+
+    override fun onBackPressed() {
+        if (partialRegisterInputView.findViewById<TextView>(R.id.change_button).visibility ==
+                View.VISIBLE) {
+            val email = emailPhoneEditText.text.toString()
+            onChangeButtonClicked()
+            emailPhoneEditText.setText(email)
+        } else if (activity != null) {
+            activity?.finish()
+        }
     }
 
 }

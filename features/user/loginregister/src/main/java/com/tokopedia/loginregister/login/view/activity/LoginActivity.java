@@ -17,8 +17,10 @@ import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
+import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.loginregister.R;
 
 /**
  * @author by nisie on 10/1/18.
@@ -129,5 +131,16 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
     public LoginRegisterComponent getComponent() {
         return DaggerLoginRegisterComponent.builder().baseAppComponent(((BaseMainApplication)
                 getApplication()).getBaseAppComponent()).build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                LoginEmailPhoneContract.View) {
+            ((LoginEmailPhoneContract.View) getSupportFragmentManager().findFragmentById(R.id
+                    .parent_view)).onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
