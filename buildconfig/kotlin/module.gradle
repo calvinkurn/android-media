@@ -62,7 +62,7 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt 'com.google.guava:guava:21.0'
+    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson

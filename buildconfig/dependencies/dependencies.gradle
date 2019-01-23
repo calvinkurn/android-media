@@ -154,7 +154,8 @@ ext {
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
-            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
+            guava                 : "com.google.guava:guava:21.0"
     ]
 
     testDependencies = [
