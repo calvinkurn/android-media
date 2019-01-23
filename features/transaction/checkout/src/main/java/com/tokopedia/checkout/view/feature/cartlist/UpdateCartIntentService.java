@@ -42,7 +42,7 @@ public class UpdateCartIntentService extends IntentService {
                 updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
             }
             if (userSession == null) {
-                //userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
+                userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
             }
         }
 
