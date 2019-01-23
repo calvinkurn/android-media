@@ -125,7 +125,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         if (isMaintenance(bodyResponse)) {
             ServerErrorHandler.showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            ServerErrorHandler.showServerErrorSnackbar();
             ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(),
                     response.code());
         } else if (isForbiddenRequest(bodyResponse, response.code())
