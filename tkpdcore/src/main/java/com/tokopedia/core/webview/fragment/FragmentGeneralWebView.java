@@ -27,7 +27,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -37,6 +37,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core2.R;
 
 import java.net.URLDecoder;
 
@@ -378,7 +379,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     }
                 }
             }
-            if (callbackAfterL!= null) {
+            if (callbackAfterL != null) {
                 callbackAfterL.onReceiveValue(results);
                 callbackAfterL = null;
             }
@@ -468,6 +469,16 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     openDigitalPage(applink);
                     return true;
                 }
+            } else if (getActivity() != null
+                    && Uri.parse(url).getScheme().equalsIgnoreCase(ApplinkConst.APPLINK_BACK)
+                    && !getActivity().isTaskRoot()) {
+                getActivity().finish();
+                return true;
+            } else if (getActivity() != null
+                    && Uri.parse(url).getScheme().equalsIgnoreCase(ApplinkConst.APPLINK_BACK)
+                    && !getActivity().isTaskRoot()) {
+                openHomePage();
+                return true;
             }
             return overrideUrl(url);
         }
@@ -482,6 +493,16 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void openHomePage() {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+            startActivity(((TkpdCoreRouter) getActivity().getApplicationContext()).getHomeIntent
+                    (getActivity()));
+            getActivity().finish();
         }
     }
 

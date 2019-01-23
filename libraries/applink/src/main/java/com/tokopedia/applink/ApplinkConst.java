@@ -184,6 +184,7 @@ public interface ApplinkConst {
 
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
+    String APPLINK_BACK = "tokopedia://back";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
