@@ -9,10 +9,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 
 data class ProfileViewModel(
+        var profileId: Int = 0,
+        var addressId: Int = 0,
         var templateTitle: String = "",
         var isMainTemplate: Boolean = false,
         var addressTitle: String = "",
         var addressDetail: String = "",
+        var cityName: String = "",
+        var districtName: String = "",
         var paymentImageUrl: String = "",
         var paymentDetail: String = "",
         var durationDetail: String = "",
@@ -21,8 +25,12 @@ data class ProfileViewModel(
 ) : Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
+            parcel?.readInt() ?: 0,
+            parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             parcel?.readByte() != 0.toByte(),
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
@@ -33,10 +41,14 @@ data class ProfileViewModel(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(profileId)
+        parcel.writeInt(addressId)
         parcel.writeString(templateTitle)
         parcel.writeByte(if (isMainTemplate) 1 else 0)
         parcel.writeString(addressTitle)
         parcel.writeString(addressDetail)
+        parcel.writeString(cityName)
+        parcel.writeString(districtName)
         parcel.writeString(paymentImageUrl)
         parcel.writeString(paymentDetail)
         parcel.writeString(durationDetail)

@@ -32,9 +32,10 @@
                 android:textColor="#8a000000"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                tools:text="Lanjutkan Tanpa Template" />
+                android:text="Lanjutkan Tanpa Template" />
 
             <TextView
+                android:id="@+id/tv_change_no_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -43,7 +44,7 @@
                 android:textColor="#42b549"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                tools:text="Ubah" />
+                android:text="Ubah" />
         </LinearLayout>
 
         <LinearLayout

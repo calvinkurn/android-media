@@ -6,8 +6,7 @@
     android:foreground="?selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:padding="@dimen/dp_16">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -16,6 +15,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_marginBottom="@dimen/dp_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -42,21 +42,22 @@
                 android:paddingTop="@dimen/dp_2"
                 android:paddingRight="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_2"
+                android:text="Utama"
                 android:textColor="@color/text_main_address"
-                android:textSize="10sp"
-                android:text="Utama" />
+                android:textSize="10sp" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/tv_profile_address"
+            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:ellipsize="end"
             android:lineSpacingExtra="6sp"
-            android:textColor="#8a000000"
-            android:textSize="12sp"
-            tools:text="Kantor (Tokopedia Tower Lt. 45, Jl…)" />
+            android:maxLines="1"
+            tools:text="Rumah (Tokopedia Tower Lt. 45, Jl. Raya gdaf afghi dshf ksdf skdfbk ksdhbf)" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,6 +75,8 @@
                 android:id="@+id/tv_payment_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="6sp"
                 android:textColor="#8a000000"

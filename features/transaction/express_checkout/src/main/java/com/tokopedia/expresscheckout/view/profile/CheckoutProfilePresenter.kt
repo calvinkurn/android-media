@@ -5,6 +5,10 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.data.entity.response.profile.ProfileListGqlResponse
+import com.tokopedia.expresscheckout.data.entity.response.profile.ProfileResponse
+import com.tokopedia.expresscheckout.domain.model.profile.ProfileResponseModel
+import com.tokopedia.expresscheckout.view.profile.mapper.ViewModelMapper
+import com.tokopedia.expresscheckout.view.profile.subscriber.GetProfileListSubscriber
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 
@@ -15,6 +19,7 @@ import com.tokopedia.usecase.RequestParams
 class CheckoutProfilePresenter : BaseDaggerPresenter<CheckoutProfileContract.View>(), CheckoutProfileContract.Presenter {
 
     private val getProfileListUseCase = GraphqlUseCase()
+    private lateinit var viewModelMapper: ViewModelMapper
 
     override fun attachView(view: CheckoutProfileContract.View?) {
         super.attachView(view)
@@ -33,6 +38,11 @@ class CheckoutProfilePresenter : BaseDaggerPresenter<CheckoutProfileContract.Vie
         getProfileListUseCase.addRequest(graphqlRequest)
         getProfileListUseCase.execute(RequestParams.create(), GetProfileListSubscriber(view, this))
 
+    }
+
+    override fun prepareViewModel(profileResponseModel: ProfileResponseModel) {
+        viewModelMapper = ViewModelMapper()
+        view?.setData(viewModelMapper.convertToViewModels(profileResponseModel))
     }
 
 }

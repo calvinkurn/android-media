@@ -3,6 +3,7 @@ package com.tokopedia.expresscheckout.view.profile
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.expresscheckout.domain.model.profile.ProfileResponseModel
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 
 /**
@@ -19,14 +20,14 @@ interface CheckoutProfileContract {
 
         fun getActivityContext(): Context?
 
-        fun showToasterError(message: String?)
-
         fun setData(data: ArrayList<ProfileViewModel>)
     }
 
     interface Presenter : CustomerPresenter<View> {
 
         fun loadData()
+
+        fun prepareViewModel(profileResponseModel: ProfileResponseModel)
     }
 
 }

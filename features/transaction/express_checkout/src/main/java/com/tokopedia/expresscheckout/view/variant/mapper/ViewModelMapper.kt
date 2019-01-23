@@ -223,6 +223,7 @@ class ViewModelMapper : DataMapper {
     override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
         val userProfileModel: ProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
         val profileViewModel = ProfileViewModel()
+        profileViewModel.profileId = userProfileModel?.id ?: 0
         profileViewModel.addressId = userProfileModel?.addressModel?.addressId ?: 0
         profileViewModel.districtName = userProfileModel?.addressModel?.districtName ?: ""
         profileViewModel.cityName = userProfileModel?.addressModel?.cityName ?: ""
@@ -235,7 +236,7 @@ class ViewModelMapper : DataMapper {
         profileViewModel.isDefaultProfileCheckboxChecked = false
         profileViewModel.isDurationError = false
         profileViewModel.isEditable = false
-        profileViewModel.isSelected = false
+        profileViewModel.isSelected = true
         profileViewModel.isShowDefaultProfileCheckBox = false
         profileViewModel.isStateHasChangedProfile = false
         profileViewModel.isStateHasRemovedProfile = false

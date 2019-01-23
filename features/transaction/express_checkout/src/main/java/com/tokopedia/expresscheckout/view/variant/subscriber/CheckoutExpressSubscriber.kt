@@ -25,8 +25,9 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
         view?.hideLoadingDialog()
         val expressCheckoutResponse = response.getData<CheckoutExpressGqlResponse>(CheckoutExpressGqlResponse::class.java)
         if (expressCheckoutResponse.checkoutResponse.header.errorCode.equals("200")) {
-
+            // Todo : Navigate to thank you page
         } else {
+            // Todo : show bottomsheet error
             view?.showBottomsheetError("Checkout error", "Checkout error", "Checkout error")
         }
     }

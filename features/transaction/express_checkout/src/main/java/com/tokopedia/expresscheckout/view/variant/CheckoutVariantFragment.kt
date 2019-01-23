@@ -22,6 +22,7 @@ import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListener
+import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
@@ -107,6 +108,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance()
         checkoutProfileBottomSheet = CheckoutProfileBottomSheet.newInstance()
+        checkoutProfileBottomSheet.setListener(this)
 
         return view
     }
@@ -190,10 +192,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onBindProfile() {
-        checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
+
     }
 
     override fun onClickEditProfile() {
+        checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
         checkoutProfileBottomSheet.show(activity?.supportFragmentManager, "")
     }
 
@@ -599,7 +602,41 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onContinueWithoutProfile() {
+        val profileViewModel = fragmentViewModel.getProfileViewModel()
+        if (profileViewModel != null) {
+            profileViewModel.isStateHasRemovedProfile = true
+            profileViewModel.isSelected = false
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
+        }
+        checkoutProfileBottomSheet.dismiss()
+    }
 
+    override fun onProfileChanged(selectedProfileViewModel: ProfileViewModel) {
+        val currentProfileViewModel = fragmentViewModel.getProfileViewModel()
+        if (currentProfileViewModel != null) {
+            currentProfileViewModel.addressId = selectedProfileViewModel.addressId
+            currentProfileViewModel.addressDetail = selectedProfileViewModel.addressDetail
+            currentProfileViewModel.addressTitle = selectedProfileViewModel.addressTitle
+            currentProfileViewModel.cityName = selectedProfileViewModel.cityName
+            currentProfileViewModel.districtName = selectedProfileViewModel.districtName
+            currentProfileViewModel.isStateHasRemovedProfile = false
+            currentProfileViewModel.isSelected = true
+            currentProfileViewModel.isDurationError = false
+            currentProfileViewModel.isStateHasChangedProfile = true
+            currentProfileViewModel.isShowDefaultProfileCheckBox = false
+            currentProfileViewModel.isEditable = false
+            currentProfileViewModel.isDefaultProfileCheckboxChecked = false
+            currentProfileViewModel.paymentDetail = selectedProfileViewModel.paymentDetail
+            currentProfileViewModel.paymentOptionImageUrl = selectedProfileViewModel.paymentImageUrl
+            currentProfileViewModel.shippingDurationId = selectedProfileViewModel.durationId
+            currentProfileViewModel.shippingDuration = selectedProfileViewModel.durationDetail
+
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(currentProfileViewModel))
+
+            reloadRatesDebounceListener.onNeedToRecalculateRates(true)
+        }
+
+        checkoutProfileBottomSheet.dismiss()
     }
 
     private fun initUpdateShippingRatesDebouncer() {

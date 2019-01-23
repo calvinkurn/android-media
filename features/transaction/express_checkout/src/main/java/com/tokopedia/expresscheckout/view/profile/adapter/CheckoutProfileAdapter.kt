@@ -16,6 +16,7 @@ class CheckoutProfileAdapter(val data: ArrayList<ProfileViewModel>, val listener
     public fun setData(newData: ArrayList<ProfileViewModel>) {
         data.clear()
         data.addAll(newData)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

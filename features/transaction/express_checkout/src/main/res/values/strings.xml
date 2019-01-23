@@ -4,5 +4,6 @@
     <string name="format_note_counter" formatted="false">%s / %s</string>
     <string name="label_insurance_info_short_yes">Transaksi ini terlindungi asuransi</string>
     <string name="label_insurance_info_short_no">Transaksi ini tidak terlindungi asuransi</string>
+    <string name="title_choose_other_template">Pilih Template Lain</string>
 
 </resources>

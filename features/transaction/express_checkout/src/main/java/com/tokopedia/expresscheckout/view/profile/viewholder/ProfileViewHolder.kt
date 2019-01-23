@@ -3,6 +3,7 @@ package com.tokopedia.expresscheckout.view.profile.viewholder
 import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.text.Html
+import android.text.Spanned
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.expresscheckout.R
@@ -34,19 +35,20 @@ class ProfileViewHolder(val view: View, val listener: CheckoutProfileActionListe
                 itemView.tv_main_template.visibility = View.GONE
             }
 
-            itemView.tv_template_title.text = element.templateTitle
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                itemView.tv_profile_address.text =
-                        Html.fromHtml("<b>${element.addressTitle}</b> ${element.addressDetail}",
-                                Html.FROM_HTML_MODE_LEGACY).toString()
-            } else {
-                itemView.tv_profile_address.text =
-                        Html.fromHtml("<b>${element.addressTitle}</b> ${element.addressDetail}").toString()
-            }
-
+            itemView.tv_template_title.text = "Template ${element.templateTitle}"
+            itemView.tv_profile_address.text = getHtmlFormat("<b>${element.addressTitle}</b> ${element.addressDetail}")
             ImageHandler.loadImageRounded2(itemView.context, itemView.img_payment_method, element.paymentImageUrl)
             itemView.tv_payment_detail.text = element.paymentDetail
-            itemView.tv_shipping_detail.text = element.durationDetail
+            itemView.tv_shipping_detail.text = getHtmlFormat("Durasi <b>${element.durationDetail}</b>")
+            itemView.setOnClickListener { listener.onItemSelected(element) }
+        }
+    }
+
+    private fun getHtmlFormat(text: String): Spanned {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            return Html.fromHtml(text)
         }
     }
 

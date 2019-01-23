@@ -35,8 +35,16 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         }
     }
 
+    public fun setListener(listener: CheckoutProfileFragmentListener) {
+        this.listener = listener
+    }
+
     override fun getLayoutResourceId(): Int {
         return R.layout.fragment_bottomsheet_profile_list
+    }
+
+    override fun title(): String {
+        return getString(R.string.title_choose_other_template)
     }
 
     public fun updateArguments(profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel?) {
@@ -56,7 +64,12 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
 
         adapter = CheckoutProfileAdapter(ArrayList(), this)
 
-        tvContinueWithoutTemplate.setOnClickListener { listener.onContinueWithoutProfile() }
+        tvContinueWithoutTemplate.setOnClickListener {
+            for (profileViewModel: ProfileViewModel in adapter.data) {
+                profileViewModel.isSelected = false
+            }
+            listener.onContinueWithoutProfile()
+        }
         rvProfile.adapter = adapter
         rvProfile.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     }
@@ -74,16 +87,23 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
     }
 
     override fun setData(data: ArrayList<ProfileViewModel>) {
+        val currentSelectedProfile = arguments?.getParcelable(ARGUMENT_DEFAULT_PROFILE_VIEW_MODEL) as com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel
+        for (profileViewModel: ProfileViewModel in data) {
+            if (profileViewModel.profileId == currentSelectedProfile.profileId && currentSelectedProfile.isSelected) {
+                profileViewModel.isSelected = true
+                break
+            }
+        }
         adapter.setData(data)
+        updateHeight()
+    }
+
+    override fun onItemSelected(profileViewModel: ProfileViewModel) {
+        listener.onProfileChanged(profileViewModel)
     }
 
     override fun getActivityContext(): Context? {
         return activity
-    }
-
-    override fun showToasterError(message: String?) {
-        ToasterError.make(view, message
-                ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
     }
 
 }
