@@ -1032,7 +1032,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
 
     private void executeProductShare(ProductData productData){
-        ProductShare productShare = new ProductShare(getActivity());
+        ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
         productShare.share(productData, ()->{
             showProgressLoading();
             return Unit.INSTANCE;

@@ -70,7 +70,6 @@ interface Constants {
              */
             const val TWITTER_DEFAULT = "http://www.twitter.com/intent/tweet?"
             const val WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd"
-            const val GUEST_USER_ADDRESSAL = "memberi";
         }
     }
 

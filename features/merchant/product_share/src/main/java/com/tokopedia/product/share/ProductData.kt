@@ -11,7 +11,7 @@ data class ProductData(
         var shopUrl: String? = "",
         var shopName: String = "",
         var productId: String = "",
-        var productImageUrl: String? = ""
+        var productImageUrl: String? = "",
         var productShareDescription: String = "",
         val PLACEHOLDER_NAME: String = "{{name}}",
         val PLACEHOLDER_LINK: String = "{{branchlink}}",
