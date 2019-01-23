@@ -39,8 +39,7 @@ class TrackingMapper {
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
-            val tempEvent = item.event.replace("\\\\", "")
-            event.put(tempEvent)
+            event.put(JSONObject(item.event))
             val nextItem: Tracking? = try {
                 tracking[i+1]
             } catch (e: IndexOutOfBoundsException) {
