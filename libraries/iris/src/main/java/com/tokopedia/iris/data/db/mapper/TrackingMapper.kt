@@ -36,7 +36,7 @@ class TrackingMapper {
     fun transformListEvent(tracking: List<Tracking>) : String {
         val result = JSONObject()
         val data = JSONArray()
-        val row = JSONObject()
+        var row = JSONObject()
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
@@ -55,6 +55,9 @@ class TrackingMapper {
                 row.put("device_id", item.deviceId)
                 row.put("user_id", item.userId)
                 event = JSONArray()
+            } else {
+                data.put(row)
+                row = JSONObject()
             }
         }
         result.put("data", data)
