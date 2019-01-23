@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +52,7 @@ import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -593,18 +593,42 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
-        Log.d("NIS", "go to Buy")
+        var router = (activity?.application as TopChatRouter)
+        presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
+                shopId)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         var router = (activity?.application as TopChatRouter)
-        presenter.addProductToCart(router, element, onError(), onSuccessAddToCart())
+        presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
+                shopId)
     }
 
-    private fun onSuccessAddToCart(): () -> Unit {
+    private fun onSuccessAddToCart(): (addToCartResult: AddToCartResult) -> Unit {
         return {
-            ToasterNormal.make(view, getString(R.string.success_add_to_cart), ToasterNormal
-                    .LENGTH_SHORT).show()
+            showSnackbarAddToCart(it)
+        }
+    }
+
+    private fun showSnackbarAddToCart(it: AddToCartResult) {
+        if(it.isSuccess) {
+            ToasterNormal.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
+        }else {
+            ToasterError.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
+        }
+    }
+
+    private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartResult) -> Unit {
+        return {
+            showSnackbarAddToCart(it)
+            activity?.startActivity((activity!!.application as TopChatRouter)
+                    .getCartIntent(activity))
+        }
+    }
+
+    private fun onGoCheckout(): () -> Unit {
+        return {
+
         }
     }
 

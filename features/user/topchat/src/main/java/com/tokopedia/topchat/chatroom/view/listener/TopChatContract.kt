@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.common.TopChatRouter
+import com.tokopedia.transaction.common.sharedata.AddToCartResult
 
 /**
  * @author : Steven 11/12/18
@@ -72,7 +73,8 @@ interface TopChatContract {
         fun addProductToCart(router: TopChatRouter,
                              element: ProductAttachmentViewModel,
                              onError: (Throwable) -> Unit,
-                             onSuccess: () -> Unit)
+                             onSuccess: (addToCartResult: AddToCartResult) -> Unit,
+                             shopId: Int)
 
         fun isUploading(): Boolean
 

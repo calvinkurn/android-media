@@ -415,39 +415,41 @@ class TopChatRoomPresenter @Inject constructor(
         return true
     }
 
-    override fun addProductToCart(router: TopChatRouter, element: ProductAttachmentViewModel, onError: (Throwable) -> Unit, onSuccess: () -> Unit) {
+    override fun addProductToCart(
+            router: TopChatRouter,
+            element: ProductAttachmentViewModel,
+            onError: (Throwable) -> Unit,
+            onSuccess: (addToCartResult: AddToCartResult) -> Unit,
+            shopId: Int
+    ) {
         router.addToCartProduct(
                 AddToCartRequest.Builder()
                         .productId(Integer.parseInt(element.productId.toString()))
                         .notes("")
                         .quantity(1)
-                        .shopId(Integer.parseInt(element.fromUid))
+                        .shopId(shopId)
                         .build(),
                 false).subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(addToCartSubscriber())
+                .subscribe(addToCartSubscriber(onError, onSuccess))
     }
 
-    private fun addToCartSubscriber(): Subscriber<AddToCartResult> {
+    private fun addToCartSubscriber(
+            onError: (Throwable) -> Unit,
+            onSuccess: (addToCartResult: AddToCartResult) -> Unit
+    ): Subscriber<AddToCartResult> {
         return object : Subscriber<AddToCartResult>() {
             override fun onCompleted() {
 
             }
 
             override fun onError(e: Throwable) {
-                Log.d("onError", e.toString())
+                onError(e)
             }
 
             override fun onNext(addToCartResult: AddToCartResult) {
-//                view.dismissProgressDialog()
-//                if (addToCartResult.cartId.isEmpty()) {
-//                    wishListView.showAddToCartErrorMessage(addToCartResult.message)
-//                } else {
-//                    wishListView.showAddToCartMessage(addToCartResult.message)
-//                }
-//                wishListView.sendAddToCartAnalytics(dataDetail, addToCartResult)
-                Log.d("onNext", addToCartResult.toString())
+                onSuccess(addToCartResult)
             }
         }
     }

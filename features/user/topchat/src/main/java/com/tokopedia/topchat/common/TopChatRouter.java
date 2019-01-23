@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.common;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,5 +36,7 @@ public interface TopChatRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
+
+    Intent getCartIntent(Activity activity);
 
 }

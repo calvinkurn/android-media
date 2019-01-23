@@ -172,10 +172,10 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             ivATC.setVisibility(View.GONE);
         }
 
-        footerLayout.setVisibility(View.GONE);
-        separator.setVisibility(View.GONE);
-        tvBuy.setVisibility(View.GONE);
-        ivATC.setVisibility(View.GONE);
+//        footerLayout.setVisibility(View.GONE);
+//        separator.setVisibility(View.GONE);
+//        tvBuy.setVisibility(View.GONE);
+//        ivATC.setVisibility(View.GONE);
     }
 
 
