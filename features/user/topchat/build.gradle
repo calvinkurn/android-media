@@ -49,6 +49,8 @@ dependencies {
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation project(rootProject.ext.features.transactioncommon)
+
 
 
     implementation project(rootProject.ext.libraries.graphql)

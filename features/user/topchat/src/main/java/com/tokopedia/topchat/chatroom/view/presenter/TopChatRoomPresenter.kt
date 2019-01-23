@@ -26,12 +26,15 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
+import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
+import com.tokopedia.topchat.common.TopChatRouter
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest
+import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -43,6 +46,8 @@ import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 import java.io.File
@@ -410,8 +415,41 @@ class TopChatRoomPresenter @Inject constructor(
         return true
     }
 
-    override fun addProductToCart(element: ProductAttachmentViewModel, onError: (Throwable) -> Unit, onSuccess: () -> Unit) {
+    override fun addProductToCart(router: TopChatRouter, element: ProductAttachmentViewModel, onError: (Throwable) -> Unit, onSuccess: () -> Unit) {
+        router.addToCartProduct(
+                AddToCartRequest.Builder()
+                        .productId(Integer.parseInt(element.productId.toString()))
+                        .notes("")
+                        .quantity(1)
+                        .shopId(Integer.parseInt(element.fromUid))
+                        .build(),
+                false).subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(addToCartSubscriber())
+    }
 
+    private fun addToCartSubscriber(): Subscriber<AddToCartResult> {
+        return object : Subscriber<AddToCartResult>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                Log.d("onError", e.toString())
+            }
+
+            override fun onNext(addToCartResult: AddToCartResult) {
+//                view.dismissProgressDialog()
+//                if (addToCartResult.cartId.isEmpty()) {
+//                    wishListView.showAddToCartErrorMessage(addToCartResult.message)
+//                } else {
+//                    wishListView.showAddToCartMessage(addToCartResult.message)
+//                }
+//                wishListView.sendAddToCartAnalytics(dataDetail, addToCartResult)
+                Log.d("onNext", addToCartResult.toString())
+            }
+        }
     }
 
     override fun sendProductAttachment(messageId: String, item: ResultProduct,

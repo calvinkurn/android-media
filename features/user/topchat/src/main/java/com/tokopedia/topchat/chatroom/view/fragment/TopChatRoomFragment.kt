@@ -597,7 +597,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        presenter.addProductToCart(element, onError(), onSuccessAddToCart())
+        var router = (activity?.application as TopChatRouter)
+        presenter.addProductToCart(router, element, onError(), onSuccessAddToCart())
     }
 
     private fun onSuccessAddToCart(): () -> Unit {
