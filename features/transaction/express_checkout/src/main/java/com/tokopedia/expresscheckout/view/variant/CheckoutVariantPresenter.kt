@@ -15,7 +15,9 @@ import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.expresscheckout.view.variant.subscriber.AtcExpressSubscriber
 import com.tokopedia.expresscheckout.view.variant.subscriber.CheckoutExpressSubscriber
 import com.tokopedia.expresscheckout.view.variant.subscriber.GetRatesSubscriber
+import com.tokopedia.expresscheckout.view.variant.subscriber.OneClickShipmentSubscriber
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
@@ -23,8 +25,11 @@ import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transactiondata.entity.request.*
 import com.tokopedia.usecase.RequestParams
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -120,23 +125,58 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
     override fun checkout(fragmentViewModel: FragmentViewModel) {
         view.showLoadingDialog()
 
-        val variables = getCheckoutParams(fragmentViewModel)
-
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
-                R.raw.mutation_checkout_express), CheckoutExpressGqlResponse::class.java, variables)
-        checkoutExpressUseCase.clearRequest()
-        checkoutExpressUseCase.addRequest(graphqlRequest)
-        checkoutExpressUseCase.execute(RequestParams.create(), CheckoutExpressSubscriber(view, this))
-
+        if (fragmentViewModel.getProfileViewModel()?.isStateHasRemovedProfile == false) {
+            val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
+                    R.raw.mutation_checkout_express), CheckoutExpressGqlResponse::class.java, getCheckoutExpressParams(fragmentViewModel))
+            checkoutExpressUseCase.clearRequest()
+            checkoutExpressUseCase.addRequest(graphqlRequest)
+            checkoutExpressUseCase.execute(RequestParams.create(), CheckoutExpressSubscriber(view, this))
+        } else {
+            view?.getAddToCartObservable(getCheckoutOcsParams(fragmentViewModel))
+                    ?.subscribeOn(Schedulers.io())
+                    ?.unsubscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(OneClickShipmentSubscriber(view, this));
+        }
     }
 
-    private fun getCheckoutParams(fragmentViewModel: FragmentViewModel): HashMap<String, Any?> {
+    private fun getCheckoutOcsParams(fragmentViewModel: FragmentViewModel): AddToCartRequest {
+        return AddToCartRequest.Builder()
+                .productId(getProductId(fragmentViewModel))
+                .notes(fragmentViewModel.getNoteViewModel()?.note)
+                .quantity(fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                        ?: fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity
+                        ?: 0)
+                .shopId(fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.shopId
+                        ?: 0)
+                .build()
+    }
+
+    private fun getProductId(fragmentViewModel: FragmentViewModel): Int {
+        var productId = 0
+        if (fragmentViewModel.getProductViewModel()?.productChildrenList?.isNotEmpty() == true) {
+            val productChildrenList = fragmentViewModel.getProductViewModel()?.productChildrenList
+            if (productChildrenList != null) {
+                for (productChild: ProductChild in productChildrenList) {
+                    if (productChild.isSelected) {
+                        productId = productChild.productId
+                        break
+                    }
+                }
+            }
+        } else {
+            productId = fragmentViewModel.getProductViewModel()?.parentId ?: 0
+        }
+        return productId
+    }
+
+    private fun getCheckoutExpressParams(fragmentViewModel: FragmentViewModel): HashMap<String, Any?> {
         val dropshipDataCheckoutRequest = DropshipDataCheckoutRequest()
         dropshipDataCheckoutRequest.name = ""
         dropshipDataCheckoutRequest.telpNo = ""
 
         val productDataCheckoutRequest = ProductDataCheckoutRequest()
-        productDataCheckoutRequest.productId = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productId ?: 0
+        productDataCheckoutRequest.productId = getProductId(fragmentViewModel)
         productDataCheckoutRequest.productQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity ?: fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productQuantity ?: 1
         productDataCheckoutRequest.productNotes = fragmentViewModel.getNoteViewModel()?.note
         productDataCheckoutRequest.isPurchaseProtection = false

@@ -12,6 +12,9 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest
+import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import rx.Observable
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -44,9 +47,13 @@ interface CheckoutVariantContract {
 
         fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?)
 
-        fun navigateToOcs()
+        fun navigateAtcToOcs()
 
-        fun navigateToNcf()
+        fun navigateAtcToNcf()
+
+        fun navigateCheckoutToOcs()
+
+        fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult>
 
         fun getActivityContext(): Context?
     }

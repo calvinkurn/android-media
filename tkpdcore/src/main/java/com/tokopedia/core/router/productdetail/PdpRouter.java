@@ -53,7 +53,7 @@ public interface PdpRouter {
 
     Intent getCartIntent(Activity activity);
 
-    Intent getCheckoutIntent(Activity activity);
+    Intent getCheckoutIntent(Context context);
 
     Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam);
 

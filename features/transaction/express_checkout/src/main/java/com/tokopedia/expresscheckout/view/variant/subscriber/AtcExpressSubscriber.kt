@@ -33,8 +33,8 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
         if (expressCheckoutResponse.atcExpress.status.equals("OK")) {
             if (expressCheckoutResponse.atcExpress.data.errors.isNotEmpty()) {
                 when (expressCheckoutResponse.atcExpress.data.errorCode) {
-                    1, 3 -> view?.navigateToOcs()
-                    2, 4 -> view?.navigateToNcf()
+                    1, 3 -> view?.navigateAtcToOcs()
+                    2, 4 -> view?.navigateAtcToNcf()
                     else -> {
                         view?.finishWithError(expressCheckoutResponse.atcExpress.data.errors.joinToString(" "))
                     }

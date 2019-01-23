@@ -37,7 +37,10 @@ import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourie
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
+import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest
+import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber
@@ -440,12 +443,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         fragmentListener.finishWithResult(messages)
     }
 
-    override fun navigateToOcs() {
-        fragmentListener.navigateToOcs()
+    override fun navigateAtcToOcs() {
+        fragmentListener.navigateAtcToOcs()
     }
 
-    override fun navigateToNcf() {
-        fragmentListener.navigateToNcf()
+    override fun navigateAtcToNcf() {
+        fragmentListener.navigateAtcToNcf()
+    }
+
+    override fun navigateCheckoutToOcs() {
+        startActivity(router.getCheckoutIntent(contextView))
+    }
+
+    override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
+        return router.addToCartProduct(addToCartRequest, true)
     }
 
     override fun showBottomsheetError(title: String, message: String, action: String) {

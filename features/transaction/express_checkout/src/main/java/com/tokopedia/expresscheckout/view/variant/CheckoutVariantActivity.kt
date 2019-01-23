@@ -46,13 +46,13 @@ class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentLis
         overridePendingTransition(0, R.anim.push_down)
     }
 
-    override fun navigateToOcs() {
+    override fun navigateAtcToOcs() {
         setResult(RESULT_CODE_NAVIGATE_TO_OCS)
         finish()
         overridePendingTransition(0, 0)
     }
 
-    override fun navigateToNcf() {
+    override fun navigateAtcToNcf() {
         setResult(RESULT_CODE_NAVIGATE_TO_NCF)
         finish()
         overridePendingTransition(0, 0)

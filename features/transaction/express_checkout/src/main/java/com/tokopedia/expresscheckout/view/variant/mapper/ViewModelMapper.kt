@@ -67,6 +67,7 @@ class ViewModelMapper : DataMapper {
                                            typeVariantViewModels: ArrayList<TypeVariantViewModel>): ProductViewModel {
         val productModel: ProductModel? = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
         val productViewModel = ProductViewModel()
+        productViewModel.parentId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productId ?: 0
         productViewModel.productImageUrl = productModel?.productImageSrc200Square ?: ""
         productViewModel.productName = productModel?.productName ?: ""
         productViewModel.minOrderQuantity = productModel?.productMinOrder ?: 0
