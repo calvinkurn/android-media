@@ -229,7 +229,7 @@ repositories {
 afterEvaluate {
     dependencies {
         liveDevImplementation rootProject.ext.instabugDependencies.instabug
-//        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
