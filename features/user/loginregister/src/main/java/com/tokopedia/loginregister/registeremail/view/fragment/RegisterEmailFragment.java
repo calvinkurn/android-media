@@ -175,8 +175,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
 
@@ -762,15 +760,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case RC_SIGN_IN_GOOGLE:
-                if (data != null) {
-                    GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-                    email.setText(googleSignInAccount.getEmail());
-                    if (googleSignInAccount.getDisplayName() != null
-                            && !googleSignInAccount.getDisplayName().equals(googleSignInAccount.getEmail()))
-                        name.setText(googleSignInAccount.getDisplayName());
-                }
-                break;
             case REQUEST_AUTO_LOGIN:
                 if (getActivity() != null && resultCode == Activity.RESULT_OK) {
                     getActivity().setResult(Activity.RESULT_OK);

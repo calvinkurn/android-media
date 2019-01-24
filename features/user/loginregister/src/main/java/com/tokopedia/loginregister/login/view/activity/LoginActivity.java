@@ -13,14 +13,17 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
+import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.loginregister.R;
 
 /**
  * @author by nisie on 10/1/18.
@@ -60,12 +63,14 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
 
     @Override
     protected Fragment getNewFragment() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
 
-        if (GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.LOGIN_REVAMP_UI, true)) {
             return LoginFragment.createInstance(bundle);
         } else {
             return LoginEmailPhoneFragment.Companion.createInstance(bundle);
