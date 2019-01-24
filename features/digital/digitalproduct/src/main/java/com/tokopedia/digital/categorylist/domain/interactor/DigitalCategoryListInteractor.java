@@ -42,9 +42,11 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
     @Override
     public void getTokoCashData(Subscriber<TokoCashData> subscriber) {
         Observable<TokoCashData> observable = digitalModuleRouter.getDigitalTokoCashBalance();
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
+        if (observable != null) {
+            compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber));
+        }
     }
 }

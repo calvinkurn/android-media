@@ -5,7 +5,6 @@ import android.app.Application;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent;
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
-import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
 
 public class DigitalComponentInstance {
     private static DigitalComponent digitalComponent;

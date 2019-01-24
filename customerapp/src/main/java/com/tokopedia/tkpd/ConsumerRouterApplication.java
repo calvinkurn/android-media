@@ -1267,27 +1267,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getLoyaltyActivitySelectedCoupon(Context context, String digitalString, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponActiveAndSelected(
-                context, digitalString, categoryId
-        );
-    }
-
-    @Override
-    public Intent getLoyaltyActivity(Context context, String platform, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponActive(
-                context, platform, categoryId
-        );
-    }
-
-    @Override
-    public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponNotActive(
-                context, platform,
-                categoryId);
-    }
-
-    @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
         Bundle extras = new Bundle();
         extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,

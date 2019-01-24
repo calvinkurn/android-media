@@ -27,6 +27,7 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.gm.common.constant.GMParamConstant;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
@@ -35,7 +36,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -455,7 +455,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
+                    context.startActivity(((DigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalCategoryList());
                     UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
                     break;
@@ -463,8 +463,8 @@ public class DrawerSellerHelper extends DrawerHelper
                     if (remoteConfig.getBoolean(RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
                         intent = SellerOrderListActivity.getInstance(context);
                     else
-                        intent = ((IDigitalModuleRouter) context.getApplication())
-                                .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                        intent = ((DigitalModuleRouter) context.getApplication())
+                                .getWebviewActivityWithIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                         + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
                     context.startActivity(intent);
                     UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);

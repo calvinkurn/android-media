@@ -16,10 +16,11 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent;
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
+import com.tokopedia.digital.newcart.di.DaggerDigitalCartComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.digital.common.di.DigitalComponent;
+import com.tokopedia.digital.newcart.di.DigitalCartComponentInstance;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
@@ -29,7 +30,6 @@ import com.tokopedia.user.session.UserSession;
 public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>, DigitalCartDefaultFragment.InteractionListener, DigitalCartDealsFragment.InteractionListener {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private DigitalCheckoutPassData cartPassData;
-    private DigitalCartComponent component;
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, DigitalCartActivity.class)
@@ -85,26 +85,12 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         cartPassData = getIntent().getParcelableExtra(EXTRA_PASS_DIGITAL_CART_DATA);
-        initInjector();
         super.onCreate(savedInstanceState);
-    }
-
-    private void initInjector() {
-        DigitalCommonComponent digitalCommonComponent = DaggerDigitalCommonComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getApplication()).getBaseAppComponent()).build();
-        DigitalComponent digitalComponent = DaggerDigitalComponent.builder()
-                .digitalCommonComponent(digitalCommonComponent)
-                .build();
-        component = DaggerDigitalCartComponent.builder()
-                .digitalComponent(digitalComponent)
-                .build();
-        component.inject(this);
     }
 
     @Override
     public DigitalCartComponent getComponent() {
-        if (component == null) initInjector();
-        return component;
+        return DigitalCartComponentInstance.getDigitalCartComponent(getApplication());
     }
 
     @Override
