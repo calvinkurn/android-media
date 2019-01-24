@@ -86,7 +86,7 @@ public class DashboardFragment
     @Override
     protected void initInjector() {
         DaggerAffiliateComponent affiliateComponent = (DaggerAffiliateComponent) DaggerAffiliateComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext()).getBaseAppComponent()).build();
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
         DaggerDashboardComponent.builder()
                 .affiliateComponent(affiliateComponent)
@@ -233,9 +233,9 @@ public class DashboardFragment
         }
     }
 
-    public int convertDpToPixel(int dp){
+    public int convertDpToPixel(int dp) {
         DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
-        int px = dp * ((int)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        int px = dp * ((int) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
     }
 
@@ -249,7 +249,7 @@ public class DashboardFragment
                 () -> {
                     presenter.loadDashboardItem(false);
                 }
-                );
+        );
     }
 
     @Override
@@ -274,7 +274,7 @@ public class DashboardFragment
                 error,
                 () -> {
                     presenter.loadMoreDashboardItem(cursor);
-        });
+                });
     }
 
     @Override
@@ -301,6 +301,7 @@ public class DashboardFragment
 
     @Override
     public void goToDeposit() {
+        // TODO: 24/1/19 update app link for buyer/seller saldo tab
         RouteManager.route(getContext(), ApplinkConst.DEPOSIT);
         affiliateAnalytics.onAfterClickSaldo();
     }

@@ -100,4 +100,6 @@ public interface UserSessionInterface {
 
     void setSaldoWithdrawalWaring(boolean value);
 
+    void setSaldoIntroPageStatus(boolean value);
+
 }

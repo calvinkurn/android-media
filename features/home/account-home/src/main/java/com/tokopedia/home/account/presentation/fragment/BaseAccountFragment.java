@@ -37,6 +37,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import java.util.HashMap;
@@ -63,6 +64,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public AccountTypeFactory accountTypeFactory;
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
+    UserSession userSession;
 
     abstract void notifyItemChanged(int position);
 
@@ -70,6 +72,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         accountAnalytics = new AccountAnalytics(getActivity());
+        userSession = new UserSession(getContext());
     }
 
     protected void openApplink(String applink) {
@@ -237,7 +240,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
+    public void onTokopediaPayRightItemClicked(boolean isRightSaldo, String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
 
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
         if (bsData != null) {
@@ -250,7 +253,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     ApplinkConst.WEBVIEW,
                     applink));
         } else if (applink != null && applink.startsWith("tokopedia")) {
-            openApplink(applink);
+            if (isRightSaldo) {
+                openSladoPage(applink);
+            } else {
+                openApplink(applink);
+            }
         } else {
             if (getContext() == null
                     || bsData == null
@@ -279,9 +286,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         }
     }
 
+    private void openSladoPage(String applink) {
+        if (userSession.hasShownSaldoIntroScreen()) {
+            openApplink(applink);
+        } else {
+            userSession.setSaldoIntroPageStatus(true);
+            openApplink(ApplinkConst.SALDO_INTRO);
+        }
+    }
+
     @Override
     public void onDepositClicked(SellerSaldoViewModel element) {
-        openApplink(ApplinkConst.DEPOSIT);
+        // TODO: 24/1/19 update deeplink for seller saldo tab
+        openSladoPage(ApplinkConst.DEPOSIT);
     }
 
     @Override

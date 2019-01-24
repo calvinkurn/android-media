@@ -99,6 +99,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         tokopediaPayViewModel.setRightSaldo(true);
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+
+        // TODO: 24/1/19  change app link for buyer saldo tab
         tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
         items.add(tokopediaPayViewModel);
 

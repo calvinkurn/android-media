@@ -117,6 +117,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
             tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+
+            // TODO: 24/1/19 update app link for buyer saldo tab
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);
         } else {

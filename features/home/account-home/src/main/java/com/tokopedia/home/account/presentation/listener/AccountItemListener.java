@@ -43,7 +43,7 @@ public interface AccountItemListener {
     void onTokopediaPayLeftItemClicked(String label, String applink, TokopediaPayBSModel bsData,
                                        boolean isLinked, String walletType);
 
-    void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData);
+    void onTokopediaPayRightItemClicked(boolean isRightSaldo, String label, String vccStatus, String applink, TokopediaPayBSModel bsData);
 
     void onDepositClicked(SellerSaldoViewModel element);
 

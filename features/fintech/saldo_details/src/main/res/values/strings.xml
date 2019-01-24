@@ -42,6 +42,9 @@
     <string name="sp_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
     <string name="sp_alert_not_verified_yet_positive">Verifikasi</string>
     <string name="sp_alert_not_verified_yet_negative">Tidak</string>
-
+    <string name="saldo_intro_title">Baru! Saldo Tokopedia Kini Jadi Saldo Refund &amp; Saldo Penghasilan</string>
+    <string name="saldo_intro_description">Tenang, hasil penjualanmu tersimpan aman di <b>Saldo Penghasilan</b>. Cek juga <b>Saldo Refund</b> untuk melihat dana refund atau hasil penjualan produk investasi.</string>
+    <string name="saldo_intro_view_more">Lihat Selengkapnya</string>
+    <string name="saldo_intro_goto_balance_page">Cek Halaman Saldo</string>
 
 </resources>
