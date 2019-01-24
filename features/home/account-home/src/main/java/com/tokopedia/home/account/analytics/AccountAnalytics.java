@@ -4,9 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
@@ -57,23 +60,23 @@ public class AccountAnalytics {
     }
 
     public void eventClickAccount(String title, String section, String item, boolean withUserId) {
-        if (analyticTracker == null)
-            return;
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
 
         if (withUserId) {
-            analyticTracker.sendEventTracking(
+
+            gtmAnalytics.pushGeneral(new EventTracking(
                     CLICK_HOME_PAGE,
                     String.format("%s %s", AKUN_SAYA, title),
                     String.format("%s - %s - %s", CLICK, section, item),
                     userSessionInterface.getUserId()
-            );
+            ).getEvent());
         } else {
-            analyticTracker.sendEventTracking(
+            gtmAnalytics.pushGeneral(new EventTracking(
                     CLICK_HOME_PAGE,
                     String.format("%s %s", AKUN_SAYA, title),
                     String.format("%s - %s - %s", CLICK, section, item),
                     ""
-            );
+            ).getEvent());
         }
     }
 
@@ -81,72 +84,84 @@ public class AccountAnalytics {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 CLICK_FINTECH_MICROSITE,
                 category,
                 action,
                 label
-        );
+        ).getEvent());
     }
 
     public void eventClickSetting(String item) {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", USER, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ).getEvent());
     }
 
     public void eventClickAccountSetting(String item) {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", ACCOUNT, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ).getEvent());
     }
 
     public void eventClickShopSetting(String item) {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ).getEvent());
     }
 
     public void eventClickPaymentSetting(String item) {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ).getEvent());
     }
 
     public void eventClickNotificationSetting(String item) {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", NOTIFICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ).getEvent());
     }
 
 
@@ -154,36 +169,42 @@ public class AccountAnalytics {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", APPLICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ).getEvent());
     }
 
     public void eventClickEmailSetting(String item) {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", EMAIL, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ).getEvent());
     }
 
     public void eventClickKycSetting() {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.CLICK_ACCOUNT,
                 String.format("%s %s", ACCOUNT, SETTING),
                 AccountConstants.Analytics.CLICK_KYC_SETTING,
                 ""
-        );
+        ).getEvent());
     }
 
     public void eventClickKYCSellerAccountPage(int status) {
@@ -191,38 +212,40 @@ public class AccountAnalytics {
             return;
         }
 
+        final GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
         switch (status){
             case KYCConstant.STATUS_REJECTED:
-                analyticTracker.sendEventTracking(
+
+                gtmAnalytics.pushGeneral(new EventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_REJECTED,
                         ""
-                );
+                ).getEvent());
                 break;
             case KYCConstant.STATUS_EXPIRED:
-                analyticTracker.sendEventTracking(
+                gtmAnalytics.pushGeneral(new EventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_REJECTED,
                         ""
-                );
+                ).getEvent());
                 break;
             case KYCConstant.STATUS_PENDING:
-                analyticTracker.sendEventTracking(
+                gtmAnalytics.pushGeneral(new EventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_PENDING,
                         ""
-                );
+                ).getEvent());
                 break;
             case KYCConstant.STATUS_NOT_VERIFIED:
-                analyticTracker.sendEventTracking(
+                gtmAnalytics.pushGeneral(new EventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_NOT_VERIFIED,
                         ""
-                );
+                ).getEvent());
                 break;
             default:
                 break;
@@ -230,15 +253,21 @@ public class AccountAnalytics {
     }
 
     public void eventClickActivationOvoMyAccount() {
-        analyticTracker.sendEventTracking(
+        final GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.EVENT_SALDO_OVO,
                 AccountConstants.Analytics.MY_ACCOUNT,
-                AccountConstants.Analytics.CLICK_MY_ACCOUNT_ACTIVATION_OVO, "");
+                AccountConstants.Analytics.CLICK_MY_ACCOUNT_ACTIVATION_OVO,
+                ""
+        ).getEvent());
     }
 
     public void eventTrackingNotification() {
         if (analyticTracker == null)
             return;
+
+        final GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
 
         Map<String, Object> eventTracking = new HashMap<>();
         eventTracking.put(SCREEN_NAME, SCREEN_NAME_ACCOUNT);
@@ -247,19 +276,21 @@ public class AccountAnalytics {
         eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
         eventTracking.put(EVENT_LABEL, "");
 
-        analyticTracker.sendEventTracking(eventTracking);
+        gtmAnalytics.pushGeneral(eventTracking);
     }
 
     public void eventClickTokopediaCornerSetting() {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
+        final GTMAnalytics gtmAnalytics = (GTMAnalytics) TrackApp.getInstance().getValue("GTM");
+
+        gtmAnalytics.pushGeneral(new EventTracking(
                 AccountConstants.Analytics.EVENT_CLICK_SAMPAI,
                 AccountConstants.Analytics.EVENT_CATEGORY_SAMPAI,
                 AccountConstants.Analytics.EVENT_ACTION_SAMPAI,
                 ""
-        );
+        ).getEvent());
     }
 
     public void setUserAttributes(UserAttributeData data) {

@@ -229,7 +229,7 @@ public class GTMAnalytics extends ContextAnalytics {
         return this;
     }
 
-    private void pushGeneral(Map<String, Object> values) {
+    public void pushGeneral(Map<String, Object> values) {
         Log.i("GAv4", "UA-9801603-15: Send General");
 
         log(getContext(), null, values);
