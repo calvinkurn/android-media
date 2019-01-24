@@ -2,7 +2,6 @@ package com.tokopedia.district_recommendation.domain.usecase;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.district_recommendation.data.repository.ShopAddressRepository;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

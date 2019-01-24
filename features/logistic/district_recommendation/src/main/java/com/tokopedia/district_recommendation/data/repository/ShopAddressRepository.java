@@ -2,7 +2,6 @@ package com.tokopedia.district_recommendation.data.repository;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.district_recommendation.data.source.ShopAddressDataSource;
-import com.tokopedia.network.utils.TKPDMapParam;
 
 import java.util.Map;
 
