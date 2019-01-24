@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
@@ -56,6 +57,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -104,17 +106,17 @@ public class ExploreFragment
 
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
-    private ImageView ivBack, ivBantuan;
+    private ImageView ivBack, ivBantuan, ivProfile;
     private RecyclerView rvExplore, rvAutoComplete, rvFilter;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty;
-    private LinearLayout layoutFilter;
+    private LinearLayout layoutFilter, layoutProfile;
+    private BadgeView profileBadge;
     private CardView btnFilterMore;
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
-
     private boolean isCanDoAction;
 
     @Inject
@@ -151,6 +153,9 @@ public class ExploreFragment
         layoutEmpty = view.findViewById(R.id.layout_empty);
         rvFilter = view.findViewById(R.id.rv_filter);
         layoutFilter = view.findViewById(R.id.layout_filter);
+        layoutProfile = view.findViewById(R.id.action_profile);
+        ivProfile = view.findViewById(R.id.iv_profile);
+        profileBadge = view.findViewById(R.id.badge_profile);
         btnFilterMore = view.findViewById(R.id.btn_filter_more);
         sortButton = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
@@ -188,7 +193,6 @@ public class ExploreFragment
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
         });
-
         layoutManager = new GridLayoutManager(getContext(),
                 IMAGE_SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
@@ -221,6 +225,18 @@ public class ExploreFragment
         );
     }
 
+    private void initProfileSection(boolean isAffiliate) {
+        //init image
+        if (isAffiliate) {
+            ImageHandler.loadImage2(ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
+        } else if (userSession.isLoggedIn()) {
+
+        } else {
+
+        }
+        //init red dot
+    }
+
     private void initListener() {
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
         ivBantuan.setOnClickListener(view ->
@@ -232,16 +248,10 @@ public class ExploreFragment
         btnBackToTop.setOnClickListener(view -> {
             rvExplore.scrollToPosition(0);
         });
-    }
+        ivProfile.setOnClickListener(view -> {
 
-    @NonNull
-    private void showBottomActionWhenScrollingUp() {
-        if (rvExplore.getScrollY() < oldScrollY && rvExplore.getScrollY() != 0) {
-            btnBackToTop.show();
-        } else {
-            btnBackToTop.hide();
-        }
-        oldScrollY = rvExplore.getScrollY();
+        });
+
     }
 
     @Override
@@ -710,6 +720,16 @@ public class ExploreFragment
         ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
                 .setAction(R.string.title_try_again, listener)
                 .show();
+    }
+
+    @Override
+    public void onSuccessIsAffiliate(boolean isAffiliate) {
+        initProfileSection(isAffiliate);
+    }
+
+    @Override
+    public void onErrorIsAffiliate(String error) {
+        isCanDoAction = true;
     }
 
     private void goToEducation() {
