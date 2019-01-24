@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.applink;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
@@ -39,6 +40,12 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private String url;
     private boolean showToolbar;
 
+    public static Intent newInstance(Context context, String url) {
+        return new Intent(context, AppLinkWebsiteActivity.class)
+                .putExtra(EXTRA_URL, url)
+                .putExtra(EXTRA_TITLEBAR, true);
+    }
+
     public static Intent newInstance(Context context, String url, boolean showToolbar) {
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
@@ -51,7 +58,13 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         String webUrl = extras.getString(
                 KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
         );
-        boolean showToolbar = extras.getBoolean(KEY_APP_LINK_QUERY_TITLEBAR, true);
+        boolean showToolbar = true;
+        try {
+            showToolbar = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
+                    "true"));
+        } catch (ParseException e) {
+            showToolbar = true;
+        }
 
         if (TextUtils.isEmpty(webUrl)) {
             webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;

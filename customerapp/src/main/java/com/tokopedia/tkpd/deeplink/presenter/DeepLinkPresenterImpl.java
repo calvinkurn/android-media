@@ -271,7 +271,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                    */
                 case DeepLinkChecker.APPLINK:
                     if (linkSegment != null && linkSegment.size() > 0) {
-                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false);
+                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false, true);
                         screenName = AppScreen.SCREEN_WEBVIEW;
                     } else {
                         return;
@@ -463,11 +463,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
             openWebView(uriData,
                     uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"),
-                    uriData.getQueryParameter(PARAM_TITLEBAR) != null ? uriData.getQueryParameter
-                            (PARAM_TITLEBAR) : true);
+                    uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
+                            (PARAM_TITLEBAR).equalsIgnoreCase("true"));
         } else {
-            openWebView(uriData, false, uriData.getQueryParameter(PARAM_TITLEBAR) != null ? uriData.getQueryParameter
-                    (PARAM_TITLEBAR) : true);
+            openWebView(uriData, false, uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
+                    (PARAM_TITLEBAR).equalsIgnoreCase("true"));
         }
     }
 
