@@ -60,6 +60,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final String KOL_URL = "tokopedia.com/content";
+    private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     private static final int LOGIN_GPLUS = 123453;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
@@ -471,12 +472,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
             if (getActivity() != null
-                    && url.equalsIgnoreCase(ApplinkConst.APPLINK_BACK)
+                    && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
                     && !getActivity().isTaskRoot()) {
                 getActivity().finish();
                 return true;
             } else if (getActivity() != null
-                    && url.equalsIgnoreCase(ApplinkConst.APPLINK_BACK)
+                    && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
                     && !getActivity().isTaskRoot()) {
                 openHomePage();
                 return true;

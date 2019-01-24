@@ -185,10 +185,6 @@ public interface ApplinkConst {
 
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
-    String APPLINK_BACK = "tokopedia://back";
-
-    String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
-    String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
 
     String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
     String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
