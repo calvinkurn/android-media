@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,13 +14,16 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
 import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.GridSpaceItemDecoration;
 import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheetDynamicChannel;
@@ -28,8 +32,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class TopAdsDynamicChannelView extends LinearLayout implements View.OnClickListener, LocalAdsClickListener {
+public class TopAdsDynamicChannelView extends LinearLayout implements View.OnClickListener,
+        LocalAdsClickListener, TopAdsItemImpressionListener {
 
+    private static final String TAG = TopAdsDynamicChannelView.class.getSimpleName();
     public static final int SPAN_COUNT = 3;
     private RecyclerView recyclerView;
     private AdsItemAdapter itemAdapter;
@@ -70,6 +76,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         itemAdapter = new AdsItemAdapter(getContext());
         itemAdapter.setItemClickListener(this);
+        itemAdapter.setAdsItemImpressionListener(this);
         recyclerView.setAdapter(itemAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, SPAN_COUNT));
         recyclerView.addItemDecoration(new GridSpaceItemDecoration(SPAN_COUNT,
@@ -138,5 +145,11 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         } else {
             presenter.addWishlist(data);
         }
+    }
+
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        Log.d(TAG, "onImpressionProductAdsItem pos "+position+" name "+product.getName());
+        TopAdsGtmTracker.eventHomeProductView(getContext(), product, position);
     }
 }
