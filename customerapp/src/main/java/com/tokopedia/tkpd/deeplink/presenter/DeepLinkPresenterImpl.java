@@ -13,9 +13,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -59,7 +57,6 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +67,7 @@ import rx.Subscriber;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
- *         modified by Alvarisi
+ * modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
@@ -80,6 +77,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String PARAM_TITLEBAR = "titlebar";
+
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     private final Activity context;
@@ -462,9 +461,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void prepareOpenWebView(Uri uriData) {
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
-            openWebView(uriData, uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
+            openWebView(uriData,
+                    uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"),
+                    uriData.getQueryParameter(PARAM_TITLEBAR) != null ? uriData.getQueryParameter
+                            (PARAM_TITLEBAR) : true);
         } else {
-            openWebView(uriData, false);
+            openWebView(uriData, false, uriData.getQueryParameter(PARAM_TITLEBAR) != null ? uriData.getQueryParameter
+                    (PARAM_TITLEBAR) : true);
         }
     }
 
@@ -472,8 +475,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
 
-    private void openWebView(Uri encodedUri, boolean allowingOverriding) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString()), allowingOverriding);
+    private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar) {
+        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString
+                ()), allowingOverriding, showTitlebar);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
         viewListener.actionChangeToolbarWithBackToNative();
     }

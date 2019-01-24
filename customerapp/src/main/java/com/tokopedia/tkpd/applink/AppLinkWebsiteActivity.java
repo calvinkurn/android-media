@@ -17,10 +17,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.tkpd.R;
 
@@ -31,16 +28,21 @@ import com.tokopedia.tkpd.R;
 public class AppLinkWebsiteActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
     private static final String EXTRA_URL = "EXTRA_URL";
+    private static final String EXTRA_TITLEBAR = "EXTRA_TITLEBAR";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
     private static final String KEY_APP_LINK_QUERY_URL = "url";
+    private static final String KEY_APP_LINK_QUERY_TITLEBAR = "titlebar";
+
 
     private FragmentGeneralWebView fragmentGeneralWebView;
 
     private String url;
+    private boolean showToolbar;
 
-    public static Intent newInstance(Context context, String url) {
+    public static Intent newInstance(Context context, String url, boolean showToolbar) {
         return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_URL, url);
+                .putExtra(EXTRA_URL, url)
+                .putExtra(EXTRA_TITLEBAR, showToolbar);
     }
 
     @SuppressWarnings("unused")
@@ -49,10 +51,12 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         String webUrl = extras.getString(
                 KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
         );
+        boolean showToolbar = extras.getBoolean(KEY_APP_LINK_QUERY_TITLEBAR, true);
+
         if (TextUtils.isEmpty(webUrl)) {
             webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
         }
-        return AppLinkWebsiteActivity.newInstance(context, webUrl);
+        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar);
     }
 
     @SuppressWarnings("unused")
@@ -87,6 +91,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         url = extras.getString(EXTRA_URL);
+        showToolbar = extras.getBoolean(EXTRA_TITLEBAR, true);
     }
 
     @Override
@@ -103,7 +108,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView)) {
-            fragmentGeneralWebView = FragmentGeneralWebView.createInstance(getEncodedUrl(url), true);
+            fragmentGeneralWebView = FragmentGeneralWebView.createInstance(getEncodedUrl(url),
+                    true, showToolbar);
             getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
                     fragmentGeneralWebView).commit();
         }
@@ -184,7 +190,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     protected int getContentId() {
-        if(com.tokopedia.abstraction.common.utils.GlobalConfig.isCustomerApp()) {
+        if (com.tokopedia.abstraction.common.utils.GlobalConfig.isCustomerApp()) {
             return com.tokopedia.abstraction.R.layout.activity_base_legacy_light;
         }
 
