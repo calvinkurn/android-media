@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_20"
+    android:background="@drawable/bg_bottom_shadow_top_line">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_variant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_product_variant"
+        android:lineSpacingExtra="@dimen/sp_8"
+        app:fontSize="small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_choose_variant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_choose_product_variant"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/tkpd_main_green"
+        app:fontSize="small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_variant"/>
+    
+    <View android:id="@+id/variant_divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_half"
+        android:background="@color/grey_300"
+        android:layout_marginTop="@dimen/dp_14"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_choose_variant"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_rate_estimation_start"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Ongkir mulai dari Rp 12.000"
+        app:fontSize="small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/variant_divider"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/icon_shop_location"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_10"
+        app:srcCompat="@drawable/ic_shop_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_rate_estimation_start"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_shop_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_10"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="dari Kota Depok"
+        app:fontSize="micro"
+        app:layout_constraintStart_toEndOf="@+id/icon_shop_location"
+        app:layout_constraintLeft_toRightOf="@+id/icon_shop_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/icon_shop_location"
+        app:layout_constraintBottom_toBottomOf="@+id/icon_shop_location"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/icon_courier_est"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_6"
+        app:srcCompat="@drawable/ic_courier_grey"
+        app:layout_constraintStart_toStartOf="@+id/icon_shop_location"
+        app:layout_constraintLeft_toLeftOf="@+id/icon_shop_location"
+        app:layout_constraintEnd_toEndOf="@+id/icon_shop_location"
+        app:layout_constraintRight_toRightOf="@+id/icon_shop_location"
+        app:layout_constraintTop_toBottomOf="@+id/icon_shop_location"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_courier_dest"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tkpd_main_green"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="ke Kab. Bolaang Mongondow Selatan"
+        app:fontSize="micro"
+        app:layout_constraintStart_toStartOf="@+id/txt_shop_location"
+        app:layout_constraintLeft_toLeftOf="@+id/txt_shop_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/icon_courier_est"
+        app:layout_constraintBottom_toBottomOf="@+id/icon_courier_est"/>
+
+</android.support.constraint.ConstraintLayout>

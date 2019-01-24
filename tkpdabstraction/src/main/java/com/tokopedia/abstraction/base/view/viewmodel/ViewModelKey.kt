@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.di
+package com.tokopedia.abstraction.base.view.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import dagger.MapKey

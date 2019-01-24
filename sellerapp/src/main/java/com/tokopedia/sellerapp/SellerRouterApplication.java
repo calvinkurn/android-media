@@ -131,6 +131,7 @@ import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
+import com.tokopedia.product.detail.ProductDetailInternalRouter;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
@@ -626,7 +627,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToProductDetail(Context context, String productUrl) {
-        DeepLinkChecker.openProduct(productUrl, context);
+        startActivity(ProductDetailInternalRouter.getProductDetailIntent(context, productUrl));
     }
 
     @Override

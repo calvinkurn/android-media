@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_24"
+    android:background="@drawable/bg_bottom_shadow_top_line">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title_product_info_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_product_info"
+        app:fontSize="title"
+        app:weight="medium"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_pre_order"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_pre_order"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:fontSize="small"
+        app:textViewTheme="lightDisabled"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txt_pre_order"
+        app:layout_constraintRight_toLeftOf="@+id/txt_pre_order"
+        app:layout_constraintTop_toBottomOf="@+id/title_product_info_label"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_pre_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        tools:text="4 hari"
+        app:fontSize="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/label_pre_order"
+        app:layout_constraintBottom_toBottomOf="@+id/label_pre_order"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_min_order"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_min_order"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:fontSize="small"
+        app:textViewTheme="lightDisabled"
+        app:layout_constraintLeft_toLeftOf="@+id/label_pre_order"
+        app:layout_constraintStart_toStartOf="@+id/label_pre_order"
+        app:layout_constraintEnd_toEndOf="@+id/txt_min_order"
+        app:layout_constraintRight_toRightOf="@+id/txt_min_order"
+        app:layout_constraintTop_toBottomOf="@+id/label_pre_order"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_min_order"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        tools:text="1 Buah"
+        app:fontSize="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/label_min_order"
+        app:layout_constraintBottom_toBottomOf="@+id/label_min_order"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_product_condition"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_product_condition"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:fontSize="small"
+        app:textViewTheme="lightDisabled"
+        app:layout_constraintLeft_toLeftOf="@+id/label_pre_order"
+        app:layout_constraintStart_toStartOf="@+id/label_pre_order"
+        app:layout_constraintEnd_toEndOf="@+id/txt_product_condition"
+        app:layout_constraintRight_toRightOf="@+id/txt_product_condition"
+        app:layout_constraintTop_toBottomOf="@+id/label_min_order"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_product_condition"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        tools:text="Baru"
+        app:fontSize="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/label_product_condition"
+        app:layout_constraintBottom_toBottomOf="@+id/label_product_condition"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_see_detail_product_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_8"
+        android:text="@string/label_read_detail"
+        android:textColor="@color/tkpd_main_green"
+        app:fontSize="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_product_condition"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title_product_desc_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_product_desc"
+        android:layout_marginTop="@dimen/dp_24"
+        app:fontSize="title"
+        app:weight="medium"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_see_detail_product_info"/>
+
+    <HorizontalScrollView android:id="@+id/youtube_scroll"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_80"
+        android:layout_marginTop="@dimen/dp_16"
+        android:transitionName="@string/transition_video_horizontal_scroll"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_product_desc_label">
+
+        <LinearLayout
+            android:id="@+id/youtube_video_place_holder"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </HorizontalScrollView>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_product_descr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_product_desc"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:autoLink="all"
+        android:ellipsize="end"
+        android:longClickable="false"
+        android:maxLines="@integer/default_description_lines"
+        android:transitionName="@string/transition_description"
+        android:textIsSelectable="false"
+        android:lineSpacingExtra="@dimen/sp_8"
+        tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .."
+        app:fontSize="micro"
+        app:textViewTheme="lightSecondary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/youtube_scroll"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_see_detail_product_descr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_8"
+        android:text="@string/label_read_detail"
+        android:textColor="@color/tkpd_main_green"
+        app:fontSize="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_product_descr"/>
+
+</android.support.constraint.ConstraintLayout>

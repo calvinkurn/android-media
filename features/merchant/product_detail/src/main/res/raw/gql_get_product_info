@@ -1,0 +1,112 @@
+query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
+    getPDPInfo(productID: $productID, shopDomain: $shopDomain, productKey: $productKey){
+        basic {
+            id
+            name
+            alias
+            price
+            price_currency
+            last_update_price
+            description
+            min_order
+            max_order
+            status
+            stock
+            weight
+            weight_unit
+            condition
+            url
+            sku
+            gtin
+            is_kreasi_lokal
+            is_must_insurance
+            is_eligible_cod
+            is_free_return
+        }
+        return_info {
+            icon
+            color_hex
+            color_rgb
+            content
+        }
+        brand {
+            id
+            is_active
+            name
+        }
+        catalog {
+            id
+            is_active
+            name
+            url
+        }
+        menu {
+            id
+            name
+            url
+        }
+        category {
+            id
+            name
+            title
+            breadcrumb_url
+            detail {
+                id
+                name
+                breadcrumb_url
+            }
+        }
+        pictures {
+            id
+            file_name
+            file_path
+            description
+            is_from_ig
+            x
+            y
+            url_original
+            url_thumbnail
+            url_300
+            is_primary
+        }
+        preorder {
+            is_active
+            duration
+            time_unit
+        }
+        wholesale {
+            min_qty
+            max_qty
+            price
+            min_qty_fmt
+            max_qty_fmt
+            price_fmt
+        }
+        campaign {
+            id
+            type
+            is_active
+            is_apps_only
+            name
+            original_price
+            percentage
+            start_date
+            end_date
+        }
+        cashback {
+            percentage
+            value
+        }
+        stats {
+            count_view
+            count_review
+            count_talk
+            rating
+        }
+        tx_stats {
+            tx_success
+            tx_reject
+            sold
+        }
+    }
+}

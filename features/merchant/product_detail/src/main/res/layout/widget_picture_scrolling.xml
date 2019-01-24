@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.design.component.ticker.TouchViewPager
+        android:id="@id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicator_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:fillColor="@color/tkpd_main_green"
+        app:pageColor="@color/white"
+        android:padding="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@drawable/gradient_shadow_black_vertical"/>
+
+    <LinearLayout
+        android:id="@+id/error_product_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/black_54"
+        android:padding="@dimen/dp_30"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/error_product_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/sp_8"
+            android:gravity="center_horizontal"
+            app:fontSize="small"
+            app:weight="medium"
+            app:textViewTheme="darkPrimary"
+            tools:text="Toko ini tutup hingga 17/6/2018 karena libur hari lebaran"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/error_product_descr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            android:gravity="center_horizontal"
+            app:fontSize="micro"
+            app:weight="medium"
+            app:textViewTheme="darkPrimary"
+            tools:text="Jika Anda memiliki transaksi tertunda dengan toko ini selama masa tutup, Anda bisa menghubungi penjual melalui fitur kirim pesan atau Layanan Pengguna"/>
+
+    </LinearLayout>
+
+</FrameLayout>

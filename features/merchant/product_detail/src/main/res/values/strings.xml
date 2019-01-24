@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">product_detail</string>
+    <string name="label_flash_sale">Flash Sale</string>
+    <string name="product_detail_discussion">Diskusi</string>
+    <string name="product_detail_courier">Pengiriman</string>
+    <string name="delivery_label">Pengiriman</string>
+    <string name="label_seen">Dilihat</string>
+    <string name="label_success_transaction">Transaksi Berhasil</string>
+    <string name="label_product_variant">Varian Produk</string>
+    <string name="label_choose_product_variant"><![CDATA[Pilih warna & ukuran]]></string>
+    <string name="label_product_info">Informasi Produk</string>
+    <string name="label_min_order">Min. Pemesanan</string>
+    <string name="label_pre_order">Waktu Preorder</string>
+    <string name="label_product_condition">Kondisi</string>
+    <string name="label_read_detail">Baca Selengkapnya</string>
+    <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
+    <string name="transition_description">description_transition</string>
+    <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="template_cashback">Cashback %1$s%%</string>
+    <string name="template_price">%1$s%2$s</string>
+    <string name="template_campaign_off">%1$d%% OFF </string>
+</resources>

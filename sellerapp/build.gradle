@@ -292,6 +292,7 @@ dependencies {
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.productDetailRevamp)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.productManageList)

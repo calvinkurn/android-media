@@ -1,13 +1,11 @@
-package com.tokopedia.topads.dashboard.view.viewmodel
+package com.tokopedia.abstraction.base.view.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.tokopedia.topads.dashboard.di.TopAdsDashboardScope
 import javax.inject.Inject
 import javax.inject.Provider
 
 @Suppress("UNCHECKED_CAST")
-@TopAdsDashboardScope
 class ViewModelFactory @Inject constructor(
         private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
 ): ViewModelProvider.Factory {
