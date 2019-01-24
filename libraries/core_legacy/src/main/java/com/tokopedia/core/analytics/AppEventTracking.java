@@ -890,6 +890,8 @@ public interface AppEventTracking {
 
     interface GTM {
         String GA_ID = "GA_ID";
+        String GTM_ID = "GTM_ID";
+        String GTM_RESOURCE = "GTM_RESOURCE";
 
         String UTM_SOURCE = "utm_source";
         String UTM_MEDIUM = "utm_medium";

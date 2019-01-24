@@ -113,4 +113,13 @@ public class GlobalNavAnalytics {
         cache.putBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, true);
         cache.applyEditor();
     }
+
+    public void eventClickNewestInfo() {
+        analyticTracker.sendEventTracking(
+                "clickNotifCenter",
+                "notif center",
+                "click on info terbaru",
+                ""
+        );
+    }
 }

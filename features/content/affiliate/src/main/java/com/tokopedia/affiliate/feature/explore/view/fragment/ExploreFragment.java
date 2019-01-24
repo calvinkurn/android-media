@@ -221,12 +221,7 @@ public class ExploreFragment
 
     private void initListener() {
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
-        ivBantuan.setOnClickListener(view ->
-                RouteManager.route(
-                        getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
-                )
-        );
+        ivBantuan.setOnClickListener(view -> goToEducation());
         scrollToTopButton.setButton2OnClickListener(view -> {
             rvExplore.scrollToPosition(0);
         });
@@ -407,7 +402,6 @@ public class ExploreFragment
                                       boolean isPullToRefresh,
                                       SortFilterModel sortFilterModel) {
        populateFirstData(itemList, cursor);
-       sortButton.setVisibility(View.VISIBLE);
        if (!isPullToRefresh) {
             populateFilter(sortFilterModel.getFilterList());
             populateSort(sortFilterModel.getSortList());
@@ -430,6 +424,7 @@ public class ExploreFragment
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
+        sortButton.setVisibility(View.VISIBLE);
         populateExploreItem(itemList, cursor);
     }
 
