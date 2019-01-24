@@ -154,7 +154,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         var isValid = true
 
         if (TextUtils.isEmpty(password)) {
-            view.showErrorPassword(R.string.error_field_required)
+            view.showErrorPassword(R.string.error_field_password_required)
             isValid = false
         } else if (password.length < 4) {
             view.showErrorPassword(R.string.error_incorrect_password)

@@ -76,6 +76,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     public void renderData() {
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
+        etPassword.addTextChangedListener(watcher(wrapperPassword));
 
         btnAction.setOnClickListener(new ClickRegister());
         btnChange.setOnClickListener(new OnClickListener() {

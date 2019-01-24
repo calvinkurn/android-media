@@ -16,6 +16,7 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -222,8 +223,24 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
         }
 
+        val passwordEditText = partialRegisterInputView.findViewById<TextInputEditText>(R.id.password)
+        passwordEditText.setOnEditorActionListener { textView, id, keyEvent ->
+            if (id == EditorInfo.IME_ACTION_DONE) {
+                actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
+                presenter.login(emailPhoneEditText.text.toString().trim(),
+                        passwordEditText.text.toString())
+                KeyboardHandler.hideSoftKeyboard(activity)
+                true
+            }else{
+                false
+            }
+        }
+
         partialRegisterInputView.findViewById<TextView>(R.id.change_button).setOnClickListener { it ->
+            val email = emailPhoneEditText.text.toString()
             onChangeButtonClicked()
+            emailPhoneEditText.setText(email)
+            emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
         }
 
         activity?.let { it ->
@@ -568,6 +585,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 dialog.dismiss()
                 onChangeButtonClicked()
                 emailPhoneEditText.setText(email)
+                emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
             }
             dialog.show()
         }
@@ -727,6 +745,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val email = emailPhoneEditText.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText.setText(email)
+            emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
         } else if (activity != null) {
             activity?.finish()
         }
