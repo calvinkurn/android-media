@@ -12,6 +12,7 @@ interface LoginEmailPhoneContract : LoginContract {
         fun onErrorValidateRegister(throwable: Throwable)
         fun onErrorEmptyEmailPhone()
         fun goToLoginPhoneVerifyPage(phoneNumber: String)
+        fun goToRegisterPhoneVerifyPage(phoneNumber: String)
         fun onEmailExist(email: String)
         fun showNotRegisteredEmailDialog(email: String)
         fun onBackPressed()

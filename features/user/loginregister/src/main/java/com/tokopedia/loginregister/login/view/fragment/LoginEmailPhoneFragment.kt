@@ -37,12 +37,13 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
-import com.tokopedia.loginregister.login.view.fragment.LoginFragment.IS_FROM_REGISTER
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
@@ -80,10 +81,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_SAVE_SMART_LOCK = 102
     private val REQUEST_SECURITY_QUESTION = 104
     private val REQUESTS_CREATE_PASSWORD = 106
+    private val REQUEST_ACTIVATE_ACCOUNT = 107
     private val REQUEST_VERIFY_PHONE = 108
     private val REQUEST_ADD_NAME = 109
     private val REQUEST_CHOOSE_ACCOUNT = 110
     private val REQUEST_NO_TOKOCASH_ACCOUNT = 111
+
+    val IS_AUTO_LOGIN = "auto_login"
+    val AUTO_LOGIN_METHOD = "method"
+
+    val AUTO_LOGIN_EMAIL = "email"
+    val AUTO_LOGIN_PASS = "pw"
+
+    val IS_AUTO_FILL = "auto_fill"
+    val AUTO_FILL_EMAIL = "email"
+    val IS_FROM_REGISTER = "is_from_register"
 
     val FACEBOOK = "facebook"
     val GPLUS = "gplus"
@@ -109,6 +121,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var loginButtonsContainer: LinearLayout
     private lateinit var emailPhoneEditText: EditText
     private lateinit var partialActionButton: TextView
+    private lateinit var passwordEditText: TextInputEditText
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
@@ -189,6 +202,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         loginButtonsContainer = view.findViewById(R.id.login_container)
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         partialActionButton = partialRegisterInputView.findViewById(R.id.register_btn)
+        passwordEditText = partialRegisterInputView.findViewById(R.id.password)
         return view
     }
 
@@ -199,7 +213,38 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         context?.run {
             presenter.discoverLogin(this)
         }
+
+        if (arguments != null && arguments!!.getBoolean(IS_AUTO_FILL, false)) {
+            emailPhoneEditText.setText(arguments!!.getString(AUTO_FILL_EMAIL, ""))
+        } else if (arguments!!.getBoolean(IS_AUTO_LOGIN, false)) {
+            when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
+                LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
+                LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
+
+                LoginActivity.METHOD_EMAIL -> {
+                    actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
+                    val email = arguments!!.getString(AUTO_LOGIN_EMAIL, "")
+                    val pw = arguments!!.getString(AUTO_LOGIN_PASS, "")
+                    partialRegisterInputView.showLoginEmailView(email)
+                    emailPhoneEditText.setText(email)
+                    passwordEditText.setText(pw)
+                    presenter.login(email, pw)
+                }
+                else -> showSmartLock()
+            }
+        } else {
+            showSmartLock()
+        }
     }
+
+    private fun showSmartLock() {
+        val intent = Intent(activity, SmartLockActivity::class.java)
+        val bundle = Bundle()
+        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_SMART_LOCK)
+    }
+
 
     override fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
@@ -223,7 +268,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
         }
 
-        val passwordEditText = partialRegisterInputView.findViewById<TextInputEditText>(R.id.password)
         passwordEditText.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
@@ -231,7 +275,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                         passwordEditText.text.toString())
                 KeyboardHandler.hideSoftKeyboard(activity)
                 true
-            }else{
+            } else {
                 false
             }
         }
@@ -417,7 +461,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun getLoginRouter(): LoginSuccessRouter {
         return object : LoginSuccessRouter {
             override fun onGoToActivationPage(email: String) {
-                // No need to implement
+                val intent = ActivationActivity.getCallingIntent(activity,
+                        email, passwordEditText.text.toString())
+                startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
             }
 
             override fun onForbidden() {
@@ -552,12 +598,24 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
+        activity?.let {
+            val intent = VerificationActivity.getCallingIntent(
+                    it,
+                    phoneNumber,
+                    RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
+                    true,
+                    RequestOtpUseCase.MODE_SMS
+            )
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE)
+        }
+    }
+
 
     override fun onEmailExist(email: String) {
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            val passwordEditText = partialRegisterInputView.findViewById<TextInputEditText>(R.id.password)
             KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
         }
@@ -612,11 +670,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun setSmartLock() {
-        val passwordET = partialRegisterInputView.findViewById<EditText>(R.id.password)
-        if (emailPhoneEditText.text.isNotBlank() && passwordET.text.isNotBlank()) {
+        if (emailPhoneEditText.text.isNotBlank() && passwordEditText.text.isNotBlank()) {
             saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
                     emailPhoneEditText.text.toString(),
-                    passwordET.text.toString())
+                    passwordEditText.text.toString())
         }
     }
 
@@ -681,6 +738,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     && data.extras!!.getString(SmartLockActivity.USERNAME) != null
                     && data.extras!!.getString(SmartLockActivity.PASSWORD) != null) run {
                 emailPhoneEditText.setText(data.extras!!.getString(SmartLockActivity.USERNAME))
+                emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
             } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) run {
@@ -696,6 +754,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+                dismissLoadingLogin()
+                activity!!.setResult(Activity.RESULT_CANCELED)
+            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+                onSuccessLogin()
+            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE
