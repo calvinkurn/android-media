@@ -38,6 +38,7 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -61,6 +62,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -262,7 +264,8 @@ public abstract class SellerRouterApplication extends MainApplication
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
-        UnifiedOrderListRouter {
+        UnifiedOrderListRouter,
+        CoreNetworkRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1938,5 +1941,15 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
         return null;
+    }
+
+    @Override
+    public void refereshFcmTokenToCMNotif(String token) {
+
+    }
+
+    @Override
+    public Intent getMaintenancePageIntent() {
+        return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 }

@@ -66,6 +66,7 @@ import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivi
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -3565,5 +3566,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent gotoInboxMainPage(Context context) {
         return new Intent(context, InboxMainActivity.class);
+    }
+
+    @Override
+    public Intent getMaintenancePageIntent() {
+        return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 }
