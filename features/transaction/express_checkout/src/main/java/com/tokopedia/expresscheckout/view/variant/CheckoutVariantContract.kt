@@ -53,6 +53,8 @@ interface CheckoutVariantContract {
 
         fun navigateCheckoutToOcs()
 
+        fun navigateToThankYouPage(appLink: String)
+
         fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult>
 
         fun getActivityContext(): Context?

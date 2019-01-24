@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -455,6 +456,22 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         startActivity(router.getCheckoutIntent(contextView))
     }
 
+    override fun navigateToThankYouPage(appLink: String) {
+        if (appLink.isNotEmpty()) {
+            RouteManager.route(contextView, appLink)
+        } else {
+            showBottomsheetError(
+                    "Terjadi Kendala Teknis",
+                    "Silakan cek status pesanan Anda untuk mengetahui proses transaksi ini.",
+                    "Cek Status Pesanan")
+            errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+                override fun onActionButtonClicked() {
+                    // Todo : navigate to menunggu konfirmasi
+                }
+            }
+        }
+    }
+
     override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
         return router.addToCartProduct(addToCartRequest, true)
     }
@@ -506,6 +523,22 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         val profileViewModel = fragmentViewModel.getProfileViewModel()
         val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
         val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+
+        val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
+        if (shopShipmentList != null) {
+            for (shopShipment: ShopShipment in shopShipmentList) {
+                var foundData = false
+                for (shipProd: ShipProd in shopShipment.shipProds) {
+                    if (shipProd.shipProdId == productData.shipperProductId && summaryViewModel != null) {
+                        summaryViewModel.servicePrice = shipProd.additionalFee
+                        foundData = true
+                        break
+                    }
+                }
+                if (foundData) break
+            }
+        }
+
         if (profileViewModel != null) {
             if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 showBottomsheetError("Tandai Lokasi Pengiriman", productData.error.errorMessage, "Tandai Lokasi")
