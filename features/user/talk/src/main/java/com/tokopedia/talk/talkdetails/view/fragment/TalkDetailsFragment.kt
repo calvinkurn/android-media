@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
@@ -79,6 +80,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private lateinit var bottomMenu: Menus
     private lateinit var alertDialog: Dialog
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     @Inject
     lateinit var talkDialog: TalkDialog
@@ -90,9 +92,12 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     private var shopId: String = ""
     private var source: String = ""
 
+    private var isTraceStopped: Boolean = false
     companion object {
+        const val TALK_DETAILS_TRACE = "talk_list_details"
         const val GO_TO_REPORT_TALK_REQ_CODE = 101
         const val GO_TO_ATTACH_PRODUCT_REQ_CODE = 102
+
     }
 
     override fun getScreenName(): String {
@@ -112,6 +117,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        performanceMonitoring = PerformanceMonitoring.start(TALK_DETAILS_TRACE)
         savedInstanceState?.run {
             talkId = savedInstanceState.getString(TalkDetailsActivity.THREAD_TALK_ID, "")
             shopId = savedInstanceState.getString(TalkDetailsActivity.SHOP_ID, "")
@@ -167,10 +173,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         loadData()
     }
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_comments, container, false)
     }
-
 
     private fun setupView() {
         attachedProductList.layoutManager = LinearLayoutManager(context, LinearLayoutManager
@@ -205,11 +211,11 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     }
 
+
     override fun hideLoadingAction() {
         progressBar.visibility = View.GONE
         mainView.visibility = View.VISIBLE
     }
-
 
     private fun showErrorTalk(message: String) {
         if (adapter.itemCount == 0) {
@@ -255,6 +261,14 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
 
         showAttachProduct(data)
+        stopTrace()
+    }
+
+    fun stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace()
+            isTraceStopped = true
+        }
     }
 
     private fun showAttachProduct(data: ArrayList<Visitable<*>>) {

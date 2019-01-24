@@ -26,6 +26,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
