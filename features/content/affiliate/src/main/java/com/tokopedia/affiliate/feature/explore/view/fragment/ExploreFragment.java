@@ -298,7 +298,7 @@ public class ExploreFragment
                     adapter.addElement(new LoadingMoreModel());
                     presenter.loadMoreData(exploreParams);
                 }
-                if (layoutManager.findFirstCompletelyVisibleItemPosition() == -1){
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() > IMAGE_SPAN_COUNT){
                     btnBackToTop.show();
                 }else{
                     btnBackToTop.hide();
