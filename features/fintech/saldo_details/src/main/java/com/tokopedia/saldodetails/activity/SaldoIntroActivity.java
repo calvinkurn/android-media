@@ -39,7 +39,8 @@ public class SaldoIntroActivity extends BaseSimpleActivity {
         if (getSupportActionBar() == null) {
             return;
         }
-        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default));
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this,
+                com.tokopedia.abstraction.R.drawable.ic_close_default));
     }
 }
 

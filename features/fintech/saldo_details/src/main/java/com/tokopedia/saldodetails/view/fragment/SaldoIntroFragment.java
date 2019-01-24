@@ -42,21 +42,15 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "Go to view more page", Toast.LENGTH_LONG).show();
-                // TODO: 24/1/19 goto help page
-            }
+        viewMore.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Go to view more page", Toast.LENGTH_LONG).show();
+            // TODO: 24/1/19 goto help page
         });
 
-        gotoSaldoPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 24/1/19 goto saldo page, check for tab flag
+        gotoSaldoPage.setOnClickListener(v -> {
+            // TODO: 24/1/19 goto saldo page, check for tab flag
 
-                RouteManager.route(getContext(), ApplinkConst.DEPOSIT);
-            }
+            RouteManager.route(getContext(), ApplinkConst.DEPOSIT);
         });
     }
 }
