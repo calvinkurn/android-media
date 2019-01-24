@@ -367,11 +367,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().clearEditText()
     }
 
-//
-//    override fun disableAction() {
-//        getViewState().setActionable(false)
-//    }
-
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         return TopChatRoomAdapter(TopChatTypeFactoryImpl(
                 this,
@@ -623,12 +618,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             showSnackbarAddToCart(it)
             activity?.startActivity((activity!!.application as TopChatRouter)
                     .getCartIntent(activity))
-        }
-    }
-
-    private fun onGoCheckout(): () -> Unit {
-        return {
-
         }
     }
 
