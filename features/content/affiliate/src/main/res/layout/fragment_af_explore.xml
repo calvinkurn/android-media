@@ -130,20 +130,6 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
     </LinearLayout>
 
-
-
-    <com.tokopedia.design.button.BottomActionView
-        android:id="@+id/bottom_action_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_20"
-        app:bav_2_display="true"
-        app:bav_icon_2="@drawable/ic_arrow_up"
-        app:bav_label_2="@string/text_back_to_top"
-        app:layout_anchor="@+id/rv_explore"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        android:visibility="gone"/>
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -179,12 +165,16 @@
         app:bav_icon_2="@drawable/ic_sort_aff"/>
     
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnBackToTop"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
+        android:id="@+id/btn_back_to_top"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
         android:layout_gravity="bottom|right"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:src="@drawable/ic_arrow_up"/>
+        android:layout_marginBottom="@dimen/dp_18"
+        android:src="@drawable/ic_arrow_up"
+        android:visibility="gone"
+        android:tint="@color/grey_600"
+        app:backgroundTint="@color/white"
+        tools:visibility="visible"/>
 
 </android.support.design.widget.CoordinatorLayout>

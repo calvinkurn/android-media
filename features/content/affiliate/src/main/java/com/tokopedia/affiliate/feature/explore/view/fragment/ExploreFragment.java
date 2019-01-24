@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -109,10 +110,10 @@ public class ExploreFragment
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty;
-    private BottomActionView scrollToTopButton;
     private LinearLayout layoutFilter;
     private CardView btnFilterMore;
     private BottomActionView sortButton;
+    private FloatingActionButton btnBackToTop;
 
     private boolean isCanDoAction;
 
@@ -149,10 +150,10 @@ public class ExploreFragment
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
         rvFilter = view.findViewById(R.id.rv_filter);
-        scrollToTopButton = view.findViewById(R.id.bottom_action_view);
         layoutFilter = view.findViewById(R.id.layout_filter);
         btnFilterMore = view.findViewById(R.id.btn_filter_more);
         sortButton = view.findViewById(R.id.bav);
+        btnBackToTop = view.findViewById(R.id.btn_back_to_top);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -177,6 +178,7 @@ public class ExploreFragment
         dropKeyboard();
         initEmptyResultModel();
         autoCompleteLayout.setVisibility(View.GONE);
+        btnBackToTop.hide();
         layoutFilter.setVisibility(View.GONE);
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -227,7 +229,7 @@ public class ExploreFragment
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
                 )
         );
-        scrollToTopButton.setButton2OnClickListener(view -> {
+        btnBackToTop.setOnClickListener(view -> {
             rvExplore.scrollToPosition(0);
         });
     }
@@ -235,9 +237,9 @@ public class ExploreFragment
     @NonNull
     private void showBottomActionWhenScrollingUp() {
         if (rvExplore.getScrollY() < oldScrollY && rvExplore.getScrollY() != 0) {
-            scrollToTopButton.setVisibility(View.VISIBLE);
+            btnBackToTop.show();
         } else {
-            scrollToTopButton.setVisibility(View.GONE);
+            btnBackToTop.hide();
         }
         oldScrollY = rvExplore.getScrollY();
     }
@@ -296,6 +298,12 @@ public class ExploreFragment
                     adapter.addElement(new LoadingMoreModel());
                     presenter.loadMoreData(exploreParams);
                 }
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() == -1){
+                    btnBackToTop.show();
+                }else{
+                    btnBackToTop.hide();
+                }
+
             }
         };
     }
