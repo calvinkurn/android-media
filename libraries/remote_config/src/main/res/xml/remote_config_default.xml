@@ -280,4 +280,8 @@
         <key>mainapp_digital_channel_recommendation</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_enable_login_revamp_phone</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
