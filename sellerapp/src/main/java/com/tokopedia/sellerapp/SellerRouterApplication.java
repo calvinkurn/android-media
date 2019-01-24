@@ -75,6 +75,8 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
+import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
@@ -262,7 +264,7 @@ public abstract class SellerRouterApplication extends MainApplication
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
-        UnifiedOrderListRouter {
+        UnifiedOrderListRouter, FlashSaleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -273,12 +275,54 @@ public abstract class SellerRouterApplication extends MainApplication
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
+    private AnalyticTracker analyticTracker;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        analyticTracker = initializeAnalyticTracker();
         initializeDagger();
         initializeRemoteConfig();
+    }
+
+    private AnalyticTracker initializeAnalyticTracker() {
+        return new AnalyticTracker() {
+            @Override
+            public void sendEventTracking(Map<String, Object> events) {
+                UnifyTracking.eventClearEnhanceEcommerce(SellerRouterApplication.this);
+                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, events);
+            }
+
+            @Override
+            public void sendEventTracking(String event, String category, String action, String label) {
+                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, new EventTracking(
+                        event,
+                        category,
+                        action,
+                        label
+                ).getEvent());
+            }
+
+            @Override
+            public void sendScreen(Activity activity, final String screenName) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
+            }
+
+            @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
+                }
+            }
+
+            @Override
+            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                TrackingUtils.eventTrackingEnhancedEcommerce(SellerRouterApplication.this, trackingData);
+            }
+        };
     }
 
     private void initializeRemoteConfig() {
@@ -1044,8 +1088,8 @@ public abstract class SellerRouterApplication extends MainApplication
                 requestCode);
     }
 
-    @Override
     @Deprecated
+    @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(getAppContext(), new EventTracking(event, category, action, label).getEvent());
     }
@@ -1135,43 +1179,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public AnalyticTracker getAnalyticTracker() {
-        return new AnalyticTracker() {
-            @Override
-            public void sendEventTracking(Map<String, Object> events) {
-                UnifyTracking.eventClearEnhanceEcommerce(SellerRouterApplication.this);
-                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, events);
-            }
-
-            @Override
-            public void sendEventTracking(String event, String category, String action, String label) {
-                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, new EventTracking(
-                        event,
-                        category,
-                        action,
-                        label
-                ).getEvent());
-            }
-
-            @Override
-            public void sendScreen(Activity activity, final String screenName) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.sendScreen(activity, () -> screenName);
-                }
-            }
-
-            @Override
-            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
-                            shopType, pageType, productId);
-                }
-            }
-
-            @Override
-            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                TrackingUtils.eventTrackingEnhancedEcommerce(SellerRouterApplication.this, trackingData);
-            }
-        };
+        return this.analyticTracker;
     }
 
     @Override
@@ -1597,6 +1605,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public @NonNull
+    Intent getFlashSaleDashboardIntent(@NonNull Context context) {
+        return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
+    }
+
+    @Override
+    public @NonNull
     Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
@@ -1642,10 +1656,12 @@ public abstract class SellerRouterApplication extends MainApplication
                                            @NonNull ArrayList<HashMap<String, String>> hashProducts) {
         return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
+
     @Override
     public Fragment getFlightOrderListFragment() {
         return null;
     }
+
     @Override
     public Intent getHelpUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
