@@ -1,6 +1,7 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.content.Context
+import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -105,4 +106,13 @@ fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
     NetworkErrorHelper.showEmptyState(this.context, this, errorMessage) {
         action()
     }
+}
+
+fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
+    val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+    layoutParams.setMargins(left, top, right, bottom)
+}
+
+fun View.getDimens(@DimenRes id: Int): Int {
+    return this.context.resources.getDimension(id).toInt()
 }
