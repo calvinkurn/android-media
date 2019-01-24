@@ -64,5 +64,8 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
                 element.getVccUserStatus(),
                 element.getApplinkRight(),
                 element.getBsDataRight()));
+
+        tokopediaPayCardView.setSaldoInfoIconVisibility(element.isRightSaldo());
+        tokopediaPayCardView.setInfoIconClickListener(v -> listener.onSaldoInfoIconClicked(false));
     }
 }

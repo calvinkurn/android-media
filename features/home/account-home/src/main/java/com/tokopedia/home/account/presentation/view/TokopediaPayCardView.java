@@ -19,10 +19,9 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.AccountHomeRouter;
 
 /**
  * @author okasurya on 7/18/18.
@@ -38,6 +37,7 @@ public class TokopediaPayCardView extends BaseCustomView {
     private TextView textDesctRight;
     private LinearLayout layoutLeft;
     private LinearLayout layoutRight;
+    private ImageView saldoInfoIV;
     private View container;
     private ImageView iconLeft, iconRight;
 
@@ -69,6 +69,7 @@ public class TokopediaPayCardView extends BaseCustomView {
         layoutRight = view.findViewById(R.id.layout_right);
         iconLeft = view.findViewById(R.id.card_icon_left);
         iconRight = view.findViewById(R.id.card_icon_right);
+        saldoInfoIV = view.findViewById(R.id.ss_info_image_view);
 
         ImageHandler.loadImageBitmap2(getContext(),
                 getBackgroundImageUri(),
@@ -156,5 +157,17 @@ public class TokopediaPayCardView extends BaseCustomView {
 
     public LinearLayout getLayoutRight() {
         return layoutRight;
+    }
+
+    public void setSaldoInfoIconVisibility(boolean isRightSaldo) {
+        if (isRightSaldo) {
+            saldoInfoIV.setVisibility(VISIBLE);
+        } else {
+            saldoInfoIV.setVisibility(GONE);
+        }
+    }
+
+    public void setInfoIconClickListener(View.OnClickListener listener) {
+        saldoInfoIV.setOnClickListener(listener);
     }
 }

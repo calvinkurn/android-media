@@ -94,6 +94,9 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
+        // TODO: 24/1/19 check if buyer is also seller
+        model.setOnBoardingForBuyerSaldo(true);
+        tokopediaPayViewModel.setRightSaldo(true);
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
         tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);

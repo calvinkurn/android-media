@@ -3,16 +3,21 @@ package com.tokopedia.home.account.presentation.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
 
 public class SellerSaldoView extends BaseCustomView {
 
-    private LabelView labelViewDeposit;
+    private ImageView saldoInfoIV;
+    private TextView saldoTV;
+    private TextView saldoAmtTV;
+    private CardView parentView;
 
 
     public SellerSaldoView(@NonNull Context context) {
@@ -32,14 +37,21 @@ public class SellerSaldoView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_seller_saldo, this);
-        labelViewDeposit = view.findViewById(R.id.label_view_seller_saldo);
+        saldoTV = view.findViewById(R.id.ss_text_view_title);
+        parentView = view.findViewById(R.id.parent_cardView);
+        saldoAmtTV = view.findViewById(R.id.saldo_balance_text_view);
+        saldoInfoIV = view.findViewById(R.id.ss_info_image_view);
     }
 
     public void setOnClickDeposit(View.OnClickListener listener) {
-        labelViewDeposit.setOnClickListener(listener);
+        parentView.setOnClickListener(listener);
+    }
+
+    public void setOnClickInfoIcon(View.OnClickListener listener) {
+        saldoInfoIV.setOnClickListener(listener);
     }
 
     public void setBalance(String balance) {
-        labelViewDeposit.setContent(balance);
+        saldoAmtTV.setText(balance);
     }
 }

@@ -194,5 +194,6 @@
     <string name="title_seller_saldo">Saldo Seller</string>
     <string name="buyer_saldo_on_boarding_title">Saldo Refund</string>
     <string name="buyer_saldo_on_boarding_desc">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia. Untuk melihat <b>Saldo Penghasilan</b> cek Saldo di tab ‘<b>Jual</b>’.</string>
+    <string name="saldo_info_bottom_sheet_btn">Mengerti</string>
 
 </resources>

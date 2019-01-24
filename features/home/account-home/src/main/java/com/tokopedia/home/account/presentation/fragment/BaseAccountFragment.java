@@ -24,6 +24,7 @@ import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
+import com.tokopedia.home.account.presentation.view.SaldoInfoBottomSheet;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -411,5 +412,25 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                 .useArrow(true)
                 .useSkipWord(false)
                 .build();
+    }
+
+    @Override
+    public void onSaldoInfoIconClicked(boolean isSeller) {
+        if (getContext() == null) {
+            return;
+        }
+        SaldoInfoBottomSheet saldoInfoBottomSheet =
+                new SaldoInfoBottomSheet(getContext());
+
+        if (isSeller) {
+            saldoInfoBottomSheet.setBody(getResources().getString(R.string.seller_saldo_on_boarding_desc));
+            saldoInfoBottomSheet.setTitle(getResources().getString(R.string.seller_saldo_on_boarding_title));
+        } else {
+            saldoInfoBottomSheet.setBody(getResources().getString(R.string.buyer_saldo_on_boarding_desc));
+            saldoInfoBottomSheet.setTitle(getResources().getString(R.string.buyer_saldo_on_boarding_title));
+        }
+
+        saldoInfoBottomSheet.setButtonText(getResources().getString(R.string.saldo_info_bottom_sheet_btn));
+        saldoInfoBottomSheet.show();
     }
 }

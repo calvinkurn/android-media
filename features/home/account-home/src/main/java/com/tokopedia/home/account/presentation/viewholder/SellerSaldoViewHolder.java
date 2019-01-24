@@ -39,5 +39,6 @@ public class SellerSaldoViewHolder extends AbstractViewHolder<SellerSaldoViewMod
     public void bind(final SellerSaldoViewModel element) {
         sellerSaldoView.setBalance(element.getDepositFmt());
         sellerSaldoView.setOnClickDeposit(v -> listener.onDepositClicked(element));
+        sellerSaldoView.setOnClickInfoIcon(v -> listener.onSaldoInfoIconClicked(true));
     }
 }

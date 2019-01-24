@@ -115,6 +115,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             model.setOnBoardingForBuyerSaldo(true);
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
+            tokopediaPayViewModel.setRightSaldo(true);
             tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);
@@ -122,6 +123,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             model.setOnBoardingForBuyerSaldo(false);
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
+            tokopediaPayViewModel.setRightSaldo(false);
             tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
             tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
             if (accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.ACTIVE)) {
