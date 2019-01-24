@@ -34,6 +34,7 @@
                     android:id="@+id/input_email_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
                     android:imeOptions="actionNext"
                     android:inputType="text"/>
 
@@ -102,9 +103,9 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeActionId="@+id/ime_login"
                 android:imeActionLabel="Lanjut"
-                android:imeOptions="actionUnspecified"
+                android:imeOptions="actionDone"
+                android:paddingLeft="5dp"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:textColor="@color/black"
