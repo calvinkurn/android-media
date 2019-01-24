@@ -17,6 +17,7 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
+import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
@@ -40,6 +41,7 @@ public class HomeFeedFragment extends Fragment implements HomeFeedListener {
     private int tabIndex;
     private GetHomeFeedUseCase getHomeFeedUseCase;
     private UserSession userSession;
+    private HomeEggListener homeEggListener;
 
     public static HomeFeedFragment newInstance(int tabIndex) {
         HomeFeedFragment homeFeedFragment = new HomeFeedFragment();
@@ -47,6 +49,10 @@ public class HomeFeedFragment extends Fragment implements HomeFeedListener {
         bundle.putInt(HomeFeedFragment.ARG_TAB_INDEX, tabIndex);
         homeFeedFragment.setArguments(bundle);
         return homeFeedFragment;
+    }
+
+    public void setListener(HomeEggListener homeEggListener) {
+        this.homeEggListener = homeEggListener;
     }
 
     @Override
@@ -60,6 +66,7 @@ public class HomeFeedFragment extends Fragment implements HomeFeedListener {
         recyclerView = view.findViewById(R.id.recyclerView);
         tabIndex = getArguments().getInt(ARG_TAB_INDEX);
         initAdapter();
+        initListeners();
         loadData();
     }
 
@@ -75,6 +82,17 @@ public class HomeFeedFragment extends Fragment implements HomeFeedListener {
         );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
+    }
+
+    private void initListeners() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (homeEggListener != null) {
+                    homeEggListener.hideEggOnScroll();
+                }
+            }
+        });
     }
 
     private void loadData() {

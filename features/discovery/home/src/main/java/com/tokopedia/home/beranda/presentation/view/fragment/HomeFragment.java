@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -49,6 +50,7 @@ import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
+import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
@@ -66,6 +68,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
+import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -96,7 +99,7 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener,
-        NotificationListener, FragmentListener {
+        NotificationListener, FragmentListener, HomeEggListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "beranda_trace";
@@ -117,7 +120,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private TabLayout tabLayout;
     private CoordinatorLayout root;
     private SectionContainer tabContainer;
-    //private SwipeRefreshLayout refreshLayout;
+    private ToggleableSwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
     private PerformanceMonitoring performanceMonitoring;
@@ -130,6 +133,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private RecyclerView.OnScrollListener onEggScrollListener;
     private ViewPager homeFeedsViewPager;
     private TabLayout homeFeedsTabLayout;
+    private AppBarLayout appBarLayout;
+    private int lastOffset;
 
     private MainToolbar mainToolbar;
 
@@ -217,13 +222,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mainToolbar = view.findViewById(R.id.toolbar);
         recyclerView = view.findViewById(R.id.list);
-        //refreshLayout = view.findViewById(R.id.sw_refresh_layout);
+        refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
         homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
         homeFeedsTabLayout = view.findViewById(R.id.tab_layout_home_feeds);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isUserLoggedIn()) {
             if (getArguments() != null) {
                 scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
@@ -242,6 +248,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initAdapter();
         initHomeFeedsViewPager();
         initRefreshLayout();
+        initAppBarScrollListener();
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
@@ -250,25 +257,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             public void onClick(View view) {
                 scrollToRecommendList();
                 HomePageTracking.eventClickJumpRecomendation(getActivity());
-            }
-        });
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (isUserLoggedIn() && showRecomendation) {
-                    int firstVisibleItemPos = layoutManager.findLastVisibleItemPosition();
-                    Visitable visitable = adapter.getItem(firstVisibleItemPos);
-                    if ((visitable instanceof InspirationViewModel
-                            || visitable instanceof TopAdsViewModel)
-                            || visitable instanceof LoadingModel
-                            || visitable instanceof LoadingMoreModel) {
-                        floatingTextButton.setVisibility(View.INVISIBLE);
-                    } else {
-                        floatingTextButton.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    floatingTextButton.setVisibility(View.GONE);
-                }
             }
         });
 
@@ -286,7 +274,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initHomeFeedsViewPager() {
-        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(getFragmentManager(), 10);
+        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this, getFragmentManager(), 10);
         homeFeedsViewPager.setOffscreenPageLimit(10);
         homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
         homeFeedsTabLayout.setupWithViewPager(homeFeedsViewPager);
@@ -294,7 +282,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void scrollToRecommendList() {
-        recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+        appBarLayout.setExpanded(false, true);
         scrollToRecommendList = false;
     }
 
@@ -336,7 +324,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initRefreshLayout() {
-        /*refreshLayout.post(new Runnable() {
+        refreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 if (presenter != null) {
@@ -345,17 +333,65 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         });
-        refreshLayout.setOnRefreshListener(this);*/
-        if (presenter != null) {
-            presenter.getHomeData();
-            presenter.getHeaderData(true);
-        }
+        refreshLayout.setOnRefreshListener(this);
     }
 
     private void loadEggData() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
             floatingEggButtonFragment.loadEggData();
+        }
+    }
+
+    private void initAppBarScrollListener() {
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
+
+                if (isAppBarFullyExpanded(offset)) {
+                    refreshLayout.setCanChildScrollUp(false);
+                } else {
+                    refreshLayout.setCanChildScrollUp(true);
+                }
+
+                hideEggFragmentOnScrolling();
+
+                if (isAppBarFullyCollapsed(offset)) {
+                    floatingTextButton.setVisibility(View.INVISIBLE);
+                } else if (isUserLoggedIn() && showRecomendation) {
+                    floatingTextButton.setVisibility(View.VISIBLE);
+                }
+
+                if (isAppBarScrollDown(offset) && !floatingTextButton.isAnimationStart()) {
+                    floatingTextButton.hide();
+                } else if (isAppBarScrollUp(offset) && !floatingTextButton.isAnimationStart()) {
+                    floatingTextButton.show();
+                }
+                lastOffset = offset;
+            }
+        });
+    }
+
+    private boolean isAppBarScrollUp(int offset) {
+        return offset > lastOffset;
+    }
+
+    private boolean isAppBarScrollDown(int offset) {
+        return offset < lastOffset;
+    }
+
+    private boolean isAppBarFullyExpanded(int offset) {
+        return offset == 0;
+    }
+
+    private boolean isAppBarFullyCollapsed(int offset) {
+        return Math.abs(offset) >= appBarLayout.getTotalScrollRange();
+    }
+
+    private void hideEggFragmentOnScrolling() {
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            floatingEggButtonFragment.hideOnScrolling();
         }
     }
 
@@ -623,18 +659,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isLoading() {
-        //return refreshLayout.isRefreshing();
-        return false;
+        return refreshLayout.isRefreshing();
     }
 
     @Override
     public void showLoading() {
-        //refreshLayout.setRefreshing(true);
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-        //refreshLayout.setRefreshing(false);
+        refreshLayout.setRefreshing(false);
         if (performanceMonitoring != null && !isTraceStopped) {
             performanceMonitoring.stopTrace();
             isTraceStopped = true;
@@ -1022,5 +1057,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchTokopointsNotification(String type) {
         TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
+    }
+
+    @Override
+    public void hideEggOnScroll() {
+        hideEggFragmentOnScrolling();
     }
 }
