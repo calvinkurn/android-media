@@ -64,4 +64,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
     public static final String AFFILIATE_EXPLORE_ENABLE_FILTER = "affiliate_explore_enable_filter";
+
+    public static final String SEARCH_RESULT_ENABLE_PROFILE_TAB = "mainapp_search_result_enable_profile_tab";
 }
