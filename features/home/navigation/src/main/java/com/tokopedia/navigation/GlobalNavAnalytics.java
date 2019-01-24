@@ -117,8 +117,8 @@ public class GlobalNavAnalytics {
     public void eventClickNewestInfo() {
         analyticTracker.sendEventTracking(
                 "clickNotifCenter",
-               "notif center",
-                GlobalNavConstant.Analytics.CLICK,
+                "notif center",
+                "click on info terbaru",
                 ""
         );
     }
