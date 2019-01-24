@@ -15,7 +15,7 @@ import java.util.*
 
 const val CALENDAR_YYYYMMDD = "yyyy-MM-dd"
 const val CALENDAR_MMMM = "MMMM"
-const val CALENDAR_YYYY = "YYYY"
+const val CALENDAR_YYYY = "yyyy"
 private val DEFAULT_LOCALE = Locale("in", "ID")
 
 fun Resources.getColorCalendar(context: Context, @ColorRes resId: Int): Int {

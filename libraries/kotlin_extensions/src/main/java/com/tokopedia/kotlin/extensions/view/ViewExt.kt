@@ -80,16 +80,16 @@ fun View.showErrorToaster(errorMessage: String, actionMessage: String?, action: 
     toaster.show()
 }
 
-fun View.showNormalToaster(errorMessage: String) {
-    this.showNormalToaster(errorMessage, null as String?) { }
+fun View.showNormalToaster(successMessage: String) {
+    this.showNormalToaster(successMessage, null as String?) { }
 }
 
-fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
-    this.showNormalToaster(errorMessage, context.getString(actionMessage), action)
+fun View.showNormalToaster(successMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
+    this.showNormalToaster(successMessage, context.getString(actionMessage), action)
 }
 
-fun View.showNormalToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
-    val toaster = ToasterNormal.make(this, errorMessage, BaseToaster.LENGTH_LONG)
+fun View.showNormalToaster(successMessage: String, actionMessage: String?, action: () -> Unit) {
+    val toaster = ToasterNormal.make(this, successMessage, BaseToaster.LENGTH_LONG)
     actionMessage?.let { message ->
         toaster.setAction(message) {
             action()
