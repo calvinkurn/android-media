@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.registeremail.view.fragment;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -29,33 +28,28 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.tokopedia.loginregister.R;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.design.utils.StripedUnderlineUtil;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.sessioncommon.di.SessionModule;
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.registeremail.di.DaggerRegisterEmailComponent;
 import com.tokopedia.loginregister.registeremail.domain.pojo.RegisterEmailPojo;
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity;
-import com.tokopedia.loginregister.registeremail.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.loginregister.registeremail.view.listener.RegisterEmailContract;
 import com.tokopedia.loginregister.registeremail.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.loginregister.registeremail.view.util.CustomPhoneNumberUtil;
 import com.tokopedia.loginregister.registeremail.view.util.RegisterUtil;
-import com.tokopedia.design.utils.StripedUnderlineUtil;
+import com.tokopedia.sessioncommon.di.SessionModule;
+import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -67,20 +61,9 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
-
 /**
  * @author by nisie on 10/25/18.
  */
-@RuntimePermissions
 public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailContract.View {
 
@@ -428,31 +411,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         };
     }
 
-
-    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
-    public void setupEmailAddressToEmailTextView() {
-        List<String> list = getEmailListOfAccountsUserHasLoggedInto();
-        if (list.size() > 0) {
-            String mEmail = list.get(0);
-            if (email.getText().toString().equals("")) {
-                email.setText(mEmail);
-                email.setSelection(mEmail.length());
-            }
-        }
-        email.setThreshold(0);
-        AutoCompleteTextAdapter adapter = new AutoCompleteTextAdapter(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                list,
-                selected -> {
-                    email.setText(selected);
-                    email.setSelection(selected.length());
-                    email.dismissDropDown();
-                });
-        email.setAdapter(adapter);
-    }
-
-
     public List<String> getEmailListOfAccountsUserHasLoggedInto() {
         Set<String> listOfAddresses = new LinkedHashSet<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS;
@@ -474,8 +432,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             }
             return false;
         });
-        RegisterEmailFragmentPermissionsDispatcher
-                .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
 
         registerPassword.setOnEditorActionListener((v, id, event) -> {
             if (id == REGISTER_BUTTON_IME || id == EditorInfo.IME_NULL) {
@@ -706,40 +662,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onForbidden() {
         ForbiddenActivity.startActivity(getActivity());
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RegisterEmailFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                RegisterEmailFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
-    void showRationaleForGetAccounts(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(),
-                new RequestPermissionUtil.PermissionRequestListener() {
-                    @Override
-                    public void onProceed() {
-                        request.proceed();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        request.cancel();
-                    }
-                }, Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
-    void showDeniefForGetAccounts() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
-    void showNeverAskForGetAccounts() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
     }
 
     @Override
