@@ -107,9 +107,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     private fun onSuccessValidate(model: RegisterValidationPojo) {
         if (TextUtils.equals(model.type, PHONE_TYPE)) {
             if (model.exist) {
-                viewEmailPhone.goToLoginPhoneVerifyPage(model.view)
+                viewEmailPhone.goToLoginPhoneVerifyPage(model.view.replace("-",""))
             } else {
-                viewEmailPhone.goToRegisterPhoneVerifyPage(model.view)
+                viewEmailPhone.goToRegisterPhoneVerifyPage(model.view.replace("-",""))
             }
 
         }

@@ -50,7 +50,7 @@
                 android:gravity="center"
                 android:background="@color/white"
                 android:layout_marginTop="@dimen/dp_20"
-                android:padding="@dimen/dp_9"
+                android:padding="@dimen/dp_8"
                 android:text="@string/change_2"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"
@@ -138,7 +138,7 @@
         <TextView
             android:id="@+id/register_btn"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_44"
+            android:layout_height="@dimen/dp_48"
             android:layout_below="@+id/forgot_pass"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_16"
