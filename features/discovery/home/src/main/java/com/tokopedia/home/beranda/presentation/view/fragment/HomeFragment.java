@@ -348,6 +348,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
 
+                if (offset == lastOffset) {
+                    return;
+                }
+
                 if (isAppBarFullyExpanded(offset)) {
                     refreshLayout.setCanChildScrollUp(false);
                 } else {
