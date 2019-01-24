@@ -9,8 +9,15 @@ data class ProductData(
         var currencySymbol: String = "Rp",
         var productUrl: String? = "",
         var shopUrl: String? = "",
+        var shopName: String = "",
         var productId: String = "",
-        var productImageUrl: String? = ""
+        var productImageUrl: String? = "",
+        var productShareDescription: String = "",
+        val PLACEHOLDER_NAME: String = "{{name}}",
+        val PLACEHOLDER_LINK: String = "{{branchlink}}",
+        val PLACEHOLDER_PRICE: String = "{{price}}",
+        val PLACEHOLDER_SHOP_NAME: String = "{{shop_name}}",
+        val PLACEHOLDER_NEW_LINE: String = "\\n"
 ) {
     val renderShareUri: String
         get() {
@@ -24,5 +31,7 @@ data class ProductData(
         private const val ARG_UTM_SOURCE = "Android"
         private const val ARG_UTM_MEDIUM = "Share"
         private const val CAMPAIGN_NAME = "Product%20Share"
+        const val PLACEHOLDER_REFERRAL_CODE: String = "{{referral_code}}"
+
     }
 }

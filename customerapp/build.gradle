@@ -540,6 +540,7 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
+    implementation project(rootProject.ext.features.referral)
 }
 
 
