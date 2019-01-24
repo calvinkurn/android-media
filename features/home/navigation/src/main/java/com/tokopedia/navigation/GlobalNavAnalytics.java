@@ -31,7 +31,7 @@ public class GlobalNavAnalytics {
         analyticTracker.sendEventTracking(
                 CLICK_HOMEPAGE,
                 String.format("%s %s %s", HOME_PAGE, BOTTOM, NAV),
-                String.format("%s %s %s", CLICK, name, NAV),
+                String.format("%s %s %s", CLICK, name.toLowerCase(), NAV),
                 ""
         );
     }

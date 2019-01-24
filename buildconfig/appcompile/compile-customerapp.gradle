@@ -34,6 +34,7 @@ include "features:discovery:topadssdk"
 include "features:discovery:recentview"
 //include "features:discovery:recentview_no_op"
 
+include "features:fintech:home_credit"
 include "features:fintech:mitra_toppers"
 include "features:fintech:reksa_dana"
 include "features:fintech:instant_loan"

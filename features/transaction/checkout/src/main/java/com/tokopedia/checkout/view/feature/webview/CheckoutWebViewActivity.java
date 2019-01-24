@@ -26,7 +26,7 @@ public class CheckoutWebViewActivity extends BaseWebViewActivity {
     private CodAnalytics mCodTracker;
     private int mCallerCode = -1;
 
-    public static Intent newInstance(Context context, String url) {
+    public static Intent newInstance(Context context, String url, String title) {
         return newInstance(context, url, null, -1);
     }
 
@@ -40,8 +40,8 @@ public class CheckoutWebViewActivity extends BaseWebViewActivity {
     public static Intent newInstance(Context context, String url, String title, int callerCode) {
         Intent intent = new Intent(context, CheckoutWebViewActivity.class);
         intent.putExtra(EXTRA_URL, url);
-        intent.putExtra(BaseWebViewActivity.EXTRA_TITLE, title);
         intent.putExtra(EXTRA_CALLER_CODE, callerCode);
+        intent.putExtra(EXTRA_TITLE, title);
         return intent;
     }
 

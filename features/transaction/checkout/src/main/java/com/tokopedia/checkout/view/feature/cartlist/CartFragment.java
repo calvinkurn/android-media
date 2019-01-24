@@ -100,7 +100,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
-    private static final String CART_TRACE = "cart_trace";
+    private static final String CART_TRACE = "mp_cart";
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
 
@@ -440,6 +440,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 refreshHandler.startRefresh();
             } else {
                 renderInitialGetCartListDataSuccess(cartListData);
+                stopTrace();
             }
         }
     }
@@ -795,11 +796,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
-        }
-
         sendAnalyticsScreenName(getScreenName());
         if (refreshHandler != null) {
             refreshHandler.finishRefresh();
@@ -855,6 +851,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 mIsMenuVisible = true;
                 getActivity().invalidateOptionsMenu();
             }
+        }
+
+        cartPageAnalytics.eventViewCartListFinishRender();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
         }
     }
 
@@ -1149,6 +1155,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         dPresenter.setCartListData(cartListData);
                         renderLoadGetCartDataFinish();
                         renderInitialGetCartListDataSuccess(cartListData);
+                        stopTrace();
                     }
                 }
             }

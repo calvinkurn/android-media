@@ -45,7 +45,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
     public static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
 
-    private static final String CHOOSE_COURIER_TRACE = "choose_courier_trace";
+    private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;

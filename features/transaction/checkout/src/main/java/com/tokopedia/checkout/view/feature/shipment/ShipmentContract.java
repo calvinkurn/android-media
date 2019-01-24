@@ -120,6 +120,8 @@ public interface ShipmentContract {
         void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void showToastFailedTickerPromo(String text);
+
+        void stopTrace();
     }
 
     interface AnalyticsActionListener {
@@ -297,7 +299,6 @@ public interface ShipmentContract {
 
         void proceedCodCheckout(String voucherCode, boolean isOneClickShipment);
 
-        void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label);
     }
 
 }

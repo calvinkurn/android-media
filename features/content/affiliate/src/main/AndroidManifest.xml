@@ -48,6 +48,12 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".feature.explore.view.activity.SortActivity"
+            android:label="@string/text_button_sort"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".feature.createpost.view.activity.CreatePostActivity"
             android:label="@string/title_af_create_post"
             android:screenOrientation="portrait"

@@ -249,6 +249,7 @@ import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.InboxMainActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.network.NetworkRouter;
@@ -503,7 +504,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NotifCenterRouter,
         EventModuleRouter,
         ChallengesModuleRouter,
-        TravelCalendarRouter,
         com.tokopedia.tkpdpdp.ProductDetailRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
@@ -2909,18 +2909,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent gotoNotificationPage(Context context) {
-        return new Intent(context, NotificationActivity.class);
-    }
-
-    @Override
     public Intent gotoSearchPage(Context context) {
         return new Intent(context, SearchActivity.class);
-    }
-
-    @Override
-    public Intent gotoQrScannerPage() {
-        return gotoQrScannerPage(false);
     }
 
     @Override
@@ -3577,5 +3567,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+    }
+
+    @Override
+    public Intent gotoInboxMainPage(Context context) {
+        return new Intent(context, InboxMainActivity.class);
     }
 }

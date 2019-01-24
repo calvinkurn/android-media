@@ -15,6 +15,8 @@ import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -148,7 +150,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean isPurchaseProtectionPage = false;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
-    private CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection;
+    private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     private CodAnalytics mTrackerCod;
 
     @Inject
@@ -189,6 +191,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.voucherCouponMapper = voucherCouponMapper;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
         this.codCheckoutUseCase = codCheckoutUseCase;
+        this.mTrackerPurchaseProtection = analyticsPurchaseProtection;
         this.userSessionInterface = userSessionInterface;
         this.analyticsPurchaseProtection = analyticsPurchaseProtection;
         this.mTrackerCod = codAnalytics;
@@ -352,9 +355,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
             isPurchaseProtectionPage = true;
-            sendPurchaseProtectionAnalytics(
-                    CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI,
-                    null);
+            mTrackerPurchaseProtection.eventImpressionOfProduct();
         }
     }
 
@@ -713,7 +714,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
                     analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest), checkoutData.getTransactionId());
                     if (isPurchaseProtectionPage) {
-                        analyticsPurchaseProtection.eventClickOnBuy(
+                        mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
                                         ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
                                         ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
@@ -753,6 +754,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
                     enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
                     enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
+                    enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
                     enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
                 }
             }
@@ -1304,20 +1306,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return hasDeletePromoAfterChecKPromoCodeFinal;
     }
 
-    @Override
-    public void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label) {
-        switch (type) {
-            case CLICK_PELAJARI:
-                analyticsPurchaseProtection.eventClickOnPelajari(label);
-                break;
-            case CLICK_BAYAR:
-                analyticsPurchaseProtection.eventClickOnBuy(label);
-                break;
-            case IMPRESSION_PELAJARI:
-                analyticsPurchaseProtection.eventImpressionOfProduct();
-                break;
-        }
-    }
 
     @Override
     public CodModel getCodData() {

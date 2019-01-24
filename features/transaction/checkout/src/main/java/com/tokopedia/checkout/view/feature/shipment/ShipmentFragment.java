@@ -113,7 +113,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
     private static final int REQUEST_CODE_COD = 1218;
-    private static final String SHIPMENT_TRACE = "shipment_trace";
+    private static final String SHIPMENT_TRACE = "mp_shipment";
 
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
     public static final String ARG_AUTO_APPLY_PROMO_CODE_APPLIED = "ARG_AUTO_APPLY_PROMO_CODE_APPLIED";
@@ -160,6 +160,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
     @Inject
     CodAnalytics mTrackerCod;
+    @Inject
+    CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
@@ -473,11 +475,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp) {
-        if (!isShipmentTraceStopped) {
-            shipmentTracePerformance.stopTrace();
-            isShipmentTraceStopped = true;
-        }
-
         PromoData promoData = shipmentAdapter.getPromoData();
         CartPromoSuggestion cartPromoSuggestion = shipmentPresenter.getCartPromoSuggestion();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
@@ -492,6 +489,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 promoData, cartPromoSuggestion, recipientAddressModel,
                 shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, isInitialRender
         );
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isShipmentTraceStopped) {
+            shipmentTracePerformance.stopTrace();
+            isShipmentTraceStopped = true;
+        }
     }
 
     @Override
@@ -1462,7 +1467,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceTncClicked() {
-        startActivity(CheckoutWebViewActivity.newInstance(getContext(), CartConstant.TERM_AND_CONDITION_URL));
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(),
+                CartConstant.TERM_AND_CONDITION_URL,
+                getString(R.string.title_activity_checkout_tnc_webview));
+        startActivity(intent);
     }
 
     @Override
@@ -1499,7 +1507,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected String getScreenName() {
-        return ConstantTransactionAnalytics.ScreenName.CHECKOUT;
+        if (isOneClickShipment()) {
+            return ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT;
+        } else {
+            return ConstantTransactionAnalytics.ScreenName.CHECKOUT;
+        }
     }
 
     @Override
@@ -1811,9 +1823,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToProtectionMore(String url) {
-        shipmentPresenter.sendPurchaseProtectionAnalytics(
-                CheckoutAnalyticsPurchaseProtection.Event.CLICK_PELAJARI, url);
-        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
+        mTrackerPurchaseProtection.eventClickOnPelajari(url);
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
+                getString(R.string.title_activity_checkout_webview));
         startActivity(intent);
     }
 

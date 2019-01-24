@@ -201,6 +201,7 @@ ext {
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
 
+            homecredit                    : ":features:fintech:home_credit",
             instantLoan                   : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                  : ":features:fintech:mitra_toppers",

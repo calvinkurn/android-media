@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -13,8 +14,6 @@ import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,19 +29,23 @@ public class UpdateCartIntentService extends IntentService {
     public static final String EXTRA_CART_ITEM_DATA_LIST = "EXTRA_CART_ITEM_DATA_LIST";
 
     private UpdateCartUseCase updateCartUseCase;
-    private UserSessionInterface userSession;
+    private UserSession userSession;
 
     public UpdateCartIntentService() {
         super(UpdateCartIntentService.class.getSimpleName());
-        if (getApplication() != null) {
-            updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
-            userSession = new UserSession(getApplicationContext());
-//            userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
-        }
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        if (getApplication() != null) {
+            if (updateCartUseCase == null) {
+                updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
+            }
+            if (userSession == null) {
+                userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
+            }
+        }
+
         if (userSession != null && updateCartUseCase != null && intent != null && intent.hasExtra(EXTRA_CART_ITEM_DATA_LIST)) {
             List<CartItemData> cartItemDataList = intent.getParcelableArrayListExtra(EXTRA_CART_ITEM_DATA_LIST);
             List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
