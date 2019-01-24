@@ -1833,7 +1833,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onNotifierClicked(String url) {
         mTrackerCod.eventClickPelajariSelengkapnya();
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
-                getString(R.string.manage_terms_and_conditions),
+                getString(R.string.title_activity_checkout_tnc_webview),
                 CheckoutWebViewActivity.CALLER_CODE_COD);
         startActivity(intent);
     }
