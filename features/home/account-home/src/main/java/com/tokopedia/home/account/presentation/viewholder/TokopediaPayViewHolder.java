@@ -2,14 +2,18 @@ package com.tokopedia.home.account.presentation.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.view.View;
-import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.TokopediaPayCardView;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
+
+import java.util.ArrayList;
 
 /**
  * @author okasurya on 7/19/18.
@@ -21,16 +25,23 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
     private TokopediaPayCardView tokopediaPayCardView;
     private AccountItemListener listener;
 
-    public TokopediaPayViewHolder(View itemView, @NonNull AccountItemListener listener) {
+    public TokopediaPayViewHolder(View itemView, @NonNull AccountItemListener listener, ArrayList<ShowCaseObject> showCaseObjects) {
         super(itemView);
         tokopediaPayCardView = itemView.findViewById(R.id.view_tokopedia_pay);
         this.listener = listener;
+
+        showCaseObjects.add(new ShowCaseObject(
+                tokopediaPayCardView.getLayoutRight(),
+                getString(R.string.buyer_saldo_on_boarding_title),
+                Html.fromHtml(getString(R.string.buyer_saldo_on_boarding_desc)).toString(),
+                ShowCaseContentPosition.UNDEFINED,
+                R.color.tkpd_main_green));
     }
 
     @Override
     public void bind(TokopediaPayViewModel element) {
         tokopediaPayCardView.setTextAmountLeft(element.getAmountLeft());
-        if(element.isLinked()) {
+        if (element.isLinked()) {
             tokopediaPayCardView.setAmountColorLeft(android.R.color.primary_text_light);
         } else {
             tokopediaPayCardView.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);

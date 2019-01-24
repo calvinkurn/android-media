@@ -153,4 +153,8 @@ public class TokopediaPayCardView extends BaseCustomView {
     public void setRightItemClickListener(View.OnClickListener listener) {
         layoutRight.setOnClickListener(listener);
     }
+
+    public LinearLayout getLayoutRight() {
+        return layoutRight;
+    }
 }

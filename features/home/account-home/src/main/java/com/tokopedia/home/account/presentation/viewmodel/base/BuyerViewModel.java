@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class BuyerViewModel implements Parcelable {
     private List<ParcelableViewModel> items = new ArrayList<>();
+    private boolean onBoardingForBuyerSaldo = false;
 
     public List<ParcelableViewModel> getItems() {
         return items;
@@ -29,6 +30,7 @@ public class BuyerViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.items);
+        dest.writeByte((byte) (onBoardingForBuyerSaldo ? 1 : 0));
     }
 
     public BuyerViewModel() {
@@ -37,6 +39,15 @@ public class BuyerViewModel implements Parcelable {
     protected BuyerViewModel(Parcel in) {
         this.items = new ArrayList<>();
         in.readList(this.items, ParcelableViewModel.class.getClassLoader());
+        onBoardingForBuyerSaldo = in.readByte() != 0;
+    }
+
+    public boolean isOnBoardingForBuyerSaldo() {
+        return onBoardingForBuyerSaldo;
+    }
+
+    public void setOnBoardingForBuyerSaldo(boolean onBoardingForBuyerSaldo) {
+        this.onBoardingForBuyerSaldo = onBoardingForBuyerSaldo;
     }
 
     public static final Creator<BuyerViewModel> CREATOR = new Creator<BuyerViewModel>() {

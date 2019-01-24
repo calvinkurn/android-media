@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.text.Html;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -28,9 +29,9 @@ public class SellerSaldoViewHolder extends AbstractViewHolder<SellerSaldoViewMod
 
         showCaseObjects.add(new ShowCaseObject(
                 sellerSaldoView,
-                getString(R.string.intro_seller_saldo_title),
-                getString(R.string.intro_seller_saldo_desc),
-                ShowCaseContentPosition.LEFT,
+                getString(R.string.seller_saldo_on_boarding_title),
+                Html.fromHtml(getString(R.string.seller_saldo_on_boarding_desc)).toString(),
+                ShowCaseContentPosition.UNDEFINED,
                 R.color.tkpd_main_green));
     }
 

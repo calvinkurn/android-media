@@ -1,6 +1,9 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +27,7 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
 
     @Inject
     BuyerAccount.Presenter presenter;
+    private boolean hasShownShowCase;
 
     public static Fragment newInstance() {
         Fragment fragment = new BuyerAccountFragment();
@@ -74,7 +79,8 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new BuyerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
+        accountTypeFactory = new AccountTypeFactory(this);
+        adapter = new BuyerAccountAdapter(accountTypeFactory, new ArrayList<>());
         recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(this::getData);
     }
@@ -103,6 +109,26 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         if (model.getItems() != null) {
             adapter.clearAllElements();
             adapter.setElement(model.getItems());
+        }
+
+        if (model.isOnBoardingForBuyerSaldo()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startShowCase(getContext());
+                }
+            }, 100);
+        }
+    }
+
+    private void startShowCase(Context context) {
+        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, BuyerAccountFragment.class.getName())) {
+
+            hasShownShowCase = true;
+            createShowCaseDialog().show((Activity) context,
+                    BuyerAccountFragment.class.getName(),
+                    accountTypeFactory.getShowCaseObjectListForBuyerSaldo()
+            );
         }
     }
 
