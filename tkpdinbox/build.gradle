@@ -44,6 +44,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

@@ -23,9 +23,8 @@ public class NewDiscussionNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                TkpdCoreRouter.getInboxTalkActivityIntent(mContext)
+                TkpdCoreRouter.getInboxTalkActivityIntentWrapper(mContext)
         );
-        mNotificationPass.classParentStack = TkpdCoreRouter.getInboxTalkActivityClass(mContext);
         mNotificationPass.title = String.format(
                 "%s %s",
                 incomingMessage.getString("counter"),

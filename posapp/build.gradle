@@ -195,7 +195,6 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.linker)
@@ -204,6 +203,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
+    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.productDetail)

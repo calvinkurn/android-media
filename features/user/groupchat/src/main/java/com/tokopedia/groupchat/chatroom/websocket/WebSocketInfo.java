@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.AdminMsg;
 import com.tokopedia.groupchat.chatroom.domain.pojo.EventHandlerPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.GeneratedMessagePojo;
@@ -124,6 +126,10 @@ public class WebSocketInfo {
                 return mapToEventHandler(data);
             case ParticipantViewModel.TYPE:
                 return mapToParticipant(data);
+            case OverlayViewModel.TYPE:
+                return mapToOverlay(data);
+            case OverlayCloseViewModel.TYPE:
+                return mapToOverlayClose(data);
             default:
                 return null;
         }
@@ -401,6 +407,22 @@ public class WebSocketInfo {
         return gson.fromJson(data, VideoViewModel.class);
     }
 
+    private Visitable mapToOverlay(JsonObject data) {
+        if (TextUtils.isEmpty(data.toString())) {
+            return new OverlayViewModel();
+        }
+        Gson gson = new Gson();
+        return gson.fromJson(data, OverlayViewModel.class);
+    }
+
+    private Visitable mapToOverlayClose(JsonObject data) {
+        if (TextUtils.isEmpty(data.toString())) {
+            return new OverlayCloseViewModel();
+        }
+        Gson gson = new Gson();
+        return gson.fromJson(data, OverlayCloseViewModel.class);
+    }
+
     static WebSocketInfo createReconnect() {
         return createReconnect("");
     }
@@ -480,6 +502,10 @@ public class WebSocketInfo {
         } else if (mappedMessage instanceof EventGroupChatViewModel) {
             return true;
         } else if (mappedMessage instanceof ParticipantViewModel) {
+            return true;
+        } else if (mappedMessage instanceof OverlayViewModel) {
+            return true;
+        } else if (mappedMessage instanceof OverlayCloseViewModel) {
             return true;
         } else {
             return false;

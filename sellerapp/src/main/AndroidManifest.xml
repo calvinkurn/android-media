@@ -36,6 +36,10 @@
         </activity>
 
         <activity
+            android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".dashboard.view.activity.DashboardActivity"
             android:exported="true"
             android:label="@string/drawer_title_home"

@@ -5,15 +5,15 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.domain.model.feed.DataFeedDomain;
+import com.tokopedia.home.beranda.domain.model.feed.FeedDomain;
+import com.tokopedia.home.beranda.domain.model.feed.FeedResult;
+import com.tokopedia.home.beranda.domain.model.feed.InspirationItemDomain;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
-import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
-import com.tokopedia.feedplus.domain.model.feed.DataFeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +156,8 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getUrl(),
                 page,
                 recommendationDomain.getPriceInt(),
-                recommendationDomain.getRecommendationType()
+                recommendationDomain.getRecommendationType(),
+                recommendationDomain.getCategoryBreadcrumb()
         );
     }
 

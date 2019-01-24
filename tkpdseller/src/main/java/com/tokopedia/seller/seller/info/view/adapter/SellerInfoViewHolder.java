@@ -11,13 +11,11 @@ import android.widget.TextView;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
-
-import static com.tokopedia.seller.R.id.imageView;
 
 /**
  * Created by normansyahputa on 11/30/17.

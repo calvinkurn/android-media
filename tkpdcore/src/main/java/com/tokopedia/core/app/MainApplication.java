@@ -8,14 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.android.gms.tagmanager.ContainerHolder;
+import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -24,6 +30,11 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -54,7 +65,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Context context;
     private static Activity activity;
     private static Boolean isResetNotification = false;
     private static Boolean isResetDrawer = false;
@@ -100,10 +110,6 @@ public abstract class MainApplication extends MainRouterApplication{
         }
 
         return isInBackground;
-    }
-
-    public synchronized static Context getAppContext() {
-        return MainApplication.context;
     }
 
     /**
@@ -255,8 +261,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
-        //CommonUtils.dumper("asdasas");
-        MainApplication.context = getApplicationContext();
         init();
         initCrashlytics();
         initStetho();
@@ -317,10 +321,9 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.GTM, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.APPSFLYER, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.MOENGAGE, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.setMoEngageExistingUser(this, getTkpdCoreRouter().legacySessionHandler().isLoggedIn());
+        TrackingUtils.runGTMFirstTime(this);
+        TrackingUtils.runAppsFylerFirstTime(this);
+        TrackingUtils.runMoengageFirstTime(this);
         TrackingUtils.enableDebugging(this, isDebug());
     }
 
@@ -381,4 +384,47 @@ public abstract class MainApplication extends MainRouterApplication{
             FirebaseApp.initializeApp(this, builder.build());
         }
     }
+
+    @Override
+    public Intent getSellerHomeActivityReal(Context context) {
+        return SellerAppRouter.getSellerHomeActivity(context);
+    }
+
+    @Override
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return SellerAppRouter.getAppNotificationReceiver();
+    }
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        return InboxRouter.getInboxMessageActivityClass();
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        return InboxRouter.getInboxResCenterActivityClass();
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
+        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
+    }
+
+    @Override
+    public Class getSellingActivityClassReal() {
+        return SellerRouter.getSellingActivityClass();
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionListReal(Context mContext) {
+        return SellerRouter.getActivitySellingTransactionList(mContext);
+    }
+	
+    @Override
+    public Intent getInboxTalkCallingIntent(Context mContext){
+        return null;
+    }
+
+
+
 }

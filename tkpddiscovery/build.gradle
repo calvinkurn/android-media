@@ -34,6 +34,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
@@ -42,7 +43,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.cacheApi)

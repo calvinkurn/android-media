@@ -7,7 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.domain.usecase.ThankYouPageTrackerUseCase;
 import com.tokopedia.tkpd.thankyou.view.ThanksTracker;

@@ -10,6 +10,7 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -17,63 +18,9 @@ import com.tokopedia.core.router.SellerRouter;
 /**
  * this code is bridging for old code and latest codes.
  */
-public abstract class MainRouterApplication extends BaseMainApplication implements TkpdCoreRouter {
+public abstract class MainRouterApplication extends CoreNetworkApplication implements TkpdCoreRouter {
     GCMHandler gcmHandler;
     SessionHandler sessionHandler;
-
-    @Override
-    public Class<?> getInboxTalkActivityClass() {
-        return null;
-//        return InboxRouter.getInboxTalkActivityClass();
-    }
-
-    @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return null;
-//        return SellerAppRouter.getSellerHomeActivity(context);
-    }
-
-    @Override
-    public Intent getInboxTalkActivityIntentReal(Context context) {
-        return null;
-//        return InboxRouter.getInboxTalkActivityIntent(context);
-    }
-
-    @Override
-    public IAppNotificationReceiver getAppNotificationReceiver() {
-        return null;
-//        return SellerAppRouter.getAppNotificationReceiver();
-    }
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        return null;
-//        return InboxRouter.getInboxMessageActivityClass();
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        return null;
-//        return InboxRouter.getInboxResCenterActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return null;
-//        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return null;
-//        return SellerRouter.getSellingActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return null;
-//        return SellerRouter.getActivitySellingTransactionList(mContext);
-    }
 
     @Override
     public SessionHandler legacySessionHandler() {

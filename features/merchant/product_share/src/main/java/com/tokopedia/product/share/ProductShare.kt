@@ -22,11 +22,11 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.io.File
 import java.lang.Exception
 
-class ProductShare(private val activity: Activity) {
+class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
 
     fun share(data: ProductData, preBuildImage: ()->Unit, postBuildImage: ()-> Unit){
-        if (SHARE_IMAGE_ENABLED) {
+        if (mode == MODE_IMAGE) {
             preBuildImage()
 
             ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, object : SimpleTarget<Bitmap>(DEFAULT_IMAGE_WIDTH,
@@ -53,16 +53,7 @@ class ProductShare(private val activity: Activity) {
                         bitmap.recycle()
                         generateBranchLink(file, data)
                     } catch (t: Throwable){
-                        try {
-                            val bitmap = sticker.buildBitmapImage()
-                            val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
-                            bitmap.recycle()
-                            generateBranchLink(file, data)
-                        } catch (t: Throwable){
-                            generateBranchLink(null, data)
-                        } finally {
-                            postBuildImage()
-                        }
+                        generateBranchLink(null, data)
                     } finally {
                         postBuildImage()
                     }
@@ -73,10 +64,10 @@ class ProductShare(private val activity: Activity) {
         }
     }
 
-    private fun openIntentShare(file: File?, title: String, shareContent: String, shareUri: String) {
+    private fun openIntentShare(file: File?, title: String?, shareContent: String, shareUri: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            type = "text/plain"
+            type = if (file == null || mode == MODE_TEXT) "text/plain" else "image/*"
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             if (file != null) {
                 putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
@@ -126,11 +117,13 @@ class ProductShare(private val activity: Activity) {
 
 
     companion object {
-        private const val SHARE_IMAGE_ENABLED = false;
         private const val DEFAULT_IMAGE_WIDTH = 2048
         private const val DEFAULT_IMAGE_HEIGHT = 2048
 
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
+
+        const val MODE_TEXT = 0
+        const val MODE_IMAGE = 1
 
     }
 }

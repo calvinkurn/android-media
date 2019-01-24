@@ -29,11 +29,13 @@ dependencies {
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.logisticanalytics)
+    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.loyalty)
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.fingerprint)
@@ -48,6 +50,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.networkDependencies.glide
 

@@ -24,8 +24,6 @@
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.READ_SMS" />
 
     <uses-feature
         android:name="android.hardware.camera.flash"
@@ -126,10 +124,6 @@
         <activity
             android:name="com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop"
             android:label="@string/title_activity_people_favorited_shop"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.deposit.activity.DepositActivity"
-            android:label="@string/title_activity_people_deposit"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.seller.OrderHistoryView"
@@ -258,9 +252,6 @@
             android:name="com.tokopedia.seller.opportunity.snapshot.SnapShotProduct"
             android:label="@string/title_activity_snapshot"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.gallery.GalleryActivity"
-            android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
@@ -275,11 +266,6 @@
             <meta-data
                 android:name="forward.Kochava"
                 android:value="com.kochava.android.tracker.ReferralCapture" />
-        </receiver>
-        <receiver android:name="com.tokopedia.core.msisdn.IncomingSmsReceiver">
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
         </receiver>
 
         <!-- ======================================================= -->
@@ -321,9 +307,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
-        <activity android:name="com.tokopedia.core.referral.ReferralActivity" />
-        <activity android:name="com.tokopedia.core.referral.FriendsWelcomeActivity" />
     </application>
 
 </manifest>

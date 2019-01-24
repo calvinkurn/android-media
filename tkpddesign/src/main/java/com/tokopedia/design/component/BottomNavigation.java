@@ -889,7 +889,7 @@ public class BottomNavigation extends BottomNavigationView {
     private void setBadgePosition(BadgeView badgeView, int badgeNumber) {
         if (badgeNumber < 0) {
             //for empty badge
-            badgeView.setGravityOffset(20, 3, true);
+            badgeView.setGravityOffset(20, 5, true);
         } else {
             //for badge with number
             badgeView.setGravityOffset(10, 3, true);

@@ -6,8 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_8"
     android:layout_marginLeft="@dimen/dp_8"
     android:layout_marginRight="@dimen/dp_8"
     app:cardCornerRadius="@dimen/dp_4"
@@ -41,7 +40,7 @@
 
             <TextView
                 android:id="@+id/text_main"
-                style="@style/TextView.Micro.Green.Bold"
+                style="@style/TextView.Micro.Green"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -53,7 +52,7 @@
 
             <TextView
                 android:id="@+id/text_secondary"
-                style="@style/TextView.Micro.Bold"
+                style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"

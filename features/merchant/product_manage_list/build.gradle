@@ -40,8 +40,10 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsFreeClaim)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.networkDependencies.glide
 

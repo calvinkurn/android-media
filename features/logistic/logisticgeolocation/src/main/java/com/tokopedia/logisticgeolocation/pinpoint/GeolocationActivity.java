@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticgeolocation.R;
@@ -41,18 +42,19 @@ import permissions.dispatcher.RuntimePermissions;
 public class GeolocationActivity extends BaseActivity implements ITransactionAnalyticsGeoLocationPinPoint {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
-    public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
     public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
 
     private Bundle mBundle;
+    private boolean isFromMarketPlace = false;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject RetrofitInteractor mRepository;
     @Inject UserSession mUser;
 
     /**
      * Usage = Address // Address Tx // Shipment // ShopOpen // Seller
-     * @param locationPass please get from common module logistic_data
+     *
+     * @param locationPass          please get from common module logistic_data
      * @param isFromMarketPlaceCart true if you are from marketplace cart
      * @return intent
      */
@@ -60,7 +62,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                                         boolean isFromMarketPlaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
         bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
         intent.putExtras(bundle);
         return intent;
@@ -76,6 +78,10 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                             ((AbstractionRouter) getApplication()).getAnalyticTracker()
                     );
         }
+        mBundle = getIntent().getExtras();
+        if (mBundle != null) {
+            isFromMarketPlace = mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false);
+        }
 
         BaseAppComponent appComponent =
                 ((BaseMainApplication) getApplication()).getBaseAppComponent();
@@ -84,7 +90,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                 .build()
                 .inject(this);
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             GeolocationActivityPermissionsDispatcher.inflateFragmentWithCheck(this);
         }
     }
@@ -112,14 +118,19 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     public void inflateFragment() {
+        LocationPass locationPass = null;
         Fragment fragment = null;
         mBundle = getIntent().getExtras();
-        if(mBundle != null) {
-            LocationPass locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
-            if(locationPass != null && !locationPass.getLatitude().isEmpty()) {
+
+        if (mBundle != null) {
+            locationPass = mBundle.getParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION);
+        }
+
+        if (locationPass != null) {
+            if (locationPass.getLatitude() != null && !locationPass.getLatitude().isEmpty()) {
                 fragment = GoogleMapFragment.newInstance(locationPass);
             } else {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("address", locationPass.getDistrictName()
                         + ", "
                         + locationPass.getCityName());
@@ -133,7 +144,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
         } else {
             fragment = GoogleMapFragment.newInstanceNoLocation();
         }
-        if(fragment != null) getSupportFragmentManager()
+        if (fragment != null) getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, fragment, TAG_FRAGMENT)
                 .commit();
@@ -142,31 +153,31 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
 
     @Override
     public void sendAnalyticsOnDropdownSuggestionItemClicked() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickDropdownSuggestionTandaiLokasiPadaTambahAddress();
     }
 
     @Override
     public void sendAnalyticsOnSetCurrentMarkerAsCurrentPosition() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickVTandaiLokasiPadaTambahAddress();
     }
 
     @Override
     public void sendAnalyticsOnBackPressClicked() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickBackArrowTandaiLokasiPadaTambahAddress();
     }
 
     @Override
     public void sendAnalyticsOnGetCurrentLocationClicked() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickPinButtonFromTandaiLokasi();
     }
 
     @Override
     public void sendAnalyticsOnViewErrorSetPinPointLocation(String errorMessage) {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(errorMessage);
     }
 

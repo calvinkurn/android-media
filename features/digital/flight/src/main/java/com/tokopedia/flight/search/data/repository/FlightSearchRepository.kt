@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.data.repository
 
-import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.search.data.api.single.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.api.single.response.*
@@ -161,7 +161,7 @@ open class FlightSearchRepository @Inject constructor(
                 }
     }
 
-    fun getSearchFilter(@FlightSortOption sortOption: Int, filterModel: FlightFilterModel):
+    fun getSearchFilter(@TravelSortOption sortOption: Int, filterModel: FlightFilterModel):
             Observable<List<JourneyAndRoutes>> {
         return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, sortOption)
     }
@@ -210,7 +210,7 @@ open class FlightSearchRepository @Inject constructor(
     fun deleteFlightSearchReturnData(): Observable<Unit> {
         val filterModel = FlightFilterModel()
         filterModel.isReturn = true
-        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, FlightSortOption.NO_PREFERENCE)
+        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, TravelSortOption.NO_PREFERENCE)
                 .flatMap { Observable.just(deleteFlightSearchReturnData(it)) }
     }
 

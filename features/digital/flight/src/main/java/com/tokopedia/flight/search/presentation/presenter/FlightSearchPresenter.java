@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -10,7 +11,6 @@ import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
-import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightSearchCombinedUseCase;
@@ -86,7 +86,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 
     @Override
     public void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
@@ -96,7 +97,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
-        flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(), journeyViewModel, adapterPosition);
+        if (isViewAttached()) {
+            flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(), journeyViewModel, adapterPosition);
+        }
         deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(journeyViewModel));
     }
 
@@ -355,7 +358,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh) {
+    public void fetchSortAndFilterLocalData(@TravelSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
                 new Subscriber<List<FlightJourneyViewModel>>() {
@@ -387,7 +390,17 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void detachView() {
+    public boolean isDoneLoadData() {
+        return callCounter >= maxCall;
+    }
+
+    @Override
+    public void resetCounterCall() {
+        callCounter = 0;
+    }
+
+    @Override
+    public void unsubscribeAll() {
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
@@ -397,18 +410,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         flightSearchCombinedUseCase.unsubscribe();
         flightSortAndFilterUseCase.unsubscribe();
         flightSearchV2UseCase.unsubscribe();
-
-        super.detachView();
-    }
-
-    @Override
-    public boolean isDoneLoadData() {
-        return callCounter >= maxCall;
-    }
-
-    @Override
-    public void resetCounterCall() {
-        callCounter = 0;
     }
 
     private void deleteFlightReturnSearch(Subscriber subscriber) {

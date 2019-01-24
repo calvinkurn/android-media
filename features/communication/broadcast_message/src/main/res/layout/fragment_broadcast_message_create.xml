@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4">
+
+            <TextView style="@style/TextView.Small.BlackSecondary"
+                android:text="@string/recipient" />
+
+            <TextView style="@style/TextView.Small.BlackPrimary"
+                android:id="@+id/total_follower"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                tools:text="@string/recipient"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_16"
+            android:background="@color/white_fafafa"
+            android:orientation="vertical">
+
+            <TextView style="@style/TextView.Micro.BlackSecondary"
+                android:text="@string/upload"/>
+
+            <ImageView android:id="@+id/bg_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/image_height"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/bg_fill_grey_dashed"
+                android:src="@drawable/ic_upload_image"
+                android:scaleType="center"/>
+
+            <TextView style="@style/TextView.Micro.BlackDisabled"
+                android:text="@string/desc_linked_image"
+                android:layout_marginTop="@dimen/dp_8"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_16">
+
+            <TextView style="@style/TextView.Small.BlackSecondary"
+                android:id="@+id/title_switch_product"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/attach_my_product"/>
+
+            <Switch
+                style="@style/Switch"
+                android:id="@+id/switch_upload_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_product_upload"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_80"
+            android:background="@color/white"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/grey_300"/>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:padding="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_6"
+            android:id="@+id/text_input_layout_message"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/message_label"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/message_max_character"
+            app:helperEnabled="true"
+            app:helperTextAppearance="@style/BMHelperTextAppearance"
+            app:counterTextAppearance="@style/BMCounterTextAppearance"
+            app:helper="@string/message_content_desc">
+
+            <EditText
+                android:id="@+id/edit_text_message"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:gravity="top"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLength="@integer/message_max_character"/>
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <LinearLayout style="@style/LabelLayout"
+            android:orientation="vertical"
+            android:clickable="false"
+            android:layout_marginTop="@dimen/dp_8"
+            android:padding="0dp">
+
+            <Button
+                android:id="@+id/button_save"
+                style="@style/Button.Submit.Green"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/bm_continue" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

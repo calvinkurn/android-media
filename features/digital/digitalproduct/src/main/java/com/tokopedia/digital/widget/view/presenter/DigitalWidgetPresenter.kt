@@ -31,4 +31,10 @@ class DigitalWidgetPresenter(private val digitalWidgetUseCase: DigitalWidgetUseC
         })
     }
 
+
+    override fun detachView() {
+        digitalWidgetUseCase.unsubscribe()
+        super.detachView()
+    }
+
 }

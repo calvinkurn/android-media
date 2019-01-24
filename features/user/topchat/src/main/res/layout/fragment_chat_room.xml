@@ -94,6 +94,7 @@
 
 
         <RelativeLayout
+            android:id="@+id/send_message_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
@@ -103,7 +104,7 @@
             android:paddingLeft="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_5"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
             <ImageView
@@ -178,6 +179,40 @@
                 android:layout_gravity="center"
                 android:visibility="gone"
                 tools:visibility="visible" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/chat_blocked_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:padding="@dimen/dp_8"
+            android:visibility="gone"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/border_green_reputation">
+
+            <TextView
+                android:id="@+id/blocked_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/black_70"
+                android:text="@string/chat_blocked_text"
+                />
+
+            <TextView
+                android:id="@+id/enable_chat_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/tkpd_main_green"
+                android:layout_below="@+id/blocked_text"
+                android:text="@string/enable_chat_settings"
+                />
 
 
         </RelativeLayout>

@@ -13,9 +13,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -24,7 +22,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -44,6 +41,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
+import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
@@ -59,7 +57,6 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -74,14 +71,13 @@ import rx.Subscriber;
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
-    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
+    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
+    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
-    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
-
 
     private final Activity context;
     private final DeepLinkView viewListener;

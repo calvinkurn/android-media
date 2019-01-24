@@ -27,6 +27,7 @@
     <string name="default_request_error_null_data">Data Kosong. Mohon ulangi beberapa saat lagi</string>
     <string name="default_request_error_unknown_short">Terjadi kesalahan</string>
     <string name="msg_no_connection_trouble">Terjadi Kendala pada Koneksi Internet.</string>
+    <string name="cs_notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
 
     <string name="error_no_connection2">Mohon periksa koneksi internet Anda</string>
     <string name="close">Tutup</string>
@@ -49,6 +50,7 @@
     <string name="appupdate_update">Update</string>
     <string name="appupdate_later">Nanti</string>
     <string name="appupdate_close">Tutup</string>
+    <string name="retry_label">Ulangi</string>
 
     <!-- Permission Util -->
     <string name="dialog_cancel">BATAL</string>

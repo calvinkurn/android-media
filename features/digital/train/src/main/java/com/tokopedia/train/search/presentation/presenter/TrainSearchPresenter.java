@@ -102,7 +102,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
         getView().showLoadingPage();
         getView().hideFilterAndSortButtonAction();
         RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(
-                getView().getFilterParam(), getView().getSortOptionSelected());
+                getView().getFilterParam(), getView().getSortOptionSelected(), getView().getScheduleVariantSelected());
 
         getFilteredAndSortedScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
             @Override

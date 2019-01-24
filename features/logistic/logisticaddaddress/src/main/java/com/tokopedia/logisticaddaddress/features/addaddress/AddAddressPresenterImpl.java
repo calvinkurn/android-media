@@ -72,8 +72,16 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     public void requestReverseGeoCode(Context context, Destination destination) {
         GeoLocationUtils.getReverseGeoCodeParallel(context,
                 Double.parseDouble(destination.getLatitude()),
-                Double.parseDouble(destination.getLongitude()), resultAddress -> {
-                    mView.setPinpointAddress(resultAddress);
+                Double.parseDouble(destination.getLongitude()), new GeoLocationUtils.GeoLocationListener() {
+                    @Override
+                    public void getGeoCode(String resultAddress) {
+                        mView.setPinpointAddress(resultAddress);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        mView.showErrorSnackbar(message);
+                    }
                 });
     }
 
@@ -137,14 +145,14 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
     private TKPDMapParam<String, String> getParamAddAddress(Destination address) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(PARAM_ADDRESS, address.getAddressStreet());
-        param.put(PARAM_ADDRESS_TYPE, address.getAddressName());
-        param.put(PARAM_CITY, address.getCityId());
-        param.put(PARAM_DISTRICT, address.getDistrictId());
-        param.put(PARAM_PROVINCE, address.getProvinceId());
-        param.put(PARAM_POSTAL_CODE, address.getPostalCode());
-        param.put(PARAM_RECEIVER_NAME, address.getReceiverName());
-        param.put(PARAM_RECEIVER_PHONE, address.getReceiverPhone());
+        param.put(PARAM_ADDRESS, (address.getAddressStreet() != null) ? address.getAddressStreet() : "");
+        param.put(PARAM_ADDRESS_TYPE, (address.getAddressName() != null) ? address.getAddressName() : "");
+        param.put(PARAM_CITY, (address.getCityId() != null) ? address.getCityId() : "");
+        param.put(PARAM_DISTRICT, (address.getDistrictId() != null) ? address.getDistrictId() : "");
+        param.put(PARAM_PROVINCE, (address.getProvinceId() != null) ? address.getProvinceId() : "");
+        param.put(PARAM_POSTAL_CODE, (address.getPostalCode() != null) ? address.getPostalCode() : "");
+        param.put(PARAM_RECEIVER_NAME, (address.getReceiverName() != null) ? address.getReceiverName() : "");
+        param.put(PARAM_RECEIVER_PHONE, (address.getReceiverPhone() != null) ? address.getReceiverPhone() : "");
         if (address.getLatitude() != null && address.getLongitude() != null) {
             param.put(PARAM_LATITUDE, String.valueOf(address.getLatitude()));
             param.put(PARAM_LONGITUDE, String.valueOf(address.getLongitude()));
@@ -154,15 +162,15 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
     private TKPDMapParam<String, String> getParamEditAddress(Destination address, String password) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(PARAM_ADDRESS_ID, address.getAddressId());
-        param.put(PARAM_ADDRESS, address.getAddressStreet());
-        param.put(PARAM_ADDRESS_TYPE, address.getAddressName());
-        param.put(PARAM_CITY, address.getCityId());
-        param.put(PARAM_DISTRICT, address.getDistrictId());
-        param.put(PARAM_PROVINCE, address.getProvinceId());
-        param.put(PARAM_POSTAL_CODE, address.getPostalCode());
-        param.put(PARAM_RECEIVER_NAME, address.getReceiverName());
-        param.put(PARAM_RECEIVER_PHONE, address.getReceiverPhone());
+        param.put(PARAM_ADDRESS_ID, (address.getAddressId() != null) ? address.getAddressId() : "");
+        param.put(PARAM_ADDRESS, (address.getAddressStreet() != null) ? address.getAddressStreet() : "");
+        param.put(PARAM_ADDRESS_TYPE, (address.getAddressName() != null) ? address.getAddressName() : "");
+        param.put(PARAM_CITY, (address.getCityId() != null) ? address.getCityId() : "");
+        param.put(PARAM_DISTRICT, (address.getDistrictId() != null) ? address.getDistrictId() : "");
+        param.put(PARAM_PROVINCE, (address.getProvinceId() != null) ? address.getProvinceId() : "");
+        param.put(PARAM_POSTAL_CODE, (address.getPostalCode() != null) ? address.getPostalCode() : "");
+        param.put(PARAM_RECEIVER_NAME, (address.getReceiverName() != null) ? address.getReceiverName() : "");
+        param.put(PARAM_RECEIVER_PHONE, (address.getReceiverPhone() != null) ? address.getReceiverPhone() : "");
         if (address.getLatitude() != null && address.getLongitude() != null) {
             param.put(PARAM_LATITUDE, String.valueOf(address.getLatitude()));
             param.put(PARAM_LONGITUDE, String.valueOf(address.getLongitude()));

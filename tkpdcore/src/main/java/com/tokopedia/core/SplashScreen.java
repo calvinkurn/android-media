@@ -34,6 +34,8 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,8 +69,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        setContentView(R.layout.activity_splash);
 
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -106,7 +106,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         moveToHome();
     }
 
-    private void moveToHome() {
+    protected void moveToHome() {
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
