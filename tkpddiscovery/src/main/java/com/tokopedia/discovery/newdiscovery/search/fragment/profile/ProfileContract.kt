@@ -15,6 +15,8 @@ class ProfileContract {
         fun attachNavigationListener(searchNavigationListener: SearchNavigationListener)
         fun attachRedirectionListener(redirectionListener: RedirectionListener)
         fun onErrorGetProfileListData(e : Throwable)
+        fun launchLoginPage()
+        fun launchProfilePage(userId : String)
     }
 
     interface Presenter : CustomerPresenter<View> {

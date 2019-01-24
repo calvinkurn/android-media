@@ -38,6 +38,8 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TextView
+                    android:drawableLeft="@drawable/search_kol_badge"
+                    android:gravity="center_vertical"
                     android:textColor="@color/black_70"
                     android:textStyle="bold"
                     android:textSize="@dimen/dp_14"

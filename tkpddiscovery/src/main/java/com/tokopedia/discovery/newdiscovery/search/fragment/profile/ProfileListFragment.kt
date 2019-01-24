@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.profile
 
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.DiscoveryRouter
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListTypeFactoryImpl
@@ -29,6 +35,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         ProfileContract.View,
         ProfileListListener,
         FollowActionListener{
+
+    private val PARAM_USER_ID = "{user_id}"
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -76,9 +84,14 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
+        SearchTracking.eventUserImpressionProfileResultInTabProfile(
+                context,
+                profileListViewModel.getListTrackingObject(),
+                query
+        )
+
         totalProfileCount = profileListViewModel.totalSearchCount
         renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)
-        activity!!.invalidateOptionsMenu()
     }
 
     override fun renderList(list: List<ProfileViewModel>, hasNextPage: Boolean) {
@@ -147,7 +160,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onErrorToggleFollow(adapterPosition: Int, errorMessage: String) {
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        NetworkErrorHelper.showSnackbar(activity)
     }
 
     override fun attachNavigationListener(searchNavigationListener: SearchNavigationListener) {
@@ -159,7 +172,23 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onFollowButtonClicked(adapterPosition: Int, profileModel: ProfileViewModel) {
-        presenter.handleFollowAction(adapterPosition, profileModel)
+        SearchTracking.eventClickFollowActionProfileResultProfileTab(
+                context,
+                query,
+                !profileModel.followed,
+                profileModel.name,
+                profileModel.id,
+                adapterPosition
+        )
+
+        when (userSessionInterface.isLoggedIn) {
+            true -> {
+                presenter.handleFollowAction(adapterPosition, profileModel)
+            }
+            false -> {
+                launchLoginPage()
+            }
+        }
     }
 
     companion object {
@@ -190,7 +219,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         return createProfileEmptySearchModel(
                 context!!,
                 query,
-                "Prolil"
+                getString(R.string.title_profile)
         )
     }
 
@@ -234,5 +263,24 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun getUserId(): String {
         return userSessionInterface.userId
+    }
+
+    override fun launchLoginPage() {
+        RouteManager.route(context, ApplinkConst.LOGIN)
+    }
+
+    override fun launchProfilePage(userId : String) {
+        val applink : String = ApplinkConst.PROFILE.replace(PARAM_USER_ID, userId)
+        RouteManager.route(context, applink)
+    }
+
+    override fun onHandleProfileClick(profileModel: ProfileViewModel) {
+        SearchTracking.eventUserClickProfileResultInTabProfile(
+                context,
+                listOf(profileModel.getTrackingObject()),
+                query
+                )
+
+        launchProfilePage(profileModel.id)
     }
 }

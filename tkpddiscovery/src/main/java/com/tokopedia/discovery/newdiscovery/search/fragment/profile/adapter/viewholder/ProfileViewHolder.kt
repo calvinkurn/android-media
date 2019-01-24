@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.viewholder
 
+import android.graphics.drawable.Drawable
+import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -23,13 +25,19 @@ class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListLis
 
         when(profileData.isKol) {
             true -> {
-                itemView.tv_name.setCompoundDrawables(
-                        itemView.context.resources.getDrawable(R.drawable.search_kol_badge),
+                val kolDrawable : Drawable = itemView.context.resources.getDrawable(R.drawable.search_kol_badge)
+                itemView.tv_name.setCompoundDrawablesWithIntrinsicBounds(
+                        kolDrawable,
                         null,
                         null,
                         null
                 )
             }
+        }
+
+        when(TextUtils.isEmpty(profileData.username)) {
+            true -> itemView.tv_username.visibility = View.GONE
+            false -> itemView.tv_username.visibility = View.VISIBLE
         }
 
         when(profileData.post_count != 0) {
@@ -65,6 +73,10 @@ class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListLis
                 itemView.btn_follow.buttonCompatType = ButtonCompat.PRIMARY
                 itemView.btn_follow.isClickable = true
             }
+        }
+
+        itemView.setOnClickListener {
+            profileListListener.onHandleProfileClick(profileData)
         }
 
         itemView.btn_follow.setOnClickListener {

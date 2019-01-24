@@ -4,6 +4,7 @@ import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel
 
 interface ProfileListListener : EmptyStateListener{
-    abstract fun onFollowButtonClicked(adapterPosition: Int,
+    fun onFollowButtonClicked(adapterPosition: Int,
                                        profileModel: ProfileViewModel)
+    fun onHandleProfileClick(profileModel: ProfileViewModel)
 }

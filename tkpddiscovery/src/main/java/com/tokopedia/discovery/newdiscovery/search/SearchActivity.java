@@ -99,6 +99,7 @@ public class SearchActivity extends DiscoveryActivity
     private String productTabTitle;
     private String catalogTabTitle;
     private String shopTabTitle;
+    private String profileTabTitle;
     private boolean forceSwipeToShop;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
@@ -306,6 +307,7 @@ public class SearchActivity extends DiscoveryActivity
         productTabTitle = getString(R.string.product_tab_title);
         catalogTabTitle = getString(R.string.catalog_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
+        profileTabTitle = getString(R.string.title_profile);
     }
 
     private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
@@ -353,7 +355,7 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem("Prolil", profileListFragment));
+        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 

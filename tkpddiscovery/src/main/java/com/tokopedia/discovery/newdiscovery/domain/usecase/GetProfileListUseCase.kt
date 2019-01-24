@@ -33,18 +33,24 @@ open class GetProfileListUseCase(private val context: Context?,
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map { graphqlResponse ->
                     val profileListGqlResponse = graphqlResponse.getData<SearchProfileListGqlResponse>(SearchProfileListGqlResponse::class.java)
+                    val startRow = (requestParams.getString(KEY_START,"0").toInt())+1
                     ProfileListViewModel(
-                            convertToProfileListViewModel(profileListGqlResponse),
+                            convertToProfileListViewModel(profileListGqlResponse,
+                                    startRow
+                                    ),
                             profileListGqlResponse!!.aceSearchProfile!!.hasNext,
                             profileListGqlResponse.aceSearchProfile.count
                     )
                 }
     }
 
-    private fun convertToProfileListViewModel(gqlResponse: SearchProfileListGqlResponse): List<ProfileViewModel> {
+    private fun convertToProfileListViewModel(
+            gqlResponse: SearchProfileListGqlResponse,
+            startRow : Int): List<ProfileViewModel> {
         val profileListGqlResponse = gqlResponse.aceSearchProfile
 
         val profileListViewModel = ArrayList<ProfileViewModel>()
+        var position = startRow
         for (item in profileListGqlResponse.profiles!!) {
             val profileViewModel = ProfileViewModel(
                     item.id,
@@ -57,7 +63,8 @@ open class GetProfileListUseCase(private val context: Context?,
                     item.isaffiliate,
                     item.following,
                     item.followers,
-                    item.postCount
+                    item.postCount,
+                    position++
             )
             profileListViewModel.add(profileViewModel)
         }

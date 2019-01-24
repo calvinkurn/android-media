@@ -17,7 +17,9 @@
             android:descendantFocusability="blocksDescendants"
             android:dividerHeight="@dimen/dp_5"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/dp_10"
+            android:clipToPadding="false"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
