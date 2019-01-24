@@ -416,7 +416,7 @@ public class SearchActivity extends DiscoveryActivity
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem("Prolil", profileListFragment));
+        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 

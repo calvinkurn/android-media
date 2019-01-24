@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.profile
 
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery.DiscoveryRouter
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListTypeFactoryImpl
@@ -234,14 +231,16 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     private fun getEmptySearchTitle(context: Context, sectionTitle: String): String {
         val templateText = context.getString(R.string.msg_empty_search_with_filter_1)
-        return String.format(templateText, sectionTitle)
+        return String.format(templateText, sectionTitle).toLowerCase()
     }
 
     override fun onErrorGetProfileListData(e: Throwable) {
-        NetworkErrorHelper.createSnackbarWithAction(
-                activity
-        ) {
-            loadData(nextPage)
+        hideLoading()
+
+        if (!adapter.isContainData) {
+            NetworkErrorHelper.showEmptyState(activity, view) { loadData(nextPage) }
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
         }
     }
 
