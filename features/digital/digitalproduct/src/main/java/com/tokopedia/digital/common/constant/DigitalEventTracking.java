@@ -40,6 +40,7 @@ public interface DigitalEventTracking {
     interface Label {
         String DEFAULT_EMPTY_VALUE = "";
         String NO_PROMO = "no promo";
+        String PROMO = "no promo";
         String SITE = "tokopediadigital";
     }
 
@@ -47,5 +48,10 @@ public interface DigitalEventTracking {
     interface Screen {
         String DIGITAL_CATEGORY = "/digital/";
         String DIGITAL_CHECKOUT = "/digital/checkout";
+    }
+
+    interface Misc{
+        String ACTION_FIELD_STEP1 = "cart page loaded";
+        String ACTION_FIELD_STEP2 = "click payment option button";
     }
 }

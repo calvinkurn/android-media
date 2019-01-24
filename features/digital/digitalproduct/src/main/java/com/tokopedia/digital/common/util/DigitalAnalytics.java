@@ -96,7 +96,10 @@ public class DigitalAnalytics {
                 cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
-        String label = cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase() + " - " + cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase();
+        String label = String.format("%s - %s",
+                cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase(),
+                cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase()
+        );
 
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(
@@ -108,7 +111,7 @@ public class DigitalAnalytics {
                                 "checkout", DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf(
                                                 "step", "1",
-                                                "option", "cart page loaded"
+                                                "option", DigitalEventTracking.Misc.ACTION_FIELD_STEP1
                                         ),
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
@@ -133,11 +136,14 @@ public class DigitalAnalytics {
                 cartDataInfo.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName));
-        String label = cartDataInfo.getAttributes().getCategoryName().toLowerCase() + " - " + cartDataInfo.getAttributes().getOperatorName().toLowerCase();
+        String label = String.format("%s - %s - ",
+                cartDataInfo.getAttributes().getCategoryName().toLowerCase(),
+                cartDataInfo.getAttributes().getOperatorName().toLowerCase()
+        );
         if (TextUtils.isEmpty(voucherCode)) {
-            label += " - no promo";
+            label += DigitalEventTracking.Label.NO_PROMO;
         } else {
-            label += " - promo";
+            label += DigitalEventTracking.Label.PROMO;
         }
 
 
@@ -151,7 +157,7 @@ public class DigitalAnalytics {
                                 "checkout", DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf(
                                                 "step", "2",
-                                                "option", "click payment option button"
+                                                "option", DigitalEventTracking.Misc.ACTION_FIELD_STEP2
                                         ),
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
