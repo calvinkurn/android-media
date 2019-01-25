@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -22,6 +24,7 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
@@ -31,6 +34,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Deprecated
 public class GTMContainer implements IGTMContainer {
@@ -39,8 +43,6 @@ public class GTMContainer implements IGTMContainer {
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
     private static final int EXPIRE_CONTAINER_TIME_DEBUG = 900;
 
-    private static final String IS_EXCEPTION_ENABLED = "is_exception_enabled";
-    private static final String IS_USING_HTTP_2 = "is_using_http_2";
     private static final String TAG = GTMContainer.class.getSimpleName();
 
     private Context context;
@@ -79,6 +81,26 @@ public class GTMContainer implements IGTMContainer {
         } catch (Exception e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    public void loadContainer() {
+        try {
+            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
+            TagManager tagManager = getTagManager();
+            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
+                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
+
+            pResult.setResultCallback(cHolder -> {
+                ContainerHolderSingleton.setContainerHolder(cHolder);
+                if (isAllowRefreshDefault(cHolder)) {
+                    Log.i("GTM TKPD", "Refreshed Container ");
+                    cHolder.refresh();
+                    //setExpiryRefresh();
+                }
+            }, 2, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            TrackingUtils.eventError(context, context.getClass().toString(), e.toString());
         }
     }
 
