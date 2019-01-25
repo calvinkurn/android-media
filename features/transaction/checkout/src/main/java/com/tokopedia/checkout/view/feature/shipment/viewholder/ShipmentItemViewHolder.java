@@ -41,6 +41,7 @@ import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -685,9 +686,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            int selectedServiceId = shipmentDetailData.getSelectedShipment().getServiceId();
-            if (selectedServiceId == CourierConstant.SERVICE_ID_INSTANT
-                    || selectedServiceId == CourierConstant.SERVICE_ID_SAME_DAY) {
+            ShipmentItemData shipmentItemData = shipmentDetailData.getSelectedShipment();
+            if (shipmentItemData != null && (shipmentItemData.getServiceId() == CourierConstant.SERVICE_ID_INSTANT
+                    || shipmentItemData.getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY)) {
                 String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
                 String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
                 tvTickerInfo.setText(tickerInfo);
