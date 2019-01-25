@@ -4,14 +4,17 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CarousalUtilities;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.model.Carousal;
@@ -36,14 +39,17 @@ public class CarouselNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setSmallIcon(getDrawableIcon());
         builder.setAutoCancel(false);
-        builder.setOngoing(true);
+        builder.setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getTitle()));
+        builder.setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getMessage()));
         if (baseNotificationModel.getCarousalList() == null || baseNotificationModel.getCarousalList().size() == 0)
             return null;
-        builder.setContentIntent(getImagePendingIntent(baseNotificationModel.getCarousalList().get(baseNotificationModel.getCarousalIndex()), getRequestCode()));
+        builder.setContentIntent(getImagePendingIntent(baseNotificationModel.getCarousalList().get(baseNotificationModel.getCarousalIndex()),
+                getRequestCode()));
+
         CarousalUtilities.downloadImages(context, baseNotificationModel.getCarousalList());
         RemoteViews remoteViews = getCarousalRemoteView(baseNotificationModel.getCarousalList(), baseNotificationModel.getCarousalIndex());
-        builder.setCustomContentView(remoteViews);
         builder.setCustomBigContentView(remoteViews);
+        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
         return builder.build();
     }
 
@@ -55,6 +61,12 @@ public class CarouselNotification extends BaseNotification {
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.carousal_layout);
         Carousal carousal = carousalList.get(index);
         carousal.setIndex(index);
+        if (!TextUtils.isEmpty(carousal.getText())) {
+            remoteView.setViewVisibility(R.id.tvTitle, View.VISIBLE);
+            remoteView.setTextViewText(R.id.tvTitle, CMNotificationUtils.getSpannedTextFromStr(carousal.getText()));
+        } else {
+            remoteView.setViewVisibility(R.id.tvTitle, View.GONE);
+        }
         if (index == 0) {
             remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE);
             remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE);
@@ -102,7 +114,6 @@ public class CarouselNotification extends BaseNotification {
         }
         return resultPendingIntent;
     }
-
 
     private PendingIntent getImagePendingIntent(Carousal carousal, int requestCode) {
         PendingIntent resultPendingIntent;

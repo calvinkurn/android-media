@@ -25,6 +25,7 @@ public interface CMConstant {
         String DELETE_NOTIFICATION = "Delete";
         String CAROUSEL_NOTIFICATION = "Carousel";
         String SILENT_PUSH = "Silent";
+        String VISUAL_NOTIIFICATION = "Visual";
     }
 
 
@@ -62,6 +63,8 @@ public interface CMConstant {
         String SUB_TEXT = "subText";
 
 
+        String VISUAL_COLLAPSED_IMAGE = "collapsedImg";
+        String VISUAL_EXPANDED_IMAGE = "expandedImg";
     }
 
     interface ReceiverExtraData {

@@ -41,8 +41,7 @@ public class GridNotification extends BaseNotification {
         builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView);
-
-
+        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
         return builder.build();
     }
 

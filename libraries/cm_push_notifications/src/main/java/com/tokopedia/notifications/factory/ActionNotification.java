@@ -35,6 +35,8 @@ public class ActionNotification extends BaseNotification {
         RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName()
                 , R.layout.layout_collapsed);
         setCollapseData(collapsedView, baseNotificationModel, true);
+
+        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
         RemoteViews expandedView = new RemoteViews(context.getApplicationContext().getPackageName(),
                 R.layout.layout_big_image);
         builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())

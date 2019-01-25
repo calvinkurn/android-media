@@ -62,7 +62,7 @@
                 android:singleLine="true"
                 android:visibility="gone"
                 android:textColor="@color/secondary_text_default_material_light"
-                android:textSize="@dimen/notification_subtext_size" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_button3"
@@ -74,7 +74,7 @@
                 android:singleLine="true"
                 android:visibility="gone"
                 android:textColor="@color/secondary_text_default_material_light"
-                android:textSize="@dimen/notification_subtext_size" />
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

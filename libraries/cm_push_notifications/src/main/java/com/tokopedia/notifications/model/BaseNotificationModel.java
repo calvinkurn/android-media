@@ -39,6 +39,9 @@ public class BaseNotificationModel {
     private List<Grid> gridList = new ArrayList<>();
     private String subText;
 
+    private String visualCollapsedImageUrl;
+    private String visualExpandedImageUrl;
+
     private int carousalIndex = 0;
     private boolean vibration = true;
     private boolean sound = true;
@@ -219,5 +222,21 @@ public class BaseNotificationModel {
 
     public void setSubText(String subText) {
         this.subText = subText;
+    }
+
+    public String getVisualCollapsedImageUrl() {
+        return visualCollapsedImageUrl;
+    }
+
+    public void setVisualCollapsedImageUrl(String visualCollapsedImageUrl) {
+        this.visualCollapsedImageUrl = visualCollapsedImageUrl;
+    }
+
+    public String getVisualExpandedImageUrl() {
+        return visualExpandedImageUrl;
+    }
+
+    public void setVisualExpandedImageUrl(String visualExpandedImageUrl) {
+        this.visualExpandedImageUrl = visualExpandedImageUrl;
     }
 }

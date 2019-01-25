@@ -65,6 +65,8 @@ public class CMNotificationFactory {
                     return null;
                 case CMConstant.NotificationType.CAROUSEL_NOTIFICATION:
                     return (new CarouselNotification(context.getApplicationContext(), baseNotificationModel));
+                case CMConstant.NotificationType.VISUAL_NOTIIFICATION:
+                    return new VisualNotification(context.getApplicationContext(), baseNotificationModel);
             }
         }
         return null;
@@ -111,6 +113,8 @@ public class CMNotificationFactory {
         model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
         model.setGridList(getGridList(data));
         model.setSubText(data.getString(CMConstant.PayloadKeys.SUB_TEXT));
+        model.setVisualCollapsedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_COLLAPSED_IMAGE));
+        model.setVisualExpandedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_EXPANDED_IMAGE));
         return model;
     }
 
