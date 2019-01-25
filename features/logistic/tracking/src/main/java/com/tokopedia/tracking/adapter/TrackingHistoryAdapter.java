@@ -36,7 +36,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
     @Override
     public TrackingHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_trailing_bullet, parent, false);
+                .inflate(R.layout.adapter_tracking_history_view_holder, parent, false);
         return new TrackingHistoryViewHolder(parent.getContext(), view);
     }
 
