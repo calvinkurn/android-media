@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public class SessionService extends AuthService<SessionApi> {
     private static final String TAG = SessionService.class.getSimpleName();
 

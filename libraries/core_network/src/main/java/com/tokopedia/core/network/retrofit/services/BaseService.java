@@ -10,6 +10,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 26/11/2015.
  */
+
+@Deprecated
 public abstract class BaseService<T> {
     private static final String TAG = BaseService.class.getSimpleName();
 

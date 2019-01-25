@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by kris on 11/9/17. Tokopedia
  */
 
+@Deprecated
 public class OrderDetailService extends AuthService<OrderDetailApi>{
 
 

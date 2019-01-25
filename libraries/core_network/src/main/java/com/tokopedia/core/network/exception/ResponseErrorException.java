@@ -8,6 +8,7 @@ import java.io.IOException;
  * @author anggaprasetiyo on 3/4/17.
  */
 
+@Deprecated
 public class ResponseErrorException extends IOException {
 
     private static final long serialVersionUID = -3848721958439593398L;

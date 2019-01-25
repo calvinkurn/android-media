@@ -4,6 +4,7 @@ package com.tokopedia.core.product.model;
  * Created by HenryPri on 12/05/17.
  */
 
+@Deprecated
 public class CourierItem {
     private String name;
     private String info;

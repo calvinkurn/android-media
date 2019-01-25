@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 2/2/16.
  */
+@Deprecated
 public class ListDistricts {
 
     @SerializedName("status")

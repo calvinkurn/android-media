@@ -17,6 +17,7 @@ import rx.Observable;
  * Created by Alifa on 2/22/2017.
  */
 
+@Deprecated
 public interface HadesApi {
 
     String ANDROID_DEVICE = "android";

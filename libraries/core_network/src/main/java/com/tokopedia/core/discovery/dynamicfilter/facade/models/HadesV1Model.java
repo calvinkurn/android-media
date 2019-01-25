@@ -15,6 +15,7 @@ import com.tokopedia.core.discovery.model.Breadcrumb;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class HadesV1Model {
 
     @SerializedName("data")

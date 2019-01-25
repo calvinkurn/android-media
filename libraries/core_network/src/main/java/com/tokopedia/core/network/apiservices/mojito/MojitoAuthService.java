@@ -10,6 +10,8 @@ import retrofit2.Retrofit;
 /**
  * @author ricoharisin on 4/15/16.
  */
+
+@Deprecated
 public class MojitoAuthService extends GlobalAuthService<MojitoAuthApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

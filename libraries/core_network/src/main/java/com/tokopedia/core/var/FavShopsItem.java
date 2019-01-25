@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@Deprecated
 public class FavShopsItem extends RecyclerViewItem implements Parcelable {
 
 	@SerializedName("image")

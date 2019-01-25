@@ -18,6 +18,8 @@ import rx.Observable;
  * KunyitApi
  * Created by stevenfredian on 8/2/16.
  */
+
+@Deprecated
 public interface KunyitApi {
 
     @GET(TkpdBaseURL.KunyitTalk.GET_INBOX_TALK)

@@ -14,6 +14,7 @@ import java.util.Map;
  * Created by normansyahputa on 10/20/17.
  */
 
+@Deprecated
 public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
 
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {

@@ -11,6 +11,8 @@ import rx.Observable;
 /**
  * @author Toped18 on 7/1/2016.
  */
+
+@Deprecated
 public interface SearchSuggestionApi {
     @GET("universe/v3?device=android&source=searchbar")
     Observable<Response<SearchDataModel>> searchSuggestion(

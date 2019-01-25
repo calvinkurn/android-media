@@ -15,6 +15,7 @@ import retrofit2.Retrofit;
  * Created by stevenfredian on 8/31/17.
  */
 
+@Deprecated
 public class DrawerService  {
 
     private Context context;

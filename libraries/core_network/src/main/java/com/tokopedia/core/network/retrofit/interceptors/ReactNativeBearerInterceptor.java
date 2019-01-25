@@ -8,6 +8,7 @@ import okhttp3.Request;
  * Created by alvarisi on 10/9/17.
  */
 
+@Deprecated
 public class ReactNativeBearerInterceptor extends ReactNativeInterceptor {
     private String token;
 

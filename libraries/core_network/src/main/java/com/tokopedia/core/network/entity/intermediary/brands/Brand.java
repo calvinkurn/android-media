@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.intermediary.brands;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Brand {
 
     @SerializedName("shop_id")

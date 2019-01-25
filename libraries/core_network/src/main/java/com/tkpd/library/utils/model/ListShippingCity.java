@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 2/11/16.
  */
+@Deprecated
 public class ListShippingCity {
     @SerializedName("status")
     @Expose

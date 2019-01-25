@@ -117,8 +117,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 311201101;
-        defaultVersionName = "3.12";
+        defaultVersionCode = 311801101;
+        defaultVersionName = "3.18";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -540,6 +540,7 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
+    implementation project(rootProject.ext.features.referral)
 }
 
 

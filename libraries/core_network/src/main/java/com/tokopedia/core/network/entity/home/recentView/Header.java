@@ -3,6 +3,7 @@ package com.tokopedia.core.network.entity.home.recentView;
 
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Header {
 
     @SerializedName("server_process_time")

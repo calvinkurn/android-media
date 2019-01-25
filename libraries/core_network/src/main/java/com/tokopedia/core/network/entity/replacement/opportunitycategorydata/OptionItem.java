@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * Created by nisie on 4/26/17.
  */
 
+@Deprecated
 public class OptionItem {
 
     @SerializedName("value")

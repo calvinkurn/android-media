@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class VideoData implements Parcelable{
 
     @SerializedName("product_id")

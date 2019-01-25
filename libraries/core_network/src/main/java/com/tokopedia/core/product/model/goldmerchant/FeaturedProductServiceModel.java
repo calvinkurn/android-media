@@ -10,6 +10,7 @@ import java.util.List;
  * Created by HenryPri on 16/06/17.
  */
 
+@Deprecated
 public class FeaturedProductServiceModel {
     @SerializedName("data")
     List<FeaturedProductItem> itemList = new ArrayList<>();

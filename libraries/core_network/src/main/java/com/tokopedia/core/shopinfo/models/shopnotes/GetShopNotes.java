@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class GetShopNotes {
 
     @SerializedName("message_error")

@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * @author kulomady on 12/22/16.
  */
+
+@Deprecated
 public class Sort implements Parcelable {
 
     @SerializedName("name")

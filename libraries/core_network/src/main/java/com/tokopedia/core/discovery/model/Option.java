@@ -11,6 +11,8 @@ import java.util.List;
 /**
  * @author kulomady on 12/22/16.
  */
+
+@Deprecated
 public class Option implements Parcelable {
 
     public static final String KEY_PRICE_MIN = "pmin";

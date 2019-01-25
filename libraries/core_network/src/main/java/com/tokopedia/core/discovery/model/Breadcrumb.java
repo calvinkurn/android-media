@@ -19,6 +19,7 @@ import java.util.List;
  * Created by sebastianuskh on 9/1/16.
  */
 
+@Deprecated
 public class Breadcrumb implements Parcelable {
     @SerializedName("name_without_total")
     public String name_without_total;

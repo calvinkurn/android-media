@@ -16,6 +16,7 @@ import retrofit2.Retrofit;
  * @author anggaprasetiyo on 2/27/17.
  */
 
+@Deprecated
 public class DigitalResponseConverter extends Converter.Factory {
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 

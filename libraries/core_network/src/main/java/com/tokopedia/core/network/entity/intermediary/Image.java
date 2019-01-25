@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alifa on 5/23/17.
  */
 
+@Deprecated
 public class Image implements Parcelable {
 
     @SerializedName("position")

@@ -29,6 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by kris on 1/19/17. Tokopedia
  */
 
+@Deprecated
 public abstract class KeroService<T> {
     protected T api;
 

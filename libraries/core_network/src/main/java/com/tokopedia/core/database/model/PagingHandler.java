@@ -25,6 +25,7 @@ import java.util.Map;
  * @since 27/11/2015
  * move code to RxJava and Retrofit 2 style.
  */
+@Deprecated
 public class PagingHandler implements PaginHandlerRotation {
     public static final String PAGING_ACE = "PAGING_ACE";
     private JSONObject result;

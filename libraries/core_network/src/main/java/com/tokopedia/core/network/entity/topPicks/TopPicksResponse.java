@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.topPicks;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class TopPicksResponse {
 
     @SerializedName("process_time")

@@ -1,5 +1,6 @@
 package com.tokopedia.core.constant;
 
+@Deprecated
 public class ConstantCoreNetwork {
 
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";

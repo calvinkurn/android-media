@@ -6,6 +6,7 @@ import java.util.Map;
  * Created by kris on 8/22/17. Tokopedia
  */
 
+@Deprecated
 public class CreditCardInterceptor extends TkpdAuthInterceptor{
 
     @Override
