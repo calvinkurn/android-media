@@ -280,8 +280,4 @@
         <key>mainapp_digital_channel_recommendation</key>
         <value>true</value>
     </entry>
-    <entry>
-        <key>mainapp_search_result_enable_profile_tab</key>
-        <value>false</value>
-    </entry>
 </defaultsMap>

@@ -113,6 +113,8 @@ public class SearchActivity extends DiscoveryActivity
     private SearchComponent searchComponent;
     private MenuItem menuChangeGrid;
 
+    private boolean profileEnabled = false;
+
     public SearchComponent getSearchComponent() {
         return searchComponent;
     }
@@ -357,7 +359,7 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (remoteConfig.getBoolean(RemoteConfigKey.SEARCH_RESULT_ENABLE_PROFILE_TAB, false)) {
+        if (profileEnabled) {
             searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
         }
 
@@ -422,7 +424,7 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (remoteConfig.getBoolean(RemoteConfigKey.SEARCH_RESULT_ENABLE_PROFILE_TAB, false)) {
+        if (profileEnabled) {
             searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
         }
 

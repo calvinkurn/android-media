@@ -18,7 +18,7 @@ import java.util.HashMap
 
 import rx.Observable
 
-open class GetProfileListUseCase(private val context: Context?,
+open class GetProfileListUseCase(private val context: Context,
                                  private val graphqlUseCase: GraphqlUseCase) : UseCase<ProfileListViewModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<ProfileListViewModel>? {
@@ -38,7 +38,7 @@ open class GetProfileListUseCase(private val context: Context?,
                             convertToProfileListViewModel(profileListGqlResponse,
                                     startRow
                                     ),
-                            profileListGqlResponse!!.aceSearchProfile!!.hasNext,
+                            profileListGqlResponse?.aceSearchProfile?.hasNext?:false,
                             profileListGqlResponse.aceSearchProfile.count
                     )
                 }

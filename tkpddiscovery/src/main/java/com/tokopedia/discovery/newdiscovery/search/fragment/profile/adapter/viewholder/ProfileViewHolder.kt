@@ -12,12 +12,12 @@ import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.ProfileListListener
 import kotlinx.android.synthetic.main.search_result_profile.view.*
 
-class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListListener) : AbstractViewHolder<ProfileViewModel>(itemView) {
+class ProfileViewHolder(itemView: View, val profileListListener: ProfileListListener) : AbstractViewHolder<ProfileViewModel>(itemView) {
     companion object {
         val LAYOUT = R.layout.search_result_profile
     }
-    override fun bind(profileData: ProfileViewModel?) {
-        when(profileData!!.imgUrl != ""){
+    override fun bind(profileData: ProfileViewModel) {
+        when(!TextUtils.isEmpty(profileData?.imgUrl?:"")){
             true -> ImageHandler.loadImageCircle2(itemView.context, itemView.img_profile, profileData!!.imgUrl)
         }
         itemView.tv_name.text = profileData.name
@@ -44,7 +44,7 @@ class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListLis
             true -> {
                 itemView.tv_post_count.text = String.format(
                         itemView.context.getString(R.string.post_count_value),
-                        profileData!!.post_count.toString()
+                        profileData.post_count.toString()
                 )
                 itemView.tv_post_count.visibility = View.VISIBLE
             }
@@ -62,7 +62,7 @@ class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListLis
 //            }
 //        }
 
-        when(profileData!!.followed){
+        when(profileData.followed){
             true -> {
                 itemView.btn_follow.text = itemView.context.getString(R.string.btn_following_text)
                 itemView.btn_follow.buttonCompatType = ButtonCompat.SECONDARY
