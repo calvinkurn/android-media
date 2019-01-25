@@ -113,8 +113,8 @@ public class ExploreFragment
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
-    private FrameLayout layoutEmpty;
-    private LinearLayout layoutFilter, layoutProfile;
+    private FrameLayout layoutEmpty, layoutProfile;
+    private LinearLayout layoutFilter;
     private CardView btnFilterMore;
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
@@ -252,10 +252,10 @@ public class ExploreFragment
             rvExplore.scrollToPosition(0);
         });
         layoutProfile.setOnClickListener(view -> {
-            AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
             if (!userSession.isLoggedIn()) {
                 goToLogin();
             } else {
+                AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
                 goToProfile();
             }
         });
