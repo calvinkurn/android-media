@@ -6,6 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_card_attach_product"
+    android:minWidth="270dp"
     android:orientation="vertical">
 
     <RelativeLayout
