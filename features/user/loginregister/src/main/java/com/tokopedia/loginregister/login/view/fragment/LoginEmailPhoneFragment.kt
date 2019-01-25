@@ -238,8 +238,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         } else {
             showSmartLock()
         }
-
-        passwordEditText.set
     }
 
     private fun showSmartLock() {
