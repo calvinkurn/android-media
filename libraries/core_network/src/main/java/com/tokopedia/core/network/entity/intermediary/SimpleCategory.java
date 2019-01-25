@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Alifa on 3/8/2017.
  */
 
+@Deprecated
 public class SimpleCategory implements Parcelable {
 
     @SerializedName("id")

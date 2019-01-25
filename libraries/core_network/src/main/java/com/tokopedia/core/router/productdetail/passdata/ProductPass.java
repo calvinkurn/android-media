@@ -7,6 +7,8 @@ import android.os.Parcelable;
 /**
  * Created by Angga.Prasetiyo on 23/10/2015.
  */
+
+@Deprecated
 public class ProductPass implements Parcelable {
     private static final String TAG = ProductPass.class.getSimpleName();
 

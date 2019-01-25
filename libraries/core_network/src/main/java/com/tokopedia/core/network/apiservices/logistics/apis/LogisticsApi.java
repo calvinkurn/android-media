@@ -12,6 +12,7 @@ import rx.Observable;
  * Created by sachinbansal on 4/6/18.
  */
 
+@Deprecated
 public interface LogisticsApi {
 
     @POST("./")

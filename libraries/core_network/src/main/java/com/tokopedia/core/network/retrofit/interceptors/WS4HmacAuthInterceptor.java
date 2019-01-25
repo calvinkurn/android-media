@@ -8,6 +8,7 @@ import okhttp3.Response;
  * @author anggaprasetiyo on 3/4/17.
  */
 
+@Deprecated
 public class WS4HmacAuthInterceptor extends AuthHmacInterceptor {
 
     public WS4HmacAuthInterceptor(String authKey) {

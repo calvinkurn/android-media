@@ -10,6 +10,8 @@ import java.util.List;
 /**
  * Created by m.normansyah on 11/26/15.
  */
+
+@Deprecated
 public class ProductItemData {
     @SerializedName("list")
     @Expose

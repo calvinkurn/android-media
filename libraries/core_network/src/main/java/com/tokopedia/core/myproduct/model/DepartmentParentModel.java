@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by admin on 15/01/2016.
  */
+
+@Deprecated
 public class DepartmentParentModel {
     @SerializedName("")
     @Expose

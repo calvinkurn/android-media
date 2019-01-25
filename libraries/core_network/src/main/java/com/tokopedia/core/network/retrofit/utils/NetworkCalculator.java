@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
  * Created by m.normansyah on 27/11/2015.
  * This is isn't contain any context
  */
+
+@Deprecated
 public class NetworkCalculator {
     public static final String messageTAG = NetworkCalculator.class.getSimpleName();
 

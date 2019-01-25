@@ -9,6 +9,7 @@ import java.util.List;
  * @author normansyahputa on 2/13/17.
  */
 
+@Deprecated
 public class ResponseErrorException extends IOException {
     private List<Error> errorList;
     public ResponseErrorException(List<Error> errorList) {

@@ -17,6 +17,8 @@ import rx.Observable;
  * ProductApi
  * Created by Angga.Prasetiyo on 25/11/2015.
  */
+
+@Deprecated
 public interface ProductApi {
 
     @GET(TkpdBaseURL.Product.PATH_GET_DETAIL_PRODUCT)

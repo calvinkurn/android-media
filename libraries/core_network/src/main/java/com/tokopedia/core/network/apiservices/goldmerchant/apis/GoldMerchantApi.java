@@ -15,6 +15,7 @@ import rx.Observable;
  * Created by kris on 11/9/16. Tokopedia
  */
 
+@Deprecated
 public interface GoldMerchantApi {
 
     @GET(TkpdBaseURL.GoldMerchant.GET_PRODUCT_VIDEO+"{productId}")

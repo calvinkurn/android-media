@@ -8,6 +8,8 @@ import java.util.List;
 /**
  * Created by m.normansyah on 26/11/2015.
  */
+
+@Deprecated
 public class ProductFeedData {
     @SerializedName("config")
     @Expose

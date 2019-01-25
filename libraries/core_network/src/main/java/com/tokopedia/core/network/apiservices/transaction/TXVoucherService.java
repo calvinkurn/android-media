@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public class TXVoucherService extends AuthService<TXPaymentVoucherApi> {
     private static final String TAG = TXVoucherService.class.getSimpleName();
 

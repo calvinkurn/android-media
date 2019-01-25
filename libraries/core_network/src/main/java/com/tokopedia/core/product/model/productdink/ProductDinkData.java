@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Angga.Prasetiyo on 18/03/2016.
  */
+
+@Deprecated
 public class ProductDinkData {
     private static final String TAG = ProductDinkData.class.getSimpleName();
 

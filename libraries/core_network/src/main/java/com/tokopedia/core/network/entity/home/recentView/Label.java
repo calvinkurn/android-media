@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Label implements Parcelable {
 
     @SerializedName("color")

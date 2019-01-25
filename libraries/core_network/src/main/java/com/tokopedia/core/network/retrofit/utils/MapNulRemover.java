@@ -6,6 +6,8 @@ import java.util.Map;
 /**
  * @author anggaprasetiyo on 10/3/16.
  */
+
+@Deprecated
 public class MapNulRemover {
 
     /**

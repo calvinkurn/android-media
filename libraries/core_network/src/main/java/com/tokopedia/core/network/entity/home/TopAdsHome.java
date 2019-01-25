@@ -7,6 +7,8 @@ import java.util.List;
 /**
  * Created by noiz354 on 3/2/16.
  */
+
+@Deprecated
 public class TopAdsHome {
 
     @SerializedName("data")

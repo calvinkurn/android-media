@@ -13,6 +13,7 @@ import rx.Observable;
  * Created by kris on 9/14/17. Tokopedia
  */
 
+@Deprecated
 public interface MapApi {
 
     /*@GET(TkpdBaseURL.Maps.PATH_MAPS_PLACES)

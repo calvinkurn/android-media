@@ -34,6 +34,8 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Tkpd_Eka on 10/16/2015.
  */
+
+@Deprecated
 public class GetShopNote {
 
     public static final String STUART = "STUART";

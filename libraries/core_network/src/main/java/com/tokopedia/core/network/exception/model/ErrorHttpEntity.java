@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alvarisi on 3/29/17.
  */
 
+@Deprecated
 public class ErrorHttpEntity {
     @SerializedName("code")
     @Expose

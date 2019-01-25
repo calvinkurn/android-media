@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by kris on 9/14/17. Tokopedia
  */
 
+@Deprecated
 public class MapService extends AuthService<MapApi>{
     @Override
     protected void initApiService(Retrofit retrofit) {

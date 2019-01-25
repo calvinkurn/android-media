@@ -17,6 +17,7 @@ import rx.Observable;
  * Created by nisie on 3/10/17.
  */
 
+@Deprecated
 public interface UploadImageApi {
 
     @Multipart

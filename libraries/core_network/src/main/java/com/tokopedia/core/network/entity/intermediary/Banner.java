@@ -13,6 +13,7 @@ import java.util.List;
  * Created by alifa on 5/23/17.
  */
 
+@Deprecated
 public class Banner implements Parcelable {
 
     @SerializedName("images")

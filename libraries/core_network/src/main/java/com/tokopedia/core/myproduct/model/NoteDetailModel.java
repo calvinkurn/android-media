@@ -8,6 +8,8 @@ import org.parceler.Parcel;
 /**
  * Created by admin on 23/12/2015.
  */
+
+@Deprecated
 @Parcel
 public class NoteDetailModel {
 

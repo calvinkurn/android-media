@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public class MyShopNoteActService extends AuthService<MyShopNoteActApi> {
     private static final String TAG = MyShopNoteActService.class.getSimpleName();
 

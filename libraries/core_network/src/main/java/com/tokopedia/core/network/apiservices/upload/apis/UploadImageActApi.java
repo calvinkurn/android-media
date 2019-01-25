@@ -14,6 +14,8 @@ import rx.Observable;
 /**
  * @author hangnadi on 2/22/16.
  */
+
+@Deprecated
 public interface UploadImageActApi {
 
     @FormUrlEncoded

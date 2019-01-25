@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public class InboxReputationService extends AuthService<InboxReputationApi> {
     private static final String TAG = InboxReputationService.class.getSimpleName();
 

@@ -5,6 +5,8 @@ import com.tokopedia.core.var.RecyclerViewItem;
 /**
  * @author kulomady on 11/26/16.
  */
+
+@Deprecated
 public class CatalogModel extends RecyclerViewItem {
     public static final int CATALOG_MODEL_TYPE = 1_234_15;
 

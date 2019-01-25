@@ -9,6 +9,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Data implements Parcelable {
 
     public static final int GRID_2_VIEW_TYPE = 1;

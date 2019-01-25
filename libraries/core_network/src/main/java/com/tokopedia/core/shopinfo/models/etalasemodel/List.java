@@ -4,6 +4,7 @@ package com.tokopedia.core.shopinfo.models.etalasemodel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class List {
 
     @SerializedName("etalase_id")

@@ -5,6 +5,7 @@ package com.tokopedia.core.shop.model.editetalase;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Data {
 
     @SerializedName("is_success")

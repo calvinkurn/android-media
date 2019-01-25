@@ -11,6 +11,8 @@ import rx.Observable;
 /**
  * @author Herdi_WORK on 19.09.16.
  */
+
+@Deprecated
 public interface KeroApi {
     @GET(TkpdBaseURL.Shipment.PATH_RATES)
     Observable<Response<String>> calculateShippingRate(@QueryMap TKPDMapParam<String, String> stringStringMap);

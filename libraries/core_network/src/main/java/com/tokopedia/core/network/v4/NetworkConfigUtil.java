@@ -15,6 +15,8 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Created by m.normansyah on 03/11/2015.
  */
+
+@Deprecated
 public class NetworkConfigUtil {
     public static String md5(String s) {
         try {

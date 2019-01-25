@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Toped18 on 6/9/2016.
  */
+
+@Deprecated
 public class ActResponseModel {
 
     @SerializedName("status")

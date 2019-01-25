@@ -23,6 +23,7 @@ import java.util.List;
  * @author anggaprasetiyo on 2/27/17.
  */
 
+@Deprecated
 public class TkpdDigitalResponse {
     private static final String TAG = TkpdDigitalResponse.class.getSimpleName();
 

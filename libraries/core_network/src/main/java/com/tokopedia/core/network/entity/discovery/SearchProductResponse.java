@@ -9,6 +9,7 @@ import java.util.List;
  * Created by hangnadi on 10/5/17.
  */
 
+@Deprecated
 @SuppressWarnings("all")
 public class SearchProductResponse {
 

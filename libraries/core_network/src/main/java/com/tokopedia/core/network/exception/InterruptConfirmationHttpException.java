@@ -16,6 +16,7 @@ import java.io.IOException;
  * Created by alvarisi on 3/29/17.
  */
 
+@Deprecated
 public class InterruptConfirmationHttpException extends IOException {
     private InterruptEntity entity;
 

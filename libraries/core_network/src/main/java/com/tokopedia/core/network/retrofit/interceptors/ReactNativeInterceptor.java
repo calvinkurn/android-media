@@ -16,6 +16,7 @@ import okhttp3.Response;
  * @author by alvarisi on 10/9/17.
  */
 
+@Deprecated
 public class ReactNativeInterceptor implements Interceptor {
     protected HashMap<String, String> headers;
 

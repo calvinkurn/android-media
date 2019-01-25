@@ -23,6 +23,7 @@ import com.tkpd.library.kirisame.network.util.UrlConnectionWrapper;
  * Created by Tkpd_Eka on 8/6/2015.
  * Ver 1.2.1
  */
+@Deprecated
 public abstract class UploadImageUrlConnection {
 
     public static final int CONNECTION_FAILED = 0;

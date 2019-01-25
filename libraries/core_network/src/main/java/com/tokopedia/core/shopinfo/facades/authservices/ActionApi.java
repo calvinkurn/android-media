@@ -17,6 +17,8 @@ import rx.Observable;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public interface ActionApi {
     String PARAM_SHOP_ID = "shop_id";
     String PARAM_SHOP_DOMAIN = "shop_domain";

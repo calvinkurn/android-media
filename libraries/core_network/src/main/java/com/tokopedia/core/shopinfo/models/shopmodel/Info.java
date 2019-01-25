@@ -9,6 +9,7 @@ import com.tokopedia.core.var.Badge;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class Info {
 
     private static final int SHOP_GOLD_MERCHANT_VALUE = 1;

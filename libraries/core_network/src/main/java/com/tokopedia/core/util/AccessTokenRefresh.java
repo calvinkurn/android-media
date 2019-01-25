@@ -25,6 +25,7 @@ import retrofit2.Retrofit;
  * @author steven .
  */
 
+@Deprecated
 public class AccessTokenRefresh {
 
     private static final String FORCE_LOGOUT = "forced_logout";

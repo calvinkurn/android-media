@@ -19,6 +19,7 @@ import java.util.Map;
 import com.tkpd.library.kirisame.network.entity.VolleyNetwork;
 import com.tkpd.library.kirisame.network.util.VolleyNetworkRequestQueue;
 
+@Deprecated
 public abstract class VolleyNetworkJSON extends VolleyNetwork {
 
     protected Map<String, Object> param = new HashMap<>();

@@ -10,6 +10,7 @@ import java.util.Map;
  * Created by kris on 6/16/17. Tokopedia
  */
 
+@Deprecated
 public class MsisdnInterceptor extends TkpdAuthInterceptor {
 
     public MsisdnInterceptor(String authKey) {

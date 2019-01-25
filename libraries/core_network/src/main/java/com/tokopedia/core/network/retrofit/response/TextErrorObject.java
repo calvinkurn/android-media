@@ -9,6 +9,7 @@ import java.util.List;
  * Created by Hendry on 7/6/2017.
  */
 
+@Deprecated
 public class TextErrorObject {
     @SerializedName("text")
     @Expose
