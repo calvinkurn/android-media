@@ -2,20 +2,18 @@ package com.tokopedia.seller.seller.info.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.text.TextUtilsCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
+import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
-import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.seller.info.di.component.DaggerSellerInfoComponent;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;
@@ -25,7 +23,6 @@ import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
 import com.tokopedia.seller.seller.info.view.presenter.SellerInfoPresenter;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
-import com.tokopedia.core.analytics.UnifyTracking;
 
 import java.util.List;
 

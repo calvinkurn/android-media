@@ -3,7 +3,6 @@ package com.tokopedia.digital.widget.view.fragment
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.content.res.ResourcesCompat
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService
 import com.tokopedia.digital.common.data.source.CategoryListDataSource
 import com.tokopedia.digital.common.data.source.StatusDataSource
+import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
 import com.tokopedia.digital.widget.data.source.RecommendationListDataSource
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase
@@ -42,12 +42,20 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     private lateinit var digitalWidgetPresenter: DigitalWidgetPresenter
 
     private lateinit var tab_layout_widget: TabLayout
-    private lateinit var view_pager_widget: ViewPager
+    private lateinit var view_pager_widget: DigitalWrapContentViewPager
     private lateinit var container: LinearLayout
     private lateinit var pulsa_place_holders: RelativeLayout
     private lateinit var error_view: LinearLayout
     private lateinit var text_error_message: TextView
     private lateinit var button_try_again: Button
+
+    companion object {
+
+        fun newInstance(): DigitalWidgetFragment {
+            val fragment = DigitalWidgetFragment()
+            return fragment
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootview = inflater.inflate(R.layout.fragment_digital_widget, container, false)
@@ -117,6 +125,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
             return
         }
 
+        pulsa_place_holders.visibility = View.GONE
         showDigitalWidget()
         tab_layout_widget.removeAllTabs()
         addChildTabLayout(rechargeCategory, newRechargePositions)
@@ -124,7 +133,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
         tab_layout_widget.tabMode = TabLayout.MODE_SCROLLABLE
 
         if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = RechargeViewPagerAdapter(fragmentManager, rechargeCategory.toMutableList())
+            rechargeViewPagerAdapter = RechargeViewPagerAdapter(childFragmentManager, rechargeCategory.toMutableList())
             view_pager_widget.adapter = rechargeViewPagerAdapter
         } else {
             rechargeViewPagerAdapter?.addFragments(rechargeCategory)
@@ -146,9 +155,6 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
         text_error_message.text = getString(resId)
     }
 
-    override fun renderErrorMessage() {
-    }
-
     private fun showDigitalWidget() {
         container.visibility = View.VISIBLE
         (tab_layout_widget.parent as LinearLayout).visibility = View.VISIBLE
@@ -156,7 +162,6 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
 
     private fun addChildTabLayout(rechargeCategory: List<Category>, newRechargePositions: MutableList<Int>) {
         for (i in rechargeCategory.indices) {
-            pulsa_place_holders.visibility = View.GONE
             val category = rechargeCategory[i]
             val tab = tab_layout_widget.newTab()
             tab.text = category.attributes.name
@@ -219,6 +224,11 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
         CommonUtils.hideKeyboard(
                 com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
                 v)
+    }
+
+    override fun onDestroy() {
+        digitalWidgetPresenter.detachView()
+        super.onDestroy()
     }
 
 }

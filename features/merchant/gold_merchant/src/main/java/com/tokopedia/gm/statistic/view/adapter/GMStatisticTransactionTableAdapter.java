@@ -3,8 +3,8 @@ package com.tokopedia.gm.statistic.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.gm.statistic.view.adapter.viewholder.GMStatisticTransactionTableViewHolder;

@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -57,6 +56,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -95,9 +95,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
+    private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
+
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
-    private static final String CART_TRACE = "cart_trace";
+    private static final String CART_TRACE = "mp_cart";
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
 
@@ -437,6 +439,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 refreshHandler.startRefresh();
             } else {
                 renderInitialGetCartListDataSuccess(cartListData);
+                stopTrace();
             }
         }
     }
@@ -530,6 +533,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.notifyDataSetChanged();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
+    }
+
+    @Override
+    public void onTopAdsItemClicked(Product product) {
+        Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+        context.startActivity(intent);
     }
 
     @Override
@@ -786,11 +795,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
-        }
-
         sendAnalyticsScreenName(getScreenName());
         if (refreshHandler != null) {
             refreshHandler.finishRefresh();
@@ -829,7 +833,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
-        cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+        if (cartListData.getAdsModel() != null) {
+            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+        }
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         if (cbSelectAll != null) {
             cbSelectAll.setChecked(cartListData.isAllSelected());
@@ -844,6 +850,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 mIsMenuVisible = true;
                 getActivity().invalidateOptionsMenu();
             }
+        }
+
+        cartPageAnalytics.eventViewCartListFinishRender();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
         }
     }
 
@@ -1138,6 +1154,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         dPresenter.setCartListData(cartListData);
                         renderLoadGetCartDataFinish();
                         renderInitialGetCartListDataSuccess(cartListData);
+                        stopTrace();
                     }
                 }
             }
@@ -1216,10 +1233,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void goToDetail(PromoData promoData) {
-        if(promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
+        if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCodeSafe(),
                     cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        }else{
+        } else {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoData.getPromoCodeSafe(),
                     cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
@@ -1320,11 +1337,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
-    }
-
-    @Override
     public void onRefresh(View view) {
         if (dPresenter.dataHasChanged()) {
             showMainContainer();
@@ -1379,7 +1391,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
-        if(resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             sendAnalyticsScreenName(getScreenName());
             Bundle bundle = data.getExtras();
             if (bundle != null) {

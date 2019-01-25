@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.GlobalConfig;
@@ -19,15 +20,15 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
-//import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.view.presenter.ShopOpenCreateSuccessPresenter;
 
 import javax.inject.Inject;
+
+//import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity;
 
 
 public class ShopOpenCreateSuccessFragment extends BasePresenterFragment implements WatermarkPresenterView {

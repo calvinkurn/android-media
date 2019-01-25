@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Home Credit</string>
+    <string name="hc_ktp_title">Ambil Foto KTP</string>
+    <string name="hc_ktp_desc">Pastikan KTP berada dalam area kotak dan terbaca dengan jelas. </string>
+
+    <string name="hc_selfie_title">Ambil Foto Diri Bersama KTP</string>
+    <string name="hc_selfie_desc">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
+    <string name="hc_camera_recapture_text">Foto Ulang</string>
+    <string name="hc_image_upload">Lanjut</string>
+</resources>

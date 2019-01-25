@@ -68,6 +68,7 @@ public class TrainFilterSearchPresenter extends BaseDaggerPresenter<TrainFilterS
                 .scheduleVariant(getView().getScheduleVariant())
                 .build();
         getFilterSearchParamDataUseCase.setFilterParam(filterParam);
+        getFilterSearchParamDataUseCase.setScheduleVariant(getView().getScheduleVariant());
         getFilterSearchParamDataUseCase.execute(RequestParams.EMPTY, new Subscriber<FilterSearchData>() {
             @Override
             public void onCompleted() {
@@ -87,20 +88,8 @@ public class TrainFilterSearchPresenter extends BaseDaggerPresenter<TrainFilterS
                 if (filterSearchDataFromIntent != null) {
                     filterSearchData.setSelectedMinPrice(filterSearchDataFromIntent.getSelectedMinPrice());
                     filterSearchData.setSelectedMaxPrice(filterSearchDataFromIntent.getSelectedMaxPrice());
-                    if (filterSearchDataFromIntent.getSelectedDepartureTimeList() != null &&
-                            filterSearchDataFromIntent.getSelectedDepartureTimeList().size() != filterSearchData.getDepartureTimeList().size()) {
-                        filterSearchData.setSelectedDepartureTimeList(filterSearchDataFromIntent.getSelectedDepartureTimeList());
-                    } else {
-                        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>(filterSearchData.getDepartureTimeList()));
-                    }
-
-                    if (filterSearchDataFromIntent.getSelectedTrainClass() != null &&
-                            filterSearchDataFromIntent.getSelectedTrainClass().size() != filterSearchData.getTrainClass().size()) {
-                        filterSearchData.setSelectedTrainClass(filterSearchDataFromIntent.getSelectedTrainClass());
-                    } else {
-                        filterSearchData.setSelectedTrainClass(new ArrayList<>(filterSearchData.getTrainClass()));
-                    }
-
+                    filterSearchData.setSelectedDepartureTimeList(filterSearchDataFromIntent.getSelectedDepartureTimeList());
+                    filterSearchData.setSelectedTrainClass(filterSearchDataFromIntent.getSelectedTrainClass());
                     filterSearchData.setSelectedTrains(filterSearchDataFromIntent.getSelectedTrains());
                 }
                 getView().renderFilterSearchData(filterSearchData);

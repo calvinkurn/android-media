@@ -28,6 +28,7 @@ public class ProductDataCheckoutRequest {
     private String productCategoryId;
     private String productListName;
     private String productAttribution;
+    private long cartId;
 
     private ProductDataCheckoutRequest(Builder builder) {
         productId = builder.productId;
@@ -44,6 +45,7 @@ public class ProductDataCheckoutRequest {
         productCategoryId = builder.productCategoryId;
         productListName = builder.productListName;
         productAttribution = builder.productAttribution;
+        cartId = builder.cartId;
     }
 
     public int getProductId() {
@@ -102,6 +104,9 @@ public class ProductDataCheckoutRequest {
         return productListName;
     }
 
+    public long getCartId() {
+        return cartId;
+    }
 
     public static final class Builder {
         private int productId;
@@ -118,6 +123,7 @@ public class ProductDataCheckoutRequest {
         private String productCategoryId;
         private String productListName;
         private String productAttribution;
+        private long cartId;
 
         public Builder() {
         }
@@ -189,6 +195,11 @@ public class ProductDataCheckoutRequest {
 
         public Builder productAttribution(String val) {
             productAttribution = val;
+            return this;
+        }
+
+        public Builder cartId(long val) {
+            cartId = val;
             return this;
         }
 

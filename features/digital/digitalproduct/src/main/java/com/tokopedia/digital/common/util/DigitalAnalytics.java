@@ -60,7 +60,15 @@ public class DigitalAnalytics {
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
                                 )
-                        )
+                        ),
+                        "currentSite", DigitalEventTracking.Label.SITE
+                )
+        );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "ecommerce", null,
+                        "currentSite", null
                 )
         );
 
@@ -98,7 +106,15 @@ public class DigitalAnalytics {
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
                                 )
-                        )
+                        ),
+                        "currentSite", DigitalEventTracking.Label.SITE
+                )
+        );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "ecommerce", null,
+                        "currentSite", null
                 )
         );
     }

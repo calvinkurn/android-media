@@ -32,10 +32,10 @@ import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListCompone
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
-import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
@@ -46,7 +46,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
-import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -60,7 +59,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     private static final int ORDER_ASC = 1;
     private static final String PARAMS = "params";
-    private static final String CHOOSE_ADDRESS_TRACE = "choose_another_address_trace";
+    private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -114,7 +113,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
-                .shipmentAddressListModule(new ShipmentAddressListModule(this))
+                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(),this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
@@ -166,13 +165,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_add_address) {
+        if (item.getItemId() == R.id.menu_add_address && getActivity() != null) {
             checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
             startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
                     getActivity(), null, token, false, false
                     ),
-                    ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+                    LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
         }
 
@@ -449,20 +448,22 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = ((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
-                getActivity(), mapper.transform(model), token, true, false
-        );
-        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+        if (getActivity() != null) {
+            Intent intent = ((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
+                    getActivity(), mapper.transform(model), token, true, false
+            );
+            startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
+                case LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE:
                     RecipientAddressModel newRecipientAddressModel = null;
-                    if (data != null && data.hasExtra(EXTRA_ADDRESS)) {
-                        Destination newAddress = data.getParcelableExtra(EXTRA_ADDRESS);
+                    if (data != null && data.hasExtra(LogisticCommonConstant.EXTRA_ADDRESS)) {
+                        Destination newAddress = data.getParcelableExtra(LogisticCommonConstant.EXTRA_ADDRESS);
                         newRecipientAddressModel = new RecipientAddressModel();
                         newRecipientAddressModel.setAddressName(newAddress.getAddressName());
                         newRecipientAddressModel.setDestinationDistrictId(newAddress.getDistrictId());
@@ -476,7 +477,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     }
                     onSearchReset();
                     break;
-                case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
+                case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
                     onSearchReset();
                     break;
                 default:

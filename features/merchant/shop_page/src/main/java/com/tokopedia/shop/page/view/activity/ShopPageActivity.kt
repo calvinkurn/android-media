@@ -95,7 +95,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
-        const val SHOP_TRACE = "shop_trace"
+        const val SHOP_TRACE = "mp_shop"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val VIEW_CONTENT = 1
@@ -300,12 +300,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
-    private fun stopPerformanceMonitor(){
+    override fun stopPerformanceMonitor(){
         performanceMonitoring?.stopTrace()
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
-        stopPerformanceMonitor()
         setViewState(VIEW_CONTENT)
         shopInfo?.run {
             this@ShopPageActivity.shopInfo = this
@@ -372,7 +371,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
-        stopPerformanceMonitor()
         setViewState(VIEW_ERROR)
         errorTextView.text = ErrorHandler.getErrorMessage(this, e)
         errorButton.setOnClickListener { getShopInfo() }

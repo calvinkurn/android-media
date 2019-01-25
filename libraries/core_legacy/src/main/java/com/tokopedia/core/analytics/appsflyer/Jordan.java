@@ -13,6 +13,7 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 public class Jordan {
 
-    private Application application;
+    private Application context;
     public static final String GCM_PROJECT_NUMBER = "692092518182";
     private static boolean isAppsflyerCallbackHandled;
 
@@ -41,11 +42,11 @@ public class Jordan {
         } else if (ctx instanceof Application) {
             application = (Application) ctx;
         }
-        this.application = application;
+        this.context = application;
     }
 
     private Jordan(Application application) {
-        this.application = application;
+        this.context = application;
     }
 
     public static Jordan init(Context context) {
@@ -56,11 +57,17 @@ public class Jordan {
         return new Jordan(application);
     }
 
+    /**
+     * latest release codes. {@link AppsflyerAnalytics#initialize()}
+     * @param userID
+     * @return
+     */
+    @Deprecated
     public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
-        if(application == null){
+        if(context == null){
             return null;
         }
-        AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(application);
+        AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
         CommonUtils.dumper("Appsflyer login userid " + userID);
 
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
@@ -100,10 +107,10 @@ public class Jordan {
         };
 
         try {
-            Bundle bundle = application.getPackageManager().getApplicationInfo(application.getPackageName(),
+            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
                     PackageManager.GET_META_DATA).metaData;
             appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
-            ((TkpdCoreRouter)(application.getApplicationContext())).onAppsFlyerInit();
+            ((TkpdCoreRouter)(context.getApplicationContext())).onAppsFlyerInit();
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -114,14 +121,14 @@ public class Jordan {
     }
 
     public IAppsflyerContainer getAFContainer(){
-        if(application != null)
+        if(context != null)
             return AppsflyerContainer.newInstance(application);
         else
             return null;
     }
 
     public IMoengageContainer getMoEngageContainer() {
-        if(application != null)
+        if(context != null)
             return MoEngageContainer.getMoEngageContainer(application);
         else
             return null;

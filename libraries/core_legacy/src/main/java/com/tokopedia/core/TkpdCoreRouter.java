@@ -89,16 +89,12 @@ public interface TkpdCoreRouter {
         return RouterUtils.getRouterFromContext(mContext).getAppNotificationReceiver();
     }
 
-    static Intent getInboxTalkActivityIntent(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getInboxTalkActivityIntentReal(mContext);
+    static Intent getInboxTalkActivityIntentWrapper(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getInboxTalkCallingIntent(mContext);
     }
 
     static Intent getSellerHomeActivity(Context context) {
         return RouterUtils.getRouterFromContext(context).getSellerHomeActivityReal(context);
-    }
-
-    static Class<?> getInboxTalkActivityClass(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getInboxTalkActivityClass();
     }
 
     static Class<?> getDeeplinkClass(Context mContext) {
@@ -107,11 +103,9 @@ public interface TkpdCoreRouter {
 
     Class<?> getDeeplinkClass();
 
-    Class<?> getInboxTalkActivityClass();
-
     Intent getSellerHomeActivityReal(Context context);
 
-    Intent getInboxTalkActivityIntentReal(Context mContext);
+    Intent getInboxTalkCallingIntent(Context mContext);
 
     IAppNotificationReceiver getAppNotificationReceiver();
 
@@ -140,4 +134,6 @@ public interface TkpdCoreRouter {
     SessionHandler legacySessionHandler();
 
     GCMHandler legacyGCMHandler();
+
+    void refereshFcmTokenToCMNotif(String token);
 }

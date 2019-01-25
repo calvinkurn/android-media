@@ -12,6 +12,7 @@ public interface ConstantTransactionAnalytics {
         String EVENT_LABEL = "eventLabel";
         String E_COMMERCE = "ecommerce";
         String PAYMENT_ID = "payment_id";
+        String CURRENT_SITE = "currentSite";
     }
 
 
@@ -36,6 +37,7 @@ public interface ConstantTransactionAnalytics {
         String PRODUCT_VIEW = "productView";
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
+        String VIEW_CART = "viewCart";
     }
 
     interface EventCategory {
@@ -156,6 +158,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
+        String VIEW_CART_LIST = "view cart list";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -242,6 +245,7 @@ public interface ConstantTransactionAnalytics {
     interface ScreenName {
         String CART = "/cart";
         String CHECKOUT = "/cart/shipment";
+        String ONE_CLICK_SHIPMENT = "/cart/shipment/ocs";
         String SELECT_COURIER = "/selectcourier";
         String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart#voucher";
         String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart#coupon";
@@ -253,5 +257,9 @@ public interface ConstantTransactionAnalytics {
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
         String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
+    }
+
+    interface CustomDimension {
+        String DIMENSION_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
     }
 }

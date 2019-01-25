@@ -1,15 +1,24 @@
 package com.tokopedia.affiliate.feature.explore.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
+import com.tokopedia.affiliate.feature.explore.data.pojo.CategoryPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreProductPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreQuery;
+import com.tokopedia.affiliate.feature.explore.data.pojo.FilterQuery;
+import com.tokopedia.affiliate.feature.explore.data.pojo.SortData;
+import com.tokopedia.affiliate.feature.explore.data.pojo.SortQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -22,13 +31,18 @@ import rx.Subscriber;
  */
 public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
 
-    private ExploreContract.View mainView;
-    private boolean isSearch;
-    private ExploreParams exploreParams;
+    protected ExploreContract.View mainView;
+    protected boolean isSearch;
+    protected boolean isPullToRefresh;
+    protected ExploreParams exploreParams;
 
-    public GetExploreFirstSubscriber(ExploreContract.View mainView, boolean isSearch, ExploreParams exploreParams) {
+    public GetExploreFirstSubscriber(ExploreContract.View mainView,
+                                     boolean isSearch,
+                                     boolean isPullToRefresh,
+                                     ExploreParams exploreParams) {
         this.mainView = mainView;
         this.isSearch = isSearch;
+        this.isPullToRefresh = isPullToRefresh;
         this.exploreParams = exploreParams;
     }
 
@@ -58,15 +72,63 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
             mainView.onEmptySearchResult();
         } else {
             ExploreQuery exploreQuery = query.getExploreProduct();
-            mainView.onSuccessGetFirstData(
-                    exploreQuery.getProducts() != null ?
-                            mappingProducts(exploreQuery.getProducts(), mainView) :
-                            new ArrayList<>(),
-                    exploreQuery.getPagination() != null ?
-                            exploreQuery.getPagination().getNextCursor() :
-                            ""
-            );
+            if (isFirstDataWithFilterSort(exploreParams)) {
+                mainView.onSuccessGetFilteredSortedFirstData(
+                        exploreQuery.getProducts() != null ?
+                                mappingProducts(exploreQuery.getProducts(), mainView) :
+                                new ArrayList<>(),
+                        exploreQuery.getPagination() != null ?
+                                exploreQuery.getPagination().getNextCursor() :
+                                "",
+                        isSearch,
+                        isPullToRefresh);
+            } else {
+                mainView.onSuccessGetFirstData(
+                        exploreQuery.getProducts() != null ?
+                                mappingProducts(exploreQuery.getProducts(), mainView) :
+                                new ArrayList<>(),
+                        exploreQuery.getPagination() != null ?
+                                exploreQuery.getPagination().getNextCursor() :
+                                "",
+                        isSearch,
+                        isPullToRefresh,
+                        mappingSortFilter(query.getFilter(), query.getSort())
+                );
+            }
         }
+    }
+
+    private SortFilterModel mappingSortFilter(FilterQuery filterPojo, SortQuery sortPojo) {
+        return new SortFilterModel(
+                mappingFilterModel(filterPojo.getCategory()),
+                mappingSortModel(sortPojo.getSorts()));
+    }
+
+    private List<FilterViewModel> mappingFilterModel(List<CategoryPojo> pojoList) {
+        List<FilterViewModel> itemList = new ArrayList<>();
+        for (CategoryPojo pojo : pojoList) {
+            FilterViewModel item = new FilterViewModel(
+                    pojo.getName(),
+                    pojo.getImage(),
+                    pojo.getIds(),
+                    false);
+            itemList.add(item);
+        }
+        return itemList;
+    }
+
+    private List<SortViewModel> mappingSortModel(List<SortData> pojoList) {
+        List<SortViewModel> itemList = new ArrayList<>();
+        for (SortData pojo : pojoList) {
+            SortViewModel item = new SortViewModel(
+                    pojo.getKey(),
+                    pojo.isAsc(),
+                    pojo.getText(),
+                    false);
+            itemList.add(item);
+        }
+        return itemList;
+
     }
 
     public static List<Visitable> mappingProducts(List<ExploreProductPojo> pojoList, ExploreContract.View mainView) {
@@ -83,5 +145,9 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
             mainView.getAffiliateAnalytics().onProductImpression(pojo.getProductId());
         }
         return itemList;
+    }
+
+    private boolean isFirstDataWithFilterSort(ExploreParams exploreParams) {
+        return exploreParams.getFilters().size()!=0 || !TextUtils.isEmpty(exploreParams.getSort().getText());
     }
 }

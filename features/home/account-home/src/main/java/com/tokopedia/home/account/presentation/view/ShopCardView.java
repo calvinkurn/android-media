@@ -42,6 +42,7 @@ public class ShopCardView extends BaseCustomView {
     private LabelView labelViewDeposit;
     private WarningTickerView warningTickerView;
     private TextView shopStatus;
+    private View infoButton;
     private LabelView labelViewTopAds;
 
     public ShopCardView(@NonNull Context context) {
@@ -68,6 +69,7 @@ public class ShopCardView extends BaseCustomView {
         shopReputation = view.findViewById(R.id.shop_reputation);
         warningTickerView = view.findViewById(R.id.verification_warning_ticker);
         shopStatus = view.findViewById(R.id.text_shop_verification_status);
+        infoButton = view.findViewById(R.id.shop_status_info_button);
         labelViewTopAds = view.findViewById(R.id.label_view_topads);
         labelViewTopAds.setVisibility(GONE);
         view.findViewById(R.id.separator_2).setVisibility(GONE);
@@ -135,6 +137,10 @@ public class ShopCardView extends BaseCustomView {
         labelViewTopAds.setOnClickListener(listener);
     }
 
+    public void setOnClickShopStatusInfo(View.OnClickListener listener) {
+        infoButton.setOnClickListener(listener);
+    }
+
     public void setKyc(int verificationStatus, String verificationStatusName,
                        WarningTickerView.LinkClickListener listener) {
 
@@ -155,8 +161,10 @@ public class ShopCardView extends BaseCustomView {
     private void setShopStatus(String verificationStatusName) {
         if (TextUtils.isEmpty(verificationStatusName)) {
             shopStatus.setVisibility(View.GONE);
+            infoButton.setVisibility(View.GONE);
         } else {
             shopStatus.setVisibility(View.VISIBLE);
+            infoButton.setVisibility(VISIBLE);
             shopStatus.setText(verificationStatusName);
         }
     }

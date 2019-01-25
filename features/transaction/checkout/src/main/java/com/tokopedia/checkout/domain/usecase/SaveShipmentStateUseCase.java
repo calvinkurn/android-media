@@ -1,8 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.response.saveshipmentstate.SaveShipmentStateResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;

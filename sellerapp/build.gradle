@@ -15,8 +15,8 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
-            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
+    return gradle.startParameter.taskNames.contains("assembleLiveProdRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit")
 }
 
 def allowDistribution() {
@@ -246,6 +246,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation project(rootProject.ext.features.commonDigital)
@@ -276,6 +278,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.logisticuploadawb)
@@ -283,6 +286,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticgeolocation)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
@@ -291,6 +295,8 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.broadcastMessage)
+    implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.merchantVoucher)

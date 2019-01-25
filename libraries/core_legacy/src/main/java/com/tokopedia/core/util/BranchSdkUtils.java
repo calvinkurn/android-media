@@ -181,16 +181,19 @@ public class BranchSdkUtils {
             }
             Uri uri = Uri.parse(String.format("groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
                     tempUri, connector, linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags));
+            
+            String temp = String.format("utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                    linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags);
+
             try {
                 renderedUrl = uri.toString().replace(" ", "%20");
+                temp = temp.replace(" ", "%20");
             } catch (Exception e) {
                 e.printStackTrace();
                 renderedUrl = uri.toString();
             }
-
-            String temp = String.format("utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                    linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags);
-            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, String.format("%s%s", desktopUrl, temp));
+            
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, String.format("%s?%s", desktopUrl, temp));
             linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, renderedUrl);
             linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, renderedUrl);
         }

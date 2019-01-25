@@ -1,6 +1,5 @@
 package com.tokopedia.train.passenger.domain;
 
-import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.usecase.RequestParams;
@@ -29,11 +28,4 @@ public class TrainSoftBookingUseCase extends UseCase<TrainSoftbook> {
     public Observable<TrainSoftbook> createObservable(RequestParams requestParams) {
         return trainRepository.doSoftBookTrainTicket(requestParams.getParameters());
     }
-
-    public RequestParams create(RequestParams requestParams) {
-        RequestParams requestParamsInput = RequestParams.create();
-        requestParamsInput.putObject(TrainUrl.INPUT_GQL, requestParams.getParameters());
-        return requestParamsInput;
-    }
-
 }

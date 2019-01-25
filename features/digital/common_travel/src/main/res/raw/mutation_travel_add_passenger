@@ -1,0 +1,20 @@
+mutation travelAddPassenger($input: TravelPassengerGeneric!, $instanceType: TravelType!) {
+  travelAddPassenger(
+    input: $input
+    instanceType: $instanceType) {
+        id
+        userId
+        travelId
+        title
+        firstName
+        lastName
+        birthDate
+        nationality
+        passportNo
+        passportCountry
+        passportExpiry
+        name
+        idNumber
+        paxType
+  }
+}

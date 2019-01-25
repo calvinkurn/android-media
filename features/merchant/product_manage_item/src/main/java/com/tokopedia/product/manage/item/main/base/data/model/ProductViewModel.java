@@ -7,8 +7,8 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
-import com.tokopedia.product.manage.item.common.util.ItemType;
 import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;

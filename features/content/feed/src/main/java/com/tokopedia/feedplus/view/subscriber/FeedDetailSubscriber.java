@@ -1,9 +1,7 @@
 package com.tokopedia.feedplus.view.subscriber;
 
-import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.pojo.Feed;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.ProductFeedType;
@@ -41,13 +39,9 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof ApolloNetworkException) {
-            viewListener.onErrorGetFeedDetail(viewListener.getString(R.string.msg_network_error));
-        } else {
-            viewListener.onErrorGetFeedDetail(
-                    ErrorHandler.getErrorMessage(viewListener.getActivity(), e)
-            );
-        }
+        viewListener.onErrorGetFeedDetail(
+                ErrorHandler.getErrorMessage(viewListener.getActivity(), e)
+        );
     }
 
     @Override

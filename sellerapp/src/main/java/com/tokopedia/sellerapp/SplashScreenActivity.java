@@ -16,6 +16,8 @@ import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
+import org.json.JSONObject;
+
 /**
  * Created by normansyahputa on 11/29/16.
  */
@@ -57,5 +59,10 @@ public class SplashScreenActivity extends SplashScreen {
         Intent intent = SellerRouter.getActivityShopCreateEdit(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+    @Override
+    protected void handlingInitBranchSession(JSONObject referringParams) {
+        moveToHome();
     }
 }

@@ -90,7 +90,6 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
                 RouteManager.route(TkpdYoutubeVideoActivity.this, videoLand);
                 HomeGATracking.eventClickCTAButton(v.getContext());
             }
-            finish();
         });
 
         extractValues(getIntent().getExtras());

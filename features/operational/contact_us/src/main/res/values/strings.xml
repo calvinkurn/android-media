@@ -4,7 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="contact_us_title_home">Bantuan</string>
+    <string name="contact_us_title_home">Pusat Bantuan</string>
     <string name="invoice_list_title">Riwayat Transaksi</string>
     <string name="order_query_ticket_title">Kendala</string>
     <string name="submit_ticket_title">Form Bantuan</string>
@@ -39,6 +39,7 @@
     <string name="butuh_bantuan_lain">Butuh Bantuan Lain?</string>
     <string name="empty_string">Anda tidak memiliki riwayat transaksi \n untuk sementara ini</string>
     <string name="app_name">contact_us</string>
+    <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
 
     <string name="title_help">Bantuan</string>
     <string name="please_wait">Please Wait...</string>

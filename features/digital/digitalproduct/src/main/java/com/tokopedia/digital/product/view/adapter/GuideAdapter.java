@@ -56,6 +56,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     }
 
     public void addData(List<GuideData> guideDataList) {
+        if (guideDataList == null) return;
         this.guideDataList.addAll(guideDataList);
         notifyDataSetChanged();
     }

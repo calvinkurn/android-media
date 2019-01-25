@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.view.model;
 
 import android.os.Parcel;
 
-import com.tokopedia.product.manage.item.common.util.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 
 /**
  * @author normansyahputa on 2/20/17.

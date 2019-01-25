@@ -453,6 +453,7 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             bottomNavigation.setNotification(0, FEED_MENU);
         }
+
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
@@ -699,6 +700,7 @@ public class MainParentActivity extends BaseActivity implements
     private void unRegisterNewFeedClickedReceiver() {
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
     }
+
 
 
     @Override
