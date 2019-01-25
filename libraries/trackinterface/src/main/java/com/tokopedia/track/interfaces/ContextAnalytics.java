@@ -5,7 +5,7 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 
-public class ContextAnalytics {
+public abstract class ContextAnalytics implements Analytics {
     private final Application context;
 
     public ContextAnalytics(Context context) {
@@ -16,7 +16,7 @@ public class ContextAnalytics {
         return context;
     }
 
-    private Application getApplication(Context context){
+    private Application getApplication(Context context) {
         Application application = null;
         if (context instanceof Activity) {
             application = ((Activity) context).getApplication();
@@ -29,12 +29,11 @@ public class ContextAnalytics {
         return application;
     }
 
-
-    public void initialize(){
-
+    public String TAG() {
+        return "TEST";
     }
 
-    public String TAG(){
-        return "TEST";
+    public void initialize() {
+
     }
 }
