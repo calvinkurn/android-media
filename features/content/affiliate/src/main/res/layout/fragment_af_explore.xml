@@ -69,12 +69,6 @@
                             android:src="@drawable/ic_profile_default"
                             android:layout_gravity="center"/>
 
-                        <com.tokopedia.design.component.badge.BadgeView
-                            android:id="@+id/badge_profile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top|right"/>
-
                     </FrameLayout>
                 </LinearLayout>
             </LinearLayout>

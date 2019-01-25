@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
+import com.tokopedia.affiliate.util.AffiliateHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
@@ -113,7 +115,6 @@ public class ExploreFragment
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty;
     private LinearLayout layoutFilter, layoutProfile;
-    private BadgeView profileBadge;
     private CardView btnFilterMore;
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
@@ -155,7 +156,6 @@ public class ExploreFragment
         layoutFilter = view.findViewById(R.id.layout_filter);
         layoutProfile = view.findViewById(R.id.action_profile);
         ivProfile = view.findViewById(R.id.iv_profile);
-        profileBadge = view.findViewById(R.id.badge_profile);
         btnFilterMore = view.findViewById(R.id.btn_filter_more);
         sortButton = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
@@ -232,6 +232,12 @@ public class ExploreFragment
             ImageHandler.loadImageCircle2(getActivity(), ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
         }
         //init red dot
+        if (AffiliateHelper.isFirstTimeOpenProfileFromExplore(getActivity())) {
+            BadgeView badgeView = new BadgeView(getActivity());
+            badgeView.bindTarget(layoutProfile);
+            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeView.setBadgeNumber(-1);
+        }
     }
 
     private void initListener() {
@@ -245,7 +251,8 @@ public class ExploreFragment
         btnBackToTop.setOnClickListener(view -> {
             rvExplore.scrollToPosition(0);
         });
-        ivProfile.setOnClickListener(view -> {
+        layoutProfile.setOnClickListener(view -> {
+            AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
             if (!userSession.isLoggedIn()) {
                 goToLogin();
             } else {
