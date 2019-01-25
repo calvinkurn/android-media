@@ -13,9 +13,8 @@ import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
@@ -270,26 +269,31 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         postCancelReasonUseCase.setRequestParams(requestParams);
         postCancelReasonUseCase.cancelOrReplaceOrder(url);
         postCancelReasonUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
+                                            @Override
+                                            public void onCompleted() {
 
-            }
+                                            }
 
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper(e.getStackTrace());
-                getView().hideProgressBar();
-            }
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                CommonUtils.dumper(e.getStackTrace());
+                                                getView().hideProgressBar();
+                                            }
 
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<JsonObject>>() {
-                }.getType();
-                RestResponse restResponse = typeRestResponseMap.get(token);
-                getView().hideProgressBar();
-                getView().finishOrderDetail();
-            }
-        });
+                                            @Override
+                                            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
+                                                Type token = new TypeToken<DataResponse<CancelReplacementPojo>>() {
+                                                }.getType();
+                                                RestResponse restResponse = typeDataResponseMap.get(token);
+                                                DataResponse dataResponse = restResponse.getData();
+                                                CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
+                                                if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
+                                                    getView().showMessage(cancelReplacementPojo.getMessageStatus());
+                                                getView().hideProgressBar();
+                                                getView().finishOrderDetail();
+                                            }
+                                        }
+        );
     }
 
     public void finishOrder(String orderId, String url) {
