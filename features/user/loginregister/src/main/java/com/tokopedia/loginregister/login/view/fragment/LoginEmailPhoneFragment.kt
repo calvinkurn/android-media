@@ -37,6 +37,7 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.R.id.register_button
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -181,6 +182,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item!!.itemId
         if (id == ID_ACTION_REGISTER) {
+            analytics.trackClickRegisterOnMenu()
+
             goToRegisterInitial()
             return true
         }
@@ -235,6 +238,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         } else {
             showSmartLock()
         }
+
+        passwordEditText.set
     }
 
     private fun showSmartLock() {
@@ -265,6 +270,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         emailPhoneEditText.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 showLoadingLogin()
+                analytics.trackClickOnNext()
                 presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
                 true
             } else {
@@ -275,6 +281,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
+            analytics.trackClickOnNext()
             presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
         }
 
@@ -319,16 +326,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
             register_button.setText(spannable, TextView.BufferType.SPANNABLE)
             register_button.setOnClickListener {
+                analytics.trackClickRegisterOnFooter()
                 goToRegisterInitial()
             }
 
             val forgotPassword = partialRegisterInputView.findViewById<TextView>(R.id.forgot_pass)
-            forgotPassword.setOnClickListener { goToForgotPassword() }
+            forgotPassword.setOnClickListener {
+                analytics.trackClickForgotPassword()
+                goToForgotPassword() }
         }
 
     }
 
     private fun onChangeButtonClicked() {
+        analytics.trackChangeButtonClicked()
+
         emailPhoneEditText.imeOptions = EditorInfo.IME_ACTION_DONE
 
         partialActionButton.text = getString(R.string.next)
@@ -611,6 +623,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
+
         activity?.let {
             val intent = VerificationActivity.getCallingIntent(
                     it,
@@ -628,6 +641,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
+            analytics.trackClickOnLoginButton()
             KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
         }
@@ -815,6 +829,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onBackPressed() {
+        analytics.trackOnBackPressed()
         if (partialRegisterInputView.findViewById<TextView>(R.id.change_button).visibility ==
                 View.VISIBLE) {
             val email = emailPhoneEditText.text.toString()

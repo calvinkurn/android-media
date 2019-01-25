@@ -399,4 +399,67 @@ public class LoginRegisterAnalytics {
                 "failed"
         );
     }
+
+    public void trackClickOnNext() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "click"
+        );
+    }
+
+    public void trackChangeButtonClicked() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button ubah",
+                ""
+        );
+    }
+
+    public void trackClickForgotPassword() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on lupa kata sandi",
+                ""
+        );
+    }
+
+    public void trackClickRegisterOnFooter() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar bottom",
+                ""
+        );
+    }
+
+    public void trackClickRegisterOnMenu() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar top",
+                ""
+        );
+    }
+
+    public void trackClickOnLoginButton() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button masuk",
+                ""
+        );
+    }
+
+    public void trackOnBackPressed() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click back",
+                ""
+        );
+    }
 }
