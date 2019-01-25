@@ -31,9 +31,9 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
+import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
-import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
@@ -257,24 +257,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
         if (afterPost && !onlyOnePost) {
-            ToasterNormal
-                    .make(view,
-                            getString(R.string.profile_recommend_success),
-                            BaseToaster.LENGTH_LONG
-                    )
-                    .setAction(getString(R.string.profile_add_more)) {
-                        goToAffiliateExplore()
-                    }
-                    .show()
+            showAfterPostToaster(affiliatePostQuota?.number != 0)
             afterPost = false
+
         } else if (afterEdit) {
-            ToasterNormal
-                    .make(view,
-                            getString(R.string.profile_edit_success),
-                            BaseToaster.LENGTH_LONG
-                    )
-                    .setAction(getString(R.string.af_title_ok)) {}
-                    .show()
+            showAfterEditToaster()
             afterEdit = false
         }
     }
@@ -582,6 +569,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     )
                 }
             }
+        }
+    }
+
+    private fun showAfterPostToaster(addAction: Boolean) {
+        if (addAction) {
+            view?.showNormalToaster(getString(R.string.profile_recommend_success), getString(R.string.profile_add_more)) {
+                goToAffiliateExplore()
+            }
+        } else {
+            view?.showNormalToaster(getString(R.string.profile_recommend_success))
+        }
+    }
+
+    private fun showAfterEditToaster() {
+        view?.showNormalToaster(getString(R.string.profile_edit_success), getString(R.string.af_title_ok)) {
         }
     }
 
