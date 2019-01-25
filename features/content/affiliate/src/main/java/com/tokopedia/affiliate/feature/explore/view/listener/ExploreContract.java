@@ -60,10 +60,6 @@ public interface ExploreContract {
 
         void onErrorCheckAffiliate(String error, String productId, String adId);
 
-        void onSuccessIsAffiliate(boolean isAffiliate);
-
-        void onErrorIsAffiliate(String error);
-
         void onSuccessCheckQuota(String productId, String adId);
 
         void onSuccessCheckQuotaButEmpty();
@@ -85,8 +81,6 @@ public interface ExploreContract {
         void loadMoreData(ExploreParams exploreParams);
 
         void checkIsAffiliate(String productId, String adId);
-
-        void isAffiliate();
 
         void checkAffiliateQuota(String productId, String adId);
 

@@ -13,7 +13,6 @@ import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckAffiliateSub
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckQuotaSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreFirstSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreLoadMoreSubscriber;
-import com.tokopedia.affiliate.feature.explore.view.subscriber.IsAffiliateSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 
 import javax.inject.Inject;
@@ -74,11 +73,6 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     @Override
     public void checkIsAffiliate(String productId, String adId) {
         checkAffiliateUseCase.execute(new CheckAffiliateSubscriber(getView(), productId, adId));
-    }
-
-    @Override
-    public void isAffiliate() {
-        checkAffiliateUseCase.execute(new IsAffiliateSubscriber(getView()));
     }
 
     @Override

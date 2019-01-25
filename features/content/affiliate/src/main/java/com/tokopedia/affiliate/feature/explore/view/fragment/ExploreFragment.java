@@ -182,6 +182,7 @@ public class ExploreFragment
         layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
+        initProfileSection();
         autoCompleteLayout.setVisibility(View.GONE);
         btnBackToTop.hide();
         layoutFilter.setVisibility(View.GONE);
@@ -225,14 +226,10 @@ public class ExploreFragment
         );
     }
 
-    private void initProfileSection(boolean isAffiliate) {
+    private void initProfileSection() {
         //init image
-        if (isAffiliate) {
-            ImageHandler.loadImage2(ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
-        } else if (userSession.isLoggedIn()) {
-
-        } else {
-
+        if (userSession.isLoggedIn()) {
+            ImageHandler.loadImageCircle2(getActivity(), ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
         }
         //init red dot
     }
@@ -249,7 +246,11 @@ public class ExploreFragment
             rvExplore.scrollToPosition(0);
         });
         ivProfile.setOnClickListener(view -> {
-
+            if (!userSession.isLoggedIn()) {
+                goToLogin();
+            } else {
+                goToProfile();
+            }
         });
 
     }
@@ -396,12 +397,7 @@ public class ExploreFragment
             if (userSession.isLoggedIn()) {
                 presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
             } else {
-                startActivityForResult(
-                        RouteManager.getIntent(
-                                getContext(),
-                                ApplinkConst.LOGIN
-                        ),
-                        LOGIN_CODE);
+                goToLogin();
             }
         }
     }
@@ -627,13 +623,26 @@ public class ExploreFragment
         affiliateAnalytics.onJatahRekomendasiHabisDialogShow();
         Dialog dialog = buildDialog();
         dialog.setOnOkClickListener(view -> {
-            RouteManager.route(
-                    getActivity(),
-                    ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
+            goToProfile();
             dialog.dismiss();
         });
         dialog.setOnCancelClickListener(view -> dialog.dismiss());
         dialog.show();
+    }
+
+    private void goToProfile() {
+        RouteManager.route(
+                getActivity(),
+                ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
+    }
+
+    private void goToLogin() {
+        startActivityForResult(
+                RouteManager.getIntent(
+                        getActivity(),
+                        ApplinkConst.LOGIN
+                ),
+                LOGIN_CODE);
     }
 
     private Dialog buildDialog() {
@@ -697,6 +706,9 @@ public class ExploreFragment
                 SortViewModel selectedSort = data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
                 getSortedData(selectedSort);
             }
+            else if (requestCode == LOGIN_CODE) {
+                initProfileSection();
+            }
         }
     }
 
@@ -720,16 +732,6 @@ public class ExploreFragment
         ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
                 .setAction(R.string.title_try_again, listener)
                 .show();
-    }
-
-    @Override
-    public void onSuccessIsAffiliate(boolean isAffiliate) {
-        initProfileSection(isAffiliate);
-    }
-
-    @Override
-    public void onErrorIsAffiliate(String error) {
-        isCanDoAction = true;
     }
 
     private void goToEducation() {
