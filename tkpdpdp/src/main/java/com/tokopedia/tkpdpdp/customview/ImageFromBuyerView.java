@@ -28,7 +28,7 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
     public static final int VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88;
 
     public static final int DEFAULT_START_ROW = 0;
-    public static final int DEFAULT_END_ROW = 3;
+    public static final int DEFAULT_END_ROW = 4;
 
     public ImageFromBuyerView(Context context, AttributeSet attrs) {
         super(context, attrs);
