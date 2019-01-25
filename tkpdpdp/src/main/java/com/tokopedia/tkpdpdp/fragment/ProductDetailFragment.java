@@ -241,6 +241,9 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
 import static com.tokopedia.tkpdpdp.constant.ConstantKey.ARGS_STATE_RESULT_PDP_MODAL;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
+import static com.tokopedia.transaction.common.data.expresscheckout.Constant.CHECKOUT_TYPE_EXPRESS;
+import static com.tokopedia.transaction.common.data.expresscheckout.Constant.CHECKOUT_TYPE_NCF;
+import static com.tokopedia.transaction.common.data.expresscheckout.Constant.CHECKOUT_TYPE_OCS;
 import static com.tokopedia.transaction.common.data.expresscheckout.Constant.EXTRA_MESSAGES_ERROR;
 import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_ERROR;
 import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_NCF;
@@ -799,24 +802,30 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
-        if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP)) {
-            try {
-                if (getActivity() != null) {
-                    AtcRequestParam atcRequestParam = new AtcRequestParam();
-                    atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
-                    atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
-                    atcRequestParam.setNotes("");
-                    atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
-                    Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                            .getExpressCheckoutIntent(getActivity(), atcRequestParam);
-                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
-                    getActivity().overridePendingTransition(R.anim.pull_up, 0);
+        switch (productData.getCheckoutType()) {
+            case CHECKOUT_TYPE_NCF:
+                checkVariant(source);
+                break;
+            case CHECKOUT_TYPE_OCS:
+                checkVariant(source);
+                break;
+            case CHECKOUT_TYPE_EXPRESS:
+                try {
+                    if (getActivity() != null) {
+                        AtcRequestParam atcRequestParam = new AtcRequestParam();
+                        atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+                        atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
+                        atcRequestParam.setNotes("");
+                        atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
+                        Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                                .getExpressCheckoutIntent(getActivity(), atcRequestParam);
+                        startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
+                        getActivity().overridePendingTransition(R.anim.pull_up, 0);
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
                 }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        } else {
-            checkVariant(source);
+                break;
         }
     }
 
@@ -827,7 +836,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             } else {
                 onClickBuyWhileRequestingVariant = true;
                 lastStateOnClickBuyWhileRequestVariant = source;
-                buttonBuyView.showLoadingAddToCart();
+                if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP)) {
+                    buttonBuyView.showLoadingBuyNow();
+                } else if (source.equals(ProductDetailView.SOURCE_BUTTON_CART_PDP)) {
+                    buttonBuyView.showLoadingAddToCart();
+                }
             }
         } else {
             openProductModalActivity(generateStateVariant(source));

@@ -6,6 +6,10 @@ package com.tokopedia.transaction.common.data.expresscheckout;
 
 public interface Constant {
 
+    String CHECKOUT_TYPE_NCF = "ncf";
+    String CHECKOUT_TYPE_OCS = "ocs";
+    String CHECKOUT_TYPE_EXPRESS = "express";
+
     int REQUEST_CODE_ATC_EXPRESS = 10;
     int RESULT_CODE_ERROR = -10;
     int RESULT_CODE_NAVIGATE_TO_OCS = 20;
