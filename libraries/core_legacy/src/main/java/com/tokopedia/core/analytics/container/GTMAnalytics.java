@@ -44,6 +44,11 @@ public class GTMAnalytics extends ContextAnalytics {
         super(context);
     }
 
+    @Override
+    public void sendGeneralEvent(Map<String, Object> value) {
+        pushGeneral(value);
+    }
+
 
     public TagManager getTagManager() {
         return TagManager.getInstance(getContext());
@@ -229,7 +234,7 @@ public class GTMAnalytics extends ContextAnalytics {
         return this;
     }
 
-    public void pushGeneral(Map<String, Object> values) {
+    private void pushGeneral(Map<String, Object> values) {
         Log.i("GAv4", "UA-9801603-15: Send General");
 
         log(getContext(), null, values);
