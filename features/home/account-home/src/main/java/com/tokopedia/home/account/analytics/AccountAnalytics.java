@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
@@ -69,7 +70,7 @@ public class AccountAnalytics {
                     userSessionInterface.getUserId()
             ));
         } else {
-            Analytics.sendGeneralEvent(gtmData(
+            analytics.sendGeneralEvent(gtmData(
                     CLICK_HOME_PAGE,
                     String.format("%s %s", AKUN_SAYA, title),
                     String.format("%s - %s - %s", CLICK, section, item),
@@ -238,7 +239,7 @@ public class AccountAnalytics {
                 ));
                 break;
             case KYCConstant.STATUS_NOT_VERIFIED:
-                Analytics.sendGeneralEvent(gtmData(
+                analytics.sendGeneralEvent(gtmData(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_NOT_VERIFIED,
