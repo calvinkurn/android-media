@@ -6,8 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_card_attach_product"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_8">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/main_product_attach"
@@ -15,7 +14,9 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_8">
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:gravity="center_vertical">
 
         <android.support.v7.widget.CardView
             android:id="@+id/attach_product_chat_image_layout"
@@ -40,14 +41,14 @@
             android:id="@+id/name_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="12dp"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginStart="14dp"
+            android:layout_marginEnd="@dimen/dp_14"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:layout_marginRight="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_14"
             android:layout_toEndOf="@id/attach_product_chat_image_layout"
             android:layout_toLeftOf="@+id/delete_button"
             android:layout_toRightOf="@id/attach_product_chat_image_layout"
+            android:layout_centerVertical="true"
             android:maxWidth="172dp"
             >
 
@@ -97,41 +98,44 @@
         android:layout_width="270dp"
         android:layout_height="@dimen/dp_1"
         android:layout_below="@id/main_product_attach"
-        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/grey_300"
         android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/footer_layout"
-        android:layout_width="270dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:gravity="right"
+        android:layout_marginBottom="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_6"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_8"
         android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_alignRight="@id/main_product_attach"
         android:paddingRight="@dimen/dp_8">
 
         <ImageView
             android:id="@+id/ic_add_to_cart"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
             android:layout_marginRight="@dimen/dp_10"
             android:gravity="center"
             android:src="@drawable/ic_new_checkout_cart"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/tv_buy"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
             android:text="@string/action_buy"
             android:textAllCaps="false"
             android:visibility="gone"
+            tools:visibility="visible"
             app:buttonCompatSize="small"
             app:buttonCompatType="transaction"/>
 
