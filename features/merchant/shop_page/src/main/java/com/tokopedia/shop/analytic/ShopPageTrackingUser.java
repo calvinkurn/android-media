@@ -10,7 +10,6 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.trackingoptimizer.model.ScreenCustomModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +39,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TAB;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
@@ -78,19 +78,22 @@ public class ShopPageTrackingUser {
     }
 
     private void sendScreenName(Activity activity, String screenName, CustomDimensionShopPage customDimensionShopPage) {
-        ScreenCustomModel screenCustomModel = new ScreenCustomModel(
+        shopTrackingRouter.getAnalyticTracker().sendCustomScreen(activity, screenName,
                 customDimensionShopPage.shopId, customDimensionShopPage.shopType, SHOPPAGE, null);
-        trackingQueue.putScreenName(screenName, screenCustomModel);
     }
 
     protected void sendDataLayerEvent(Map<String, Object> eventTracking) {
-        trackingQueue.putTracking((HashMap<String, Object>) eventTracking);
+        if (eventTracking.containsKey(ECOMMERCE)) {
+            trackingQueue.putEETracking((HashMap<String, Object>) eventTracking);
+        } else {
+            shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventTracking);
+        }
     }
 
     protected void sendEvent(String event, String category, String action, String label,
                              CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
-        trackingQueue.putTracking(eventMap);
+        shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventMap);
     }
 
     public void sendAllTrackingQueue() {

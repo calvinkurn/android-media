@@ -122,14 +122,14 @@ public class Jordan {
 
     public IAppsflyerContainer getAFContainer(){
         if(context != null)
-            return AppsflyerContainer.newInstance(application);
+            return AppsflyerContainer.newInstance(context);
         else
             return null;
     }
 
     public IMoengageContainer getMoEngageContainer() {
         if(context != null)
-            return MoEngageContainer.getMoEngageContainer(application);
+            return MoEngageContainer.getMoEngageContainer(context);
         else
             return null;
     }

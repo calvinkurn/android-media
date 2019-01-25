@@ -17,25 +17,18 @@ import kotlin.coroutines.experimental.CoroutineContext
  * This is to optimize the tracking sent to server
  *
  * Example of Input
- * trackingQueueObj.putScreenName("screen1")
  * trackingQueueObj.putEETracking(EventModel("evt1","cat1", "act1", "lbl1"), hashMapOf("ecommerce" to arrayOf("1"))
  * trackingQueueObj.putEETracking(EventModel("evt1","cat1", "act1", "lbl1"), hashMapOf("ecommerce" to arrayOf("2"))
  * trackingQueueObj.putEETracking(EventModel("evt1","cat1", "act1", "lbl1"), hashMapOf("ecommerce" to arrayOf("3"))
- * trackingQueueObj.putRegularTracking(EventModel("evt2","cat2", "act2", "lbl2"))
- * trackingQueueObj.putRegularTracking(EventModel("evt3","cat3", "act3", "lbl3"))
  * // put below onPause()
  * trackingQueueObj.sendAll()
  *
  * Example output:
- * it will send 3 hits instead of 6 hits
+ * it will send 1 hits instead of 3 hits
  * TrackingOptimizerRouter.sendEventTracking(mapOf("event" to evt1", "eventCategory" to "cat1",
  *                                                  "eventAction" to "act1", "eventLabel" to "lbl1",
  *                                                  "ecommerce" to arrayOf("1", "2", "3")),
  *                                                  "openScreen" to "screen1")
- * TrackingOptimizerRouter.sendEventTracking(mapOf("event" to evt2", "eventCategory" to "cat2",
- *                                                  "eventAction" to "act2", "eventLabel" to "lbl2"))
- * TrackingOptimizerRouter.sendEventTracking(mapOf("event" to evt3", "eventCategory" to "cat3",
- *                                                  "eventAction" to "act3", "eventLabel" to "lbl3"))
  *
  * ===================================================================================================================
  * Enhance E Commerce will be send with the limit 7000 bytes. If it is over 7000 bytes, then it will send a new row
@@ -61,40 +54,14 @@ class TrackingQueue(val context: Context) : CoroutineScope{
     }
 
     /**
-     * to store screen name, auth dimension will be default.
-     */
-    fun putScreenName(screenName:String) {
-        launch {
-            trackingRepository.putScreenName(screenName)
-        }
-    }
-
-    /**
-     * to store screen name along with custom auth dimension (if needed)
-     */
-    fun putScreenName(screenName:String, screenCustomModel: ScreenCustomModel) {
-        launch {
-            trackingRepository.putScreenName(screenName, screenCustomModel)
-        }
-    }
-
-    /**
-     * to store regular tracking
-     */
-    fun putRegularTracking(event: EventModel, customDimension: HashMap<String, Any>? = null) {
-        launch {
-            trackingRepository.putRegular(event, customDimension)
-        }
-    }
-
-    /**
      * to store the tracking into db
-     * map should contain "event", "eventCategory", "eventAction", and "eventAction"
-     * If there is no those key, it will do nothing.
-     * if there contains "ecommerce" key, it will considered as enhance e commerce tracking
+     * if contains "ecommerce" key, it will considered as enhance e commerce tracking
      * The other keys will be considered as custom dimensions
      */
-    fun putTracking(map: HashMap<String, Any>? = null) {
+    fun putEETracking(map: HashMap<String, Any>? = null) {
+        if (map!= null && !map.containsKey("ecommerce")) {
+            return
+        }
         launch {
             trackingRepository.put(map)
         }
