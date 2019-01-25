@@ -230,6 +230,7 @@ public class ExploreFragment
         //init image
         if (userSession.isLoggedIn()) {
             ImageHandler.loadImageCircle2(getActivity(), ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
+        } else {
         }
         //init red dot
     }
