@@ -141,7 +141,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public static final String MERCHANT_TYPE = "merchant";
     private static final String NON_LOGIN_USER_ID = "0";
     public static final int FIRST_PAGE = 0;
-    public static final int TOTAL_IMAGE_FOR_PDP = 4;
+    public static final int TOTAL_IMAGE_FOR_PDP = 21;
 
     private final WishListActionListener wishListActionListener;
     private final GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase;
