@@ -544,9 +544,9 @@ public class GTMContainer implements IGTMContainer {
                 context,
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
-                        AppEventTracking.EVENT_CATEGORY, "purchase category digital",
-                        AppEventTracking.EVENT_ACTION, "purchase action digital",
-                        AppEventTracking.EVENT_LABEL, "purchase label digital",
+                        AppEventTracking.EVENT_CATEGORY, "digital - thanks",
+                        AppEventTracking.EVENT_ACTION, "view purchase attempt",
+                        AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
                         Purchase.SHOP_ID, purchase.getShopId(),
                         Purchase.PAYMENT_ID, purchase.getPaymentId(),
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
