@@ -128,4 +128,5 @@
 /libraries/pagination                   @lavekush-t
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
+/libraries/cmnotification               @tokopedia/minion-yoda
 
