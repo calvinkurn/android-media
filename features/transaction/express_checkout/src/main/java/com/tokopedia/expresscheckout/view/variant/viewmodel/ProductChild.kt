@@ -3,6 +3,10 @@ package com.tokopedia.expresscheckout.view.variant.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 
+/**
+ * Created by Irfan Khoirul on 13/12/18.
+ */
+
 data class ProductChild(
         var productId: Int,
         var productName: String,

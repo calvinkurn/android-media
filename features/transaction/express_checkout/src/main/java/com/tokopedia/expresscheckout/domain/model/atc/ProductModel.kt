@@ -40,5 +40,6 @@ data class ProductModel(
         var productCategory: String? = null,
         var productTrackerDataModel: ProductTrackerDataModel? = null,
         var productPreorderModel: ProductPreorderModel? = null,
+        var wholesalePriceModel: ArrayList<WholesalePriceModel>? = null,
         var productVariantDataModels: ArrayList<ProductVariantDataModel>? = null
 )

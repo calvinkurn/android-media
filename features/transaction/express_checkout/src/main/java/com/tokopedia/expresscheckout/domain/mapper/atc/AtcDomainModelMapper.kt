@@ -11,6 +11,7 @@ import com.tokopedia.expresscheckout.domain.model.profile.AddressModel
 import com.tokopedia.expresscheckout.domain.model.profile.PaymentModel
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
 import com.tokopedia.expresscheckout.domain.model.profile.ShipmentModel
+import com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.*
 import com.tokopedia.transactiondata.entity.response.variantdata.Child
 import com.tokopedia.transactiondata.entity.response.variantdata.Option
@@ -194,7 +195,25 @@ class AtcDomainModelMapper : AtcDataMapper {
         val productVariantDataModels = ArrayList<ProductVariantDataModel>()
         productVariantDataModels.add(getProductVariantDataModel(product.productVariantData))
         productModel.productVariantDataModels = productVariantDataModels
+
+        val wholesalePriceModels = ArrayList<WholesalePriceModel>()
+        if (product.wholesalePrice != null) {
+            for (wholesalePrice: WholesalePrice in product.wholesalePrice) {
+                wholesalePriceModels.add(getWholesalePriceModel(wholesalePrice))
+            }
+        }
         return productModel
+    }
+
+    private fun getWholesalePriceModel(wholesalePrice: WholesalePrice): WholesalePriceModel {
+        val wholesalePriceModel = WholesalePriceModel()
+        wholesalePriceModel.prdPrc = wholesalePrice.prdPrc
+        wholesalePriceModel.prdPrcFmt = wholesalePrice.prdPrcFmt
+        wholesalePriceModel.qtyMin = wholesalePrice.qtyMin
+        wholesalePriceModel.qtyMinFmt = wholesalePrice.qtyMinFmt
+        wholesalePriceModel.qtyMax = wholesalePrice.qtyMax
+        wholesalePriceModel.qtyMaxFmt = wholesalePrice.qtyMaxFmt
+        return wholesalePriceModel
     }
 
     private fun getFreeReturnsModel(product: Product): FreeReturnsModel {

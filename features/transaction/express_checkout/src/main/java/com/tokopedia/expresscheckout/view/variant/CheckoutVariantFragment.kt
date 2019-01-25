@@ -18,6 +18,7 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.expresscheckout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
@@ -359,6 +360,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
         val productViewModel = fragmentViewModel.getProductViewModel()
         val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+
+        if (fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.isNotEmpty() == true) {
+            val wholesalePriceModels = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.asReversed()
+            if (wholesalePriceModels != null) {
+                for (wholesalePriceModel: WholesalePriceModel in wholesalePriceModels) {
+                    if (quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMax ||
+                            (quantityViewModel.orderQuantity < wholesalePriceModel.qtyMax &&
+                                    quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMin)) {
+                        productViewModel?.productPrice = wholesalePriceModel.prdPrc
+                        break
+                    }
+                }
+            }
+        }
 
         if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
             for (productChild: ProductChild in productViewModel.productChildrenList) {
