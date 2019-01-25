@@ -49,12 +49,12 @@ public class DigitalSearchNumberActivity extends BaseSimpleActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         this.categoryId = extras.getString(EXTRA_CATEGORY_ID);
         this.clientNumber = extras.getParcelable(EXTRA_CLIENT_NUMBER);
         this.number = extras.getString(EXTRA_NUMBER);
         this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
