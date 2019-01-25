@@ -4,8 +4,8 @@ open class ProfileListViewModel(val profileModelList: List<ProfileViewModel>,
                            val isHasNextPage: Boolean,
                            val totalSearchCount: Int) {
 
-    fun getListTrackingObject() : MutableList<Any> {
-        val listTracking = mutableListOf(Any())
+    fun getListTrackingObject() : List<Any> {
+        val listTracking = arrayListOf<Any>()
         for(profileModel in profileModelList) {
             listTracking.add(profileModel.getTrackingObject())
         }

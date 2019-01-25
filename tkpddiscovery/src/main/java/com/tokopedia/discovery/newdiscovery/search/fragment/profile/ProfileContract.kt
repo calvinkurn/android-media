@@ -23,6 +23,7 @@ class ProfileContract {
         fun attachFollowActionListener(followActionListener: FollowActionListener)
         fun requestProfileListData(query: String, page: Int)
         fun handleFollowAction(adapterPosition: Int,
-                               profileModel : ProfileViewModel)
+                               userToFollowId: Int,
+                               followedStatus: Boolean)
     }
 }

@@ -1,14 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.profile.subscriber;
 
-import com.tokopedia.discovery.newdiscovery.domain.subscriber.GetProfileListSubscriber;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProfileListUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileContract;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.FollowActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel;
-import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kolcommon.model.FollowResponseModel;
-import com.tokopedia.usecase.RequestParams;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -48,7 +41,13 @@ public class FollowUnfollowKolSubscriberTest {
 
     @Test
     public void onNext_followResponseModelStatusSuccess_actionListenerSuccessToggleFollowButton() {
+        String mockErrorMessage = "mock error message";
+
         FollowResponseModel followResponseModel = Mockito.mock(FollowResponseModel.class);
+
+        when(followResponseModel.getErrorMessage()).thenReturn(mockErrorMessage);
+        when(followResponseModel.isSuccess()).thenReturn(true);
+
         followUnfollowKolSubscriber.onNext(followResponseModel);
 
         verify(followActionListener).onSuccessToggleFollow(anyInt(), anyBoolean());
@@ -56,7 +55,11 @@ public class FollowUnfollowKolSubscriberTest {
 
     @Test
     public void onNext_followResponseModelStatusFailed_actionListenerErrorToggleFollowButton() {
+        String mockErrorMessage = "mock error message";
+
         FollowResponseModel followResponseModel = Mockito.mock(FollowResponseModel.class);
+
+        when(followResponseModel.getErrorMessage()).thenReturn(mockErrorMessage);
         when(followResponseModel.isSuccess()).thenReturn(false);
 
         followUnfollowKolSubscriber.onNext(followResponseModel);
@@ -66,7 +69,12 @@ public class FollowUnfollowKolSubscriberTest {
 
     @Test
     public void onFailed_followResponseModelStatusFailed_actionListenerErrorToggleFollowButton() {
-        followUnfollowKolSubscriber.onError(new Throwable());
+        String mockErrorMessage = "mock error message";
+        Throwable throwable = Mockito.mock(Throwable.class);
+
+        when(throwable.getMessage()).thenReturn(mockErrorMessage);
+
+        followUnfollowKolSubscriber.onError(throwable);
 
         verify(followActionListener).onErrorToggleFollow(anyInt(), anyString());
     }

@@ -23,21 +23,22 @@ class ProfileListPresenter(
     }
 
     override fun handleFollowAction(adapterPosition: Int,
-                                    profileModel: ProfileViewModel) {
+                                    userToFollowId: Int,
+                                    followedStatus: Boolean) {
         val requestedAction : Int =
-                when(profileModel.followed) {
+                when(followedStatus) {
                     true -> FollowKolPostGqlUseCase.PARAM_UNFOLLOW
                     false -> FollowKolPostGqlUseCase.PARAM_FOLLOW
                 }
 
         followKolPostGqlUseCase.execute(
                 FollowKolPostGqlUseCase.createRequestParams(
-                        profileModel.id.toInt(),
+                        userToFollowId,
                         requestedAction
                 ), FollowUnfollowKolSubscriber(
                 adapterPosition,
                 view,
-                profileModel.followed,
+                followedStatus,
                 followActionListener
         ))
     }

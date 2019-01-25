@@ -180,7 +180,10 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
         when (userSessionInterface.isLoggedIn) {
             true -> {
-                presenter.handleFollowAction(adapterPosition, profileModel)
+                presenter.handleFollowAction(
+                        adapterPosition,
+                        profileModel.id.toInt(),
+                        profileModel.followed)
             }
             false -> {
                 launchLoginPage()

@@ -2,8 +2,8 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.profile;
 
 import com.tokopedia.discovery.newdiscovery.domain.subscriber.GetProfileListSubscriber;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProfileListUseCase;
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.FollowActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.subscriber.FollowUnfollowKolSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel;
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.usecase.RequestParams;
 
@@ -29,6 +29,9 @@ public class ProfileListPresenterTest {
     @Mock
     FollowKolPostGqlUseCase followKolPostGqlUseCase;
 
+    @Mock
+    FollowActionListener followActionListener;
+
     private ProfileListPresenter profileListPresenter;
 
     @Before
@@ -38,6 +41,7 @@ public class ProfileListPresenterTest {
                 followKolPostGqlUseCase
         );
         profileListPresenter.attachView(view);
+        profileListPresenter.attachFollowActionListener(followActionListener);
     }
 
     @Test
@@ -49,7 +53,11 @@ public class ProfileListPresenterTest {
 
     @Test
     public void onHandleFollowAction_givenPositionAndProfileModel_executeFollowKolUseCase() {
-        profileListPresenter.handleFollowAction(anyInt(),any(ProfileViewModel.class));
+        int mockAdapterPosition = 1;
+        int mockUserIdToFollow = 14;
+        boolean mockFollowed = false;
+
+        profileListPresenter.handleFollowAction(mockAdapterPosition, mockUserIdToFollow, mockFollowed);
 
         verify(followKolPostGqlUseCase).execute(any(RequestParams.class), any(FollowUnfollowKolSubscriber.class));
     }

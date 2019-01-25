@@ -39,7 +39,7 @@ public class SearchTracking {
     public static final String VALUE_UNFOLLOW = "unfollow";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
     public static final String EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE = "click - %s profile";
-    public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po %s";
+    public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
     public static final String PROMO_VIEW = "promoView";
     public static final String EVENT_ACTION_IMPORESSION_PROFILE = "imporession - profile";
     public static String imageClick = "/imagesearch - p%s";
