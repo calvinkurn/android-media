@@ -53,14 +53,14 @@ class ProfileViewHolder(itemView: View?, val profileListListener: ProfileListLis
             }
         }
 
-        when(profileData!!.isKol || profileData.isAffiliate) {
-            true -> {
-                itemView.btn_follow.visibility = View.VISIBLE
-            }
-            false -> {
-                itemView.btn_follow.visibility = View.GONE
-            }
-        }
+//        when(profileData!!.isKol || profileData.isAffiliate) {
+//            true -> {
+//                itemView.btn_follow.visibility = View.VISIBLE
+//            }
+//            false -> {
+//                itemView.btn_follow.visibility = View.GONE
+//            }
+//        }
 
         when(profileData!!.followed){
             true -> {

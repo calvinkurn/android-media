@@ -75,7 +75,6 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 public class SearchActivity extends DiscoveryActivity
         implements SearchContract.View, RedirectionListener, BottomSheetListener, SearchNavigationListener {
 
-    private Boolean profileEnabled = false;
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
     public static final int TAB_PRODUCT = 0;

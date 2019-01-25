@@ -66,6 +66,7 @@
                     tools:text="15 post"/>
             </LinearLayout>
             <com.tokopedia.design.component.ButtonCompat
+                android:visibility="gone"
                 android:id="@+id/btn_follow"
                 android:gravity="center"
                 android:layout_gravity="center"
