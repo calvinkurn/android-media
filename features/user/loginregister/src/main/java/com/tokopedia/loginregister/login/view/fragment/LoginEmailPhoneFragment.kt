@@ -55,6 +55,7 @@ import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
+import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -80,6 +81,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private val REQUEST_SMART_LOCK = 101
     private val REQUEST_SAVE_SMART_LOCK = 102
+    private val REQUEST_LOGIN_WEBVIEW = 103
     private val REQUEST_SECURITY_QUESTION = 104
     private val REQUESTS_CREATE_PASSWORD = 106
     private val REQUEST_ACTIVATE_ACCOUNT = 107
@@ -87,6 +89,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_ADD_NAME = 109
     private val REQUEST_CHOOSE_ACCOUNT = 110
     private val REQUEST_NO_TOKOCASH_ACCOUNT = 111
+    private val REQUEST_LOGIN_PHONE = 112
+    private val REQUEST_REGISTER_PHONE = 113
+    private val REQUEST_ADD_NAME_REGISTER_PHONE = 114
+    private val REQUEST_WELCOME_PAGE = 115
+
 
     val IS_AUTO_LOGIN = "auto_login"
     val AUTO_LOGIN_METHOD = "method"
@@ -331,7 +338,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val forgotPassword = partialRegisterInputView.findViewById<TextView>(R.id.forgot_pass)
             forgotPassword.setOnClickListener {
                 analytics.trackClickForgotPassword()
-                goToForgotPassword() }
+                goToForgotPassword()
+            }
         }
 
     }
@@ -616,7 +624,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val intent = (it.applicationContext as LoginRegisterPhoneRouter).getTokoCashOtpIntent(
                     it, phoneNumber, true, RequestOtpUseCase.MODE_SMS
             )
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE)
+            startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
     }
 
@@ -630,7 +638,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     true,
                     RequestOtpUseCase.MODE_SMS
             )
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE)
+            startActivityForResult(intent, REQUEST_REGISTER_PHONE)
         }
     }
 
@@ -785,7 +793,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_VERIFY_PHONE
+            } else if (requestCode == REQUEST_VERIFY_PHONE) {
+                onSuccessLogin()
+            } else if (requestCode == REQUEST_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                goToAddName()
+            } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                startActivityForResult(WelcomePageActivity.newInstance(activity),
+                        REQUEST_WELCOME_PAGE)
+            } else if (requestCode == REQUEST_WELCOME_PAGE) {
+                if (resultCode == Activity.RESULT_OK) {
+                    goToProfileCompletionPage()
+                } else {
+                    activity!!.setResult(Activity.RESULT_OK)
+                    activity!!.finish()
+                }
+            } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.getParcelableExtra<Parcelable>(ChooseTokoCashAccountViewModel.ARGS_DATA) != null) {
@@ -796,7 +818,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     val phoneNumber = emailPhoneEditText.text.toString()
                     goToNoTokocashAccountPage(phoneNumber)
                 }
-            } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode ==
+            } else if (requestCode == REQUEST_LOGIN_PHONE && resultCode ==
                     LoginRegisterPhoneRouter.RESULT_SUCCESS_AUTO_LOGIN) run {
                 onSuccessLoginPhoneNumber()
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
@@ -805,6 +827,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
+        }
+    }
+
+    private fun goToProfileCompletionPage() {
+        if (activity != null) {
+            (activity!!.applicationContext as ApplinkRouter).goToApplinkActivity(activity, ApplinkConst.PROFILE_COMPLETION)
+        }
+    }
+
+    private fun goToAddName() {
+        if (activity != null) {
+            var applink = ApplinkConst.ADD_NAME_REGISTER
+            applink = applink.replace("{phone}", emailPhoneEditText.text.toString())
+            val intent = (activity!!.applicationContext as ApplinkRouter).getApplinkIntent(activity, applink)
+            startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
         }
     }
 
