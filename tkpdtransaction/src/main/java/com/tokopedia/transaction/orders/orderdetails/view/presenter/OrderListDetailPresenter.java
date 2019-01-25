@@ -18,6 +18,7 @@ import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
@@ -282,13 +283,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                                             @Override
                                             public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                                                Type token = new TypeToken<DataResponse<CancelReplacementPojo>>() {
+                                                Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
                                                 }.getType();
                                                 RestResponse restResponse = typeDataResponseMap.get(token);
-                                                DataResponse dataResponse = restResponse.getData();
+                                                DataResponseCommon dataResponse = restResponse.getData();
                                                 CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                                                 if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
                                                     getView().showMessage(cancelReplacementPojo.getMessageStatus());
+                                                else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
+                                                    getView().showMessage((String) dataResponse.getErrorMessage().get(0));
+                                                else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
+                                                    getView().showMessage((String) dataResponse.getMessageStatus().get(0));
                                                 getView().hideProgressBar();
                                                 getView().finishOrderDetail();
                                             }
