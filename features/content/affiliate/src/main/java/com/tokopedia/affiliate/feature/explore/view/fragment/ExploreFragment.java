@@ -257,6 +257,7 @@ public class ExploreFragment
             } else {
                 AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
                 goToProfile();
+                initProfileSection();
             }
         });
 
