@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -13,8 +14,6 @@ import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class UpdateCartIntentService extends IntentService {
     public static final String EXTRA_CART_ITEM_DATA_LIST = "EXTRA_CART_ITEM_DATA_LIST";
 
     private UpdateCartUseCase updateCartUseCase;
-    private com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
+    private UserSession userSession;
 
     public UpdateCartIntentService() {
         super(UpdateCartIntentService.class.getSimpleName());

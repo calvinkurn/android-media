@@ -115,6 +115,7 @@ ext {
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:9.1.04",
+            moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
             moengageMSG: "com.moengage:addon-messaging:2.0.03",
             branch     : "io.branch.sdk.android:library:2.+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
@@ -198,7 +199,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.16",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.0",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 

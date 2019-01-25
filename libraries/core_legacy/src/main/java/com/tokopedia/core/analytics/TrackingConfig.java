@@ -44,6 +44,10 @@ public abstract class TrackingConfig {
         return Jordan.init(context).getMoEngageContainer();
     }
 
+    public static void runGTMFirstTime(Application application) {
+        GTMContainer.newInstance(application).loadContainer();
+    }
+
     public static void runAppsFylerFirstTime(Application application) {
         SessionHandler sessionHandler = RouterUtils.getRouterFromContext(application).legacySessionHandler();
         Jordan.init(application).runFirstTimeAppsFlyer(sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000");
