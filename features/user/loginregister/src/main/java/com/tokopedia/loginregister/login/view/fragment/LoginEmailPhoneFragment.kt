@@ -262,6 +262,16 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun prepareView() {
+        emailPhoneEditText.setOnEditorActionListener { textView, id, keyEvent ->
+            if (id == EditorInfo.IME_ACTION_DONE) {
+                showLoadingLogin()
+                presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
+                true
+            } else {
+                false
+            }
+        }
+
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
@@ -319,6 +329,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onChangeButtonClicked() {
+        emailPhoneEditText.imeOptions = EditorInfo.IME_ACTION_DONE
+
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener { presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString()) }
         partialRegisterInputView.showDefaultView()
