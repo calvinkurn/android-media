@@ -19,8 +19,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.applink.DigitalApplinkModule;
-import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
@@ -68,7 +66,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
  * @author rizkyfadillah on 26/07/17.
  */
 @DeepLinkHandler({
-        DigitalApplinkModule.class,
         SellerApplinkModule.class,
         TopAdsDashboardApplinkModule.class,
         TopAdsApplinkModule.class,
@@ -99,7 +96,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
-                new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TopAdsDashboardApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),

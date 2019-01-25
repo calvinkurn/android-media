@@ -31,8 +31,6 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -86,10 +84,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
-import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
@@ -145,9 +139,6 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -247,7 +238,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
+        MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
@@ -255,7 +246,6 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.tkpdpdp.ProductDetailRouter,
         TopAdsDashboardRouter,
         TopAdsManagementRouter,
-        DigitalRouter,
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
@@ -678,16 +668,6 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = DashboardActivity.createInstance(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        return DigitalCartActivity.newInstance(this, passData);
-    }
-
-    @Override
-    public Intent instanceIntentDigitalCategoryList() {
-        return DigitalCategoryListActivity.newInstance(this);
     }
 
     @Override
@@ -1336,17 +1316,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getPromoListIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public Intent getPromoDetailIntent(Context context, String slug) {
-        return null;
-    }
-
-
-    @Override
     public Intent getCartIntent(Activity activity) {
         return null;
     }
@@ -1890,46 +1859,5 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
         return remoteConfig.getBoolean(key, defaultValue);
-    }
-
-    @Override
-    public String getBranchAutoApply(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public String getTrackingClientId() {
-        return null;
-    }
-
-    @Override
-    public Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation, boolean enableShare, boolean enableLike) {
-        return null;
-    }
-
-    @Override
-    public String getAfUniqueId() {
-        return TrackingUtils.getAfUniqueId(MainApplication.getAppContext());
-    }
-
-    @Override
-    public String getAdsId() {
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
-        return analHandler.getAdsId();
-    }
-
-    @Override
-    public Observable<com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData> getDigitalTokoCashBalance() {
-        return null;
-    }
-
-    @Override
-    public void showForceLogoutDialog() {
-        ServerErrorHandler.showForceLogoutDialog();
-    }
-
-    @Override
-    public void goToTokoCash(String applinkUrl, Activity activity) {
-
     }
 }

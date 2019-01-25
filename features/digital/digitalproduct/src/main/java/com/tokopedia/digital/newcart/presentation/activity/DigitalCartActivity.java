@@ -16,6 +16,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent;
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.applink.DigitalApplinkConstant;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.di.DaggerDigitalComponent;
@@ -69,7 +70,8 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         return userSession.getUserId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
-    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
+    @DeepLink({DigitalApplinkConstant.DIGITAL_CART})
+    public static Intent getApplinkInstance(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return DigitalCartActivity.newInstance(context, extras)
                 .setData(uri.build())

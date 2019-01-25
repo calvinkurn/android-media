@@ -26,8 +26,6 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.gm.common.constant.GMParamConstant;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
@@ -566,7 +564,7 @@ public class DrawerSellerHelper extends DrawerHelper
     public void onGoToDeposit() {
         if (context.getApplicationContext() instanceof SellerModuleRouter) {
             SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) context.getApplicationContext();
-            sellerModuleRouter.getSaldoDepositIntent(context);
+//            sellerModuleRouter.getSaldoDepositIntent(context);
             sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
         }
     }
