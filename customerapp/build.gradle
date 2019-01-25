@@ -117,8 +117,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 311201101;
-        defaultVersionName = "3.12";
+        defaultVersionCode = 311801101;
+        defaultVersionName = "3.18";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -295,7 +295,6 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
@@ -412,6 +411,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
@@ -541,6 +542,7 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
+    implementation project(rootProject.ext.features.referral)
 }
 
 

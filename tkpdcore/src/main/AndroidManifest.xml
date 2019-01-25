@@ -307,9 +307,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
-        <activity android:name="com.tokopedia.core.referral.ReferralActivity" />
-        <activity android:name="com.tokopedia.core.referral.FriendsWelcomeActivity" />
     </application>
 
 </manifest>

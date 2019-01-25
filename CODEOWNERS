@@ -130,8 +130,9 @@
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
+/features/im/referral                   @tokopedia/minion-yoda
 
 /libraries/pagination                   @lavekush-t
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
-
+/kelontongapp                           @tokopedia/core-team

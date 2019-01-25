@@ -106,6 +106,16 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
         PushManager.getInstance().getPushHandler().handlePushPayload(SellerMainApplication.getAppContext(), message.getData());
     }
 
+    @Override
+    public void onCampaignManagementNotificationReceived(RemoteMessage message) {
+
+    }
+
+    @Override
+    public boolean isFromCMNotificationPlatform(Map<String ,String > extra) {
+        return false;
+    }
+
     private boolean isAllowedNotification(Bundle data) {
         return cacheManager.isAllowToHandleNotif(data)
                 && cacheManager.checkLocalNotificationAppSettings(

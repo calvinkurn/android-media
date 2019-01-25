@@ -16,6 +16,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 
 import java.util.Objects;
