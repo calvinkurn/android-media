@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/deposit_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -77,10 +78,10 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16">
+                android:layout_margin="@dimen/dp_16">
 
                 <TextView
-                    android:id="@+id/txt_depo"
+                    android:id="@+id/saldo_deposit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -90,11 +91,23 @@
                     android:text="@string/sp_title_remaining_tokopedia"
                     android:textSize="@dimen/sp_12" />
 
+                <ImageView
+                    android:id="@+id/saldo_deposit_text_info"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:padding="@dimen/dp_4"
+                    android:layout_toRightOf="@+id/saldo_deposit_text"
+                    android:layout_toEndOf="@+id/saldo_deposit_text"
+                    android:layout_above="@+id/total_balance"
+                    android:src="@drawable/info_icon"
+                    android:visibility="visible"
+                    tools:visibility="visible" />
+
                 <TextView
                     android:id="@+id/total_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txt_depo"
+                    android:layout_below="@+id/saldo_deposit_text"
                     android:gravity="start"
                     android:letterSpacing="-0.02"
                     android:lineSpacingExtra="0sp"

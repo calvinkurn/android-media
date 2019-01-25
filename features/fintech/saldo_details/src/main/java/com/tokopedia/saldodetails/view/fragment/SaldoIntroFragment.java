@@ -15,6 +15,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
 
+import java.util.Objects;
+
 public class SaldoIntroFragment extends TkpdBaseV4Fragment {
 
     private Button viewMore;
@@ -31,7 +33,7 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saldo_intro, container, false);
         viewMore = view.findViewById(R.id.si_view_more);
         gotoSaldoPage = view.findViewById(R.id.si_goto_balance_page);
@@ -50,7 +52,8 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
         gotoSaldoPage.setOnClickListener(v -> {
             // TODO: 24/1/19 goto saldo page, check for tab flag
 
-            RouteManager.route(getContext(), ApplinkConst.DEPOSIT);
+            RouteManager.route(Objects.requireNonNull(getContext()), ApplinkConst.DEPOSIT);
+            Objects.requireNonNull(getActivity()).finish();
         });
     }
 }

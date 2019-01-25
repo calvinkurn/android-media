@@ -46,5 +46,14 @@
     <string name="saldo_intro_description">Tenang, hasil penjualanmu tersimpan aman di <b>Saldo Penghasilan</b>. Cek juga <b>Saldo Refund</b> untuk melihat dana refund atau hasil penjualan produk investasi.</string>
     <string name="saldo_intro_view_more">Lihat Selengkapnya</string>
     <string name="saldo_intro_goto_balance_page">Cek Halaman Saldo</string>
+    <string name="title_saldo_detail">Detail Saldo</string>
+    <string name="saldo_help">Pelajari</string>
+    <string name="saldo_buyer_tab_title">Saldo Refund</string>
+    <string name="saldo_seller_tab_title">Saldo Penghasilan</string>
+    <string name="saldo_total_balance_buyer">Nilai Saldo Refund</string>
+    <string name="saldo_total_balance_seller">Nilai Saldo Penghasilan</string>
+    <string name="saldo_total_balance_text">Nilai Saldo</string>
+    <string name="saldo_balance_buyer_desc">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
+    <string name="saldo_balance_seller_desc">Berisi dana hasil penjualan. Saldo Penghasilan tidak dapat digunakan untuk pembelanjaan. Tetapi dapat digunakan untuk berlangganan Power Merchant dan Kredit TopAds.</string>
 
 </resources>

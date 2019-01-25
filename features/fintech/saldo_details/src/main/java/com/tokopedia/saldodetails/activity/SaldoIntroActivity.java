@@ -16,7 +16,6 @@ public class SaldoIntroActivity extends BaseSimpleActivity {
     @SuppressWarnings("unused")
     @DeepLink(ApplinkConst.SALDO_INTRO)
     public static Intent getcallingIntent(Context context, Bundle extras) {
-
         return SaldoIntroActivity.newInstance(context);
     }
 

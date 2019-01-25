@@ -31,6 +31,7 @@ import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
+import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
@@ -46,6 +47,8 @@ import javax.inject.Inject;
 public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>
         implements SaldoDetailContract.View, SaldoItemListener, EmptyResultViewHolder.Callback, RefreshHandler.OnRefreshHandlerListener {
 
+    private static final String IS_USER_SELLER = "is_user_seller";
+    private static final String IS_SELLER_ENABLED = "is_user_enabled";
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
 
@@ -72,9 +75,18 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     private Context context;
     private TextView checkBalanceStatus;
+    private boolean isSeller;
+    private TextView totalBalanceTitle;
+    private View totalBalanceInfo;
+    private boolean isSellerEnabled;
 
-    public static SaldoDepositFragment createInstance() {
-        return new SaldoDepositFragment();
+    public static SaldoDepositFragment createInstance(boolean isSeller, boolean isSellerEnabled) {
+        SaldoDepositFragment saldoDepositFragment = new SaldoDepositFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_USER_SELLER, isSeller);
+        bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled);
+        saldoDepositFragment.setArguments(bundle);
+        return saldoDepositFragment;
     }
 
     protected Bundle savedState;
@@ -134,6 +146,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @SuppressLint("Range")
     private void initViews(View view) {
+
+        totalBalanceTitle = view.findViewById(R.id.saldo_deposit_text);
+        totalBalanceInfo = view.findViewById(R.id.saldo_deposit_text_info);
 
         totalBalance = view.findViewById(R.id.total_balance);
         startDateLayout = view.findViewById(R.id.start_date_layout);
@@ -223,12 +238,26 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     protected void initialVar() {
+        if (getArguments() != null) {
+            isSeller = getArguments().getBoolean(IS_USER_SELLER);
+            isSellerEnabled = getArguments().getBoolean(IS_SELLER_ENABLED);
+        }
+
+        if (isSeller) {
+            totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_seller));
+        } else if (isSellerEnabled) {
+            totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_buyer));
+        } else {
+            totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_text));
+        }
+
+        totalBalanceInfo.setOnClickListener(v -> showBottomSheetInfoDialog());
         datePicker = new SaldoDatePickerUtil(getActivity());
         adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
-        if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
+        if (isSeller && getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
                     .isSaldoNativeEnabled()) {
@@ -236,7 +265,29 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
             } else {
                 hideSaldoPrioritasFragment();
             }
+        } else {
+            hideSaldoPrioritasFragment();
         }
+
+    }
+
+    private void showBottomSheetInfoDialog() {
+        UserStatusInfoBottomSheet userStatusInfoBottomSheet =
+                new UserStatusInfoBottomSheet(context);
+
+        if (isSeller) {
+            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_seller_desc));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_seller));
+        } else if (isSellerEnabled) {
+            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_buyer_desc));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_buyer));
+        } else {
+            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_buyer_desc));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_text));
+        }
+
+        userStatusInfoBottomSheet.setButtonText(getString(R.string.sp_saldo_withdraw_warning_positiv_button));
+        userStatusInfoBottomSheet.show();
     }
 
     private RecyclerView.OnScrollListener onScroll() {

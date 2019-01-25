@@ -2,6 +2,8 @@ package com.tokopedia.saldodetails.commom.analytics;
 
 public class SaldoDetailsConstants {
 
+    public static final String SALDO_HELP_URL = "";
+
     interface Event {
         String EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
