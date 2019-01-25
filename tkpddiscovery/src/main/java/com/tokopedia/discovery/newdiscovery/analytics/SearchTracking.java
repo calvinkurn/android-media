@@ -472,7 +472,7 @@ public class SearchTracking {
 
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(
-                        EVENT, EVENT_EMPTY,
+                        EVENT, EVENT_CLICK_SEARCH_RESULT,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
                         EVENT_ACTION, EVENT_ACTION_CLICK_PROFILE_RESULT,
                         EVENT_LABEL, keyword,
