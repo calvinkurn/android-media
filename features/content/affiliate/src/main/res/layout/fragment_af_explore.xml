@@ -66,6 +66,7 @@
                             android:layout_width="@dimen/dp_24"
                             android:layout_height="@dimen/dp_24"
                             android:layout_marginRight="@dimen/dp_16"
+                            android:src="@drawable/ic_profile_default"
                             android:layout_gravity="center"/>
 
                         <com.tokopedia.design.component.badge.BadgeView
