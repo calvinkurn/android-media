@@ -62,7 +62,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Context context;
     private static Activity activity;
     private static Boolean isResetNotification = false;
     private static Boolean isResetDrawer = false;
@@ -108,10 +107,6 @@ public abstract class MainApplication extends MainRouterApplication{
         }
 
         return isInBackground;
-    }
-
-    public synchronized static Context getAppContext() {
-        return MainApplication.context;
     }
 
     /**
@@ -263,8 +258,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
-        //CommonUtils.dumper("asdasas");
-        MainApplication.context = getApplicationContext();
         init();
         initCrashlytics();
         initStetho();

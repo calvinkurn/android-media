@@ -960,6 +960,8 @@ public interface AppEventTracking {
         String QUALITY_SCORE = "quality_score";
         String SCREEN_NAME = "screen_name";
         String CHANNEL = "channel";
+        String SOURCE = "source";
+        String PDP_SHARE = "pdp_share";
         String APP_VERSION = "app version";
         String PLATFORM = "platform";
         String HOTLIST_ID = "hotlist_id";

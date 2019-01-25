@@ -123,15 +123,20 @@ public class FiltersBottomSheet extends BottomSheets {
                     public void onClick(View v) {
                         lastCheckedPosition = getAdapterPosition();
                         fromInitView = false;
-                        notifyDataSetChanged();
 
-                        if (mFilterDetails != null && mFilterDetails.get(getAdapterPosition()) != null) {
-                            AnalyticsTrackerUtil.sendEvent(getActivity(),
-                                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                                    AnalyticsTrackerUtil.ActionKeys.PILIH_FILTER,
-                                    mFilterDetails.get(getAdapterPosition()).getText());
+                        try {
+                            if (mFilterDetails != null && mFilterDetails.get(getAdapterPosition()) != null) {
+                                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                                        AnalyticsTrackerUtil.ActionKeys.PILIH_FILTER,
+                                        mFilterDetails.get(getAdapterPosition()).getText());
+                            }
+                        } catch (Exception e) {
+
                         }
+
+                        notifyDataSetChanged();
                     }
                 });
             }

@@ -3,8 +3,14 @@
     <string name="msg_exit">Tekan sekali lagi untuk keluar</string>
 
     <string name="dialog_info">Info</string>
-    <string name="dialog_msg">Kami mendeteksi bahwa beberapa fitur pada aplikasi akan tidak berfungsi secara fungsional pada device Anda.</string>
-    <string name="dialog_ok">OK, terimakasih</string>
+    <string name="dialog_msg">Beberapa fitur tidak akan berfungsi dengan baik pada HP kamu. Silakan gunakan internet browser untuk penggunaan yang lebih baik.</string>
+    <string name="dialog_no">Lanjut via browser</string>
+    <string name="dialog_yes">Lanjut via app</string>
 
     <string name="title_general_push_notification">Notifikasi Baru dari Mitra Tokopedia</string>
+    <string name="msg_system_error">Terjadi gangguan pada sistem.</string>
+    <string name="msg_no_internet_connection">Koneksi Internet Terputus. Periksa kembali jaringan WiFi atau data seluler Anda.</string>
+    <string name="btn_try_again">Coba Lagi</string>
+
+    <string name="permission_location_rationale">Kami membutuhkan akses lokasi untuk membantu Anda.</string>
 </resources>

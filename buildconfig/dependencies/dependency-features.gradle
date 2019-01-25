@@ -49,6 +49,7 @@ ext {
     tkpdTalkVersion = '2.22'
     tkpdLoginPhoneVersion = '2.22'
     tkpdLoginRegisterVersion = '2.22'
+    tkpdReferralVersion = '1.00'
     tkpdSessionCommonVersion = '2.22'
     tkpdTokocashVersion = '2.22'
     tkpdTokopointVersion = '2.22'
@@ -138,6 +139,7 @@ ext {
             profile                 : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
             promoCheckout           : "com.tokopedia.promocheckout:promo_checkout:${promoCheckoutVersion}",
             promoCheckoutCommon     : "com.tokopedia.promocheckout:promo_checkout_common:${promoCheckoutVersion}",
+            referral                : "com.tokopedia.referral:referral:${tkpdReferralVersion}",
             reputation              : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon        : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             ride                    : "com.tokopedia.ride:ride:${tkpdRideVersion}",
@@ -243,6 +245,8 @@ ext {
             productManageItem             : ":features:merchant:product_manage_item",
             productManageList             : ":features:merchant:product_manage_list",
             productShare                  : ":features:merchant:product_share",
+            referral                      : ":features:im:referral",
+
             reputation                    : ":features:merchant:reputation",
             reputationCommon              : ":features:merchant:reputation_common",
             shopCommon                    : ":features:merchant:shop_common",

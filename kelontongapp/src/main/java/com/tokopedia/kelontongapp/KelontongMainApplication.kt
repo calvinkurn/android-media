@@ -4,31 +4,46 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
+import com.appsflyer.AppsFlyerConversionListener
+import com.appsflyer.AppsFlyerLib
 
 import com.crashlytics.android.Crashlytics
 
 import io.fabric.sdk.android.Fabric
+import com.moengage.core.MoEngage
+
+
 
 /**
  * Created by meta on 02/10/18.
  */
 class KelontongMainApplication : Application() {
 
-    val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
-    val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
+
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
+        sharedPref = getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
+        initAppsflyer()
+        initMoengage()
         initCrashlytics()
         createNotificationChannel()
     }
 
-    fun initCrashlytics() {
+    private fun initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, Crashlytics())
             Crashlytics.setUserIdentifier(getString(R.string.app_name))
         }
+    }
+
+    private fun initMoengage() {
+        val moEngage = MoEngage.Builder(this, MOENGAGE_ID)
+                .build()
+        MoEngage.initialise(moEngage)
     }
 
     private fun createNotificationChannel() {
@@ -42,7 +57,35 @@ class KelontongMainApplication : Application() {
         }
     }
 
-    companion object {
-        val NOTIFICATION_CHANNEL_ID = "mitra_tkpd_notification_channel_id"
+    private fun initAppsflyer() {
+        AppsFlyerLib.getInstance().init(AF_KEY, appsflyerConversionListener(), this)
+        AppsFlyerLib.getInstance().setCustomerUserId(sharedPref.getString(USER_ID, ""))
+        val addData = HashMap<String, Any?>()
+        addData[KEY_INSTALL_SOURCE] = getInstallSource()
+        AppsFlyerLib.getInstance().setAdditionalData(addData)
+        AppsFlyerLib.getInstance().setDebugLog(true);
+        AppsFlyerLib.getInstance().startTracking(this)
+    }
+
+    private fun appsflyerConversionListener() = object: AppsFlyerConversionListener {
+        override fun onAppOpenAttribution(p0: MutableMap<String, String>?) {
+            // no-op
+        }
+
+        override fun onAttributionFailure(p0: String?) {
+            // no-op
+        }
+
+        override fun onInstallConversionDataLoaded(p0: MutableMap<String, String>?) {
+            // no-op
+        }
+
+        override fun onInstallConversionFailure(p0: String?) {
+            // no-op
+        }
+    }
+
+    private fun getInstallSource(): String? {
+        return packageManager.getInstallerPackageName(packageName)
     }
 }
