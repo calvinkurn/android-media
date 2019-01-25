@@ -54,7 +54,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData), Float.toString(paymentData.getFeeAmount())));
+                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData), getTax(paymentData)));
                     BranchSdkUtils.sendCommerceEvent(MainApplication.getAppContext(), getTrackignBranchIOData(orderData));
                     indexOrdersData++;
                 }
@@ -66,6 +66,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return false;
+    }
+
+    private String getTax(PaymentData paymentData) {
+        float tax = paymentData.getFeeAmount();
+        if(paymentData.getPaymentGateway() != null) {
+            tax += paymentData.getPaymentGateway().getGatewayFee();
+        }
+        return Float.toString(tax);
     }
 
     private Purchase getAppsFlyerTrackingData(List<OrderData> orders) {
@@ -93,7 +101,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return purchase;
     }
 
-    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode, String feeAmount) {
+    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode, String tax) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
@@ -108,7 +116,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
         purchase.setAffiliation(getShopName(orderData));
-        purchase.setTax(feeAmount);
+        purchase.setTax(tax);
         purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
@@ -218,9 +226,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private String getProductCategory(OrderDetail orderDetail) {
         if (orderDetail.getProduct() != null
                 && orderDetail.getProduct().getProductCategory() != null) {
-            return orderDetail.getProduct().getProductCategory().getCategoryLevel1()
-                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryLevel2()
-                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryLevel3();
+            return orderDetail.getProduct().getProductCategory().getCategoryNameLevel1()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel2()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel3();
         }
 
         return "";

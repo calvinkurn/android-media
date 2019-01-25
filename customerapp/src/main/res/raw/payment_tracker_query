@@ -13,9 +13,9 @@
                 category{
                     category_id
                     category_name
-                    category_level1
-                    category_level2
-                    category_level3
+                    category_name_level1
+                    category_name_level2
+                    category_name_level3
                 }
                 product_id
                 product_name
@@ -44,6 +44,12 @@
           gateway_img_url
           gateway_id
       	}
+    }
+    payment_gateway {
+        gateway_name
+        gateway_img_url
+        gateway_id
+        gateway_fee
     }
     payment_method{
       method

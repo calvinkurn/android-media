@@ -14,15 +14,15 @@ public class ProductCategory {
     @SerializedName("category_name")
     @Expose
     private String categoryName;
-    @SerializedName("category_level1")
+    @SerializedName("category_name_level1")
     @Expose
-    private String categoryLevel1 = "";
-    @SerializedName("category_level2")
+    private String categoryNameLevel1 = "";
+    @SerializedName("category_name_level2")
     @Expose
-    private String categoryLevel2 = "";
-    @SerializedName("category_level3")
+    private String categoryNameLevel2 = "";
+    @SerializedName("category_name_level3")
     @Expose
-    private String categoryLevel3 = "";
+    private String categoryNameLevel3 = "";
 
     public int getCategoryId() {
         return categoryId;
@@ -40,27 +40,27 @@ public class ProductCategory {
         this.categoryName = categoryName;
     }
 
-    public String getCategoryLevel1() {
-        return categoryLevel1;
+    public String getCategoryNameLevel1() {
+        return categoryNameLevel1;
     }
 
-    public void setCategoryLevel1(String categoryLevel1) {
-        this.categoryLevel1 = categoryLevel1;
+    public void setCategoryNameLevel1(String categoryNameLevel1) {
+        this.categoryNameLevel1 = categoryNameLevel1;
     }
 
-    public String getCategoryLevel2() {
-        return categoryLevel2;
+    public String getCategoryNameLevel2() {
+        return categoryNameLevel2;
     }
 
-    public void setCategoryLevel2(String categoryLevel2) {
-        this.categoryLevel2 = categoryLevel2;
+    public void setCategoryNameLevel2(String categoryNameLevel2) {
+        this.categoryNameLevel2 = categoryNameLevel2;
     }
 
-    public String getCategoryLevel3() {
-        return categoryLevel3;
+    public String getCategoryNameLevel3() {
+        return categoryNameLevel3;
     }
 
-    public void setCategoryLevel3(String categoryLevel3) {
-        this.categoryLevel3 = categoryLevel3;
+    public void setCategoryNameLevel3(String categoryNameLevel3) {
+        this.categoryNameLevel3 = categoryNameLevel3;
     }
 }

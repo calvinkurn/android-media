@@ -31,6 +31,9 @@ public class PaymentData {
     @SerializedName("fee_amount")
     @Expose
     private float feeAmount;
+    @SerializedName("payment_gateway")
+    @Expose
+    private PaymentGateway paymentGateway;
 
     public int getPaymentId() {
         return paymentId;
@@ -86,5 +89,13 @@ public class PaymentData {
 
     public void setFeeAmount(float feeAmount) {
         this.feeAmount = feeAmount;
+    }
+
+    public PaymentGateway getPaymentGateway() {
+        return paymentGateway;
+    }
+
+    public void setPaymentGateway(PaymentGateway paymentGateway) {
+        this.paymentGateway = paymentGateway;
     }
 }
