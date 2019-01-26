@@ -31,8 +31,8 @@ public class SellerSaldoViewHolder extends AbstractViewHolder<SellerSaldoViewMod
                 sellerSaldoView,
                 getString(R.string.seller_saldo_on_boarding_title),
                 Html.fromHtml(getString(R.string.seller_saldo_on_boarding_desc)).toString(),
-                ShowCaseContentPosition.UNDEFINED,
-                R.color.tkpd_main_green));
+                ShowCaseContentPosition.BOTTOM,
+                R.color.transparent));
     }
 
     @Override

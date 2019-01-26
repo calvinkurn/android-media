@@ -35,7 +35,7 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
                 getString(R.string.buyer_saldo_on_boarding_title),
                 Html.fromHtml(getString(R.string.buyer_saldo_on_boarding_desc)).toString(),
                 ShowCaseContentPosition.BOTTOM,
-                R.color.white));
+                R.color.transparent));
     }
 
     @Override
