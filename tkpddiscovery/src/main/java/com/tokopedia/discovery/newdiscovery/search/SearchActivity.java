@@ -358,7 +358,6 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
         if (profileEnabled) {
             searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
         }
@@ -423,7 +422,6 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
         if (profileEnabled) {
             searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
         }
