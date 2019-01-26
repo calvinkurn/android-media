@@ -7,13 +7,13 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
-        android:layout_margin="@dimen/dp_10"
-        app:cardElevation="@dimen/dp_4"
+        android:layout_margin="@dimen/dp_5"
+        app:cardElevation="@dimen/dp_2"
         app:cardCornerRadius="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100">
+        android:layout_height="@dimen/dp_72">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -31,8 +31,8 @@
             <LinearLayout
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_5"
-                android:layout_marginTop="@dimen/dp_15"
-                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -76,8 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_8"
                 app:buttonCompatType="primary"
-                app:buttonCompatSize="medium"
-                android:text="Follow"/>
+                app:buttonCompatSize="small"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>
