@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shadow_top">
+
+    <LinearLayout android:id="@+id/btn_buy"
+        android:layout_width="0dp"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/orange_red"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_promo_hour"
+        app:layout_constraintEnd_toStartOf="@+id/btn_promo_hour"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ProgressBar
+            android:id="@+id/variant_progress_bar"
+            style="?android:attr/progressBarStyleInverse"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_buy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buy"
+            android:textColor="@color/color_href_link"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            app:weight="medium"
+            app:fontSize="title"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/btn_promo_hour"
+        android:layout_width="0dp"
+        android:layout_height="?android:attr/actionBarSize"
+        android:text="@string/promo_hourly"
+        android:gravity="center"
+        android:textColor="@color/color_href_link"
+        android:background="@drawable/bg_btn_promo_ads"
+        android:visibility="gone"
+        app:fontSize="title"
+        app:weight="medium"
+        app:layout_constraintLeft_toRightOf="@+id/btn_buy"
+        app:layout_constraintStart_toEndOf="@+id/btn_buy"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_promote_topads"
+        app:layout_constraintEnd_toStartOf="@+id/btn_promote_topads"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/btn_promote_topads"
+        android:layout_width="0dp"
+        android:layout_height="?android:attr/actionBarSize"
+        android:text="@string/promote_topads"
+        android:gravity="center"
+        android:textColor="@color/color_href_link"
+        android:background="@drawable/btn_buy"
+        android:visibility="gone"
+        app:fontSize="title"
+        app:weight="medium"
+        app:layout_constraintLeft_toRightOf="@+id/btn_promo_hour"
+        app:layout_constraintStart_toEndOf="@+id/btn_promo_hour"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/btn_byme"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:padding="@dimen/dp_4"
+        android:scaleType="center"
+        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:srcCompat="@drawable/ic_byme"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_topchat"
+        app:layout_constraintEnd_toStartOf="@+id/btn_topchat"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/btn_topchat"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:padding="@dimen/dp_4"
+        android:scaleType="center"
+        android:background="@drawable/white_button_rounded"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_goneMarginLeft="@dimen/dp_16"
+        app:layout_goneMarginStart="@dimen/dp_16"
+        app:srcCompat="@drawable/ic_topchat"
+        app:layout_constraintLeft_toRightOf="@+id/btn_byme"
+        app:layout_constraintStart_toEndOf="@+id/btn_byme"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_buy_now"
+        app:layout_constraintEnd_toStartOf="@+id/btn_buy_now"/>
+
+    <FrameLayout android:id="@+id/btn_buy_now"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:background="@drawable/bg_rounded_orange_red_outline"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintLeft_toRightOf="@+id/btn_topchat"
+        app:layout_constraintStart_toEndOf="@+id/btn_topchat"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_add_to_cart"
+        app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_buy_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buy_now"
+            android:textColor="@color/orange_red"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            app:fontSize="micro" />
+
+        <ProgressBar
+            android:id="@+id/pb_buy_now"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/orange_red"
+            tools:visibility="visible"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <FrameLayout android:id="@+id/btn_add_to_cart"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/bg_btn_add_to_cart"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintLeft_toRightOf="@+id/btn_buy_now"
+        app:layout_constraintStart_toEndOf="@+id/btn_buy_now"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_product_to_cart"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            app:textViewTheme="darkPrimary"
+            app:fontSize="micro" />
+
+        <ProgressBar
+            android:id="@+id/pb_add_to_cart"
+            style="?android:progressBarStyleInverse"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white"
+            tools:visibility="visible"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>

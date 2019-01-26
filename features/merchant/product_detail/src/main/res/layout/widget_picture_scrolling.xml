@@ -20,11 +20,6 @@
         android:padding="@dimen/dp_5"
         android:layout_marginBottom="@dimen/dp_5"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@drawable/gradient_shadow_black_vertical"/>
-
     <LinearLayout
         android:id="@+id/error_product_container"
         android:layout_width="match_parent"

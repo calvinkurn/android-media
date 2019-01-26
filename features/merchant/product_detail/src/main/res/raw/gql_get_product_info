@@ -45,6 +45,12 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             name
             url
         }
+        shop {
+            id
+            name
+            domain
+            url
+        }
         category {
             id
             name

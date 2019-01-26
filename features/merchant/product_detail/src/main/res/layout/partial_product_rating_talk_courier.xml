@@ -39,7 +39,6 @@
             android:layout_marginLeft="@dimen/dp_2"
             android:layout_marginStart="@dimen/dp_2"
             android:text="/5"
-            android:layout_gravity="bottom"
             app:fontSize="micro"/>
 
     </LinearLayout>

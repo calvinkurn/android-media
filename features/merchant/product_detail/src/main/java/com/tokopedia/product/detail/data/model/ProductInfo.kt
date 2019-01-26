@@ -32,6 +32,10 @@ data class ProductInfo(
         @Expose
         val menu: Menu = Menu(),
 
+        @SerializedName("shop")
+        @Expose
+        val shop: ProductShop = ProductShop(),
+
         @SerializedName("pictures")
         @Expose
         val pictures: List<Picture> = listOf(),

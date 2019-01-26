@@ -9,7 +9,6 @@
 
         <activity android:name=".view.activity.ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
-            android:theme="@style/Theme.White"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>
 

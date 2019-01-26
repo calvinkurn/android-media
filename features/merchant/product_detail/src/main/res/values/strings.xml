@@ -20,4 +20,20 @@
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
     <string name="template_campaign_off">%1$d%% OFF </string>
+    <string name="template_review">%1$d Ulasan</string>
+    <string name="template_talk">%1$d Diskusi</string>
+    <string name="template_preorder_time">%1$d Hari</string>
+    <string name="template_min_order">%1$d Buah</string>
+    <string name="buy_now">Beli Sekarang</string>
+    <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="buy">Beli</string>
+    <string name="promo_hourly">Promo Perjam</string>
+    <string name="promote_topads">Iklan TopAds</string>
+    <string name="no_stock">Stok Kosong</string>
+    <string name="action_preorder">PREORDER</string>
+    <string name="product_from">Produk dari</string>
+    <string name="from_official_store_label">Brand Resmi</string>
+    <string name="label_cart">Keranjang</string>
+    <string name="label_move_to_warehouse">Gudangkan</string>
+    <string name="label_move_to_etalase">Ke Etalase</string>
 </resources>

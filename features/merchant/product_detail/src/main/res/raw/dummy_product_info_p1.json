@@ -45,6 +45,12 @@
       "name":"new etalase",
       "url":""
     },
+    "shop": {
+      "id": 137266,
+      "name": "BEST MEMORY",
+      "domain": "beststereo",
+      "url": "https://www.tokopedia.com/beststereo"
+    },
     "category":{
       "id":284,
       "name":"Handphone & Tablet - Aksesoris Tablet - Connection Kit",

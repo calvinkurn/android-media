@@ -53,6 +53,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
+    fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+
     companion object {
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"

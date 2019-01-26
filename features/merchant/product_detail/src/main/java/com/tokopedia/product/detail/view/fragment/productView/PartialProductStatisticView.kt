@@ -1,0 +1,19 @@
+package com.tokopedia.product.detail.view.fragment.productView
+
+import android.view.View
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.ProductInfo
+import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
+
+class PartialProductStatisticView private constructor(private val view: View) {
+    companion object {
+        fun build(_view: View) = PartialProductStatisticView(_view)
+    }
+
+    fun renderData(data: ProductInfo){
+        with(view){
+            txt_review.text = context.getString(R.string.template_review, data.stats.countReview)
+            txt_discussion.text = context.getString(R.string.template_talk, data.stats.countTalk)
+        }
+    }
+}
