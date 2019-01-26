@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.common.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
@@ -109,7 +110,10 @@ public class DoubleTextView extends LinearLayout {
         this.bottomTextView.setTextColor(bottomTextColor);
     }
 
-    @SuppressWarnings("unused")
+    public void setBottomTextBackground(Drawable drawable) {
+        this.bottomTextView.setBackground(drawable);
+    }
+
     public void setBottomGravity(int gravity) {
         this.bottomTextView.setGravity(gravity);
     }

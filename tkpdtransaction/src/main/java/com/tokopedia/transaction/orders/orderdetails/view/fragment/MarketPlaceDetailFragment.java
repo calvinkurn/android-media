@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -221,6 +222,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         doubleTextView.setTopText(title.label());
         doubleTextView.setBottomText(title.value());
         doubleTextView.setBottomGravity(Gravity.RIGHT);
+        if(title.backgroundColor() !=null && !title.backgroundColor().isEmpty()){
+            Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
+            drawable.setTint(Integer.parseInt(title.backgroundColor()));
+            doubleTextView.setBottomTextBackground(drawable);
+        }
         statusDetail.addView(doubleTextView);
     }
 

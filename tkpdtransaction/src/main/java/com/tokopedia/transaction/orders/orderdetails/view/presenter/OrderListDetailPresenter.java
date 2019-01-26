@@ -192,13 +192,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 if (details.getDriverDetails() != null) {
                     getView().showDriverInfo(details.getDriverDetails());
                 }
-            } else if (i == 3) {
+            }
+            if (i == details.detail().size()-1) {
                 if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
                     getView().showDropshipperInfo(details.getDropShipper());
                 }
             }
             getView().setDetail(details.detail().get(i));
         }
+
+
         if (details.getShopInfo() != null) {
             getView().setShopInfo(details.getShopInfo());
         }

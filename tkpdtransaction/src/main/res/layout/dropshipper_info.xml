@@ -15,19 +15,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dropshipper_bg"
-        android:padding="@dimen/dp_16">
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
 
         <TextView
+            android:id="@+id/tv_label_dropshipper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_24"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_24"
             android:maxLines="2"
             android:text="@string/dropshipper"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="16dp" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideLine"
@@ -41,24 +44,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Tukul Arwana"
-            android:textSize="@dimen/sp_12"
             android:textStyle="bold"
+            android:paddingBottom="@dimen/dp_8"
+            app:layout_constraintBottom_toTopOf="@id/tv_label_dropshipper"
             app:layout_constraintLeft_toRightOf="@+id/guideLine"
             app:layout_constraintRight_toRightOf="parent"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintTop_toTopOf="@id/tv_label_dropshipper"
+            />
 
 
         <TextView
             android:id="@+id/dropShipper_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
             android:text="08123456789"
-            android:textSize="@dimen/sp_12"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/tv_label_dropshipper"
             app:layout_constraintLeft_toRightOf="@+id/guideLine"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dropShipper_name" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_dropshipper" />
 
     </android.support.constraint.ConstraintLayout>
 
