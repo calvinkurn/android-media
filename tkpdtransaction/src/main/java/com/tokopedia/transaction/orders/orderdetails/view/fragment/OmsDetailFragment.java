@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
@@ -346,15 +347,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setItems(List<Items> items) {
-        List<Items> itemsList=new ArrayList<>();
+        List<Items> itemsList = new ArrayList<>();
         for (Items item : items) {
             if (!CATEGORY_GIFT_CARD.equalsIgnoreCase(item.getCategory())) {
                 itemsList.add(item);
             }
         }
-        if(itemsList.size()>0){
+        if (itemsList.size() > 0) {
             recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter));
-        }else{
+        } else {
             detailsLayout.setVisibility(View.GONE);
         }
     }
@@ -427,6 +428,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void finishOrderDetail() {
 
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

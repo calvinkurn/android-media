@@ -2,19 +2,16 @@ package com.tokopedia.transaction.orders.orderdetails.domain;
 
 import android.content.Context;
 
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
-import com.tokopedia.common.network.domain.RestRequestUseCase;
+import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
+import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +26,7 @@ public class PostCancelReasonUseCase extends RestRequestSupportInterceptorUseCas
 
     @Inject
     public PostCancelReasonUseCase(Interceptor interceptor, Context context) {
-        super(interceptor,context);
+        super(interceptor, context);
     }
 
     public void setRequestParams(RequestParams params) {
@@ -39,12 +36,13 @@ public class PostCancelReasonUseCase extends RestRequestSupportInterceptorUseCas
     public void cancelOrReplaceOrder(String url) {
         this.url = url;
     }
+
     @Override
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         Map<String, Object> params = this.params.getParameters();
 
-        Type token = new TypeToken<DataResponse<JsonObject>>() {
+        Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(this.url, token)

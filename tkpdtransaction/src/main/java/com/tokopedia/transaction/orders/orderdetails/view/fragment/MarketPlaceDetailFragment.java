@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -395,6 +396,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     }
 
     @Override
+    public void showMessage(String message) {
+        Toast.makeText(getAppContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void setActionButtons(List<ActionButton> actionButtons) {
         actionBtnLayout.removeAllViews();
         actionBtnLayout.setOrientation(LinearLayout.VERTICAL);
@@ -495,7 +501,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                                     startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
                                 } else
-                                     RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                    RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
                             } else {
                                 dialog.dismiss();
                             }
@@ -565,7 +571,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-            } else if ( resultCode == CANCEL_BUYER_REQUEST) {
+            } else if (resultCode == CANCEL_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));

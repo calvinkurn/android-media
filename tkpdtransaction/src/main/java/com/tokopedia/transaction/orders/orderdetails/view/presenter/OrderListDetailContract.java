@@ -29,7 +29,7 @@ import java.util.List;
 
 public interface OrderListDetailContract {
 
-    public interface View extends CustomerView{
+    interface View extends CustomerView {
         void setStatus(Status status);
 
         void setConditionalInfo(ConditionalInfo conditionalInfo);
@@ -84,18 +84,21 @@ public interface OrderListDetailContract {
 
         void finishOrderDetail();
 
+        void showMessage(String message);
+
     }
 
-    public interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment);
 
-       void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
+        void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
         List<ActionButton> getActionList();
     }
 
     interface ActionInterface {
         void setActionButton(int position, List<ActionButton> actionButtons);
+
         void setTapActionButton(int position, List<ActionButton> actionButtons);
     }
 }
