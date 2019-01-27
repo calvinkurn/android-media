@@ -95,6 +95,9 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onViewCreated() {
+        if (!userSession.isLoggedIn()){
+            getView().closeViewWithMessageAlert(getView().getString(R.string.digital_cart_login_message));
+        }
         getView().hideCartView();
         getView().showFullPageLoading();
         RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(

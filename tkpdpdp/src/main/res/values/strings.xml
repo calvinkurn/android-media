@@ -120,5 +120,6 @@
 
     <string name="value_cashback_pdp">Cashback %1$s</string>
     <string name="title_cod">Bayar di Tempat</string>
-    <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
+    <string name="cod_content">Bayar Ke kurir saat pesanan diterima. Tersedia dibeberapa kota tertentu</string>
+    <string name="no_support_application">Tidak ada aplikasi pendukung untuk membuka konten.</string>
 </resources>

@@ -533,4 +533,13 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void eventViewCartListFinishRender() {
+        sendEventCategoryAction(
+                EventName.VIEW_CART,
+                EventCategory.CART,
+                EventAction.VIEW_CART_LIST
+        );
+    }
+
+
 }

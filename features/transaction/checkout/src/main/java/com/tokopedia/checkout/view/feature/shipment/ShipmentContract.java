@@ -112,6 +112,8 @@ public interface ShipmentContract {
         void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void showToastFailedTickerPromo(String text);
+
+        void stopTrace();
     }
 
     interface AnalyticsActionListener {
@@ -285,7 +287,6 @@ public interface ShipmentContract {
 
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
 
-        void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label);
     }
 
 }

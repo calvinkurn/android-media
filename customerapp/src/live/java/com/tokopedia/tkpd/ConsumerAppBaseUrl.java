@@ -51,7 +51,6 @@ public class ConsumerAppBaseUrl {
     public static final String TOPPROFILE_DOMAIN = GRAPHQL_DOMAIN;
     public static final String CHATBOT_DOMAIN = BASE_API_DOMAIN;
     public static final String GAMIFICATION_BASE_URL = "https://gql.tokopedia.com/";
-    public static final String TRAVEL_CALENDAR_BASE_URL = "https://gql.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
     public static final String OMS_DOMAIN = "https://omscart.tokopedia.com/";
