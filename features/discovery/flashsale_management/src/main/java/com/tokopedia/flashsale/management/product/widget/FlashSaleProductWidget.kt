@@ -75,8 +75,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 if (item.getMessage().isNotEmpty()) {
                     ivCheckMark.visibility = View.GONE
                     tvStatus.visibility = View.GONE
-                }
-                if (item.getProductStatus() == FlashSaleProductStatusTypeDef.RESERVE) {
+                } else if (item.getProductStatus() == FlashSaleProductStatusTypeDef.RESERVE) {
                     // show mark
                     ivCheckMark.visibility = View.VISIBLE
                     tvStatus.visibility = View.GONE
