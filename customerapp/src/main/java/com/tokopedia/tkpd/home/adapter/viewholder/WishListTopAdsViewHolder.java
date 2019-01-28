@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -11,6 +12,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -20,6 +22,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.user.session.UserSession;
@@ -31,8 +34,10 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 /**
  * Author errysuprayogi on 25,November,2018
  */
-public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements TopAdsItemClickListener {
+public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements TopAdsItemClickListener,
+        TopAdsItemImpressionListener {
 
+    private static final String TAG = WishListTopAdsViewHolder.class.getSimpleName();
     private TopAdsCarouselView topAdsCarouselView;
     private UserSession userSession;
     private Context context;
@@ -46,7 +51,14 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
 
     public void renderTopAds(TopAdsModel topAdsModel) {
         topAdsCarouselView.setAdsItemClickListener(this);
+        topAdsCarouselView.setAdsItemImpressionListener(this);
         topAdsCarouselView.setData(topAdsModel);
+    }
+
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        Log.d(TAG, "onImpressionProductAdsItem Wishlist "+position+" "+product.getName());
+        TopAdsGtmTracker.eventWishlistProductView(context, product, position);
     }
 
     @Override
@@ -61,6 +73,7 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         context.startActivity(intent);
+        TopAdsGtmTracker.eventWishlistProductClick(context, product, position);
     }
 
     @Override

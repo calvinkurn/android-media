@@ -50,6 +50,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -58,6 +59,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -79,7 +81,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
 public class ProductFragment extends BrowseSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
         ItemClickListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener,
-        DefaultCategoryAdapter.CategoryListener, RevampCategoryAdapter.CategoryListener {
+        TopAdsItemImpressionListener, DefaultCategoryAdapter.CategoryListener,
+        RevampCategoryAdapter.CategoryListener {
 
     public static final int REQUEST_CODE_LOGIN = 1;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 2;
@@ -333,6 +336,12 @@ public class ProductFragment extends BrowseSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
+        topAdsRecyclerAdapter.setAdsImpressionListener(this);
+    }
+
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        TopAdsGtmTracker.eventCategoryProductView(getContext(), "", product, position);
     }
 
     @Override
@@ -710,6 +719,7 @@ public class ProductFragment extends BrowseSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+        TopAdsGtmTracker.eventCategoryProductClick(getContext(), "", product, position);
     }
 
     @Override
