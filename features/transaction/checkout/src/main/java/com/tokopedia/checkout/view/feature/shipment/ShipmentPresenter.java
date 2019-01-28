@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -1327,7 +1328,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                CommonUtils.dumper(e);
                 mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }

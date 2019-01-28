@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cod.R
 import com.tokopedia.cod.di.DaggerCodComponent
@@ -52,9 +53,14 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
     }
 
     override fun initInjector() {
-        DaggerCodComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        activity?.let {
+            val baseApp = it.application
+            if (baseApp is BaseMainApplication) {
+                DaggerCodComponent.builder()
+                        .baseAppComponent(baseApp.baseAppComponent)
+                        .build().inject(this)
+            }
+        }
     }
 
     override fun getScreenName(): String {
@@ -76,7 +82,7 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
     override fun initView() {
         arguments?.getParcelable<Data>(ARGUMENT_COD_DATA)?.let {
             textview_ticker_message.setText(it.message.messageInfo)
-            textview_counter_info.text = formatHtml(it.counterInfo)
+            textview_counter_info.text = MethodChecker.fromHtml(it.counterInfo)
             recycler_view_summary.run {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context)
@@ -96,10 +102,5 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
         startActivity(intent)
         activity?.finish()
     }
-
-    @Suppress("DEPRECATION")
-    fun formatHtml(text: String): Spanned =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT) else Html.fromHtml(text)
 
 }

@@ -81,6 +81,9 @@ public class CodBottomSheetFragment extends BottomSheetDialogFragment {
         if (mTracker != null) mTracker.eventViewErrorIneligible();
     }
 
+    /*
+    // This class handles <li> and <ul> tag from server response to be displayed correctly
+     */
     private class UlTagHandler implements Html.TagHandler{
         @Override
         public void handleTag(boolean opening, String tag, Editable output,
