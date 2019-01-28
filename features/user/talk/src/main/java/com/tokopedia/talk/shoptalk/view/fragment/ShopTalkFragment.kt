@@ -81,7 +81,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     companion object {
 
-        const val TALK_SHOP_TRACE = "talk_list_shop"
+        const val TALK_SHOP_TRACE = "mp_talk_shop_list"
         fun newInstance(bundle: Bundle): ShopTalkFragment {
             val fragment = ShopTalkFragment()
             fragment.arguments = bundle
