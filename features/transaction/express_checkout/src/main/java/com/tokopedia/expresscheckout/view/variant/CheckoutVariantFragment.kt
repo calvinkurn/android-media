@@ -472,21 +472,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateToThankYouPage(appLink: String) {
-        if (appLink.isNotEmpty()) {
-            val intent = RouteManager.getIntent(contextView, appLink)
-            startActivity(intent)
-            activity?.finish()
-        } else {
-            showBottomsheetError(
-                    "Terjadi Kendala Teknis",
-                    "Silakan cek status pesanan Anda untuk mengetahui proses transaksi ini.",
-                    "Cek Status Pesanan")
-            errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
-                override fun onActionButtonClicked() {
-                    // Todo : navigate to menunggu konfirmasi
-                }
-            }
-        }
+        val intent = RouteManager.getIntent(contextView, appLink)
+        startActivity(intent)
+        activity?.finish()
     }
 
     override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
