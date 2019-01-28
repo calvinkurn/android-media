@@ -132,6 +132,11 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieGcmId)
         cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieAfId)
 
+        if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+            val cookieMoeId = "moengage=true"
+            cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieMoeId)
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
         } else {
