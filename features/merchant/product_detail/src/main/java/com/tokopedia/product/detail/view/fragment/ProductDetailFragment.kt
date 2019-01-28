@@ -287,7 +287,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
             val minPrice = data.wholesale.sortedBy { it.price }.get(0).price
             label_min_wholesale.text = getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
             label_wholesale.visibility = View.VISIBLE
-            label_wholesale.visibility = View.VISIBLE
+            label_min_wholesale.visibility = View.VISIBLE
             base_view_wholesale.visibility = View.VISIBLE
         } else {
             label_wholesale.visibility = View.GONE
