@@ -60,6 +60,8 @@ public class GlobalNavConstant {
     public static final int PEMBELIAN = 0;
     public static final int PENJUALAN = 1;
     public static final int KOMPLAIN = 2;
+    public static final int UPDATE = 3;
+
 
     public static final int MENUNGGU_PEMBAYARAN = 4;
     public static final int MENUNGGU_KONFIRMASI = 5;
@@ -75,4 +77,7 @@ public class GlobalNavConstant {
     public static final int SELLER = 12;
 
     public static final int BUYER_INFO = 14;
+
+    public static final int NEWEST_INFO = 15;
+
 }

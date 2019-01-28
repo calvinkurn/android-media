@@ -35,13 +35,13 @@ public class ToasterError extends BaseToaster {
 
     public static void showClose(@NonNull Activity activity,
                                 String snackbarText) {
+        if (activity == null) {
+            return;
+        }
         ToasterError.make(activity.findViewById(android.R.id.content),
                 snackbarText, BaseToaster.LENGTH_LONG)
-                .setAction(activity.getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // no-op
-                    }
+                .setAction(activity.getString(R.string.close), v -> {
+                    // no-op
                 }).show();
     }
 }

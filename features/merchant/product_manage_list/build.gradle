@@ -26,21 +26,24 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsFreeClaim)
+    implementation project(rootProject.ext.features.productDraftDatabase)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.productShare)
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.useCase)
-    implementation project(rootProject.ext.features.topAdsFreeClaim)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
-
+    implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
-    implementation project(rootProject.ext.features.seller)
-
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.features.productDraftDatabase)
-    implementation project(rootProject.ext.features.shopCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

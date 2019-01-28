@@ -13,12 +13,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author by Nabilla Sabbaha on 2/28/2017.
@@ -26,20 +22,13 @@ import butterknife.ButterKnife;
 
 public class ItemCartHolderView extends RelativeLayout {
 
-    @BindView(R2.id.icon_category)
-    ImageView iconCategory;
-    @BindView(R2.id.category_name)
-    TextView categoryName;
-    @BindView(R2.id.operator_name)
-    TextView operatorName;
-    @BindView(R2.id.layout_main_info)
-    LinearLayout layoutMainInfo;
-    @BindView(R2.id.layout_additional_info)
-    LinearLayout layoutAdditionalInfo;
-    @BindView(R2.id.button_detail)
-    TextView buttonDetail;
-    @BindView(R2.id.separator)
-    View separator;
+    private ImageView iconCategory;
+    private TextView categoryName;
+    private TextView operatorName;
+    private LinearLayout layoutMainInfo;
+    private LinearLayout layoutAdditionalInfo;
+    private TextView buttonDetail;
+    private View separator;
 
     private boolean additionalInfoShowed;
     private Context context;
@@ -61,8 +50,17 @@ public class ItemCartHolderView extends RelativeLayout {
 
     private void init(Context context) {
         this.context = context;
+
         LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_item_digital_module, this, true);
-        ButterKnife.bind(this);
+
+        iconCategory = findViewById(R.id.icon_category);
+        categoryName = findViewById(R.id.category_name);
+        operatorName = findViewById(R.id.operator_name);
+        layoutMainInfo = findViewById(R.id.layout_main_info);
+        layoutAdditionalInfo = findViewById(R.id.layout_additional_info);
+        buttonDetail = findViewById(R.id.button_detail);
+        separator = findViewById(R.id.separator);
+
         setView();
     }
 
@@ -132,14 +130,11 @@ public class ItemCartHolderView extends RelativeLayout {
     }
 
     private OnClickListener getClickDetailListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (additionalInfoShowed) {
-                    hideAdditionalInfo();
-                } else {
-                    showAdditionalInfo();
-                }
+        return v -> {
+            if (additionalInfoShowed) {
+                hideAdditionalInfo();
+            } else {
+                showAdditionalInfo();
             }
         };
     }

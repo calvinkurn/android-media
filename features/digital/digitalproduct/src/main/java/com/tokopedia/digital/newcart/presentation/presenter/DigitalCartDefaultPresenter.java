@@ -2,6 +2,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -20,7 +21,15 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                                        ICartDigitalInteractor cartDigitalInteractor,
                                        UserSession userSession,
                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                       DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
-        super(digitalAddToCartUseCase, digitalAnalytics, digitalModuleRouter, cartDigitalInteractor, userSession, digitalCheckoutUseCase, digitalInstantCheckoutUseCase);
+                                       DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+                                       DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+        super(digitalAddToCartUseCase,
+                digitalAnalytics,
+                digitalModuleRouter,
+                cartDigitalInteractor,
+                userSession,
+                digitalCheckoutUseCase,
+                digitalInstantCheckoutUseCase,
+                digitalPostPaidLocalCache);
     }
 }

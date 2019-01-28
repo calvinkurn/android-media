@@ -1,12 +1,13 @@
 package com.tokopedia.payment.fingerprint.domain;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -30,7 +31,9 @@ public class GetPostDataOtpUseCase extends UseCase<HashMap<String, String>> {
 
     @Override
     public Observable<HashMap<String, String>> createObservable(final RequestParams requestParams) {
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<String, String>());
+        Map<String, String> params = AuthUtil.generateParamsNetwork(
+                userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()
+        );
         requestParams.putAllString(params);
         return fingerprintRepository.getPostDataOtp(requestParams.getString(TRANSACTION_ID, ""));
     }

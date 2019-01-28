@@ -1020,6 +1020,13 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.PRODUCT_TALK
         ).getEvent());
+
+        sendGTMEvent(context, new EventTracking(
+                "clickShopPage",
+                "inbox - talk",
+                "click tab diskusi produk on pdp",
+                ""
+        ).getEvent());
     }
 
     public static void eventPDPReputation(Context context) {

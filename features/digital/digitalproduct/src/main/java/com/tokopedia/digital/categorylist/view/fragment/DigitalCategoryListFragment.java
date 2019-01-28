@@ -31,8 +31,6 @@ import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -41,7 +39,6 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
@@ -57,11 +54,12 @@ import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPres
 import com.tokopedia.digital.categorylist.view.presenter.IDigitalCategoryListPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import retrofit2.Retrofit;
 import rx.subscriptions.CompositeSubscription;
 
@@ -86,21 +84,13 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public static final int DEFAULT_COUPON_APPLIED = 1;
     public static final int DEFAULT_COUPON_NOT_APPLIED = 0;
 
-    @BindView(R2.id.rv_digital_category)
-    RecyclerView rvDigitalCategoryList;
-    @BindView(R2.id.header_container)
-    LinearLayout headerContainer;
-
-    @BindView(R2.id.header_my_transaction)
-    DigitalItemHeaderHolder headerMyTransaction;
-    @BindView(R2.id.header_subscription)
-    DigitalItemHeaderHolder headerSubscription;
-    @BindView(R2.id.header_fav_number)
-    DigitalItemHeaderHolder headerFavNumber;
-    @BindView(R2.id.ticker_view)
-    TickerView tickerView;
-    @BindView(R2.id.separator_for_ticker)
-    View separatorForTicker;
+    private RecyclerView rvDigitalCategoryList;
+    private LinearLayout headerContainer;
+    private DigitalItemHeaderHolder headerMyTransaction;
+    private DigitalItemHeaderHolder headerSubscription;
+    private DigitalItemHeaderHolder headerFavNumber;
+    private TickerView tickerView;
+    private View separatorForTicker;
 
     private CompositeSubscription compositeSubscription;
     private DigitalCategoryListAdapter adapter;
@@ -174,7 +164,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     protected void initialPresenter() {
-
         ICategoryDigitalListDataMapper mapperData = new CategoryDigitalListDataMapper();
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
@@ -218,6 +207,14 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     protected void initView(View view) {
+        rvDigitalCategoryList = view.findViewById(R.id.rv_digital_category);
+        headerContainer = view.findViewById(R.id.header_container);
+        headerMyTransaction = view.findViewById(R.id.header_my_transaction);
+        headerSubscription = view.findViewById(R.id.header_subscription);
+        headerFavNumber = view.findViewById(R.id.header_fav_number);
+        tickerView = view.findViewById(R.id.ticker_view);
+        separatorForTicker = view.findViewById(R.id.separator_for_ticker);
+
         refreshHandler = new RefreshHandler(getActivity(), view, this);
 
         if (isCouponApplied == DEFAULT_COUPON_APPLIED) {

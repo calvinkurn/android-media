@@ -44,21 +44,25 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.transactioncommon)
+
     implementation project(rootProject.ext.features.saldodetails)
+    implementation project(rootProject.ext.features.referral)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation project(rootProject.ext.features.loyaltyCommon)
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){

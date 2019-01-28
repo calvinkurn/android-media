@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
@@ -34,7 +35,7 @@ public interface EmptyCartContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
-        void renderEmptyCart(String autoApplyMessage);
+        void renderEmptyCart(AutoApplyData autoApplyMessage);
 
         void renderHasWishList(boolean hasMoreItem);
 
@@ -50,9 +51,13 @@ public interface EmptyCartContract {
 
         void navigateToCartFragment(CartListData cartListData);
 
-        void stopTrace();
+        void stopCartTrace();
 
-        boolean isTraceStopped();
+        boolean isCartTraceStopped();
+
+        void stopAllTrace();
+
+        boolean isAllTraceStopped();
 
     }
 

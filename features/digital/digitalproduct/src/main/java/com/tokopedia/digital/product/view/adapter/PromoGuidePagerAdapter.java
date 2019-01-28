@@ -13,6 +13,7 @@ import com.tokopedia.digital.product.view.fragment.DigitalPromoFragment;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.GuideData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,6 +45,7 @@ public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
         this.context = context;
         this.tabCount = tabCount;
         this.firstTab = firstTab;
+        this.guideDataList = new ArrayList<>();
     }
 
     @Override
@@ -140,4 +142,5 @@ public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
     public List<GuideData> getGuideDataList() {
         return guideDataList;
     }
+
 }

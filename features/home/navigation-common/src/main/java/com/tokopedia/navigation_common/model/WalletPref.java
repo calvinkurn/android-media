@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 public class WalletPref {
     private static final String WALLET_PREF = "wallet.pref";
+    public static final String VCC_PREF = "vcc.pref";
     private static final String TOKOSWIPE_URL = "tokoswipe_url";
 
     private SharedPreferences preferences;
@@ -23,9 +24,20 @@ public class WalletPref {
         editor.putString(WALLET_PREF, jsonWallet).apply();
     }
 
+    public void saveVccUserStatus(VccUserStatus vccUserStatus) {
+        SharedPreferences.Editor editor = preferences.edit();
+        String jsonVccStatus = gson.toJson(vccUserStatus);
+        editor.putString(VCC_PREF, jsonVccStatus).apply();
+    }
+
     public WalletModel retrieveWallet() {
         String jsonWallet = preferences.getString(WALLET_PREF, null);
         return gson.fromJson(jsonWallet, WalletModel.class);
+    }
+
+    public VccUserStatus retrieveVccUserStatus() {
+        String jsonWallet = preferences.getString(VCC_PREF, null);
+        return gson.fromJson(jsonWallet, VccUserStatus.class);
     }
 
     public void setTokoSwipeUrl(String url) {

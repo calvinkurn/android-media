@@ -134,10 +134,6 @@
             android:name=".shopsettings.shipping.OpenShopEditShipping"
             android:label="@string/title_open_shop" />
         <activity
-            android:name=".shopsettings.notes.activity.ManageShopNotesActivity"
-            android:label="@string/title_activity_manage_shop_notes"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".product.etalase.view.activity.EtalaseDynamicPickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
             android:screenOrientation="portrait" />

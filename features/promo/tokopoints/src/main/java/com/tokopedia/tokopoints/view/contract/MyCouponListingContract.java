@@ -40,5 +40,7 @@ public interface MyCouponListingContract {
         void destroyView();
 
         void getCoupons(int categoryId);
+
+        void setCategoryId(int categoryId);
     }
 }

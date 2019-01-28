@@ -23,6 +23,7 @@ import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.contract.SendGiftContract;
 import com.tokopedia.tokopoints.view.presenter.SendGiftPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import javax.inject.Inject;
@@ -95,7 +96,7 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
             }
             mPresenter.sendGift(getArguments().getInt(CommonConstant.EXTRA_COUPON_ID),
                     mEditEmail.getText().toString(),
-                    mEditEmail.getText().toString());
+                    mEditNotes.getText().toString());
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,

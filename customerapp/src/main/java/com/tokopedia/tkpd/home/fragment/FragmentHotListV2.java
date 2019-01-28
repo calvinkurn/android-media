@@ -21,6 +21,7 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
@@ -225,7 +226,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
             hotList.sendAppsFlyerData(getActivity());
-            ScreenTracking.screen(getActivity(), getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
             TrackingUtils.sendMoEngageOpenHotListEvent(getActivity());
 
             if (!hasLoadedOnce && hotList != null) {

@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.tracking.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -93,17 +94,19 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
 
     @Override
     public void handleError() {
-        startHomeActivity(null);
+        RouteManager.route(this, ApplinkConst.HOME);
         finishActivity();
     }
 
     private void startHomeActivity(String applink) {
-        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
-        if (!TextUtils.isEmpty(applink)) {
-            intent.putExtra(EXTRA_APPLINK, applink);
-        } else {
-            intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
-        }
-        startActivity(intent);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+
+        Intent homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
+        taskStackBuilder.addNextIntent(homeIntent);
+
+        Intent intent = RouteManager.getIntent(this, applink);
+        taskStackBuilder.addNextIntent(intent);
+
+        taskStackBuilder.startActivities();
     }
 }

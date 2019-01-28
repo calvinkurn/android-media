@@ -107,6 +107,13 @@ public interface DigitalBaseContract {
                               DigitalCheckoutPassData cartPassData);
 
         void setCheckoutParameter(CheckoutDataParameter.Builder builder);
+
+        boolean isAlreadyShowPostPaid();
+
+        void showPostPaidDialog(String title,
+                                String content,
+                                String confirmButtonTitle,
+                                String userId);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{

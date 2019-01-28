@@ -8,6 +8,7 @@ import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.PendingCashbackModel;
 import com.tokopedia.navigation_common.model.ReputationShop;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
+import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.ProfileModel;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;

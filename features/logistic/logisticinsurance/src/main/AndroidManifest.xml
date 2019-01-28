@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.logisticinsurance">
+
+    <application>
+        <activity
+            android:name=".view.InsuranceTnCActivity"
+            android:label="@string/title_term_and_condition"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+</manifest>

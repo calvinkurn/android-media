@@ -20,7 +20,7 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage);
+    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc);
 
     Intent getInboxTalkCallingIntent(Context context);
 

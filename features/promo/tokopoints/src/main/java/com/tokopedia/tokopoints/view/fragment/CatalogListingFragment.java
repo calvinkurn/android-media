@@ -122,6 +122,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (item.getItemId() == R.id.filter_menu_item) {
             if (filtersBottomSheet != null) {
                 filtersBottomSheet.show(getChildFragmentManager(), "Filters");
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FILTER,
+                        "");
             }
             return true;
         }
@@ -175,7 +181,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 && fragment.isAdded()) {
             if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
                 fragment.getPresenter().setPointRange(mPresenter.getPointRangeId());
-                fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId());
+                fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId(), true);
             }
         }
     }
@@ -285,9 +291,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 public void onPageSelected(int position) {
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                             "click " + filters.getCategories().get(0).getSubCategory().get(position).getName(),
-                            filters.getCategories().get(0).getSubCategory().get(position).getName());
+                            "");
 
                     CatalogListItemFragment fragment = (CatalogListItemFragment) mViewPagerAdapter.getRegisteredFragment(position);
 
@@ -297,7 +303,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                             mPresenter.setCurrentCategoryId(filters.getCategories().get(0).getId());
                             mPresenter.setCurrentSubCategoryId(filters.getCategories().get(0).getSubCategory().get(position).getId());
                             fragment.getPresenter().setPointRange(mPresenter.getPointRangeId());
-                            fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId());
+                            fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId(), true);
                         }
                     }
 
@@ -345,7 +351,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     private void setUpFilters(List<CatalogFilterPointRange> pointRanges) {
-        if (pointRanges != null && pointRanges.size() != 0) {
+        if (pointRanges != null && pointRanges.size() != 0 && isSeeAllPage()) {
             if (menuItemFilter != null)
                 menuItemFilter.setVisible(true);
             filtersBottomSheet = new FiltersBottomSheet();
@@ -368,6 +374,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void gotoMyCoupons() {
         startActivity(MyCouponListingActivity.getCallingIntent(getContext()));
+
+        AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_SELL_ALL_COUPON,
+                "");
     }
 
     @Override
@@ -430,10 +442,16 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             }
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(source.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
         }
 
     }
@@ -629,8 +647,15 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     @Override
-    public void onSaveFilter(CatalogFilterPointRange filter) {
+    public void onSaveFilter(CatalogFilterPointRange filter, int selectedPosition) {
         if (filter != null) {
+            if (menuItemFilter != null) {
+                if (selectedPosition == 0) {
+                    menuItemFilter.setIcon(R.drawable.ic_filter_button_unselected);
+                } else {
+                    menuItemFilter.setIcon(R.drawable.ic_filter_button_selected);
+                }
+            }
             if (mPresenter.getPointRangeId() != filter.getId()) {
                 mPresenter.setPointRangeId(filter.getId());
                 refreshTab();

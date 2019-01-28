@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -37,6 +36,7 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -269,6 +269,11 @@ public class KolPostFragment extends BaseDaggerFragment implements
     @Override
     public void onSuccessDeletePost(int rowNumber) {
         adapter.removeItem(rowNumber);
+        if (isAdapterEmpty()) {
+            adapter.clearData();
+            fetchDataFirstTime();
+        }
+
         ToasterNormal.make(getView(), getString(R.string.kol_post_deleted), BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_ok, v -> {
 
@@ -429,6 +434,16 @@ public class KolPostFragment extends BaseDaggerFragment implements
     @Override
     public void onLikeKolError(String message) {
         showError(message);
+    }
+
+    private boolean isAdapterEmpty() {
+        return adapter.getItemCount() == 0
+                || isFirstItemEntryPoint();
+    }
+
+    private boolean isFirstItemEntryPoint() {
+        return adapter.getItemCount() == 1
+                && adapter.getList().get(0) instanceof EntryPointViewModel;
     }
 
     private void showError(String message) {

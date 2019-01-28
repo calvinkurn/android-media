@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
+import com.tokopedia.applink.RouteManager;
 
 /**
  * @author anggaprasetiyo on 23/05/18.
@@ -20,10 +21,8 @@ public class UploadAwbLogisticFragment extends BaseSessionWebViewFragment {
 
     @Override
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if (getActivity() != null && ((ILogisticUploadAwbRouter) getActivity().getApplication())
-                .logisticUploadRouterIsSupportedDelegateDeepLink(url)) {
-            ((ILogisticUploadAwbRouter) getActivity().getApplication())
-                    .logisticUploadRouterActionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+        if(RouteManager.isSupportApplink(getActivity(), url)){
+            RouteManager.route(getActivity(), url);
             return true;
         }
         return false;

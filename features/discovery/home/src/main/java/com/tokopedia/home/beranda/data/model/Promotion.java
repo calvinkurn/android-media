@@ -86,17 +86,21 @@ public class Promotion {
                 "ecommerce", DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                "id", getPromotionID(),
-                                                "name", getPromotionName(),
-                                                "creative", getPromotionAlias(),
-                                                "position", getPromotionPosition(),
-                                                "promo_code", !TextUtils.isEmpty(getPromoCode()) ? getPromoCode() : "NoPromoCode"
-                                        )
+                                        getImpressionDataLayerItem()
                                 )
                         )
                 ),
                 "attribution", String.format("1 - sliderBanner - %s - %s", getPromotionPosition(), getPromotionAlias())
+        );
+    }
+
+    public Map<String, Object> getImpressionDataLayerItem() {
+        return DataLayer.mapOf(
+                "id", promotionID,
+                "name", promotionName,
+                "creative", promotionAlias,
+                "position", promotionPosition,
+                "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
         );
     }
 

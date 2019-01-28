@@ -18,8 +18,8 @@ import android.widget.TextView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.model.detail.dialog.PartialDialogModels;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 
 import java.util.ArrayList;
 

@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EMAIL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
@@ -37,6 +40,7 @@ public class AccountAnalytics {
 
     private AnalyticTracker analyticTracker;
     private Context context;
+    private UserSessionInterface userSessionInterface;
 
     public AccountAnalytics(Context context) {
         if (context == null)
@@ -48,17 +52,40 @@ public class AccountAnalytics {
             analyticTracker = ((AbstractionRouter) context.getApplicationContext())
                     .getAnalyticTracker();
         }
+
+        userSessionInterface = new UserSession(context);
     }
 
-    public void eventClickAccount(String title, String section, String item) {
+    public void eventClickAccount(String title, String section, String item, boolean withUserId) {
+        if (analyticTracker == null)
+            return;
+
+        if (withUserId) {
+            analyticTracker.sendEventTracking(
+                    CLICK_HOME_PAGE,
+                    String.format("%s %s", AKUN_SAYA, title),
+                    String.format("%s - %s - %s", CLICK, section, item),
+                    userSessionInterface.getUserId()
+            );
+        } else {
+            analyticTracker.sendEventTracking(
+                    CLICK_HOME_PAGE,
+                    String.format("%s %s", AKUN_SAYA, title),
+                    String.format("%s - %s - %s", CLICK, section, item),
+                    ""
+            );
+        }
+    }
+
+    public void eventClickOVOPayLater(String category, String action, String label) {
         if (analyticTracker == null)
             return;
 
         analyticTracker.sendEventTracking(
-                CLICK_HOME_PAGE,
-                String.format("%s %s", AKUN_SAYA, title),
-                String.format("%s - %s - %s", CLICK, section, item),
-                ""
+                CLICK_FINTECH_MICROSITE,
+                category,
+                action,
+                label
         );
     }
 
@@ -166,13 +193,21 @@ public class AccountAnalytics {
 
         switch (status){
             case KYCConstant.STATUS_REJECTED:
+                analyticTracker.sendEventTracking(
+                        AccountConstants.Analytics.CLICK_ACCOUNT,
+                        String.format("%s %s", ACCOUNT, SETTING),
+                        AccountConstants.Analytics.CLICK_KYC_REJECTED,
+                        ""
+                );
+                break;
             case KYCConstant.STATUS_EXPIRED:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
-                        AccountConstants.Analytics.CLICK_KYC_EXPIRED,
+                        AccountConstants.Analytics.CLICK_KYC_REJECTED,
                         ""
                 );
+                break;
             case KYCConstant.STATUS_PENDING:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
@@ -180,6 +215,7 @@ public class AccountAnalytics {
                         AccountConstants.Analytics.CLICK_KYC_PENDING,
                         ""
                 );
+                break;
             case KYCConstant.STATUS_NOT_VERIFIED:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
@@ -187,6 +223,7 @@ public class AccountAnalytics {
                         AccountConstants.Analytics.CLICK_KYC_NOT_VERIFIED,
                         ""
                 );
+                break;
             default:
                 break;
         }
@@ -211,6 +248,18 @@ public class AccountAnalytics {
         eventTracking.put(EVENT_LABEL, "");
 
         analyticTracker.sendEventTracking(eventTracking);
+    }
+
+    public void eventClickTokopediaCornerSetting() {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                AccountConstants.Analytics.EVENT_CLICK_SAMPAI,
+                AccountConstants.Analytics.EVENT_CATEGORY_SAMPAI,
+                AccountConstants.Analytics.EVENT_ACTION_SAMPAI,
+                ""
+        );
     }
 
     public void setUserAttributes(UserAttributeData data) {

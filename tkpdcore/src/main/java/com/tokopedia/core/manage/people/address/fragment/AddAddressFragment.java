@@ -445,13 +445,14 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendAnalyticsOnDistrictSelectionClicked();
+                // Moved to module router, this class isn't supposed to be used anymore
+                /*sendAnalyticsOnDistrictSelectionClicked();
                 Intent intent = ((TkpdCoreRouter) getActivity().getApplication())
                         .getDistrictRecommendationIntent(
                                 getActivity(), token,
                                 getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)
                         );
-                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
+                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);*/
             }
         };
     }

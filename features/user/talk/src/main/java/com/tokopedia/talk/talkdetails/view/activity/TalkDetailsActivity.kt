@@ -33,6 +33,12 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         const val THREAD_TALK_ID = "THREAD_TALK_ID"
         const val COMMENT_ID = "COMMENT_ID"
         const val SHOP_ID = "SHOP_ID"
+        const val SOURCE = "source"
+
+        const val SOURCE_INBOX = "inbox"
+        const val SOURCE_SHOP = "shop"
+        const val SOURCE_PDP = "pdp"
+        const val SOURCE_DEEPLINK = "deeplink"
 
         const val RESULT_OK_REFRESH_TALK = 200
         const val RESULT_OK_READ = 201
@@ -41,10 +47,11 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
 
         @JvmStatic
-        fun getCallingIntent(threadId: String, shopId: String, context: Context): Intent {
+        fun getCallingIntent(threadId: String, shopId: String, context: Context, source: String): Intent {
             val intent = Intent(context, TalkDetailsActivity::class.java)
             intent.putExtra(THREAD_TALK_ID, threadId)
             intent.putExtra(SHOP_ID, shopId)
+            intent.putExtra(SOURCE, source)
             return intent
         }
     }
@@ -58,9 +65,11 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val talkId = extras.getString(TALK_ID, "")
             val shopId = extras.getString(SHOP_ID, "")
+            val source = SOURCE_DEEPLINK
+
 
             return (context.applicationContext as TalkRouter).getTalkDetailIntent(context,
-                    talkId, shopId).putExtras(extras)
+                    talkId, shopId, source).putExtras(extras)
         }
 
     }

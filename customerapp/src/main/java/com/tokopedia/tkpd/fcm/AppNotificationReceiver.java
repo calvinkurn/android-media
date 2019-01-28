@@ -12,12 +12,15 @@ import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+
+import java.util.Map;
 
 /**
  * Created by alvarisi on 1/17/17.
@@ -43,6 +46,16 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
         PushManager.getInstance().getPushHandler().handlePushPayload(ConsumerMainApplication.getAppContext(), message.getData());
+    }
+
+    @Override
+    public void onCampaignManagementNotificationReceived(RemoteMessage message) {
+        CMPushNotificationManager.getInstance().handlePushPayload(message);
+    }
+
+    @Override
+    public boolean isFromCMNotificationPlatform(Map<String ,String > extra) {
+        return CMPushNotificationManager.getInstance().isFromCMNotificationPlatform(extra);
     }
 
     public void onNotificationReceived(String from, Bundle bundle) {

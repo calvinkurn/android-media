@@ -36,6 +36,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
@@ -49,7 +50,6 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
-import com.tokopedia.tokopoints.view.model.PopupNotification;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
@@ -90,6 +90,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private View dynamicLinksContainer;
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
+    private HomepagePagerAdapter homepagePagerAdapter;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
@@ -161,13 +162,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPresenter.attachView(this);
         initListener();
         mPresenter.getTokoPointDetail();
-        mPresenter.getPopupNotification();
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getAppContext(), CommonConstant.PREF_TOKOPOINTS);
         if (!localCacheHandler.getBoolean(CommonConstant.PREF_KEY_ON_BOARDED)) {
             showOnBoardingTooltip(getString(R.string.tp_label_know_tokopoints), getString(R.string.tp_message_tokopoints_on_boarding));
             localCacheHandler.putBoolean(CommonConstant.PREF_KEY_ON_BOARDED, true);
             localCacheHandler.applyEditor();
         }
+
+        TokoPointsNotificationManager.fetchNotification(getActivity(), "main", getChildFragmentManager());
     }
 
     @Override
@@ -220,18 +222,25 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value
-                || source.getId() == R.id.bottom_view_membership) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
+        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
                     mValueMembershipDescription);
+        } else if (source.getId() == R.id.bottom_view_membership) {
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -239,7 +248,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
         } else if (source.getId() == R.id.view_loyalty_saya) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -333,28 +342,28 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
                 }
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FLOATING_LUCKY,
+                        "");
             });
 
             getView().findViewById(R.id.text_token_title).setOnClickListener(view -> {
                 if (mSumToken <= 0) {
                     showStartPurchaseBottomSheet(lobDetails.getTitle());
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_EMPTY,
-                            "");
                 } else {
                     if (getActivity() != null) {
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
-                            "");
                 }
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
+                        "");
             });
         }
     }
@@ -374,9 +383,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
-                if(tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")){
+                if (tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")) {
                     ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
-                }else{
+                } else {
                     ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
                 }
 
@@ -443,7 +452,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onError(String error) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        if (mContainerMain != null) {
+            mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        }
     }
 
     @Override
@@ -455,7 +466,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onErrorPromos(String error) {
-
+        if (homepagePagerAdapter != null) {
+            homepagePagerAdapter.setRefreshing(false);
+        }
     }
 
     @Override
@@ -634,7 +647,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons, Map<String, String> emptyMessages) {
-        HomepagePagerAdapter homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
+        homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
+        homepagePagerAdapter.setRefreshing(false);
         homepagePagerAdapter.setEmptyMessages(emptyMessages);
         mPagerPromos.setAdapter(homepagePagerAdapter);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
@@ -650,18 +664,22 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             public void onPageSelected(int position) {
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
+                    mPresenter.setPagerSelectedItem(position);
+
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_PENUKARAN_POINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_PENUKARAN,
                             "");
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
+                    mPresenter.setPagerSelectedItem(position);
+
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_SAYA,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_KUPON_SAYA,
                             "");
                 }
             }
@@ -671,6 +689,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             }
         });
+        mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
     }
 
     private void decorateDialog(AlertDialog dialog) {
@@ -767,17 +786,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
         startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
-    }
-
-    @Override
-    public void showPopupNotification(PopupNotification data) {
-        if (data.getTitle() == null || data.getTitle().trim().isEmpty()) {
-            return;
-        }
-
-        PopupNotificationBottomSheet popupNotificationBottomSheet = new PopupNotificationBottomSheet();
-        popupNotificationBottomSheet.setData(data);
-        popupNotificationBottomSheet.show(getChildFragmentManager(), data.getTitle());
     }
 
     @Override

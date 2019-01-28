@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -60,7 +61,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getActivity(),getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
         UpdateInactivePhoneEventTracking.eventViewPhotoUploadScreen(getActivity());
     }
 

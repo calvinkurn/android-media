@@ -25,6 +25,7 @@
     <string name="title_password_setting">Kata Sandi</string>
     <string name="title_kyc_setting">Dokumen Data Diri</string>
     <string name="title_address_setting">Daftar Alamat</string>
+    <string name="title_sampai_project">Tokopedia Corner</string>
     <string name="screentitle_account_setting">Atur Akun</string>
     <string name="title_shop_info_setting">Informasi</string>
     <string name="title_shop_etalase_setting">Etalase</string>
@@ -183,5 +184,8 @@
 
     <string name="title_menu_challenge">Tokopedia Challenge</string>
     <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
+    <string name="title_menu_affiliate">Raih Komisi di By Me</string>
+    <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
+    <string name="curate_product_by_me">Kurasi Produk di By Me</string>
 
 </resources>

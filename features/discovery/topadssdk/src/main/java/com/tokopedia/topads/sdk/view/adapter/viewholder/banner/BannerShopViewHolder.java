@@ -15,12 +15,11 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
 
@@ -34,14 +33,12 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     public static final int LAYOUT = R.layout.layout_ads_banner_shop;
     private static final String TAG = BannerShopViewHolder.class.getSimpleName();
     private Context context;
-    private ImageView iconImg;
-    private TextView promotedTxt;
+    private ImpressedImageView iconImg;
     private TextView nameTxt;
     private TextView descriptionTxt;
-    private LinearLayout badgeContainer;
-    private CardView imageContainer;
-    private ImageView productImage;
+    private TextView ctaTxt;
     private ImageLoader imageLoader;
+    private LinearLayout layoutContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 
     public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener) {
@@ -49,13 +46,10 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         context = itemView.getContext();
         imageLoader = new ImageLoader(context);
-        iconImg = (ImageView) itemView.findViewById(R.id.icon);
-        promotedTxt = (TextView) itemView.findViewById(R.id.title_promote);
-        nameTxt = (TextView) itemView.findViewById(R.id.shop_name);
+        iconImg = (ImpressedImageView) itemView.findViewById(R.id.icon);
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
-        badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        imageContainer = itemView.findViewById(R.id.image_container);
-        productImage = itemView.findViewById(R.id.image);
+        ctaTxt = (TextView) itemView.findViewById(R.id.kunjungi_toko);
+        layoutContainer = itemView.findViewById(R.id.layout_container);
     }
 
     @Override
@@ -69,42 +63,9 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                     new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
                 }
             });
-            promotedTxt.setText(cpm.getPromotedText());
-            nameTxt.setText(TopAdsBannerView.escapeHTML(cpm.getName()));
-
-
-            if (cpm.getBadges().size() > 0) {
-                badgeContainer.removeAllViews();
-                badgeContainer.setVisibility(View.VISIBLE);
-                for (Badge badge : cpm.getBadges()) {
-                    ImageView badgeImg = new ImageView(context);
-                    badgeImg.setLayoutParams(new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size_small),
-                            context.getResources().getDimensionPixelSize(R.dimen.badge_size_small)));
-                    Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
-                    badgeContainer.addView(badgeImg);
-                }
-            } else {
-                badgeContainer.setVisibility(View.GONE);
-            }
-            if(cpm.getCpmShop() !=null){
-                if(cpm.getCpmShop().getProducts().size() > 0) {
-                    imageContainer.setVisibility(View.VISIBLE);
-                    final Product product = cpm.getCpmShop().getProducts().get(0);
-                    imageLoader.loadImage(product.getImageProduct().getImageUrl(), productImage);
-                    productImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            topAdsBannerClickListener.onBannerAdsClicked(product.getApplinks());
-                            new ImpresionTask().execute(product.getImageProduct().getImageClickUrl());
-                        }
-                    });
-                } else {
-                    imageContainer.setVisibility(View.GONE);
-                }
-                String desc = String.format("%s %s", TopAdsBannerView.escapeHTML(cpm.getCpmShop().getSlogan()), cpm.getCta());
-                TopAdsBannerView.setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
-            }
-            descriptionTxt.setOnClickListener(new View.OnClickListener() {
+            descriptionTxt.setText(TopAdsBannerView.escapeHTML(cpm.getCpmShop().getSlogan()));
+            ctaTxt.setText(cpm.getCta());
+            layoutContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(topAdsBannerClickListener!=null) {

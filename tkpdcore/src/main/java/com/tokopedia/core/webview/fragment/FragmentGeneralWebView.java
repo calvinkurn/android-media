@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,9 +27,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -37,6 +40,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core2.R;
 
 import java.net.URLDecoder;
 
@@ -50,20 +54,25 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         View.OnKeyListener {
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
+    public static final String EXTRA_SHOW_TOOLBAR = "show_toolbar";
     private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
     private static final String SEAMLESS = "seamless";
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final String KOL_URL = "tokopedia.com/content";
+    private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     private static final int LOGIN_GPLUS = 123453;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
+    private boolean showToolbar;
     private ValueCallback<Uri> callbackBeforeL;
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
+    private boolean doubleTapExit = false;
+    private static final int EXIT_DELAY_MILLIS = 2000;
 
     private boolean pageLoaded = false;
 
@@ -72,18 +81,21 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     /**
-     * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean)} ()} instead.
+     * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean, boolean)} ()}
+     * instead.
      */
     @Deprecated
     public static FragmentGeneralWebView createInstance(String url) {
-        return createInstance(url, false);
+        return createInstance(url, false, true);
     }
 
-    public static FragmentGeneralWebView createInstance(String url, boolean allowOverride) {
+    public static FragmentGeneralWebView createInstance(String url, boolean allowOverride,
+                                                        boolean showToolbar) {
         FragmentGeneralWebView fragment = new FragmentGeneralWebView();
         Bundle args = new Bundle();
         args.putString(EXTRA_URL, url);
         args.putBoolean(EXTRA_OVERRIDE_URL, allowOverride);
+        args.putBoolean(EXTRA_SHOW_TOOLBAR, showToolbar);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,6 +105,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             url = getArguments().getString(EXTRA_URL);
+            showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
     }
 
@@ -115,6 +128,16 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             return null;
         } else {
             return onCreateWebView(inflater, container, savedInstanceState);
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (!showToolbar && getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        } else if (!showToolbar && getActivity() != null) {
+            getActivity().getActionBar().hide();
         }
     }
 
@@ -335,12 +358,27 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     if (WebViewGeneral.canGoBack()) {
                         WebViewGeneral.goBack();
                         return true;
+                    } else if (!showToolbar) {
+                        doubleTapExit();
+                        return true;
                     }
                     break;
             }
         }
         return false;
     }
+
+    private void doubleTapExit() {
+        if (doubleTapExit) {
+            getActivity().finish();
+        } else {
+            doubleTapExit = true;
+            String exitMessage = "Tekan sekali lagi untuk keluar";
+            Toast.makeText(getActivity(), exitMessage, Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+        }
+    }
+
 
     @Override
     public boolean onOverrideUrl(String url) {
@@ -378,8 +416,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     }
                 }
             }
-            callbackAfterL.onReceiveValue(results);
-            callbackAfterL = null;
+            if (callbackAfterL != null) {
+                callbackAfterL.onReceiveValue(results);
+                callbackAfterL = null;
+            }
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
                 if (null == callbackBeforeL) return;
@@ -431,7 +471,18 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
-            if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
+            if (getActivity() != null
+                    && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
+                    && !getActivity().isTaskRoot()) {
+                getActivity().finish();
+                return true;
+            } else if (getActivity() != null
+                    && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
+                    && !getActivity().isTaskRoot()) {
+                openHomePage();
+                return true;
+            } else if (getActivity() != null && ((IDigitalModuleRouter) getActivity()
+                    .getApplication())
                     .isSupportedDelegateDeepLink(url)) {
                 if (url.startsWith(Constants.Applinks.WEBVIEW)) {
                     Uri uri = Uri.parse(url);
@@ -480,6 +531,16 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void openHomePage() {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+            startActivity(((TkpdCoreRouter) getActivity().getApplicationContext()).getHomeIntent
+                    (getActivity()));
+            getActivity().finish();
         }
     }
 

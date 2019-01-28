@@ -35,7 +35,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.view.compoundview.ProductPriceInfoView;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
@@ -51,42 +50,22 @@ import com.tokopedia.digital.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DigitalUssdFragment.ActionListener} interface
- * to handle interaction events.
- * Use the {@link DigitalUssdFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigitalPresenter>
         implements IUssdDigitalView, ProductAdditionalInfoView.ActionListener {
 
-
-    @BindView(R2.id.tv_balance)
-    TextView tvBalance;
-    @BindView(R2.id.tv_phone_number)
-    TextView tvPhoneNumber;
-    @BindView(R2.id.tv_operator_name)
-    TextView tv_operator_name;
-    @BindView(R2.id.holder_chooser_product)
-    LinearLayout holderChooserProduct;
-    @BindView(R2.id.holder_additional_info_product)
-    LinearLayout holderAdditionalInfoProduct;
-    @BindView(R2.id.holder_price_info_product)
-    LinearLayout holderPriceInfoProduct;
-    @BindView(R2.id.btn_buy_digital)
-    TextView btnBuyDigital;
-    @BindView(R2.id.cb_instant_checkout)
-    CheckBox cbInstantCheckout;
-    @BindView(R2.id.tv_unknown_number)
-    TextView tvUnknownNumber;
-    @BindView(R2.id.tooltip_instant_checkout)
-    ImageView tooltipInstantCheckout;
+    private TextView tvBalance;
+    private TextView tvPhoneNumber;
+    private TextView tvOperatorName;
+    private LinearLayout holderChooserProduct;
+    private LinearLayout holderAdditionalInfoProduct;
+    private LinearLayout holderPriceInfoProduct;
+    private TextView btnBuyDigital;
+    private CheckBox cbInstantCheckout;
+    private TextView tvUnknownNumber;
+    private ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
+
     private static final String ARG_PARAM_EXTRA_PULSA_BALANCE_DATA = "ARG_PARAM_EXTRA_PULSA_BALANCE_DATA";
     private static final String EXTRA_STATE_OPERATOR_DATA = "EXTRA_STATE_OPERATOR_DATA";
     private static final String EXTRA_STATE_CATEGORY_ID = "EXTRA_STATE_CATEGORY_ID";
@@ -109,12 +88,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     private List<Validation> validationList;
     private int selectedSimIndex = 0;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment DigitalUssdFragment.
-     */
     public static DigitalUssdFragment newInstance(PulsaBalance pulsaBalance, Operator selectedOperator,
                                                   List<Validation> validationListData, String categoryId,
                                                   String categoryName, int simPos, List<Operator> selectedOperatorList) {
@@ -156,7 +129,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         state.putInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, selectedSimIndex);
         state.putParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA,
                 (ArrayList<? extends Parcelable>) selectedOperatorList);
-
     }
 
     @Override
@@ -169,7 +141,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         this.validationList = savedState.getParcelableArrayList(ARG_PARAM_EXTRA_VALIDATION_LIST_DATA);
         this.selectedSimIndex = getArguments().getInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, 0);
         this.selectedOperatorList = savedState.getParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA);
-
     }
 
     @Override
@@ -179,7 +150,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
     @Override
     protected void initialPresenter() {
-
         presenter = new UssdProductDigitalPresenter(this);
     }
 
@@ -206,6 +176,17 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
     @Override
     protected void initView(View view) {
+        tvBalance = view.findViewById(R.id.tv_balance);
+        tvPhoneNumber = view.findViewById(R.id.tv_phone_number);
+        tvOperatorName = view.findViewById(R.id.tv_operator_name);
+        holderChooserProduct = view.findViewById(R.id.holder_chooser_product);
+        holderAdditionalInfoProduct = view.findViewById(R.id.holder_additional_info_product);
+        holderPriceInfoProduct = view.findViewById(R.id.holder_price_info_product);
+        btnBuyDigital = view.findViewById(R.id.btn_buy_digital);
+        cbInstantCheckout = view.findViewById(R.id.cb_instant_checkout);
+        tvUnknownNumber = view.findViewById(R.id.tv_unknown_number);
+        tooltipInstantCheckout = view.findViewById(R.id.tooltip_instant_checkout);
+
         digitalProductChooserView = new DigitalProductChooserView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
@@ -226,7 +207,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         renderPriceInfoProduct();
         renderAdditionalInfoProduct();
         productAdditionalInfoView.setActionListener(this);
-        tv_operator_name.setText(selectedOperator.getName());
+        tvOperatorName.setText(selectedOperator.getName());
 
         tvBalance.setText(pulsaBalance.getPulsaBalance());
         tvPhoneNumber.setText(pulsaBalance.getMobileNumber());
@@ -258,11 +239,9 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         clearHolder(holderPriceInfoProduct);
         productPriceInfoView.renderData(productSelected);
         holderPriceInfoProduct.addView(productPriceInfoView);
-
     }
 
     public void showVerifyUssdOperatorDialogFragment(boolean isEdit) {
-
         OperatorVerificationDialog dialog = OperatorVerificationDialog.newInstance(selectedOperator,
                 validationList, selectedSimIndex, isEdit, selectedOperatorList);
         dialog.setTargetFragment(this, OperatorVerificationDialog.REQUEST_CODE_DIGITAL_USSD_OPERATOR_MATCH);
@@ -517,10 +496,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         startActivity(DigitalWebActivity.newInstance(getActivity(), url));
     }
 
-    public interface ActionListener {
-        void updateTitleToolbar(String title);
-    }
-
     private void setBottomSheetDialog() {
         BottomSheetView bottomSheetView;
         bottomSheetView = new BottomSheetView(context);
@@ -532,4 +507,9 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                 .build());
         bottomSheetView.show();
     }
+
+    public interface ActionListener {
+        void updateTitleToolbar(String title);
+    }
+
 }

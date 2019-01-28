@@ -108,7 +108,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         setAdapter();
         setListener();
         if (getActivity() != null) {
-            ScreenTracking.screen(getActivity(),getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
         }
         return rootView;
     }

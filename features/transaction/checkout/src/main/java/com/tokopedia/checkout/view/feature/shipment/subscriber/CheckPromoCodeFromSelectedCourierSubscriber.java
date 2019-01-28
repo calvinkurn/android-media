@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shipment.subscriber;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 
 import rx.Subscriber;
 
@@ -32,7 +33,11 @@ public class CheckPromoCodeFromSelectedCourierSubscriber extends Subscriber<Prom
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
-            view.showToastError(ErrorHandler.getErrorMessage(view.getActivityContext(), e));
+            if (e instanceof CheckPromoCodeException) {
+                view.showToastError(e.getMessage());
+            }else {
+                view.showToastError(ErrorHandler.getErrorMessage(view.getActivityContext(), e));
+            }
         }
     }
 

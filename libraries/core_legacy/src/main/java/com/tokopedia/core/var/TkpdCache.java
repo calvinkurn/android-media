@@ -201,6 +201,7 @@ public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
         public static final String HOME_DATA_CACHE = "HOME_DATA_CACHE";
         public static final String EXPLORE_DATA_CACHE = "EXPLORE_DATA_CACHE";
+        public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
         public static final String REFERRAL_CODE = "REFERRAL_CODE";

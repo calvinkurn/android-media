@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -97,9 +96,9 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     }
 
     @Override
-    public void onCartEmpty(String autoApplyMessage) {
+    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc) {
         if (emptyCartFragment == null) {
-            emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "");
+            emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "", state, titleDesc);
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(com.tokopedia.abstraction.R.id.parent_view, emptyCartFragment, getTagFragment())

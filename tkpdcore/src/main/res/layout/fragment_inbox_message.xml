@@ -18,12 +18,40 @@
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="Search here"/>
+        
+        <FrameLayout android:id="@+id/base_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/simpleSearchView"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:orientation="horizontal">
+            
+            <TextView style="@style/TextView.Small.Green"
+                android:id="@+id/tv_organize_action"
+                android:text="@string/option_organize_chat"/>
+
+            <TextView style="@style/TextView.Small.Green"
+                android:id="@+id/tv_bm_action"
+                android:text="@string/option_broadcast"
+                android:background="@android:color/white"
+                android:visibility="gone"
+                android:layout_gravity="end"
+                android:drawableLeft="@drawable/ic_bm_speaker"
+                android:drawableStart="@drawable/ic_bm_speaker"
+                android:drawablePadding="@dimen/dp_4"/>
+            
+        </FrameLayout>
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/simpleSearchView">
+            android:layout_below="@id/base_action">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/chat_list"

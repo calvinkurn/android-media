@@ -10,16 +10,15 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
-import java.util.List;
 import java.util.Map;
 
 import rx.subscriptions.CompositeSubscription;
@@ -89,12 +88,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         tvShopName.setText(cartShopHolderData.getShopGroupData().getShopName());
         tvShopName.setOnClickListener(v -> cartAdapterListener.onCartShopNameClicked(cartShopHolderData));
 
-        if (cartShopHolderData.getShopGroupData().isOfficialStore()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
-            imgShopBadge.setVisibility(View.VISIBLE);
-        } else if (cartShopHolderData.getShopGroupData().isGoldMerchant()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
-            imgShopBadge.setVisibility(View.VISIBLE);
+        if (cartShopHolderData.getShopGroupData().isOfficialStore() || cartShopHolderData.getShopGroupData().isGoldMerchant()) {
+            if (!cartShopHolderData.getShopGroupData().getShopBadge().isEmpty()) {
+                ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, cartShopHolderData.getShopGroupData().getShopBadge());
+                imgShopBadge.setVisibility(View.VISIBLE);
+            }
         } else {
             imgShopBadge.setVisibility(View.GONE);
         }

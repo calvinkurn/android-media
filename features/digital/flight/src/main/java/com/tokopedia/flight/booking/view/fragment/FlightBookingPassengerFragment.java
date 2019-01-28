@@ -259,14 +259,14 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.adult_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
         spTitle.setEntries(entries);
         spTitle.setValues(entries);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
-        String[] entries = getResources().getStringArray(R.array.child_infant_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
         spTitle.setEntries(entries);
         spTitle.setValues(entries);
     }

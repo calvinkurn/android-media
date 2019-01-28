@@ -35,12 +35,12 @@ import com.tokopedia.core.geolocation.interactor.RetrofitInteractor;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
 import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
 
 /**
  * Created by hangnadi on 1/31/16.
@@ -360,6 +360,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             Intent intent = new Intent();
             intent.putExtras(bundle);
             intent.putExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+//            intent.putExtra(GeolocationActivity.EXTRA_HASH_LOCATION, bundleLocationMap(locationPass));
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }

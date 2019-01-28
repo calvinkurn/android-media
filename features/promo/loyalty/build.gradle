@@ -1,0 +1,69 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
+
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'loyalty'
+    groupId = 'com.tokopedia.loyalty'
+    versionName = "2.22"
+    artifactName = "loyalty-release"
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.features.loyaltyCommon)
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+    implementation project(rootProject.ext.libraries.core_legacy)
+}
+
+apply from: '../../../publish_local.gradle'

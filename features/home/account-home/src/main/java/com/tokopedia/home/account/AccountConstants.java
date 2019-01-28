@@ -6,6 +6,7 @@ package com.tokopedia.home.account;
 public class AccountConstants {
 
     public static final String QUERY = "query";
+    public static final String TOPADS_QUERY = "topads_query";
     public static final String VARIABLES = "variables";
     public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
@@ -28,6 +29,7 @@ public class AccountConstants {
         public static final String LOAN = "modal usaha";
         public static final String PEMBELI = "pembeli";
         public static final String CLICK_CHALLENGE = "challenge";
+        public static final String BY_ME = "by.me";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";
@@ -81,10 +83,19 @@ public class AccountConstants {
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
         public static final String CLICK_KYC_SETTING = "click on dokumen data diri";
-        public static final String CLICK_KYC_EXPIRED = "click on verifikasi ulang";
+        public static final String CLICK_KYC_REJECTED = "click on verifikasi ulang";
         public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
         public static final String CLICK_KYC_PENDING = "click on lihat status";
         public static final String EVENT_SALDO_OVO = "clickSaldo";
+        public static final String EVENT_CLICK_SAMPAI = "clickRegister";
+        public static final String EVENT_CATEGORY_SAMPAI = "register tokopedia corner";
+        public static final String EVENT_ACTION_SAMPAI = "click button daftar";
+        public static final String OVO_PAY_LATER_CATEGORY = "fin - android main screen";
+        public static final String OVO_PAY_LATER_CLICK = "ovo - pay later click";
+        public static final String OVO_PAY_LATER_LABEL = "success - %s";
+        public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
+        public static final String BY_ME_CURATION = "kurasi produk by.me";
+        public static final String CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
 
     public class ImageUrl {

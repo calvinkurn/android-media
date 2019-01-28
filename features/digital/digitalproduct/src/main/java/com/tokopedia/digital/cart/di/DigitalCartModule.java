@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.repository.CartDigitalRepository;
 import com.tokopedia.digital.cart.data.repository.CheckoutRepository;
 import com.tokopedia.digital.cart.data.repository.VoucherDigitalRepository;
@@ -119,4 +120,12 @@ public class DigitalCartModule {
         }
         throw new RuntimeException("Application must implement " + DigitalModuleRouter.class.getSimpleName());
     }
+
+
+    @Provides
+    @DigitalCartScope
+    DigitalPostPaidLocalCache provideDigitalPostPaidLocalCache(@ApplicationContext Context context) {
+        return DigitalPostPaidLocalCache.newInstance(context);
+    }
+
 }

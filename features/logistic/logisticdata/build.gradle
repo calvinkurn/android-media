@@ -5,6 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
+
 buildscript {
     repositories {
         mavenCentral()
@@ -15,18 +16,21 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = "${artifactIdLogisticData}"
+    groupId = "${groupIdLogistic}"
+    versionName = "${logisticGroupVersion}"
+    artifactName = "${artifactIdLogisticData}-release"
+}
+
 dependencies {
-    implementation project(rootProject.ext.features.core)
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.playServicesDependencies.maps
+
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.payment)
-
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

@@ -30,6 +30,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.shopCommon)

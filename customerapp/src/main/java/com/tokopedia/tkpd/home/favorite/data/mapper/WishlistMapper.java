@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.home.favorite.data.mapper;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;

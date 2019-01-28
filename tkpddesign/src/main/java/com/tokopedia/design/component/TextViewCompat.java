@@ -71,7 +71,7 @@ public class TextViewCompat extends AppCompatTextView {
     }
 
     private void configFontSize(TypedArray attributeArray) {
-        int fontSize  = attributeArray.getInteger(R.styleable.TextViewCompat_fontSize, SMALL);
+        int fontSize  = attributeArray.getInteger(R.styleable.TextViewCompat_fontSize, 0);
         if (fontSize == HEADLINE) {
             this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_headline));
             this.setMinimumHeight(getResources().getInteger(R.integer.text_headline_weight));
@@ -94,7 +94,7 @@ public class TextViewCompat extends AppCompatTextView {
     }
 
     private void configWeight(TypedArray attributeArray) {
-        int weight = attributeArray.getInteger(R.styleable.TextViewCompat_weight, REGULAR);
+        int weight = attributeArray.getInteger(R.styleable.TextViewCompat_weight, 0);
         if (weight == REGULAR) {
             this.setTypeface(getTypeface(), Typeface.NORMAL);
         } else if (weight == MEDIUM) {
@@ -103,7 +103,7 @@ public class TextViewCompat extends AppCompatTextView {
     }
 
     private void configTheme(Context context, TypedArray attributeArray) {
-        int theme = attributeArray.getInteger(R.styleable.TextViewCompat_textViewTheme, LIGHT_PRIMARY);
+        int theme = attributeArray.getInteger(R.styleable.TextViewCompat_textViewTheme, 0);
         if (theme == LIGHT_PRIMARY) {
             this.setTextColor(ContextCompat.getColor(context, R.color.light_primary));
         } else if (theme == LIGHT_SECONDARY) {

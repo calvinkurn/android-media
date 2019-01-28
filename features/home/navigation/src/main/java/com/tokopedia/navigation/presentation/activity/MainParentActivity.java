@@ -1,6 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,10 +23,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -33,6 +35,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
+import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
@@ -111,16 +114,17 @@ public class MainParentActivity extends BaseActivity implements
 
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
-    List<Fragment> fragmentList;
-    private List<String> titles;
+    private List<Fragment> fragmentList;
     private Notification notification;
-    Fragment currentFragment;
-    Fragment cartFragment;
-    Fragment emptyCartFragment;
+    private Fragment currentFragment;
+    private Fragment cartFragment;
+    private Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
     private BroadcastReceiver newFeedClickedReceiver;
+    private SharedPreferences cacheManager;
+    private AbTestingOfficialStore abTestingOfficialStore;
 
     private Handler handler = new Handler();
 
@@ -170,6 +174,8 @@ public class MainParentActivity extends BaseActivity implements
         if (savedInstanceState != null) {
             presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
+        cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
+        abTestingOfficialStore = new AbTestingOfficialStore(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
     }
@@ -186,10 +192,9 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void setDefaultShakeEnable() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(getString(R.string.pref_receive_shake), true);
-        editor.apply();
+        cacheManager.edit()
+                .putBoolean(getString(R.string.pref_receive_shake), true)
+                .apply();
     }
 
     @Override
@@ -218,7 +223,6 @@ public class MainParentActivity extends BaseActivity implements
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
-        FrameLayout container = findViewById(R.id.container);
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
@@ -226,7 +230,6 @@ public class MainParentActivity extends BaseActivity implements
             scrollToTop(fragment); // enable feature scroll to top for home & feed
         });
 
-        titles = titles();
         fragmentList = fragments();
 
         if (isFirstTime()) {
@@ -297,10 +300,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private int getPositionFragmentByMenu(MenuItem item) {
         int i = item.getItemId();
-        int position = 0;
-        if (i == R.id.menu_home) {
-            position = HOME_MENU;
-        } else if (i == R.id.menu_feed) {
+        int position = HOME_MENU;
+        if (i == R.id.menu_feed) {
             position = FEED_MENU;
         } else if (i == R.id.menu_inbox) {
             position = INBOX_MENU;
@@ -315,9 +316,13 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
-        globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
+        globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
 
-        if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
+        if (item.getTitle().equals(getString(R.string.os))) {
+            RouteManager.route(this, ApplinkConst.OFFICIAL_STORES);
+            return false;
+        }
+        if (position == CART_MENU || position == ACCOUNT_MENU)
             if (!presenter.isUserLogin())
                 return false;
         Fragment fragment = fragmentList.get(position);
@@ -374,6 +379,22 @@ public class MainParentActivity extends BaseActivity implements
         this.userSession = userSession;
     }
 
+    /**
+     * AB Testing Official Store
+     */
+    private void abTestBottomNavforOs() {
+        Menu menuBottomNav = bottomNavigation.getMenu();
+        MenuItem itemInbox = menuBottomNav.findItem(R.id.menu_inbox);
+        if (abTestingOfficialStore.shouldDoAbTesting()) {
+            itemInbox.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_menu_os));
+            itemInbox.setTitle(R.string.os);
+        } else {
+            itemInbox.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_menu_inbox));
+            itemInbox.setTitle(R.string.inbox);
+        }
+    }
+
+
     @Override
     public BaseAppComponent getComponent() {
         return getApplicationComponent();
@@ -384,11 +405,12 @@ public class MainParentActivity extends BaseActivity implements
         super.onResume();
         presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
-            reloadPage(this);
+            reloadPage();
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
 
         addShortcuts();
+        abTestBottomNavforOs();
 
         registerBroadcastHockeyApp();
         registerNewFeedClickedReceiver();
@@ -405,7 +427,7 @@ public class MainParentActivity extends BaseActivity implements
             presenter.onDestroy();
     }
 
-    private void reloadPage(Activity activity) {
+    private void reloadPage() {
         finish();
         startActivity(getIntent());
     }
@@ -415,22 +437,12 @@ public class MainParentActivity extends BaseActivity implements
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
-            fragmentList.add(InboxFragment.newInstance());
+            fragmentList.add(InboxFragment.newInstance(true));
             cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
             fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance());
         }
         return fragmentList;
-    }
-
-    private List<String> titles() {
-        List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.home));
-        titles.add(getString(R.string.feed));
-        titles.add(getString(R.string.inbox));
-        titles.add(getString(R.string.keranjang));
-        titles.add(getString(R.string.akun));
-        return titles;
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -441,7 +453,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
+        if (abTestingOfficialStore.shouldDoAbTesting()) {
+            bottomNavigation.setNotification(0, INBOX_MENU);
+        } else {
+            bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
+        }
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
         if (notification.getHaveNewFeed()) {
             bottomNavigation.setNotification(-1, FEED_MENU);
@@ -453,6 +469,8 @@ public class MainParentActivity extends BaseActivity implements
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
+
+        abTestingOfficialStore.putCacheForAbTesting(notification.getShouldOsAppear()); // save cache for ab testing
     }
 
     @Override
@@ -621,6 +639,27 @@ public class MainParentActivity extends BaseActivity implements
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
             }
 
+            // Note: applink/deeplink router already in DeeplinkHandlerActivity.
+            // Applink should not be passed to home because the analytics at home might be triggered.
+            // It is better to use TaskStackBuilder to build taskstack for home, rather than passwing to home directly.
+            // Below code is still maintained to ensure no deeplink/applink uri is lost
+            try {
+                Intent applinkIntent = new Intent(this, MainParentActivity.class);
+                applinkIntent.setData(Uri.parse(applink));
+                if (getIntent() != null && getIntent().getExtras() != null) {
+                    Intent newIntent = getIntent();
+                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+                    newIntent.removeExtra(DeepLink.REFERRER_URI);
+                    newIntent.removeExtra(DeepLink.URI);
+                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
+                    if (newIntent.getExtras() != null)
+                        applinkIntent.putExtras(newIntent.getExtras());
+                }
+                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
+            } catch (ActivityNotFoundException ex) {
+                ex.printStackTrace();
+            }
+
             presenter.setIsRecurringApplink(true);
         }
     }
@@ -677,12 +716,11 @@ public class MainParentActivity extends BaseActivity implements
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
     }
 
-
     @Override
-    public void onCartEmpty(String autoApplyMessage) {
+    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc) {
         if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
             if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage);
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc);
             }
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));

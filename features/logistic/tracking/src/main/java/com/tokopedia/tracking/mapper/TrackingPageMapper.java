@@ -1,8 +1,8 @@
 package com.tokopedia.tracking.mapper;
 
-import com.tokopedia.tracking.entity.Detail;
-import com.tokopedia.tracking.entity.TrackOrder;
-import com.tokopedia.tracking.entity.TrackingResponse;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.Detail;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackOrder;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
 import com.tokopedia.tracking.viewmodel.TrackingHistoryViewModel;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 

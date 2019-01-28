@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="75dp"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              android:paddingBottom="10dp"
+              android:paddingEnd="1dp"
+              android:paddingStart="1dp"
+              android:paddingTop="10dp">
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:maxLines="2"
+        android:paddingTop="3dp"
+        android:textColor="@color/grey_600"
+        android:textSize="10sp"
+        tools:text="Pembayaran o Topup"/>
+</LinearLayout>

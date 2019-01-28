@@ -139,7 +139,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     protected void setViewListener() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
 
-        if (digitalRouter.getBooleanRemoteConfig(DigitalRouter.MULTICHECKOUT_CART_REMOTE_CONFIG, true)) {
+        if (digitalRouter.getBooleanRemoteConfig(DigitalRouter.MULTICHECKOUT_CART_REMOTE_CONFIG, true) && !GlobalConfig.isSellerApp() ) {
             Intent newCartIntent = DigitalCartActivity.newInstance(this, passData);
             newCartIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             startActivity(newCartIntent);

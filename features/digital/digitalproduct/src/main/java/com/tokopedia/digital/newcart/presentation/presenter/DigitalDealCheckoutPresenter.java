@@ -5,6 +5,7 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
@@ -32,8 +33,22 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     private UserSession userSession;
 
     @Inject
-    public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase, DigitalAnalytics digitalAnalytics, DigitalModuleRouter digitalModuleRouter, ICartDigitalInteractor cartDigitalInteractor, UserSession userSession, DigitalCheckoutUseCase digitalCheckoutUseCase, DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
-        super(digitalAddToCartUseCase, digitalAnalytics, digitalModuleRouter, cartDigitalInteractor, userSession, digitalCheckoutUseCase, digitalInstantCheckoutUseCase);
+    public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
+                                        DigitalAnalytics digitalAnalytics,
+                                        DigitalModuleRouter digitalModuleRouter,
+                                        ICartDigitalInteractor cartDigitalInteractor,
+                                        UserSession userSession,
+                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
+                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+                                        DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+        super(digitalAddToCartUseCase,
+                digitalAnalytics,
+                digitalModuleRouter,
+                cartDigitalInteractor,
+                userSession,
+                digitalCheckoutUseCase,
+                digitalInstantCheckoutUseCase,
+                digitalPostPaidLocalCache);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
     }

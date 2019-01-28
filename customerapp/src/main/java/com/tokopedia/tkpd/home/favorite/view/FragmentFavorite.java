@@ -53,7 +53,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         SwipeRefreshLayout.OnRefreshListener {
 
     private static final long DURATION_ANIMATOR = 1000;
-    private static final String FAVORITE_TRACE = "favorite_trace";
+    private static final String FAVORITE_TRACE = "mp_favourite_shop";
 
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -164,7 +164,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 } else {
                     favoritePresenter.loadInitialData();
                 }
-                ScreenTracking.screen(getActivity(), getScreenName());
+                ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
             } else {
                 if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
@@ -255,9 +255,12 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
         recylerviewScrollListener.resetState();
-        performanceMonitoring.stopTrace();
     }
 
+    @Override
+    public void stopTracePerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
+    }
 
     @Override
     public void showErrorLoadMore() {

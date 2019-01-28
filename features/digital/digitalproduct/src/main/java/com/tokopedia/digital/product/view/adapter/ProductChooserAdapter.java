@@ -12,13 +12,9 @@ import android.widget.TextView;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 5/9/17.
@@ -91,24 +87,22 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class ItemDescAndPriceHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.title_price)
         TextView tvTitlePrice;
-        @BindView(R2.id.tv_price)
         TextView tvPrice;
-        @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
         private Product product;
 
         ItemDescAndPriceHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
-                        actionListener.onProductItemSelected(product);
-                    }
+
+            tvTitlePrice = itemView.findViewById(R.id.title_price);
+            tvPrice = itemView.findViewById(R.id.tv_price);
+            emptyStockNotification = itemView.findViewById(R.id.empty_stock_notification);
+
+            itemView.setOnClickListener(v -> {
+                if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                    actionListener.onProductItemSelected(product);
                 }
             });
         }
@@ -153,20 +147,21 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class ItemPriceAdmin extends RecyclerView.ViewHolder {
-        @BindView(R2.id.product_price_no_addition)
         TextView tvProductPrice;
-        @BindView(R2.id.product_plain_description)
         TextView tvProductDescription;
-        @BindView(R2.id.product_total_price)
         TextView tvProductTotalPrice;
-        @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
         private Product product;
 
         ItemPriceAdmin(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            tvProductPrice = itemView.findViewById(R.id.product_price_no_addition);
+            tvProductDescription = itemView.findViewById(R.id.product_plain_description);
+            tvProductTotalPrice = itemView.findViewById(R.id.product_total_price);
+            emptyStockNotification = itemView.findViewById(R.id.empty_stock_notification);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -229,30 +224,28 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class ItemHolderPromoProduct extends RecyclerView.ViewHolder {
-        @BindView(R2.id.product_promo_title)
-        TextView tvProductPromoTitle;
-        @BindView(R2.id.product_promo_tag)
-        TextView tvProductPromoTag;
-        @BindView(R2.id.product_promo_description)
-        TextView tvProductPromoDescription;
-        @BindView(R2.id.product_promo_price)
-        TextView tvPromoProductPrice;
-        @BindView(R2.id.product_promo_old_price)
-        TextView tvProductPromoOldPrice;
-        @BindView(R2.id.empty_stock_notification)
-        TextView emptyStockNotification;
+        private TextView tvProductPromoTitle;
+        private TextView tvProductPromoTag;
+        private TextView tvProductPromoDescription;
+        private TextView tvPromoProductPrice;
+        private TextView tvProductPromoOldPrice;
+        private TextView emptyStockNotification;
 
         private Product product;
 
         ItemHolderPromoProduct(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
-                        actionListener.onProductItemSelected(product);
-                    }
+
+            tvProductPromoTitle = itemView.findViewById(R.id.product_promo_title);
+            tvProductPromoTag = itemView.findViewById(R.id.product_promo_tag);
+            tvProductPromoDescription = itemView.findViewById(R.id.product_promo_description);
+            tvPromoProductPrice = itemView.findViewById(R.id.product_promo_price);
+            tvProductPromoOldPrice = itemView.findViewById(R.id.product_promo_old_price);
+            emptyStockNotification = itemView.findViewById(R.id.empty_stock_notification);
+
+            itemView.setOnClickListener(v -> {
+                if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                    actionListener.onProductItemSelected(product);
                 }
             });
         }

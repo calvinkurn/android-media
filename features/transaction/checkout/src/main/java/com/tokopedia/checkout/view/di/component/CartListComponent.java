@@ -14,4 +14,5 @@ import dagger.Component;
 public interface CartListComponent {
 
     void inject(CartFragment cartFragment);
+
 }

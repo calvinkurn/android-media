@@ -2,7 +2,7 @@ package com.tokopedia.flight.search.domain.usecase
 
 import android.text.TextUtils
 import android.util.SparseIntArray
-import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.*
@@ -26,7 +26,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
     override fun createObservable(requestParams: RequestParams): Observable<FlightSearchStatisticModel> {
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
-        return flightSearchRepository.getSearchFilter(FlightSortOption.CHEAPEST, filterModel)
+        return flightSearchRepository.getSearchFilter(TravelSortOption.CHEAPEST, filterModel)
                 .map { mapToFlightSearchStatisticsModel(it) }
     }
 

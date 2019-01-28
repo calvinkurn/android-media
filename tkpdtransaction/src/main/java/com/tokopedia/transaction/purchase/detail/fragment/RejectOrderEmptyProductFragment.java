@@ -9,8 +9,8 @@ import android.view.View;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.adapter.RejectOrderEmptyProductsAdapter;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyProductEditable;
 
 import java.util.ArrayList;

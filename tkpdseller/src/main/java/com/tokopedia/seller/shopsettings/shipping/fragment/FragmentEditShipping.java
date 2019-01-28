@@ -25,12 +25,12 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout;
@@ -59,6 +59,8 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     ShippingAddressLayout addressLayout;
 
     TextView submitButtonCreateShop;
+
+    LogisticRouter logisticRouter;
 
     private EditShippingPresenter editShippingPresenter;
     private TkpdProgressDialog mainProgressDialog;
@@ -116,6 +118,10 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             editShippingPresenter.setSavedInstance(getArguments());
         } else {
             editShippingPresenter.setSavedInstance(savedInstanceState);
+        }
+
+        if (getActivity().getApplicationContext() instanceof LogisticRouter) {
+            logisticRouter = (LogisticRouter) getActivity().getApplicationContext();
         }
     }
 
@@ -496,7 +502,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                 );
                 locationPass.setCityName(editShippingPresenter.getShopInformation().getCityName());
             }
-            Intent intent = GeolocationActivity.createInstanceIntent(getActivity(), locationPass);
+            Intent intent = logisticRouter.navigateToGeoLocationActivityRequest(getActivity(), locationPass);
             startActivityForResult(intent, OPEN_MAP_CODE);
         } else {
             CommonUtils.dumper("Google play services unavailable");

@@ -6,13 +6,9 @@ import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
-import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
-import com.tokopedia.shop.analytic.model.ListTitleTypeDef;
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +41,6 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_AL
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_LIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OF_REQUEST_OPEN_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OPEN_OPERATIONAL_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.INFO;
@@ -55,7 +50,6 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUC
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_BANNER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
@@ -78,8 +72,9 @@ public class ShopPageTrackingUser {
         this.shopTrackingRouter = router;
     }
 
-    private void sendScreenName(Activity activity, String screenName) {
-        shopTrackingRouter.getAnalyticTracker().sendScreen(activity, screenName);
+    private void sendScreenName(Activity activity, String screenName, CustomDimensionShopPage customDimensionShopPage) {
+        shopTrackingRouter.getAnalyticTracker().sendCustomScreen(activity, screenName,
+                customDimensionShopPage.shopId, customDimensionShopPage.shopType, SHOPPAGE, null);
     }
 
     protected void sendDataLayerEvent(Map<String, Object> eventTracking) {
@@ -185,8 +180,8 @@ public class ShopPageTrackingUser {
         return TextUtils.join(" ", s);
     }
 
-    public void sendScreenShopPage(Activity activity, String shopId) {
-        sendScreenName(activity, joinDash(SHOPPAGE, shopId));
+    public void sendScreenShopPage(Activity activity, CustomDimensionShopPage customDimensionShopPage) {
+        sendScreenName(activity, joinDash(SHOPPAGE, customDimensionShopPage.shopId), customDimensionShopPage);
     }
 
     public void clickManageShop(CustomDimensionShopPage customDimensionShopPage) {

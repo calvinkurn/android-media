@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 
+import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
@@ -47,19 +48,16 @@ public class CategoryListDataSource {
     private Observable<List<CategoryEntity>> getDataFromCloud() {
         return digitalEndpointService.getApi().getCategoryList()
                 .map(getFuncTransformCategoryEntityList())
-                .doOnNext(new Action1<List<CategoryEntity>>() {
-                    @Override
-                    public void call(List<CategoryEntity> categoryEntities) {
-                        deleteCache(categoryEntities);
-                        if (categoryEntities != null) {
-                            cacheManager.save(
-                                    KEY_CATEGORY_LIST,
-                                    CacheUtil.convertListModelToString(categoryEntities,
-                                            new TypeToken<List<CategoryEntity>>() {
-                                            }.getType()),
-                                    DEFAULT_EXPIRED_TIME
-                            );
-                        }
+                .doOnNext(categoryEntities -> {
+                    deleteCache(categoryEntities);
+                    if (categoryEntities != null) {
+                        cacheManager.save(
+                                KEY_CATEGORY_LIST,
+                                CacheUtil.convertListModelToString(categoryEntities,
+                                        new TypeToken<List<CategoryEntity>>() {
+                                        }.getType()),
+                                DEFAULT_EXPIRED_TIME
+                        );
                     }
                 });
     }
@@ -85,7 +83,7 @@ public class CategoryListDataSource {
         }
     }
 
-    private Func1<Response<com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse>, List<CategoryEntity>> getFuncTransformCategoryEntityList() {
+    private Func1<Response<TkpdDigitalResponse>, List<CategoryEntity>> getFuncTransformCategoryEntityList() {
         return response -> response.body().convertDataList(CategoryEntity[].class);
     }
 

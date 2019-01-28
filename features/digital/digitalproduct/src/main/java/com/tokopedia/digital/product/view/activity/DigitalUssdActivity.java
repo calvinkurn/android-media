@@ -20,8 +20,8 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DigitalUssdActivity extends BasePresenterActivity implements DigitalUssdFragment.ActionListener {
+
     private String titleToolbar;
     public static final String EXTRA_BALANCE_PASS_DATA = "EXTRA_BALANCE_PASS_DATA";
     private static final String EXTRA_OPERATOR_PASS_DATA = "EXTRA_OPERATOR_PASS_DATA";
@@ -142,4 +142,5 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
     private void invalidateTitleToolBar() {
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
     }
+
 }

@@ -470,4 +470,7 @@ public class TickerView extends BaseCustomView {
         return listMessage!= null && !listMessage.isEmpty() && listMessage.contains(message);
     }
 
+    public int getCount(){
+        return listMessage.size();
+    }
 }

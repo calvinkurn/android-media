@@ -2,6 +2,7 @@ package com.tokopedia.train.search.presentation.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ import java.util.List;
 
 public class TrainFilterSearchFragment extends BaseDaggerFragment implements BaseTrainFilterListener {
 
+    private static final String FILTER_SEARCH_DATA = "filter_search_data";
+
     private FilterSearchActionView listener;
     private FilterSearchData filterSearchData;
     private CurrencyTextWatcher minCurrencyTextWatcher;
@@ -47,16 +50,27 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
         return view;
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        filterSearchData = listener.getFilterSearchData();
+        if (savedInstanceState != null) {
+            filterSearchData = savedInstanceState.getParcelable(FILTER_SEARCH_DATA);
+        } else {
+            filterSearchData = listener.getFilterSearchData();
+        }
 
         listener.setTitleToolbar(getString(R.string.train_search_filter));
         listener.setCloseButton(true);
 
         populateView(view);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(FILTER_SEARCH_DATA, filterSearchData);
     }
 
     private void populateView(View view) {

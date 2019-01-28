@@ -30,7 +30,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
@@ -41,14 +40,13 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
-import com.tokopedia.digital.widget.view.presenter.DigitalWidgetPresenter;
-import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetPresenter;
+import com.tokopedia.digital.widget.view.presenter.DigitalWidgetCategoryCategoryPresenter;
+import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetCategoryPresenter;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -56,13 +54,11 @@ import permissions.dispatcher.RuntimePermissions;
  * @author Rizky on 15/01/18.
  */
 @RuntimePermissions
-public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDigitalWidgetPresenter>
+public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDigitalWidgetCategoryPresenter>
         implements IDigitalWidgetView, BaseDigitalProductView.ActionListener {
 
-    @BindView(R2.id.holder_product_detail)
-    LinearLayout holderProductDetail;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
+    private LinearLayout holderProductDetail;
+    private ProgressBar pbMainLoading;
 
     private final String INSTANT = "instant";
     private final String NO_INSTANT = "no instant";
@@ -82,7 +78,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
     @Inject
-    DigitalWidgetPresenter presenter;
+    DigitalWidgetCategoryCategoryPresenter presenter;
 
     public static WidgetAllStyleRechargeFragment newInstance(Category category, int position) {
         WidgetAllStyleRechargeFragment fragment = new WidgetAllStyleRechargeFragment();
@@ -120,15 +116,16 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
                 .inject(this);
+
+        presenter.attachView(this);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initialPresenter() {
-        presenter.attachView(this);
     }
 
     @Override
@@ -149,7 +146,8 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     protected void initView(View view) {
-
+        holderProductDetail = view.findViewById(R.id.holder_product_detail);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
     }
 
     @Override

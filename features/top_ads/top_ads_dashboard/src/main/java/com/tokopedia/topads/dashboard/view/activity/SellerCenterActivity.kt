@@ -14,6 +14,6 @@ class SellerCenterActivity : BaseSimpleActivity() {
     override fun getNewFragment() = BaseSessionWebViewFragment.newInstance(SELLER_CENTER_URL)
 
     companion object {
-        private val SELLER_CENTER_URL = "https://seller.tokopedia.com/topads/"
+        private val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/about-topads/iklan/?source=help&medium=android"
     }
 }

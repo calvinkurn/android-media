@@ -1,10 +1,12 @@
 package com.tokopedia.tkpdpdp.listener;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.entity.variant.Child;
@@ -19,12 +21,12 @@ import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttribute
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onImageReviewLoaded(List<ImageReviewItem> data);
 
+    void onProductInfoShortClicked(Intent intent);
     /**
      * Saat salah satu kategori product di klik.
      *
@@ -142,7 +145,7 @@ public interface ProductDetailView extends ViewListener {
      *
      * @param data  data yang dikirim
      */
-    void onProductShareClicked(@NonNull ShareData data);
+    void onProductShareClicked(@NonNull ProductDetailData data);
 
     /**
      * Pada saat rating product diklik
@@ -162,6 +165,8 @@ public interface ProductDetailView extends ViewListener {
     void onInstallmentClicked(@NonNull Bundle bundle);
 
     void onDescriptionClicked(@NonNull Bundle bundle);
+
+    void onDescriptionClicked(@NonNull Intent intent);
 
     /**
      * Pada saat ada error pada toko
@@ -358,7 +363,9 @@ public interface ProductDetailView extends ViewListener {
 
     void refreshData();
 
-    void onSuccesLoadRateEstimaion(RatesModel ratesModel);
+    void onSuccesLoadRateEstimation(RatesModel ratesModel);
+
+    void onErrorLoadRateEstimation();
 
     void moveToEstimationDetail();
 

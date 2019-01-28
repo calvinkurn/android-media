@@ -189,8 +189,6 @@ public interface TkpdCoreRouter {
 
     String getDesktopLinkGroupChat();
 
-    Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
-
     Intent getWithdrawIntent(Context context);
 
     String getStringRemoteConfig(String key);

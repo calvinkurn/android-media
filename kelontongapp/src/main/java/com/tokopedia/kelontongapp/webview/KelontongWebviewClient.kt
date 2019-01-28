@@ -1,5 +1,6 @@
 package com.tokopedia.kelontongapp.webview
 
+import android.Manifest.permission.*
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.DialogInterface
@@ -14,13 +15,20 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 
-import android.Manifest.permission.CAMERA
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.Context
+import android.content.SharedPreferences
+import android.webkit.WebResourceError
+import com.appsflyer.AppsFlyerLib
+import com.tokopedia.kelontongapp.*
+import org.json.JSONObject
+import org.json.JSONArray
+import java.lang.Exception
 
 /**
  * Created by meta on 12/10/18.
  */
 class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
+    private val sharedPref: SharedPreferences = activity.getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
         val uri = Uri.parse(url)
@@ -34,14 +42,27 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     }
 
     private fun handleUri(view: WebView, uri: Uri): Boolean {
-        view.loadUrl(uri.toString())
-        return true
+        return if (uri.scheme.startsWith(APPSFLYER_URL_SCHEME)) {
+            handleAppsFlyer(uri)
+            false
+        } else {
+            view.loadUrl(uri.toString())
+            true
+        }
+    }
+
+    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+        super.onReceivedError(view, request, error)
+        if (activity is KelontongMainActivity) {
+            activity.onReceivedErrorView()
+        }
     }
 
     fun checkPermission(): Boolean {
         val resultCamera = ContextCompat.checkSelfPermission(activity, CAMERA)
         val resultWrite = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
-        return resultCamera == PackageManager.PERMISSION_GRANTED && resultWrite == PackageManager.PERMISSION_GRANTED
+        return resultCamera == PackageManager.PERMISSION_GRANTED
+                && resultWrite == PackageManager.PERMISSION_GRANTED
     }
 
     fun requestPermission() {
@@ -51,7 +72,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            PERMISSION_REQUEST_CODE -> if (grantResults.size > 0) {
+            PERMISSION_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
                 val cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED
 
@@ -72,6 +93,22 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
         }
     }
 
+    private var progressInterface: ProgressInterface? = null
+
+    fun setProgressInterface(progressInterface: ProgressInterface) {
+        this.progressInterface = progressInterface;
+    }
+
+    override fun onPageCommitVisible(view: WebView?, url: String?) {
+        super.onPageCommitVisible(view, url)
+        if (progressInterface != null)
+            progressInterface!!.onPageVisible()
+    }
+
+    interface ProgressInterface {
+        fun onPageVisible()
+    }
+
     private fun showMessageOKCancel(message: String, okListener: DialogInterface.OnClickListener) {
         AlertDialog.Builder(activity)
                 .setMessage(message)
@@ -84,5 +121,34 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     companion object {
 
         private val PERMISSION_REQUEST_CODE = 2312
+    }
+
+    private fun handleAppsFlyer(uri: Uri) {
+        if(uri.host == APPSFLYER_SET_USER) {
+            if(uri.getQueryParameter(ID) != null) {
+                with (sharedPref.edit()) {
+                    putString(USER_ID, uri.getQueryParameter(ID))
+                    apply()
+                }
+                AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter(ID))
+            }
+        } else {
+            var eventName: String? = uri.getQueryParameter(EVENT_NAME)
+            val eventValue: MutableMap<String, Any> = HashMap()
+
+            val event: JSONObject
+            val keys: JSONArray
+            try {
+                event = JSONObject(uri.getQueryParameter(EVENT_VALUE))
+                keys = event.names()
+                for (i in 0 until keys.length()) {
+                    eventValue[keys.getString(i)] = event.getString(keys.getString(i))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
+        }
     }
 }

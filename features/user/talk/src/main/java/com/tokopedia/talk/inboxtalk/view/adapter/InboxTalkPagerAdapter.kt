@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.fragment.InboxTalkFragment
 
@@ -19,7 +20,11 @@ class InboxTalkPagerAdapter(val fragmentManager: FragmentManager,
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> InboxTalkFragment.newInstance(InboxTalkActivity.INBOX_ALL)
+            0 -> if (GlobalConfig.isSellerApp()) {
+                InboxTalkFragment.newInstance(InboxTalkActivity.MY_PRODUCT)
+            } else {
+                InboxTalkFragment.newInstance(InboxTalkActivity.INBOX_ALL)
+            }
             1 -> InboxTalkFragment.newInstance(InboxTalkActivity.MY_PRODUCT)
             2 -> InboxTalkFragment.newInstance(InboxTalkActivity.FOLLOWING)
             else -> Fragment()
@@ -48,7 +53,11 @@ class InboxTalkPagerAdapter(val fragmentManager: FragmentManager,
     fun getFragmentPosition(nav: String): Int {
         return when (nav) {
             InboxTalkActivity.INBOX_ALL -> 0
-            InboxTalkActivity.MY_PRODUCT -> 1
+            InboxTalkActivity.MY_PRODUCT -> if (GlobalConfig.isSellerApp()) {
+                1
+            } else {
+                0
+            }
             InboxTalkActivity.FOLLOWING -> 2
             else -> 0
         }

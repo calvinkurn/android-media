@@ -18,7 +18,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
@@ -30,6 +29,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.gm.common.constant.GMParamConstant;
 import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -42,7 +42,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
@@ -149,7 +148,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
-        if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
+        if (!TrackingUtils.getBoolean(context, AppEventTracking.GTM.CONTACT_US)) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
                     R.drawable.ic_help,
                     TkpdState.DrawerPosition.HELP,
@@ -286,7 +285,7 @@ public class DrawerSellerHelper extends DrawerHelper
     private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
         String gm = context.getString(GMConstant.getGMTitleResource(context));
         DrawerGroup gmMenu = new DrawerGroup(gm,
-                R.drawable.ic_goldmerchant_drawer,
+                GMConstant.getGMDrawerDrawableResource(context),
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0);
@@ -407,7 +406,7 @@ public class DrawerSellerHelper extends DrawerHelper
             boolean isNeedToCloseActivity = true;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
-                    UnifyTracking.eventDrawerSellerHome();
+                    UnifyTracking.eventDrawerSellerHome(context);
                     context.startActivity(DashboardActivity.createInstance(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
@@ -415,8 +414,8 @@ public class DrawerSellerHelper extends DrawerHelper
                         new GMTracking((AbstractionRouter) context.getApplication())
                                 .sendClickHamburgerMenuEvent(item.label);
                     }
-                    UnifyTracking.eventClickGoldMerchantViaDrawer();
-                    context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));
+                    UnifyTracking.eventClickGoldMerchantViaDrawer(context);
+                    context.startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
@@ -457,7 +456,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalCategoryList());
-                    UnifyTracking.eventClickPaymentAndTopupOnDrawer();
+                    UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
                     if (remoteConfig.getBoolean(RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
@@ -467,10 +466,10 @@ public class DrawerSellerHelper extends DrawerHelper
                                 .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                         + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
                     context.startActivity(intent);
-                    UnifyTracking.eventClickDigitalTransactionListOnDrawer();
+                    UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
-                    UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DRAFT_PRODUCT);
+                    UnifyTracking.eventDrawerClick(context, AppEventTracking.EventLabel.DRAFT_PRODUCT);
                     context.startActivity(new Intent(context, ProductDraftListActivity.class));
                     break;
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:
@@ -482,7 +481,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:
                     intent = new Intent(context, GMStatisticDashboardActivity.class);
                     context.startActivity(intent);
-                    UnifyTracking.eventClickGMStat();
+                    UnifyTracking.eventClickGMStat(context);
                     break;
                 case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
                     Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
@@ -490,13 +489,13 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(mitraToppersIntent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-                    UnifyTracking.eventDrawerTopads();
+                    UnifyTracking.eventDrawerTopads(context);
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                     if (isGoldMerchant) {
-                        UnifyTracking.eventClickMenuFeaturedProduct();
+                        UnifyTracking.eventClickMenuFeaturedProduct(context);
                         intent = new Intent(context, GMFeaturedProductActivity.class);
                         context.startActivity(intent);
                     } else {
@@ -505,7 +504,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
-                    UnifyTracking.eventClickMenuSellerInfo();
+                    UnifyTracking.eventClickMenuSellerInfo(context);
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
                     break;
@@ -564,9 +563,11 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void onGoToDeposit() {
-        Intent intent = new Intent(context, DepositActivity.class);
-        context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);
+        if (context.getApplicationContext() instanceof SellerModuleRouter) {
+            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) context.getApplicationContext();
+            sellerModuleRouter.getSaldoDepositIntent(context);
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
+        }
     }
 
     @Override

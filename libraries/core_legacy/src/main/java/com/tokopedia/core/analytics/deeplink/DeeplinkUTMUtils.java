@@ -25,6 +25,7 @@ public class DeeplinkUTMUtils {
     private static final String REFERRER_NAME = "android.intent.extra.REFERRER_NAME";
     private static final String QUICK_SEARCH_BOX = "com.google.android.googlequicksearchbox";
     private static final String APP_CRAWLER = "com.google.appcrawler";
+    private static final String KEY_AMP = "amp";
 
     private DeeplinkUTMUtils() {
 
@@ -93,14 +94,18 @@ public class DeeplinkUTMUtils {
         Map<String, String> maps = splitQuery(uri1);
         Campaign campaign = new Campaign();
 
-        Uri uri = getReferrer(activity);
+        Uri referrerUri = getReferrer(activity);
 
-        if (uri1 == null) {
-            campaign.setUtmSource("direct");
-            campaign.setUtmMedium("none");
+        boolean isAmpUri = (maps != null && "true".equalsIgnoreCase(maps.get(KEY_AMP)));
+
+        //iuf valida campaign and amp is false
+        if (uri1 != null && isValidCampaignUrl(uri1) && !isAmpUri) {
+            campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
+            campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
             campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                    maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
-
+                    maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
             campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
                     maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
             campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
@@ -108,31 +113,15 @@ public class DeeplinkUTMUtils {
             campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                     maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
-
-            // App was opened directly by the user
         } else {
             // App was referred via a deep link
-            if (uri1.getScheme().equals("http") || uri1.getScheme().equals("https")) {
+            if (referrerUri != null && referrerUri.getScheme() != null && referrerUri.getScheme().equals("http") || referrerUri.getScheme().equals("https")) {
                 // App was opened from a browser
-                String host = uri1.getHost();
+                String host = referrerUri.getHost();
 
-                if(isValidCampaignUrl(uri1)){
+                if (host == null) host = "";
 
-                    campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
-                    campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
-                    campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
-                    campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-                    campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                    campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
-
-                }
-                else if (host.equalsIgnoreCase("m-tokopedia-com.cdn.ampproject.org")) {
+                if (host.equalsIgnoreCase("m-tokopedia-com.cdn.ampproject.org")) {
 
                     campaign.setUtmSource("amp");
                     campaign.setUtmMedium("organic");
@@ -146,8 +135,7 @@ public class DeeplinkUTMUtils {
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
-                }
-                else if (host.contains("www.google")) {
+                } else if (host.contains("www.google")) {
 
                     campaign.setUtmSource("google.com");
                     campaign.setUtmMedium("organic");
@@ -161,13 +149,12 @@ public class DeeplinkUTMUtils {
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
-                }
-                else {
+                } else {
 
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
                     campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
                     campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
@@ -179,10 +166,10 @@ public class DeeplinkUTMUtils {
 
                 }
 
-            } else if (uri != null && uri.getScheme() != null && uri.getScheme().equals("android-app")) {
+            } else if (referrerUri != null && referrerUri.getScheme() != null && referrerUri.getScheme().equals("android-app")) {
                 // App was opened from another app
 
-                AndroidAppUri appUri = AndroidAppUri.newAndroidAppUri(uri);
+                AndroidAppUri appUri = AndroidAppUri.newAndroidAppUri(referrerUri);
                 String referrerPackage = appUri.getPackageName();
                 if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
                     // App was opened from the Google app
@@ -201,11 +188,11 @@ public class DeeplinkUTMUtils {
 
                 } else if (!APP_CRAWLER.equals(referrerPackage)) {
                     // App was deep linked into from another app (excl. Google crawler)
-                    campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_SOURCE) : "android-app");
+                    campaign.setUtmSource(referrerPackage == null ? "" : referrerPackage);
 
                     campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
                             maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
+
 
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
@@ -218,20 +205,6 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
                 }
-
-            } else if (isValidCampaignUrl(uri1)) {
-                campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                        maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
-                campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                        maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
-                campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                        maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
-                campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                        maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-                campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                        maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
-                        maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
             }
         }
 

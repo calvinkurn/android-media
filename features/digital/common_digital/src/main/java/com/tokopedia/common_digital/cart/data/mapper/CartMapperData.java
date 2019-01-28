@@ -7,6 +7,7 @@ import com.tokopedia.common_digital.cart.data.entity.response.MainInfo;
 import com.tokopedia.common_digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
+import com.tokopedia.common_digital.cart.domain.model.PostPaidPopupAttribute;
 import com.tokopedia.common_digital.cart.view.model.cart.AttributesDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
@@ -19,6 +20,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.RelationData;
 import com.tokopedia.common_digital.cart.view.model.cart.Relationships;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.common.MapperDataException;
+import com.tokopedia.common_digital.product.data.response.PostPaidPopup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,8 @@ import java.util.List;
 public class CartMapperData implements ICartMapperData {
 
     @Override
-    public CartDigitalInfoData transformCartInfoData(ResponseCartData responseCartData) throws MapperDataException {
+    public CartDigitalInfoData transformCartInfoData(ResponseCartData responseCartData)
+            throws MapperDataException {
         try {
             CartDigitalInfoData cartDigitalInfoData = new CartDigitalInfoData();
             List<CartItemDigital> cartItemDigitalList = new ArrayList<>();
@@ -88,6 +91,19 @@ public class CartMapperData implements ICartMapperData {
                 applyVoucher.setMessageSuccess(entity.getMessageSuccess());
                 attributesDigital.setAutoApplyVoucher(applyVoucher);
             }
+
+            if (responseCartData.getAttributes().getPostPaidPopUp() != null &&
+                    responseCartData.getAttributes().getPostPaidPopUp().getAction() != null &&
+                    responseCartData.getAttributes().getPostPaidPopUp().getAction().getConfirmAction() != null) {
+                PostPaidPopup postPaidPopup = responseCartData.getAttributes().getPostPaidPopUp();
+                PostPaidPopupAttribute postPaidPopupAttribute = new PostPaidPopupAttribute();
+                postPaidPopupAttribute.setTitle(postPaidPopup.getTitle());
+                postPaidPopupAttribute.setContent(postPaidPopup.getContent());
+                postPaidPopupAttribute.setImageUrl(postPaidPopup.getImageUrl());
+                postPaidPopupAttribute.setConfirmButtonTitle(postPaidPopup.getAction().getConfirmAction().getTitle());
+                attributesDigital.setPostPaidPopupAttribute(postPaidPopupAttribute);
+            }
+
             attributesDigital.setDefaultPromoTab(responseCartData.getAttributes().getDefaultPromoTab());
 
             attributesDigital.setUserId(responseCartData.getAttributes().getUserId());

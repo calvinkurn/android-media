@@ -32,6 +32,10 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.TkpdWebView;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import static android.app.Activity.RESULT_OK;
 
 public class SimpleWebViewWithFilePickerFragment extends Fragment implements GeneralWebView {
@@ -59,6 +63,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             }
             super.onProgressChanged(view, newProgress);
         }
+
         //For Android 3.0+
         public void openFileChooser(ValueCallback<Uri> uploadMsg) {
             callbackBeforeL = uploadMsg;
@@ -137,6 +142,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
         }
+
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -180,12 +186,25 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
     public static SimpleWebViewWithFilePickerFragment createInstance(String url) {
         return createInstanceWithWebClient(url, null);
     }
+
     public static SimpleWebViewWithFilePickerFragment createInstanceWithWebClient(String url, WebViewClient client) {
         webViewClient = client;
         SimpleWebViewWithFilePickerFragment fragment = new SimpleWebViewWithFilePickerFragment();
         Bundle args = new Bundle();
         if (!TextUtils.isEmpty(url)) {
-            args.putString(EXTRA_URL, url);
+            String encodedUrl;
+            try {
+                if (url.contains(SEAMLESS))
+                    encodedUrl = url;
+                else if (Uri.decode(url).equals(url))
+                    encodedUrl = URLEncoder.encode(url, "UTF-8");
+                else
+                    encodedUrl = url;
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                encodedUrl = url;
+            }
+            args.putString(EXTRA_URL, encodedUrl);
         }
         fragment.setArguments(args);
         return fragment;
@@ -210,7 +229,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                     }
                 }
             }
-            if(callbackAfterL != null) callbackAfterL.onReceiveValue(results);
+            if (callbackAfterL != null) callbackAfterL.onReceiveValue(results);
             callbackAfterL = null;
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
@@ -236,7 +255,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         else {
             webview.loadAuthUrl(url);
         }
-        if(webViewClient == null)
+        if (webViewClient == null)
             webview.setWebViewClient(new SimpleWebViewWithFilePickerFragment.MyWebClient());
         else
             webview.setWebViewClient(webViewClient);

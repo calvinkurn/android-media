@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
@@ -47,7 +48,7 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getActivity(),getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
         UpdateInactivePhoneEventTracking.eventViewKirimPengajuan(getActivity());
     }
 

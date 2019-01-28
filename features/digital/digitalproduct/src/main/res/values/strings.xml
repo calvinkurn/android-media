@@ -132,8 +132,6 @@
     <string name="digital_list_device_consumer_app_prefix">android-%s</string>
     <string name="digital_list_device_seller_app_prefix">seller_app-%s</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="digital_cart_total_payment_label">Total Pembayaran</string>
     <string name="digital_cart_checkout_pay_label">Bayar</string>
     <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
@@ -160,4 +158,10 @@
     <string name="digital_cart_deals_showcase_special_detail">Tambahkan voucher spesial dan bayar sekaligus bersama produk sebelumnya.</string>
     <string name="digital_deal_empty_label">Oops! Hasil tidak ditemukan.</string>
     <string name="digital_deal_empty_detail_label">Cari deals di kategori lainnya.</string>
+    <string name="digital_post_paid_dont_show_again_label">Jangan tampilkan lagi</string>
+    <string name="digital_channel_top_up_tagihan_title"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="digital_my_channel_top_up_tagihan_title"><![CDATA[Top-up & Tagihanmu]]></string>
+    <string name="digital_channel_try_again">Coba Lagi</string>
+    <string name="digital_channel_error_default">Terjadi Kendala pada Server</string>
+    <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
 </resources>

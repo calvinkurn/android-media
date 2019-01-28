@@ -146,7 +146,7 @@
 
     <TextView
         android:id="@+id/tv_promo"
-        style="@style/TextSmallMediumBlack70"
+        style="@style/TextView.Small.OrangeRed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_seller_cost_addition_fee"
@@ -177,14 +177,5 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
         tools:text="Rp100.000" />
-
-    <TextView
-        android:id="@+id/tv_promo_message"
-        style="@style/TextSmallNormalBlack70"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_donation_label"
-        android:layout_marginBottom="@dimen/dp_16"
-        tools:text="Anda mendapat gratis ongkir Rp20.000" />
 
 </RelativeLayout>

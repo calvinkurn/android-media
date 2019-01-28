@@ -5,7 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.data.repository.AddressRepository;
+import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
@@ -55,6 +57,8 @@ public interface CartComponent {
     RatesRepository ratesRepository();
 
     AddressRepository addressRepository();
+
+    PeopleAddressRepository peopleAddressRepository();
 
     ICartMapper cartMapper();
 

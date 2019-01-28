@@ -40,6 +40,7 @@ public class BannerView extends BaseCustomView {
     private boolean autoScrollOnProgress;
 
     private OnPromoClickListener onPromoClickListener;
+    private OnPromoLoadedListener onPromoLoadedListener;
     private OnPromoScrolledListener onPromoScrolledListener;
     private OnPromoAllClickListener onPromoAllClickListener;
 
@@ -110,6 +111,10 @@ public class BannerView extends BaseCustomView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         startAutoScrollBanner();
+    }
+
+    public interface OnPromoLoadedListener {
+        void onPromoLoaded();
     }
 
     public interface OnPromoClickListener {
@@ -190,6 +195,9 @@ public class BannerView extends BaseCustomView {
         });
         if (promoImageUrls.size() == 1) {
             bannerIndicator.setVisibility(View.GONE);
+        }
+        if (onPromoLoadedListener!= null){
+            onPromoLoadedListener.onPromoLoaded();
         }
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         bannerRecyclerView.setOnFlingListener(null);
@@ -286,6 +294,10 @@ public class BannerView extends BaseCustomView {
 
     public void setOnPromoScrolledListener(OnPromoScrolledListener onPromoScrolledListener) {
         this.onPromoScrolledListener = onPromoScrolledListener;
+    }
+
+    public void setOnPromoLoadedListener(OnPromoLoadedListener onPromoLoadedListener) {
+        this.onPromoLoadedListener = onPromoLoadedListener;
     }
 
     public OnPromoAllClickListener getOnPromoAllClickListener() {

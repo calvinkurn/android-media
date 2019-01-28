@@ -4,9 +4,6 @@
           package="com.tokopedia.session">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
     <application
         android:allowBackup="true"
@@ -77,17 +74,6 @@
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-
-        <!-- ======================================================= -->
-        <!-- RECEIVERS REGISTRY -->
-        <!-- ======================================================= -->
-        <receiver
-            android:name="com.tokopedia.util.IncomingSmsReceiver"
-            android:permission="android.permission.BROADCAST_SMS">
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

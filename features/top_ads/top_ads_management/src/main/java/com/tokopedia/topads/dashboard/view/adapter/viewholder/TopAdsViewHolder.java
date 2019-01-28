@@ -1,17 +1,16 @@
 package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 
 /**
  * Created by zulfikarrahman on 11/28/16.

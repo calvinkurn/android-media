@@ -26,10 +26,10 @@ import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActi
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transaction.common.TransactionRouter;
 
 import java.util.ArrayList;
 
@@ -105,7 +105,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getActivity(), getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

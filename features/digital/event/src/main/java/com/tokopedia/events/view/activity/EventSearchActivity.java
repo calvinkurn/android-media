@@ -206,13 +206,13 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     public void setFilterActive() {
         TextView tvFilter = findViewById(R.id.tv_filter);
-        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_list, 0, R.drawable.oval_3, 0);
+        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_button, 0, R.drawable.oval_3, 0);
     }
 
     @Override
     public void setFilterInactive() {
         TextView tvFilter = findViewById(R.id.tv_filter);
-        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_list, 0, 0, 0);
+        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_button, 0, 0, 0);
     }
 
 

@@ -3,6 +3,7 @@ package com.tokopedia.talk.producttalk.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
@@ -14,6 +15,10 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterNormal
@@ -44,6 +49,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.product_talk.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -59,6 +65,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         EmptyProductTalkViewHolder.TalkItemListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+
     override fun getContext(): Context? {
         return activity
     }
@@ -68,11 +76,21 @@ class ProductTalkFragment : BaseDaggerFragment(),
         return TalkAnalytics.SCREEN_NAME_PRODUCT_TALK
     }
 
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            analytics.sendScreen(this, screenName)
+        }
+    }
+
     @Inject
     lateinit var presenter: ProductTalkPresenter
 
     @Inject
     lateinit var talkDialog: TalkDialog
+
+    @Inject
+    lateinit var analytics: TalkAnalytics
 
     lateinit var adapter: ProductTalkAdapter
     lateinit var linearLayoutManager: LinearLayoutManager
@@ -95,6 +113,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     var shopName: String = ""
     var shopAvatar: String = ""
 
+    private var isTraceStopped: Boolean = false
+
     override fun initInjector() {
         val productTalkComponent = DaggerProductTalkComponent.builder()
                 .talkComponent(getComponent(TalkComponent::class.java))
@@ -104,6 +124,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        const val TALK_PRODUCT_TRACE = "mp_talk_product_list"
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
@@ -111,6 +132,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
             return fragment
         }
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(TALK_PRODUCT_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -201,6 +227,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         presenter.getProductTalk(productId)
     }
 
+
     private fun setUpView(view: View) {
         val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
@@ -225,7 +252,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
         swiper = view.findViewById(R.id.swipeToRefresh)
         swiper.setOnRefreshListener { onRefreshData() }
     }
-
 
     private fun onRefreshData() {
         presenter.resetProductTalk(productId)
@@ -280,9 +306,16 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
         adapter.hideLoading()
         adapter.addList(productTalkViewModel.listThread)
+        stopTrace()
+    }
+
+    fun stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace()
+            isTraceStopped = true
+        }
     }
 
     override fun onLoadClicked() {
@@ -313,6 +346,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         if (!presenter.isLoggedIn()) {
             goToLogin()
         } else {
+            analytics.trackClickReplyButton(talkId)
             goToDetailTalk(talkId, shopId, allowReply)
         }
     }
@@ -325,7 +359,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         if (allowReply) {
             context?.run {
                 this@ProductTalkFragment.startActivityForResult(
-                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
+                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this,
+                                TalkDetailsActivity.SOURCE_PDP)
                         , REQUEST_GO_TO_DETAIL)
             }
         } else {
@@ -379,7 +414,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
                     talkId)
             getString(R.string.menu_follow_talk) -> showFollowTalkDialog(alertDialog, talkId)
             getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(alertDialog, talkId)
-            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId, "")
+            getString(R.string.menu_report_talk) -> {
+                analytics.trackClickOnMenuReport()
+                goToReportTalk(talkId, shopId, productId, "")
+            }
         }
         bottomMenu.dismiss()
     }
@@ -399,6 +437,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun showUnfollowTalkDialog(alertDialog: Dialog, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuUnfollow()
             talkDialog.createUnfollowTalkDialog(
                     this,
                     this@ProductTalkFragment.alertDialog,
@@ -413,6 +452,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuFollow()
             talkDialog.createFollowTalkDialog(
                     this,
                     this@ProductTalkFragment.alertDialog,
@@ -425,8 +465,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun showDeleteTalkDialog(alertDialog: Dialog, shopId: String, talkId: String) {
-
         context?.run {
+            analytics.trackClickOnMenuDelete()
             talkDialog.createDeleteTalkDialog(
                     this,
                     this@ProductTalkFragment.alertDialog,
@@ -469,8 +509,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
         when (itemMenu.title) {
-            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId,
-                    commentId)
+            getString(R.string.menu_report_comment) -> {
+                analytics.trackClickOnMenuReport()
+                goToReportTalk(talkId, shopId, productId, commentId)
+            }
             getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
                     talkId, commentId)
         }
@@ -478,6 +520,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
+        analytics.trackClickOnMenuDelete()
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -508,6 +551,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
         activity?.applicationContext?.run {
+            analytics.trackClickProductFromAttachment()
             val intent: Intent = (this as TalkRouter).getProductPageIntent(this, attachProduct
                     .productId.toString())
             this@ProductTalkFragment.startActivity(intent)
@@ -588,6 +632,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToUserProfile(userId: String) {
+        analytics.trackClickUserProfile()
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
             this@ProductTalkFragment.startActivity(intent)
@@ -673,5 +718,42 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     }
 
+
+    override fun shouldHandleUrlManually(url: String): Boolean {
+        val urlManualHandlingList = arrayOf("tkp.me", "tokopedia.me", "tokopedia.link")
+        return Arrays.asList(*urlManualHandlingList).contains(url)
+    }
+
+    override fun onGoToWebView(url: String, id: String) {
+        if (url.isNotEmpty() && activity != null) {
+            KeyboardHandler.DropKeyboard(activity, view)
+
+            when {
+                RouteManager.isSupportApplink(activity, url) -> RouteManager.route(activity, url)
+                isBranchIOLink(url) -> handleBranchIOLinkClick(url)
+                else -> {
+                    val applinkRouter = activity!!.applicationContext as ApplinkRouter
+                    applinkRouter.goToApplinkActivity(activity,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                }
+            }
+        }
+    }
+
+    override fun handleBranchIOLinkClick(url: String) {
+        activity?.run {
+            val talkRouter = this.applicationContext as TalkRouter
+            val intent = talkRouter.getSplashScreenIntent(this)
+            intent.putExtra("branch", url)
+            intent.putExtra("branch_force_new_session", true)
+            startActivity(intent)
+        }
+    }
+
+    override fun isBranchIOLink(url: String): Boolean {
+        val BRANCH_IO_HOST = "tokopedia.link"
+        val uri = Uri.parse(url)
+        return uri.host != null && uri.host == BRANCH_IO_HOST
+    }
 
 }

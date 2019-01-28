@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.feature.shipment.converter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -11,9 +10,10 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +136,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setShopName(shop.getShopName());
         shipmentCartItemModel.setOfficialStore(shop.isOfficial());
         shipmentCartItemModel.setGoldMerchant(shop.isGold());
+        shipmentCartItemModel.setShopBadge(shop.getShopBadge());
 
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());
         shipmentCartItemModel.setSpId(groupShop.getSpId());
@@ -195,7 +196,7 @@ public class ShipmentDataConverter {
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
 
-        if(product.getPurchaseProtectionPlanData() != null) {
+        if (product.getPurchaseProtectionPlanData() != null) {
             PurchaseProtectionPlanData ppp = product.getPurchaseProtectionPlanData();
             cartItemModel.setProtectionAvailable(ppp.isProtectionAvailable());
             cartItemModel.setProtectionPricePerProduct(ppp.getProtectionPricePerProduct());

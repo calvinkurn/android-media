@@ -4,5 +4,7 @@ mutation SendReport($content: Int!, $contentType: String!, $reasonType: String!,
       success
     }
     error
+    error_message
+    error_type
   }
 }

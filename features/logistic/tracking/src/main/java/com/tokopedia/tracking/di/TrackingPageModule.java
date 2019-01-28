@@ -5,26 +5,27 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.logisticdata.data.apiservice.TrackingOrderApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.tracking.mapper.ITrackingPageMapper;
 import com.tokopedia.tracking.mapper.TrackingPageMapper;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.presenter.TrackingPagePresenter;
-import com.tokopedia.tracking.repository.ITrackingPageRepository;
-import com.tokopedia.tracking.repository.TrackingPageRepository;
+import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
+import com.tokopedia.logisticdata.data.repository.TrackingPageRepository;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
@@ -64,13 +65,25 @@ public class TrackingPageModule {
 
     @Provides
     @TrackingPageScope
-    OkHttpClient provideOkHttpClient(@ApplicationContext Context context, OkHttpRetryPolicy okHttpRetryPolicy) {
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+
+    }
+
+    @Provides
+    @TrackingPageScope
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                     UserSession userSession,
+                                     OkHttpRetryPolicy okHttpRetryPolicy) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
-                .addInterceptor(new TkpdAuthInterceptor())
-                .addInterceptor(new FingerprintInterceptor(context));
+                .addInterceptor(new TkpdAuthInterceptor(
+                        context, ((NetworkRouter) context),
+                        userSession))
+                .addInterceptor(new FingerprintInterceptor(((NetworkRouter) context),
+                        userSession));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new HttpLoggingInterceptor())
                     .addInterceptor(new ChuckInterceptor(context));
@@ -105,14 +118,14 @@ public class TrackingPageModule {
 
     @Provides
     @TrackingPageScope
-    ITrackingPageRepository provideTrackingPageRepository(TrackingOrderApi api, ITrackingPageMapper mapper) {
-        return new TrackingPageRepository(api, mapper);
+    ITrackingPageRepository provideTrackingPageRepository(TrackingOrderApi api) {
+        return new TrackingPageRepository(api);
     }
 
     @Provides
     @TrackingPageScope
-    TrackCourierUseCase provideTrackCourierUseCase(ITrackingPageRepository repository) {
-        return new TrackCourierUseCase(repository);
+    TrackCourierUseCase provideTrackCourierUseCase(ITrackingPageRepository repository, ITrackingPageMapper mapper) {
+        return new TrackCourierUseCase(repository, mapper);
     }
 
     @Provides

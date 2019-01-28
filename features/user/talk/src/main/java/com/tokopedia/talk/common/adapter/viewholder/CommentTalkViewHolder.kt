@@ -8,9 +8,10 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.ticker.SelectableSpannedMovementMethod
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.util.BranchLinkHandlerListener
+import com.tokopedia.talk.common.util.BranchLinkHandlerMovementMethod
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import kotlinx.android.synthetic.main.reported_talk.view.*
@@ -26,7 +27,7 @@ class CommentTalkViewHolder(val v: View,
 
     private val SELLER_LABEL_ID: Int = 3
 
-    interface TalkCommentItemListener {
+    interface TalkCommentItemListener : BranchLinkHandlerListener{
         fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String)
         fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String)
         fun onNoShowTalkCommentClick(talkId: String, commentId: String)
@@ -84,7 +85,7 @@ class CommentTalkViewHolder(val v: View,
         reportedLayout.visibility = View.GONE
         talkContent.visibility = View.VISIBLE
         talkContent.text = MethodChecker.fromHtml(element.comment)
-        talkContent.movementMethod = SelectableSpannedMovementMethod()
+        talkContent.movementMethod = BranchLinkHandlerMovementMethod(listener)
 
     }
 

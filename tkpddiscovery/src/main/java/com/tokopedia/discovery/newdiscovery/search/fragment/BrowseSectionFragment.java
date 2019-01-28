@@ -17,6 +17,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -184,7 +185,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected void screenTrack() {
         if (getUserVisibleHint()) {
-            ScreenTracking.screen(getActivity(), getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
     }
 

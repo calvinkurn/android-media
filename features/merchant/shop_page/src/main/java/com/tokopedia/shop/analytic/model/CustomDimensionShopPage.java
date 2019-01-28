@@ -17,4 +17,14 @@ public class CustomDimensionShopPage {
                 shopInfo.getInfo().isGoldMerchant() ? TrackShopTypeDef.GOLD_MERCHANT: TrackShopTypeDef.REGULAR_MERCHANT;
         return customDimensionShopPage;
     }
+
+    public static CustomDimensionShopPage create(String shopId, boolean isOfficialStore, boolean isGoldMerchant){
+        CustomDimensionShopPage customDimensionShopPage = new CustomDimensionShopPage();
+        customDimensionShopPage.shopId = shopId;
+        customDimensionShopPage.shopType = isOfficialStore ? TrackShopTypeDef.OFFICIAL_STORE:
+                isGoldMerchant ? TrackShopTypeDef.GOLD_MERCHANT: TrackShopTypeDef.REGULAR_MERCHANT;
+        return customDimensionShopPage;
+    }
+
+
 }
