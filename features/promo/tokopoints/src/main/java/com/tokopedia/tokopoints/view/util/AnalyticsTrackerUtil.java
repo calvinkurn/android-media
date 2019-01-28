@@ -58,7 +58,7 @@ public class AnalyticsTrackerUtil {
         String VIEW_TICKER = "view ticker";
         String CLICK_LIHAT_SEMUA = "click lihat semua";
         String CLICK_BANTUAN = "click bantuan tokopoints";
-        String CLICK_EGG = "click egg";
+        String CLICK_EGG = "click floating lucky egg";
         String CLICK_EGG_EMPTY = "click raih points dan kumpulkan loyalty";
         String CLICK_EGG_BELI = "click beli - untuk dapat lucky egg";
         String CLICK_EGG_BAYAR = "click bayar - untuk dapat lucky egg";
