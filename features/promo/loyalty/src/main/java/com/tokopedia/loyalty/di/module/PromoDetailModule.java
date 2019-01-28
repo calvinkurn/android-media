@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.loyalty.di.PromoDetailScope;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
@@ -49,5 +50,11 @@ public class PromoDetailModule {
     @PromoDetailScope
     IPromoDetailPresenter providePromoDetailPresenter(IPromoInteractor promoInteractor) {
         return new PromoDetailPresenter(promoInteractor);
+    }
+
+    @Provides
+    @PromoDetailScope
+    PerformanceMonitoring providePerformanceMonitoring(){
+        return new PerformanceMonitoring();
     }
 }
