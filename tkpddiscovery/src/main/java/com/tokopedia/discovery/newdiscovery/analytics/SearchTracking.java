@@ -515,7 +515,7 @@ public class SearchTracking {
                 String.format(
                         EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE,
                         keyword,
-                        profileName,
+                        profileName.toLowerCase(),
                         profileId,
                         position
                 )

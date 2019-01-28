@@ -34,7 +34,7 @@ data class ProfileViewModel (
             return DataLayer.mapOf(
                     KEY_ID, id,
                     KEY_NAME, VAL_NAME,
-                    KEY_CREATIVE, name,
+                    KEY_CREATIVE, name.toLowerCase(),
                     KEY_POSITION, position
             )
         }
