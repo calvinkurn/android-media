@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductCarouselListViewHolder;
@@ -33,20 +34,16 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChanne
 
 public class AdsAdapterTypeFactory implements AdsTypeFactory {
 
-    private int clickPosition;
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
     private TopAdsItemImpressionListener itemImpressionListener;
     private boolean enableWishlist;
     private int offset;
+    private PositionChangeListener positionChangeListener;
+
 
     public AdsAdapterTypeFactory(Context context) {
-        this(context, -1);
-    }
-
-    public AdsAdapterTypeFactory(Context context, int clickPosition) {
         imageLoader = new ImageLoader(context);
-        this.clickPosition = clickPosition;
     }
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
@@ -62,7 +59,9 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     }
 
     public void setClickPosition(int adapterPosition) {
-        clickPosition = adapterPosition;
+        if(positionChangeListener!=null){
+            positionChangeListener.onPositionChange(adapterPosition);
+        }
     }
 
     @Override
@@ -115,13 +114,16 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
             holder = new ProductGridViewHolder(view, imageLoader, itemClickListener,
-                    itemImpressionListener, clickPosition, enableWishlist);
+                    itemImpressionListener, enableWishlist);
+            this.positionChangeListener = (PositionChangeListener) holder;
         } else if (viewType == ProductListViewHolder.LAYOUT) {
             holder = new ProductListViewHolder(view, imageLoader, itemClickListener,
-                    itemImpressionListener, clickPosition, enableWishlist);
+                    itemImpressionListener, enableWishlist);
+            this.positionChangeListener = (PositionChangeListener) holder;
         } else if (viewType == ProductBigViewHolder.LAYOUT) {
             holder = new ProductBigViewHolder(view, imageLoader, itemClickListener,
-                    itemImpressionListener, clickPosition, enableWishlist);
+                    itemImpressionListener, enableWishlist);
+            this.positionChangeListener = (PositionChangeListener) holder;
         } else if (viewType == ShopGridViewHolder.LAYOUT) {
             holder = new ShopGridViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopListViewHolder.LAYOUT) {

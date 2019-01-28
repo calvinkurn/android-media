@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
@@ -31,7 +33,7 @@ import java.util.List;
  */
 
 public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewModel> implements
-        View.OnClickListener {
+        View.OnClickListener, PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_product_grid;
@@ -53,14 +55,13 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private LinearLayout bottomLabelContainer;
     private RelativeLayout wishlistBtnContainer;
     private ImageView btnWishList;
-    private int clickPosition;
+    private int clickPosition = RecyclerView.NO_POSITION;
     private TopAdsItemImpressionListener impressionListener;
 
 
     public ProductGridViewHolder(View itemView, ImageLoader imageLoader,
                                  LocalAdsClickListener itemClickListener,
                                  TopAdsItemImpressionListener impressionListener,
-                                 int clickPosition,
                                  boolean enableWishlist) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
@@ -70,7 +71,6 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         this.itemClickListener = itemClickListener;
         this.impressionListener = impressionListener;
         this.imageLoader = imageLoader;
-        this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
@@ -207,4 +207,8 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         return false;
     }
 
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
+    }
 }

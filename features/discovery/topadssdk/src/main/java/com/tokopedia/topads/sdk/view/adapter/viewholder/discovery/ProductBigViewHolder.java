@@ -18,6 +18,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 
 public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel> implements
-        View.OnClickListener {
+        View.OnClickListener, PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_product_list_big;
@@ -60,7 +61,6 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     public ProductBigViewHolder(View itemView, ImageLoader imageLoader,
                                 LocalAdsClickListener itemClickListener,
                                 TopAdsItemImpressionListener itemImpressionListener,
-                                int clickPosition,
                                 boolean enableWishlist) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
@@ -209,4 +209,8 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
         return false;
     }
 
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
+    }
 }
