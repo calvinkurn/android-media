@@ -15,7 +15,6 @@ import com.tokopedia.home.account.R;
 public class SellerSaldoView extends BaseCustomView {
 
     private ImageView saldoInfoIV;
-    private TextView saldoTV;
     private TextView saldoAmtTV;
     private CardView parentView;
 
@@ -37,7 +36,6 @@ public class SellerSaldoView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_seller_saldo, this);
-        saldoTV = view.findViewById(R.id.ss_text_view_title);
         parentView = view.findViewById(R.id.parent_cardView);
         saldoAmtTV = view.findViewById(R.id.saldo_balance_text_view);
         saldoInfoIV = view.findViewById(R.id.ss_info_image_view);
@@ -49,6 +47,10 @@ public class SellerSaldoView extends BaseCustomView {
 
     public void setOnClickInfoIcon(View.OnClickListener listener) {
         saldoInfoIV.setOnClickListener(listener);
+    }
+
+    public CardView getParentView() {
+        return parentView;
     }
 
     public void setBalance(String balance) {

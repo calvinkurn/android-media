@@ -2,7 +2,6 @@ package com.tokopedia.home.account.presentation.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -33,9 +32,9 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
         showCaseObjects.add(new ShowCaseObject(
                 tokopediaPayCardView.getLayoutRight(),
                 getString(R.string.buyer_saldo_on_boarding_title),
-                Html.fromHtml(getString(R.string.buyer_saldo_on_boarding_desc)).toString(),
+                getString(R.string.buyer_saldo_on_boarding_desc),
                 ShowCaseContentPosition.BOTTOM,
-                R.color.transparent));
+                R.color.white));
     }
 
     @Override

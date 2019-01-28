@@ -112,7 +112,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         }
 
         if (model.isOnBoardingForBuyerSaldo()) {
-            new Handler().postDelayed(() -> startShowCase(getContext()), 100);
+            new Handler().postDelayed(() -> startShowCase(getContext()), SHOWCASE_DIALOG_INTRO_DELAY);
         }
     }
 

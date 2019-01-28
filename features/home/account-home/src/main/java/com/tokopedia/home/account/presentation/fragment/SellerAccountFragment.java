@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -98,7 +99,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             getData();
             isLoaded = !isLoaded;
         } else if (isVisibleToUser) {
-            setShowCase(getContext());
+            new Handler().postDelayed(() -> setShowCase(getContext()), SHOWCASE_DIALOG_INTRO_DELAY);
         }
     }
 

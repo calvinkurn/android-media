@@ -18,8 +18,7 @@ public class SellerSaldoViewHolder extends AbstractViewHolder<SellerSaldoViewMod
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_seller_saldo;
-
-    SellerSaldoView sellerSaldoView;
+    private SellerSaldoView sellerSaldoView;
     private AccountItemListener listener;
 
     public SellerSaldoViewHolder(View view, AccountItemListener accountItemListener, ArrayList<ShowCaseObject> showCaseObjects) {
@@ -28,11 +27,11 @@ public class SellerSaldoViewHolder extends AbstractViewHolder<SellerSaldoViewMod
         this.listener = accountItemListener;
 
         showCaseObjects.add(new ShowCaseObject(
-                sellerSaldoView,
+                sellerSaldoView.getParentView(),
                 getString(R.string.seller_saldo_on_boarding_title),
-                Html.fromHtml(getString(R.string.seller_saldo_on_boarding_desc)).toString(),
+                getString(R.string.seller_saldo_on_boarding_desc),
                 ShowCaseContentPosition.BOTTOM,
-                R.color.transparent));
+                R.color.white));
     }
 
     @Override

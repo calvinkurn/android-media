@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -200,7 +201,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            setShowCase();
+            new Handler().postDelayed(() -> setShowCase(), 400);
         }
     }
 

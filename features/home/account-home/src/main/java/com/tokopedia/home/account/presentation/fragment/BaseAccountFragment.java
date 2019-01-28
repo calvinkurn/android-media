@@ -60,6 +60,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final String OVO = "OVO";
+    public static final long SHOWCASE_DIALOG_INTRO_DELAY = 400;
 
     public AccountTypeFactory accountTypeFactory;
     private SeeAllView seeAllView;
