@@ -31,9 +31,13 @@ class CodActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DaggerCodComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        application.let {
+            if (it is BaseMainApplication) {
+                DaggerCodComponent.builder()
+                        .baseAppComponent(it.baseAppComponent)
+                        .build().inject(this)
+            }
+        }
     }
 
     override fun getNewFragment(): Fragment {
