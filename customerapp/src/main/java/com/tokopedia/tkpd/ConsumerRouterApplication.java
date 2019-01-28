@@ -1305,6 +1305,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getBranchAutoApply(Activity activity) {
+        //TODO check if its needed
         String promoCode = CacheUtil.getValueFromCache(activity, TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE);
         PromoCodeAutoApplyUseCase promoCodeAutoApplyUseCase = new PromoCodeAutoApplyUseCase(activity);
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
@@ -3659,7 +3660,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setBranchReferralCode(String referralCode){
-        BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
+        //BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
+        //TODO check if its correct way to go
+        CacheUtil.addValueToCache(context, TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE, referralCode);
     }
 
     @Override

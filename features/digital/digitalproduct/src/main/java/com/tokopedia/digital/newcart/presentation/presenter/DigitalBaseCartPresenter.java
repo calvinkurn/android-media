@@ -280,6 +280,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     private void branchAutoApplyCouponIfAvailable() {
+        //TODO check how it is to behave
         String savedCoupon = digitalModuleRouter.getBranchAutoApply(getView().getActivity());
         if (savedCoupon != null && savedCoupon.length() > 0) {
             getView().hideCartView();
