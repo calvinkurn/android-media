@@ -3691,8 +3691,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private ShareData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
-        ShareData shareData = ShareData.Builder.aShareData()
+    private LinkerData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
                 .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
                 .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
