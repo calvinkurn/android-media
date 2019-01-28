@@ -428,6 +428,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
 

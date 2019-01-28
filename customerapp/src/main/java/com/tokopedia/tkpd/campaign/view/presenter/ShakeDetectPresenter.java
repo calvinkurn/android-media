@@ -4,31 +4,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
 
+import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.PermissionCheckerHelper;
 import com.tokopedia.applink.ApplinkDelegate;
-import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.core.network.exception.ServerErrorRequestDeniedException;
-import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceException;
-import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
-import com.tokopedia.tkpd.BuildConfig;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.utils.LocationDetectorHelper;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
@@ -38,6 +34,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -45,7 +43,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
+import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.PARAM_LATITUDE;
+import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.PARAM_LONGITUDE;
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.SCREEN_NAME;
+
+//import com.tokopedia.tkpd.R;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -104,6 +106,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             getView().setInvisibleCounter();
             getView().setCancelButtonVisible();
             RequestParams requestParams = RequestParams.create();
+            addLocationParameter(requestParams);
             requestParams.putString(IS_AUDIO, "false");
             if (ShakeDetectManager.sTopActivity != null) {
                 requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_"));
@@ -145,14 +148,14 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     }
 
 
-                     getView().sendBroadcast(intent);
-                     getView().finish();
+                    getView().sendBroadcast(intent);
+                    getView().finish();
 
                 }
 
                 @Override
                 public void onNext(final CampaignResponseEntity s) {
-                    if(!s.isEnable()) {
+                    if (!s.isEnable()) {
                         CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
                         return;
                     }
@@ -164,7 +167,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     }
                     ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
                     if (!deepLinkDelegate.supportsUri(s.getUrl())) {
-                        getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+//                        getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
                         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                         return;
                     }
@@ -182,6 +185,32 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 }
             });
         }
+    }
+
+    private void addLocationParameter(RequestParams requestParams) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(getView()
+                    .getCurrentActivity().getApplicationContext(), new PermissionCheckerHelper(),
+                    LocationServices.getFusedLocationProviderClient(getView()
+                            .getCurrentActivity().getApplicationContext()));
+
+            locationDetectorHelper.getLocation(onGetLocation(requestParams),
+                    getView().getCurrentActivity());
+        } else {
+            String latitude = "0";
+            String longitude = "0";
+            requestParams.putString(PARAM_LATITUDE, latitude);
+            requestParams.putString(PARAM_LONGITUDE, longitude);
+        }
+
+    }
+
+    private Function2<Double, Double, Unit> onGetLocation(RequestParams requestParams) {
+        return (latitude, longitude) -> {
+            requestParams.putString(PARAM_LATITUDE, latitude.toString());
+            requestParams.putString(PARAM_LONGITUDE, longitude.toString());
+            return null;
+        };
     }
 
     private void waitForSecondShake() {
@@ -233,7 +262,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public void onDisableShakeShake() {
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
-        if(SessionHandler.isV4Login(getView().getCurrentActivity())) {
+        if (SessionHandler.isV4Login(getView().getCurrentActivity())) {
             getView().getCurrentActivity().startActivity(GeneralSettingActivity.createIntent(getView().getCurrentActivity()));
             getView().finish();
         } else {
