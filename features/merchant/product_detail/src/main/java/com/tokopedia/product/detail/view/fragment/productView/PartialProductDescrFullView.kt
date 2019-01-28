@@ -6,7 +6,6 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfo
-import com.tokopedia.product.detail.data.model.Video
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration
 import kotlinx.android.synthetic.main.partial_product_full_descr.view.*

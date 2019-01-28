@@ -8,6 +8,10 @@ data class Basic(
         @Expose
         val alias: String = "",
 
+        @SerializedName("catalogID")
+        @Expose
+        val catalogID: Int = 0,
+
         @SerializedName("condition")
         @Expose
         val condition: Int = 0,
@@ -24,31 +28,31 @@ data class Basic(
         @Expose
         val id: Int = 0,
 
-        @SerializedName("is_eligible_cod")
+        @SerializedName("isEligibleCOD")
         @Expose
         val isEligibleCod: Boolean = false,
 
-        @SerializedName("is_free_return")
+        @SerializedName("isFreeReturn")
         @Expose
         val isFreeReturn: Boolean = false,
 
-        @SerializedName("is_kreasi_lokal")
+        @SerializedName("isKreasiLokal")
         @Expose
         val isKreasiLokal: Boolean = false,
 
-        @SerializedName("is_must_insurance")
+        @SerializedName("isMustInsurance")
         @Expose
         val isMustInsurance: Boolean = false,
 
-        @SerializedName("last_update_price")
+        @SerializedName("lastUpdatePrice")
         @Expose
         val lastUpdatePrice: String = "",
 
-        @SerializedName("max_order")
+        @SerializedName("maxOrder")
         @Expose
         val maxOrder: Int = 0,
 
-        @SerializedName("min_order")
+        @SerializedName("minOrder")
         @Expose
         val minOrder: Int = 0,
 
@@ -60,9 +64,13 @@ data class Basic(
         @Expose
         val price: Int = 0,
 
-        @SerializedName("price_currency")
+        @SerializedName("priceCurrency")
         @Expose
         val priceCurrency: String = "",
+
+        @SerializedName("shopID")
+        @Expose
+        val shopID: Int = 0,
 
         @SerializedName("sku")
         @Expose
@@ -84,7 +92,7 @@ data class Basic(
         @Expose
         val weight: Int = 0,
 
-        @SerializedName("weight_unit")
+        @SerializedName("weightUnit")
         @Expose
         val weightUnit: Int = 0
 )

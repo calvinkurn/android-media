@@ -8,43 +8,43 @@ data class Picture(
         @Expose
         val description: String = "",
 
-        @SerializedName("file_name")
+        @SerializedName("fileName")
         @Expose
         val fileName: String = "",
 
-        @SerializedName("file_path")
+        @SerializedName("filePath")
         @Expose
         val filePath: String = "",
 
-        @SerializedName("id")
+        @SerializedName("picID")
         @Expose
         val id: Int = 0,
 
-        @SerializedName("is_from_ig")
+        @SerializedName("isFromIG")
         @Expose
         val isFromIg: Boolean = false,
 
-        @SerializedName("is_primary")
+        @SerializedName("status")
         @Expose
-        val isPrimary: Boolean = false,
+        val status: Int = 1,
 
-        @SerializedName("url_300")
+        @SerializedName("url300")
         @Expose
         val url300: String = "",
 
-        @SerializedName("url_original")
+        @SerializedName("urlOriginal")
         @Expose
         val urlOriginal: String = "",
 
-        @SerializedName("url_thumbnail")
+        @SerializedName("urlThumbnail")
         @Expose
         val urlThumbnail: String = "",
 
-        @SerializedName("x")
+        @SerializedName("width")
         @Expose
         val width: Int = 0,
 
-        @SerializedName("y")
+        @SerializedName("height")
         @Expose
         val height: Int = 0
 )

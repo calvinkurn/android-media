@@ -4,11 +4,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Brand(
-        @SerializedName("id")
+        @SerializedName("brandID")
         @Expose
         val id: Int = 0,
 
-        @SerializedName("is_active")
+        @SerializedName("isActive")
         @Expose
         val isActive: Boolean = false,
 
@@ -36,7 +36,7 @@ data class Catalog(
 )
 
 data class Menu(
-        @SerializedName("id")
+        @SerializedName("menuID")
         @Expose
         val id: Int = 0,
 

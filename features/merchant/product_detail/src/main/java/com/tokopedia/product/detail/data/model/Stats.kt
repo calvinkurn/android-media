@@ -4,15 +4,15 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Stats(
-        @SerializedName("count_review")
+        @SerializedName("countReview")
         @Expose
         val countReview: Int = 0,
 
-        @SerializedName("count_talk")
+        @SerializedName("countTalk")
         @Expose
         val countTalk: Int = 0,
 
-        @SerializedName("count_view")
+        @SerializedName("countView")
         @Expose
         val countView: Int = 0,
 
@@ -22,15 +22,15 @@ data class Stats(
 )
 
 data class TxStats(
-        @SerializedName("sold")
+        @SerializedName("itemSold")
         @Expose
         val sold: Int = 0,
 
-        @SerializedName("tx_reject")
+        @SerializedName("txReject")
         @Expose
         val txReject: Int = 0,
 
-        @SerializedName("tx_success")
+        @SerializedName("txSuccess")
         @Expose
         val txSuccess: Int = 0
 )

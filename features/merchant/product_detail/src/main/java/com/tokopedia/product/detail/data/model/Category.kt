@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Category(
-        @SerializedName("breadcrumb_url")
+        @SerializedName("breadcrumbUrl")
         @Expose
         val breadcrumbUrl: String = "",
 
@@ -25,7 +25,7 @@ data class Category(
         val title: String = ""
 ){
     data class Detail(
-            @SerializedName("breadcrumb_url")
+            @SerializedName("breadcrumbUrl")
             @Expose
             val breadcrumbUrl: String = "",
 

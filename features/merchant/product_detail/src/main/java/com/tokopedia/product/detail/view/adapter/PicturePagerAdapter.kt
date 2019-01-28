@@ -71,7 +71,7 @@ class PicturePagerAdapter(private val context: Context,
     fun addAllImages(images: List<Picture>){
         pictures.clear()
         pictures.addAll(images.sortedWith(object : Comparator<Picture> {
-            override fun compare(o1: Picture, o2: Picture): Int = o1.isPrimary.compareTo(o2.isPrimary)
+            override fun compare(o1: Picture, o2: Picture): Int = o1.status.compareTo(o2.status)
         }))
         notifyDataSetChanged()
     }

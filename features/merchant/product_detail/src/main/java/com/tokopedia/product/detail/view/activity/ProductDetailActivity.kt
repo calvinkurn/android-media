@@ -38,11 +38,14 @@ class ProductDetailActivity: BaseSimpleActivity(), HasComponent<ProductDetailCom
                 bundle.putString(PARAM_PRODUCT_KEY, segmentUri[1])
             }
             putExtras(bundle)
-            setData(uri)
+            data = uri
         }
     }
 
-    override fun getNewFragment(): Fragment = ProductDetailFragment.newInstance(createProductParams(uriData, bundleData), isFromDeeplink)
+    override fun getNewFragment(): Fragment = ProductDetailFragment
+            .newInstance(bundleData.getString(PARAM_PRODUCT_ID),
+                    bundleData.getString(PARAM_PRODUCT_KEY),
+                    bundleData.getString(PARAM_SHOP_DOMAIN), isFromDeeplink)
 
     private fun createProductParams(uriData: Uri?, bundleData: Bundle?): ProductParams {
         return if (bundleData != null) {

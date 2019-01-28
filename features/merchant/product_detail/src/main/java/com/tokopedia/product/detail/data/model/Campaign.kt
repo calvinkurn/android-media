@@ -4,39 +4,39 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Campaign(
-        @SerializedName("end_date")
+        @SerializedName("endDate")
         @Expose
         val endDate: String = "",
 
-        @SerializedName("id")
+        @SerializedName("campaignID")
         @Expose
         val id: Int = 0,
 
-        @SerializedName("is_active")
+        @SerializedName("isActive")
         @Expose
         val isActive: Boolean = false,
 
-        @SerializedName("is_apps_only")
+        @SerializedName("isAppsOnly")
         @Expose
         val isAppsOnly: Boolean = false,
 
-        @SerializedName("name")
+        @SerializedName("campaignTypeName")
         @Expose
         val name: String = "",
 
-        @SerializedName("original_price")
+        @SerializedName("originalPrice")
         @Expose
         val originalPrice: Int = 0,
 
-        @SerializedName("percentage")
+        @SerializedName("percentageAmount")
         @Expose
         val percentage: Int = 0,
 
-        @SerializedName("start_date")
+        @SerializedName("startDate")
         @Expose
         val startDate: String = "",
 
-        @SerializedName("type")
+        @SerializedName("campaignType")
         @Expose
         val type: Int = 0
 )

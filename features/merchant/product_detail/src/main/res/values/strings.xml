@@ -36,4 +36,7 @@
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
     <string name="label_move_to_etalase">Ke Etalase</string>
+    <string name="label_product_wholesale">Harga Grosir</string>
+    <string name="label_product_installment">Cicilan</string>
+    <string name="label_format_wholesale">Mulai dari %1$s</string>
 </resources>

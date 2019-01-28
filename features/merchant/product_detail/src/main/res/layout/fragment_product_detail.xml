@@ -68,6 +68,7 @@
             <include layout="@layout/partial_product_detail_visibility"/>
 
             <include layout="@layout/partial_variant_rate_estimation"/>
+            <include layout="@layout/partial_product_detail_wholesale"/>
             <include layout="@layout/partial_product_full_descr"/>
 
         </LinearLayout>

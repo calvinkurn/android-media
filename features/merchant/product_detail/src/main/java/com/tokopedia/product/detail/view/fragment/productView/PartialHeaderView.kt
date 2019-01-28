@@ -47,8 +47,8 @@ class PartialHeaderView private constructor(private val view: View){
     fun renderData(data: ProductInfo) {
         with(view) {
             product_name.text = MethodChecker.fromHtml(data.basic.name)
-            if (!data.cashback.percentage.isEmpty() && (data.cashback.percentage.toIntOrNull() ?: 0) > 0){
-                text_cashback.text = context.getString(R.string.template_cashback, data.cashback.percentage)
+            if (data.cashback.percentage > 0){
+                text_cashback.text = context.getString(R.string.template_cashback, data.cashback.percentage.toString())
                 text_cashback.visibility = View.VISIBLE
             } else
                 text_cashback.visibility = View.GONE

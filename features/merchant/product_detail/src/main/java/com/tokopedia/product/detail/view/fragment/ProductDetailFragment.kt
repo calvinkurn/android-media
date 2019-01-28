@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfo
 import com.tokopedia.product.detail.data.model.ProductParams
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.productView.PartialButtonActionView
 import com.tokopedia.product.detail.view.fragment.productView.PartialHeaderView
@@ -31,10 +32,15 @@ import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
+import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
 import javax.inject.Inject
 
 class ProductDetailFragment: BaseDaggerFragment() {
-    private var productParams: ProductParams? = null
+    private var productId: String? = null
+    private var productKey: String? = null
+    private var shopDomain: String? = null
+    private var isFromDeeplink: Boolean = false
+
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
     lateinit var productDescrView: PartialProductDescrFullView
@@ -50,13 +56,18 @@ class ProductDetailFragment: BaseDaggerFragment() {
     var productInfo: ProductInfo? = null
 
     companion object {
-        private const val ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA"
+        private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
+        private const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
+        private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
 
-        fun newInstance(data: ProductParams, isFromDeeplink: Boolean = false) =
+        fun newInstance(productId: String? = null, productKey: String? = null,
+                        shopDomain: String? = null, isFromDeeplink: Boolean = false) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
-                        putParcelable(ARG_PARAM_PRODUCT_PASS_DATA, data)
+                        productId?.let { putString(ARG_PRODUCT_ID, it) }
+                        productKey?.let { putString(ARG_PRODUCT_KEY, it) }
+                        shopDomain?.let { putString(ARG_SHOP_DOMAIN, it) }
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                     }
                 }
@@ -72,7 +83,10 @@ class ProductDetailFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         arguments?.let {
-            productParams = it.getParcelable(ARG_PARAM_PRODUCT_PASS_DATA)
+            productId = it.getString(ARG_PRODUCT_ID)
+            productKey = it.getString(ARG_PRODUCT_KEY)
+            shopDomain = it.getString(ARG_SHOP_DOMAIN)
+            isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -243,10 +257,9 @@ class ProductDetailFragment: BaseDaggerFragment() {
     }
 
     private fun loadProductData() {
-        productParams?.let {
-            if (allProductParamsSet())
-                showBasicProductData()
-            productInfoViewModel.getProductInfo(GraphqlHelper.loadRawString(resources, R.raw.gql_get_product_info), it, resources)
+        if (productId != null || (productKey != null && shopDomain != null)){
+            productInfoViewModel.getProductInfo(GraphqlHelper.loadRawString(resources, R.raw.gql_get_product_info),
+                    ProductParams(productId, shopDomain, productKey), resources)
         }
     }
 
@@ -266,13 +279,23 @@ class ProductDetailFragment: BaseDaggerFragment() {
         view_picture.renderData(data.pictures)
         productStatsView.renderData(data)
         productDescrView.renderData(data)
-        actionButtonView.renderData(data.basic.status, productInfoViewModel.isShopOwner(data.shop.id), data.preorder)
-        activity?.invalidateOptionsMenu()
-    }
+        actionButtonView.renderData(data.basic.status,
+                productInfoViewModel.isShopOwner(data.basic.shopID) || GlobalConfig.isSellerApp(),
+                data.preorder)
 
-    private fun showBasicProductData() {
-        headerView.renderDataTemp(productParams!!)
-        view_picture.renderDataTemp(productParams!!)
+        if (data.wholesale.isNotEmpty()){
+            val minPrice = data.wholesale.sortedBy { it.price }.get(0).price
+            label_min_wholesale.text = getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
+            label_wholesale.visibility = View.VISIBLE
+            label_wholesale.visibility = View.VISIBLE
+            base_view_wholesale.visibility = View.VISIBLE
+        } else {
+            label_wholesale.visibility = View.GONE
+            label_wholesale.visibility = View.GONE
+            base_view_wholesale.visibility = View.GONE
+        }
+
+        activity?.invalidateOptionsMenu()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -319,7 +342,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
             menuEtalase.isEnabled = false
             menuEtalase.isVisible = false
 
-            val isOwned = productInfoViewModel.isShopOwner(productInfo!!.shop.id)
+            val isOwned = productInfoViewModel.isShopOwner(productInfo!!.basic.shopID)
             val isSellerApp = GlobalConfig.isSellerApp()
             val isWareHousing = productInfo!!.basic.status == ProductDetailConstant.PRD_STATE_WAREHOUSE
 
@@ -362,8 +385,4 @@ class ProductDetailFragment: BaseDaggerFragment() {
     private fun shareProduct() {
 
     }
-
-    private fun allProductParamsSet(): Boolean = productParams != null &&
-            !productParams!!.productName.isNullOrEmpty() &&
-            !productParams!!.productPrice.isNullOrEmpty()
 }

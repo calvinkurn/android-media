@@ -2,36 +2,38 @@
   "getPDPInfo":{
     "basic":{
       "id":146243108,
+      "shopID":137266,
       "name":"Xiaomi Mi 300Mbps WiFi Amplifier 2 Wireless Network Repeater",
       "alias":"xiaomi-mi-300mbps-wifi-amplifier-2-wireless-network-repeater",
       "price":72000,
-      "price_currency":"Rp",
-      "last_update_price":"20190112063934",
+      "priceCurrency":"Rp",
+      "lastUpdatePrice":"20190112063934",
       "description":"This Xiaomi Mi Wi-Fi Amplifier 2 is proud of its connectivity to any device that has USB port, which means a possibility to hitch up the amplifier to different devices of different-brand routers, TV-sets, laptops or even power strips with a necessary USB port.\n\nApp Control\n\nOnly need two steps, you can add the Xiaomi Mi Wi-Fi Amplifier 2 into the smartphone APP to achieve easy control of the Amplifier, such as it can achieve signal detection.\n\nSpecifications\n\nName\tXiaomi Mi Wi-Fi Amplifier 2\nBrand\tXiaomi\nType\tWi-Fi Amplifier\nMaterial\tABS\nColor\tWhite\nAntenna\tBuilt-in\nOperating Frequency\t2.5 GHz\nConnectivity\tUSB\nTransmission Rate\t300Mbps\nPower Supply\t5 V/0.5 A ~ 5 V/2 A\nBrand Compatibility\tXiaomi and Other\nProduct Size\t120 x 30 x 9 mm\nPackage Size\t13.5 x 5 x 5 cm\nProduct Weight\t30g\nPackage Contents\t1 x Xiaomi Mi Wi-Fi Amplifier 2, 1 x Manual",
-      "min_order":1,
-      "max_order":0,
+      "minOrder":1,
+      "maxOrder":0,
       "status":1,
       "stock":3155,
       "weight":1000,
-      "weight_unit":1,
+      "weightUnit":1,
       "condition":1,
       "url":"https://www.tokopedia.com/beststereo/xiaomi-mi-300mbps-wifi-amplifier-2-wireless-network-repeater",
       "sku":"",
       "gtin":"",
-      "is_kreasi_lokal":true,
-      "is_must_insurance":false,
-      "is_eligible_cod":true,
-      "is_free_return":false
+      "isKreasiLokal":true,
+      "isMustInsurance":false,
+      "isEligibleCOD":true,
+      "isFreeReturn":false,
+      "catalogID":123
     },
-    "return_info":{
+    "returnInfo":{
       "icon":"",
-      "color_hex":"",
-      "color_rgb":"",
+      "colorHex":"",
+      "colorRgb":"",
       "content":""
     },
     "brand":{
-      "id":23,
-      "is_active":true,
+      "brandID":23,
+      "isActive":true,
       "name":"xiaomi"
     },
     "catalog":{
@@ -41,119 +43,110 @@
       "url":"https://staging.tokopedia.com/catalog/39619/mobilephone-samsung-136"
     },
     "menu":{
-      "id":91,
+      "menuID":91,
       "name":"new etalase",
       "url":""
-    },
-    "shop": {
-      "id": 137266,
-      "name": "BEST MEMORY",
-      "domain": "beststereo",
-      "url": "https://www.tokopedia.com/beststereo"
     },
     "category":{
       "id":284,
       "name":"Handphone & Tablet - Aksesoris Tablet - Connection Kit",
       "title":"Handphone & Tablet - Aksesoris Tablet - Connection Kit",
-      "breadcrumb_url":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet/connection-kit",
+      "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet/connection-kit",
       "detail":[
         {
           "id":65,
           "name":"Handphone & Tablet",
-          "breadcrumb_url":"https://www.tokopedia.com/p/handphone-tablet"
+          "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet"
         },
         {
           "id":277,
           "name":"Aksesoris Tablet",
-          "breadcrumb_url":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet"
+          "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet"
         },
         {
           "id":284,
           "name":"Connection Kit",
-          "breadcrumb_url":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet/connection-kit"
+          "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet/connection-kit"
         }
       ]
     },
     "pictures":[
       {
-        "id":289144834,
-        "file_name":"664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
-        "file_path":"product-1/2017/2/21/664240",
+        "picID":289144834,
+        "fileName":"664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
+        "filePath":"product-1/2017/2/21/664240",
         "description":"",
-        "is_from_ig":false,
-        "x":900,
-        "y":900,
-        "url_original":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
-        "url_thumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
-        "url_300":"",
-        "is_primary":true
+        "isFromIG":false,
+        "width":900,
+        "height":900,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
+        "url300":"",
+        "status":2
       },
       {
-        "id":289144835,
-        "file_name":"664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
-        "file_path":"product-1/2017/2/21/664240",
+        "picID":289144835,
+        "fileName":"664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
+        "filePath":"product-1/2017/2/21/664240",
         "description":"",
-        "is_from_ig":false,
-        "x":557,
-        "y":500,
-        "url_original":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
-        "url_thumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
-        "url_300":"",
-        "is_primary":false
+        "isFromIG":false,
+        "width":557,
+        "height":500,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
+        "url300":"",
+        "status":1
       },
       {
-        "id":289144836,
-        "file_name":"664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
-        "file_path":"product-1/2017/2/21/664240",
+        "picID":289144836,
+        "fileName":"664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
+        "filePath":"product-1/2017/2/21/664240",
         "description":"",
-        "is_from_ig":false,
-        "x":1000,
-        "y":680,
-        "url_original":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
-        "url_thumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
-        "url_300":"",
-        "is_primary":false
+        "isFromIG":false,
+        "width":1000,
+        "height":680,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
+        "url300":"",
+        "status":1
       },
       {
-        "id":289144837,
-        "file_name":"664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
-        "file_path":"product-1/2017/2/21/664240",
+        "picID":289144837,
+        "fileName":"664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
+        "filePath":"product-1/2017/2/21/664240",
         "description":"",
-        "is_from_ig":false,
-        "x":900,
-        "y":716,
-        "url_original":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
-        "url_thumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
-        "url_300":"",
-        "is_primary":false
+        "isFromIG":false,
+        "width":900,
+        "height":716,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
+        "url300":"",
+        "status":1
       },
       {
-        "id":289144838,
-        "file_name":"664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
-        "file_path":"product-1/2017/2/21/664240",
+        "picID":289144838,
+        "fileName":"664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
+        "filePath":"product-1/2017/2/21/664240",
         "description":"",
-        "is_from_ig":false,
-        "x":500,
-        "y":325,
-        "url_original":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
-        "url_thumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
-        "url_300":"",
-        "is_primary":false
+        "isFromIG":false,
+        "width":500,
+        "height":325,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
+        "url300":"",
+        "status":1
       }
     ],
     "preorder":{
-      "is_active":true,
+      "isActive":true,
       "duration":3,
-      "time_unit":1
+      "timeUnit":1
     },
     "wholesale":[
       {
-        "min_qty":100,
-        "max_qty":10000,
-        "price":69000,
-        "min_qty_fmt":"100",
-        "max_qty_fmt":"10.000",
-        "price_fmt":"69.000"
+        "minQty":100,
+        "maxQty":10000,
+        "price":69000
       }
     ],
     "videos":[
@@ -167,30 +160,29 @@
       }
     ],
     "campaign":{
-      "id":6,
-      "type":7,
-      "is_active":true,
-      "is_apps_only":true,
-      "name":"flash sale",
-      "original_price":100000,
-      "percentage":20,
-      "start_date":"2018-10-24T10:00:00+07:00Z",
-      "end_date":"2018-10-24T10:00:00+07:00Z"
+      "campaignID":6,
+      "campaignType":7,
+      "isActive":true,
+      "isAppsOnly":true,
+      "campaignTypeName":"flash sale",
+      "originalPrice":100000,
+      "percentageAmount":20,
+      "startDate":"2018-10-24T10:00:00+07:00Z",
+      "endDate":"2018-10-24T10:00:00+07:00Z"
     },
     "cashback":{
-      "percentage":"5",
-      "value":"Rp3.600"
+      "percentage": 5
     },
     "stats":{
-      "count_view":19300,
-      "count_review":415,
-      "count_talk":391,
+      "countView":19300,
+      "countReview":415,
+      "countTalk":391,
       "rating":361
     },
-    "tx_stats":{
-      "tx_success":1100,
-      "tx_reject":14,
-      "sold":1
+    "txStats":{
+      "txSuccess":1100,
+      "txReject":14,
+      "itemSold":1
     }
   }
 }

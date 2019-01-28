@@ -6,11 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class Cashback(
         @SerializedName("percentage")
         @Expose
-        val percentage: String = "",
-
-        @SerializedName("value")
-        @Expose
-        val value: String = ""
+        val percentage: Int = 0
 )
 
 data class PreOrder(
@@ -18,21 +14,21 @@ data class PreOrder(
         @Expose
         val duration: Int = 0,
 
-        @SerializedName("is_active")
+        @SerializedName("isActive")
         @Expose
         val isActive: Boolean = false,
 
-        @SerializedName("time_unit")
+        @SerializedName("timeUnit")
         @Expose
         val timeUnit: Int = 0
 )
 
 data class ReturnInfo(
-        @SerializedName("color_hex")
+        @SerializedName("colorHex")
         @Expose
         val colorHex: String = "",
 
-        @SerializedName("color_rgb")
+        @SerializedName("colorRgb")
         @Expose
         val colorRgb: String = "",
 
@@ -46,27 +42,15 @@ data class ReturnInfo(
 )
 
 data class Wholesale(
-        @SerializedName("max_qty")
+        @SerializedName("maxQty")
         @Expose
         val maxQty: Int = 0,
 
-        @SerializedName("max_qty_fmt")
-        @Expose
-        val maxQtyFmt: String = "",
-
-        @SerializedName("min_qty")
+        @SerializedName("minQty")
         @Expose
         val minQty: Int = 0,
 
-        @SerializedName("min_qty_fmt")
-        @Expose
-        val minQtyFmt: String = "",
-
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
-
-        @SerializedName("price_fmt")
-        @Expose
-        val priceFmt: String = ""
+        val price: Int = 0
 )

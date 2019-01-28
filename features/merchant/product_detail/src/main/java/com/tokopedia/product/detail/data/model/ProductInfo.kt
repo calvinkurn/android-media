@@ -32,10 +32,6 @@ data class ProductInfo(
         @Expose
         val menu: Menu = Menu(),
 
-        @SerializedName("shop")
-        @Expose
-        val shop: ProductShop = ProductShop(),
-
         @SerializedName("pictures")
         @Expose
         val pictures: List<Picture> = listOf(),
@@ -44,7 +40,7 @@ data class ProductInfo(
         @Expose
         val preorder: PreOrder = PreOrder(),
 
-        @SerializedName("return_info")
+        @SerializedName("returnInfo")
         @Expose
         val returnInfo: ReturnInfo = ReturnInfo(),
 
@@ -52,7 +48,7 @@ data class ProductInfo(
         @Expose
         val stats: Stats = Stats(),
 
-        @SerializedName("tx_stats")
+        @SerializedName("txStats")
         @Expose
         val txStats: TxStats = TxStats(),
 
