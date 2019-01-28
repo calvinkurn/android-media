@@ -13,6 +13,20 @@ import rx.Subscriber
 class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter) :
         Subscriber<GraphqlResponse>() {
 
+    companion object {
+        val STATE_SUCCESS = 200
+        val STATE_ERROR = 400
+        val STATE_HEADER_ERROR_CHANGE_COURIER = "shop_shipment_empty_object"
+        val STATE_HEADER_ERROR_CHANGE_PAYMENT = "Apicalls success but got error"
+        val STATE_HEADER_ERROR_PRODUCT_NOT_ACTIVE = "Product is not active"
+        val STATE_HEADER_ERROR_SHOP_NOT_ACTIVE = "Shop is not active"
+
+        val STATE_CHECKOUT_SUCCESS = 0
+        val STATE_CHECKOUT_ERROR_CHANGE_COURIER = 1
+        val STATE_CHECKOUT_ERROR_CHANGE_PAYMENT = 2
+        val STATE_CHECKOUT_ERROR_FAILED_PAYMENT = 3
+    }
+
     lateinit var domainModelMapper: CheckoutDomainModelMapper
 
     override fun onCompleted() {
@@ -22,18 +36,38 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideLoadingDialog()
+        view?.showErrorAPI()
     }
 
     override fun onNext(response: GraphqlResponse) {
         view?.hideLoadingDialog()
         val checkoutResponse = response.getData<CheckoutExpressGqlResponse>(CheckoutExpressGqlResponse::class.java)
-        if (checkoutResponse.checkoutResponse.header.errorCode.equals("200")) {
-            domainModelMapper = CheckoutDomainModelMapper()
-            val checkoutResponseModel = domainModelMapper.convertToDomainModel(checkoutResponse.checkoutResponse)
-            view?.navigateToThankYouPage(checkoutResponseModel.checkoutDataModel?.dataModel?.applink ?: "")
-        } else {
-            // Todo : show bottomsheet error
-            view?.showBottomsheetError("Checkout error", "Checkout error", "Checkout error")
+        domainModelMapper = CheckoutDomainModelMapper()
+        val checkoutResponseModel = domainModelMapper.convertToDomainModel(checkoutResponse.checkoutResponse)
+        val headerErrorCode = checkoutResponseModel.headerModel?.errorCode?.toInt() ?: 0
+        val dataErrorCode = checkoutResponseModel.checkoutDataModel?.error?.toInt() ?: 0
+        val headerMessage = checkoutResponseModel.headerModel?.messages?.get(0) ?: ""
+        val dataMessage = checkoutResponseModel.checkoutDataModel?.message ?: ""
+
+        when {
+            headerErrorCode == STATE_SUCCESS && dataErrorCode == STATE_CHECKOUT_SUCCESS -> {
+                view?.navigateToThankYouPage(checkoutResponseModel.checkoutDataModel?.dataModel?.applink
+                        ?: "")
+            }
+            headerMessage.equals(STATE_HEADER_ERROR_CHANGE_COURIER) -> {
+                view?.showErrorCourier(checkoutResponseModel.checkoutDataModel?.error ?: "")
+            }
+            headerErrorCode == STATE_SUCCESS && dataErrorCode >= STATE_ERROR ||
+                    (headerErrorCode >= STATE_ERROR && headerMessage.equals(STATE_HEADER_ERROR_CHANGE_PAYMENT)) -> {
+                view?.showErrorPayment(dataMessage)
+            }
+            headerMessage == STATE_HEADER_ERROR_PRODUCT_NOT_ACTIVE -> {
+                view?.showErrorNotAvailable("Stok produk ini sedang kosong. Silakan ganti dengan produk serupa.")
+            }
+            headerMessage == STATE_HEADER_ERROR_SHOP_NOT_ACTIVE -> {
+                view?.showErrorNotAvailable("Toko ini sedang tutup. Silakan gunakan toko lain.")
+            }
+            else -> view?.showErrorAPI()
         }
     }
 

@@ -6,7 +6,7 @@ package com.tokopedia.transaction.common.data.expresscheckout;
 
 public interface Constant {
 
-    String CHECKOUT_TYPE_NCF = "ncf";
+    String CHECKOUT_TYPE_DEFAULT = "ncf";
     String CHECKOUT_TYPE_OCS = "ocs";
     String CHECKOUT_TYPE_EXPRESS = "express";
 

@@ -25,6 +25,7 @@ class CheckoutDomainModelMapper : CheckoutDataMapper {
         headerModel.reason = checkoutResponse.header.reason
         headerModel.errors = checkoutResponse.header.errors
         headerModel.errorCode = checkoutResponse.header.errorCode
+        headerModel.messages = checkoutResponse.header.messages
 
         return headerModel
     }

@@ -39,7 +39,6 @@ import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourie
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
-import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
@@ -481,12 +480,83 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return router.addToCartProduct(addToCartRequest, true)
     }
 
-    override fun showBottomsheetError(title: String, message: String, action: String) {
-        errorBottomSheets.setError(title, message, action)
+    override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {
+        errorBottomSheets.setData(title, message, action, enableRetry)
         if (errorBottomSheets.isVisible) {
             errorBottomSheets.dismiss()
         }
         errorBottomSheets.show(fragmentManager, title)
+    }
+
+    override fun showErrorCourier(message: String) {
+        showBottomSheetError("Pilih Kurir Lain", message, "Pilih Kurir Lain", false)
+        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+            override fun onActionButtonClicked() {
+                errorBottomSheets.dismiss()
+                showDurationOptions()
+            }
+
+            override fun onRetryClicked() {
+                // do nothing
+            }
+        }
+    }
+
+    override fun showErrorNotAvailable(message: String) {
+        showBottomSheetError("Produk tidak tersedia", message, "Tutup", false)
+        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+            override fun onActionButtonClicked() {
+                errorBottomSheets.dismiss()
+            }
+
+            override fun onRetryClicked() {
+                // do nothing
+            }
+        }
+    }
+
+    override fun showErrorAPI() {
+        showBottomSheetError("Terjadi kendala teknis", "Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi", "Lanjutkan Tanpa Template", true)
+        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+            override fun onActionButtonClicked() {
+                errorBottomSheets.dismiss()
+            }
+
+            override fun onRetryClicked() {
+
+            }
+        }
+    }
+
+    override fun showErrorPayment(message: String) {
+        showBottomSheetError("Pilih Metode Pembayaran Lain", message, "Pilih Metode Pembayaran", false)
+        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+            override fun onActionButtonClicked() {
+                errorBottomSheets.dismiss()
+                // Todo : Hit checkout lama, then goto payment activity
+            }
+
+            override fun onRetryClicked() {
+                // do nothing
+            }
+        }
+    }
+
+    private fun showErrorPinpoint(productData: ProductData?, profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
+        showBottomSheetError("Tandai Lokasi Pengiriman", productData?.error?.errorMessage ?: "", "Tandai Lokasi", false)
+        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+            override fun onActionButtonClicked() {
+                errorBottomSheets.dismiss()
+                val locationPass = LocationPass()
+                locationPass.districtName = profileViewModel.districtName
+                locationPass.cityName = profileViewModel.cityName
+                startActivityForResult(router.getGeolocationIntent(contextView, locationPass), REQUEST_CODE_GEOLOCATION)
+            }
+
+            override fun onRetryClicked() {
+                // do nothing
+            }
+        }
     }
 
     override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
@@ -546,15 +616,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
         if (profileViewModel != null) {
             if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                showBottomsheetError("Tandai Lokasi Pengiriman", productData.error.errorMessage, "Tandai Lokasi")
-                errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
-                    override fun onActionButtonClicked() {
-                        val locationPass = LocationPass()
-                        locationPass.districtName = profileViewModel.districtName
-                        locationPass.cityName = profileViewModel.cityName
-                        startActivityForResult(router.getGeolocationIntent(contextView, locationPass), REQUEST_CODE_GEOLOCATION)
-                    }
-                }
+                showErrorPinpoint(productData, profileViewModel)
             } else {
                 profileViewModel.isDurationError = false
                 profileViewModel.shippingCourier = productData.shipperName

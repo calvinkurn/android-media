@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        android:background="@drawable/bg_button_dont_use_template"
+        android:background="@drawable/bg_rectangle_grey"
         android:fontFamily="sans-serif-medium"
         android:foreground="?selectableItemBackground"
         android:gravity="center_horizontal"

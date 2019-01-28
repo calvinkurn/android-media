@@ -17,5 +17,8 @@ data class Header(
         val reason: String,
 
         @SerializedName("error_code")
-        val errorCode: String
+        val errorCode: String,
+
+        @SerializedName("messages")
+        val messages: ArrayList<String>
 )

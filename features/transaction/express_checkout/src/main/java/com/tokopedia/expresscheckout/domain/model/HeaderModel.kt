@@ -7,6 +7,7 @@ package com.tokopedia.expresscheckout.domain.model;
 data class HeaderModel(
         var processTime: Double = 0.0,
         var errors: ArrayList<String>? = null,
+        var messages: ArrayList<String>? = null,
         var reason: String? = null,
         var errorCode: String? = null
 )

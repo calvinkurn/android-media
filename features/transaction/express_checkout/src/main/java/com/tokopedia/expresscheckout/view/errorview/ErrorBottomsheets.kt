@@ -22,10 +22,17 @@ class ErrorBottomsheets : BottomSheets() {
 
     }
 
-    fun setError(title: String, message: String, action: String) {
+    fun setData(title: String, message: String, action: String, enableRetry: Boolean) {
         this.title = title
         tv_message.text = message
         btn_action.text = action
+
+        if (enableRetry) {
+            btn_retry.visibility = View.VISIBLE
+            btn_retry.setOnClickListener { actionListener.onRetryClicked() }
+        } else {
+            btn_retry.visibility = View.GONE
+        }
 
         btn_action.setOnClickListener { actionListener.onActionButtonClicked() }
     }

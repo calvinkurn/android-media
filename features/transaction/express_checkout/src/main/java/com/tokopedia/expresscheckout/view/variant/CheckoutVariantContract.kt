@@ -35,7 +35,15 @@ interface CheckoutVariantContract {
 
         fun showData(viewModels: ArrayList<Visitable<*>>)
 
-        fun showBottomsheetError(title: String, message: String, action: String)
+        fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean)
+
+        fun showErrorCourier(message: String)
+
+        fun showErrorNotAvailable(message: String)
+
+        fun showErrorPayment(message: String)
+
+        fun showErrorAPI()
 
         fun showToasterError(message: String?)
 

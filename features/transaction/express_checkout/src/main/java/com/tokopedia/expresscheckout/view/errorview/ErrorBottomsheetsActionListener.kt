@@ -8,4 +8,6 @@ interface ErrorBottomsheetsActionListener {
 
     fun onActionButtonClicked()
 
+    fun onRetryClicked()
+
 }
