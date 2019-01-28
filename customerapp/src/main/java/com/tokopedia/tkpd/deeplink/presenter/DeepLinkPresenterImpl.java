@@ -10,8 +10,10 @@ import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -54,6 +56,7 @@ import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
+import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
@@ -518,6 +521,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopModel.info.getShopId());
                     context.startActivity(intent);
                 } else {
+                    if (!GlobalConfig.DEBUG) {
+                        Crashlytics.logException(new ShopNotFoundException());
+                    }
                     prepareOpenWebView(uriData);
                 }
             }

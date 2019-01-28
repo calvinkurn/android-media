@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.net.Uri;
 
 import com.appsflyer.AFInAppEventType;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
@@ -64,6 +65,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
@@ -1427,6 +1429,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onNullData() {
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.logException(new ProductNotFoundException());
+            }
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
             if (webViewHandleListener != null) {
                 webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
