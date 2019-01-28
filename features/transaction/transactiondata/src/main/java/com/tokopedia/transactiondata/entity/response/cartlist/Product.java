@@ -74,6 +74,9 @@ public class Product {
     @SerializedName("is_preorder")
     @Expose
     private int isPreorder;
+    @SerializedName("is_cod")
+    @Expose
+    private boolean isCod;
     @SerializedName("product_cashback")
     @Expose
     private String productCashback;
@@ -311,5 +314,13 @@ public class Product {
 
     public boolean isWishlisted() {
         return isWishlisted;
+    }
+
+    public boolean isCod() {
+        return isCod;
+    }
+
+    public void setCod(boolean cod) {
+        isCod = cod;
     }
 }

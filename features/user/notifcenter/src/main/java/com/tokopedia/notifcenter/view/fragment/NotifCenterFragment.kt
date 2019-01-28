@@ -15,6 +15,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.notifcenter.NotifCenterRouter
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.R.string.notif_no_info_desc
+import com.tokopedia.notifcenter.analytics.NotifCenterAnalytics
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
@@ -33,6 +34,10 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
     @Inject
     lateinit var presenter: NotifCenterPresenter
+
+    @Inject
+    lateinit var analytics : NotifCenterAnalytics
+
     private lateinit var adapter: NotifCenterAdapter
     private lateinit var notifCenterRouter: NotifCenterRouter
     private lateinit var menuList: ArrayList<Menus.ItemMenus>
@@ -131,6 +136,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     }
 
     override fun openRedirectUrl(url: String) {
+        analytics.trackClickList()
         activity?.let {
             notifCenterRouter.openRedirectUrl(it, url)
         }
@@ -156,6 +162,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                 if (lastVisibleItemPosition + LOAD_MORE_THRESHOLD > adapter.itemCount
                         && canLoadMore
                         && !isLoading()) {
+                    analytics.trackScrollToBottom()
+
                     presenter.fetchData()
                 }
             }
@@ -179,6 +187,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                 menus.setOnItemMenuClickListener { itemMenus, _ ->
                     resetParam()
                     adapter.clearAllElements()
+                    analytics.trackClickFilter(itemMenus.title)
+
                     when (itemMenus.title) {
                         NotifFilterViewModel.FILTER_BUYER_TEXT -> presenter
                                 .updateFilterId(NotifFilterViewModel.FILTER_BUYER_ID)

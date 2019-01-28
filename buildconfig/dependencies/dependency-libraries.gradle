@@ -42,7 +42,9 @@ ext {
             cacheManager      : ":libraries:cache_manager",
 //            cacheManager      : ":libraries:cache_manager_no_op",
             cameraView        : ":libraries:camera_view",
+            cmnotification    :":libraries:cm_push_notifications",
             commonNetwork     : ":libraries:common_network",
+            coreNetwork       : ":libraries:core_network",
             datePickerRange   : ":libraries:date_picker_range",
             fingerprint       : ":libraries:fingerprint",
             config            : ":libraries:global_config",
@@ -68,6 +70,5 @@ ext {
             design            : ":tkpddesign",
             track             : ":track",
             trackinterface    : ":trackinterface",
-            cmnotification    :":libraries:cm_push_notifications"
     ]
 }
