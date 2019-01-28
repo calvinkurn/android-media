@@ -61,6 +61,7 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
         }
         adapter = GridCalendarAdapter(cells, mCal, maxDateCal,
                 minDateCal, holidayResultList, gridActionListener(cells))
+        calendarGrid.setNestedScrollingEnabled(false);
         calendarGrid.layoutManager = GridLayoutManager(context, 7)
         calendarGrid.adapter = adapter
     }
@@ -95,7 +96,7 @@ class CalendarPickerView @JvmOverloads constructor(context: Context, attrs: Attr
          * set 1 if sunday is the first day of gridview
          * set 2 if sunday is the last day of gridview
          */
-        private val FIRST_DAY_INITIAL = 2
+        private val FIRST_DAY_INITIAL = 1
 
         private val DAYS_COUNT = 42
     }

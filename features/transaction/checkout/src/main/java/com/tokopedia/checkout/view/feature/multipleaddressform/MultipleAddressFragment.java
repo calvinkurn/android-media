@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -34,6 +33,7 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

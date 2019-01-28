@@ -28,6 +28,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -58,6 +60,7 @@ import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.cod.view.CodActivity;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -66,6 +69,7 @@ import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivi
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -114,6 +118,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -296,6 +301,8 @@ import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarke
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
 import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.RecentViewRouter;
+import com.tokopedia.referral.ReferralAction;
+import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -411,6 +418,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -420,6 +428,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -521,7 +530,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingPromoCheckoutRouter,
         TopAdsRouter,
         CMRouter,
-        SaldoDetailsRouter {
+        SaldoDetailsRouter,
+        ReferralRouter,
+        SaldoDetailsRouter,
+        ILoyaltyRouter {
 
     private static final String EXTRA = "extra";
 
@@ -2022,6 +2034,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+        ReferralAction<Context, String, Integer, String, String, String, Context> referralAction = new ReferralAction<>();
+        referralAction.doAction(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE, dataObj,
+                actionCreator, actionUIDelegate);
+    }
+
+    @Override
     public boolean isToggleBuyAgainOn() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, true);
     }
@@ -2803,6 +2822,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         else
             return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
     }
+    @Override
+    public Intent getCodPageIntent(Context context, Data data) {
+        return CodActivity.newIntent(context, data);
+    }
 
     @Override
     public Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart) {
@@ -3563,7 +3586,64 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void eventReferralAndShare(Context context, String action, String label){
+        UnifyTracking.eventReferralAndShare(context, action, label);
+    }
+
+    @Override
+    public void setBranchReferralCode(String referralCode){
+        BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
+    }
+
+    @Override
+    public void sendMoEngageReferralScreenOpen(Context context, String screenName){
+        TrackingUtils.sendMoEngageReferralScreenOpen(context, screenName);
+    }
+
+    @Override
+    public void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap){
+        new DefaultShare(activity, createShareDataFromHashMap(keyValueMap)).show();
+    }
+
+    @Override
+    public void executeShareSocmedHandler(Activity activity, HashMap<String, String> keyValueMap, String packageName){
+        ShareSocmedHandler.ShareSpecific(createShareDataFromHashMap(keyValueMap), activity, packageName,
+                "text/plain", null, null);
+    }
+
+    @Override
+    public void sendAnalyticsToGTM(Context context, String type, String channel){
+        if (type.equals(ShareData.REFERRAL_TYPE)) {
+            eventReferralAndShare(context,
+                    com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(context.getApplicationContext(), channel);
+        } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
+            UnifyTracking.eventAppShareWhenReferralOff(context.getApplicationContext(), com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
+        } else {
+            UnifyTracking.eventShare(context.getApplicationContext(), channel);
+        }
+    }
+
+    private ShareData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
+                .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
+                .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
+                .setTextContent(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.SHARING_CONTENT))
+                .setUri(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URI))
+                .setShareUrl(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URL))
+                .build();
+        return shareData;
+    }
+
+
+    @Override
     public Intent gotoInboxMainPage(Context context) {
         return new Intent(context, InboxMainActivity.class);
+    }
+
+    @Override
+    public Intent getMaintenancePageIntent() {
+        return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 }
