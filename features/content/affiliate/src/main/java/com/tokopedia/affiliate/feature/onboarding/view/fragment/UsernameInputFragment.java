@@ -146,9 +146,10 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetUsernameSuggestion(List<String> suggestions) {
-        setFirstSuggestion(suggestions);
         adapter.setList(suggestions);
         suggestionCard.setVisibility(View.VISIBLE);
+
+        setFirstSuggestion(suggestions);
     }
 
     @Override
