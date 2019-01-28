@@ -72,6 +72,10 @@ class FlashSaleProductWidget @JvmOverloads constructor(
             ImageHandler.LoadImage(ivProduct, item.getProductImageUrl())
             tvDepartmentName.text = item.getDepartmentNameString()
             if (item is FlashSaleSubmissionProductItem) {
+                if (item.getMessage().isNotEmpty()) {
+                    ivCheckMark.visibility = View.GONE
+                    tvStatus.visibility = View.GONE
+                }
                 if (item.getProductStatus() == FlashSaleProductStatusTypeDef.RESERVE) {
                     // show mark
                     ivCheckMark.visibility = View.VISIBLE
