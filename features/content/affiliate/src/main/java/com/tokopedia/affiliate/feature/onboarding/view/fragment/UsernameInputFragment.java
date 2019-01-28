@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -20,10 +21,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
-import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.adapter.SuggestionAdapter;
@@ -157,26 +157,30 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterUsername() {
-        Intent profileIntent = RouteManager.getIntent(
-                getContext(),
-                ApplinkConst.PROFILE.replace(PARAM_USER_ID, userSession.getUserId())
-        );
-        profileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(profileIntent);
+        if (getActivity() == null) {
+            return;
+        }
 
-        Intent intent;
         if (!TextUtils.isEmpty(productId)) {
-            intent = RecommendProductActivity.createIntent(
-                    getContext(),
+            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+
+            Intent profileIntent = RouteManager.getIntent(
+                    getActivity(),
+                    ApplinkConst.PROFILE.replace(PARAM_USER_ID, userSession.getUserId())
+            );
+            profileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            taskStackBuilder.addNextIntent(profileIntent);
+
+            Intent recommendIntent = RecommendProductActivity.createIntent(
+                    getActivity(),
                     productId
             );
-        } else {
-            intent = OnboardingActivity.createIntent(
-                    getContext(),
-                    OnboardingActivity.FINISH_TRUE
-            );
+            taskStackBuilder.addNextIntent(recommendIntent);
+
+            taskStackBuilder.startActivities();
         }
-        startActivity(intent);
+
+        getActivity().finish();
     }
 
     @Override
