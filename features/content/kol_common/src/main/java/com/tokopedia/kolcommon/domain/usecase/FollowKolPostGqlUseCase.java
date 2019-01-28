@@ -1,8 +1,10 @@
 package com.tokopedia.kolcommon.domain.usecase;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -53,24 +55,30 @@ public class FollowKolPostGqlUseCase extends UseCase<FollowResponseModel>{
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map(new Func1<GraphqlResponse, FollowResponseModel>() {
-                    @Override
-                    public FollowResponseModel call(GraphqlResponse graphqlResponse) {
-                        FollowKolQuery followKolQuery = graphqlResponse.getData(FollowKolQuery.class);
-                        if (followKolQuery.getData() != null) {
-                            FollowKolDomain followKolDomain = new FollowKolDomain(
-                                    followKolQuery.getData().getData().getStatus()
-                            );
+                .map(mapResponse());
+    }
 
-                            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS){
-                                return new FollowResponseModel(true, "");
-                            } else {
-                                return new FollowResponseModel(false, "");
-                            }
-                        } else {
-                            return new FollowResponseModel(false, new Throwable().getMessage());
-                        }
+    private Func1<GraphqlResponse, FollowResponseModel> mapResponse() {
+        return graphqlResponse -> {
+            FollowKolQuery followKolQuery = graphqlResponse.getData(FollowKolQuery.class);
+            if (followKolQuery.getData() != null) {
+                FollowKolDomain followKolDomain = new FollowKolDomain(
+                        followKolQuery.getData().getData().getStatus()
+                );
+
+                if (TextUtils.isEmpty(followKolQuery.getData().getError())){
+                    if (followKolQuery.getData().getData().getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS){
+                        return new FollowResponseModel(true, "");
+                    } else {
+                        return new FollowResponseModel(false, "");
                     }
-                });
+                } else {
+                    return new FollowResponseModel(false, followKolQuery.getData().getError());
+                }
+
+            } else {
+                return new FollowResponseModel(false, ErrorHandler.getErrorMessage(context, new RuntimeException()));
+            }
+        };
     }
 }
