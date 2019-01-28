@@ -19,12 +19,19 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.saldodetails.response.model.SummaryDepositParam.PARAM_IS_SELLER;
+
 public class GetSaldoBalanceUseCase {
 
     private static final String GET_SALDO_BALANCE = "SaldoQuery";
+    private static final String PARAM_SALDO_TYPE = "type";
+    private static final String VALUE_SALDO_TYPE_USABLE = "usable";
+    private static final String VALUE_SALDO_TYPE_HOLD = "hold";
     private GraphqlUseCase graphqlUseCase;
     private Context context;
     private boolean isRequesting;
+    private boolean isSeller;
+
 
     @Inject
     public GetSaldoBalanceUseCase(@ApplicationContext Context context) {
@@ -38,6 +45,10 @@ public class GetSaldoBalanceUseCase {
         }
     }
 
+    public void setSellerStatus(boolean status) {
+        this.isSeller = status;
+    }
+
     public void execute(Subscriber<GraphqlResponse> subscriber) {
         graphqlUseCase.clearRequest();
         setRequesting(true);
@@ -45,7 +56,8 @@ public class GetSaldoBalanceUseCase {
         List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
 
         HashMap<String, Object> usableRequestMap = new HashMap<>();
-        usableRequestMap.put("type", "usable");
+        usableRequestMap.put(PARAM_SALDO_TYPE, VALUE_SALDO_TYPE_USABLE);
+        usableRequestMap.put(PARAM_IS_SELLER, isSeller);
         GraphqlRequest graphqlRequestForUsable = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
                 GqlSaldoBalanceResponse.class,
@@ -54,7 +66,8 @@ public class GetSaldoBalanceUseCase {
         graphqlRequestList.add(graphqlRequestForUsable);
 
         HashMap<String, Object> holdRequestMap = new HashMap<>();
-        holdRequestMap.put("type", "hold");
+        holdRequestMap.put(PARAM_SALDO_TYPE, VALUE_SALDO_TYPE_HOLD);
+        holdRequestMap.put(PARAM_IS_SELLER, isSeller);
         GraphqlRequest graphqlRequestForHold = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
                 GqlHoldSaldoBalanceResponse.class,

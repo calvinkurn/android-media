@@ -9,7 +9,7 @@ public class SummaryDepositParam {
     private static final String PARAM_END_DATE = "dateTo";
     private static final String PARAM_PER_PAGE = "maxRows";
     private static final String PARAM_PAGE = "page";
-    private static final String PARAM_IS_SELLER = "isSeller";
+    public static final String PARAM_IS_SELLER = "isSeller";
 
     private String endDate;
     private int page;

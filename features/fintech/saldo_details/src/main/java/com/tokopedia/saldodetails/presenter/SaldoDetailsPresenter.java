@@ -209,6 +209,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     @Override
     public void getSaldoBalance() {
 
+        getSaldoBalanceUseCase.setSellerStatus(isSeller());
         getSaldoBalanceUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {

@@ -1,7 +1,6 @@
-query SaldoQuery($type: String!) {
-  saldo(type: $type) {
+query SaldoQuery($type: String!, $isSeller: Boolean!) {
+  saldo(type: $type, isSeller: $isSeller) {
       deposit
       deposit_fmt
-      __typename
       }
   }
