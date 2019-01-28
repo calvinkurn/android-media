@@ -473,7 +473,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun navigateToThankYouPage(appLink: String) {
         if (appLink.isNotEmpty()) {
-            RouteManager.route(contextView, appLink)
+            val intent = RouteManager.getIntent(contextView, appLink)
+            startActivity(intent)
+            activity?.finish()
         } else {
             showBottomsheetError(
                     "Terjadi Kendala Teknis",
