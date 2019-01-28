@@ -2536,7 +2536,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : categoryLevelStr);
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setQty(productData.getInfo().getProductMinOrder());
+        enhancedECommerceProductCartMapData.setQty(Integer.parseInt(productData.getInfo().getProductMinOrder()));
         enhancedECommerceProductCartMapData.setShopId(productData.getShopInfo().getShopId());
         enhancedECommerceProductCartMapData.setShopType(generateShopType(productData.getShopInfo()));
         enhancedECommerceProductCartMapData.setShopName(productData.getShopInfo().getShopName());
