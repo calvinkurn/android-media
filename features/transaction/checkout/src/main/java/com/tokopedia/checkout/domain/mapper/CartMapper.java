@@ -93,11 +93,11 @@ public class CartMapper implements ICartMapper {
             shopGroupData.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
             shopGroupData.setShopName(shopGroup.getShop().getShopName());
             shopGroupData.setShopType(generateShopType(shopGroup.getShop()));
-            shopGroupData.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
+            shopGroupData.setGoldMerchant(shopGroup.getShop().getGoldMerchant().isGoldBadge());
             shopGroupData.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
             if (shopGroup.getShop().getIsOfficial() == 1) {
                 shopGroupData.setShopBadge(shopGroup.getShop().getOfficialStore().getOsLogoUrl());
-            } else if (shopGroup.getShop().getIsGold() == 1) {
+            } else if (shopGroup.getShop().getGoldMerchant().isGoldBadge()) {
                 shopGroupData.setShopBadge(shopGroup.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
             }
 
@@ -140,7 +140,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setOriginalRemark(cartItemDataOrigin.getProductVarianRemark());
                 cartItemDataOrigin.setOriginalQty(data.getProduct().getProductQuantity());
                 cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
-                cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
+                cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getGoldMerchant().isGoldBadge());
                 cartItemDataOrigin.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
                 cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
                 cartItemDataOrigin.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
@@ -425,7 +425,7 @@ public class CartMapper implements ICartMapper {
     private String generateShopType(Shop shop) {
         if (shop.getIsOfficial() == 1)
             return SHOP_TYPE_OFFICIAL_STORE;
-        else if (shop.getIsGold() == 1)
+        else if (shop.getGoldMerchant().isGoldBadge())
             return SHOP_TYPE_GOLD_MERCHANT;
         else return SHOP_TYPE_REGULER;
     }
