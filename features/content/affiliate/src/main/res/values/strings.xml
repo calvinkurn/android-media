@@ -38,11 +38,8 @@
 
     <!--ONBOARDING-->
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
-    <string name="af_about_comission">Tentang Komisi</string>
-    <string name="af_try_now">Selanjutnya</string>
-    <string name="af_onboarding_make_profile_desc">Buat username By Me, kurasi produk, dan bagikan ke teman untuk meraih Komisi!</string>
-    <string name="af_onboarding_start_by_me">Bagikan Produk Kesukaanmu, Bisa Dapat Komisi!</string>
-    <string name="af_make_by_me_profile">Buat Username By Me, Yuk!</string>
+    <string name="title_af_username">Perbarui Username</string>
+    <string name="af_make_by_me_profile">Sebelum Lanjut,\nPerbarui Username-mu Dulu, Yuk!</string>
     <string name="af_type_username">Ketik Username:</string>
     <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
     <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
