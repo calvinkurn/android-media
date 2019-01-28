@@ -49,6 +49,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     @Inject
     UserSession userSession;
     private boolean isSeller;
+    private SaldoTabItem sellerSaldoTabItem;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -150,6 +151,27 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         saldoDetailPagerAdapter.setItems(saldoTabItems);
         saldoViewPager.setAdapter(saldoDetailPagerAdapter);
         sladoTabLayout.setupWithViewPager(saldoViewPager);
+
+        saldoViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (sellerSaldoTabItem != null &&
+                        sellerSaldoTabItem.getFragment() != null &&
+                        sellerSaldoTabItem.getFragment().isVisible()) {
+                    sellerSaldoTabItem.getFragment().setUserVisibleHint(true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void loadTwoTabItem() {
@@ -161,7 +183,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
         saldoTabItems.add(buyerSaldoTabItem);
 
-        SaldoTabItem sellerSaldoTabItem = new SaldoTabItem();
+        sellerSaldoTabItem = new SaldoTabItem();
         sellerSaldoTabItem.setTitle(getString(R.string.saldo_seller_tab_title));
         sellerSaldoTabItem.setFragment(SaldoDepositFragment.createInstance(true, isSeller));
 
@@ -204,5 +226,13 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.white));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
+    }
+
+    public TabLayout getSaldoTabLayout() {
+        return sladoTabLayout;
+    }
+
+    public View getBuyerTabView() {
+        return getSaldoTabLayout().getChildAt(0);
     }
 }

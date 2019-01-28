@@ -38,7 +38,6 @@
     <string name="title_saldo_setting">Saldo</string>
     <string name="seller_saldo_on_boarding_title">Saldo Penghasilan</string>
     <string name="seller_saldo_on_boarding_desc">Berisi dana hasil penjualan. Dana tidak dapat dibelanjakan, namun dapat digunakan untuk berlangganan Power Merchant dan Kredit TopAds. Untuk melihat <b>Saldo Refund</b> dan hasil penjualan investasi cek Saldo di tab ‘<b>Beli</b>’.</string>
-    <string name="intro_seller_saldo_finish_string">Selesai</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
     <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
