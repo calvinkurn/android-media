@@ -201,7 +201,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     public static final long PAUSE_RESUME_TRESHOLD_TIME = TimeUnit.SECONDS.toMillis(2);
-    private static final String PLAY_TRACE = "play";
+    private static final String PLAY_TRACE = "mp_play_detail";
 
     private static final long TOOLTIP_DELAY = 1500L;
 
