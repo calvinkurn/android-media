@@ -76,6 +76,14 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                     // show mark
                     ivCheckMark.visibility = View.VISIBLE
                     tvStatus.visibility = View.GONE
+                } else if (item.getProductStatus() == FlashSaleProductStatusTypeDef.REJECTED) {
+                    // rejected status is not shown until campaign is inReview
+                    ivCheckMark.visibility = View.GONE
+                    tvStatus.text = FlashSaleProductStatusTypeDef.SUBMITTED.getProductStatusString(context)
+                    val statusColor = StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
+                    tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
+                    tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
+                    tvStatus.visibility = View.VISIBLE
                 } else {
                     ivCheckMark.visibility = View.GONE
                     if (item.getProductStatus().getProductStatusString(context).isEmpty()) {
