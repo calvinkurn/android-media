@@ -2,14 +2,14 @@ package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
 import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 
 import java.net.ConnectException;
