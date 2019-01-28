@@ -7,13 +7,11 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
-        android:layout_margin="@dimen/dp_5"
-        app:cardElevation="@dimen/dp_2"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="@dimen/dp_4"
         app:cardCornerRadius="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_5"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_72">
+        android:layout_height="@dimen/dp_90">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -36,26 +34,48 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
-                <TextView
-                    android:drawablePadding="@dimen/dp_6"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/black_70"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/sp_12"
-                    android:id="@+id/tv_name"
+                <LinearLayout
+                    android:layout_marginBottom="@dimen/dp_5"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    tools:text="Putri Titian"/>
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:drawablePadding="@dimen/dp_6"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black_70"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_12"
+                        android:id="@+id/tv_name"
+                        android:ellipsize="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Devara Fikry Akmal"/>
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        android:maxLines="1"
+                        android:drawablePadding="@dimen/dp_6"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black_38"
+                        android:textSize="@dimen/sp_10"
+                        android:id="@+id/label_following"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/value_status_followed"/>
+                </LinearLayout>
                 <TextView
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:gravity="center_vertical"
                     android:id="@+id/tv_username"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/sp_10"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     tools:text="\@putrititian"/>
                 <TextView
                     android:gravity="center_vertical"
@@ -63,8 +83,7 @@
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/sp_10"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     tools:text="15 post"/>
             </LinearLayout>
             <com.tokopedia.design.component.ButtonCompat
@@ -76,7 +95,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_8"
                 app:buttonCompatType="primary"
-                app:buttonCompatSize="small"/>
+                app:buttonCompatSize="medium"
+                android:text="Follow"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

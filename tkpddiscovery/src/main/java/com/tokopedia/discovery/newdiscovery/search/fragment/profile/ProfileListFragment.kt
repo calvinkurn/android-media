@@ -290,4 +290,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
         launchProfilePage(profileModel.id)
     }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
+    }
 }

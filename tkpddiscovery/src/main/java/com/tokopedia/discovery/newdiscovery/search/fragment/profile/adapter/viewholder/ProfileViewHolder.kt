@@ -15,13 +15,23 @@ import kotlinx.android.synthetic.main.search_result_profile.view.*
 class ProfileViewHolder(itemView: View, val profileListListener: ProfileListListener) : AbstractViewHolder<ProfileViewModel>(itemView) {
     companion object {
         val LAYOUT = R.layout.search_result_profile
+        val TEXT_WITH_ELLIPSIZE = "%s..."
+        val MAX_NAME_LENGHT = 20
     }
     override fun bind(profileData: ProfileViewModel) {
         when(!TextUtils.isEmpty(profileData?.imgUrl?:"")){
             true -> ImageHandler.loadImageCircle2(itemView.context, itemView.img_profile, profileData!!.imgUrl)
         }
-        itemView.tv_name.text = profileData.name
         itemView.tv_username.text = profileData.username
+
+        when(profileData.name.length > MAX_NAME_LENGHT) {
+            true -> {
+                itemView.tv_name.text = String.format(TEXT_WITH_ELLIPSIZE, profileData.name.subSequence(0, MAX_NAME_LENGHT))
+            }
+            false -> {
+                itemView.tv_name.text = profileData.name
+            }
+        }
 
         when(profileData.isKol) {
             true -> {
@@ -67,11 +77,15 @@ class ProfileViewHolder(itemView: View, val profileListListener: ProfileListList
                 itemView.btn_follow.text = itemView.context.getString(R.string.btn_following_text)
                 itemView.btn_follow.buttonCompatType = ButtonCompat.SECONDARY
                 itemView.btn_follow.isClickable = true
+
+                itemView.label_following.visibility = View.VISIBLE
             }
             false -> {
                 itemView.btn_follow.text = itemView.context.getString(R.string.btn_follow_text)
                 itemView.btn_follow.buttonCompatType = ButtonCompat.PRIMARY
                 itemView.btn_follow.isClickable = true
+
+                itemView.label_following.visibility = View.GONE
             }
         }
 
