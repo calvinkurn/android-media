@@ -61,6 +61,13 @@ public class CrackResultMapper implements Func1<CrackResultEntity, CrackResult> 
                     CrackBenefit crackBenefit = new CrackBenefit();
                     crackBenefit.setColor(crackBenefitEntity.getColor());
                     crackBenefit.setSize(crackBenefitEntity.getSize());
+                    crackBenefit.setBenefitType(crackBenefitEntity.getBenefitType());
+                    crackBenefit.setValueBefore(crackBenefitEntity.getValueBefore());
+                    crackBenefit.setValueAfter(crackBenefitEntity.getValueAfter());
+                    crackBenefit.setTierInformation(crackBenefitEntity.getTierInformation());
+                    crackBenefit.setMultiplier(crackBenefitEntity.getMultiplier());
+                    crackBenefit.setAnimationType(crackBenefitEntity.getAnimationType());
+                    crackBenefit.setTemplateText(crackBenefitEntity.getTemplateText());
                     crackBenefit.setText(crackBenefitEntity.getText());
                     crackBenefitList.add(crackBenefit);
                 }

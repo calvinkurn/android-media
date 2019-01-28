@@ -13,7 +13,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -60,6 +59,8 @@ public class WidgetTokenView extends FrameLayout {
     public static final int STEP1_END_MASKED_PERCENT = 70;
     public static final double RATIO_LIGHT_WIDTH = 0.8;
     public static final int CRACK_STEP3_DEGREE = 4;
+    private static final long INFINITE_BOUNCE_START_DELAY = 2000;
+    private static final long INFINITE_BOUNCE_DURATION = 180;
 
     private ImageView imageViewFull;
     private MaskedHeightImageView imageViewCracked;
@@ -69,7 +70,7 @@ public class WidgetTokenView extends FrameLayout {
     private ImageView imageViewLightLeft;
     private ImageView imageViewLightRight;
 
-    private boolean isTokenClicked;
+    private volatile boolean isTokenClicked;
 
     private WidgetTokenListener listener;
     private View rootView;
@@ -77,9 +78,11 @@ public class WidgetTokenView extends FrameLayout {
     private AnimatorSet crackingAnimationSet1;
     private AnimatorSet crackingAnimationSet2;
     private AnimatorSet crackingAnimationSet3;
-    private ObjectAnimator shakeAnimatorSlow;
+    private AnimatorSet initialBounceAnimatorSet;
 
     private MediaPlayer crackMediaPlayer;
+    private volatile boolean isAnimatedFirstTime = true;
+    private volatile long animationStartTime;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -116,12 +119,12 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTokenClicked) {
-                    clearTokenAnimation();
-                    shakeHardAndCrackAnimation();
-                    listener.onClick();
+                if (!isAnimatedFirstTime) {
+                    if (System.currentTimeMillis() - animationStartTime < 2000)
+                        clearTokenAnimationAndCrack();
                 }
                 isTokenClicked = true;
+
             }
         });
 
@@ -183,7 +186,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewRight.requestLayout();
 
         // to show the light on the top left
-        int marginTopLightLeft =imageMarginBottom - (int) (0.75 * imageHeight) - lightImageHeight / 2;
+        int marginTopLightLeft = imageMarginBottom - (int) (0.75 * imageHeight) - lightImageHeight / 2;
         int marginLeftLightLeft = (int) (0.5 * (rootWidth - (int) (0.65 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightLeftLp = (FrameLayout.LayoutParams) imageViewLightLeft.getLayoutParams();
         ivLightLeftLp.width = lightImageWidth;
@@ -261,42 +264,63 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     private void shake() {
-        PropertyValuesHolder pvhShake =
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -8, 8);
-        shakeAnimatorSlow = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
-        shakeAnimatorSlow.setRepeatMode(ValueAnimator.REVERSE);
-        shakeAnimatorSlow.setRepeatCount(5);
-        shakeAnimatorSlow.setDuration(500 / 5);
-        shakeAnimatorSlow.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+        imageViewFull.setPivotY(imageViewFull.getHeight());
+        imageViewFull.setPivotX(imageViewFull.getWidth() * 0.5f);
 
-            }
+        if (initialBounceAnimatorSet == null) {
+            initialBounceAnimatorSet = new AnimatorSet();
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                imageViewFull.setTranslationX(0);
-            }
+            PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f);
+            PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f);
+            ObjectAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, scalex, scaley);
+            bounceAnim.setRepeatCount(2);
+            bounceAnim.setRepeatMode(ValueAnimator.REVERSE);
+            bounceAnim.setDuration(INFINITE_BOUNCE_DURATION);
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                imageViewFull.setTranslationX(0);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        shakeAnimatorSlow.start();
+            PropertyValuesHolder scalex1 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f);
+            PropertyValuesHolder scaley1 = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f);
+            ObjectAnimator bounceBackAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, scalex1, scaley1);
+            bounceBackAnim.setDuration(INFINITE_BOUNCE_DURATION);
+            initialBounceAnimatorSet.playSequentially(bounceAnim, bounceBackAnim);
+        }
+        initialBounceAnimatorSet.addListener(bounceListener);
+        initialBounceAnimatorSet.start();
     }
+
+    Animator.AnimatorListener bounceListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            animationStartTime = System.currentTimeMillis();
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            isAnimatedFirstTime = false;
+            if (isTokenClicked) {
+                clearTokenAnimationAndCrack();
+            } else {
+                if (initialBounceAnimatorSet != null) {
+                    initialBounceAnimatorSet.setStartDelay(2000);
+                    initialBounceAnimatorSet.start();
+                }
+            }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    };
 
     private void shakeHardAndCrackAnimation() {
         imageViewFull.setPivotY(Y_PIVOT_PERCENT * imageViewFull.getHeight());
         imageViewCracked.setPivotY(Y_PIVOT_PERCENT * imageViewCracked.getHeight());
-
         imageViewCracked.setVisibility(VISIBLE);
-
         initCrackingAnimationSet();
         playCrack();
         crackingAnimationSet.start();
@@ -350,6 +374,7 @@ public class WidgetTokenView extends FrameLayout {
     public boolean isCrackPercentageFull() {
         return imageViewCracked.isFullyHiddenByMask();
     }
+
 
     private void initCracking1() {
         if (crackingAnimationSet1 == null) {
@@ -431,8 +456,9 @@ public class WidgetTokenView extends FrameLayout {
     public void stopShaking() {
         imageViewFull.setRotation(0);
         imageViewCracked.setRotation(0);
-        if (shakeAnimatorSlow != null) {
-            shakeAnimatorSlow.cancel();
+        if (initialBounceAnimatorSet != null) {
+            initialBounceAnimatorSet.removeListener(bounceListener);
+            initialBounceAnimatorSet.cancel();
         }
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
@@ -441,23 +467,58 @@ public class WidgetTokenView extends FrameLayout {
 
     public void split() {
         playRewardSound();
-
+        AnimatorSet bounceAnimatorSet = new AnimatorSet();
+        AnimatorSet bounceLeftAnimatorSet = new AnimatorSet();
+        AnimatorSet bounceRightAnimatorSet = new AnimatorSet();
         imageViewFull.setVisibility(View.GONE);
         imageViewCracked.setVisibility(View.GONE);
-
         imageViewLeft.setVisibility(View.VISIBLE);
         imageViewRight.setVisibility(View.VISIBLE);
 
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
-        if (shakeAnimatorSlow != null) {
-            shakeAnimatorSlow.cancel();
+        if (initialBounceAnimatorSet != null) {
+            initialBounceAnimatorSet.removeListener(bounceListener);
+            initialBounceAnimatorSet.cancel();
         }
+        imageViewLeft.setPivotY(imageViewLeft.getHeight());
+        imageViewLeft.setPivotX(imageViewLeft.getWidth() * 0.5f);
+        imageViewRight.setPivotY(imageViewRight.getHeight());
+        imageViewRight.setPivotX(imageViewRight.getWidth() * 0.5f);
+
+        PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.25f);
+        PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.7f);
+
+        ObjectAnimator animLeftBounce = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, scalex, scaley);
+        animLeftBounce.setRepeatCount(1);
+        animLeftBounce.setRepeatMode(ValueAnimator.REVERSE);
+        animLeftBounce.setDuration(200);
+
+        PropertyValuesHolder scalex1 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f);
+        PropertyValuesHolder scaley1 = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f);
+
+        ObjectAnimator animLeftBounceBack = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, scalex1, scaley1);
+        animLeftBounceBack.setDuration(150);
+
+        ObjectAnimator animRightBounce = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, scalex, scaley);
+        animRightBounce.setRepeatCount(1);
+        animRightBounce.setRepeatMode(ValueAnimator.REVERSE);
+        animRightBounce.setDuration(200);
+
+        ObjectAnimator animRightBounceBack = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, scalex1, scaley1);
+        animRightBounceBack.setDuration(150);
+
+        bounceLeftAnimatorSet.playSequentially(animLeftBounce, animLeftBounceBack);
+        bounceRightAnimatorSet.playSequentially(animRightBounce, animRightBounceBack);
+        bounceAnimatorSet.playTogether(bounceLeftAnimatorSet, bounceRightAnimatorSet);
+        bounceAnimatorSet.start();
 
         Animation rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
+        rotateRightAnimation.setStartOffset(300);
         imageViewRight.setAnimation(rotateRightAnimation);
         Animation rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
+        rotateLeftAnimation.setStartOffset(300);
         imageViewLeft.setAnimation(rotateLeftAnimation);
     }
 
@@ -477,18 +538,21 @@ public class WidgetTokenView extends FrameLayout {
         shake();
     }
 
-    public void clearTokenAnimation() {
+    public void clearTokenAnimationAndCrack() {
         imageViewLightLeft.clearAnimation();
         imageViewLightLeft.setVisibility(View.GONE);
         imageViewLightRight.clearAnimation();
         imageViewLightRight.setVisibility(View.GONE);
+        if (initialBounceAnimatorSet != null) {
+            initialBounceAnimatorSet.removeListener(bounceListener);
+            initialBounceAnimatorSet.cancel();
 
-        if (shakeAnimatorSlow != null) {
-            shakeAnimatorSlow.cancel();
         }
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
+        shakeHardAndCrackAnimation();
+        listener.onClick();
     }
 
 }

@@ -9,18 +9,25 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
 import com.tokopedia.gamification.cracktoken.model.CrackResultStatus;
 import com.tokopedia.gamification.cracktoken.model.ExpiredCrackResult;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
+import com.tokopedia.gamification.data.entity.GamificationSumCouponOuter;
+import com.tokopedia.gamification.data.entity.TokoPointDetailEntity;
 import com.tokopedia.gamification.domain.GetCrackResultEggUseCase;
 import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
 import com.tokopedia.gamification.floating.view.model.TokenAsset;
 import com.tokopedia.gamification.floating.view.model.TokenBackgroundAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +51,16 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private GetCrackResultEggUseCase getCrackResultEggUseCase;
     private UserSession userSession;
+    private GraphqlUseCase mGetRewardsUseCase;
 
     @Inject
     public CrackTokenPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase,
                                GetCrackResultEggUseCase getCrackResultEggUseCase,
-                               UserSession userSession) {
+                               UserSession userSession, GraphqlUseCase mGetRewardsUseCase) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
         this.userSession = userSession;
+        this.mGetRewardsUseCase = mGetRewardsUseCase;
     }
 
     @Override
@@ -116,9 +125,48 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         return new GeneralErrorCrackResult(getView().getContext());
     }
 
+    public void getRewardsCount() {
+        mGetRewardsUseCase.clearRequest();
+        GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_sum_coupon),
+                GamificationSumCouponOuter.class);
+        mGetRewardsUseCase.addRequest(sumTokenRequest);
+        GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_current_points),
+                TokoPointDetailEntity.class);
+        mGetRewardsUseCase.addRequest(graphqlRequestPoints);
+        mGetRewardsUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                GamificationSumCouponOuter gamificationSumCouponOuter = graphqlResponse.getData(GamificationSumCouponOuter.class);
+                TokoPointDetailEntity tokoPointDetailEntity = graphqlResponse.getData(TokoPointDetailEntity.class);
+                int points = 0;
+                int loyalty = 0;
+                int coupons = 0;
+                if (gamificationSumCouponOuter != null && gamificationSumCouponOuter.getTokopointsSumCoupon() != null)
+                    coupons = gamificationSumCouponOuter.getTokopointsSumCoupon().getSumCoupon();
+                if (tokoPointDetailEntity != null && tokoPointDetailEntity.getTokoPoints() != null && tokoPointDetailEntity.getTokoPoints().getStatus() != null && tokoPointDetailEntity.getTokoPoints().getStatus().getPoints() != null) {
+                    loyalty = tokoPointDetailEntity.getTokoPoints().getStatus().getPoints().getLoyalty();
+                    points = tokoPointDetailEntity.getTokoPoints().getStatus().getPoints().getReward();
+                }
+                getView().updateRewards(points, coupons, loyalty);
+            }
+        });
+
+    }
+
     @Override
     public void getGetTokenTokopoints() {
         getView().showLoading();
+        getRewardsCount();
         getTokenTokopointsUseCase.execute(new Subscriber<TokenData>() {
             @Override
             public void onCompleted() {
@@ -216,8 +264,8 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     @Override
     public void detachView() {
-        super.detachView();
         getCrackResultEggUseCase.unsubscribe();
         getTokenTokopointsUseCase.unsubscribe();
+        super.detachView();
     }
 }
