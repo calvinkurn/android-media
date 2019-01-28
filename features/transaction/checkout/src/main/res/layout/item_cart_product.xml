@@ -83,7 +83,7 @@
             android:id="@+id/layout_policy"
             layout="@layout/layout_cart_item_policy"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tv_product_name"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_image"

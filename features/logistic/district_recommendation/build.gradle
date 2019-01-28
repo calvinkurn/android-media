@@ -35,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.network)
 
     implementation rootProject.ext.debugToolsDependencies.chuck
