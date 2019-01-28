@@ -42,7 +42,6 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
 
     @Override
     public void getAddress(int page, int sortId, String query) {
-        mView.onFirstPageStartLoad();
         getAddressUseCase
                 .execute(getAddressUseCase.getAddressParam(page, sortId, query),
                         getPeopleAddressSubscriber(page, query));
