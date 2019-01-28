@@ -144,7 +144,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_see_detail_product_info"/>
 
-    <HorizontalScrollView android:id="@+id/youtube_scroll"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/youtube_scroll"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_80"
         android:layout_marginTop="@dimen/dp_16"
@@ -155,15 +156,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_product_desc_label">
-
-        <LinearLayout
-            android:id="@+id/youtube_video_place_holder"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </HorizontalScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/title_product_desc_label"/>
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/txt_product_descr"

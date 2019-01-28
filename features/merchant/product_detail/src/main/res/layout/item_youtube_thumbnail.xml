@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/font_black_primary_70"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dp_80">
+
+    <ImageView android:id="@+id/video_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:tint="@color/cardview_shadow_start_color"
+        tools:src="@drawable/ic_topchat"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_btn_play"/>
+
+    <ProgressBar
+        android:id="@+id/youtube_thumbnail_loading_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+</FrameLayout>

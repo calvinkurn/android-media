@@ -1,10 +1,14 @@
 package com.tokopedia.product.detail.view.fragment.productView
 
+import android.support.v7.widget.LinearLayoutManager
 import android.text.util.Linkify
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfo
+import com.tokopedia.product.detail.data.model.Video
+import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
+import com.tokopedia.product.detail.view.util.SpaceItemDecoration
 import kotlinx.android.synthetic.main.partial_product_full_descr.view.*
 
 class PartialProductDescrFullView private constructor(private val view: View){
@@ -14,8 +18,21 @@ class PartialProductDescrFullView private constructor(private val view: View){
          fun build(_view: View) = PartialProductDescrFullView(_view)
      }
 
+    init {
+        view.youtube_scroll.layoutManager = LinearLayoutManager(view.context,
+                LinearLayoutManager.HORIZONTAL, false)
+        view.youtube_scroll.addItemDecoration(SpaceItemDecoration(view.context.resources.getDimensionPixelSize(R.dimen.dp_16),
+                LinearLayoutManager.HORIZONTAL))
+    }
+
     fun renderData(data: ProductInfo){
         with(view){
+            if (data.videos.isNotEmpty()) {
+                youtube_scroll.adapter = YoutubeThumbnailAdapter(data.videos.toMutableList())
+                youtube_scroll.visibility = View.VISIBLE
+            } else {
+                youtube_scroll.visibility = View.GONE
+            }
             if (data.preorder.isActive){
                 txt_pre_order.text = context.getString(R.string.template_preorder_time, data.preorder.duration)
                 label_pre_order.visibility = View.VISIBLE

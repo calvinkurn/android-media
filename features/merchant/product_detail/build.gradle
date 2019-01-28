@@ -34,6 +34,8 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
