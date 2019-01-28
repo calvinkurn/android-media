@@ -11,6 +11,8 @@ import com.tokopedia.core.network.CoreNetworkApplication;
  * @author anggaprasetiyo on 5/23/17.
  *         Pindahan dari TkpdAuthInterceptor, biar bisa dipake rame rame
  */
+
+@Deprecated
 public class ServerErrorHandler {
     private static final String ACTION_FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";

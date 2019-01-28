@@ -11,6 +11,7 @@ import rx.Observable;
  * Created by ashwanityagi on 08/11/17.
  */
 
+@Deprecated
 public interface ReferralApi {
 
     @POST(TkpdBaseURL.Referral.PATH_GET_REFERRAL_VOUCHER_CODE)

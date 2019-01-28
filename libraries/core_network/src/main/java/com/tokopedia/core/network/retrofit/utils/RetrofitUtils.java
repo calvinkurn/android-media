@@ -28,6 +28,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * @author m.normansyah on 27/11/2015.
  */
+
+@Deprecated
 public class RetrofitUtils {
 
     public static final String NETWORK_FORBIDDEN_ERROR = "silahkan login kembali";

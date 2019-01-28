@@ -11,6 +11,8 @@ import retrofit2.Retrofit;
  * Created by Tkpd_Eka on 12/3/2015.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public class ShopService extends AuthService<ShopApi> {
 
     public ShopService() {

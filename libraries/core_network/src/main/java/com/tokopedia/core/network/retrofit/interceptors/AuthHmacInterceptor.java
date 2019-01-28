@@ -27,6 +27,7 @@ import okio.Buffer;
  * @author anggaprasetiyo on 3/4/17.
  */
 
+@Deprecated
 abstract class AuthHmacInterceptor implements Interceptor {
 
     private static final String TAG = AuthHmacInterceptor.class.getSimpleName();

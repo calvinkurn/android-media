@@ -3,6 +3,7 @@ package com.tokopedia.core.network.entity.homeMenu;
 
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class HomeCategoryMenuItem {
 
     @SerializedName("data")

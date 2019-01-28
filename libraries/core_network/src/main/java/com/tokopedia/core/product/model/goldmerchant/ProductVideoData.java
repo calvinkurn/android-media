@@ -13,6 +13,7 @@ import java.util.List;
  * Created by kris on 11/9/16. Tokopedia
  */
 
+@Deprecated
 public class ProductVideoData implements Parcelable{
 
     @SerializedName("data")

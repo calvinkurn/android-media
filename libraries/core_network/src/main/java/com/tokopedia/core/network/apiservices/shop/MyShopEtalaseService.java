@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 02/12/2015.
  */
+
+@Deprecated
 public class MyShopEtalaseService extends AuthService<MyShopEtalaseApi> {
     private static final String TAG = MyShopEtalaseService.class.getSimpleName();
 

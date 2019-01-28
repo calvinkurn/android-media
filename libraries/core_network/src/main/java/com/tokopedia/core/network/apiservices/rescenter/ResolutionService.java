@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by hangnadi on 3/9/17.
  */
 
+@Deprecated
 public class ResolutionService extends BearerService<ResolutionApi> {
 
     public ResolutionService(String mToken) {

@@ -28,7 +28,9 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -107,17 +109,20 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
     private CategoryData categoryData;
+    private DigitalAnalytics digitalAnalytics;
 
     @Inject
     public ProductDigitalPresenter(
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase) {
+            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
+            DigitalAnalytics digitalAnalytics) {
         super(localCacheHandler);
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
+        this.digitalAnalytics = digitalAnalytics;
     }
 
     @Override
@@ -222,6 +227,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 renderCategoryDataAndBannerToView(
                         categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
+
+                digitalAnalytics.sendCategoryScreen(view.getActivity(), productDigitalData.getCategoryData().getName());
             }
         };
     }

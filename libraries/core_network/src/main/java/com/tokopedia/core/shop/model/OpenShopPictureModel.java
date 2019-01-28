@@ -10,6 +10,7 @@ import org.parceler.Transient;
  * Created by Toped18 on 6/14/2016.
  */
 
+@Deprecated
 @Parcel
 public class OpenShopPictureModel {
 

@@ -11,6 +11,8 @@ import java.util.List;
  * Created by m.normansyah on 19/01/2016.
  * - this didn't support wholesaleprice
  */
+
+@Deprecated
 public class ProductFeedData2 {
     @SerializedName("status")
     @Expose

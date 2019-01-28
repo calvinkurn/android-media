@@ -12,6 +12,8 @@ import retrofit2.Retrofit;
 /**
  * Created by Herdi_WORK on 19.09.16.
  */
+
+@Deprecated
 public class KeroAuthService extends GlobalAuthService<KeroApi> {
 
     private int numberOfRetry = 0;

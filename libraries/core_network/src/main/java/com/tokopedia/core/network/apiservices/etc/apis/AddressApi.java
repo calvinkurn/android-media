@@ -20,6 +20,8 @@ import rx.Observable;
  * AddressApi
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface AddressApi {
 
     @FormUrlEncoded

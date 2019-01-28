@@ -8,6 +8,8 @@ import java.util.Arrays;
 /**
  * Created by m.normansyah on 2/24/16.
  */
+
+@Deprecated
 public class Slide {
     @SerializedName("data")
     @Expose

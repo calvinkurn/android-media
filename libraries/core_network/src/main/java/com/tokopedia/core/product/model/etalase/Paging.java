@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Angga.Prasetiyo on 13/11/2015.
  */
+
+@Deprecated
 public class Paging implements Parcelable{
     private static final String TAG = Paging.class.getSimpleName();
 

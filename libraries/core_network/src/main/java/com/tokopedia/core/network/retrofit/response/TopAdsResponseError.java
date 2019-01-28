@@ -15,6 +15,7 @@ import java.util.List;
 //              {"code":"","title":"Validate param.","detail":"Anggaran minimal 5 kali lebih besar dari Penawaran Maks."}
 //          ]}
 
+@Deprecated
 public class TopAdsResponseError extends BaseResponseError {
     private static final String ERROR_KEY = "errors";
 

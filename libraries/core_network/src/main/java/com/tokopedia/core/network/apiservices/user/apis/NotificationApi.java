@@ -16,6 +16,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface NotificationApi {
 
     @GET(TkpdBaseURL.User.PATH_GET_NOTIFICATION)

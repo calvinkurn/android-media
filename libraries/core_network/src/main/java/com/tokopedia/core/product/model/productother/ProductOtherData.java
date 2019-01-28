@@ -9,6 +9,8 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 14/12/2015.
  */
+
+@Deprecated
 public class ProductOtherData {
     private static final String TAG = ProductOtherData.class.getSimpleName();
 

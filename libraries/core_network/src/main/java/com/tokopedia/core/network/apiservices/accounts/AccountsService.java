@@ -16,6 +16,8 @@ import retrofit2.Retrofit;
 /**
  * @author stevenfredian on 5/25/16.
  */
+
+@Deprecated
 public class AccountsService {
 
     public static final String ACCOUNTS = "ACCOUNTS";

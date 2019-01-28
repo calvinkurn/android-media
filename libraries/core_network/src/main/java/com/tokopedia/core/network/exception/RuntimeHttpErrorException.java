@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
  * @author anggaprasetiyo on 7/3/17.
  */
 
+@Deprecated
 public class RuntimeHttpErrorException extends RuntimeException {
 
     private static final long serialVersionUID = -3093170622024881475L;

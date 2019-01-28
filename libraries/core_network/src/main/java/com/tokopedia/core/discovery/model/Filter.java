@@ -13,6 +13,8 @@ import java.util.List;
 /**
  * @author kulomady on 12/22/16.
  */
+
+@Deprecated
 public class Filter implements Parcelable {
 
     public static final String TEMPLATE_NAME_LOCATION = "template_location";

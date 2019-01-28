@@ -9,6 +9,7 @@ import retrofit2.Retrofit;
  * Created by nisie on 3/10/17.
  */
 
+@Deprecated
 public class UploadImageService extends AuthService<UploadImageApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

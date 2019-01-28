@@ -4,6 +4,7 @@ package com.tokopedia.core.shopinfo.models.shopmodel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class ShopTxStats {
 
     @SerializedName("shop_tx_has_transaction_3_month")

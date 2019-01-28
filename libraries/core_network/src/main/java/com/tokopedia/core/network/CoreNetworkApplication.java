@@ -9,6 +9,7 @@ import com.tokopedia.core.TkpdCoreRouter;
  * Created by User on 10/24/2017.
  */
 
+@Deprecated
 public abstract class CoreNetworkApplication extends BaseMainApplication implements CoreNetworkRouter {
 
     protected static Context context;

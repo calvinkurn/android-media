@@ -39,6 +39,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * Created by ricoharisin on 2/27/17.
  */
 
+@Deprecated
 public class OkHttpFactory {
 
     private final OkHttpClient client = getDefaultClient();

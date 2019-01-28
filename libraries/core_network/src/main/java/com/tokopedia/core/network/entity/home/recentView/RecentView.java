@@ -9,6 +9,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class RecentView extends RecyclerViewItem implements Parcelable {
 
     @SerializedName("badges")

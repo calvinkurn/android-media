@@ -11,6 +11,7 @@ package com.tokopedia.core.discovery.model.searchSuggestion;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Hotlist {
 
     @SerializedName("title")

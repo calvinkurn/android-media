@@ -10,6 +10,8 @@ import java.util.ArrayList;
 /**
  * Created by m.normansyah on 1/28/16.
  */
+
+@Deprecated
 public class GetListFaveShopId {
     @SerializedName("status")
     @Expose

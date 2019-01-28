@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Created by Tkpd_Eka on 8/7/2015.
  */
+@Deprecated
 public final class MultipartEntity {
 
     private class Model {

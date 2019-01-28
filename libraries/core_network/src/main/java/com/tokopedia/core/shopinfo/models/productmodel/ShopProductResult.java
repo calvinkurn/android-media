@@ -4,6 +4,7 @@ package com.tokopedia.core.shopinfo.models.productmodel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class ShopProductResult {
 
     @SerializedName("status")

@@ -6,6 +6,7 @@ import org.parceler.Parcel;
  * Created by Toped10 on 6/1/2016.
  */
 
+@Deprecated
 @Parcel
 public class ShopScheduleModel {
     String close_note;

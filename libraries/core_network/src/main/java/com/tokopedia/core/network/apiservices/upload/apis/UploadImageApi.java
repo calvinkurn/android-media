@@ -19,6 +19,8 @@ import rx.Observable;
  *         <p>
  *         migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public interface UploadImageApi {
 
     @Multipart
