@@ -84,6 +84,7 @@ public class SessionHandler {
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
     private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE = "KEY_AFFILIATE";
     public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
 
     private Context context;
@@ -165,6 +166,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
         LocalCacheHandler.clearCache(context, KEY_PROFILE_BUYER);
+        LocalCacheHandler.clearCache(context, KEY_AFFILIATE);
         logoutInstagram(context);
         try {
             MethodChecker.removeAllCookies(context);

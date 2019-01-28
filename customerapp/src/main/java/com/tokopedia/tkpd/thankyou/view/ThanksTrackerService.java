@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -24,11 +23,7 @@ public class ThanksTrackerService extends IntentService {
         Intent intent = new Intent(context, ThanksTrackerService.class);
         intent.putExtra(DATA, data);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
+        context.startService(intent);
     }
 
     public ThanksTrackerService() {

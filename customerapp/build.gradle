@@ -348,6 +348,7 @@ dependencies {
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticgeolocation)
+    implementation project(rootProject.ext.features.logisticCod)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.logisticinsurance)
     implementation project(rootProject.ext.features.topchat)
