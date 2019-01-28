@@ -86,6 +86,7 @@ public class ExploreFragment
         SearchInputView.Listener,
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
+    private static final String TAG_SHOWCASE = ExploreActivity.class.getName() + ".bottomNavigation";
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
@@ -243,6 +244,9 @@ public class ExploreFragment
             badgeView.bindTarget(layoutProfile);
             badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
             badgeView.setBadgeNumber(-1);
+        }
+        if (!ShowCasePreference.hasShown(getActivity(), TAG_SHOWCASE)) {
+            showShowCase();
         }
     }
 
@@ -760,7 +764,7 @@ public class ExploreFragment
                 getString(R.string.desc_showcase),
                 ShowCaseContentPosition.UNDEFINED));
 
-        showCaseDialog.show(getActivity(), ExploreActivity.class.getName() + ".bottomNavigation", showcases);
+        showCaseDialog.show(getActivity(), TAG_SHOWCASE, showcases);
     }
 
     private ShowCaseDialog createShowCase() {
