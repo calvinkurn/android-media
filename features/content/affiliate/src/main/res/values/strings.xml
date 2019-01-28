@@ -48,9 +48,6 @@
     <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
     <string name="af_save">Simpan</string>
     <string name="af_by_me_domain">tokopedia.me/</string>
-    <string name="af_complete_profile">Mulai Kurasi Produk kesukaanmu!</string>
-    <string name="af_select_product_recommendation">Pilih produk yang kamu suka untuk dibagikan ke temanmu.</string>
-    <string name="af_see_product_selection">Lihat Pilihan Produk</string>
     <string name="af_minimal_character">Username minimum %d karakter</string>
     <string name="af_recommend_this_product">Lanjutkan Kurasi dengan Produk Ini?</string>
     <string name="af_recommend">Rekomendasikan</string>

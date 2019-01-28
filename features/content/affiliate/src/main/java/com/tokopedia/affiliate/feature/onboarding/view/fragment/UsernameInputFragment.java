@@ -146,6 +146,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetUsernameSuggestion(List<String> suggestions) {
+        setFirstSuggestion(suggestions);
         adapter.setList(suggestions);
         suggestionCard.setVisibility(View.VISIBLE);
     }
@@ -276,5 +277,12 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     private void registerUsername() {
         presenter.registerUsername(usernameInput.getTextWithoutPrefix());
+    }
+
+    private void setFirstSuggestion(List<String> suggestions) {
+        if (suggestions == null || suggestions.isEmpty()) {
+            return;
+        }
+        usernameInput.setText(suggestions.get(0));
     }
 }

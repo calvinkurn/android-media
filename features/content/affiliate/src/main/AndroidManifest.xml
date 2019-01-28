@@ -13,12 +13,6 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".feature.onboarding.view.activity.OnboardingActivity"
-            android:label="@string/title_af_tokopedia_byme"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".feature.onboarding.view.activity.UsernameInputActivity"
             android:label="@string/title_af_tokopedia_byme"
             android:screenOrientation="portrait"
