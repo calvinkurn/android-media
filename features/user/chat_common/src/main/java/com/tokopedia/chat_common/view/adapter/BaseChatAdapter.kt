@@ -21,7 +21,7 @@ import java.util.*
 open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
-    private val MILISECONDS: Long = 1000000
+    private val SECONDS: Long = 1000000
 
     var typingModel = TypingChatModel()
 
@@ -44,14 +44,6 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         } else if (holder is ImageAnnouncementViewHolder) {
             (holder as ImageAnnouncementViewHolder).onViewRecycled()
         }
-//
-//        if (holder is ImageDualAnnouncementViewHolder) {
-//            (holder as ImageDualAnnouncementViewHolder).onViewRecycled()
-//        } else if (holder is ProductAttachmentViewHolder) {
-//            (holder as ProductAttachmentViewHolder).onViewRecycled()
-//        } else if (holder is AttachedInvoiceSentViewHolder) {
-//            (holder as AttachedInvoiceSentViewHolder).onViewRecycled()
-//        }
     }
 
     fun setList(list: List<Visitable<*>>) {
@@ -72,7 +64,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     }
 
     fun showTyping() {
-        if(!this.visitables.any{it == typingModel}) {
+        if(this.visitables.none{it == typingModel}) {
             this.visitables.add(0, typingModel)
             notifyItemInserted(0)
         }
@@ -95,27 +87,27 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
             if (position != visitables.size - 1) {
                 try {
                     val now = visitables[position] as BaseChatViewModel
-                    val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
+                    val myTime = (now.replyTime!!).toLong() / SECONDS
                     var prevTime: Long = 0
 
                     if (visitables[position + 1] != null
                             && visitables[position + 1] is BaseChatViewModel) {
                         val prev = visitables[position + 1] as BaseChatViewModel
-                        prevTime = java.lang.Long.parseLong(prev.replyTime) / MILISECONDS
+                        prevTime = (prev.replyTime!!).toLong() / SECONDS
                     }
 
                     (visitables[position] as BaseChatViewModel)
                             .isShowDate = !compareTime(context, myTime, prevTime)
                 } catch (e: NumberFormatException) {
                     (visitables[position] as BaseChatViewModel).isShowDate = false
-                } catch (e: ClassCastException) {
+                } catch (e: Exception) {
                     (visitables[position] as BaseChatViewModel).isShowDate = false
                 }
 
             } else {
                 try {
                     (visitables[position] as BaseChatViewModel).isShowDate = true
-                } catch (e: ClassCastException) {
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
 
@@ -130,13 +122,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
 
                 val now: BaseChatViewModel = visitables[position] as BaseChatViewModel
                 var next: BaseChatViewModel = visitables[position - 1] as BaseChatViewModel
-                val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
+                val myTime = java.lang.Long.parseLong(now.replyTime) / SECONDS
                 var nextItemTime: Long = 0
 
                 if (visitables[position - 1] != null
                         && visitables[position - 1] is BaseChatViewModel) {
                     next = visitables[position - 1] as BaseChatViewModel
-                    nextItemTime = java.lang.Long.parseLong(next.replyTime) / MILISECONDS
+                    nextItemTime = java.lang.Long.parseLong(next.replyTime) / SECONDS
                 }
 
                 (visitables[position] as BaseChatViewModel)
@@ -169,13 +161,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                 }
 
                 var prev: SendableViewModel? = null
-                val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
+                val myTime = java.lang.Long.parseLong(now.replyTime) / SECONDS
                 var prevTime: Long = 0
 
                 if (visitables[position + 1] != null && visitables[position + 1] is SendableViewModel) {
                     prev = visitables.get(position + 1) as SendableViewModel
                     if (prev.replyTime != null) {
-                        prevTime = (prev!!.replyTime)!!.toLong() / MILISECONDS
+                        prevTime = (prev!!.replyTime)!!.toLong() / SECONDS
                     }
                 }
 

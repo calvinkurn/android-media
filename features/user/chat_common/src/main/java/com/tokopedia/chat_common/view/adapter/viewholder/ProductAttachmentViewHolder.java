@@ -124,7 +124,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             } else {
                 imageResource = R.drawable.ic_chat_unread;
             }
-//
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
@@ -172,10 +171,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             ivATC.setVisibility(View.GONE);
         }
 
-//        footerLayout.setVisibility(View.GONE);
-//        separator.setVisibility(View.GONE);
-//        tvBuy.setVisibility(View.GONE);
-//        ivATC.setVisibility(View.GONE);
     }
 
 

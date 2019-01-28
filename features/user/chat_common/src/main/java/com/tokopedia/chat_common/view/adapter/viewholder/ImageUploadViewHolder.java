@@ -18,7 +18,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
  */
 
 public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewModel> {
-    //
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_image_upload;
 

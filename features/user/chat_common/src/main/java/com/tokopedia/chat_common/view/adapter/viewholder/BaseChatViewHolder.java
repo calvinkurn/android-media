@@ -21,6 +21,7 @@ import java.util.Date;
 public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
 
     private static final long MILISECONDS = 1000000;
+    private static final long START_YEAR = 1230768000;
     protected View view;
     protected TextView hour;
     protected TextView date;
@@ -38,7 +39,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
             BaseChatViewModel element = (BaseChatViewModel) viewModel;
             try {
-                if(Long.parseLong(element.getReplyTime())/ MILISECONDS < 1230768000){
+                if(Long.parseLong(element.getReplyTime())/ MILISECONDS < START_YEAR){
 
                     element.setReplyTime(String.valueOf((Long.parseLong(element.getReplyTime())*MILISECONDS)));
                 }

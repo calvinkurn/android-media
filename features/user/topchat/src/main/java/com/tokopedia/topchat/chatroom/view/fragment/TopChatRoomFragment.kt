@@ -334,8 +334,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
             }
 
-//            getViewState().onSetCustomMessage(customMessage)
-
             hideLoading()
         }
     }
@@ -481,7 +479,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     return
                 }
                 processImagePathToUpload(data)?.let {
-                    //                    chatViewState.addMessage(it)
                     presenter.startUploadImages(it)
                 }
             }

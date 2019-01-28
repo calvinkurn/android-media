@@ -407,14 +407,6 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
 
-    private fun isValidReply(message: String): Boolean {
-        if (message.trim { it <= ' ' }.isEmpty()) {
-            view.showSnackbarError(view.getStringResource(R.string.error_empty_product))
-            return false
-        }
-        return true
-    }
-
     override fun addProductToCart(
             router: TopChatRouter,
             element: ProductAttachmentViewModel,

@@ -32,7 +32,6 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 23/11/18.
@@ -214,7 +213,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onRetrySendImage(element: ImageUploadViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onReceiveStartTypingEvent() {

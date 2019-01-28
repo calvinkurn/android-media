@@ -81,9 +81,6 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() == null){
             return 0;
         }
-//        if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-//            return Constant.NotificationId.CHAT;
-//        }
         return 0;
     }
 

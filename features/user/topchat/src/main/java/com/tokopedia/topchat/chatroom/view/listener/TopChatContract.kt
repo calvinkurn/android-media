@@ -35,8 +35,6 @@ interface TopChatContract {
 
         fun showErrorWebSocket(b: Boolean)
 
-//        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
-
         fun onBackPressedEvent()
 
     }

@@ -18,17 +18,17 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
+import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
+import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
-import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
-import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
-import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 
 /**
  * @author : Steven 29/11/18
@@ -367,22 +367,12 @@ class TopChatViewStateImpl(
             action.visibility = View.VISIBLE
 
         } else {
-//            title.setText(R.string.connected_websocket);
             action.visibility = View.GONE
             notifier.visibility = View.GONE
-//            Observable.timer(1500, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe {
-//                        notifier.visibility = View.GONE
-//                    }
         }
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
-//        if (chatroomViewModel.listChat.isNotEmpty()
-//                && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
-//            showQuickReply(chatroomViewModel.listChat[0] as QuickReplyListViewModel)
-//        }
     }
 
     fun setTemplate(listTemplate: List<Visitable<Any>>?) {

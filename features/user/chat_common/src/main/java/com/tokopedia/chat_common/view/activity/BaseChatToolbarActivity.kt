@@ -1,7 +1,5 @@
 package com.tokopedia.chat_common
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -51,7 +49,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
                         MethodChecker.getColor(this@BaseChatToolbarActivity, R.color.grey_700),
                         PorterDuff.Mode.SRC_ATOP
                 )
-                supportActionBar!!.setHomeAsUpIndicator(upArrow)
+                this.setHomeAsUpIndicator(upArrow)
             }
         }
 
