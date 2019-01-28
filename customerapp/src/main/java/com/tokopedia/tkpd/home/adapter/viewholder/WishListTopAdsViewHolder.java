@@ -57,7 +57,6 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
 
     @Override
     public void onImpressionProductAdsItem(int position, Product product) {
-        Log.d(TAG, "onImpressionProductAdsItem Wishlist "+position+" "+product.getName());
         TopAdsGtmTracker.eventWishlistProductView(context, product, position);
     }
 

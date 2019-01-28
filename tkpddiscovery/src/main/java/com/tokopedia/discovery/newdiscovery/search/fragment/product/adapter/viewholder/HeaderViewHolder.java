@@ -29,9 +29,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
@@ -47,6 +49,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.search_header_layout;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
@@ -78,8 +81,13 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(String applink, CpmData data) {
                 productListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, "", data, getAdapterPosition());
+                } else {
+                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, "", data, getAdapterPosition());
+                }
             }
         });
     }

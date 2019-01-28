@@ -93,7 +93,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private void createViewCpmShop(Context context, final Cpm cpm, String appLink, String adsClickUrl) {
+    private void createViewCpmShop(Context context, final CpmData cpmData, String appLink, String adsClickUrl) {
         if (activityIsFinishing(context))
             return;
 
@@ -104,12 +104,12 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView shopName = (TextView) findViewById(R.id.shop_name);
         LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
 
-        promotedTxt.setText(cpm.getPromotedText());
-        shopName.setText(TopAdsBannerView.escapeHTML(cpm.getName()));
-        if (cpm.getBadges().size() > 0) {
+        promotedTxt.setText(cpmData.getCpm().getPromotedText());
+        shopName.setText(TopAdsBannerView.escapeHTML(cpmData.getCpm().getName()));
+        if (cpmData.getCpm().getBadges().size() > 0) {
             badgeContainer.removeAllViews();
             badgeContainer.setVisibility(View.VISIBLE);
-            for (Badge badge : cpm.getBadges()) {
+            for (Badge badge : cpmData.getCpm().getBadges()) {
                 ImageView badgeImg = new ImageView(context);
                 badgeImg.setLayoutParams(new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size_small),
                         context.getResources().getDimensionPixelSize(R.dimen.badge_size_small)));
@@ -135,11 +135,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
                 outRect.right = mItemOffset;
             }
         });
-        if (cpm != null && cpm.getCpmShop() != null) {
+        if (cpmData != null && cpmData.getCpm().getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
-            items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
-            for (int i = 0; i < cpm.getCpmShop().getProducts().size(); i++) {
-                items.add(new BannerShopProductViewModel(cpm.getCpmShop().getProducts().get(i),
+            items.add(new BannerShopViewModel(cpmData, appLink, adsClickUrl));
+            for (int i = 0; i < cpmData.getCpm().getCpmShop().getProducts().size(); i++) {
+                items.add(new BannerShopProductViewModel(cpmData.getCpm().getCpmShop().getProducts().get(i),
                         appLink, adsClickUrl));
             }
             bannerAdsAdapter.setList(items);
@@ -205,19 +205,19 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             final CpmData data = cpmModel.getData().get(0);
             if (data != null && data.getCpm() != null) {
                 if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
-                    createViewCpmShop(getContext(), data.getCpm(), data.getApplinks(), data.getAdClickUrl());
+                    createViewCpmShop(getContext(), data, data.getApplinks(), data.getAdClickUrl());
                 } else if (data.getCpm().getTemplateId() == 4) {
                     createViewCpmDigital(getContext(), data.getCpm());
-                }
-                setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (topAdsBannerClickListener != null) {
-                            topAdsBannerClickListener.onBannerAdsClicked(data.getApplinks());
-                            new ImpresionTask().execute(data.getAdClickUrl());
+                    setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (topAdsBannerClickListener != null) {
+                                topAdsBannerClickListener.onBannerAdsClicked(data.getApplinks(), data);
+                                new ImpresionTask().execute(data.getAdClickUrl());
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
         if (adsListener != null) {

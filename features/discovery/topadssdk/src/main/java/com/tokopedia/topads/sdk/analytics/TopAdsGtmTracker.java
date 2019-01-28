@@ -86,7 +86,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventSearchResultPromoView(Context context, String tabName, CpmData cpm, int position) {
+    public static void eventSearchResultPromoShopView(Context context, String tabName, CpmData cpm, int position) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -108,7 +108,29 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventSearchResultPromoClick(Context context, String tabName, CpmData cpm, int position) {
+    public static void eventSearchResultPromoProductView(Context context, String tabName, CpmData cpm, int position) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "search result",
+                    "eventAction", tabName+" - catalog impression - topads headline product",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", cpm.getId(),
+                                                    "name", "/search - "+tabName+" - catalog - topads headline product",
+                                                    "creative", cpm.getRedirect(),
+                                                    "position", position))
+                            ))
+            );
+            tracker.sendEnhancedEcommerce(map);
+        }
+    }
+
+    public static void eventSearchResultPromoShopClick(Context context, String tabName, CpmData cpm, int position) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -122,6 +144,28 @@ public class TopAdsGtmTracker {
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
                                                     "name", "/search - "+tabName+" - catalog - topads headline shop",
+                                                    "creative", cpm.getRedirect(),
+                                                    "position", position))
+                            ))
+            );
+            tracker.sendEnhancedEcommerce(map);
+        }
+    }
+
+    public static void eventSearchResultPromoProductClick(Context context, String tabName, CpmData cpm, int position) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "search result",
+                    "eventAction", tabName+" - click catalog - topads headline product",
+                    "eventLabel", cpm.getRedirect(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", cpm.getId(),
+                                                    "name", "/search - "+tabName+" - catalog - topads headline product",
                                                     "creative", cpm.getRedirect(),
                                                     "position", position))
                             ))
@@ -224,7 +268,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventHotlistPromoClick(Context context, String keyword, String hotlistKey, CpmData cpm, int position) {
+    public static void eventHotlistShopPromoClick(Context context, String keyword, String hotlistKey, CpmData cpm, int position) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -238,6 +282,28 @@ public class TopAdsGtmTracker {
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
                                                     "name", "/hot topads headline shop/"+hotlistKey+" - hotlist lainnya",
+                                                    "creative", cpm.getRedirect(),
+                                                    "position", position))
+                            ))
+            );
+            tracker.sendEnhancedEcommerce(map);
+        }
+    }
+
+    public static void eventHotlistProductPromoClick(Context context, String keyword, String hotlistKey, CpmData cpm, int position) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "hotlist page",
+                    "eventAction", "topads headline product click",
+                    "eventLabel", "keyword: "+keyword+" - applink: "+cpm.getApplinks(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", cpm.getId(),
+                                                    "name", "/hot topads headline product/"+hotlistKey+" - hotlist lainnya",
                                                     "creative", cpm.getRedirect(),
                                                     "position", position))
                             ))

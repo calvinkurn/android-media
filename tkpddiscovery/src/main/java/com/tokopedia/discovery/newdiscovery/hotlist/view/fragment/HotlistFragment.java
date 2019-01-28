@@ -524,7 +524,6 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void onImpressionProductAdsItem(int position, Product product) {
-        Log.d(TAG, "onImpressionProductAdsItem product "+product.getName()+" pos "+position);
         TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
                 getHotlistAlias(), product, position);
     }

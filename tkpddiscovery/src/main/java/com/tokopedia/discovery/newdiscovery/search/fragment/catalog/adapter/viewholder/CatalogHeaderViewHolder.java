@@ -13,6 +13,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.Catalo
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
@@ -54,7 +55,7 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
         adsBannerView.loadTopAds();
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(String applink, CpmData data) {
                 catalogListener.onBannerAdsClicked(applink);
             }
         });

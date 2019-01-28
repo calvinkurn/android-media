@@ -3,10 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
@@ -54,7 +52,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
 
     @Override
     public void bind(final BannerShopViewModel element) {
-        final Cpm cpm = element.getCpm();
+        final Cpm cpm = element.getCpmData().getCpm();
         if(cpm!=null) {
             Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
@@ -69,7 +67,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 @Override
                 public void onClick(View view) {
                     if(topAdsBannerClickListener!=null) {
-                        topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink());
+                        topAdsBannerClickListener.onBannerAdsClicked(element.getAppLink(), element.getCpmData());
                         new ImpresionTask().execute(element.getAdsClickUrl());
                     }
                 }

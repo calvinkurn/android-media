@@ -20,9 +20,11 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromo
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
@@ -40,6 +42,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
     public static final String DEFAULT_ITEM_VALUE = "1";
     public static final String HOTLIST_ADS_SRC = "hotlist";
+    public static final String SHOP = "shop";
     private DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
     private final Context context;
     private final HotlistListener mHotlistListener;
@@ -82,8 +85,13 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(String applink, CpmData data) {
                 mHotlistListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventHotlistShopPromoClick(context, "", "", data, getAdapterPosition());
+                } else {
+                    TopAdsGtmTracker.eventHotlistProductPromoClick(context, "", "", data, getAdapterPosition());
+                }
             }
         });
         if (!searchQuery.isEmpty()) {
