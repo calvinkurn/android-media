@@ -530,7 +530,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMRouter,
         SaldoDetailsRouter,
         ReferralRouter,
-        SaldoDetailsRouter,
         ILoyaltyRouter {
 
     private static final String EXTRA = "extra";
