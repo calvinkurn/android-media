@@ -124,7 +124,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        const val TALK_PRODUCT_TRACE = "talk_list_product"
+        const val TALK_PRODUCT_TRACE = "mp_talk_product_list"
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
