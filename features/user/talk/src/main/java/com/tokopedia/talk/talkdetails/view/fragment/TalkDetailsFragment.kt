@@ -94,7 +94,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private var isTraceStopped: Boolean = false
     companion object {
-        const val TALK_DETAILS_TRACE = "talk_list_details"
+        const val TALK_DETAILS_TRACE = "mp_talk_detail"
         const val GO_TO_REPORT_TALK_REQ_CODE = 101
         const val GO_TO_ATTACH_PRODUCT_REQ_CODE = 102
 
