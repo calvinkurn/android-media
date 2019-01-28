@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.di;
 
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.logisticaddaddress.data.DataSource;
 import com.tokopedia.logisticaddaddress.data.ManageAddressRepository;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetAddressUseCase;
@@ -47,4 +48,11 @@ public class ManageAddressModule {
     ManageAddressContract.Presenter providePresenter(GetAddressUseCase getAddressUseCase) {
         return new ManageAddressPresenter(getAddressUseCase);
     }
+
+    @Provides
+    @AddressScope
+    PerformanceMonitoring providePerformanceMonitoring(){
+        return new PerformanceMonitoring();
+    }
+
 }
