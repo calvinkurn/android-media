@@ -18,6 +18,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
@@ -50,13 +51,16 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     private int clickPosition;
     private ImageView btnWishList;
     private RelativeLayout wishlistBtnContainer;
+    private TopAdsItemImpressionListener impressionListener;
 
     public ProductListViewHolder(View itemView, ImageLoader imageLoader,
                                  LocalAdsClickListener itemClickListener,
+                                 TopAdsItemImpressionListener itemImpressionListener,
                                  int clickPosition,
                                  boolean enableWishlist) {
         super(itemView);
         this.itemClickListener = itemClickListener;
+        this.impressionListener = impressionListener;
         this.imageLoader = imageLoader;
         this.clickPosition = clickPosition;
         context = itemView.getContext();
@@ -81,6 +85,15 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         Product product = data.getProduct();
         if (product != null) {
             productImage.setImage(product.getImage());
+            productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+                @Override
+                public void onViewHint() {
+                    if(impressionListener!=null){
+                        impressionListener.onImpressionProductAdsItem((clickPosition < 0 ?
+                                getAdapterPosition() : clickPosition), product);
+                    }
+                }
+            });
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 productName.setText(Html.fromHtml(product.getName(),
                         Html.FROM_HTML_MODE_LEGACY));

@@ -17,14 +17,17 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener, TopAdsSwitcher {
+public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener,
+        TopAdsItemImpressionListener, TopAdsSwitcher {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_item_ads;
@@ -32,6 +35,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private TopAdsWidgetView adsWidgetView;
     private Context context;
     private ProductListener itemClickListener;
+    private String keyword = "";
 
     public TopAdsViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
@@ -39,6 +43,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         this.itemClickListener = itemClickListener;
         adsWidgetView = itemView.findViewById(R.id.topads_view);
         adsWidgetView.setItemClickListener(this);
+        adsWidgetView.setImpressionListener(this);
         adsWidgetView.setDisplayMode(DisplayMode.GRID);
         adsWidgetView.setItemDecoration(new RecyclerView.ItemDecoration() {
 
@@ -74,6 +79,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public void bind(TopAdsViewModel element) {
         adsWidgetView.setAdapterPosition(getAdapterPosition());
         adsWidgetView.setData(element.getDataList());
+        this.keyword = element.getQuery();
     }
 
     @Override
@@ -90,6 +96,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
             intent.putExtras(bundle);
             activity.startActivity(intent);
+            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position);
         }
     }
 
@@ -107,4 +114,8 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         adsWidgetView.setDisplayMode(mode);
     }
 
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        TopAdsGtmTracker.eventSearchResultProductView(context, keyword, product, position);
+    }
 }

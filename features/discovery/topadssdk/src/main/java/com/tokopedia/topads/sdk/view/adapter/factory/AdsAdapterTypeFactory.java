@@ -114,11 +114,14 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
-            holder = new ProductGridViewHolder(view, imageLoader, itemClickListener, clickPosition, enableWishlist);
+            holder = new ProductGridViewHolder(view, imageLoader, itemClickListener,
+                    itemImpressionListener, clickPosition, enableWishlist);
         } else if (viewType == ProductListViewHolder.LAYOUT) {
-            holder = new ProductListViewHolder(view, imageLoader, itemClickListener, clickPosition, enableWishlist);
+            holder = new ProductListViewHolder(view, imageLoader, itemClickListener,
+                    itemImpressionListener, clickPosition, enableWishlist);
         } else if (viewType == ProductBigViewHolder.LAYOUT) {
-            holder = new ProductBigViewHolder(view, imageLoader, itemClickListener, clickPosition, enableWishlist);
+            holder = new ProductBigViewHolder(view, imageLoader, itemClickListener,
+                    itemImpressionListener, clickPosition, enableWishlist);
         } else if (viewType == ShopGridViewHolder.LAYOUT) {
             holder = new ShopGridViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopListViewHolder.LAYOUT) {

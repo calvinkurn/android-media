@@ -233,7 +233,7 @@ public class ProductListFragment extends SearchSectionFragment
         }
         list.add(headerViewModel);
         if (!productViewModel.getAdsModel().getData().isEmpty()) {
-            list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
+            list.add(new TopAdsViewModel(productViewModel.getAdsModel(), productViewModel.getQuery()));
         }
         list.addAll(productViewModel.getProductList());
         if (productViewModel.getRelatedSearchModel() != null) {

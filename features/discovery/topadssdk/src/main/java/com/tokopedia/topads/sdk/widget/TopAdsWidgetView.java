@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
@@ -26,6 +27,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
@@ -42,7 +44,7 @@ import javax.inject.Inject;
  * Created by errysuprayogi on 2/20/18.
  */
 
-public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsClickListener {
+public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsClickListener, TopAdsItemImpressionListener {
 
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
@@ -57,6 +59,7 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode mode = DisplayMode.GRID;
     private TypedArray styledAttributes;
+    private TopAdsItemImpressionListener impressionListener;
 
     @Inject
     TopAdsPresenter presenter;
@@ -98,6 +101,7 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setAdsItemImpressionListener(this);
         try {
             adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
         } finally {
@@ -176,6 +180,10 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setImpressionListener(TopAdsItemImpressionListener impressionListener) {
+        this.impressionListener = impressionListener;
     }
 
     public void notifyDataChange() {
@@ -280,5 +288,12 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     public void showErrorRemoveWishlist() {
         SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        if(impressionListener!=null){
+            impressionListener.onImpressionProductAdsItem(position, product);
+        }
     }
 }

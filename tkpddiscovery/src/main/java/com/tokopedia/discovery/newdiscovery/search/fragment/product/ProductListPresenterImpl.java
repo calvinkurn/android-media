@@ -205,7 +205,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         List<Visitable> list = new ArrayList<Visitable>();
                         getView().removeLoading();
                         if(!productViewModel.getAdsModel().getData().isEmpty()) {
-                            list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
+                            list.add(new TopAdsViewModel(productViewModel.getAdsModel(), productViewModel.getQuery()));
                         }
                         list.addAll(productViewModel.getProductList());
                         getView().setProductList(list);
@@ -291,7 +291,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         }
                         list.add(headerViewModel);
                         if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
-                            list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
+                            list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel(), productViewModel.getQuery()));
                         }
                         list.addAll(productViewModel.getProductList());
                         if (productViewModel.getRelatedSearchModel() != null) {
