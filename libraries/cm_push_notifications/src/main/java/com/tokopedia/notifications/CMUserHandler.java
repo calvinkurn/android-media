@@ -1,6 +1,8 @@
 package com.tokopedia.notifications;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,6 +19,8 @@ import com.tokopedia.usecase.RequestParams;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import rx.Completable;
 import rx.Subscriber;
@@ -39,20 +43,30 @@ public class CMUserHandler {
     }
 
     public void updateToken(String token) {
-        Completable.fromAction(() -> sendFcmTokenToServer(token))
-                .subscribeOn(Schedulers.io()).subscribe();
+        try {
+            long delay = getRandomDelay();
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(() -> Completable.fromAction(() -> sendFcmTokenToServer(token))
+                    .subscribeOn(Schedulers.io()).subscribe(), delay);
+        } catch (Exception e) {
+        }
+
     }
 
     private void sendFcmTokenToServer(String token) {
         try {
+            if (getTempFcmId().equalsIgnoreCase(token)) {
+                //ignore temporary fcm token
+                return;
+            }
             String userId = getUserId();
             String gAdId = getGoogleAdId();
             int appVersion = CMNotificationUtils.getCurrentAppVersion(mContext);
 
             if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
                     CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
-                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId)||
-                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext,appVersion)) {
+                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId) ||
+                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersion)) {
 
                 updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
                 RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
@@ -80,7 +94,7 @@ public class CMUserHandler {
                             CMNotificationUtils.saveToken(mContext, token);
                             CMNotificationUtils.saveUserId(mContext, userId);
                             CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
-                            CMNotificationUtils.saveAppVersion(mContext,appVersion );
+                            CMNotificationUtils.saveAppVersion(mContext, appVersion);
                         }
                     }
                 });
@@ -119,6 +133,17 @@ public class CMUserHandler {
 
     private String getUserId() {
         return ((CMRouter) mContext).getUserId();
+    }
+
+    private static String getTempFcmId() {
+        return UUID.randomUUID().toString();
+    }
+
+    private long getRandomDelay() {
+        Random rand = new Random();
+        int millis = rand.nextInt(1000) + 1;//in millis delay
+        int seconds = rand.nextInt(2 * 60) + 1;//in min
+        return (seconds * 1000 + millis);
     }
 
 }

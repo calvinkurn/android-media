@@ -425,6 +425,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import permissions.dispatcher.PermissionRequest;
@@ -551,6 +552,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onCreate() {
         super.onCreate();
+        Hansel.init(this);
         initializeDagger();
         initDaggerInjector();
         initRemoteConfig();

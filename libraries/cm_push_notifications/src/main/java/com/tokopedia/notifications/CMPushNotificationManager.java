@@ -51,14 +51,16 @@ public class CMPushNotificationManager {
      * @param token
      */
     public void setFcmTokenCMNotif(String token) {
-        CommonUtils.dumper("token: " + token);
-        if (mContext == null) {
-            return;
+        if(checkFirebaseEnable()) {
+            CommonUtils.dumper("token: " + token);
+            if (mContext == null) {
+                return;
+            }
+            if (TextUtils.isEmpty(token)) {
+                return;
+            }
+            (new CMUserHandler(mContext)).updateToken(token);
         }
-        if (TextUtils.isEmpty(token)) {
-            return;
-        }
-        (new CMUserHandler(mContext)).updateToken(token);
     }
 
 
@@ -103,4 +105,7 @@ public class CMPushNotificationManager {
         return bundle;
     }
 
+    private boolean checkFirebaseEnable() {
+        return (((CMRouter) getApplicationContext()).getBooleanRemoteConfig("cm_token_capture_enable", true));
+    }
 }
