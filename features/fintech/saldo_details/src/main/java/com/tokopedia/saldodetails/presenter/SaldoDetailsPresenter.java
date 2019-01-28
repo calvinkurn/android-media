@@ -53,13 +53,14 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
     private static final long MAX_DAYS_DIFFERENCE = 31;
+    private static final long SEARCH_DELAY = 500;
     private static final java.lang.String DATE_FORMAT_VIEW = "dd MMM yyyy";
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private String paramStartDate;
     private String paramEndDate;
     private static final String BUNDLE_TOTAL_BALANCE = "total_balance";
     private static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
-    private static final java.lang.String DATE_FORMAT_WS = "yyyy/MM/dd";
+    private static final String DATE_FORMAT_WS = "yyyy/MM/dd";
 
     private PagingHandler paging;
     private DepositCacheInteractor depositCacheInteractor;
@@ -72,6 +73,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     GetTickerWithdrawalMessageUseCase getTickerWithdrawalMessageUseCase;
     @Inject
     SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
+    private boolean isSeller;
 
     @Inject
     public SaldoDetailsPresenter(@ApplicationContext Context context) {
@@ -151,7 +153,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         datePicker.DatePickerCalendar((year, month, day) -> {
             String selectedDate = getDate(year, month, day);
             getView().setEndDate(selectedDate);
-            new android.os.Handler().postDelayed(this::onSearchClicked, 500);
+            new android.os.Handler().postDelayed(this::onSearchClicked, SEARCH_DELAY);
         });
 
     }
@@ -174,7 +176,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         datePicker.DatePickerCalendar((year, month, day) -> {
             String selectedDate = getDate(year, month, day);
             getView().setStartDate(selectedDate);
-            new android.os.Handler().postDelayed(this::onSearchClicked, 500);
+            new android.os.Handler().postDelayed(this::onSearchClicked, SEARCH_DELAY);
 
         });
     }
@@ -420,6 +422,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         }
 
         param.setPage(paging.getPage());
+        param.setSeller(isSeller());
         return param.getParamSummaryDeposit();
 
     }
@@ -562,4 +565,11 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         getView().finishLoading();
     }
 
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(boolean seller) {
+        isSeller = seller;
+    }
 }

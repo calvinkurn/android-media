@@ -243,6 +243,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
             isSellerEnabled = getArguments().getBoolean(IS_SELLER_ENABLED);
         }
 
+        saldoDetailsPresenter.setSeller(isSeller);
+
         if (isSeller) {
             totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_seller));
         } else if (isSellerEnabled) {

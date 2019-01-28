@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_24"
-            android:src="@drawable/ic_empty_page_error_cloud_" />
+            android:src="@drawable/saldo_splitting_intro" />
 
         <TextView
             android:id="@+id/description_1"

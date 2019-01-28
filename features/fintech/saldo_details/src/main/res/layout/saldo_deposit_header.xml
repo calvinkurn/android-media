@@ -78,7 +78,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16">
+                android:padding="@dimen/dp_16">
 
                 <TextView
                     android:id="@+id/saldo_deposit_text"
@@ -95,10 +95,12 @@
                     android:id="@+id/saldo_deposit_text_info"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
-                    android:padding="@dimen/dp_4"
-                    android:layout_toRightOf="@+id/saldo_deposit_text"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_alignTop="@+id/saldo_deposit_text"
+                    android:layout_alignBottom="@+id/saldo_deposit_text"
                     android:layout_toEndOf="@+id/saldo_deposit_text"
-                    android:layout_above="@+id/total_balance"
+                    android:layout_toRightOf="@+id/saldo_deposit_text"
+                    android:padding="@dimen/dp_3"
                     android:src="@drawable/info_icon"
                     android:visibility="visible"
                     tools:visibility="visible" />

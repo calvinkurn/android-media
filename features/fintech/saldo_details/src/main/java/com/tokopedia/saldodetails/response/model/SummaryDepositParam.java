@@ -9,11 +9,13 @@ public class SummaryDepositParam {
     private static final String PARAM_END_DATE = "dateTo";
     private static final String PARAM_PER_PAGE = "maxRows";
     private static final String PARAM_PAGE = "page";
+    private static final String PARAM_IS_SELLER = "isSeller";
 
-    String endDate;
-    int page;
-    int perPage = 25;
-    String startDate;
+    private String endDate;
+    private int page;
+    private int perPage = 25;
+    private String startDate;
+    private boolean isSeller;
 
     public String getEndDate() {
         return endDate;
@@ -47,12 +49,21 @@ public class SummaryDepositParam {
         this.startDate = startDate;
     }
 
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(boolean seller) {
+        isSeller = seller;
+    }
+
     public Map<String, Object> getParamSummaryDeposit() {
         Map<String, Object> param = new HashMap<>();
         param.put(PARAM_START_DATE, startDate);
         param.put(PARAM_END_DATE, endDate);
         param.put(PARAM_PER_PAGE, perPage);
         param.put(PARAM_PAGE, page);
+        param.put(PARAM_IS_SELLER, isSeller);
         return param;
     }
 
