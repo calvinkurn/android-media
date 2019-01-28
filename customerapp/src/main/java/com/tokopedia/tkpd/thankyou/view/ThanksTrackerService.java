@@ -33,9 +33,6 @@ public class ThanksTrackerService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            startForeground(1, new Notification());
-        }
     }
 
     @Override
