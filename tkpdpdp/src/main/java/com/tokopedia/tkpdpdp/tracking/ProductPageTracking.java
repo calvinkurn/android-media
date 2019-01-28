@@ -278,7 +278,7 @@ public class ProductPageTracking {
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", "productClick",
                         "eventCategory", "product detail page",
-                        "eventAction", "click - top ads",
+                        "eventAction", "click - topads",
                         "eventLabel", "",
                         "ecommerce", DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/productdetail - top ads'"),
@@ -306,7 +306,7 @@ public class ProductPageTracking {
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", "productView",
                         "eventCategory", "product detail page",
-                        "eventAction", "impression - top ads",
+                        "eventAction", "impression - topads",
                         "eventLabel", "",
                         "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
                                 "impression", DataLayer.listOf(

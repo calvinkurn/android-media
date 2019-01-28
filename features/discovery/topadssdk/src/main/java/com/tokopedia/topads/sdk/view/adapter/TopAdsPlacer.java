@@ -21,6 +21,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.view.AdsView;
@@ -39,7 +40,7 @@ import javax.inject.Inject;
  * @author by errysuprayogi on 4/18/17.
  */
 
-public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
+public class TopAdsPlacer implements AdsView, LocalAdsClickListener, TopAdsItemImpressionListener {
 
     private static final String TAG = TopAdsPlacer.class.getSimpleName();
     private int ajustedPositionStart = 0;
@@ -60,6 +61,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private RecyclerView recyclerView;
     private static final int ROW_ADS_INDEX_FEED = 2;
     private Context context;
+    private TopAdsItemImpressionListener impressionListener;
 
     @Inject
     TopAdsPresenter presenter;
@@ -70,6 +72,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         this.adapter = adapter;
         this.observer = observer;
         typeFactory.setItemClickListener(this);
+        typeFactory.setImpressionListener(this);
         initInjector();
         initPresenter();
     }
@@ -99,6 +102,17 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     public void setTopAdsListener(TopAdsListener topAdsListener) {
         this.topAdsListener = topAdsListener;
+    }
+
+    public void setImpressionListener(TopAdsItemImpressionListener impressionListener) {
+        this.impressionListener = impressionListener;
+    }
+
+    @Override
+    public void onImpressionProductAdsItem(int position, Product product) {
+        if(impressionListener!=null){
+            impressionListener.onImpressionProductAdsItem(position, product);
+        }
     }
 
     public void setShouldLoadAds(boolean shouldLoadAds) {
