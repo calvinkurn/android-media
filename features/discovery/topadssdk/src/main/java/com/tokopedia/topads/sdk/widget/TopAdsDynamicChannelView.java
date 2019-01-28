@@ -128,6 +128,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         if(adsItemClickListener!=null){
             adsItemClickListener.onProductItemClicked(position, data.getProduct());
             openTopAdsUseCase.execute(data.getProductClickUrl());
+            TopAdsGtmTracker.eventHomeProductClick(getContext(), data.getProduct(), position);
         }
     }
 
@@ -149,7 +150,6 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
 
     @Override
     public void onImpressionProductAdsItem(int position, Product product) {
-        Log.d(TAG, "onImpressionProductAdsItem pos "+position+" name "+product.getName());
         TopAdsGtmTracker.eventHomeProductView(getContext(), product, position);
     }
 }
