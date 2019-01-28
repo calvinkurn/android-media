@@ -92,6 +92,10 @@ public class DynamicFeedShopAdapter
         }
 
         private void bind(Data data) {
+            if (data == null) {
+                return;
+            }
+                
             initView(data);
             initListener(data);
         }
