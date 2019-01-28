@@ -62,18 +62,13 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
 
     @Override
     protected void setViewListener() {
-//        ivToggle.setImageResource(R.drawable.chevron_down);
-//        tvDesc.setMaxLines(5);
-//        isExpand = false;
-//        ivToggle.setOnClickListener(new ClickToggle());
-//        setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull List<ImageReviewItem> imageReviewItems) {
         ItemAdapter adapter = new ItemAdapter();
-        int endRow = imageReviewItems.size()>4?DEFAULT_END_ROW :
-                (imageReviewItems.size()-1);
+        int endRow = imageReviewItems.size() > 4 ? DEFAULT_END_ROW :
+                (imageReviewItems.size() - 1);
         adapter.setData(imageReviewItems.subList(DEFAULT_START_ROW, endRow));
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4);
         rv_image.setLayoutManager(gridLayoutManager);
