@@ -48,11 +48,4 @@ public class ManageAddressModule {
     ManageAddressContract.Presenter providePresenter(GetAddressUseCase getAddressUseCase) {
         return new ManageAddressPresenter(getAddressUseCase);
     }
-
-    @Provides
-    @AddressScope
-    PerformanceMonitoring providePerformanceMonitoring(){
-        return new PerformanceMonitoring();
-    }
-
 }
