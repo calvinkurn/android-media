@@ -135,6 +135,7 @@ public class CartItemData implements Parcelable {
         private int weightUnit;
         private String weightFormatted;
         private boolean isPreOrder;
+        private boolean isCod;
         private boolean isFreeReturn;
         private boolean isCashBack;
         private boolean isFavorite;
@@ -155,6 +156,8 @@ public class CartItemData implements Parcelable {
         private boolean goldMerchant;
         private boolean wishlisted;
         private int originalQty;
+        private String goldMerchantLogoUrl;
+        private String officialStoreLogoUrl;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -420,6 +423,22 @@ public class CartItemData implements Parcelable {
             this.goldMerchant = goldMerchant;
         }
 
+        public String getGoldMerchantLogoUrl() {
+            return goldMerchantLogoUrl;
+        }
+
+        public void setGoldMerchantLogoUrl(String goldMerchantLogoUrl) {
+            this.goldMerchantLogoUrl = goldMerchantLogoUrl;
+        }
+
+        public String getOfficialStoreLogoUrl() {
+            return officialStoreLogoUrl;
+        }
+
+        public void setOfficialStoreLogoUrl(String officialStoreLogoUrl) {
+            this.officialStoreLogoUrl = officialStoreLogoUrl;
+        }
+
         public boolean isWishlisted() {
             return wishlisted;
         }
@@ -450,6 +469,14 @@ public class CartItemData implements Parcelable {
 
         public void setOriginalQty(int originalQty) {
             this.originalQty = originalQty;
+        }
+
+        public boolean isCod() {
+            return isCod;
+        }
+
+        public void setCod(boolean cod) {
+            isCod = cod;
         }
 
         public OriginData() {

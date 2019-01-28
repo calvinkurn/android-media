@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.tkpdpdp.R;
@@ -55,8 +56,12 @@ public class YoutubeWebViewThumbnail extends RelativeLayout{
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContext().startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://www.youtube.com/watch?v=" + videoId)));
+                try {
+                    getContext().startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://www.youtube.com/watch?v=" + videoId)));
+                } catch (Throwable throwable){
+                    Toast.makeText(getContext(), R.string.no_support_application, Toast.LENGTH_SHORT).show();
+                }
             }
         };
     }

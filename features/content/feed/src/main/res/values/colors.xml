@@ -10,13 +10,5 @@
     <color name="feed_new_cards_border">#e0e0e0</color>
     <color name="feed_bg_color">#fafbfc</color>
 
-    <color name="poll_black">#80000000</color>
-    <color name="poll_first_green">@color/medium_green</color>
-    <color name="poll_second_green">#aee2b1</color>
-    <color name="poll_first_white">#e0e0e0</color>
-    <color name="poll_second_white">#cecece</color>
-    <color name="poll_first_white_image">#b5b5b5</color>
-    <color name="poll_second_white_image">#f8f8f8</color>
-
     <color name="grey_chevron">#bdbdbd</color>
 </resources>

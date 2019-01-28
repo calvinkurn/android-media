@@ -12,6 +12,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -20,6 +22,8 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -27,15 +31,18 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 
 
-public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
+public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
+    private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
 
     private ReactInstanceManager reactInstanceManager;
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"
@@ -68,53 +75,18 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_react_native;
-    }
-
-    @Override
-    protected void initView() {
+    protected ReactNativeThankYouPageFragment getReactNativeFragment() {
         Bundle initialProps = getIntent().getExtras();
         initialProps.remove("android.intent.extra.REFERRER");
         initialProps.remove("is_deep_link_flag");
         initialProps.remove("deep_link_uri");
-        Log.i("ReactNative", initialProps.toString());
         sendAnalytics(initialProps);
-        ReactNativeThankYouPageFragment fragment = ReactNativeThankYouPageFragment.createInstance(initialProps);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        }
-        fragmentTransaction.commit();
+        return ReactNativeThankYouPageFragment.createInstance(initialProps);
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+    protected String getToolbarTitle() {
+        return "Tokopedia";
     }
 
     @Override
@@ -177,5 +149,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     private void closeThankyouPage() {
         super.onBackPressed();
+        RouteManager.route(this, ApplinkConst.HOME);
+        finish();
     }
 }

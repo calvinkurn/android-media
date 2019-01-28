@@ -5,6 +5,23 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
+        .FeedRecommendationViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
+import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
@@ -55,12 +72,14 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author by nisie on 5/15/17.
  */
 
 public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
-        implements FeedPlusTypeFactory, KolPostTypeFactory {
+        implements FeedPlusTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     private final FeedPlus.View viewListener;
     private final TopAdsItemClickListener topAdsItemClickListener;
@@ -68,6 +87,15 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final FeedPlus.View.Kol kolViewListener;
     private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
+    private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
+    private final BannerAdapter.BannerItemListener bannerListener;
+    private final TopadsShopViewHolder.TopadsShopListener topadsShopListener;
+    private final RecommendationCardAdapter.RecommendationCardListener recommendationCardListener;
+    private final CardTitleView.CardTitleListener cardTitleListener;
+    private final ImagePostViewHolder.ImagePostListener imagePostListener;
+    private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
+    private final PollAdapter.PollOptionListener pollOptionListener;
+    private final GridPostAdapter.GridItemListener gridItemListener;
     private final FeedAnalytics analytics;
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
@@ -77,6 +105,15 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.kolViewListener = context;
         this.kolPostListener = context;
         this.pollingViewListener = context;
+        this.dynamicPostListener = context;
+        this.bannerListener = context;
+        this.topadsShopListener = context;
+        this.recommendationCardListener = context;
+        this.cardTitleListener = context;
+        this.imagePostListener = context;
+        this.youtubePostListener = context;
+        this.pollOptionListener = context;
+        this.gridItemListener = context;
         this.analytics = analytics;
     }
 
@@ -192,6 +229,26 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(@NotNull DynamicPostViewModel dynamicPostViewModel) {
+        return DynamicPostViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(@NotNull FeedRecommendationViewModel feedRecommendationViewModel) {
+        return FeedRecommendationViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(@NotNull BannerViewModel bannerViewModel) {
+        return BannerViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(@NotNull TopadsShopViewModel topadsShopViewModel) {
+        return TopadsShopViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -240,6 +297,26 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new ExploreViewHolder(view, kolPostListener);
         else if (type == WhitelistViewHolder.LAYOUT)
             viewHolder = new WhitelistViewHolder(view, viewListener);
+        else if (type == DynamicPostViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new DynamicPostViewHolder(
+                    view,
+                    dynamicPostListener,
+                    cardTitleListener,
+                    imagePostListener,
+                    youtubePostListener,
+                    pollOptionListener,
+                    gridItemListener
+            );
+        }
+        else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener);
+        }
+        else if (type == BannerViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new BannerViewHolder(view, bannerListener, cardTitleListener);
+        }
+        else if (type == TopadsShopViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new TopadsShopViewHolder(view, topadsShopListener, cardTitleListener);
+        }
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

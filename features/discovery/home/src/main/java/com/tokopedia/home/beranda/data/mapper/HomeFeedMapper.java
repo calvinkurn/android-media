@@ -18,8 +18,8 @@ import com.tokopedia.home.beranda.domain.model.feed.InspirationItemDomain;
 import com.tokopedia.home.beranda.domain.model.feed.SourceFeedDomain;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +81,19 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, FeedResult> {
         if(topads !=null){
             for (Topad topad : topads){
                 try {
-                    list.add(new Data(new JSONObject(new Gson().toJson(topad, Topad.class))));
-                } catch (JSONException e) {
+                    Data data = new Data();
+                    data.setProductClickUrl(topad.getProduct_click_url());
+                    Product product = new Product();
+                    product.setId(topad.getProduct().getId());
+                    product.setName(topad.getProduct().getName());
+                    product.setPriceFormat(topad.getProduct().getPrice_format());
+                    ProductImage productImage = new ProductImage();
+                    productImage.setM_ecs(topad.getProduct().getImage().getS_ecs());
+                    productImage.setM_url(topad.getProduct().getImage().getS_url());
+                    product.setImage(productImage);
+                    data.setProduct(product);
+                    list.add(data);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

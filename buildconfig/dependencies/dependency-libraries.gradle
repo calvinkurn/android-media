@@ -41,7 +41,9 @@ ext {
             cacheManager      : ":libraries:cache_manager",
 //            cacheManager      : ":libraries:cache_manager_no_op",
             cameraView        : ":libraries:camera_view",
+            cmnotification    :":libraries:cm_push_notifications",
             commonNetwork     : ":libraries:common_network",
+            coreNetwork       : ":libraries:core_network",
             datePickerRange   : ":libraries:date_picker_range",
             fingerprint       : ":libraries:fingerprint",
             config            : ":libraries:global_config",
@@ -54,7 +56,7 @@ ext {
             pagination        : ":libraries:pagination",
             pushNotif         : ":libraries:push_notification",
             reactNative       : ":libraries:react_native",
-            remoteConfig       : ":libraries:remote_config",
+            remoteConfig      : ":libraries:remote_config",
             travelCalendar    : ":libraries:travel_calendar",
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
@@ -64,7 +66,8 @@ ext {
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
-            cmnotification    :":libraries:cm_push_notifications",
+            track             : ":track",
+            trackinterface    : ":trackinterface",
             graphView         :":libraries:graph_view"
     ]
 }

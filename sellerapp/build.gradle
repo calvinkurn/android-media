@@ -248,6 +248,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
@@ -277,6 +278,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.logisticuploadawb)

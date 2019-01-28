@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="profile_showcase_black">#101010</color>
+    <color name="profile_share_color">#999</color>
 </resources>

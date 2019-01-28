@@ -222,18 +222,25 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value
-                || source.getId() == R.id.bottom_view_membership) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
+        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
                     mValueMembershipDescription);
+        } else if (source.getId() == R.id.bottom_view_membership) {
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -241,7 +248,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
         } else if (source.getId() == R.id.view_loyalty_saya) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -335,28 +342,28 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
                 }
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FLOATING_LUCKY,
+                        "");
             });
 
             getView().findViewById(R.id.text_token_title).setOnClickListener(view -> {
                 if (mSumToken <= 0) {
                     showStartPurchaseBottomSheet(lobDetails.getTitle());
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_EMPTY,
-                            "");
                 } else {
                     if (getActivity() != null) {
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
-                            "");
                 }
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
+                        "");
             });
         }
     }
@@ -658,10 +665,22 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
                     mPresenter.setPagerSelectedItem(position);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_PENUKARAN,
+                            "");
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
                     mPresenter.setPagerSelectedItem(position);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_KUPON_SAYA,
+                            "");
                 }
             }
 

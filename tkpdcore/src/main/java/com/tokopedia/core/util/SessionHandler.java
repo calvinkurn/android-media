@@ -14,7 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -84,6 +84,7 @@ public class SessionHandler {
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
     private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE = "KEY_AFFILIATE";
     public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
 
     private Context context;
@@ -165,6 +166,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
         LocalCacheHandler.clearCache(context, KEY_PROFILE_BUYER);
+        LocalCacheHandler.clearCache(context, KEY_AFFILIATE);
         logoutInstagram(context);
         try {
             MethodChecker.removeAllCookies(context);
@@ -440,12 +442,12 @@ public class SessionHandler {
 
     public static String getAccessToken() {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getRefreshToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public static String getRefreshTokenIV(Context context) {
@@ -480,12 +482,12 @@ public class SessionHandler {
 
     public static String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getAccessTokenTokoCash() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TOKOCASH_SESSION);
-        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "");
+        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "").trim();
     }
 
     public void clearToken() {
@@ -549,12 +551,12 @@ public class SessionHandler {
 
     public String getAuthAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public String getAuthRefreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public boolean isUserHasShop() {
@@ -702,7 +704,7 @@ public class SessionHandler {
 
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TOKEN_TYPE, "");
+        return sharedPrefs.getString(TOKEN_TYPE, "").trim();
     }
 
     public String getUUID() {
