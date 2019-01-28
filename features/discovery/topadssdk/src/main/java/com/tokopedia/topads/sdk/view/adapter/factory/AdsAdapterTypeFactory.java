@@ -135,8 +135,9 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, itemClickListener);
         } else if (viewType == ProductCarouselListViewHolder.LAYOUT) {
-            holder = new ProductCarouselListViewHolder(view, itemClickListener, clickPosition,
+            holder = new ProductCarouselListViewHolder(view, itemClickListener,
                     itemImpressionListener, enableWishlist, offset);
+            this.positionChangeListener = (PositionChangeListener) holder;
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }
