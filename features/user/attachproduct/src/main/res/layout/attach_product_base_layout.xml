@@ -13,6 +13,7 @@
         android:id="@+id/main_product_attach"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxWidth="270dp"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
         android:paddingTop="@dimen/dp_10"
