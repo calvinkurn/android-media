@@ -1,11 +1,9 @@
-package com.tokopedia.tkpd.utils
+package com.tokopedia.kol.test
 
 import android.app.Activity
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.view.PermissionCheckerHelper
 import javax.inject.Inject
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.utils.view;
+package com.tokopedia.kol.test;
 
 import android.Manifest
 import android.app.Activity
@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.widget.Toast
-import com.tokopedia.abstraction.R
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -21,16 +20,18 @@ import org.jetbrains.annotations.NotNull
 class PermissionCheckerHelper {
 
     val REQUEST_PERMISSION_CODE = 789
-    private val TEXT_OK: Int = R.string.title_ok
-    private val TEXT_CANCEL: Int = R.string.dialog_cancel
-    private val TEXT_NEED_PERMISSION: Int = R.string.need_permission
-    private val TEXT_PERMISSION_DENIED: Int = R.string.permission_denied
-    private val TEXT_NEVER_ASK_AGAIN: Int = R.string.permission_neverask
+    private val TEXT_OK: String = "Ok"
+    private val TEXT_CANCEL: String = "Batal"
+    private val TEXT_NEED_PERMISSION: String = "Aplikasi ini membutuhkan izin untuk mengakses %s" +
+            ".\n" +
+            "        Perbolehkan?"
+    private val TEXT_PERMISSION_DENIED: String = "Ijin tidak diberikan"
+    private val TEXT_NEVER_ASK_AGAIN: String = "Anda dapat memberi izin melalui setting"
 
     object Companion {
         val PERMISSION_CAMERA = Manifest.permission.CAMERA
         val PERMISSION_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
-        val PERMISSION_ACCESS_FINE_LOCATION =  Manifest.permission.ACCESS_FINE_LOCATION
+        val PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
         val PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
     }
 
@@ -158,7 +159,7 @@ class PermissionCheckerHelper {
 
 
     private fun getNeedPermissionMessage(context: Context, permissionText: String): String {
-        return String.format(context.getString(TEXT_NEED_PERMISSION), permissionText)
+        return String.format(TEXT_NEED_PERMISSION, permissionText)
     }
 
     private fun hasPermission(context: Context, permissions: Array<String>): Boolean {
@@ -193,7 +194,7 @@ class PermissionCheckerHelper {
 
 
     fun onPermissionDenied(@NonNull context: Context, @NonNull permissions: Array<String>) {
-        Toast.makeText(context, String.format(context.getString(TEXT_PERMISSION_DENIED), permissions
+        Toast.makeText(context, String.format(TEXT_PERMISSION_DENIED, permissions
                 .joinToString
                 ("," +
                         "")), Toast
@@ -201,7 +202,7 @@ class PermissionCheckerHelper {
     }
 
     fun onNeverAskAgain(@NonNull context: Context, @NonNull permissions: Array<String>) {
-        Toast.makeText(context, String.format(context.getString(TEXT_NEVER_ASK_AGAIN), permissions
+        Toast.makeText(context, String.format(TEXT_NEVER_ASK_AGAIN, permissions
                 .joinToString("," +
                         "")), Toast
                 .LENGTH_SHORT).show()
