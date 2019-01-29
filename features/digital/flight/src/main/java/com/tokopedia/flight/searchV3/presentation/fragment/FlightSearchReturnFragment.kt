@@ -196,7 +196,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
         super.renderSearchList(list, needRefresh)
 
-        if (isDoneLoadData() && list.isNotEmpty() && isOnlyShowBestPair()) {
+        if (isDoneLoadData() && isOnlyShowBestPair()) {
             showSeeAllResultView()
         }
     }

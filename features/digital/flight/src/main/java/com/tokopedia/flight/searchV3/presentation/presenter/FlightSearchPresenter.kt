@@ -276,7 +276,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
     override fun fetchSortAndFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean) {
         flightSortAndFilterUseCase.execute(
-                flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
+                flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel,
+                        view.isStatusCombineDone()),
                 object : Subscriber<List<FlightJourneyViewModel>>() {
                     override fun onCompleted() {
 

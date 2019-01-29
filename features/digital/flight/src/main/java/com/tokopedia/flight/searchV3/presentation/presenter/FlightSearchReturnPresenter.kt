@@ -55,6 +55,8 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
 
                             view.navigateToCart(returnFlightSearchViewModel = returnJourneyViewModel,
                                     flightPriceViewModel = priceViewModel)
+                        } else if (departureJourneyModel != null) {
+                            view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }
                     }
                 })

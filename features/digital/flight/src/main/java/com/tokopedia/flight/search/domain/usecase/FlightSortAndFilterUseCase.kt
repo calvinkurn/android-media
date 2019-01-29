@@ -25,16 +25,18 @@ class FlightSortAndFilterUseCase @Inject constructor(
 
     private val PARAM_SORT = "PARAM_SORT"
     private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
+    private val PARAM_IS_USE_BEST_PAIR = "PARAM_IS_USE_BEST_PAIR"
 
     override fun createObservable(requestParams: RequestParams): Observable<List<@JvmSuppressWildcards FlightJourneyViewModel>> {
         val sortOption = requestParams.getInt(PARAM_SORT, TravelSortOption.CHEAPEST)
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
+        val isUseBestPair = requestParams.getBoolean(PARAM_IS_USE_BEST_PAIR, true)
 
         return flightSearchRepository.getSearchFilter(sortOption, filterModel)
-                    .map { mapToFlightJourneyViewModel(it) }
+                    .map { mapToFlightJourneyViewModel(it, isUseBestPair) }
     }
 
-    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>): List<FlightJourneyViewModel> {
+    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>, isUseBestPair: Boolean): List<FlightJourneyViewModel> {
         val gson = Gson()
         return it.map { journeyAndRoutes ->
             val routes = journeyAndRoutes.routes.map {
@@ -73,59 +75,108 @@ class FlightSortAndFilterUseCase @Inject constructor(
                 )
             }
             with(journeyAndRoutes.flightJourneyTable) {
-                val fare = FlightFareViewModel(
-                        adult,
-                        adultCombo,
-                        child,
-                        childCombo,
-                        infant,
-                        infantCombo,
-                        adultNumeric,
-                        adultNumericCombo,
-                        childNumeric,
-                        childNumericCombo,
-                        infantNumeric,
-                        infantNumericCombo
-                )
-                FlightJourneyViewModel(
-                        term,
-                        id,
-                        departureAirport,
-                        departureAirportName,
-                        departureAirportCity,
-                        departureTime,
-                        departureTimeInt,
-                        arrivalAirport,
-                        arrivalTime,
-                        arrivalAirportName,
-                        arrivalAirportCity,
-                        arrivalTimeInt,
-                        totalTransit,
-                        addDayArrival,
-                        duration,
-                        durationMinute,
-                        total,
-                        totalNumeric,
-                        totalCombo,
-                        totalNumericCombo,
-                        isBestPairing,
-                        beforeTotal,
-                        isRefundable,
-                        isReturn,
-                        fare,
-                        routes,
-                        flightAirlineDBS,
-                        comboId
-                )
+                if (isUseBestPair) {
+                    val fare = FlightFareViewModel(
+                            adult,
+                            adultCombo,
+                            child,
+                            childCombo,
+                            infant,
+                            infantCombo,
+                            adultNumeric,
+                            adultNumericCombo,
+                            childNumeric,
+                            childNumericCombo,
+                            infantNumeric,
+                            infantNumericCombo
+                    )
+                    FlightJourneyViewModel(
+                            term,
+                            id,
+                            departureAirport,
+                            departureAirportName,
+                            departureAirportCity,
+                            departureTime,
+                            departureTimeInt,
+                            arrivalAirport,
+                            arrivalTime,
+                            arrivalAirportName,
+                            arrivalAirportCity,
+                            arrivalTimeInt,
+                            totalTransit,
+                            addDayArrival,
+                            duration,
+                            durationMinute,
+                            total,
+                            totalNumeric,
+                            totalCombo,
+                            totalNumericCombo,
+                            isBestPairing,
+                            beforeTotal,
+                            isRefundable,
+                            isReturn,
+                            fare,
+                            routes,
+                            flightAirlineDBS,
+                            comboId
+                    )
+                } else {
+                    val fare = FlightFareViewModel(
+                            adult,
+                            "0",
+                            child,
+                            "0",
+                            infant,
+                            "0",
+                            adultNumeric,
+                            0,
+                            childNumeric,
+                            0,
+                            infantNumeric,
+                            0
+                    )
+                    FlightJourneyViewModel(
+                            term,
+                            id,
+                            departureAirport,
+                            departureAirportName,
+                            departureAirportCity,
+                            departureTime,
+                            departureTimeInt,
+                            arrivalAirport,
+                            arrivalTime,
+                            arrivalAirportName,
+                            arrivalAirportCity,
+                            arrivalTimeInt,
+                            totalTransit,
+                            addDayArrival,
+                            duration,
+                            durationMinute,
+                            total,
+                            totalNumeric,
+                            totalCombo,
+                            totalNumericCombo,
+                            false,
+                            beforeTotal,
+                            isRefundable,
+                            isReturn,
+                            fare,
+                            routes,
+                            flightAirlineDBS,
+                            comboId
+                    )
+                }
             }
         }
     }
 
     fun createRequestParams(@TravelSortOption flightSortOption: Int,
-                            flightFilterModel: FlightFilterModel): RequestParams {
+                            flightFilterModel: FlightFilterModel,
+                            isUseBestPair: Boolean): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_SORT, flightSortOption)
         requestParams.putObject(PARAM_FILTER_MODEL, flightFilterModel)
+        requestParams.putBoolean(PARAM_IS_USE_BEST_PAIR, isUseBestPair)
         return requestParams
     }
 

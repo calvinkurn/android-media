@@ -597,7 +597,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .build();
 //        startActivityForResult(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
         startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
-                getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+                 getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
     }
 
     @Override

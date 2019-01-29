@@ -113,6 +113,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onResume() {
         super.onResume()
+        flightSearchPresenter.initialize()
+
         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
     }
 
@@ -131,6 +133,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                         flightFilterModel = buildFilterModel(flightFilterModel)
 
                         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
+                        setUIMarkFilter()
                     }
                 }
                 REQUEST_CODE_SEE_DETAIL_FLIGHT -> {
@@ -212,6 +215,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         } else {
             isLoadingInitialData = false
         }
+
+        setUpProgress()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
@@ -280,7 +285,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     override fun addBottomPaddingForSortAndFilterActionButton() {
-        val scale: Float = resources.displayMetrics.density;
+        val scale: Float = resources.displayMetrics.density
         getRecyclerView(view).setPadding(
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
@@ -291,6 +296,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun setCombineStatus(isCombineDone: Boolean) {
         this.isCombineDone = isCombineDone
+        setUpProgress()
     }
 
     override fun setUIMarkFilter() {
@@ -485,7 +491,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     protected fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
-        val emptyResultViewModel: EmptyResultViewModel = EmptyResultViewModel()
+        val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
         emptyResultViewModel.title = message
         emptyResultViewModel.buttonTitleRes = R.string.flight_change_search_content_button
@@ -513,7 +519,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         swipe_refresh_layout.setSwipeDistance()
         swipe_refresh_layout.setOnRefreshListener {
             hideLoading()
-            swipe_refresh_layout.isEnabled = false
+            swipe_refresh_layout.isRefreshing = false
             resetDateAndReload()
         }
     }
@@ -595,9 +601,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun setUpProgress() {
         if (horizontal_progress_bar.visibility == View.VISIBLE) {
-            if (isDoneLoadData()) {
-                progress = MAX_PROGRESS
-                horizontal_progress_bar.setProgress(MAX_PROGRESS)
+            if (isDoneLoadData() || isCombineDone) {
+                if (isDoneLoadData() && !isCombineDone) {
+                    progress = MAX_PROGRESS - 10
+                } else if (isDoneLoadData() && isCombineDone) {
+                    progress = MAX_PROGRESS
+                }
+                horizontal_progress_bar.setProgress(progress)
                 flightSearchPresenter.setDelayHorizontalProgress()
             } else {
                 horizontal_progress_bar.setProgress(progress)
