@@ -14,6 +14,7 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
+import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
@@ -36,6 +37,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private UserSession userSession;
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
+    private AbTestingOfficialStore abTestingOfficialStore;
 
     private int badgeNumber;
 
@@ -69,8 +71,12 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     @Override
-    protected void initInjector() {
+    protected void initInjector() { }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        notifyToolbarForAbTesting();
     }
 
     @Override
@@ -92,6 +98,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private void initVar() {
         userSession = new UserSession(getContext());
+        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
     }
 
     private void initView() {
@@ -163,5 +170,11 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         return viewPager != null
                 && tabLayout != null
                 && tabLayout.getTabCount() - 1 >= 0;
+    }
+
+    public void notifyToolbarForAbTesting() {
+        if (mainToolbar != null) {
+            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
+        }
     }
 }

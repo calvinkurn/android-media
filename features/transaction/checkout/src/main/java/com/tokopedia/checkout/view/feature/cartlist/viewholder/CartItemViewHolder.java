@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
@@ -70,6 +71,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView ivIconFreeReturn;
     private TextView tvInfoPreOrder;
     private TextView tvInfoCashBack;
+    private TextView tvCodBadge;
     private AppCompatEditText etRemark;
     private TextView tvLabelRemarkOption;
     private ImageView btnDelete;
@@ -82,7 +84,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
     private TextView tvNoteCharCounter;
-    private LinearLayout productProperties;
+    private FlexboxLayout productProperties;
     private TextView tvRemark;
     private TextView tvLabelFormRemark;
     private ImageView imgWishlist;
@@ -114,6 +116,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.ivIconFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
         this.tvInfoPreOrder = itemView.findViewById(R.id.tv_pre_order);
         this.tvInfoCashBack = itemView.findViewById(R.id.tv_cashback);
+        this.tvCodBadge = itemView.findViewById(R.id.tv_cod);
         this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
         this.etRemark = itemView.findViewById(R.id.et_remark);
         this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
@@ -318,6 +321,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 data.getCartItemData().getOriginData().isPreOrder() ? View.VISIBLE : View.GONE
         );
 
+        this.tvCodBadge.setVisibility(
+                data.getCartItemData().getOriginData().isCod() ? View.VISIBLE : View.GONE
+        );
+
         this.tvInfoCashBack.setVisibility(
                 data.getCartItemData().getOriginData().isCashBack() ? View.VISIBLE : View.GONE
         );
@@ -326,7 +333,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
         if (data.getCartItemData().getOriginData().isCashBack() ||
                 data.getCartItemData().getOriginData().isPreOrder() ||
-                data.getCartItemData().getOriginData().isFreeReturn()) {
+                data.getCartItemData().getOriginData().isFreeReturn() ||
+                data.getCartItemData().getOriginData().isCod()) {
             productProperties.setVisibility(View.VISIBLE);
         } else {
             productProperties.setVisibility(View.GONE);

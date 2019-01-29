@@ -28,6 +28,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -58,6 +60,7 @@ import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.cod.view.CodActivity;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -66,6 +69,7 @@ import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivi
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -249,6 +253,7 @@ import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.InboxMainActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.network.NetworkRouter;
@@ -296,6 +301,8 @@ import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarke
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
 import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.RecentViewRouter;
+import com.tokopedia.referral.ReferralAction;
+import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -390,6 +397,7 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
@@ -411,6 +419,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -420,6 +429,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -521,8 +531,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingPromoCheckoutRouter,
         TopAdsRouter,
         CMRouter,
+        ReferralRouter,
         SaldoDetailsRouter,
-        ILoyaltyRouter {
+        ILoyaltyRouter,
+        TrackingOptimizerRouter{
 
     private static final String EXTRA = "extra";
 
@@ -547,6 +559,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private CacheManager cacheManager;
     private UserSession userSession;
+    private AnalyticTracker analyticTracker;
 
     @Override
     public void onCreate() {
@@ -1170,17 +1183,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventTracking(Map<String, Object> eventTracking) {
+    public void sendEventTrackingOrderDetail(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(this, eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
 
     @Override
-    public void sendEventTrackingOrderDetail(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(this, eventTracking);
-    }
-
-    public void sendScreenName(String screenName) {
+    public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
 
@@ -1694,45 +1703,73 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         accessTokenRefresh.refreshToken();
     }
 
+    @NonNull
     @Override
     public AnalyticTracker getAnalyticTracker() {
-        return new AnalyticTracker() {
-            @Override
-            public void sendEventTracking(Map<String, Object> events) {
-                UnifyTracking.eventClearEnhanceEcommerce(ConsumerRouterApplication.this);
-                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, events);
-            }
+        initAnalyticTracker();
+        return analyticTracker;
+    }
 
-            @Override
-            public void sendEventTracking(String event, String category, String action, String label) {
-                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
-                        event,
-                        category,
-                        action,
-                        label
-                ).getEvent());
-            }
-
-            @Override
-            public void sendScreen(Activity activity, final String screenName) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.sendScreen(activity, () -> screenName);
+    private void initAnalyticTracker() {
+        if (analyticTracker == null) {
+            analyticTracker = new AnalyticTracker() {
+                @Override
+                public void sendEventTracking(Map<String, Object> events) {
+                    ConsumerRouterApplication.this.sendEventTracking(events);
                 }
-            }
 
-            @Override
-            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
-                            shopType, pageType, productId);
+                @Override
+                public void sendEventTracking(String event, String category, String action, String label) {
+                    UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
+                            event,
+                            category,
+                            action,
+                            label
+                    ).getEvent());
                 }
-            }
 
-            @Override
-            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                TrackingUtils.eventTrackingEnhancedEcommerce(ConsumerRouterApplication.this, trackingData);
-            }
-        };
+                @Override
+                public void sendScreen(Activity activity, final String screenName) {
+                    ScreenTracking.sendScreen(ConsumerRouterApplication.this, screenName);
+                }
+
+                @Override
+                public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                    if (activity != null && !TextUtils.isEmpty(screenName)) {
+                        ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                                shopType, pageType, productId);
+                    }
+                }
+
+                @Override
+                public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                    ConsumerRouterApplication.this.sendEnhanceECommerceTracking(trackingData);
+                }
+            };
+        }
+    }
+
+    @Override
+    public void sendEventTracking(Map<String, Object> eventTracking) {
+        UnifyTracking.eventClearEnhanceEcommerce(this);
+        UnifyTracking.sendGTMEvent(this, eventTracking);
+    }
+
+    @Override
+    public void sendEnhanceECommerceTracking(Map<String, Object> events) {
+        TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
+    }
+
+    @Override
+    public void sendTrackDefaultAuth() {
+        ScreenTracking.sendAuth(this);
+    }
+
+    @Override
+    public void sendTrackCustomAuth(Context context, String shopID,
+                                    String shopType, String pageType,
+                                    String productId) {
+        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override
@@ -2020,6 +2057,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, CartActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
+    }
+
+    @Override
+    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+        ReferralAction<Context, String, Integer, String, String, String, Context> referralAction = new ReferralAction<>();
+        referralAction.doAction(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE, dataObj,
+                actionCreator, actionUIDelegate);
     }
 
     @Override
@@ -2804,6 +2848,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         else
             return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
     }
+    @Override
+    public Intent getCodPageIntent(Context context, Data data) {
+        return CodActivity.newIntent(context, data);
+    }
 
     @Override
     public Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart) {
@@ -2903,18 +2951,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent gotoNotificationPage(Context context) {
-        return new Intent(context, NotificationActivity.class);
-    }
-
-    @Override
     public Intent gotoSearchPage(Context context) {
         return new Intent(context, SearchActivity.class);
-    }
-
-    @Override
-    public Intent gotoQrScannerPage() {
-        return gotoQrScannerPage(false);
     }
 
     @Override
@@ -3571,5 +3609,67 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
         refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+    }
+
+    @Override
+    public void eventReferralAndShare(Context context, String action, String label){
+        UnifyTracking.eventReferralAndShare(context, action, label);
+    }
+
+    @Override
+    public void setBranchReferralCode(String referralCode){
+        BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
+    }
+
+    @Override
+    public void sendMoEngageReferralScreenOpen(Context context, String screenName){
+        TrackingUtils.sendMoEngageReferralScreenOpen(context, screenName);
+    }
+
+    @Override
+    public void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap){
+        new DefaultShare(activity, createShareDataFromHashMap(keyValueMap)).show();
+    }
+
+    @Override
+    public void executeShareSocmedHandler(Activity activity, HashMap<String, String> keyValueMap, String packageName){
+        ShareSocmedHandler.ShareSpecific(createShareDataFromHashMap(keyValueMap), activity, packageName,
+                "text/plain", null, null);
+    }
+
+    @Override
+    public void sendAnalyticsToGTM(Context context, String type, String channel){
+        if (type.equals(ShareData.REFERRAL_TYPE)) {
+            eventReferralAndShare(context,
+                    com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(context.getApplicationContext(), channel);
+        } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
+            UnifyTracking.eventAppShareWhenReferralOff(context.getApplicationContext(), com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
+        } else {
+            UnifyTracking.eventShare(context.getApplicationContext(), channel);
+        }
+    }
+
+    private ShareData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
+                .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
+                .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
+                .setTextContent(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.SHARING_CONTENT))
+                .setUri(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URI))
+                .setShareUrl(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URL))
+                .build();
+        return shareData;
+    }
+
+
+    @Override
+    public Intent gotoInboxMainPage(Context context) {
+        return new Intent(context, InboxMainActivity.class);
+    }
+
+    @Override
+    public Intent getMaintenancePageIntent() {
+        return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 }

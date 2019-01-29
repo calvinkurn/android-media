@@ -48,7 +48,7 @@ public class PurchaseTracking extends TrackingUtils {
         getGTMEngine(context).clearEnhanceEcommerce();
         getGTMEngine(context).eventPurchaseDigital(purchase);
         appsFlyerPurchaseEvent(context, purchase,"Digital");
-        getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX);
+        getGTMEngine(context).sendScreen("/digital/thanks");
     }
 
     private static int parseStringToInt(String input){
