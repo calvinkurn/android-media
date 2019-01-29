@@ -11,9 +11,9 @@
 
     <RelativeLayout
         android:id="@+id/main_product_attach"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="270dp"
+        android:minWidth="270dp"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
         android:paddingTop="@dimen/dp_10"
@@ -41,7 +41,7 @@
 
         <RelativeLayout
             android:id="@+id/name_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_14"
             android:layout_marginLeft="@dimen/dp_14"
@@ -56,7 +56,7 @@
 
             <TextView
                 android:id="@+id/attach_product_chat_name"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
@@ -70,7 +70,7 @@
 
             <TextView
                 android:id="@+id/attach_product_chat_price"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/attach_product_chat_name"
                 android:fontFamily="sans-serif-medium"
