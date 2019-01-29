@@ -2,6 +2,7 @@ package com.tokopedia.expresscheckout.view.variant.subscriber
 
 import com.tokopedia.expresscheckout.data.entity.response.checkout.CheckoutExpressGqlResponse
 import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDomainModelMapper
+import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
@@ -36,7 +37,7 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideLoadingDialog()
-        view?.showErrorAPI()
+        view?.showErrorAPI(RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT)
     }
 
     override fun onNext(response: GraphqlResponse) {
@@ -51,7 +52,7 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
 
         when {
             headerErrorCode == STATE_SUCCESS && dataErrorCode == STATE_CHECKOUT_SUCCESS -> {
-                view?.navigateToThankYouPage(checkoutResponseModel.checkoutDataModel?.dataModel?.applink
+                view?.navigateCheckoutToThankYouPage(checkoutResponseModel.checkoutDataModel?.dataModel?.applink
                         ?: "")
             }
             headerMessage.equals(STATE_HEADER_ERROR_CHANGE_COURIER) -> {
@@ -67,7 +68,7 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
             headerMessage == STATE_HEADER_ERROR_SHOP_NOT_ACTIVE -> {
                 view?.showErrorNotAvailable("Toko ini sedang tutup. Silakan gunakan toko lain.")
             }
-            else -> view?.showErrorAPI()
+            else -> view?.showErrorAPI(RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT)
         }
     }
 

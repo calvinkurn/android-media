@@ -52,6 +52,7 @@ import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
@@ -410,6 +411,7 @@ import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.common.TransactionRouter;
+import com.tokopedia.transaction.common.data.cartcheckout.CheckoutData;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam;
@@ -421,11 +423,14 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -442,7 +447,9 @@ import okhttp3.Response;
 import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -2016,6 +2023,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
+    @NotNull
+    @Override
+    public Observable<CheckoutData> getCheckoutObservable(@NotNull CheckoutRequest checkoutRequest) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
+        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, true);
+        return CartComponentInjector.newInstance(this).getCheckoutUseCase()
+                .createObservable(requestParams);
+    }
+
     @NonNull
     private AddToCartResult mapAddToCartResult(AddToCartDataResponse addToCartDataResponse) {
         List<String> messageList = addToCartDataResponse.getMessage();
@@ -2042,7 +2059,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
         ReferralAction<Context, String, Integer, String, String, String, Context> referralAction = new ReferralAction<>();
         referralAction.doAction(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE, dataObj,
                 actionCreator, actionUIDelegate);
@@ -3207,7 +3224,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return OrderListActivity.getInstance(context);
     }
 
-        @Override
+    @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
     }
@@ -3591,33 +3608,33 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void eventReferralAndShare(Context context, String action, String label){
+    public void eventReferralAndShare(Context context, String action, String label) {
         UnifyTracking.eventReferralAndShare(context, action, label);
     }
 
     @Override
-    public void setBranchReferralCode(String referralCode){
+    public void setBranchReferralCode(String referralCode) {
         BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
     }
 
     @Override
-    public void sendMoEngageReferralScreenOpen(Context context, String screenName){
+    public void sendMoEngageReferralScreenOpen(Context context, String screenName) {
         TrackingUtils.sendMoEngageReferralScreenOpen(context, screenName);
     }
 
     @Override
-    public void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap){
+    public void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap) {
         new DefaultShare(activity, createShareDataFromHashMap(keyValueMap)).show();
     }
 
     @Override
-    public void executeShareSocmedHandler(Activity activity, HashMap<String, String> keyValueMap, String packageName){
+    public void executeShareSocmedHandler(Activity activity, HashMap<String, String> keyValueMap, String packageName) {
         ShareSocmedHandler.ShareSpecific(createShareDataFromHashMap(keyValueMap), activity, packageName,
                 "text/plain", null, null);
     }
 
     @Override
-    public void sendAnalyticsToGTM(Context context, String type, String channel){
+    public void sendAnalyticsToGTM(Context context, String type, String channel) {
         if (type.equals(ShareData.REFERRAL_TYPE)) {
             eventReferralAndShare(context,
                     com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
@@ -3629,7 +3646,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private ShareData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
+    private ShareData createShareDataFromHashMap(HashMap<String, String> keyValueMap) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
                 .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))

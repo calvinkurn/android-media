@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -20,12 +20,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.fingerprint)
 
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.shippingRecommendation)
+    implementation project(rootProject.ext.features.payment)
 
     implementation rootProject.ext.miscDependencies.chips
 
@@ -35,5 +37,3 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'

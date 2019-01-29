@@ -12,10 +12,7 @@ import com.tokopedia.expresscheckout.data.entity.response.atc.AtcExpressGqlRespo
 import com.tokopedia.expresscheckout.data.entity.response.checkout.CheckoutExpressGqlResponse
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
-import com.tokopedia.expresscheckout.view.variant.subscriber.AtcExpressSubscriber
-import com.tokopedia.expresscheckout.view.variant.subscriber.CheckoutExpressSubscriber
-import com.tokopedia.expresscheckout.view.variant.subscriber.GetRatesSubscriber
-import com.tokopedia.expresscheckout.view.variant.subscriber.OneClickShipmentSubscriber
+import com.tokopedia.expresscheckout.view.variant.subscriber.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -122,7 +119,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         return shippingParam
     }
 
-    override fun checkout(fragmentViewModel: FragmentViewModel) {
+    override fun checkoutExpress(fragmentViewModel: FragmentViewModel) {
         view.showLoadingDialog()
 
         if (fragmentViewModel.getProfileViewModel()?.isStateHasRemovedProfile == false) {
@@ -132,12 +129,16 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
             checkoutExpressUseCase.addRequest(graphqlRequest)
             checkoutExpressUseCase.execute(RequestParams.create(), CheckoutExpressSubscriber(view, this))
         } else {
-            view?.getAddToCartObservable(getCheckoutOcsParams(fragmentViewModel))
-                    ?.subscribeOn(Schedulers.io())
-                    ?.unsubscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe(OneClickShipmentSubscriber(view, this));
+            checkoutOneClickShipment(fragmentViewModel)
         }
+    }
+
+    override fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel) {
+        view?.getAddToCartObservable(getCheckoutOcsParams(fragmentViewModel))
+                ?.subscribeOn(Schedulers.io())
+                ?.unsubscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(OneClickShipmentSubscriber(view, this));
     }
 
     private fun getCheckoutOcsParams(fragmentViewModel: FragmentViewModel): AddToCartRequest {
@@ -171,6 +172,37 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
     }
 
     private fun getCheckoutExpressParams(fragmentViewModel: FragmentViewModel): HashMap<String, Any?> {
+        val cart = Cart()
+        cart.setDefaultProfile = false
+        cart.promoCode = ""
+        cart.isDonation = 0
+        cart.data = arrayListOf(getDataCheckoutRequest(fragmentViewModel))
+
+        val checkoutParam = CheckoutParam()
+        //        checkoutParam.accountName =
+        //        checkoutParam.accountNumber =
+        //        checkoutParam.bankId =
+
+        val profile = Profile()
+        profile.addressId = fragmentViewModel.getProfileViewModel()?.addressId
+        profile.description = ""
+        profile.gatewayCode = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
+        profile.status = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
+        profile.profileId = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
+        profile.checkoutParam = checkoutParam
+
+        val checkoutRequestParam = CheckoutRequestParam()
+        checkoutRequestParam.carts = cart
+        checkoutRequestParam.profile = profile
+
+        val variables = HashMap<String, Any?>()
+        val jsonTreeCheckoutRequest = Gson().toJsonTree(checkoutRequestParam)
+        val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
+        variables.put("params", jsonObjectCheckoutRequest)
+        return variables
+    }
+
+    private fun getDataCheckoutRequest(fragmentViewModel: FragmentViewModel): DataCheckoutRequest {
         val dropshipDataCheckoutRequest = DropshipDataCheckoutRequest()
         dropshipDataCheckoutRequest.name = ""
         dropshipDataCheckoutRequest.telpNo = ""
@@ -199,34 +231,24 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         dataCheckoutRequest.addressId = fragmentViewModel.getProfileViewModel()?.addressId ?: 0
         dataCheckoutRequest.shopProducts = arrayListOf(shopProductCheckoutRequest)
 
-        val cart = Cart()
-        cart.setDefaultProfile = false
-        cart.promoCode = ""
-        cart.isDonation = 0
-        cart.data = arrayListOf(dataCheckoutRequest)
-
-        val checkoutParam = CheckoutParam()
-        //        checkoutParam.accountName =
-        //        checkoutParam.accountNumber =
-        //        checkoutParam.bankId =
-
-        val profile = Profile()
-        profile.addressId = fragmentViewModel.getProfileViewModel()?.addressId
-        profile.description = ""
-        profile.gatewayCode = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
-        profile.status = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
-        profile.profileId = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
-        profile.checkoutParam = checkoutParam
-
-        val checkoutRequestParam = CheckoutRequestParam()
-        checkoutRequestParam.carts = cart
-        checkoutRequestParam.profile = profile
-
-        val variables = HashMap<String, Any?>()
-        val jsonTreeCheckoutRequest = Gson().toJsonTree(checkoutRequestParam)
-        val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
-        variables.put("params", jsonObjectCheckoutRequest)
-        return variables
+        return dataCheckoutRequest
     }
 
+    override fun hitOldCheckout(fragmentViewModel: FragmentViewModel) {
+        view?.showLoadingDialog()
+        view?.getCheckoutObservable(getOldCheckoutParams(fragmentViewModel))
+                ?.subscribeOn(Schedulers.io())
+                ?.unsubscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(CheckoutSubscriber(view, this));
+    }
+
+    private fun getOldCheckoutParams(fragmentViewModel: FragmentViewModel): CheckoutRequest {
+        val checkoutRequest = CheckoutRequest.Builder()
+                .isDonation(0)
+                .promoCode("")
+                .data(arrayListOf(getDataCheckoutRequest(fragmentViewModel)))
+
+        return checkoutRequest.build()
+    }
 }

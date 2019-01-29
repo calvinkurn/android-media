@@ -11,6 +11,11 @@ import kotlinx.android.synthetic.main.fragment_bottomsheet_error.*
 
 class ErrorBottomsheets : BottomSheets() {
 
+    companion object {
+        val RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT = "RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT"
+        val RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT = "RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT"
+    }
+
     lateinit var actionListener: ErrorBottomsheetsActionListener
     var title: String = ""
 

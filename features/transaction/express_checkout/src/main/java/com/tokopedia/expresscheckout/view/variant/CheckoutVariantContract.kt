@@ -9,11 +9,14 @@ import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
+import com.tokopedia.transaction.common.data.cartcheckout.CheckoutData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import rx.Observable
 
 /**
@@ -43,7 +46,7 @@ interface CheckoutVariantContract {
 
         fun showErrorPayment(message: String)
 
-        fun showErrorAPI()
+        fun showErrorAPI(retryAction: String)
 
         fun showToasterError(message: String?)
 
@@ -61,9 +64,13 @@ interface CheckoutVariantContract {
 
         fun navigateCheckoutToOcs()
 
-        fun navigateToThankYouPage(appLink: String)
+        fun navigateCheckoutToPayment(paymentPassData: PaymentPassData)
+
+        fun navigateCheckoutToThankYouPage(appLink: String)
 
         fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult>
+
+        fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData>
 
         fun getActivityContext(): Context?
     }
@@ -74,13 +81,17 @@ interface CheckoutVariantContract {
 
         fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, isReloadData: Boolean)
 
-        fun checkout(fragmentViewModel: FragmentViewModel)
+        fun checkoutExpress(fragmentViewModel: FragmentViewModel)
+
+        fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel)
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 
         fun prepareViewModel(productData: ProductData)
 
         fun getShippingParam(quantity: Int, price: Int): ShippingParam
+
+        fun hitOldCheckout(fragmentViewModel: FragmentViewModel)
     }
 
 }

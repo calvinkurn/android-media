@@ -21,6 +21,8 @@ import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
+import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
+import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListener
@@ -34,14 +36,18 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.payment.activity.TopPayActivity
+import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.shipping_recommendation.domain.shipping.*
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
+import com.tokopedia.transaction.common.data.cartcheckout.CheckoutData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transactiondata.entity.request.*
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber
@@ -468,9 +474,18 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun navigateCheckoutToOcs() {
         startActivity(router.getCheckoutIntent(contextView))
+        activity?.finish()
     }
 
-    override fun navigateToThankYouPage(appLink: String) {
+    override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {
+        startActivityForResult(
+                TopPayActivity.createInstance(activity, paymentPassData),
+                TopPayActivity.REQUEST_CODE
+        )
+        activity?.finish()
+    }
+
+    override fun navigateCheckoutToThankYouPage(appLink: String) {
         val intent = RouteManager.getIntent(contextView, appLink)
         startActivity(intent)
         activity?.finish()
@@ -478,6 +493,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
         return router.addToCartProduct(addToCartRequest, true)
+    }
+
+    override fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData> {
+        return router.getCheckoutObservable(checkoutRequest)
     }
 
     override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {
@@ -515,15 +534,23 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun showErrorAPI() {
+    override fun showErrorAPI(retryAction: String) {
         showBottomSheetError("Terjadi kendala teknis", "Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi", "Lanjutkan Tanpa Template", true)
         errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomSheets.dismiss()
+                presenter.checkoutOneClickShipment(fragmentViewModel)
             }
 
             override fun onRetryClicked() {
-
+                when (retryAction) {
+                    RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT -> {
+                        presenter.checkoutExpress(fragmentViewModel)
+                    }
+                    RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT -> {
+                        presenter.hitOldCheckout(fragmentViewModel)
+                    }
+                }
             }
         }
     }
@@ -533,7 +560,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomSheets.dismiss()
-                // Todo : Hit checkout lama, then goto payment activity
+                presenter.hitOldCheckout(fragmentViewModel)
             }
 
             override fun onRetryClicked() {
@@ -543,7 +570,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     private fun showErrorPinpoint(productData: ProductData?, profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
-        showBottomSheetError("Tandai Lokasi Pengiriman", productData?.error?.errorMessage ?: "", "Tandai Lokasi", false)
+        showBottomSheetError("Tandai Lokasi Pengiriman", productData?.error?.errorMessage
+                ?: "", "Tandai Lokasi", false)
         errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomSheets.dismiss()
@@ -573,7 +601,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         onSummaryChanged(fragmentViewModel.getSummaryViewModel())
 
         rl_bottom_action_container.visibility = View.VISIBLE
-        bt_buy.setOnClickListener { presenter.checkout(fragmentViewModel) }
+        bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentViewModel) }
         img_total_payment_info.setOnClickListener {
             recyclerView.smoothScrollToPosition(adapter.data.size - 1)
         }
