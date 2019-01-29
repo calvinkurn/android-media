@@ -10,5 +10,7 @@ public interface CMRouter {
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
+    long getLongRemoteConfig(String key, long defaultValue);
+
     AnalyticTracker getAnalyticTracker();
 }

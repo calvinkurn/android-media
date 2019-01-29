@@ -59,7 +59,7 @@ public class CMPushNotificationManager {
             if (TextUtils.isEmpty(token)) {
                 return;
             }
-            (new CMUserHandler(mContext)).updateToken(token);
+            (new CMUserHandler(mContext)).updateToken(token, getRemoteDelaySeconds());
         }
     }
 
@@ -106,6 +106,10 @@ public class CMPushNotificationManager {
     }
 
     private boolean checkFirebaseEnable() {
-        return (((CMRouter) getApplicationContext()).getBooleanRemoteConfig("cm_token_capture_enable", true));
+        return (((CMRouter) getApplicationContext()).getBooleanRemoteConfig("app_cm_token_capture_enable", true));
+    }
+
+    private long getRemoteDelaySeconds(){
+        return (((CMRouter) getApplicationContext()).getLongRemoteConfig("app_token_send_delay", 60));
     }
 }

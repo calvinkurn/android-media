@@ -42,9 +42,10 @@ public class CMUserHandler {
         mContext = context;
     }
 
-    public void updateToken(String token) {
+    public void updateToken(String token, long remoteDelaySeconds) {
         try {
-            long delay = getRandomDelay();
+            long delay = getRandomDelay(remoteDelaySeconds);
+            Log.d(TAG, "HIT DELAY-" + delay);
             Handler handler = new Handler(Looper.getMainLooper());
             handler.postDelayed(() -> Completable.fromAction(() -> sendFcmTokenToServer(token))
                     .subscribeOn(Schedulers.io()).subscribe(), delay);
@@ -59,6 +60,7 @@ public class CMUserHandler {
                 //ignore temporary fcm token
                 return;
             }
+            Log.d(TAG, "HIT STARTED");
             String userId = getUserId();
             String gAdId = getGoogleAdId();
             int appVersion = CMNotificationUtils.getCurrentAppVersion(mContext);
@@ -139,10 +141,10 @@ public class CMUserHandler {
         return UUID.randomUUID().toString();
     }
 
-    private long getRandomDelay() {
+    private long getRandomDelay(long randomDelaySeconds) {
         Random rand = new Random();
         int millis = rand.nextInt(1000) + 1;//in millis delay
-        int seconds = rand.nextInt(2 * 60) + 1;//in min
+        int seconds = rand.nextInt((int) randomDelaySeconds) + 1;//in seconds
         return (seconds * 1000 + millis);
     }
 
