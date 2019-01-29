@@ -54,9 +54,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         tabIndex = getArguments().getInt(ARG_TAB_INDEX);
         recomId = getArguments().getInt(ARG_RECOM_ID);
+        super.onViewCreated(view, savedInstanceState);
         initListeners();
     }
 
