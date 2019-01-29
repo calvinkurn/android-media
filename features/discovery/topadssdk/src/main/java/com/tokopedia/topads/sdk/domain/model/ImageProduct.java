@@ -1,7 +1,6 @@
 package com.tokopedia.topads.sdk.domain.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +11,7 @@ import org.json.JSONObject;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ImageProduct implements Parcelable {
+public class ImageProduct extends ImageHolder {
 
     private static final String KEY_PRODUCT_ID = "product_id";
     private static final String KEY_PRODUCT_NAME = "product_name";
@@ -27,7 +26,6 @@ public class ImageProduct implements Parcelable {
     private String imageUrl;
     @SerializedName(KEY_IMAGE_CLICK_URL)
     private String imageClickUrl;
-    private boolean loaded;
 
     public ImageProduct(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_PRODUCT_ID)) {
@@ -45,6 +43,7 @@ public class ImageProduct implements Parcelable {
     }
 
     protected ImageProduct(Parcel in) {
+        super(in);
         productId = in.readString();
         productName = in.readString();
         imageUrl = in.readString();
@@ -108,11 +107,4 @@ public class ImageProduct implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isLoaded() {
-        return loaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        this.loaded = loaded;
-    }
 }

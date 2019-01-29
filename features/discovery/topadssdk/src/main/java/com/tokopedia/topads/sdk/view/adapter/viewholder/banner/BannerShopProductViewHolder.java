@@ -3,17 +3,17 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
@@ -27,18 +27,21 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     public static final int LAYOUT = R.layout.layout_ads_banner_shop_product;
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
     private ImageLoader imageLoader;
-    private ImageView imageView;
+    private ImpressedImageView imageView;
     private TextView descTxt;
     private TextView priceTxt;
     private LinearLayout layoutContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
+    private final TopAdsItemImpressionListener impressionListener;
     private Context context;
 
 
-    public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener) {
+    public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener,
+                                       TopAdsItemImpressionListener itemImpressionListener) {
         super(itemView);
         this.context = itemView.getContext();
         this.topAdsBannerClickListener = topAdsBannerClickListener;
+        this.impressionListener = itemImpressionListener;
         imageLoader = new ImageLoader(itemView.getContext());
         imageView = itemView.findViewById(R.id.icon);
         descTxt = itemView.findViewById(R.id.description);
@@ -49,7 +52,15 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     @Override
     public void bind(final BannerShopProductViewModel element) {
         final Product product = element.getProduct();
-        imageLoader.loadImage(product.getImageProduct().getImageUrl(), product.getImageProduct().getImageUrl(), imageView);
+        imageView.setImage(product.getImageProduct());
+        imageView.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+                }
+            }
+        });
         descTxt.setText(TopAdsBannerView.escapeHTML(element.getProduct().getName()));
         priceTxt.setText(element.getProduct().getPriceFormat());
         layoutContainer.setOnClickListener(new View.OnClickListener() {

@@ -109,7 +109,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener, TopAdsItemI
     }
 
     @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
+    public void onImpressionAdsItem(int position, Product product) {
         if(impressionListener!=null){
             impressionListener.onImpressionProductAdsItem(position, product);
         }

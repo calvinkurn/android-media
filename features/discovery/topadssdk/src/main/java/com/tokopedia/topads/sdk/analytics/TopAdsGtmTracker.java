@@ -108,7 +108,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventSearchResultPromoProductView(Context context, String tabName, CpmData cpm, int position) {
+    public static void eventSearchResultPromoProductView(Context context, String tabName, Product product, int position) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -120,9 +120,9 @@ public class TopAdsGtmTracker {
                             "promoView", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", cpm.getId(),
+                                                    "id", product.getId(),
                                                     "name", "/search - "+tabName+" - catalog - topads headline product",
-                                                    "creative", cpm.getRedirect(),
+                                                    "creative", product.getUri(),
                                                     "position", position))
                             ))
             );

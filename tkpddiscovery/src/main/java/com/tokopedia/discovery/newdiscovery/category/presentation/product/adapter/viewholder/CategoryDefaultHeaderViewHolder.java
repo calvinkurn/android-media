@@ -28,8 +28,12 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -94,6 +98,12 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
                 } else {
                     TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, getAdapterPosition());
                 }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventCategoryPromoView(context, categoryName, data, position);
             }
         });
         this.topAdsBannerView.loadTopAds();

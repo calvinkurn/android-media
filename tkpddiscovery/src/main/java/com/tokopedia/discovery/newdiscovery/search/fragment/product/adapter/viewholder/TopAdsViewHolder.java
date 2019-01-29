@@ -115,7 +115,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     }
 
     @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
+    public void onImpressionAdsItem(int position, Product product) {
         TopAdsGtmTracker.eventSearchResultProductView(context, keyword, product, position);
     }
 }

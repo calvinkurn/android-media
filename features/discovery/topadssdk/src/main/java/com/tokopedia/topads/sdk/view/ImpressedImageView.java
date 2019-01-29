@@ -12,6 +12,9 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.domain.model.CpmImage;
+import com.tokopedia.topads.sdk.domain.model.ImageHolder;
+import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import android.view.ViewTreeObserver;
@@ -23,7 +26,7 @@ import android.view.ViewTreeObserver;
 public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
-    private ProductImage image;
+    private ImageHolder image;
     private ViewHintListener hintListener;
     private float radius = 8.0f;
     private Path path;
@@ -67,13 +70,17 @@ public class ImpressedImageView extends AppCompatImageView {
         getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if(isVisible(view) && image!=null && !image.isImpressed()){
+                if(isVisible(view) && image!=null && !image.isLoaded()){
                     if(hintListener!=null){
                         hintListener.onViewHint();
                     }
                     getViewTreeObserver().removeOnScrollChangedListener(this);
-                    new ImpresionTask().execute(image.getM_url());
-                    image.setImpressed(true);
+                    if(image instanceof ProductImage){
+                        new ImpresionTask().execute(((ProductImage) image).getM_url());
+                    } else if(image instanceof CpmImage){
+                        new ImpresionTask().execute(((CpmImage) image).getFullUrl());
+                    }
+                    image.loaded();
                 }
             }
         });
@@ -126,6 +133,16 @@ public class ImpressedImageView extends AppCompatImageView {
     public void setImage(ProductImage image) {
         this.image = image;
         Glide.with(getContext()).load(image.getM_ecs()).into(this);
+    }
+
+    public void setImage(ImageProduct image) {
+        this.image = image;
+        Glide.with(getContext()).load(image.getImageUrl()).into(this);
+    }
+
+    public void setImage(CpmImage image) {
+        this.image = image;
+        Glide.with(getContext()).load(image.getFullEcs()).into(this);
     }
 
     public interface ViewHintListener {

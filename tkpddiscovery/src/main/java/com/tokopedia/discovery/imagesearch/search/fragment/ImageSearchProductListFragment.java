@@ -202,7 +202,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void setupAdapter() {
-        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, topAdsConfig);
+        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, topAdsConfig, getQueryKey());
         adapter = new ImageProductListAdapter(getActivity(), this, imageProductListTypeFactory);
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);

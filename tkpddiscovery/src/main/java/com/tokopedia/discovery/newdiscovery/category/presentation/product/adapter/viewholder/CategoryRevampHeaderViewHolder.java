@@ -36,6 +36,7 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.text.NumberFormat;
@@ -117,6 +118,12 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
                 } else {
                     TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, getAdapterPosition());
                 }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventCategoryPromoView(context, categoryName, data, position);
             }
         });
         this.topAdsBannerView.loadTopAds();

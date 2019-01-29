@@ -34,6 +34,7 @@ import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
@@ -61,6 +62,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private static final String TAG = TopAdsBannerView.class.getSimpleName();
     private TopAdsListener adsListener;
     private TopAdsBannerClickListener topAdsBannerClickListener;
+    private TopAdsItemImpressionListener impressionListener;
     private BannerAdsAdapter bannerAdsAdapter;
 
     @Inject
@@ -122,7 +124,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             badgeContainer.setVisibility(View.GONE);
         }
 
-        bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener));
+        bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(bannerAdsAdapter);
         final int mItemOffset = getResources().getDimensionPixelOffset(R.dimen.dp_8);
@@ -192,6 +194,10 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     public void setTopAdsBannerClickListener(TopAdsBannerClickListener topAdsBannerClickListener) {
         this.topAdsBannerClickListener = topAdsBannerClickListener;
+    }
+
+    public void setTopAdsImpressionListener(TopAdsItemImpressionListener adsImpressionListener){
+        this.impressionListener = adsImpressionListener;
     }
 
     @Override

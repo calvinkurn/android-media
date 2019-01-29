@@ -2665,7 +2665,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
+    public void onImpressionAdsItem(int position, Product product) {
         ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
     }
 

@@ -340,7 +340,7 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
+    public void onImpressionAdsItem(int position, Product product) {
         TopAdsGtmTracker.eventCategoryProductView(getContext(), "", product, position);
     }
 

@@ -196,7 +196,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void setupAdapter() {
-        productListTypeFactory = new ProductListTypeFactoryImpl(this, topAdsConfig);
+        productListTypeFactory = new ProductListTypeFactoryImpl(this, topAdsConfig, getQueryKey());
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);

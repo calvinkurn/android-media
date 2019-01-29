@@ -1,20 +1,16 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
@@ -38,10 +34,13 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private ImageLoader imageLoader;
     private LinearLayout layoutContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
+    private final TopAdsItemImpressionListener impressionListener;
 
-    public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener) {
+    public BannerShopViewHolder(View itemView, final TopAdsBannerClickListener topAdsBannerClickListener,
+                                TopAdsItemImpressionListener itemImpressionListener) {
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
+        this.impressionListener = itemImpressionListener;
         context = itemView.getContext();
         imageLoader = new ImageLoader(context);
         iconImg = (ImpressedImageView) itemView.findViewById(R.id.icon);
@@ -54,11 +53,13 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     public void bind(final BannerShopViewModel element) {
         final Cpm cpm = element.getCpmData().getCpm();
         if(cpm!=null) {
-            Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+            iconImg.setImage(cpm.getCpmImage());
+            iconImg.setViewHintListener(new ImpressedImageView.ViewHintListener() {
                 @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    iconImg.setImageBitmap(resource);
-                    new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+                public void onViewHint() {
+                    if(impressionListener!=null){
+                        impressionListener.onImpressionHeadlineAdsItem(getAdapterPosition(), element.getCpmData());
+                    }
                 }
             });
             descriptionTxt.setText(TopAdsBannerView.escapeHTML(cpm.getCpmShop().getSlogan()));

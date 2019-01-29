@@ -149,7 +149,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     }
 
     @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
+    public void onImpressionAdsItem(int position, Product product) {
         TopAdsGtmTracker.eventHomeProductView(getContext(), product, position);
     }
 }

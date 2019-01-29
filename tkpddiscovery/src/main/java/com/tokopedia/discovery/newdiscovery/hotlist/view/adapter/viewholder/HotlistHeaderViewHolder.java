@@ -25,7 +25,9 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.text.DecimalFormat;
@@ -53,12 +55,15 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
     private final String searchQuery;
+    private final String hotlistAlias;
 
-    public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery) {
+    public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery,
+                                   String hotlistAlias) {
         super(parent);
         context = parent.getContext();
         this.mHotlistListener = mHotlistListener;
         this.searchQuery = searchQuery;
+        this.hotlistAlias = hotlistAlias;
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
         this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
         this.hastagList = parent.findViewById(R.id.hastag_list);
@@ -88,10 +93,16 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             public void onBannerAdsClicked(String applink, CpmData data) {
                 mHotlistListener.onBannerAdsClicked(applink);
                 if(applink.contains(SHOP)) {
-                    TopAdsGtmTracker.eventHotlistShopPromoClick(context, "", "", data, getAdapterPosition());
+                    TopAdsGtmTracker.eventHotlistShopPromoClick(context, searchQuery, hotlistAlias, data, getAdapterPosition());
                 } else {
-                    TopAdsGtmTracker.eventHotlistProductPromoClick(context, "", "", data, getAdapterPosition());
+                    TopAdsGtmTracker.eventHotlistProductPromoClick(context, searchQuery, hotlistAlias, data, getAdapterPosition());
                 }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventHotlistPromoView(context, hotlistAlias, data, position);
             }
         });
         if (!searchQuery.isEmpty()) {
