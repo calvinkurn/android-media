@@ -435,7 +435,32 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventCategoryPromoClick(Context context, String categoryName, CpmData cpm, int position) {
+    public static void eventCategoryPromoProductClick(Context context, String categoryName, CpmData cpm, int position) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "category page",
+                    "eventAction", "headline product topads click",
+                    "eventLabel", "keyword: "+categoryName+" url: "+cpm.getRedirect(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", cpm.getId(),
+                                                    "name", "/category - "+categoryName+" - topads headline product",
+                                                    "creative", cpm.getCpm().getName(),
+                                                    "creative_url", cpm.getRedirect(),
+                                                    "promo_id", "none/other",
+                                                    "promo_code", "none/other",
+                                                    "position", position))
+                            ))
+            );
+            tracker.sendEnhancedEcommerce(map);
+        }
+    }
+
+    public static void eventCategoryPromoShopClick(Context context, String categoryName, CpmData cpm, int position) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(

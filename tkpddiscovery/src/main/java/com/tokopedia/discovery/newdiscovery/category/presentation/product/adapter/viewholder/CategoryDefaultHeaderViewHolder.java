@@ -23,6 +23,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -43,6 +44,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     @LayoutRes
     public static final int LAYOUT = R.layout.default_category_header;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
 
     RecyclerView defaultCategoriesRecyclerView;
     LinearLayout expandLayout;
@@ -69,7 +71,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
     }
 
-    private void initTopAds(String depId) {
+    private void initTopAds(String depId, String categoryName) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
@@ -87,13 +89,18 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
             @Override
             public void onBannerAdsClicked(String applink, CpmData data) {
                 categoryListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, getAdapterPosition());
+                } else {
+                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, getAdapterPosition());
+                }
             }
         });
         this.topAdsBannerView.loadTopAds();
     }
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
-        initTopAds(categoryHeaderModel.getDepartementId());
+        initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
         activeChildren = new ArrayList<>();
         hideLayout.setVisibility(View.GONE);
         if (categoryHeaderModel.getChildCategoryModelList() != null && categoryHeaderModel.getChildCategoryModelList().size() > 6) {

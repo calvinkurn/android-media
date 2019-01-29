@@ -25,6 +25,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -47,6 +48,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     public static final int LAYOUT = R.layout.layout_category_header_lifestyle;
 
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
     private final Context context;
     private final ImageView imageHeader;
     private final RelativeLayout imageHeaderContainer;
@@ -73,7 +75,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         this.categoryListener = listener;
     }
 
-    private void initTopAds(String depId) {
+    private void initTopAds(String depId, String categoryName) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
@@ -91,6 +93,11 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
             @Override
             public void onBannerAdsClicked(String applink, CpmData data) {
                 categoryListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, getAdapterPosition());
+                } else {
+                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, getAdapterPosition());
+                }
             }
         });
         this.topAdsBannerView.loadTopAds();
@@ -98,7 +105,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
 
     @Override
     public void bind(CategoryHeaderModel model) {
-        initTopAds(model.getDepartementId());
+        initTopAds(model.getDepartementId(), model.getHeaderModel().getCategoryName());
         renderBannerCategory(model);
         renderChildCategory(model);
         renderTotalProduct(model);
