@@ -202,7 +202,6 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -270,7 +269,6 @@ import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.InboxMainActivity;
-import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -278,9 +276,6 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifcenter.NotifCenterRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.NpsRouter;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
@@ -319,8 +314,6 @@ import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.referral.ReferralAction;
 import com.tokopedia.referral.ReferralRouter;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
@@ -550,7 +543,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMRouter,
         SaldoDetailsRouter,
         ReferralRouter,
-        SaldoDetailsRouter,
         ILoyaltyRouter {
 
     private static final String EXTRA = "extra";
@@ -2604,11 +2596,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareDeal(Context context, String uri, String name, String imageUrl) {
+    public void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
                 .setName(name)
                 .setUri(uri)
+                .setDesktopUrl(desktopUrl)
                 .setImgUri(imageUrl)
                 .build();
 

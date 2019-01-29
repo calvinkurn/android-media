@@ -96,14 +96,16 @@ public class BranchHelper {
     public static void sendLoginEvent(Context context, UserData userData) {
         new BranchEvent(LinkerConstants.EVENT_LOGIN_LABLE)
                 .addCustomDataProperty(LinkerConstants.EMAIL_LABLE, userData.getEmail())
+                .addCustomDataProperty(LinkerConstants.USER_ID, userData.getUserId())
                 .addCustomDataProperty(LinkerConstants.PHONE_LABLE, LinkerUtils.normalizePhoneNumber(userData.getPhoneNumber()))
                 .logEvent(context);
 
     }
 
     public static void sendRegisterEvent(UserData userData, Context context) {
-        new BranchEvent(LinkerConstants.EVENT_REGISTER_LABLE)
+        new BranchEvent(BRANCH_STANDARD_EVENT.COMPLETE_REGISTRATION)
                 .addCustomDataProperty(LinkerConstants.EMAIL_LABLE, userData.getEmail())
+                .addCustomDataProperty(LinkerConstants.USER_ID, userData.getUserId())
                 .addCustomDataProperty(LinkerConstants.PHONE_LABLE, LinkerUtils.normalizePhoneNumber(userData.getPhoneNumber()))
                 .logEvent(context);
 

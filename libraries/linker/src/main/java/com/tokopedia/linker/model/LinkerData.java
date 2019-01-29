@@ -44,6 +44,7 @@ public class LinkerData implements Parcelable {
     private String ogTitle;
     private String ogDescription;
     private String ogImageUrl;
+    private String desktopUrl;
     private String deepLink;
 
 
@@ -67,6 +68,7 @@ public class LinkerData implements Parcelable {
         ogTitle = in.readString();
         ogDescription = in.readString();
         ogImageUrl = in.readString();
+        desktopUrl = in.readString();
         deepLink = in.readString();
     }
 
@@ -88,6 +90,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(ogTitle);
         dest.writeString(ogDescription);
         dest.writeString(ogImageUrl);
+        dest.writeString(desktopUrl);
         dest.writeString(deepLink);
     }
 
@@ -107,6 +110,14 @@ public class LinkerData implements Parcelable {
             return new LinkerData[size];
         }
     };
+
+    public String getDesktopUrl() {
+        return desktopUrl;
+    }
+
+    public void setDesktopUrl(String desktopUrl) {
+        this.desktopUrl = desktopUrl;
+    }
 
     public String getName() {
         return name;
@@ -313,6 +324,7 @@ public class LinkerData implements Parcelable {
         private String ogTitle;
         private String ogDescription;
         private String ogImageUrl;
+        private String desktopUrl;
         private String deepLink;
 
         private Builder() {
@@ -386,6 +398,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setDesktopUrl(String desktopUrl) {
+            this.desktopUrl = desktopUrl;
+            return this;
+        }
+
         public Builder setOgTitle(String ogTitle) {
             this.ogTitle = ogTitle;
             return this;
@@ -427,6 +444,7 @@ public class LinkerData implements Parcelable {
             linkerData.setOgTitle(ogTitle);
             linkerData.setOgDescription(ogDescription);
             linkerData.setOgImageUrl(ogImageUrl);
+            linkerData.setDesktopUrl(desktopUrl);
             linkerData.setDeepLink(deepLink);
             return linkerData;
         }

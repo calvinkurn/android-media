@@ -183,7 +183,7 @@ public class BranchWrapper implements WrapperInterface {
     private LinkProperties createLinkProperties(LinkerData data, String channel, Context context, UserData userData) {
         LinkProperties linkProperties = new LinkProperties();
         String deeplinkPath = getApplinkPath(data.renderShareUri(), "");
-        String desktopUrl = null;
+        String desktopUrl = data.getDesktopUrl();
 
         BranchHelper.setCommonLinkProperties(linkProperties, data);
 
@@ -227,7 +227,9 @@ public class BranchWrapper implements WrapperInterface {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, LinkerConstants.CHALLENGES_DESKTOP_URL);
         } else if (LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, LinkerConstants.REFERRAL_DESKTOP_URL);
-        } else if (desktopUrl == null) {
+        } else if (!TextUtils.isEmpty(desktopUrl)) {
+            linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
+        }else {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, data.renderShareUri());
         }
 
