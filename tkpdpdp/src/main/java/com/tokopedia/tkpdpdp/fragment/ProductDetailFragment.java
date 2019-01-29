@@ -1006,12 +1006,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
-        productData.setProductShareDescription(fireBaseRemoteMsg);
         ActionCreator actionCreator = new ActionCreator<String, Integer>(){
             @Override
             public void actionSuccess(int actionId, String dataObj) {
-                if(!TextUtils.isEmpty(dataObj)) {
-                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(productData.getProductShareDescription(),
+                if(!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
                     TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
 
