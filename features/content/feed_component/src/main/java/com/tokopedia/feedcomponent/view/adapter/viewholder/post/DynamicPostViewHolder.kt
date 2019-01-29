@@ -105,6 +105,15 @@ class DynamicPostViewHolder(v: View,
                 itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink) }
             }
 
+            if (template.avatarBadge && header.avatarBadgeImage.isNotBlank()) {
+                itemView.authorBadge.show()
+                itemView.authorBadge.loadImage(header.avatarBadgeImage)
+                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_8), 0)
+            } else {
+                itemView.authorBadge.hide()
+                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_8), 0, itemView.getDimens(R.dimen.dp_8), 0)
+            }
+
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
                 itemView.authorTitle.text = header.avatarTitle
                 itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink) }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">tkpdtransaction-common</string>
+    <string name="label_hardcoded_shipping_duration_info">Durasi dihitung sejak barang diserahkan ke kurir</string>
 </resources>
