@@ -199,11 +199,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void showHockeyAppDialog(Activity activity) {
-
-    }
-
-    @Override
     public Intent getOnBoardingIntent(Activity activity) {
         return new Intent();
     }
