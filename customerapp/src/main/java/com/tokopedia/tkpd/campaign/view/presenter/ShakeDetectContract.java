@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.locationmanager.DeviceLocation;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -44,7 +45,7 @@ public interface ShakeDetectContract {
         }
 
     public interface Presenter extends CustomerPresenter<View>{
-        public void onShakeDetect();
+        public void onShakeDetect(DeviceLocation deviceLocation);
         public void onDestroyView();
         public void onRetryClick();
         public void onDisableShakeShake();

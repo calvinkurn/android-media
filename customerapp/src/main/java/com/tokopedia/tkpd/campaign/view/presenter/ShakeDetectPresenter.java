@@ -15,7 +15,9 @@ import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
-import com.tokopedia.kol.test.PermissionCheckerHelper;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
@@ -24,7 +26,6 @@ import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
+import kotlin.jvm.functions.Function1;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -85,7 +86,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     volatile boolean secondShakeHappen = false;
 
     @Override
-    public void onShakeDetect() {
+    public void onShakeDetect(DeviceLocation deviceLocation) {
         if (getView().isLongShakeTriggered()) {
             getView().setInvisibleCounter();
             getView().showDisableShakeShakeVisible();
@@ -106,7 +107,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             getView().setInvisibleCounter();
             getView().setCancelButtonVisible();
             RequestParams requestParams = RequestParams.create();
-            addLocationParameter(requestParams);
+            addLocationParameter(requestParams, deviceLocation);
             requestParams.putString(IS_AUDIO, "false");
             if (ShakeDetectManager.sTopActivity != null) {
                 requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_"));
@@ -187,31 +188,11 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         }
     }
 
-    private void addLocationParameter(RequestParams requestParams) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(getView()
-                    .getCurrentActivity().getApplicationContext(), new PermissionCheckerHelper(),
-                    LocationServices.getFusedLocationProviderClient(getView()
-                            .getCurrentActivity().getApplicationContext()));
-
-            locationDetectorHelper.getLocation(onGetLocation(requestParams),
-                    getView().getCurrentActivity());
-        } else {
-            String latitude = "0";
-            String longitude = "0";
-            requestParams.putString(PARAM_LATITUDE, latitude);
-            requestParams.putString(PARAM_LONGITUDE, longitude);
-        }
-
+    private void addLocationParameter(RequestParams requestParams, DeviceLocation deviceLocation) {
+            requestParams.putString(PARAM_LATITUDE, String.valueOf(deviceLocation.getLatitude()));
+            requestParams.putString(PARAM_LONGITUDE, String.valueOf(deviceLocation.getLongitude()));
     }
 
-    private Function2<Double, Double, Unit> onGetLocation(RequestParams requestParams) {
-        return (latitude, longitude) -> {
-            requestParams.putString(PARAM_LATITUDE, latitude.toString());
-            requestParams.putString(PARAM_LONGITUDE, longitude.toString());
-            return null;
-        };
-    }
 
     private void waitForSecondShake() {
         subscription = Observable.interval(0, 1, TimeUnit.SECONDS).subscribeOn(Schedulers.newThread())

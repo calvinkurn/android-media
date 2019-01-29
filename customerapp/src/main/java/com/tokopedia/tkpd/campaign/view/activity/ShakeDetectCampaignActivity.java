@@ -4,18 +4,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationServices;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.component.ToasterNormal;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
 import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectContract;
@@ -24,13 +28,16 @@ import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectPresenter;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
+import com.tokopedia.tkpd.R;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
  */
 
 public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements ShakeDetectContract.View, HasComponent<CampaignComponent> {
-
 
 
     public static String SCREEN_NAME = "ShakeDetectCampaignActivity";
@@ -45,6 +52,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     private View btnTurnOff;
     private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     @Inject
     ShakeDetectPresenter presenter;
@@ -95,7 +103,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     }
 
 
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -112,7 +119,22 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     }
 
     protected void shakeDetect() {
-        presenter.onShakeDetect();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                    new PermissionCheckerHelper(),
+                    LocationServices.getFusedLocationProviderClient(getApplicationContext()));
+            locationDetectorHelper.getLocation(onGetLocation(), this);
+        } else {
+            presenter.onShakeDetect(new DeviceLocation());
+        }
+    }
+
+    private Function1<DeviceLocation, Unit> onGetLocation() {
+        return (deviceLocation) -> {
+            presenter.onShakeDetect(deviceLocation);
+            return null;
+        };
     }
 
 
@@ -175,7 +197,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -190,7 +212,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void updateTimer(Long l) {
-        shakeShakeMessage.setText(""+l);
+        shakeShakeMessage.setText("" + l);
 
     }
 
@@ -253,6 +275,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     public String getScreenName() {
         return SCREEN_NAME;
     }
+
     View.OnClickListener cancelListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -260,4 +283,9 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         }
     };
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+    }
 }

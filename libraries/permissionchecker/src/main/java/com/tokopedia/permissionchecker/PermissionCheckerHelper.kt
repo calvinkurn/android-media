@@ -1,4 +1,4 @@
-package com.tokopedia.kol.test;
+package com.tokopedia.permissionchecker
 
 import android.Manifest
 import android.app.Activity
@@ -102,7 +102,7 @@ class PermissionCheckerHelper {
                         listener)
                 permissionCount == 1 -> onShowRationale(context, permissions,
                         permissionText.replace(",", "").trim(), listener)
-                else -> listener.onNeverAskAgain(permissions)
+                else -> requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
             }
 
         } else if (!permissions.isEmpty()

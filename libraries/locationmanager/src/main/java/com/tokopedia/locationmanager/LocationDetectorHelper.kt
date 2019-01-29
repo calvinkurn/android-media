@@ -1,48 +1,47 @@
 package com.tokopedia.locationmanager
 
 import android.app.Activity
-import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.tokopedia.kol.test.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import java.util.*
 import javax.inject.Inject
 
 /**
  * @author by nisie on 25/01/19.
  */
-class LocationDetectorHelper @Inject constructor(private val applicationContext: Context,
-                                                 private val permissionCheckerHelper: PermissionCheckerHelper,
+class LocationDetectorHelper @Inject constructor(private val permissionCheckerHelper: PermissionCheckerHelper,
                                                  private val fusedLocationProvider: FusedLocationProviderClient) {
 
-    fun getLocation(onGetLocation: ((Double, Double) -> Unit),
+    fun getLocation(onGetLocation: ((DeviceLocation) -> Unit),
                     activity: Activity) {
 
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-        permissionCheckerHelper.checkPermissions(applicationContext, getPermissions(),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissions: Array<String>) {
-                        onGetLocation(0.0, 0.0)
-                    }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            permissionCheckerHelper.checkPermissions(activity, getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissions: Array<String>) {
+                            onGetLocation(DeviceLocation())
+                        }
 
-                    override fun onNeverAskAgain(permissions: Array<String>) {
+                        override fun onNeverAskAgain(permissions: Array<String>) {
 //                        Toast.makeText()
-                        onGetLocation(0.0, 0.0)
-                    }
+                            onGetLocation(DeviceLocation())
+                        }
 
-                    override fun onPermissionGranted() {
-                        getLatitudeLongitude(onGetLocation, activity)
-                    }
+                        override fun onPermissionGranted() {
+                            getLatitudeLongitude(onGetLocation, activity)
+                        }
 
-                })
+                    })
     }
 
     @SuppressWarnings("MissingPermission")
-    private fun getLatitudeLongitude(onGetLocation: (Double, Double) -> Unit,
+    private fun getLatitudeLongitude(onGetLocation: (DeviceLocation) -> Unit,
                                      activity: Activity) {
         fusedLocationProvider.lastLocation.addOnSuccessListener(activity) { location ->
             if (location != null) {
                 val wayLatitude = location.latitude
                 val wayLongitude = location.longitude
-                onGetLocation(wayLatitude, wayLongitude)
+                onGetLocation(DeviceLocation(wayLatitude, wayLongitude, Date().time))
             }
         }
     }

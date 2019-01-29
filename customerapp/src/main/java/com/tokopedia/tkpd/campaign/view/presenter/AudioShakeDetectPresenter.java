@@ -15,6 +15,7 @@ import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceExcep
 import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.configuration.WavRecorder;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -55,7 +56,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
     }
 
     @Override
-    public void onShakeDetect() {
+    public void onShakeDetect(DeviceLocation deviceLocation) {
         try {
             startRecording();
         } catch (IOException e) {
