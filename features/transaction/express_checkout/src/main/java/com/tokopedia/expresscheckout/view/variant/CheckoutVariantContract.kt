@@ -34,6 +34,10 @@ interface CheckoutVariantContract {
 
         fun hideLoadingDialog()
 
+        fun enableButtonBuy()
+
+        fun disableButtonBuy()
+
         fun updateFragmentViewModel(atcResponseModel: AtcResponseModel)
 
         fun showData(viewModels: ArrayList<Visitable<*>>)

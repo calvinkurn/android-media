@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
@@ -157,6 +158,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun hideLoadingDialog() {
         tkpdProgressDialog.dismiss()
+    }
+
+    override fun enableButtonBuy() {
+        bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_orange_enabled)
+    }
+
+    override fun disableButtonBuy() {
+        bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -800,6 +809,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     override fun onNext(boolean: Boolean) {
                         if (fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
                                 fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
+                            disableButtonBuy()
                             fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                             fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
                             presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice
@@ -818,9 +828,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     private interface ReloadRatesDebounceListener {
-
         fun onNeedToRecalculateRates(boolean: Boolean)
-
     }
 
 }
