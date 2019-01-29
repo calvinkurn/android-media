@@ -8,18 +8,16 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
-import com.tokopedia.home.beranda.domain.model.feed.FeedResult;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
-public class GetHomeFeedUseCase extends UseCase<FeedResult> {
-    public static final String PARAM_USER_ID = "userID";
-    public static final String PARAM_CURSOR = "cursor";
-    public static final String PARAM_LIMIT = "limit";
-
-    private static final int PRODUCT_PER_CARD_LIMIT = 4;
+public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
+    public static final String PARAM_RECOM_ID = "recomID";
+    public static final String PARAM_COUNT = "count";
+    public static final String PARAM_PAGE = "page";
 
     private Context context;
     private GraphqlUseCase graphqlUseCase;
@@ -34,7 +32,7 @@ public class GetHomeFeedUseCase extends UseCase<FeedResult> {
     }
 
     @Override
-    public Observable<FeedResult> createObservable(RequestParams requestParams) {
+    public Observable<HomeFeedListModel> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
         R.raw.gql_home_feed), HomeFeedGqlResponse.class, requestParams.getParameters());
 
@@ -43,12 +41,11 @@ public class GetHomeFeedUseCase extends UseCase<FeedResult> {
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map(homeFeedMapper);
     }
 
-    public RequestParams getFeedPlusParam(String userId, String
-            currentCursor) {
+    public RequestParams getHomeFeedParam(int recomId, int count, int page) {
         RequestParams params = RequestParams.create();
-        params.putInt(PARAM_USER_ID, Integer.parseInt(userId));
-        params.putString(PARAM_CURSOR, currentCursor);
-        params.putInt(PARAM_LIMIT, PRODUCT_PER_CARD_LIMIT);
+        params.putInt(PARAM_RECOM_ID, recomId);
+        params.putInt(PARAM_COUNT, count);
+        params.putInt(PARAM_PAGE, page);
         return params;
     }
 }

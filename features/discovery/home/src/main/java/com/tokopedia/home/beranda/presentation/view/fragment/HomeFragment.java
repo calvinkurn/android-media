@@ -25,10 +25,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -39,7 +36,6 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.digital.common.constant.DigitalEventTracking;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
@@ -51,7 +47,6 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
-import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.SectionContainer;
@@ -61,10 +56,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -81,8 +75,8 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -107,6 +101,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
+    private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
 
     public static final long ONE_SECOND = 1000l;
@@ -208,7 +203,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void showRecomendationButton() {
-        if (showRecomendation && isUserLoggedIn()) {
+        if (showRecomendation) {
             floatingTextButton.setVisibility(View.VISIBLE);
             HomePageTracking.eventImpressionJumpRecomendation(getActivity());
         } else {
@@ -230,11 +225,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
         homeFeedsTabLayout = view.findViewById(R.id.tab_layout_home_feeds);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-        if (isUserLoggedIn()) {
-            if (getArguments() != null) {
-                scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
-            }
+
+        if (getArguments() != null) {
+            scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
+
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         return view;
@@ -246,7 +241,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.onFirstLaunch();
         initTabNavigation();
         initAdapter();
-        initHomeFeedsViewPager();
         initRefreshLayout();
         initAppBarScrollListener();
         initEggTokenScrollListener();
@@ -273,9 +267,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
     }
 
-    private void initHomeFeedsViewPager() {
-        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this, getFragmentManager(), 10);
-        homeFeedsViewPager.setOffscreenPageLimit(10);
+    private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
+        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this, getFragmentManager(), feedTabModelList);
+        homeFeedsViewPager.setOffscreenPageLimit(DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT);
         homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
         homeFeedsTabLayout.setupWithViewPager(homeFeedsViewPager);
         homeFeedsTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -330,6 +324,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (presenter != null) {
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
+                    presenter.getFeedTabData();
                 }
             }
         });
@@ -362,7 +357,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
                 if (isAppBarFullyCollapsed(offset)) {
                     floatingTextButton.setVisibility(View.INVISIBLE);
-                } else if (isUserLoggedIn() && showRecomendation) {
+                } else if (showRecomendation) {
                     floatingTextButton.setVisibility(View.VISIBLE);
                 }
 
@@ -413,10 +408,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         };
-        if (isUserLoggedIn()) {
-            recyclerView.removeOnScrollListener(onEggScrollListener);
-            recyclerView.addOnScrollListener(onEggScrollListener);
-        }
+
+        recyclerView.removeOnScrollListener(onEggScrollListener);
+        recyclerView.addOnScrollListener(onEggScrollListener);
     }
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {
@@ -1018,6 +1012,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             Activity activity = (Activity) getContext();
             activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
         }
+    }
+
+    @Override
+    public void onTabFeedLoadError(Throwable e) {
+
+    }
+
+    @Override
+    public void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList) {
+        initHomeFeedsViewPager(feedTabModelList);
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {

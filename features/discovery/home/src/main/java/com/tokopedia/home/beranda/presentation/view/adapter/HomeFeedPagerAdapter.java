@@ -6,21 +6,26 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
 
-    int tabCount;
-    List<HomeFeedFragment> homeFeedFragmentList;
+    private List<FeedTabModel> feedTabModelList = new ArrayList<>();
+    private List<HomeFeedFragment> homeFeedFragmentList;
 
-    public HomeFeedPagerAdapter(HomeEggListener homeEggListener, FragmentManager fm, int tabCount) {
+    public HomeFeedPagerAdapter(HomeEggListener homeEggListener, FragmentManager fm,
+                                List<FeedTabModel> feedTabModelList) {
         super(fm);
-        this.tabCount = tabCount;
+        this.feedTabModelList = feedTabModelList;
         homeFeedFragmentList = new ArrayList<>();
-        for (int i = 0; i < tabCount; i++) {
-            HomeFeedFragment homeFeedFragment = HomeFeedFragment.newInstance(i);
+        for (int i = 0; i < feedTabModelList.size(); i++) {
+            HomeFeedFragment homeFeedFragment = HomeFeedFragment.newInstance(
+                    i,
+                    Integer.parseInt(feedTabModelList.get(i).getId())
+            );
             homeFeedFragment.setListener(homeEggListener);
             homeFeedFragmentList.add(homeFeedFragment);
         }
@@ -33,11 +38,11 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return tabCount;
+        return feedTabModelList.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return String.format("Tab %d", position);
+        return feedTabModelList.get(position).getName();
     }
 }

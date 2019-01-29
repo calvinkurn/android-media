@@ -15,12 +15,15 @@ import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
+import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
@@ -50,6 +53,11 @@ public class HomeModule {
     protected HomePresenter homePresenter(UserSession userSession,
                                           GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         return realHomePresenter(userSession, getShopInfoByDomainUseCase);
+    }
+
+    @Provides
+    protected HomeFeedPresenter homeFeedPresenter() {
+        return new HomeFeedPresenter();
     }
 
     protected HomePresenter realHomePresenter(UserSession userSession,
@@ -88,6 +96,18 @@ public class HomeModule {
                                                            GraphqlUseCase graphqlUseCase,
                                                            HomeFeedMapper homeFeedMapper){
         return new GetHomeFeedUseCase(context, graphqlUseCase, homeFeedMapper);
+    }
+
+    @Provides
+    protected GetFeedTabUseCase provideGetFeedTabUseCase(@ApplicationContext Context context,
+                                                         GraphqlUseCase graphqlUseCase,
+                                                         FeedTabMapper feedTabMapper){
+        return new GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper);
+    }
+
+    @Provides
+    FeedTabMapper feedTabMapper() {
+        return new FeedTabMapper();
     }
 
     @Provides

@@ -3,50 +3,47 @@ package com.tokopedia.home.beranda.presentation.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
+import com.tokopedia.home.beranda.di.BerandaComponent;
+import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
-import com.tokopedia.home.beranda.listener.HomeFeedListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
-import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
+import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
+import com.tokopedia.home.constant.ConstantKey;
 
-import java.util.ArrayList;
+import javax.inject.Inject;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
-public class HomeFeedFragment extends Fragment implements HomeFeedListener {
+public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFeedTypeFactory> implements HomeFeedContract.View {
 
     public static final String ARG_TAB_INDEX = "ARG_TAB_INDEX";
+    public static final String ARG_RECOM_ID = "ARG_RECOM_ID";
 
-    private LinearLayoutManager layoutManager;
-    private RecyclerView recyclerView;
-    private HomeRecycleAdapter adapter;
+    private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
+    private static final int DEFAULT_SPAN_COUNT = 2;
+
+    @Inject
+    HomeFeedPresenter presenter;
+
     private int tabIndex;
-    private GetHomeFeedUseCase getHomeFeedUseCase;
-    private UserSession userSession;
+    private int recomId;
     private HomeEggListener homeEggListener;
 
-    public static HomeFeedFragment newInstance(int tabIndex) {
+    public static HomeFeedFragment newInstance(int tabIndex, int recomId) {
         HomeFeedFragment homeFeedFragment = new HomeFeedFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(HomeFeedFragment.ARG_TAB_INDEX, tabIndex);
+        bundle.putInt(HomeFeedFragment.ARG_RECOM_ID, recomId);
         homeFeedFragment.setArguments(bundle);
         return homeFeedFragment;
     }
@@ -63,29 +60,35 @@ public class HomeFeedFragment extends Fragment implements HomeFeedListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView = view.findViewById(R.id.recyclerView);
         tabIndex = getArguments().getInt(ARG_TAB_INDEX);
-        initAdapter();
+        recomId = getArguments().getInt(ARG_RECOM_ID);
         initListeners();
-        loadData();
     }
 
-    private void initAdapter() {
-        layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.getItemAnimator().setChangeDuration(0);
-        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
-                getChildFragmentManager(),
-                null,
-                this,
-                null
-        );
-        adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
-        recyclerView.setAdapter(adapter);
+    @Override
+    public void loadData(int page) {
+        presenter.attachView(this);
+        presenter.loadData(recomId, DEFAULT_TOTAL_ITEM_PER_PAGE, page);
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
+    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
+        return new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT);
+    }
+
+    @Override
+    protected HomeFeedTypeFactory getAdapterTypeFactory() {
+        return new HomeFeedTypeFactory();
     }
 
     private void initListeners() {
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        getRecyclerView(getView()).addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (homeEggListener != null) {
@@ -95,26 +98,11 @@ public class HomeFeedFragment extends Fragment implements HomeFeedListener {
         });
     }
 
-    private void loadData() {
-        getHomeFeedUseCase = new GetHomeFeedUseCase(getContext(), new GraphqlUseCase(), new HomeFeedMapper());
-        userSession = new UserSession(getContext());
-        fetchCurrentPageFeed();
-    }
-
-    public void fetchCurrentPageFeed() {
-        getHomeFeedUseCase.execute(
-                getHomeFeedUseCase.getFeedPlusParam(
-                        userSession.getUserId(),
-                        ""),
-                new GetHomeFeedsSubscriber(getContext(), this, 1));
-    }
-
     @Override
-    public void onGoToProductDetailFromInspiration(String productId,
-                                                   String imageSource,
-                                                   String name,
-                                                   String price) {
-        goToProductDetail(productId, imageSource, name, price);
+    public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
+        goToProductDetail(homeFeedViewModel.getProductId(),
+                homeFeedViewModel.getImageUrl(),
+                homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
@@ -130,35 +118,17 @@ public class HomeFeedFragment extends Fragment implements HomeFeedListener {
     }
 
     @Override
-    public void updateCursor(String currentCursor) {
-
-    }
-
-    @Override
-    public void onSuccessGetFeed(ArrayList<Visitable> visitables) {
-        adapter.hideLoading();
-        int posStart = adapter.getItemCount();
-        adapter.addItems(visitables);
-        adapter.notifyItemRangeInserted(posStart, visitables.size());
-    }
-
-    @Override
-    public void onRetryClicked() {
-
-    }
-
-    @Override
-    public void onShowRetryGetFeed() {
-        if (adapter != null) {
-            adapter.hideLoading();
-            adapter.showRetry();
-            adapter.notifyDataSetChanged();
+    protected void initInjector() {
+        if (getActivity() != null) {
+            BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
+                    getActivity().getApplication()).getBaseAppComponent()).build();
+            component.inject(this);
+            component.inject(presenter);
         }
     }
 
     @Override
-    public void updateCursorNoNextPageFeed() {
-
+    protected String getScreenName() {
+        return ConstantKey.Analytics.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
     }
-
 }

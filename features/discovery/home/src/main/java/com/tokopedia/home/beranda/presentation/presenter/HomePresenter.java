@@ -7,14 +7,15 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
@@ -58,7 +59,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
-    GetHomeFeedUseCase getHomeFeedUseCase;
+    GetFeedTabUseCase getFeedTabUseCase;
 
     private String currentCursor = "";
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
@@ -320,10 +321,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         this.currentCursor = currentCursor;
     }
 
-    public void setCursorNoNextPageFeed() {
-        this.currentCursor = CURSOR_NO_NEXT_PAGE_FEED;
-    }
-
     public boolean hasNextPageFeed() {
         return !CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
     }
@@ -418,15 +415,15 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private void unsubscribeAllUseCase() {
         if (getHomeDataUseCase != null) {
-            getHomeFeedUseCase.unsubscribe();
-        }
-
-        if (getHomeFeedUseCase != null) {
-            getHomeFeedUseCase.unsubscribe();
+            getHomeDataUseCase.unsubscribe();
         }
 
         if (localHomeDataUseCase != null) {
             localHomeDataUseCase.unsubscribe();
+        }
+
+        if (getFeedTabUseCase != null) {
+            getFeedTabUseCase.unsubscribe();
         }
 
         if (subscription != null) {
@@ -493,5 +490,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if(slidesModel.getRedirectUrl()!=null && !slidesModel.getRedirectUrl().isEmpty()) {
             new ImpresionTask().execute(slidesModel.getRedirectUrl());
         }
+    }
+
+    @Override
+    public void getFeedTabData() {
+        getFeedTabUseCase.execute(new GetFeedTabsSubscriber(getView()));
     }
 }

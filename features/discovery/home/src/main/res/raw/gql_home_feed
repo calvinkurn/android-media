@@ -1,97 +1,24 @@
-query HomeFeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
-  feed(limit: $limit, cursor: $cursor, userID: $userID, source: "home") {
-    __typename
-    title
-    data {
-      __typename
-      id
-      create_time
-      type
-      cursor
-      source {
-        __typename
-        type
-        shop {
-          __typename
-          id
-          name
-          avatar
-          isOfficial
-          isGold
-          url
-          shopLink
-          shareLinkDescription
-          shareLinkURL
-        }
-      }
-      content {
-        __typename
-        type
-        inspirasi {
-          __typename
-          experiment_version
-          source
+query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
+  get_home_recommendation{
+    recommendation_product(recomID:$recomID, count:$count, page:$page){
+      product{
+        id
+        name
+        url
+        applink
+        image_url
+        is_topads
+        price
+        badges{
           title
-          foreign_title
-          widget_url
-          pagination {
-            __typename
-            current_page
-            next_page
-            prev_page
-          }
-          recommendation {
-            __typename
-            id
-            name
-            categoryBreadcrumbs
-            url
-            click_url
-            app_url
-            image_url
-            price
-            recommendation_type
-          }
+          image_url
         }
-        topads {
-          __typename
-          id
-          ad_ref_key
-          redirect
-          sticker_id
-          sticker_image
-          product_click_url
-          shop_click_url
-          product {
-            __typename
-            id
-            name
-            image {
-              __typename
-              s_url
-              s_ecs
-            }
-            price_format
-          }
-          shop {
-            __typename
-            id
-          }
-          applinks
+        labels{
+          title
+          color
         }
       }
-    }
-    links {
-      __typename
-      self
-      pagination {
-        __typename
-        has_next_page
-      }
-    }
-    meta {
-      __typename
-      total_data
+      has_next_page
     }
   }
 }
