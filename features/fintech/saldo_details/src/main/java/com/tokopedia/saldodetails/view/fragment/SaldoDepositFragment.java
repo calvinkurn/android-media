@@ -59,6 +59,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     private static final String IS_USER_SELLER = "is_user_seller";
     private static final String IS_SELLER_ENABLED = "is_user_enabled";
+    public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
+    private final long SHOW_CASE_DELAY = 400;
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
 
@@ -167,28 +169,28 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
                     getString(R.string.saldo_seller_tab_title),
                     getString(R.string.saldo_detail_intro_desc1),
                     ShowCaseContentPosition.BOTTOM,
-                    R.color.white));
+                    Color.WHITE));
 
             list.add(new ShowCaseObject(
                     mainBalanceRL,
                     getString(R.string.sp_title_withdraw),
                     getString(R.string.saldo_detail_intro_desc2),
                     ShowCaseContentPosition.BOTTOM,
-                    R.color.white));
+                    Color.WHITE));
 
             list.add(new ShowCaseObject(
                     dateSelectorLL,
                     getString(R.string.deposit_summary_title_seller),
                     getString(R.string.saldo_detail_intro_desc3),
                     ShowCaseContentPosition.BOTTOM,
-                    R.color.white));
+                    Color.WHITE));
 
             list.add(new ShowCaseObject(
                     ((SaldoDepositActivity) getActivity()).getBuyerTabView(),
                     getString(R.string.saldo_buyer_tab_title),
                     getString(R.string.saldo_detail_intro_desc4),
                     ShowCaseContentPosition.BOTTOM,
-                    R.color.white));
+                    Color.WHITE));
 
             return list;
 
@@ -201,7 +203,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            new Handler().postDelayed(() -> setShowCase(), 400);
+            new Handler().postDelayed(this::setShowCase, SHOW_CASE_DELAY);
         }
     }
 
@@ -572,7 +574,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
                 sellerDetails.isEligible()) {
 
             Bundle bundle = new Bundle();
-            bundle.putParcelable("seller_details", sellerDetails);
+            bundle.putParcelable(BUNDLE_PARAM_SELLER_DETAILS, sellerDetails);
             getChildFragmentManager()
                     .beginTransaction()
                     .replace(R.id.saldo_prioritas_widget, MerchantSaldoPriorityFragment.newInstance(bundle))

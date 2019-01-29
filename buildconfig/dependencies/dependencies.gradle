@@ -198,7 +198,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.0",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.16",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 

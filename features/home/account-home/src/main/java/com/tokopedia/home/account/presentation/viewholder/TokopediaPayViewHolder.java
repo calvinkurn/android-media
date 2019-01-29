@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
+import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -34,7 +35,7 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
                 getString(R.string.buyer_saldo_on_boarding_title),
                 getString(R.string.buyer_saldo_on_boarding_desc),
                 ShowCaseContentPosition.BOTTOM,
-                R.color.white));
+                Color.WHITE));
     }
 
     @Override
