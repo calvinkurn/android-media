@@ -991,7 +991,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
         if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
 
-        if(userSession.isLoggedIn()) {
+        if(userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
             String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                     doReferralShareAction(productData, fireBaseRemoteMsg);
