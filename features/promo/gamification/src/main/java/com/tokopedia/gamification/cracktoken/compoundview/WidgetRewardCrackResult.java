@@ -127,7 +127,7 @@ public class WidgetRewardCrackResult extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                addTextToAnimate(rewardType, rewardText, prevValue, valueIncrease, textColor, viewType);
+                addTextToAnimate(rewardType, rewardText, valueIncrease, textColor, viewType);
                 translateText(viewType);
                 startCountAnimation(rewardType, prevValue, valueIncrease, viewType);
             }
@@ -151,10 +151,9 @@ public class WidgetRewardCrackResult extends FrameLayout {
         textPaint = new Paint();
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.sp_12));
-//        textPaint.setColor(Color.parseColor("#000000"));
     }
 
-    private void addTextToAnimate(RelativeLayout rewardType, TextView rewardText, int valueBefore, int valueIncrease, int textColor, int viewType) {
+    private void addTextToAnimate(RelativeLayout rewardType, TextView rewardText, int valueIncrease, int textColor, int viewType) {
         String points = String.valueOf(valueIncrease);
         String point = "6";
         int length = points.length();

@@ -195,7 +195,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void onCrackResultCleared() {
-                listener.showToolbar();
                 setToolbarColor(getResources().getColor(R.color.black));
 
             }
@@ -305,22 +304,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 hideInfoTitle();
                 vibrate();
                 widgetTokenOnBoarding.hideHandOnBoarding(true);
-                listener.hideToolbar();
                 TokenUser tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
 
                 trackingLuckyEggClick();
             }
         });
-
-//        widgetRemainingToken.show();
         showRemainingToken(tokenUser.getTokenAsset().getSmallImgUrl(), tokenData.getSumTokenStr());
-        listener.showRemainingToken(tokenUser.getTokenAsset().getSmallImgUrl(), tokenData.getSumTokenStr());
-//        widgetRemainingToken.showRemainingToken(
-//                tokenUser.getTokenAsset().getSmallImgUrl(),
-//                tokenData.getSumTokenStr(),
-//                tokenData.getHome().getCountingMessage());
-
         showTimer(tokenData);
         showInfoTitle();
     }
@@ -519,7 +509,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessGetToken(TokenData tokenData) {
-        listener.showToolbar();
         setToolbarColor(getResources().getColor(R.color.black));
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
@@ -538,7 +527,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onErrorGetToken(CrackResult crackResult) {
-        listener.hideToolbar();
         setToolbarColor(getResources().getColor(R.color.white));
         widgetCrackResult.showCrackResult(crackResult);
     }
@@ -749,11 +737,5 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     public interface ActionListener {
         void directPageToCrackEmpty(TokenData tokenData);
-
-        void hideToolbar();
-
-        void showToolbar();
-
-        void showRemainingToken(String smallImageUrl, String remainingTokenString);
     }
 }
