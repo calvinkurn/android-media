@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alvarisi on 4/17/17.
  */
 
+@Deprecated
 public class InterruptMetaEntity {
     /**
      * {

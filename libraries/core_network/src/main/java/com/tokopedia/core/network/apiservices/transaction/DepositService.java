@@ -11,6 +11,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public class DepositService extends AuthService<DepositApi> {
     private static final String TAG = DepositService.class.getSimpleName();
 

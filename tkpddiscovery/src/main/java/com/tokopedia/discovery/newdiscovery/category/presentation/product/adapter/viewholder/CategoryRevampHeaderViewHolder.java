@@ -74,7 +74,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     private Handler bannerHandler;
     private Runnable incrementPage;
     private RevampCategoryAdapter categoryAdapter;
-
+    private boolean isInit;
     private final RevampCategoryAdapter.CategoryListener categoryListener;
     private boolean isUsedUnactiveChildren = false;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
@@ -130,7 +130,10 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     }
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
-        initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
+        if (!isInit) {
+            initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
+            isInit = true;
+        }
         activeChildren = new ArrayList<>();
         hideLayout.setVisibility(View.GONE);
         if (categoryHeaderModel.getChildCategoryModelList() != null && categoryHeaderModel.getChildCategoryModelList().size() > 9) {

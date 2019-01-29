@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
  * Created by stevenfredian on 8/31/17.
  */
 
+@Deprecated
 public class ChatService extends AuthService<ChatApi> {
 
     @Override

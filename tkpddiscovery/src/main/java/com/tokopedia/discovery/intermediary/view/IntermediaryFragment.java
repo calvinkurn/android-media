@@ -30,6 +30,7 @@ import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.CategoryPageTracking;
@@ -108,6 +109,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private static final long SLIDE_DELAY = 8000;
     public static final String DEFAULT_ITEM_VALUE = "1";
     public static final int REQUEST_CODE_LOGIN = 561;
+    private static final String PERFORMANCE_TRACE_INTERMEDIARY = "mp_category_intermediary";
 
     private NestedScrollView nestedScrollView;
     private ImageView imageHeader;
@@ -151,6 +153,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private IntermediaryContract.Presenter presenter;
     private NonScrollGridLayoutManager gridLayoutManager;
     private UserSessionInterface userSession;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStopped;
 
     public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
@@ -167,6 +171,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     protected void initInjector() {
         presenter = IntermediaryDependencyInjector.getPresenter(getActivity());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_INTERMEDIARY);
     }
 
     @Nullable
@@ -523,6 +533,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void skipIntermediaryPage() {
         if (isAdded()) {
+            stopFirebaseTrace();
             CategoryActivity.moveTo(
                     getActivity(),
                     departmentId,
@@ -727,6 +738,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public String getUserId() {
         return userSession.getUserId();
+    }
+
+    @Override
+    public void stopFirebaseTrace() {
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {

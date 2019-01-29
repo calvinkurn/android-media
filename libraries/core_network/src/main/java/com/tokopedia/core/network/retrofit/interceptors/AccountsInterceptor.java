@@ -17,6 +17,8 @@ import okhttp3.Request;
 /**
  * @author stevenfredian on 5/25/16.
  */
+
+@Deprecated
 public class AccountsInterceptor extends TkpdAuthInterceptor {
     private static final String X_TKPD_PATH = "x-tkpd-path";
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";

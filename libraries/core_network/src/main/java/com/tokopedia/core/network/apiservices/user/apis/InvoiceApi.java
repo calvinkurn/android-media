@@ -12,6 +12,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface InvoiceApi {
 
     @GET(TkpdBaseURL.User.PATH_RENDER_INVOICE)

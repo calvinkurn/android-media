@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.replacement.opportunitydata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class OrderDeadline {
 
     @SerializedName("deadline_process_day_left")

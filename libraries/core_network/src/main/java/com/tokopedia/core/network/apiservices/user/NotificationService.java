@@ -11,6 +11,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public class NotificationService extends AuthService<NotificationApi> {
     private static final String TAG = NotificationService.class.getSimpleName();
 

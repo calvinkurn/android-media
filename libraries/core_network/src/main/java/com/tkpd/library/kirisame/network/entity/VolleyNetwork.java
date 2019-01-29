@@ -24,6 +24,7 @@ import com.tkpd.library.kirisame.network.util.VolleyNetworkRequestQueue;
  * Created by Tkpd_Eka on 7/23/2015.
  * Ver 1.2.1
  */
+@Deprecated
 public abstract class VolleyNetwork {
 
     public class PostStringRequest extends StringRequest {

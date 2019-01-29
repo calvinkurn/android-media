@@ -17,6 +17,8 @@ import okhttp3.Response;
  * <p/>
  * for WS V4 use TkpdAuthInterceptor
  */
+
+@Deprecated
 public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = DynamicTkpdAuthInterceptor.class.getSimpleName();
     private static final String AUTHORIZATION = "Authorization";

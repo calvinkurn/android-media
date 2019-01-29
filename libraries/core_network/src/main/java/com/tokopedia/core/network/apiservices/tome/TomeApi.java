@@ -24,6 +24,7 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_PRODUCT
  * Created by HenryPri on 24/05/17.
  */
 
+@Deprecated
 public interface TomeApi {
     String USER_ID = "user_id";
     String SHOP_ID = "shop_id";

@@ -15,6 +15,7 @@ import rx.Observable;
  * Created by stevenfredian on 8/31/17.
  */
 
+@Deprecated
 public interface DrawerDataApi {
 
     @POST("./")

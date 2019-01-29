@@ -12,6 +12,7 @@ import com.tokopedia.core.network.SnackbarRetry;
  * Created by normansyahputa on 1/19/17.
  */
 
+@Deprecated
 public class BaseNetworkErrorHandlerImpl extends BaseNetworkErrorHandler {
     public BaseNetworkErrorHandlerImpl(NetworkErrorHelper.RetryClickedListener listener) {
         super(listener);

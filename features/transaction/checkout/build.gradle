@@ -35,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.cacheManager)
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticCommon)
@@ -48,7 +49,9 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdistrictrecommendation)
     implementation project(rootProject.ext.features.logisticinsurance)
 
+    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.shippingRecommendation)
 
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation project(rootProject.ext.features.promoCheckoutCommon)
@@ -60,6 +63,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {

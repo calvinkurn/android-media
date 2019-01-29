@@ -5,6 +5,7 @@ import android.os.Bundle;
 /**
  * Created by m.normansyah on 27/10/2015.
  */
+@Deprecated
 public interface PaginHandlerRotation {
     int defaultPagingIndex = -1;
     String PAGING_INDEX = "paging_index";

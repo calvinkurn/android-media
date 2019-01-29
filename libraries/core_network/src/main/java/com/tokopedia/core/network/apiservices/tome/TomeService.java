@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by HenryPri on 24/05/17.
  */
 
+@Deprecated
 public class TomeService extends AuthService<TomeApi> {
     public static final String TAG = TomeService.class.getSimpleName();
 

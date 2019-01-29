@@ -15,6 +15,8 @@ import rx.Observable;
 /**
  * Created by hangnadi on 3/3/17.
  */
+
+@Deprecated
 public interface ReplacementActApi {
 
     @FormUrlEncoded

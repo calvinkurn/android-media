@@ -9,6 +9,7 @@ import java.io.IOException;
  * @author anggaprasetiyo on 3/8/17.
  */
 
+@Deprecated
 public class HttpErrorException extends IOException {
     private static final long serialVersionUID = -1507431097408727789L;
     private final int errorCode;

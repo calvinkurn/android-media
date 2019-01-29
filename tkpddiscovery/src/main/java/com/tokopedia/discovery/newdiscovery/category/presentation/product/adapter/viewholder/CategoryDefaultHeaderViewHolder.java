@@ -62,6 +62,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     private Context context;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     private boolean isUsedUnactiveChildren = false;
+    private boolean isInit;
 
     public CategoryDefaultHeaderViewHolder(View itemView, DefaultCategoryAdapter.CategoryListener categoryListener) {
         super(itemView);
@@ -110,7 +111,10 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     }
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
-        initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
+        if (!isInit) {
+            initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
+            isInit = true;
+        }
         activeChildren = new ArrayList<>();
         hideLayout.setVisibility(View.GONE);
         if (categoryHeaderModel.getChildCategoryModelList() != null && categoryHeaderModel.getChildCategoryModelList().size() > 6) {
@@ -155,7 +159,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         if (categoryHeaderModel.getChildCategoryModelList() == null || categoryHeaderModel.getChildCategoryModelList().isEmpty()) {
             cardViewCategory.setVisibility(View.GONE);
         }
-        if (categoryHeaderModel.getTotalData()>0) {
+        if (categoryHeaderModel.getTotalData() > 0) {
             totalProduct.setText(NumberFormat.getNumberInstance(Locale.US)
                     .format(categoryHeaderModel.getTotalData()).replace(',', '.') + " Produk");
             totalProduct.setVisibility(View.VISIBLE);

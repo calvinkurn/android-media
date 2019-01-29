@@ -46,11 +46,30 @@ public class ScreenTracking extends TrackingUtils {
         }
     }
 
+    public static void sendScreen(Context context, String screenName) {
+        try {
+            ScreenTrackingBuilder
+                    .newInstance(context, screenName, getAfUniqueId(context))
+                    .execute(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendAuth(Context context) {
+        try {
+            ScreenTrackingBuilder
+                    .newInstance(context, "", getAfUniqueId(context))
+                    .sendAuth(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void screen(Context context, String screen) {
         if (TextUtils.isEmpty(screen)) {
-            screen = "Default Fragment Name";
+            return;
         }
-
         getGTMEngine(context).sendScreen(screen);
     }
 
@@ -64,6 +83,10 @@ public class ScreenTracking extends TrackingUtils {
         getGTMEngine(context)
                 .eventAuthenticate(authenticated)
                 .sendScreen(screenName);
+    }
+
+    public static void eventAuth(Context context, Authenticated authenticated) {
+        getGTMEngine(context).eventAuthenticate(authenticated);
     }
 
     public static void sendAFPDPEvent(Context context, final ProductDetailData data, final String eventName) {
@@ -116,5 +139,9 @@ public class ScreenTracking extends TrackingUtils {
 
     public static void eventCustomScreen(Context context, String screenName, String shopID, String shopType, String pageType, String productId) {
         getGTMEngine(context).sendScreenAuthenticatedOfficialStore(screenName, shopID, shopType, pageType, productId);
+    }
+
+    public static void sendCustomAuth(Context context, String shopID, String shopType, String pageType, String productId) {
+        getGTMEngine(context).sendCustomAuth(shopID, shopType, pageType, productId);
     }
 }

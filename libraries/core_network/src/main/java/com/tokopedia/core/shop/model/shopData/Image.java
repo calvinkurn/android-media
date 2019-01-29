@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+@Deprecated
 @Parcel
 public class Image {
 

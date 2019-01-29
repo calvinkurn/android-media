@@ -38,6 +38,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * Created by ricoharisin on 3/22/17.
  */
 
+@Deprecated
 @Module
 public class InterceptorModule {
 

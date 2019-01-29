@@ -15,6 +15,8 @@ import rx.Observable;
  * ProductActApi
  * Created by Angga.Prasetiyo on 04/12/2015.
  */
+
+@Deprecated
 public interface ProductActApi {
 
 

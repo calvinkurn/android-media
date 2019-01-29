@@ -9,7 +9,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 /**
  * Created by normansyahputa on 8/31/16.
  */
-
+@Deprecated
 public abstract class BaseNetworkController {
     protected Context context;
     protected Gson gson;

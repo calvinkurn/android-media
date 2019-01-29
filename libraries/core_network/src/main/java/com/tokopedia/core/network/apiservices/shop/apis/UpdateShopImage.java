@@ -12,6 +12,8 @@ import rx.Observable;
 /**
  * @author Toped10 on 5/26/2016.
  */
+
+@Deprecated
 public interface UpdateShopImage {
     @FormUrlEncoded
     @POST("")

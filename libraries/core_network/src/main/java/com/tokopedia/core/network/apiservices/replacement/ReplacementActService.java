@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * Created by hangnadi on 3/3/17.
  */
+
+@Deprecated
 public class ReplacementActService extends AuthService<ReplacementActApi> {
 
     private static final String TAG = ReplacementActService.class.getSimpleName();

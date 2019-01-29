@@ -12,6 +12,7 @@ import java.util.List;
  * Created by naveengoyal on 5/8/18.
  */
 
+@Deprecated
 public class FavShopItemData {
     @SerializedName("shops")
     @Expose

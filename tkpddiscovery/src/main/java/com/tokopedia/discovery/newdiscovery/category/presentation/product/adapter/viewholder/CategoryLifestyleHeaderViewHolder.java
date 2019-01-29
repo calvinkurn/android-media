@@ -60,6 +60,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final TextView totalProduct;
     private final TopAdsBannerView topAdsBannerView;
     private final SubCategoryLifestyleItemDecoration itemDecoration;
+    private boolean isInit;
 
     public CategoryLifestyleHeaderViewHolder(View itemView,
                                              RevampCategoryAdapter.CategoryListener listener) {
@@ -112,7 +113,10 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
 
     @Override
     public void bind(CategoryHeaderModel model) {
-        initTopAds(model.getDepartementId(), model.getHeaderModel().getCategoryName());
+        if (!isInit) {
+            initTopAds(model.getDepartementId(), model.getHeaderModel().getCategoryName());
+            isInit = true;
+        }
         renderBannerCategory(model);
         renderChildCategory(model);
         renderTotalProduct(model);

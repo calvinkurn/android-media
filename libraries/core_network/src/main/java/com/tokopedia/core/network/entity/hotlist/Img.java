@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.hotlist;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Img {
 
     @SerializedName("375x200")

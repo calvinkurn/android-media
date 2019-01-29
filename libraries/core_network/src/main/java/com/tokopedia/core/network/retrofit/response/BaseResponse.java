@@ -10,6 +10,8 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
  */
+
+@Deprecated
 public class BaseResponse {
     private static final String TAG = BaseResponse.class.getSimpleName();
 

@@ -12,6 +12,7 @@ import java.util.List;
  * add parceler support by m.normansyah 31/10/2015
  */
 
+@Deprecated
 public class ShopItem extends RecyclerViewItem implements Parcelable {
 
 

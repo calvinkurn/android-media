@@ -20,6 +20,8 @@ import okio.Buffer;
  * <p/>
  * for WS V4 use TkpdAuthInterceptor
  */
+
+@Deprecated
 public class GlobalTkpdAuthInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = GlobalTkpdAuthInterceptor.class.getSimpleName();
     private String AuthKey = AuthUtil.KEY.KEY_WSV4;

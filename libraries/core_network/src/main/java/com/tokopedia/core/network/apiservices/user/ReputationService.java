@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * @author by nisie on 8/14/17.
  */
 
+@Deprecated
 public class ReputationService extends AuthService<ReputationApi> {
     private static final String TAG = ReputationService.class.getSimpleName();
 

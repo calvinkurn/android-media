@@ -9,6 +9,7 @@ import java.util.List;
  * Created by HenryPri on 24/05/17.
  */
 
+@Deprecated
 public class FavoriteCheckResult {
     @SerializedName("data")
     List<String> shopIds = new ArrayList<>();

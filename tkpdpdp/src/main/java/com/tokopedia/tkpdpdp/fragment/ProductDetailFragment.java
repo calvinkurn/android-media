@@ -44,9 +44,13 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
@@ -55,6 +59,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
@@ -226,6 +231,7 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+import static com.tokopedia.core.share.DefaultShare.KEY_OTHER;
 import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
 import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
@@ -654,7 +660,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(View.INVISIBLE);
+        labelCod.setVisibility(isCodShown? View.INVISIBLE : View.GONE);
     }
 
     private void expandedAppBar() {
@@ -964,17 +970,69 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductShareClicked(@NonNull ProductDetailData data) {
-        ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
 
         ProductData productData = new ProductData();
         productData.setPriceText(data.getInfo().getProductPrice());
         productData.setCashbacktext(data.getCashBack().getProductCashback());
         productData.setProductId(data.getInfo().getProductId().toString());
         productData.setProductName(com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(data.getInfo().getProductName()).toString());
+        productData.setProductShareDescription(productData.getProductName());
         productData.setProductUrl(data.getInfo().getProductUrl());
         productData.setProductImageUrl(data.getProductImages().get(0).getImageSrc());
         productData.setShopUrl(data.getShopInfo().getShopUrl());
+        productData.setShopName(data.getShopInfo().getShopName());
 
+        checkAndExecuteReferralAction(productData);
+
+    }
+
+    private void checkAndExecuteReferralAction(ProductData productData){
+        UserSession userSession = new UserSession(getActivity());
+        String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
+        if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
+
+        if(userSession.isLoggedIn()) {
+            String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
+            if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
+                    doReferralShareAction(productData, fireBaseRemoteMsg);
+            }
+            else {
+                executeProductShare(productData);
+            }
+        }
+        else {
+            executeProductShare(productData);
+        }
+    }
+
+    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
+        productData.setProductShareDescription(fireBaseRemoteMsg);
+        ActionCreator actionCreator = new ActionCreator<String, Integer>(){
+            @Override
+            public void actionSuccess(int actionId, String dataObj) {
+                if(!TextUtils.isEmpty(dataObj)) {
+                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(productData.getProductShareDescription(),
+                            ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
+                    TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
+
+                }
+                executeProductShare(productData);
+            }
+
+            @Override
+            public void actionError(int actionId, Integer dataObj) {
+                executeProductShare(productData);
+            }
+        };
+
+        ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
+                (ActionUIDelegate<String, String>) getActivity());
+
+    }
+
+
+    private void executeProductShare(ProductData productData){
+        ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
         productShare.share(productData, ()->{
             showProgressLoading();
             return Unit.INSTANCE;
@@ -982,6 +1040,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             hideProgressLoading();
             return Unit.INSTANCE;
         });
+
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)

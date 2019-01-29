@@ -13,6 +13,8 @@ import java.util.List;
 /**
  * Created by noiz354 on 3/4/16.
  */
+
+@Deprecated
 public class ProductFeedData3 {
     @SerializedName("data")
     Result data;

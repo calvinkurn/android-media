@@ -3,6 +3,8 @@ package com.tokopedia.core.var;
 /**
  * Created by ricoharisin on 8/25/15.
  */
+
+@Deprecated
 public class TkpdUrl {
 public static final String PRODUCT_SUBMIT = "https://ws.tokopedia.com/v4/action/product/add_product_submit.pl";
     public static final String PRODUCT_VALIDATION = "https://ws.tokopedia.com/v4/action/product/add_product_validation.pl";

@@ -16,6 +16,7 @@ import rx.Observable;
  * Created by alifa on 9/13/17.
  */
 
+@Deprecated
 public interface GaladrielApi {
 
     String VALUE_PDP_WIDGET = "pdp_widget";

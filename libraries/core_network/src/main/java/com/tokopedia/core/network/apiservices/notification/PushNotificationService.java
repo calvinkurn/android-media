@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * @author  by alvarisi on 12/8/16.
  */
 
+@Deprecated
 public class PushNotificationService extends BearerService<PushNotificationApi> {
 
     public PushNotificationService(String mToken) {

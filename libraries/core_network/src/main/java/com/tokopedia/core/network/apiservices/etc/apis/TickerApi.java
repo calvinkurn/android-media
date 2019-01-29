@@ -15,6 +15,8 @@ import rx.Observable;
  * TickerApi
  * Created by Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public interface TickerApi {
 
     @FormUrlEncoded

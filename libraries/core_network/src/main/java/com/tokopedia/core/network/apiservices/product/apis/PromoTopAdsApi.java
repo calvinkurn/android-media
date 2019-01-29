@@ -14,6 +14,7 @@ import rx.Observable;
  * @author by errysuprayogi on 8/23/17.
  */
 
+@Deprecated
 public interface PromoTopAdsApi {
 
     @GET(TkpdBaseURL.TopAds.URL_CHECK_PROMO)

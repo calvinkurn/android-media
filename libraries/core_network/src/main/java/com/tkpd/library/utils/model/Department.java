@@ -8,6 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by m.normansyah on 2/9/16.
  */
+@Deprecated
 public class Department {
     @SerializedName("data")
     @Expose

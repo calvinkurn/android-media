@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by noiz354 on 3/23/16.
  */
 
+@Deprecated
 public class HotListBannerModel implements Parcelable {
     @SerializedName("query")
     public Query query;

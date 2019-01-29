@@ -1,5 +1,6 @@
 package com.tokopedia.core.var;
 
+@Deprecated
 public class Reputation{
 	private int badgeLevel;
 	private String badge;

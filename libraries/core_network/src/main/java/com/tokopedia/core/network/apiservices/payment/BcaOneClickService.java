@@ -12,6 +12,7 @@ import retrofit2.Retrofit;
  * Created by kris on 7/24/17. Tokopedia
  */
 
+@Deprecated
 public class BcaOneClickService extends AuthService<BcaOneClickApi>{
 
 

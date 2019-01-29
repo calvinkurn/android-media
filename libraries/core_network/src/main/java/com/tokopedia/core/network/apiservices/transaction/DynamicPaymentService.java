@@ -8,6 +8,8 @@ import retrofit2.Retrofit;
 /**
  * @author Default05 on 2/10/2016.
  */
+
+@Deprecated
 public class DynamicPaymentService extends BaseService<DynamicPaymentApi> {
 
     private String baseUrl;

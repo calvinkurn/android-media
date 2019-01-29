@@ -17,6 +17,7 @@ import rx.Observable;
  * @author by nisie on 8/14/17.
  */
 
+@Deprecated
 public interface ReputationApi {
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_INBOX_REPUTATION)

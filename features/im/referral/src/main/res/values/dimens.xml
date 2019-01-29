@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_med">20dp</dimen>
+    <dimen name="margin_sm">15dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_vl">40dp</dimen>
+    <dimen name="fontvs">12sp</dimen>
+    <dimen name="font_medium">16sp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="fonts">14sp</dimen>
+    <dimen name="margin_med">20dp</dimen>
+    <dimen name="padding_small">10dp</dimen>
+    <dimen name="margin_xlarge">35dp</dimen>
+    <dimen name="padding_vvs">3dp</dimen>
+    <dimen name="margin_vs">5dp</dimen>
+    <dimen name="margin_xl">45dp</dimen>
+</resources>

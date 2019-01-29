@@ -6,6 +6,7 @@ import com.tokopedia.core.network.core.OkHttpRetryPolicy;
  * Created by HenryPri on 02/05/17.
  */
 
+@Deprecated
 public class MojitoSimpleService extends MojitoService {
     @Override
     protected OkHttpRetryPolicy getOkHttpRetryPolicy() {

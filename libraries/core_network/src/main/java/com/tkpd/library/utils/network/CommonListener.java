@@ -5,6 +5,7 @@ package com.tkpd.library.utils.network;
  * this interface used as common interface for network callback.
  * instead of defining by yourself.
  */
+@Deprecated
 public interface CommonListener {
     void onError(Throwable e);
     void onFailure();

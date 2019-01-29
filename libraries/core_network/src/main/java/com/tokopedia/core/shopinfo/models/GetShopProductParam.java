@@ -6,6 +6,8 @@ import android.os.Parcelable;
 /**
  * @author by Tkpd_Eka on 11/9/2015.
  */
+
+@Deprecated
 public class GetShopProductParam implements Parcelable {
 
     public static final String DEFAULT_ALL_ETALASE_ID = "etalase";

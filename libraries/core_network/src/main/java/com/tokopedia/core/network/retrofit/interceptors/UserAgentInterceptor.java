@@ -12,6 +12,8 @@ import okhttp3.Request;
 /**
  * Created by meta on 25/05/18.
  */
+
+@Deprecated
 public class UserAgentInterceptor extends TkpdAuthInterceptor {
 
     public UserAgentInterceptor() {}
