@@ -60,6 +60,7 @@ import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.cod.view.CodActivity;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -396,6 +397,7 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
@@ -417,6 +419,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -530,7 +533,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMRouter,
         ReferralRouter,
         SaldoDetailsRouter,
-        ILoyaltyRouter {
+        ILoyaltyRouter,
+        TrackingOptimizerRouter{
 
     private static final String EXTRA = "extra";
 
@@ -555,6 +559,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private CacheManager cacheManager;
     private UserSession userSession;
+    private AnalyticTracker analyticTracker;
 
     @Override
     public void onCreate() {
@@ -1178,17 +1183,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventTracking(Map<String, Object> eventTracking) {
+    public void sendEventTrackingOrderDetail(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(this, eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
 
     @Override
-    public void sendEventTrackingOrderDetail(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(this, eventTracking);
-    }
-
-    public void sendScreenName(String screenName) {
+    public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
 
@@ -1702,45 +1703,73 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         accessTokenRefresh.refreshToken();
     }
 
+    @NonNull
     @Override
     public AnalyticTracker getAnalyticTracker() {
-        return new AnalyticTracker() {
-            @Override
-            public void sendEventTracking(Map<String, Object> events) {
-                UnifyTracking.eventClearEnhanceEcommerce(ConsumerRouterApplication.this);
-                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, events);
-            }
+        initAnalyticTracker();
+        return analyticTracker;
+    }
 
-            @Override
-            public void sendEventTracking(String event, String category, String action, String label) {
-                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
-                        event,
-                        category,
-                        action,
-                        label
-                ).getEvent());
-            }
-
-            @Override
-            public void sendScreen(Activity activity, final String screenName) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.sendScreen(activity, () -> screenName);
+    private void initAnalyticTracker() {
+        if (analyticTracker == null) {
+            analyticTracker = new AnalyticTracker() {
+                @Override
+                public void sendEventTracking(Map<String, Object> events) {
+                    ConsumerRouterApplication.this.sendEventTracking(events);
                 }
-            }
 
-            @Override
-            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
-                            shopType, pageType, productId);
+                @Override
+                public void sendEventTracking(String event, String category, String action, String label) {
+                    UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
+                            event,
+                            category,
+                            action,
+                            label
+                    ).getEvent());
                 }
-            }
 
-            @Override
-            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                TrackingUtils.eventTrackingEnhancedEcommerce(ConsumerRouterApplication.this, trackingData);
-            }
-        };
+                @Override
+                public void sendScreen(Activity activity, final String screenName) {
+                    ScreenTracking.sendScreen(ConsumerRouterApplication.this, screenName);
+                }
+
+                @Override
+                public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                    if (activity != null && !TextUtils.isEmpty(screenName)) {
+                        ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                                shopType, pageType, productId);
+                    }
+                }
+
+                @Override
+                public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                    ConsumerRouterApplication.this.sendEnhanceECommerceTracking(trackingData);
+                }
+            };
+        }
+    }
+
+    @Override
+    public void sendEventTracking(Map<String, Object> eventTracking) {
+        UnifyTracking.eventClearEnhanceEcommerce(this);
+        UnifyTracking.sendGTMEvent(this, eventTracking);
+    }
+
+    @Override
+    public void sendEnhanceECommerceTracking(Map<String, Object> events) {
+        TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
+    }
+
+    @Override
+    public void sendTrackDefaultAuth() {
+        ScreenTracking.sendAuth(this);
+    }
+
+    @Override
+    public void sendTrackCustomAuth(Context context, String shopID,
+                                    String shopType, String pageType,
+                                    String productId) {
+        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override
@@ -2818,6 +2847,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
         else
             return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
+    }
+    @Override
+    public Intent getCodPageIntent(Context context, Data data) {
+        return CodActivity.newIntent(context, data);
     }
 
     @Override

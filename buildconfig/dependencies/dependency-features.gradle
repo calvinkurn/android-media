@@ -79,6 +79,7 @@ ext {
     groupIdLogistic = 'com.tokopedia.logistic'
     artifactIdDistrictRecommendation = 'district_recommendation'
     artifactIdLogisticAnalytics = 'logisticanalytics'
+    artifactIdLogisticCod = 'logisticCod'
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
     artifactIdLogisticUploadAwb = 'logisticuploadawb'
@@ -234,6 +235,7 @@ ext {
             logisticdistrictrecommendation: ":features:logistic:district_recommendation",
             logisticinsurance             : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
+            logisticCod             : ":features:logistic:cod",
 
 
             goldMerchant                  : ":features:merchant:gold_merchant",
@@ -293,6 +295,7 @@ ext {
             transactionInvoice            : ":features:transaction:transactioninvoice",
             loyalty                       : ":features:promo:loyalty",
             loyaltyCommon                 : ":features:promo:loyalty_common",
+            shippingRecommendation      : ":features:logistic:shipping_recommendation",
 
             attachproduct                 : ":features:user:attachproduct",
             bankdb                        : ":features:user:bankdb",
