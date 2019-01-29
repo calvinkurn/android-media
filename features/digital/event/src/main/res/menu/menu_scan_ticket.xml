@@ -7,7 +7,7 @@
     <item
         android:id="@+id/action_scan_qr_code"
         android:orderInCategory="50"
-        android:icon="@drawable/digital_event_ic_qr_scanner"
+        android:icon="@drawable/ic_qr_scanner"
         android:title="@string/scan_qr_code"
         app:showAsAction="always"
         android:visible="false"

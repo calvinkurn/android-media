@@ -4,4 +4,5 @@
     <color name="user_name_text_color">#e64a4a4a</color>
     <color name="green_start_color">#77db80</color>
     <color name="digital_event_grey">#888888</color>
+    <color name="digital_event_green">#239229</color>
 </resources>
