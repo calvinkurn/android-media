@@ -660,7 +660,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(isCodShown? View.INVISIBLE : View.GONE);
+        labelCod.setVisibility(isCodShown ? View.INVISIBLE : View.GONE);
     }
 
     private void expandedAppBar() {
@@ -801,30 +801,34 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
-        switch (productData.getCheckoutType()) {
-            case CHECKOUT_TYPE_DEFAULT:
-                checkVariant(source);
-                break;
-            case CHECKOUT_TYPE_OCS:
-                checkVariant(source);
-                break;
-            case CHECKOUT_TYPE_EXPRESS:
-                try {
-                    if (getActivity() != null) {
-                        AtcRequestParam atcRequestParam = new AtcRequestParam();
-                        atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
-                        atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
-                        atcRequestParam.setNotes("");
-                        atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
-                        Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                                .getExpressCheckoutIntent(getActivity(), atcRequestParam);
-                        startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
-                        getActivity().overridePendingTransition(R.anim.pull_up, 0);
+        if (source.equals(SOURCE_BUTTON_BUY_PDP)) {
+            switch (productData.getCheckoutType()) {
+                case CHECKOUT_TYPE_DEFAULT:
+                    checkVariant(source);
+                    break;
+                case CHECKOUT_TYPE_OCS:
+                    checkVariant(source);
+                    break;
+                case CHECKOUT_TYPE_EXPRESS:
+                    try {
+                        if (getActivity() != null) {
+                            AtcRequestParam atcRequestParam = new AtcRequestParam();
+                            atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+                            atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
+                            atcRequestParam.setNotes("");
+                            atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
+                            Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                                    .getExpressCheckoutIntent(getActivity(), atcRequestParam);
+                            startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
+                            getActivity().overridePendingTransition(R.anim.pull_up, 0);
+                        }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
                     }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-                break;
+                    break;
+            }
+        } else {
+            checkVariant(source);
         }
     }
 
@@ -1014,31 +1018,30 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     }
 
-    private void checkAndExecuteReferralAction(ProductData productData){
+    private void checkAndExecuteReferralAction(ProductData productData) {
         UserSession userSession = new UserSession(getActivity());
         String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
-        if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
+        if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest))
+            productData.setProductShareDescription(fireBaseRemoteMsgGuest);
 
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                    doReferralShareAction(productData, fireBaseRemoteMsg);
-            }
-            else {
+                doReferralShareAction(productData, fireBaseRemoteMsg);
+            } else {
                 executeProductShare(productData);
             }
-        }
-        else {
+        } else {
             executeProductShare(productData);
         }
     }
 
-    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
+    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg) {
         productData.setProductShareDescription(fireBaseRemoteMsg);
-        ActionCreator actionCreator = new ActionCreator<String, Integer>(){
+        ActionCreator actionCreator = new ActionCreator<String, Integer>() {
             @Override
             public void actionSuccess(int actionId, String dataObj) {
-                if(!TextUtils.isEmpty(dataObj)) {
+                if (!TextUtils.isEmpty(dataObj)) {
                     productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(productData.getProductShareDescription(),
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
                     TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
@@ -1053,15 +1056,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
         };
 
-        ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
+        ((PdpRouter) (getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
                 (ActionUIDelegate<String, String>) getActivity());
 
     }
 
 
-    private void executeProductShare(ProductData productData){
+    private void executeProductShare(ProductData productData) {
         ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
-        productShare.share(productData, ()->{
+        productShare.share(productData, () -> {
             showProgressLoading();
             return Unit.INSTANCE;
         }, () -> {
