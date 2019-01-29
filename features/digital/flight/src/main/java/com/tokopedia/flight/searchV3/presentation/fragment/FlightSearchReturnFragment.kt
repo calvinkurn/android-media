@@ -9,7 +9,6 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
@@ -95,26 +94,28 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {
         if (flightJourneyViewModel.airlineDataList != null &&
                 flightJourneyViewModel.airlineDataList.size > 1) {
-            departure_trip_label.setValueName(getString(R.string.flight_label_multi_maskapai))
+            departure_trip_label.setValueName(String.format(" | %s", getString(R.string.flight_label_multi_maskapai)))
         } else if (flightJourneyViewModel.airlineDataList != null &&
                 flightJourneyViewModel.airlineDataList.size == 1) {
-            departure_trip_label.setValueName(flightJourneyViewModel.airlineDataList[0].shortName)
+            departure_trip_label.setValueName(String.format(" | %s", flightJourneyViewModel.airlineDataList[0].shortName))
         }
 
         if (flightJourneyViewModel.addDayArrival > 0) {
-            departure_trip_label.setValueDepartureTime(String.format("| %s - %s (+%sh)",
+            departure_trip_label.setValueTime(String.format("%s - %s (+%sh)",
                     flightJourneyViewModel.departureTime,
                     flightJourneyViewModel.arrivalTime,
                     flightJourneyViewModel.addDayArrival.toString()))
         } else {
-            departure_trip_label.setValueDepartureTime(String.format("| %s - %s",
+            departure_trip_label.setValueTime(String.format("%s - %s",
                     flightJourneyViewModel.departureTime,
                     flightJourneyViewModel.arrivalTime))
         }
 
-        departure_trip_label.setValueTitle(String.format("%s - %s",
-                getString(R.string.flight_label_departure_flight),
-                FlightDateUtil.formatToUi(flightSearchPassData.departureDate)))
+        departure_trip_label.setValueDestination(String.format("%s - %s",
+                flightJourneyViewModel.departureAirport,
+                flightJourneyViewModel.arrivalAirport))
+
+        resetDepartureLabelPrice()
     }
 
     override fun onItemClicked(journeyViewModel: FlightJourneyViewModel?) {
@@ -224,6 +225,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
             getFilterModel().isBestPairing = false
             isViewOnlyBestPairing = false
             flightSearchPresenter.fetchSortAndFilter(selectedSortOption, getFilterModel(), false)
+            resetDepartureLabelPrice()
             dialog.dismiss()
         }
         dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort))
@@ -242,11 +244,20 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
             getFilterModel().isBestPairing = true
             isViewOnlyBestPairing = true
             flightSearchPresenter.fetchSortAndFilter(selectedSortOption, getFilterModel(), false)
+            resetDepartureLabelPrice()
             dialog.dismiss()
         }
         dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort))
         dialog.setOnCancelClickListener { dialog.dismiss() }
         dialog.show()
+    }
+
+    private fun resetDepartureLabelPrice() {
+        if (priceViewModel.departurePrice.adultNumericCombo != 0 && isViewOnlyBestPairing) {
+            departure_trip_label.setValuePrice(priceViewModel.departurePrice.adultCombo)
+        } else {
+            departure_trip_label.setValuePrice(priceViewModel.departurePrice.adult)
+        }
     }
 
     companion object {

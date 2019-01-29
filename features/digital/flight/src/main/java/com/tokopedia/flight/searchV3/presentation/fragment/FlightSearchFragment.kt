@@ -490,7 +490,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         fetchFlightSearchData()
     }
 
-    protected fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
+    private fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
         val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
         emptyResultViewModel.title = message

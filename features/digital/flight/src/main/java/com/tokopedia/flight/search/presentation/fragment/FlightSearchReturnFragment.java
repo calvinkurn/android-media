@@ -15,7 +15,6 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
@@ -138,22 +137,28 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     public void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel) {
         if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() > 1) {
-            departureHeaderLabel.setValueName(getString(R.string.flight_label_multi_maskapai));
+            departureHeaderLabel.setValueName(String.format(" | %s", getString(R.string.flight_label_multi_maskapai)));
         } else if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() == 1) {
-            departureHeaderLabel.setValueName(flightJourneyViewModel.getAirlineDataList().get(0).getShortName());
+            departureHeaderLabel.setValueName(String.format(" | %s", flightJourneyViewModel.getAirlineDataList().get(0).getShortName()));
         }
         if (flightJourneyViewModel.getAddDayArrival() > 0) {
-            departureHeaderLabel.setValueDepartureTime(String.format("| %s - %s (+%sh)", flightJourneyViewModel.getDepartureTime(),
+            departureHeaderLabel.setValueTime(String.format("%s - %s (+%sh)", flightJourneyViewModel.getDepartureTime(),
                     flightJourneyViewModel.getArrivalTime(), String.valueOf(flightJourneyViewModel.getAddDayArrival())));
         } else {
-            departureHeaderLabel.setValueDepartureTime(String.format("| %s - %s", flightJourneyViewModel.getDepartureTime(),
+            departureHeaderLabel.setValueTime(String.format("%s - %s", flightJourneyViewModel.getDepartureTime(),
                     flightJourneyViewModel.getArrivalTime()));
         }
 
-        departureHeaderLabel.setValueTitle(String.format("%s - %s",
-                getString(R.string.flight_label_departure_flight),
-                FlightDateUtil.formatToUi(passDataViewModel.getDepartureDate())));
+        departureHeaderLabel.setValueDestination(String.format("%s - %s",
+                flightJourneyViewModel.getDepartureAirport(),
+                flightJourneyViewModel.getArrivalAirport()));
+
+        if (flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
+            departureHeaderLabel.setValuePrice(flightJourneyViewModel.getFare().getAdultCombo());
+        } else {
+            departureHeaderLabel.setValuePrice(flightJourneyViewModel.getFare().getAdult());
+        }
     }
 
     @Override
