@@ -95,7 +95,7 @@ public class HotlistFragment extends BrowseSectionFragment
         implements
         HotlistFragmentContract.View,
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
-        HotlistListener, TopAdsListener, TopAdsItemClickListener, TopAdsItemImpressionListener,
+        HotlistListener, TopAdsListener, TopAdsItemClickListener,
         HotlistActivity.FragmentListener {
 
     private static final String TAG = HotlistFragment.class.getSimpleName();
@@ -374,7 +374,13 @@ public class HotlistFragment extends BrowseSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
-        topAdsRecyclerAdapter.setAdsImpressionListener(this);
+        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
+                        getHotlistAlias(), product, position);
+            }
+        });
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnScrollListener() {
             @Override
             public void onLoad(int page, int totalCount) {
@@ -491,7 +497,7 @@ public class HotlistFragment extends BrowseSectionFragment
 
     protected void setupAdapter() {
         String searchQuery = getArguments().getString(EXTRA_SEARCH_QUERY, "");
-        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this, searchQuery);
+        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this, searchQuery, getHotlistAlias());
         hotlistAdapter = new HotlistAdapter(this, typeFactory);
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), hotlistAdapter);
@@ -520,12 +526,6 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
         topAdsRecyclerAdapter.hideLoading();
-    }
-
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
-                getHotlistAlias(), product, position);
     }
 
     @Override
