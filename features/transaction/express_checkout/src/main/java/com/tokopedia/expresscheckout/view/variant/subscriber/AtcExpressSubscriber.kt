@@ -48,7 +48,7 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
                 presenter.loadShippingRates(productModel?.productPrice
                         ?: 0, productModel?.productMinOrder
                         ?: 0, serviceId
-                        ?: 0, false)
+                        ?: 0, 0)
             }
         } else {
             view?.finishWithError(expressCheckoutResponse.atcExpress.errorMessage.joinToString(" "))

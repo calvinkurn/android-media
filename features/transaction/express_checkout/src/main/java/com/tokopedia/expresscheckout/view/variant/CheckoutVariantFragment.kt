@@ -616,10 +616,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun setShippingError() {
+    override fun setShippingError(message: String) {
         val profileViewModel = fragmentViewModel.getProfileViewModel()
         if (profileViewModel != null) {
             profileViewModel.isDurationError = true
+            profileViewModel.durationErrorMessage = message
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
     }
@@ -657,6 +658,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             } else {
                 profileViewModel.isDurationError = false
                 profileViewModel.shippingCourier = productData.shipperName
+                profileViewModel.shippingCourierId = productData.shipperProductId
                 profileViewModel.shippingDuration = serviceData.serviceName
                 profileViewModel.shippingDurationId = serviceData.serviceId
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
@@ -771,7 +773,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             currentProfileViewModel.isSelected = true
             currentProfileViewModel.isDurationError = false
             currentProfileViewModel.isStateHasChangedProfile = true
-            currentProfileViewModel.isShowDefaultProfileCheckBox = false
+            currentProfileViewModel.isShowDefaultProfileCheckBox =
+                    selectedProfileViewModel.profileId != currentProfileViewModel.profileId
             currentProfileViewModel.isEditable = false
             currentProfileViewModel.isDefaultProfileCheckboxChecked = false
             currentProfileViewModel.paymentDetail = selectedProfileViewModel.paymentDetail
@@ -794,7 +797,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     subscriber.onNext(boolean)
                 }
             }
-        }).debounce(1000, TimeUnit.MILLISECONDS)
+        }).debounce(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<Boolean>() {
@@ -815,7 +818,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice
                                     ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
                                     ?: 0, fragmentViewModel.getProfileViewModel()?.shippingDurationId
-                                    ?: 0, true)
+                                    ?: 0, fragmentViewModel.getProfileViewModel()?.shippingCourierId
+                                    ?: 0)
                         }
                     }
                 }))

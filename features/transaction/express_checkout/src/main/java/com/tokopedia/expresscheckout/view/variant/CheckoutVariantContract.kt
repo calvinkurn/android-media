@@ -58,7 +58,7 @@ interface CheckoutVariantContract {
 
         fun finishWithError(messages: String)
 
-        fun setShippingError()
+        fun setShippingError(message: String)
 
         fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?)
 
@@ -83,7 +83,7 @@ interface CheckoutVariantContract {
 
         fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam)
 
-        fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, isReloadData: Boolean)
+        fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, selectedSpId: Int)
 
         fun checkoutExpress(fragmentViewModel: FragmentViewModel)
 

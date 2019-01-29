@@ -81,18 +81,17 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         return variables
     }
 
-    override fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, isReloadData: Boolean) {
+    override fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, selectedSpId: Int) {
         val query = GraphqlHelper.loadRawString(view.getActivityContext()?.getResources(), R.raw.rates_v3_query)
         val shippingParam = getShippingParam(quantity, price)
 
         val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
-        val serviceId = selectedServiceId
 
         view.showLoading()
         getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
         getCourierRecommendationUseCase.execute(
                 query, shippingParam, 0, 0, shopShipmentModels,
-                GetRatesSubscriber(view, this, serviceId ?: 0, isReloadData)
+                GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
         )
     }
 
@@ -173,7 +172,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
     private fun getCheckoutExpressParams(fragmentViewModel: FragmentViewModel): HashMap<String, Any?> {
         val cart = Cart()
-        cart.setDefaultProfile = false
+        cart.setDefaultProfile = fragmentViewModel.getProfileViewModel()?.isDefaultProfileCheckboxChecked
         cart.promoCode = ""
         cart.isDonation = 0
         cart.data = arrayListOf(getDataCheckoutRequest(fragmentViewModel))

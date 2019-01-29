@@ -17,7 +17,7 @@ import rx.Subscriber
 class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                          val presenter: CheckoutVariantContract.Presenter,
                          val profileServiceId: Int,
-                         val isReloadData: Boolean) : Subscriber<ShippingRecommendationData>() {
+                         val currentSpId: Int) : Subscriber<ShippingRecommendationData>() {
 
     override fun onCompleted() {
 
@@ -34,30 +34,58 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         view?.hideLoading()
         view?.enableButtonBuy()
         if (ratesData.errorId != null && ratesData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
-            view?.finishWithError(ratesData.errorMessage)
+            showError(ratesData)
         } else if (ratesData.shippingDurationViewModels != null && ratesData.shippingDurationViewModels.size > 0) {
+            // Check is service id available
             for (shippingDurationViewModel: ShippingDurationViewModel in ratesData.shippingDurationViewModels) {
                 if (shippingDurationViewModel.serviceData.serviceId == profileServiceId) {
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
-                        for (product: ProductData in shippingDurationViewModel.serviceData.products) {
-                            if (product.isRecommend) {
-                                prepareViewModel(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
-                                return
+                        if (currentSpId != 0) {
+                            // Reload rates data come here
+                            for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                                if (product.shipperProductId == currentSpId) {
+                                    if (product.error.errorMessage.isNullOrEmpty()) {
+                                        prepareViewModel(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
+                                        return
+                                    } else {
+                                        view?.setShippingError(product.error.errorMessage)
+                                        return
+                                    }
+                                }
                             }
+                            view?.setShippingError("Toko tidak mendukung durasi pengiriman ini")
+                            return
+                        } else {
+                            // First time load rates data come here
+                            for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                                if (product.isRecommend) {
+                                    prepareViewModel(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
+                                    return
+                                }
+                            }
+                            prepareViewModel(shippingDurationViewModel.serviceData.products[0], shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
+                            return
                         }
-                        prepareViewModel(shippingDurationViewModel.serviceData.products[0], shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
-                        return
                     }
                 }
             }
+            showError(ratesData)
+        } else {
+            showError(ratesData)
+        }
+    }
+
+    private fun showError(ratesData: ShippingRecommendationData) {
+        // currentSpId 0 means first time load rates data
+        if (currentSpId == 0) {
             view?.finishWithError(ratesData.errorMessage)
         } else {
-            view?.finishWithError(ratesData.errorMessage)
+            view?.setShippingError(ratesData.errorMessage)
         }
     }
 
     private fun prepareViewModel(product: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
-        if (!isReloadData) {
+        if (currentSpId == 0) {
             presenter.prepareViewModel(product)
         }
         view?.updateShippingData(product, serviceData, shippingCourierViewModels)

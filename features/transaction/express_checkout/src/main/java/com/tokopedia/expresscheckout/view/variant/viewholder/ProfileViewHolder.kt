@@ -49,6 +49,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                     }
                 } else {
                     itemView.ll_profile_courier.visibility = View.GONE
+                    itemView.tv_profile_shipping_duration_error.text = element.durationErrorMessage
                     itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE
                     itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { }
                 }
