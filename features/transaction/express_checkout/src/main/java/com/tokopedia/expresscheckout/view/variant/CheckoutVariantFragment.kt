@@ -160,14 +160,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         tkpdProgressDialog.dismiss()
     }
 
-    override fun enableButtonBuy() {
-        bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_orange_enabled)
-    }
-
-    override fun disableButtonBuy() {
-        bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
-    }
-
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
     }
@@ -208,10 +200,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         } else {
             adapter.notifyDataSetChanged()
         }
-    }
-
-    override fun onBindProfile() {
-
     }
 
     override fun onClickEditProfile() {
@@ -429,6 +417,24 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
         }
         onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+    }
+
+    override fun onNeedToValidateButtonBuyVisibility() {
+        var hasError = false
+        when {
+            fragmentViewModel.getProfileViewModel()?.isDurationError == true -> hasError = true
+            fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
+        }
+
+        if (hasError) {
+            bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
+        } else {
+            bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_orange_enabled)
+        }
+    }
+
+    override fun onNeedToRecalculateRates() {
+        reloadRatesDebounceListener.onNeedToRecalculateRates(true)
     }
 
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
@@ -783,8 +789,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             currentProfileViewModel.shippingDuration = selectedProfileViewModel.durationDetail
 
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(currentProfileViewModel))
-
-            reloadRatesDebounceListener.onNeedToRecalculateRates(true)
         }
 
         checkoutProfileBottomSheet.dismiss()
@@ -812,7 +816,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     override fun onNext(boolean: Boolean) {
                         if (fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
                                 fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
-                            disableButtonBuy()
+                            bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
                             fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                             fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
                             presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice

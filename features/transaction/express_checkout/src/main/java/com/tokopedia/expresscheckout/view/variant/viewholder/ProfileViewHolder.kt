@@ -53,6 +53,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                     itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE
                     itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { }
                 }
+                listener.onNeedToValidateButtonBuyVisibility()
 
                 if (element.isShowDefaultProfileCheckBox) {
                     itemView.v_profile_separator_bottom.visibility = View.VISIBLE
@@ -65,7 +66,9 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 }
             }
 
-            listener.onBindProfile()
+            if (element.isStateHasChangedProfile) {
+                listener.onNeedToRecalculateRates()
+            }
         }
     }
 

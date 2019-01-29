@@ -26,13 +26,13 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideLoading()
-        view?.enableButtonBuy()
+        view?.onNeedToValidateButtonBuyVisibility()
         view?.finishWithError(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
     }
 
     override fun onNext(ratesData: ShippingRecommendationData) {
         view?.hideLoading()
-        view?.enableButtonBuy()
+        view?.onNeedToValidateButtonBuyVisibility()
         if (ratesData.errorId != null && ratesData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
             showError(ratesData)
         } else if (ratesData.shippingDurationViewModels != null && ratesData.shippingDurationViewModels.size > 0) {

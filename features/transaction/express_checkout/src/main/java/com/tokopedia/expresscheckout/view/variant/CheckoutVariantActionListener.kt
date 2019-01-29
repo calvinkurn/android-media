@@ -22,8 +22,6 @@ interface CheckoutVariantActionListener {
 
     fun onClickInsuranceInfo(insuranceInfo: String)
 
-    fun onBindProfile()
-
     fun onBindProductUpdateQuantityViewModel(stockWording: String)
 
     fun onBindVariantGetProductViewModel(): ProductViewModel?
@@ -37,4 +35,8 @@ interface CheckoutVariantActionListener {
     fun onSummaryChanged(summaryViewModel: SummaryViewModel?)
 
     fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel)
+
+    fun onNeedToValidateButtonBuyVisibility()
+
+    fun onNeedToRecalculateRates()
 }
