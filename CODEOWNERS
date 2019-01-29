@@ -54,6 +54,7 @@
 /features/payment/payment_setting/              @tokopedia/minion-bob
 /features/payment/pms/                          @tokopedia/minion-bob
 /features/transaction/checkout/                 @tokopedia/minion-bob
+/features/transaction/express_checkout/         @tokopedia/minion-bob
 /features/transaction/transactionanalytics/     @tokopedia/minion-bob
 /features/transaction/transactiondata/          @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
