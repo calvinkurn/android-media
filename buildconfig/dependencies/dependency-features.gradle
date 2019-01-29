@@ -275,7 +275,6 @@ ext {
             gamification                  : ":features:promo:gamification",
             merchantVoucher               : ":features:promo:merchant_voucher",
             tokopoints                    : ":features:promo:tokopoints",
-            tokopointsNotification        : ":features:promo:tokopoints_notification",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification        : ":features:promo:tokopoints_notification",
             promoCheckout                 : ":features:promo:promo_checkout",
