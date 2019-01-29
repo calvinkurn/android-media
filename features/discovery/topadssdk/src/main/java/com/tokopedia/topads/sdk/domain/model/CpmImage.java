@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * Created by errysuprayogi on 12/28/17.
  */
 
-public class CpmImage extends ImageHolder {
+public class CpmImage extends ImageHolder implements Parcelable {
 
     private static final String KEY_FULL_URL = "full_url";
     private static final String KEY_FULL_ECS = "full_ecs";
@@ -38,7 +38,6 @@ public class CpmImage extends ImageHolder {
     }
 
     protected CpmImage(Parcel in) {
-        super(in);
         fullUrl = in.readString();
         fullEcs = in.readString();
         ilustrationUrl = in.readString();

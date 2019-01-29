@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +11,7 @@ import org.json.JSONObject;
 /**
  * @author by errysuprayogi on 4/3/17.
  */
-public class ProductImage extends ImageHolder {
+public class ProductImage extends ImageHolder implements Parcelable {
 
     private static final String KEY_M_URL = "m_url";
     private static final String KEY_S_URL = "s_url";
@@ -33,7 +34,6 @@ public class ProductImage extends ImageHolder {
     private String xs_ecs;
 
     public ProductImage() {
-        super();
     }
 
     public ProductImage(JSONObject object) throws JSONException {
@@ -62,7 +62,6 @@ public class ProductImage extends ImageHolder {
     }
 
     protected ProductImage(Parcel in) {
-        super(in);
         m_url = in.readString();
         s_url = in.readString();
         xs_url = in.readString();
