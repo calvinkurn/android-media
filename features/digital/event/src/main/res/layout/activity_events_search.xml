@@ -167,9 +167,9 @@
                 android:id="@+id/tv_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_filter_list"
+                android:drawableLeft="@drawable/digital_event_ic_filter_list"
                 android:drawablePadding="@dimen/dp_10"
-                android:drawableStart="@drawable/ic_filter_list"
+                android:drawableStart="@drawable/digital_event_ic_filter_list"
                 android:text="Filter"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_13" />
