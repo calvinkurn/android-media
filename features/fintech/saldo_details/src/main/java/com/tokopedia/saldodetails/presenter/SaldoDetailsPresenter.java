@@ -47,6 +47,10 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 import static android.content.ContentValues.TAG;
+import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_BUYER_TOTAL_BALANCE;
+import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT;
+import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE;
+import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT;
 
 public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContract.View>
         implements SaldoDetailContract.Presenter, MerchantSaldoDetailsActionListener {
@@ -61,6 +65,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     private static final String BUNDLE_TOTAL_BALANCE = "total_balance";
     private static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
     private static final String DATE_FORMAT_WS = "yyyy/MM/dd";
+
+    private Bundle withdrawActivityBundle = new Bundle();
 
     private PagingHandler paging;
     private DepositCacheInteractor depositCacheInteractor;
@@ -257,7 +263,11 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 usableSaldoBalanceResponse = graphqlResponse.getData(GqlSaldoBalanceResponse.class);
                 holdSaldoBalanceResponse = graphqlResponse.getData(GqlHoldSaldoBalanceResponse.class);
 
-                depositCacheInteractor.setUsableSaldoBalanceCache(usableSaldoBalanceResponse);
+                if (isSeller()) {
+                    depositCacheInteractor.setUsableSellerSaldoBalanceCache(usableSaldoBalanceResponse);
+                } else {
+                    depositCacheInteractor.setUsableBuyerSaldoBalanceCache(usableSaldoBalanceResponse);
+                }
 
                 getView().setBalance(usableSaldoBalanceResponse.getSaldo().getFormattedAmount());
                 getView().setWithdrawButtonState(usableSaldoBalanceResponse.getSaldo().getDeposit() != 0);
@@ -480,19 +490,28 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         Context context = getView().getContext();
         UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
-            depositCacheInteractor.getUsableSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
+            depositCacheInteractor.getUsableBuyerSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
                 @Override
                 public void onSuccess(GqlSaldoBalanceResponse result) {
 
                     if (result.getSaldo().getDeposit() > 0) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(BUNDLE_TOTAL_BALANCE, String.valueOf(result.getSaldo().getFormattedAmount()));
-                        bundle.putString(BUNDLE_TOTAL_BALANCE_INT, String.valueOf(result.getSaldo().getDeposit()));
-                        intent.putExtras(bundle);
-                        getView().getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
+                        withdrawActivityBundle.putString(BUNDLE_SALDO_BUYER_TOTAL_BALANCE, String.valueOf(result.getSaldo().getFormattedAmount()));
+                        withdrawActivityBundle.putString(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, String.valueOf(result.getSaldo().getDeposit()));
+
+                        if (getView().isSellerEnabled()) {
+                            fetchSellerSaldoAndLaunchActivity(intent);
+                        } else {
+                            launchWithdrawActivity(intent);
+                        }
+
                     } else {
-                        getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
+                        if (getView().isSellerFragment()) {
+                            getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
+                        } else {
+                            getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
+                        }
                     }
+
                 }
 
                 @Override
@@ -503,6 +522,35 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         } else {
             getView().showWithdrawalNoPassword();
         }
+    }
+
+    private void fetchSellerSaldoAndLaunchActivity(Intent intent) {
+        depositCacheInteractor.getUsableSellerSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
+            @Override
+            public void onSuccess(GqlSaldoBalanceResponse result) {
+                if (result.getSaldo().getDeposit() > 0) {
+                    withdrawActivityBundle.putString(BUNDLE_SALDO_SELLER_TOTAL_BALANCE, String.valueOf(result.getSaldo().getFormattedAmount()));
+                    withdrawActivityBundle.putString(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, String.valueOf(result.getSaldo().getDeposit()));
+                    launchWithdrawActivity(intent);
+                } else {
+                    if (getView().isSellerFragment()) {
+                        getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
+                    } else {
+                        getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        });
+    }
+
+    private void launchWithdrawActivity(Intent intent) {
+        intent.putExtras(withdrawActivityBundle);
+        getView().getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
     }
 
     private void showLoading() {

@@ -70,6 +70,10 @@ public interface SaldoDetailContract {
         void showTickerMessage(String withdrawalTicker);
 
         void hideTickerMessage();
+
+        boolean isSellerEnabled();
+
+        boolean isSellerFragment();
     }
 
     interface Presenter extends CustomerPresenter<SaldoDetailContract.View> {

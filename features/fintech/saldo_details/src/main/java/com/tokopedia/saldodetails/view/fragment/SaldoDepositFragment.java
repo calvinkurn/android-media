@@ -60,6 +60,13 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     private static final String IS_USER_SELLER = "is_user_seller";
     private static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
+
+    public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE = "seller_total_balance";
+    public static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE = "buyer_total_balance";
+    public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
+    public static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int";
+
+
     private final long SHOW_CASE_DELAY = 400;
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
@@ -566,6 +573,16 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public void hideTickerMessage() {
         tickerMessageRL.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean isSellerEnabled() {
+        return isSellerEnabled;
+    }
+
+    @Override
+    public boolean isSellerFragment() {
+        return isSeller;
     }
 
     @Override

@@ -83,6 +83,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private CurrencyTextWatcher currencyTextWatcher;
 
     public static final String BUNDLE_TOTAL_BALANCE = "total_balance";
+    private static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE = "seller_total_balance";
+    private static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE = "buyer_total_balance";
+    private static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
+    private static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int";
     public static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
     private static final String DEFAULT_TOTAL_BALANCE = "Rp.0,-";
     private View info;

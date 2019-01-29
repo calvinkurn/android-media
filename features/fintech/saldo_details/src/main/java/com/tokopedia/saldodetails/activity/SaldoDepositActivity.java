@@ -31,6 +31,7 @@ import com.tokopedia.saldodetails.view.ui.SaldoTabItem;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     private static final int REQUEST_CODE_LOGIN = 1001;
     private static final String TAG = "DEPOSIT_FRAGMENT";
-    private TabLayout sladoTabLayout;
+    private TabLayout saldoTabLayout;
     private ViewPager saldoViewPager;
     private SaldoDetailPagerAdapter saldoDetailPagerAdapter;
     private View saldoTabViewSeparator;
@@ -150,7 +151,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         saldoDetailPagerAdapter = new SaldoDetailPagerAdapter(getSupportFragmentManager());
         saldoDetailPagerAdapter.setItems(saldoTabItems);
         saldoViewPager.setAdapter(saldoDetailPagerAdapter);
-        sladoTabLayout.setupWithViewPager(saldoViewPager);
+        saldoTabLayout.setupWithViewPager(saldoViewPager);
 
         saldoViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -189,7 +190,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
         saldoTabItems.add(sellerSaldoTabItem);
 
-        sladoTabLayout.setVisibility(View.VISIBLE);
+        saldoTabLayout.setVisibility(View.VISIBLE);
         saldoTabViewSeparator.setVisibility(View.VISIBLE);
 
     }
@@ -200,12 +201,12 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         saldoTabItem.setTitle("");
         saldoTabItem.setFragment(SaldoDepositFragment.createInstance(false, isSeller));
         saldoTabItems.add(saldoTabItem);
-        sladoTabLayout.setVisibility(View.GONE);
+        saldoTabLayout.setVisibility(View.GONE);
         saldoTabViewSeparator.setVisibility(View.GONE);
     }
 
     private void initializeView() {
-        sladoTabLayout = findViewById(R.id.saldo_tab_layout);
+        saldoTabLayout = findViewById(R.id.saldo_tab_layout);
         saldoViewPager = findViewById(R.id.saldo_view_pager);
         saldoTabViewSeparator = findViewById(R.id.saldo_tab_view_separator);
         TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
@@ -229,10 +230,10 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     }
 
     public TabLayout getSaldoTabLayout() {
-        return sladoTabLayout;
+        return saldoTabLayout;
     }
 
     public View getBuyerTabView() {
-        return getSaldoTabLayout().getChildAt(0);
+        return Objects.requireNonNull(saldoTabLayout.getTabAt(0)).getCustomView();
     }
 }
