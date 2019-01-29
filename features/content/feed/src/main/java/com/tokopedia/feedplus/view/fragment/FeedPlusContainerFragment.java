@@ -105,15 +105,11 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private void setAdapter() {
         List<FeedPlusTabItem> tabItemList = new ArrayList<>();
 
-        if (userSession.isLoggedIn()) {
-            tabItemList.add(new FeedPlusTabItem(
-                    getString(R.string.tab_my_feed),
-                    getFeedPlusFragment())
-            );
-            tabLayout.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.setVisibility(View.GONE);
-        }
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_my_feed),
+                getFeedPlusFragment())
+        );
+        tabLayout.setVisibility(View.VISIBLE);
 
         tabItemList.add(new FeedPlusTabItem(
                 getString(R.string.tab_explore),
