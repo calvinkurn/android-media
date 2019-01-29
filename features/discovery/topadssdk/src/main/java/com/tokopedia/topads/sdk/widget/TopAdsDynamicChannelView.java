@@ -33,7 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TopAdsDynamicChannelView extends LinearLayout implements View.OnClickListener,
-        LocalAdsClickListener, TopAdsItemImpressionListener {
+        LocalAdsClickListener {
 
     private static final String TAG = TopAdsDynamicChannelView.class.getSimpleName();
     public static final int SPAN_COUNT = 3;
@@ -43,8 +43,9 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     private ImageView infoCta;
     private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
     private TopAdsItemClickListener adsItemClickListener;
+    private TopAdsItemImpressionListener impressionListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
-    private LinearLayout channelTitleContainer;
+
 
     @Inject
     TopAdsPresenter presenter;
@@ -72,11 +73,17 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         recyclerView = findViewById(R.id.list);
         infoCta = findViewById(R.id.info_cta);
         titleTxt = findViewById(R.id.channel_title);
-        channelTitleContainer = findViewById(R.id.channel_title_container);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         itemAdapter = new AdsItemAdapter(getContext());
         itemAdapter.setItemClickListener(this);
-        itemAdapter.setAdsItemImpressionListener(this);
+        itemAdapter.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(position, product);
+                }
+            }
+        });
         recyclerView.setAdapter(itemAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, SPAN_COUNT));
         recyclerView.addItemDecoration(new GridSpaceItemDecoration(SPAN_COUNT,
@@ -110,6 +117,10 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         } else {
             setVisibility(GONE);
         }
+    }
+
+    public void setAdsItemImpressionListener(TopAdsItemImpressionListener impressionListener) {
+        this.impressionListener = impressionListener;
     }
 
     public void setAdsItemClickListener(TopAdsItemClickListener adsItemClickListener) {
@@ -148,8 +159,4 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         }
     }
 
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        TopAdsGtmTracker.eventHomeProductView(getContext(), product, position);
-    }
 }

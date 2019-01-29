@@ -26,8 +26,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener,
-        TopAdsItemImpressionListener, TopAdsSwitcher {
+public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener, TopAdsSwitcher {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_item_ads;
@@ -43,7 +42,12 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         this.itemClickListener = itemClickListener;
         adsWidgetView = itemView.findViewById(R.id.topads_view);
         adsWidgetView.setItemClickListener(this);
-        adsWidgetView.setImpressionListener(this);
+        adsWidgetView.setImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventSearchResultProductView(context, keyword, product, position);
+            }
+        });
         adsWidgetView.setDisplayMode(DisplayMode.GRID);
         adsWidgetView.setItemDecoration(new RecyclerView.ItemDecoration() {
 
@@ -114,8 +118,4 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         adsWidgetView.setDisplayMode(mode);
     }
 
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        TopAdsGtmTracker.eventSearchResultProductView(context, keyword, product, position);
-    }
 }

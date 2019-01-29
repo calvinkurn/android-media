@@ -40,7 +40,7 @@ import javax.inject.Inject;
  * @author by errysuprayogi on 4/18/17.
  */
 
-public class TopAdsPlacer implements AdsView, LocalAdsClickListener, TopAdsItemImpressionListener {
+public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsPlacer.class.getSimpleName();
     private int ajustedPositionStart = 0;
@@ -72,7 +72,14 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener, TopAdsItemI
         this.adapter = adapter;
         this.observer = observer;
         typeFactory.setItemClickListener(this);
-        typeFactory.setImpressionListener(this);
+        typeFactory.setImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(position, product);
+                }
+            }
+        });
         initInjector();
         initPresenter();
     }
@@ -106,13 +113,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener, TopAdsItemI
 
     public void setImpressionListener(TopAdsItemImpressionListener impressionListener) {
         this.impressionListener = impressionListener;
-    }
-
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        if(impressionListener!=null){
-            impressionListener.onImpressionProductAdsItem(position, product);
-        }
     }
 
     public void setShouldLoadAds(boolean shouldLoadAds) {

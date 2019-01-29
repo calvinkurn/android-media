@@ -23,19 +23,14 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.tkpd.R;
-import java.util.List;
-
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 
 /**
  * Author errysuprayogi on 25,November,2018
  */
-public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements TopAdsItemClickListener,
-        TopAdsItemImpressionListener {
+public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements TopAdsItemClickListener {
 
     private static final String TAG = WishListTopAdsViewHolder.class.getSimpleName();
     private TopAdsCarouselView topAdsCarouselView;
@@ -51,13 +46,13 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
 
     public void renderTopAds(TopAdsModel topAdsModel) {
         topAdsCarouselView.setAdsItemClickListener(this);
-        topAdsCarouselView.setAdsItemImpressionListener(this);
+        topAdsCarouselView.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventWishlistProductView(context, product, position);
+            }
+        });
         topAdsCarouselView.setData(topAdsModel);
-    }
-
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        TopAdsGtmTracker.eventWishlistProductView(context, product, position);
     }
 
     @Override

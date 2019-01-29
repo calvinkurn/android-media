@@ -250,7 +250,8 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener, ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener,
+        ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -2631,7 +2632,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
             topAds.setAdsItemClickListener(this);
             topAds.setAdsListener(this);
-            topAds.setAdsItemImpressionListener(this);
+            topAds.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+                @Override
+                public void onImpressionProductAdsItem(int position, Product product) {
+                    ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
+                }
+            });
             topAds.setConfig(config);
             topAds.loadTopAds();
         } catch (Exception e) {
@@ -2662,11 +2668,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
         ProductPageTracking.eventTopAdsClicked(getActivity(), position, product);
-    }
-
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
     }
 
     @Override

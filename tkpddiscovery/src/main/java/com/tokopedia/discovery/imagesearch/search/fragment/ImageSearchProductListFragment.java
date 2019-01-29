@@ -42,6 +42,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -50,6 +51,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -230,9 +232,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         }
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         adapter.setTotalData(productViewModel.getTotalData());
-
-
-
     }
 
     private List<Visitable> initMappingProduct() {
@@ -247,6 +246,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
+        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventSearchResultProductView(getContext(), getQueryKey(), product, position);
+            }
+        });
     }
 
     protected GridLayoutManager getGridLayoutManager() {

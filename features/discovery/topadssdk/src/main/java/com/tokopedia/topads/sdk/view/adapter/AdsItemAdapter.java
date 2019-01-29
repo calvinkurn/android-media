@@ -15,7 +15,6 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
-import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 
 import java.util.ArrayList;
 import java.util.List;

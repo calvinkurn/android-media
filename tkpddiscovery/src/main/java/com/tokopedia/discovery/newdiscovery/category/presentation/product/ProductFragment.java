@@ -81,7 +81,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
 public class ProductFragment extends BrowseSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
         ItemClickListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener,
-        TopAdsItemImpressionListener, DefaultCategoryAdapter.CategoryListener,
+        DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener {
 
     public static final int REQUEST_CODE_LOGIN = 1;
@@ -336,12 +336,14 @@ public class ProductFragment extends BrowseSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
-        topAdsRecyclerAdapter.setAdsImpressionListener(this);
-    }
-
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        TopAdsGtmTracker.eventCategoryProductView(getContext(), "", product, position);
+        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventCategoryProductView(getContext(),
+                        productViewModel.getCategoryHeaderModel().getHeaderModel().getCategoryName(),
+                        product, position);
+            }
+        });
     }
 
     @Override

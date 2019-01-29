@@ -41,7 +41,7 @@ import javax.inject.Inject;
  * Created by errysuprayogi on 2/20/18.
  */
 
-public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsClickListener, TopAdsItemImpressionListener {
+public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
@@ -98,7 +98,14 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        adapter.setAdsItemImpressionListener(this);
+        adapter.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(position, product);
+                }
+            }
+        });
         try {
             adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
         } finally {
@@ -285,12 +292,5 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     public void showErrorRemoveWishlist() {
         SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onImpressionAdsItem(int position, Product product) {
-        if(impressionListener!=null){
-            impressionListener.onImpressionProductAdsItem(position, product);
-        }
     }
 }
