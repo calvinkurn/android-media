@@ -84,6 +84,7 @@ public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (cartProductItemViewModel.getCartItemData().getOriginData().isPreOrder()) {
+            tvPreOrder.setText(cartProductItemViewModel.getCartItemData().getOriginData().getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);

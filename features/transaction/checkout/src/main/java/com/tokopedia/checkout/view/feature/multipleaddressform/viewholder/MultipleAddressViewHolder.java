@@ -114,6 +114,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (data.isPreOrder()) {
+            tvPreOrder.setText(data.getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);

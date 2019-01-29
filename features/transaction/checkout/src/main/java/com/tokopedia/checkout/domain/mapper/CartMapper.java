@@ -121,6 +121,10 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setPricePlanInt(data.getProduct().getProductPrice());
                 cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
                 cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
+                if (data.getProduct().getProductPreorder() != null
+                        && data.getProduct().getProductPreorder().getDurationText() != null) {
+                    cartItemDataOrigin.setPreOrderInfo("PO " + data.getProduct().getProductPreorder().getDurationText());
+                }
                 cartItemDataOrigin.setFavorite(false);
                 cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
                 cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
@@ -248,7 +252,7 @@ public class CartMapper implements ICartMapper {
         autoApplyData.setIsCoupon(cartDataListResponse.getAutoapplyV2().getIsCoupon());
         autoApplyData.setMessageSuccess(cartDataListResponse.getAutoapplyV2().getMessage().getText());
         int promoId = 0;
-        if(!TextUtils.isEmpty(cartDataListResponse.getAutoapplyV2().getPromoCodeId())){
+        if (!TextUtils.isEmpty(cartDataListResponse.getAutoapplyV2().getPromoCodeId())) {
             Integer.valueOf(cartDataListResponse.getAutoapplyV2().getPromoCodeId());
         }
         autoApplyData.setPromoId(promoId);
@@ -309,6 +313,10 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setShopType(generateShopType(data.getShop()));
             cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
+            if (data.getProduct().getProductPreorder() != null
+                    && data.getProduct().getProductPreorder().getDurationText() != null) {
+                cartItemDataOrigin.setPreOrderInfo("PO " + data.getProduct().getProductPreorder().getDurationText());
+            }
             cartItemDataOrigin.setFavorite(false);
             cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
             cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());

@@ -22,6 +22,7 @@ public class MultipleAddressAdapterData implements Parcelable {
     private boolean isGoldMerchant;
     private String cashBackInfo;
     private List<MultipleAddressItemData> itemListData;
+    private String preOrderInfo;
 
     public MultipleAddressAdapterData() {
     }
@@ -38,6 +39,7 @@ public class MultipleAddressAdapterData implements Parcelable {
         isGoldMerchant = in.readByte() != 0;
         cashBackInfo = in.readString();
         itemListData = in.createTypedArrayList(MultipleAddressItemData.CREATOR);
+        preOrderInfo = in.readString();
     }
 
     @Override
@@ -53,6 +55,7 @@ public class MultipleAddressAdapterData implements Parcelable {
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(cashBackInfo);
         dest.writeTypedList(itemListData);
+        dest.writeString(preOrderInfo);
     }
 
     @Override
@@ -138,6 +141,14 @@ public class MultipleAddressAdapterData implements Parcelable {
 
     public String getCashBackInfo() {
         return cashBackInfo;
+    }
+
+    public String getPreOrderInfo() {
+        return preOrderInfo;
+    }
+
+    public void setPreOrderInfo(String preOrderInfo) {
+        this.preOrderInfo = preOrderInfo;
     }
 
     public void setCashBackInfo(String cashBackInfo) {

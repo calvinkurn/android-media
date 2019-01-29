@@ -314,9 +314,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             this.ivIconFreeReturn.setVisibility(View.GONE);
         }
 
-        this.tvInfoPreOrder.setVisibility(
-                data.getCartItemData().getOriginData().isPreOrder() ? View.VISIBLE : View.GONE
-        );
+        if (data.getCartItemData().getOriginData().isPreOrder()) {
+            this.tvInfoPreOrder.setText(data.getCartItemData().getOriginData().getPreOrderInfo());
+            this.tvInfoPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            this.tvInfoPreOrder.setVisibility(View.GONE);
+        }
 
         this.tvInfoCashBack.setVisibility(
                 data.getCartItemData().getOriginData().isCashBack() ? View.VISIBLE : View.GONE
