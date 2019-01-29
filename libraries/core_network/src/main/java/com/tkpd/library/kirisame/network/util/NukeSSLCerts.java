@@ -13,6 +13,7 @@ import javax.net.ssl.X509TrustManager;
 /**
  * Created by Tkpd_Eka on 7/24/2015.
  */
+@Deprecated
 public class NukeSSLCerts {
     protected static final String TAG = "NukeSSLCerts";
 

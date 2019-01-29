@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alvarisi on 7/14/17.
  */
 
+@Deprecated
 public class InterruptTokopediaConfirmationExceptionEntity {
     @SerializedName("href")
     @Expose

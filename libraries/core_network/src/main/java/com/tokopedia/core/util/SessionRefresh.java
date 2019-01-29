@@ -23,6 +23,7 @@ import retrofit2.Retrofit;
  * @author ricoharisin .
  */
 
+@Deprecated
 public class SessionRefresh {
 
     private static final String USER_ID = "user_id";

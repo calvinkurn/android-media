@@ -4,6 +4,7 @@ package com.tokopedia.core.shopinfo.models.etalasemodel;
  * @author by errysuprayogi on 7/24/17.
  */
 
+@Deprecated
 public class EtalaseAdapterModel {
     private int useAce;
     private String etalaseName;

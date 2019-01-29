@@ -6,7 +6,7 @@ import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import retrofit2.Retrofit;
 
-
+@Deprecated
 public class ContactUsWsService extends AuthService<ContactUsApi> {
     private static final String TAG = ContactUsWsService.class.getSimpleName();
 

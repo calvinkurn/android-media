@@ -15,6 +15,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 26/11/2015.
  */
+
+@Deprecated
 public class StringResponseConverter extends Converter.Factory {
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 

@@ -12,6 +12,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.model.ObjContainer;
 
+@Deprecated
 public class SearchSuggestionModel {
 
     @SerializedName("domains")

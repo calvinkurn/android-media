@@ -12,6 +12,7 @@ import java.io.Serializable;
  * Created by henrypriyono on 8/7/17.
  */
 
+@Deprecated
 public class LevelThreeCategory implements Parcelable {
 
     @SerializedName("name")

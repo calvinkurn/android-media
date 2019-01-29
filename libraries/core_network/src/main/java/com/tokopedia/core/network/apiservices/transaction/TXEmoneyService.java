@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public class TXEmoneyService extends AuthService<TXPaymnetEmoneyApi> {
     private static final String TAG = TXEmoneyService.class.getSimpleName();
 

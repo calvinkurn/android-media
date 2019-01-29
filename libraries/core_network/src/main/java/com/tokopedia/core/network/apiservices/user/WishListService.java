@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 03/12/2015.
  */
+
+@Deprecated
 public class WishListService extends AuthService<WishListApi> {
     private static final String TAG = WishListService.class.getSimpleName();
 

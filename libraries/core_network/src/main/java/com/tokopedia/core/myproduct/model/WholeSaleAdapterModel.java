@@ -7,6 +7,8 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 23/12/2015.
  */
+
+@Deprecated
 @Parcel
 public class WholeSaleAdapterModel {
     double quantityOne;

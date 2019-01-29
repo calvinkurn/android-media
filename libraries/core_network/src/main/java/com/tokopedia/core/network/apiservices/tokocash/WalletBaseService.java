@@ -14,6 +14,7 @@ import retrofit2.Retrofit;
  * @author by nisie on 12/5/17.
  */
 
+@Deprecated
 public class WalletBaseService extends BaseService<WalletLoginApi> {
 
     @Inject

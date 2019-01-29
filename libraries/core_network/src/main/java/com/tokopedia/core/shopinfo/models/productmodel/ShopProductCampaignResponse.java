@@ -13,6 +13,7 @@ import java.util.Map;
  * Created by brilliant.oka on 15/05/17.
  */
 
+@Deprecated
 public class ShopProductCampaignResponse {
 
     @SerializedName("data")

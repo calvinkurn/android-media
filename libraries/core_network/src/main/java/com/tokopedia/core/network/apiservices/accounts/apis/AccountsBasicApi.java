@@ -15,6 +15,7 @@ import rx.Observable;
  * @author by nisie on 12/27/17.
  */
 
+@Deprecated
 public interface AccountsBasicApi {
 
     @FormUrlEncoded

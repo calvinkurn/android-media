@@ -18,6 +18,8 @@ import rx.Observable;
  * @author Angga.Prasetiyo on 07/12/2015.
  *         Edited by Sebast on 09/06/2016
  */
+
+@Deprecated
 public interface MyShopNoteActApi {
 
     @FormUrlEncoded

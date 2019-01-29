@@ -8,6 +8,8 @@ import com.tokopedia.core.var.TkpdCache;
 /**
  * Created by ricoharisin on 2/10/15.
  */
+
+@Deprecated
 public class TkpdNetworkURLHandler {
 
     public static boolean getProtocolHttp(Context context) {

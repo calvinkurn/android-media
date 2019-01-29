@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
  */
+
+@Deprecated
 public class ProductService extends AuthService<ProductApi> {
     private static final String TAG = ProductService.class.getSimpleName();
 

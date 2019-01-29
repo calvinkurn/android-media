@@ -9,6 +9,8 @@ import java.util.Map;
 /**
  * Created by stevenfredian on 7/5/16.
  */
+
+@Deprecated
 public class ReportProductPass implements Parcelable{
 
     public static String TAG = "ReportProductPass";

@@ -14,6 +14,8 @@ import rx.Observable;
 /**
  * Created by Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public interface TXCartApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Transaction.PATH_CALCULATE_CART)

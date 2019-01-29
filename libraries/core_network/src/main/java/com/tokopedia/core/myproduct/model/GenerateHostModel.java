@@ -10,6 +10,8 @@ import java.util.List;
 /**
  * Created by m.normansyah on 18/12/2015.
  */
+
+@Deprecated
 @Parcel
 public class GenerateHostModel {
 

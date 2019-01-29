@@ -11,6 +11,8 @@ import java.util.Map;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
+
+@Deprecated
 public abstract class TkpdBearerWithAuthInterceptor extends TkpdAuthInterceptor{
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
     private static final String HEADER_AUTHORIZATION = "Authorization";

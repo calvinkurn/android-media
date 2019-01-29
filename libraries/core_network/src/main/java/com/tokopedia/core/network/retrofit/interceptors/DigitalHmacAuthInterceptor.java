@@ -21,6 +21,7 @@ import okhttp3.Response;
  * @author anggaprasetiyo on 3/3/17.
  */
 
+@Deprecated
 public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = DigitalHmacAuthInterceptor.class.getSimpleName();
 

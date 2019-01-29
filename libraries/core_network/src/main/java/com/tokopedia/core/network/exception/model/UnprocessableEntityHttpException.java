@@ -6,6 +6,7 @@ import java.io.IOException;
  * Created by alvarisi on 3/16/17.
  */
 
+@Deprecated
 public class UnprocessableEntityHttpException extends IOException {
     public UnprocessableEntityHttpException() {
         super("Request data is invalid, please check message");

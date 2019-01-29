@@ -192,6 +192,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         if (getView().getCartPassData().getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             processToInstantCheckout();
         } else {
+            digitalAnalytics.sendCartScreen(getView().getActivity());
             switch (cartDigitalInfoData.getCrossSellingType()) {
                 case 1:
                     getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());

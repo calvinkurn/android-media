@@ -8,6 +8,7 @@ import com.tokopedia.core.util.GlobalConfig;
 /**
  * Created by ricoharisin on 2/2/15.
  */
+@Deprecated
 public class Logger {
 
     public static void i (String TAG, String msg) {

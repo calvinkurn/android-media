@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.replacement.opportunitydata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class OrderDestination {
 
     @SerializedName("receiver_phone_is_tokopedia")

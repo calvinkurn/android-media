@@ -15,6 +15,8 @@ import rx.Observable;
  *
  * @author Angga.Prasetiyo on 02/12/2015.
  */
+
+@Deprecated
 public interface MyShopEtalaseApi {
 
     @GET(TkpdBaseURL.Shop.PATH_GET_SHOP_ETALASE)

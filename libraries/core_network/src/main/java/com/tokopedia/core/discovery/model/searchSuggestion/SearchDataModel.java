@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Created by Tokopedia on 9/1/2016.
  */
+@Deprecated
 public class SearchDataModel {
 
     /**

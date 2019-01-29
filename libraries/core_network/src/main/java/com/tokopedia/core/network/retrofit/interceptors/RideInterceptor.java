@@ -30,6 +30,7 @@ import okhttp3.ResponseBody;
  * Created by alvarisi on 3/14/17.
  */
 
+@Deprecated
 public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = RideInterceptor.class.getSimpleName();
     private static final String HEADER_DATE_FORMAT = "dd MMM yy HH:mm ZZZ";

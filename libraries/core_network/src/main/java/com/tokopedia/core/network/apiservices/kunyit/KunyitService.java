@@ -10,6 +10,8 @@ import retrofit2.Retrofit;
 /**
  * @author stevenfredian on 8/2/16.
  */
+
+@Deprecated
 public class KunyitService extends AuthService<KunyitApi> {
 
     @Override

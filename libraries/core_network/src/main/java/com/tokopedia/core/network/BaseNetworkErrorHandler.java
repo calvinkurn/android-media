@@ -8,6 +8,7 @@ import android.view.View;
  * Created by normansyahputa on 1/19/17.
  */
 
+@Deprecated
 public abstract class BaseNetworkErrorHandler {
 
     protected NetworkErrorHelper.RetryClickedListener listener;

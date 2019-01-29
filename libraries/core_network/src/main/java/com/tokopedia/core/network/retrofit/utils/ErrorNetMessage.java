@@ -3,6 +3,8 @@ package com.tokopedia.core.network.retrofit.utils;
 /**
  * @author anggaprasetiyo on 10/13/16.
  */
+
+@Deprecated
 public interface ErrorNetMessage {
     String MESSAGE_ERROR_DEFAULT = "Terjadi kesalahan, ulangi beberapa saat lagi";
     String MESSAGE_ERROR_FORBIDDEN = "Akses ditolak, ulangi beberapa saat lagi";

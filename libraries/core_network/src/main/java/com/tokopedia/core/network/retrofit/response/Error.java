@@ -15,6 +15,7 @@ import java.util.List;
  * Created by Hendry on 2/28/2017.
  */
 
+@Deprecated
 public class Error {
     @SerializedName("code")
     @Expose

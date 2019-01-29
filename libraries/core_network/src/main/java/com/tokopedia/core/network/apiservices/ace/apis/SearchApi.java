@@ -16,6 +16,8 @@ import rx.Observable;
 /**
  * Created by Angga.Prasetiyo on 19/01/2016.
  */
+
+@Deprecated
 public interface SearchApi {
 
 

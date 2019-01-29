@@ -11,6 +11,7 @@ import okhttp3.Response;
  * Created by hangnadi on 7/11/17.
  */
 
+@Deprecated
 public class ResolutionInterceptor extends TkpdAuthInterceptor {
 
     private static final String TAG = ResolutionInterceptor.class.getSimpleName();

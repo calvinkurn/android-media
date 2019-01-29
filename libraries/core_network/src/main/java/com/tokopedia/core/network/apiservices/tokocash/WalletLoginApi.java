@@ -15,6 +15,7 @@ import rx.Observable;
  * Created by nabillasabbaha on 10/11/17.
  */
 
+@Deprecated
 public interface WalletLoginApi {
 
     @FormUrlEncoded

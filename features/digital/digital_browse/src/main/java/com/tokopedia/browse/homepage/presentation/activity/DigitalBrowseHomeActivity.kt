@@ -99,7 +99,17 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         val TITLE_BELANJA = "Belanja di Tokopedia"
         val TITLE_LAYANAN = "Lainnya"
 
+        val LAYANAN_SCREEN = "/digital"
+
         private var digitalBrowseHomeComponent: DigitalBrowseHomeComponent? = null
+    }
+
+    override fun getScreenName(): String {
+        if(Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN){
+            return LAYANAN_SCREEN
+        }
+
+        return super.getScreenName()
     }
 }
 

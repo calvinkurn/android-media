@@ -25,6 +25,8 @@ import rx.schedulers.Schedulers;
  * Created by Tkpd_Eka on 12/3/2015.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public class GetShopInfoRetrofit {
 
     public interface OnGetShopInfoListener {

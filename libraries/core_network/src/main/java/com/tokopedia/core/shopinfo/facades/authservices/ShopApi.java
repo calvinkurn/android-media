@@ -18,6 +18,8 @@ import rx.Observable;
  * Created by Tkpd_Eka on 12/3/2015.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public interface ShopApi {
     @FormUrlEncoded
     @POST("get_shop_info.pl")

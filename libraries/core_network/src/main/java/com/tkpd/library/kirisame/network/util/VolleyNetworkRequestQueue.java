@@ -22,6 +22,7 @@ import com.tkpd.library.kirisame.Kirisame;
 /**
  * Created by Tkpd_Eka on 7/24/2015.
  */
+@Deprecated
 public class VolleyNetworkRequestQueue {
 
     private static final int THREAD_POOL_SIZE = 8;

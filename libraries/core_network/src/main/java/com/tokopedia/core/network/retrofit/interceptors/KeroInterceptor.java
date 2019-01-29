@@ -13,6 +13,7 @@ import okhttp3.Response;
  * Created by kris on 1/19/17. Tokopedia
  */
 
+@Deprecated
 public class KeroInterceptor implements Interceptor{
     private String AuthKey = AuthUtil.KEY.KEY_WSV4;
 

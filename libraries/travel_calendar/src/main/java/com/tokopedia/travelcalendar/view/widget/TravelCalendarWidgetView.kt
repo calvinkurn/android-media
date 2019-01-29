@@ -224,13 +224,7 @@ class TravelCalendarWidgetView @JvmOverloads constructor(context: Context, attrs
         val calendarMinDate = Calendar.getInstance()
         calendarMinDate.time = minDate
 
-        if (holidayDataList.isEmpty()) {
-            holidayWidgetView.visibility = View.GONE
-        } else {
-            holidayWidgetView.visibility = View.VISIBLE
-            holidayWidgetView.setHolidayData(holidayDataList, month, year)
-        }
-
+        holidayWidgetView.setHolidayData(holidayDataList, month, year)
         calendarPickerView.setDateRange(cellDate, month, year, calendarMaxDate, calendarMinDate,
                 holidayWidgetView.getCurrentHolidayList())
     }

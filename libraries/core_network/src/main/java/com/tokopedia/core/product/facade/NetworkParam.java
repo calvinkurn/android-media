@@ -11,6 +11,8 @@ import java.util.Map;
 /**
  * Created by Angga.Prasetiyo on 02/11/2015.
  */
+
+@Deprecated
 public class NetworkParam {
     private static final String TAG = NetworkParam.class.getSimpleName();
 

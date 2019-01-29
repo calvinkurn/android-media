@@ -9,6 +9,7 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 @Parcel
 public class OpenShopSubmitData {
 

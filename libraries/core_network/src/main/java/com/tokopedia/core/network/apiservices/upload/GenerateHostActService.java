@@ -10,6 +10,8 @@ import retrofit2.Retrofit;
  * @author Angga.Prasetiyo on 10/12/2015.
  *         more documentation visit https://wiki.tokopedia.net/Generate_Host_WSv4
  */
+
+@Deprecated
 public class GenerateHostActService extends AuthService<GeneratedHostActApi> {
     private static final String TAG = GenerateHostActService.class.getSimpleName();
 

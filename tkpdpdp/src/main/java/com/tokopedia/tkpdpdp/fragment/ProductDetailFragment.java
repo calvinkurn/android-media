@@ -661,7 +661,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(View.INVISIBLE);
+        labelCod.setVisibility(isCodShown? View.INVISIBLE : View.GONE);
     }
 
     private void expandedAppBar() {

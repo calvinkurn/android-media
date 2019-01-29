@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Angga.Prasetiyo on 19/01/2016.
  */
+
+@Deprecated
 public class ProductOtherAce implements Parcelable {
 
     @SerializedName("price")

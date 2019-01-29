@@ -15,6 +15,7 @@ import com.tokopedia.core.network.R;
 /**
  * Created by Tkpd_Eka on 12/23/2015.
  */
+@Deprecated
 public class SnackbarManager {
 
     public static Snackbar make(Activity activity, String text, @Snackbar.Duration int duration) {

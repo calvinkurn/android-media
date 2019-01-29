@@ -18,6 +18,8 @@ import rx.Observable;
  * https://wiki.tokopedia.net/Slides/Banner_API_Documentation
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public interface CategoryApi {
     String MOJITO = TkpdBaseURL.MOJITO_DOMAIN;
 

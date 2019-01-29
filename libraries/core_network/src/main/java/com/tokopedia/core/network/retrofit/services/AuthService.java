@@ -8,6 +8,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
+
+@Deprecated
 public abstract class AuthService<T> extends BaseService<T> {
 
     public AuthService() {
