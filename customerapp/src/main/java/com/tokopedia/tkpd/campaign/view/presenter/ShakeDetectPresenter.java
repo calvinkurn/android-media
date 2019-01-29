@@ -24,7 +24,7 @@ import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.kol.test.LocationDetectorHelper;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;

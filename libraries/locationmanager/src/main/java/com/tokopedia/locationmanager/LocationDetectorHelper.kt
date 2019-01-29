@@ -1,16 +1,16 @@
-package com.tokopedia.kol.test
+package com.tokopedia.locationmanager
 
 import android.app.Activity
 import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.kol.test.PermissionCheckerHelper
 import javax.inject.Inject
 
 /**
  * @author by nisie on 25/01/19.
  */
-class LocationDetectorHelper @Inject constructor(@ApplicationContext val applicationContext: Context,
-                                                 val permissionCheckerHelper: PermissionCheckerHelper,
+class LocationDetectorHelper @Inject constructor(private val applicationContext: Context,
+                                                 private val permissionCheckerHelper: PermissionCheckerHelper,
                                                  private val fusedLocationProvider: FusedLocationProviderClient) {
 
     fun getLocation(onGetLocation: ((Double, Double) -> Unit),
