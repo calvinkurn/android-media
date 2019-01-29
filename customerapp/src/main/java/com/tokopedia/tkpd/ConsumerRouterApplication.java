@@ -401,12 +401,12 @@ import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.train.common.di.DaggerTrainComponent;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
+import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
@@ -531,7 +531,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingPromoCheckoutRouter,
         TopAdsRouter,
         CMRouter,
-        SaldoDetailsRouter,
         ReferralRouter,
         SaldoDetailsRouter,
         ILoyaltyRouter,
@@ -2727,8 +2726,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
                                                           String trainReservationCode,
                                                           String galaCode) {
-        TrainRepository trainRepository = DaggerTrainComponent.builder().baseAppComponent(
-                this.getBaseAppComponent()).build().trainRepository();
+        TrainRepository trainRepository = TrainComponentUtils.getTrainComponent(this).trainRepository();
         TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
         return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
                 trainReservationId, trainReservationCode, galaCode

@@ -93,7 +93,7 @@
                         style="@style/button_payment"
                         android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
-                        android:background="@drawable/orange_button_rounded"
+                        android:background="@drawable/transaction_checkout_orange_button_rounded"
                         android:text="@string/label_pay"
                         android:textColor="@color/white" />
 

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common.travel.constant.TravelPlatformType;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerListActivity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
@@ -73,6 +74,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public static final int PASSENGER_LIST_REQUEST_CODE = 1009;
     public static final int NEXT_STEP_REQUEST_CODE = 1010;
     private static final String TRAIN_PARAM_PASSENGER = "train_param_passenger";
+    private static final String TRAIN_FILL_PASSENGER_TRACE = "tr_train_fill_passenger_identity";
 
     private CardWithAction cardActionDeparture;
     private CardWithAction cardActionReturn;
@@ -96,6 +98,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     private TrainScheduleViewModel departureScheduleViewModel;
     private TrainScheduleViewModel returnScheduleViewModel;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     @Inject
     TrainAnalytics trainAnalytics;
@@ -112,6 +116,12 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         bundle.putParcelable(TrainBookingPassengerActivity.TRAIN_SCHEDULE_BOOKING, trainScheduleBookingPassData);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(TRAIN_FILL_PASSENGER_TRACE);
     }
 
     @Nullable
@@ -258,6 +268,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void renderPassengers(List<TrainPassengerViewModel> trainPassengerViewModels) {
         adapter.clearAllElements();
         adapter.addElement(trainPassengerViewModels);
+        stopTrace();
     }
 
     @Override
@@ -573,6 +584,13 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void showUpperLowerBirthDate(String lowerBirthDate, String upperBirthDate) {
         travelTrip.setLowerBirthDate(lowerBirthDate);
         travelTrip.setUpperBirthDate(upperBirthDate);
+    }
+
+    private void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override

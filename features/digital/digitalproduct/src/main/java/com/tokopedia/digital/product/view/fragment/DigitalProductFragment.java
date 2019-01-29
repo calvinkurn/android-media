@@ -37,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -150,6 +151,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
+    private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -204,6 +206,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
     private boolean isCouponApplied;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     private SaveInstanceCacheManager saveInstanceCacheManager;
 
@@ -236,6 +240,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_DETAIL_TRACE);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
@@ -470,6 +475,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
 
         holderProductDetail.addView(this.digitalProductView);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override

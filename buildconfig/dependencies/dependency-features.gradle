@@ -196,7 +196,8 @@ ext {
             flight                      : ":features:digital:flight",
             flightDbFlow                : ":features:digital:flight_dbflow",
 //            flight_no_op                : ":features:digital:flight_no_op",
-            train                       : ":features:digital:train",
+            train                         : ":features:digital:train",
+//            train                         : ":features:digital:train_no_op",
 
             flashsaleManagement         : ":features:discovery:flashsale_management",
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
@@ -280,7 +281,6 @@ ext {
             gamification                  : ":features:promo:gamification",
             merchantVoucher               : ":features:promo:merchant_voucher",
             tokopoints                    : ":features:promo:tokopoints",
-            tokopointsNotification        : ":features:promo:tokopoints_notification",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification        : ":features:promo:tokopoints_notification",
             promoCheckout                 : ":features:promo:promo_checkout",
