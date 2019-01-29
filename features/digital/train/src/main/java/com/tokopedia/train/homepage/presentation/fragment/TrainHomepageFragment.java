@@ -17,9 +17,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainAppScreen;
@@ -57,6 +57,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private static final String PROMO_PATH = "promo";
     private static final String TAG_DEPARTURE_CALENDAR = "trainCalendarDeparture";
     private static final String TAG_RETURN_CALENDAR = "trainCalendarReturn";
+    private static final String TRAIN_TRACE = "tr_train";
     private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
     private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
     private static final int PASSENGER_REQUEST_CODE = 1004;
@@ -81,8 +82,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private List<TrainPromoViewModel> trainPromoViewModelList;
 
     private TrainHomepageViewModel viewModel;
-
-    private AbstractionRouter abstractionRouter;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     @Inject
     TrainAnalytics trainAnalytics;
@@ -95,6 +96,12 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     public TrainHomepageFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(TRAIN_TRACE);
     }
 
     @Override
@@ -116,8 +123,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonSearchTicket = view.findViewById(R.id.button_search_ticket);
         separatorDateReturn = view.findViewById(R.id.separator_date_return);
         trainPromoView = view.findViewById(R.id.train_promo_view);
-
-        abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
         layoutOriginStation.setOnClickListener(view12 -> startActivityForResult(
                 TrainStationsActivity.getCallingIntent(
@@ -439,6 +444,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void navigateToLoginPage() {
+        stopTrace();
         startActivityForResult(trainRouter.getLoginIntent(), REQUEST_CODE_LOGIN);
     }
 
@@ -460,8 +466,17 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void navigateToKaiWebView() {
+        stopTrace();
         startActivity(trainRouter.getWebviewActivity(getActivity(), TrainUrl.KAI_WEBVIEW));
         getActivity().finish();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override
