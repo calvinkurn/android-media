@@ -55,7 +55,6 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
         action.setText(mData.getButtonText());
         if (mData.getCatalog() == null || mData.getCatalog().getTitle() == null) {
             couponTitle=mData.getTitle();
-            title.setText(mData.getTitle());
             title.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
             couponTitle=mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle();
