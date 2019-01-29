@@ -113,7 +113,7 @@ public class SearchActivity extends DiscoveryActivity
     private SearchComponent searchComponent;
     private MenuItem menuChangeGrid;
 
-    private boolean profileEnabled = false;
+    private boolean profileEnabled = true;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
