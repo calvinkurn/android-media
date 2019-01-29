@@ -294,11 +294,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void showForceHockeyAppDialog() {
-
-    }
-
-    @Override
     public void logInvalidGrant(Response response) {
 
     }

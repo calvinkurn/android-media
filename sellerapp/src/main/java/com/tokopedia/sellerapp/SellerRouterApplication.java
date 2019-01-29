@@ -1310,11 +1310,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showForceHockeyAppDialog() {
-        ServerErrorHandler.showForceHockeyAppDialog();
-    }
-
-    @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
 
