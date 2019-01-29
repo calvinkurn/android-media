@@ -8,15 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.android.gms.tagmanager.ContainerHolder;
+import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -25,6 +30,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -56,7 +62,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Context context;
     private static Activity activity;
     private static Boolean isResetNotification = false;
     private static Boolean isResetDrawer = false;
@@ -102,10 +107,6 @@ public abstract class MainApplication extends MainRouterApplication{
         }
 
         return isInBackground;
-    }
-
-    public synchronized static Context getAppContext() {
-        return MainApplication.context;
     }
 
     /**
@@ -257,8 +258,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
-        //CommonUtils.dumper("asdasas");
-        MainApplication.context = getApplicationContext();
         init();
         initCrashlytics();
         initStetho();
@@ -319,6 +318,7 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
+        TrackingUtils.runGTMFirstTime(this);
         TrackingUtils.runAppsFylerFirstTime(this);
         TrackingUtils.runMoengageFirstTime(this);
         TrackingUtils.enableDebugging(this, isDebug());

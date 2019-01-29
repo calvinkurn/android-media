@@ -38,6 +38,7 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -61,6 +62,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -77,7 +79,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
@@ -221,7 +222,9 @@ import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachP
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -263,7 +266,10 @@ public abstract class SellerRouterApplication extends MainApplication
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
-        UnifiedOrderListRouter, FlashSaleRouter {
+        UnifiedOrderListRouter,
+        CoreNetworkRouter,
+        TrackingOptimizerRouter,
+        FlashSaleRouter  {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -603,8 +609,9 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    public void sendScreenName(String screenName) {
-        ScreenTracking.screen(getAppContext(), screenName);
+    @Override
+    public void sendScreenName(@NonNull String screenName) {
+        ScreenTracking.screen(this, screenName);
     }
 
     @Override
@@ -1178,7 +1185,70 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public AnalyticTracker getAnalyticTracker() {
-        return this.analyticTracker;
+        initAnalyticTracker();
+        return analyticTracker;
+    }
+
+    private void initAnalyticTracker() {
+        if (analyticTracker == null) {
+            analyticTracker = new AnalyticTracker() {
+                @Override
+                public void sendEventTracking(Map<String, Object> events) {
+                    SellerRouterApplication.this.sendEventTracking(events);
+                }
+
+                @Override
+                public void sendEventTracking(String event, String category, String action, String label) {
+                    UnifyTracking.sendGTMEvent(SellerRouterApplication.this, new EventTracking(
+                            event,
+                            category,
+                            action,
+                            label
+                    ).getEvent());
+                }
+
+                @Override
+                public void sendScreen(Activity activity, final String screenName) {
+                    ScreenTracking.sendScreen(SellerRouterApplication.this, screenName);
+                }
+
+                @Override
+                public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                    if (activity != null && !TextUtils.isEmpty(screenName)) {
+                        ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                                shopType, pageType, productId);
+                    }
+                }
+
+                @Override
+                public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                    SellerRouterApplication.this.sendEnhanceECommerceTracking(trackingData);
+                }
+            };
+        }
+    }
+
+    @Override
+    public void sendEventTracking(Map<String, Object> eventTracking) {
+        UnifyTracking.eventClearEnhanceEcommerce(this);
+        UnifyTracking.sendGTMEvent(this, eventTracking);
+    }
+
+    @Override
+    public void sendEnhanceECommerceTracking(@NotNull Map<String, Object> events) {
+        TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
+    }
+
+    @Override
+    public void sendTrackDefaultAuth() {
+        ScreenTracking.sendAuth(this);
+    }
+
+    @Override
+    public void sendTrackCustomAuth(@NotNull Context context, @NotNull String shopID,
+                                    @NotNull String shopType, @NotNull String pageType,
+                                    @NotNull String productId) {
+        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override
@@ -1953,5 +2023,15 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
         return null;
+    }
+
+    @Override
+    public void refereshFcmTokenToCMNotif(String token) {
+
+    }
+
+    @Override
+    public Intent getMaintenancePageIntent() {
+        return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 }
