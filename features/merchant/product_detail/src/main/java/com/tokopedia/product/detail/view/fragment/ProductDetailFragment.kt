@@ -12,13 +12,20 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfo
 import com.tokopedia.product.detail.data.model.ProductParams
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductTrackingConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.productView.PartialButtonActionView
@@ -29,6 +36,8 @@ import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
+import com.tokopedia.product.share.ProductData
+import com.tokopedia.product.share.ProductShare
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
@@ -53,9 +62,16 @@ class ProductDetailFragment: BaseDaggerFragment() {
     private var isAppBarCollapsed = false
     private var menu: Menu? = null
 
+    private val analyticTracker: AnalyticTracker? by lazy {
+        (context?.applicationContext as? AbstractionRouter)?.analyticTracker
+    }
+
     var productInfo: ProductInfo? = null
 
     companion object {
+        const val REQUEST_CODE_TALK_PRODUCT = 1
+        const val REQUEST_CODE_LOGIN = 561
+
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
         private const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
         private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
@@ -277,7 +293,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
         productInfo = data
         headerView.renderData(data)
         view_picture.renderData(data.pictures)
-        productStatsView.renderData(data)
+        productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         actionButtonView.renderData(data.basic.status,
                 productInfoViewModel.isShopOwner(data.basic.shopID) || GlobalConfig.isSellerApp(),
@@ -296,6 +312,39 @@ class ProductDetailFragment: BaseDaggerFragment() {
         }
 
         activity?.invalidateOptionsMenu()
+    }
+
+    private fun onDiscussionClicked() {
+
+        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK,
+                ProductTrackingConstant.ProductTalk.EVENT_LABEL)
+
+        activity?.let {
+            val router = it.applicationContext as? ProductDetailRouter ?: return
+            startActivityForResult(router.getProductTalk(it, productInfo?.basic?.id.toString() ), REQUEST_CODE_TALK_PRODUCT)
+        }
+        if (productInfo != null){
+            //TODO SENT MOENGAGE
+        }
+    }
+
+    private fun onReviewClicked() {
+
+        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK,
+                ProductTrackingConstant.ProductReview.EVENT_LABEL)
+
+        if (productInfo != null){
+            //TODO SENT MOENGAGE
+            activity?.let {
+                val router = it.applicationContext as? ProductDetailRouter ?: return
+                startActivity(router.getProductReputationIntent(it, productInfo!!.basic.id.toString(),
+                        productInfo!!.basic.name))
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -375,14 +424,69 @@ class ProductDetailFragment: BaseDaggerFragment() {
     }
 
     private fun reportProduct() {
+        if (productInfoViewModel.isUserSessionActive()){
+            analyticTracker?.sendEventTracking(ProductTrackingConstant.Report.EVENT,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK,
+                    ProductTrackingConstant.Report.EVENT_LABEL)
 
+            //TODO: SHOW REPORT DIALOG
+        } else {
+            analyticTracker?.sendEventTracking(ProductTrackingConstant.Report.EVENT,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK,
+                    ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
+        }
     }
 
     private fun gotoCart() {
+        activity?.let {
+            val router = (it.applicationContext as? ProductDetailRouter) ?: return
+            if (productInfoViewModel.isUserSessionActive()){
+                startActivity(router.getCartIntent(it))
+            } else {
+                startActivityForResult(router.getLoginIntent(it), REQUEST_CODE_LOGIN)
+            }
+            if (hasVariant())
+                analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
+                    ProductTrackingConstant.Category.PDP.toLowerCase(),
+                    ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
+                    ""/*generated variant */)
+        }
+    }
 
+    private fun hasVariant(): Boolean {
+        //TODO CHECK VARIAN
+        return false
     }
 
     private fun shareProduct() {
+        if (productInfo == null && activity == null) return
 
+        val productShare = ProductShare(activity!!)
+        val productData = ProductData(
+                productInfo!!.basic.price.getCurrencyFormatted(),
+                "${productInfo!!.cashback.percentage}%",
+                MethodChecker.fromHtml(productInfo!!.basic.name).toString(),
+                productInfo!!.basic.priceCurrency,
+                productInfo!!.basic.url,
+                "",
+                productInfo!!.basic.id.toString(),
+                productInfo!!.pictures.getOrNull(0)?.urlOriginal ?: ""
+        )
+
+        productShare.share(productData, {
+            showProgressLoading()
+        }){
+            hideProgressLoading()
+        }
+    }
+
+    private fun hideProgressLoading() {
+        pb_loading.gone()
+    }
+
+    private fun showProgressLoading() {
+        pb_loading.visible()
     }
 }
