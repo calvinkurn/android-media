@@ -256,13 +256,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
-        if (afterPost && !onlyOnePost) {
-            showAfterPostToaster(affiliatePostQuota?.number != 0)
+        if (afterPost) {
+            when {
+                isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
+                onlyOnePost -> showShowCaseDialog(shareProfile)
+                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
+            }
             afterPost = false
 
         } else if (afterEdit) {
             showAfterEditToaster()
             afterEdit = false
+
         }
     }
 
@@ -604,18 +609,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 true
             }
 
-            shareProfile.setOnClickListener(shareLink(headerViewModel.link))
+            shareProfile.setOnClickListener(shareLinkClickListener(headerViewModel.link))
             shareProfile.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))
                 true
             }
-
-            showShowCaseDialog(shareProfile)
         } else {
             footerOwn.visibility = View.GONE
             footerOther.visibility = View.VISIBLE
 
-            shareOther.setOnClickListener(shareLink(headerViewModel.link))
+            shareOther.setOnClickListener(shareLinkClickListener(headerViewModel.link))
             shareOther.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))
                 true
@@ -633,18 +636,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showShowCaseDialog(view: View?) {
-        if (afterPost && onlyOnePost) {
-            val showCaseTag = this::class.java.simpleName
-            val showCaseDialog = createShowCaseDialog()
-            val showcases = ArrayList<ShowCaseObject>()
-            showcases.add(ShowCaseObject(
-                    view,
-                    getString(R.string.profile_showcase_title),
-                    getString(R.string.profile_showcase_description),
-                    ShowCaseContentPosition.UNDEFINED))
-            showCaseDialog.show(this.activity, showCaseTag, showcases)
-            afterPost = false
-        }
+        val showCaseTag = this::class.java.simpleName
+        val showCaseDialog = createShowCaseDialog()
+        val showcases = ArrayList<ShowCaseObject>()
+        showcases.add(ShowCaseObject(
+                view,
+                getString(R.string.profile_showcase_title),
+                getString(R.string.profile_showcase_description),
+                ShowCaseContentPosition.UNDEFINED))
+        showCaseDialog.show(this.activity, showCaseTag, showcases)
     }
 
     private fun createShowCaseDialog(): ShowCaseDialog {
@@ -662,17 +662,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .build()
     }
 
-    private fun shareLink(link: String): View.OnClickListener {
+    private fun shareLinkClickListener(link: String): View.OnClickListener {
         return View.OnClickListener {
-            val shareBody = String.format(getString(R.string.profile_share_text), link)
-            val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
-            sharingIntent.type = TEXT_PLAIN
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
-            startActivity(
-                    Intent.createChooser(sharingIntent, getString(R.string.profile_share_this_profile))
-            )
-            profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+            shareLink(link)
         }
+    }
+
+    private fun shareLink(link: String) {
+        val shareBody = String.format(getString(R.string.profile_share_text), link)
+        val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+        sharingIntent.type = TEXT_PLAIN
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
+        startActivity(
+                Intent.createChooser(sharingIntent, getString(R.string.profile_share_this_profile))
+        )
+        profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
     }
 
     private fun getEmptyModel(isShowAffiliateContent: Boolean,
@@ -802,5 +806,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun isAutomaticOpenShareUser(): Boolean {
+        val userId = userSession.userId.toIntOrNull() ?: 0
+        return userId % 50 == 17
+                || userId % 50 == 23
+                || userId == 32044530 //dev's userId
+                || userId == 6215930 //QA's userId
+                || userId == 17211048 //QA's userId
     }
 }
