@@ -30,6 +30,8 @@ import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListene
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
+import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
@@ -440,6 +442,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         reloadRatesDebounceListener.onNeedToRecalculateRates(true)
     }
 
+    override fun onNeedToUpdateOnboardingStatus() {
+        setOnboardingStateHasNotShown(activity, false)
+    }
+
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
         val quantityViewModel = fragmentViewModel.getQuantityViewModel()
         if (quantityViewModel != null) {
@@ -610,7 +616,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) {
-        hideLoading()
+        for (viewModel: Visitable<*> in viewModels) {
+            if (viewModel is com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
+                viewModel.isFirstTimeShowProfile = isOnboardingStateHasNotShown(activity)
+                break
+            }
+        }
         fragmentViewModel.viewModels = viewModels
         adapter.clearAllElements()
         adapter.addDataViewModel(viewModels)

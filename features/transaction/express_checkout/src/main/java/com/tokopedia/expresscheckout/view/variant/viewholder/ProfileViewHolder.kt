@@ -4,6 +4,8 @@ import android.os.Build
 import android.text.Html
 import android.text.Spanned
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.expresscheckout.R
@@ -19,6 +21,12 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
 
     companion object {
         val LAYOUT = R.layout.item_profile_detail_product_page
+
+        val ANIM_ALPHA_START = 0.0F
+        val ANIM_ALPHA_STOP = 1.0F
+        val ANIM_DURATION = 1000L
+        val ANIM_START_OFFSET = 100L
+        val ANIM_REPEAT_COUNT = 3
     }
 
     override fun bind(element: ProfileViewModel?) {
@@ -64,6 +72,17 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                     itemView.ll_profile_default_checkbox_container.visibility = View.GONE
                     itemView.cb_profile_set_default.setOnClickListener { }
                 }
+            }
+
+            if (element.isFirstTimeShowProfile) {
+                element.isFirstTimeShowProfile = false
+                val anim = AlphaAnimation(ANIM_ALPHA_START, ANIM_ALPHA_STOP)
+                anim.duration = ANIM_DURATION
+                anim.repeatMode = Animation.REVERSE
+                anim.startOffset = ANIM_START_OFFSET
+                anim.repeatCount = ANIM_REPEAT_COUNT
+                itemView.startAnimation(anim)
+                listener.onNeedToUpdateOnboardingStatus()
             }
 
             if (element.isStateHasChangedProfile) {

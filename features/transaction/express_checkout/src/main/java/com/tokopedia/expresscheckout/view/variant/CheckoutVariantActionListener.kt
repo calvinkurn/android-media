@@ -39,4 +39,6 @@ interface CheckoutVariantActionListener {
     fun onNeedToValidateButtonBuyVisibility()
 
     fun onNeedToRecalculateRatesAfterChangeTemplate()
+
+    fun onNeedToUpdateOnboardingStatus()
 }
