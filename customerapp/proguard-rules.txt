@@ -356,3 +356,7 @@
 -dontwarn com.sendbird.android.shadow.**
 -keep class kotlinx.coroutines.experimental.android.AndroidExceptionPreHandler { *; }
 -keep class kotlinx.coroutines.experimental.JobSupport { *; }
+
+-keep class com.tokopedia.track.** { *; }
+-keep class com.tokopedia.track.interfaces.** { *; }
+-keep class * extends com.tokopedia.track.interfaces.ContextAnalytics { *; }
