@@ -44,6 +44,11 @@ public class GTMAnalytics extends ContextAnalytics {
         super(context);
     }
 
+    @Override
+    public void sendGeneralEvent(Map<String, Object> value) {
+        pushGeneral(value);
+    }
+
 
     public TagManager getTagManager() {
         return TagManager.getInstance(getContext());

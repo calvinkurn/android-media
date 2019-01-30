@@ -101,8 +101,8 @@
     <string name="label_free_return_hint">Belanja Nyaman, Hati Puas. Produk tidak sesuai? Tukar saja! Ongkos kirim GRATIS!</string>
     <string name="label_info_detail">Info Selengkapnya</string>
     <string name="label_product_installment">Cicilan</string>
-    <string name="value_wholesale_price">Mulai dari %s</string>
-    <string name="value_installment">Bunga %s mulai dari %s</string>
+    <string name="value_wholesale_price" formatted="false">Mulai dari %s</string>
+    <string name="value_installment" formatted="false">Bunga %s mulai dari %s</string>
     <string name="value_success_rate">%1$s persen %2$s </string>
     <string name="value_shop_last_online">\u2022 %s</string>
     <string name="title_product_info_detail">Informasi Produk</string>
