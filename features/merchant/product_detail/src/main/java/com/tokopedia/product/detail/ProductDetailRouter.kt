@@ -8,4 +8,6 @@ interface ProductDetailRouter{
     fun getCartIntent(context: Context): Intent
     fun getProductTalk(context: Context, productId: String): Intent
     fun getProductReputationIntent(context: Context, productId: String, productName: String): Intent
+    fun getShoProductListIntent(context: Context, shopId: String, keyword: String, etalaseId: String): Intent
+    fun getShopPageIntent(context: Context, shopId: String): Intent
 }

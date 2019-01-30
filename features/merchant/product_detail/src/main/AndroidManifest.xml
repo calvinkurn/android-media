@@ -14,6 +14,11 @@
         <activity android:name=".view.activity.ProductYoutubePlayerActivity"
             android:screenOrientation="landscape"/>
 
+        <activity android:name=".view.activity.ProductFullDescriptionActivity"
+            android:label="@string/label_product_desc"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>

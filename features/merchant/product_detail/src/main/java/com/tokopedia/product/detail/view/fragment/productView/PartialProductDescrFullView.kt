@@ -8,9 +8,13 @@ import android.view.View
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfo
 import com.tokopedia.product.detail.data.model.Video
+import com.tokopedia.product.detail.view.activity.ProductFullDescriptionActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration
@@ -40,6 +44,38 @@ class PartialProductDescrFullView private constructor(private val view: View){
             } else {
                 youtube_scroll.visibility = View.GONE
             }
+
+            txt_weight.text = context.getString(R.string.template_weight, data.basic.weight,
+                    data.basic.weightUnit.toString())
+
+            label_asuransi.visible()
+            txt_asuransi.visible()
+            txt_asuransi.text = if (data.basic.isMustInsurance) "Ya" else "Opsional"
+
+            if (data.menu.name.isNotBlank()){
+                txt_etalase.text = MethodChecker.fromHtml(data.menu.name)
+                txt_etalase.visible()
+                label_etalase.visible()
+                txt_etalase.setOnClickListener {
+                    gotoEtalase(data.menu.id, data.basic.shopID)
+                }
+            } else {
+                txt_etalase.gone()
+                label_etalase.gone()
+            }
+
+            if (data.category.detail.isNotEmpty()){
+                txt_category.text = MethodChecker.fromHtml(data.category.detail.last().name)
+                txt_category.setOnClickListener {
+                    //TODO ON P2 BREADCRUMB
+                }
+                txt_category.visible()
+                label_category.visible()
+            } else {
+                txt_category.gone()
+                label_category.gone()
+            }
+
             if (data.preorder.isActive){
                 txt_pre_order.text = context.getString(R.string.template_preorder_time, data.preorder.duration)
                 label_pre_order.visibility = View.VISIBLE
@@ -61,7 +97,26 @@ class PartialProductDescrFullView private constructor(private val view: View){
 
             txt_product_descr.autoLinkMask = 0
             Linkify.addLinks(txt_product_descr, Linkify.WEB_URLS)
+
+            label_see_detail_product_descr.setOnClickListener {
+                view.context.startActivity(ProductFullDescriptionActivity.createIntent(view.context,
+                        data.basic.name, data.basic.price, "", data.pictures[0].urlThumbnail,
+                        data.basic.description, data.videos.map { it.url }))
+            }
         }
+    }
+
+    private fun gotoEtalase(etalaseId: Int, shopID: Int) {
+        val appContext = view.context.applicationContext
+        if (appContext !is ProductDetailRouter)
+            return
+
+        val intent = if (etalaseId == 0){
+            appContext.getShoProductListIntent(view.context, shopID.toString(), "", etalaseId.toString())
+        } else {
+            appContext.getShopPageIntent(view.context, shopID.toString())
+        }
+        view.context.startActivity(intent)
     }
 
     private fun gotoVideoPlayer(videos: List<Video>, index: Int) {

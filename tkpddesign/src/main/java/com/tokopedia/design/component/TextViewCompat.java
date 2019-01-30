@@ -13,6 +13,9 @@ import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 /**
@@ -149,11 +152,19 @@ public class TextViewCompat extends AppCompatTextView {
     }
 
     public void setDrawableRight(@DrawableRes int drawableRight){
+        Drawable drawable = null;
         if (drawableRight != -1){
-            Drawable drawable = AppCompatResources.getDrawable(getContext(), drawableRight);
-            setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+            drawable = AppCompatResources.getDrawable(getContext(), drawableRight);
         }
+        setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
     }
 
 
+    public void setDrawableLeft(@DrawableRes int drawableLeft) {
+        Drawable drawable = null;
+        if (drawableLeft != -1){
+            drawable = AppCompatResources.getDrawable(getContext(), drawableLeft);
+        }
+        setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+    }
 }

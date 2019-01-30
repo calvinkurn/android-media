@@ -19,6 +19,7 @@
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
+    <string name="template_weight">%1$d %2$s</string>
     <string name="template_campaign_off">%1$d%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_talk">%1$d Diskusi</string>
@@ -41,4 +42,8 @@
     <string name="label_format_wholesale">Mulai dari %1$s</string>
 
     <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
+    <string name="label_weight">Berat</string>
+    <string name="label_asuransi">Asuransi</string>
+    <string name="label_category">Kategori</string>
+    <string name="label_etalase">Etalase</string>
 </resources>
