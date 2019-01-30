@@ -148,6 +148,13 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         openTopAdsUseCase.unsubscribe();
+        presenter.detachView();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        presenter.attachView(this);
     }
 
     @Override
