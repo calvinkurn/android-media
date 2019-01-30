@@ -81,7 +81,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         return variables
     }
 
-    override fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, selectedSpId: Int) {
+    override fun loadShippingRates(price: Long, quantity: Int, selectedServiceId: Int, selectedSpId: Int) {
         val query = GraphqlHelper.loadRawString(view.getActivityContext()?.getResources(), R.raw.rates_v3_query)
         val shippingParam = getShippingParam(quantity, price)
 
@@ -95,7 +95,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         )
     }
 
-    override fun getShippingParam(quantity: Int, price: Int): ShippingParam {
+    override fun getShippingParam(quantity: Int, price: Long): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.districtId.toString()
         shippingParam.originPostalCode = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel?.postalCode

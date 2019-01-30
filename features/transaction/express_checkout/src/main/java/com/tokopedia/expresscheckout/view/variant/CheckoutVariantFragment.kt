@@ -213,7 +213,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     private fun showDurationOptions() {
         val shippingParam = presenter.getShippingParam(fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                ?: 0, fragmentViewModel.getProductViewModel()?.productPrice ?: 0)
+                ?: 0, fragmentViewModel.getProductViewModel()?.productPrice?.toLong() ?: 0)
         val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
         val selectedServiceId = fragmentViewModel.getProfileViewModel()?.shippingDurationId
         shippingDurationBottomsheet.updateArguments(shippingParam, selectedServiceId
@@ -282,7 +282,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
 
                 if (summaryViewModel != null) {
-                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice)?.toLong() ?: 0
+                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice.toLong()) ?: 0
                     onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
                 }
 
@@ -380,10 +380,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
             for (productChild: ProductChild in productViewModel.productChildrenList) {
                 if (productChild.isSelected) {
-                    summaryViewModel?.itemPrice = (productChild.productPrice * quantityViewModel.orderQuantity).toLong()
+                    summaryViewModel?.itemPrice = productChild.productPrice.toLong() * quantityViewModel.orderQuantity
                     break
                 }
             }
+        } else {
+            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityViewModel.orderQuantity) ?: 0
         }
 
         if (summaryViewModel != null) {
@@ -434,6 +436,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onNeedToRecalculateRatesAfterChangeTemplate() {
+        fragmentViewModel.getProfileViewModel()?.isStateHasChangedProfile = false
         reloadRatesDebounceListener.onNeedToRecalculateRates(true)
     }
 
@@ -819,7 +822,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
                             fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                             fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
-                            presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice
+                            presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice?.toLong()
                                     ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
                                     ?: 0, fragmentViewModel.getProfileViewModel()?.shippingDurationId
                                     ?: 0, fragmentViewModel.getProfileViewModel()?.shippingCourierId

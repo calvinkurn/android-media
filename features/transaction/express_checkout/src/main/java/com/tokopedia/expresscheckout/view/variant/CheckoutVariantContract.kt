@@ -81,7 +81,7 @@ interface CheckoutVariantContract {
 
         fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam)
 
-        fun loadShippingRates(price: Int, quantity: Int, selectedServiceId: Int, selectedSpId: Int)
+        fun loadShippingRates(price: Long, quantity: Int, selectedServiceId: Int, selectedSpId: Int)
 
         fun checkoutExpress(fragmentViewModel: FragmentViewModel)
 
@@ -91,7 +91,7 @@ interface CheckoutVariantContract {
 
         fun prepareViewModel(productData: ProductData)
 
-        fun getShippingParam(quantity: Int, price: Int): ShippingParam
+        fun getShippingParam(quantity: Int, price: Long): ShippingParam
 
         fun hitOldCheckout(fragmentViewModel: FragmentViewModel)
     }

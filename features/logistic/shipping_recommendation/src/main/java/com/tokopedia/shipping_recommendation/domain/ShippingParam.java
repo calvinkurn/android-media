@@ -22,7 +22,7 @@ public class ShippingParam implements Parcelable {
     private String ut;
     private int insurance;
     private int productInsurance;
-    private int orderValue;
+    private long orderValue;
     private String categoryIds;
 
     public ShippingParam() {
@@ -43,7 +43,7 @@ public class ShippingParam implements Parcelable {
         ut = in.readString();
         insurance = in.readInt();
         productInsurance = in.readInt();
-        orderValue = in.readInt();
+        orderValue = in.readLong();
         categoryIds = in.readString();
     }
 
@@ -63,7 +63,7 @@ public class ShippingParam implements Parcelable {
         dest.writeString(ut);
         dest.writeInt(insurance);
         dest.writeInt(productInsurance);
-        dest.writeInt(orderValue);
+        dest.writeLong(orderValue);
         dest.writeString(categoryIds);
     }
 
@@ -196,11 +196,11 @@ public class ShippingParam implements Parcelable {
         this.productInsurance = productInsurance;
     }
 
-    public int getOrderValue() {
+    public long getOrderValue() {
         return orderValue;
     }
 
-    public void setOrderValue(int orderValue) {
+    public void setOrderValue(long orderValue) {
         this.orderValue = orderValue;
     }
 
