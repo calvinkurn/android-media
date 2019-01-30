@@ -24,6 +24,9 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_item_shop;
 
+    private static final int DEFAULT_CORNER_RADIUS = 4;
+    private static final int DEFAULT_STROKE_WIDTH = 2;
+
     private LinearLayout mainContent;
     private SquareImageView itemShopImage;
     private ImageView itemShopBadge;
@@ -82,20 +85,48 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
 
         try{
             itemPreview1.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageAndCache(itemPreview1, shopItem.getProductImages().get(0));
+            ImageHandler.loadImageRoundedWithBorder(
+                    itemPreview1,
+                    context,
+                    shopItem.getProductImages().get(0),
+                    DEFAULT_CORNER_RADIUS,
+                    DEFAULT_STROKE_WIDTH,
+                    context.getResources().getColor(R.color.black_38),
+                    itemPreview1.getWidth(),
+                    itemPreview1.getHeight()
+            );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview1.setVisibility(View.INVISIBLE);
         }
 
         try{
             itemPreview2.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageAndCache(itemPreview2, shopItem.getProductImages().get(1));
+            ImageHandler.loadImageRoundedWithBorder(
+                    itemPreview2,
+                    context,
+                    shopItem.getProductImages().get(1),
+                    DEFAULT_CORNER_RADIUS,
+                    DEFAULT_STROKE_WIDTH,
+                    context.getResources().getColor(R.color.black_38),
+                    itemPreview2.getWidth(),
+                    itemPreview2.getHeight()
+            );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview2.setVisibility(View.INVISIBLE);
         }
 
         try{
-            ImageHandler.loadImageAndCache(itemPreview3, shopItem.getProductImages().get(2));
+            itemPreview3.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageRoundedWithBorder(
+                    itemPreview3,
+                    context,
+                    shopItem.getProductImages().get(2),
+                    DEFAULT_CORNER_RADIUS,
+                    DEFAULT_STROKE_WIDTH,
+                    context.getResources().getColor(R.color.black_38),
+                    itemPreview3.getWidth(),
+                    itemPreview3.getHeight()
+            );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview3.setVisibility(View.INVISIBLE);
         }

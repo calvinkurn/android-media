@@ -80,20 +80,17 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:background="@drawable/rounded_corner_with_border_drawable"
             android:id="@+id/shop_item_preview_1"
             android:layout_width="@dimen/shop_item_preview_width"
             android:layout_height="@dimen/shop_item_preview_height"/>
 
         <ImageView
-            android:background="@drawable/rounded_corner_with_border_drawable"
             android:id="@+id/shop_item_preview_2"
             android:layout_width="@dimen/shop_item_preview_width"
             android:layout_height="@dimen/shop_item_preview_height"
             android:layout_marginLeft="9dp"/>
 
         <ImageView
-            android:background="@drawable/rounded_corner_with_border_drawable"
             android:id="@+id/shop_item_preview_3"
             android:layout_width="@dimen/shop_item_preview_width"
             android:layout_height="@dimen/shop_item_preview_height"
