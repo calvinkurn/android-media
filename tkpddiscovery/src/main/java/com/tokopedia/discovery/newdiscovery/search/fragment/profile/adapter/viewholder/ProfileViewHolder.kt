@@ -11,27 +11,20 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.Pr
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.ProfileListListener
 import kotlinx.android.synthetic.main.search_result_profile.view.*
+import android.support.constraint.ConstraintSet
+
+
 
 class ProfileViewHolder(itemView: View, val profileListListener: ProfileListListener) : AbstractViewHolder<ProfileViewModel>(itemView) {
     companion object {
         val LAYOUT = R.layout.search_result_profile
-        val TEXT_WITH_ELLIPSIZE = "%s..."
-        val MAX_NAME_LENGHT = 20
     }
     override fun bind(profileData: ProfileViewModel) {
         when(!TextUtils.isEmpty(profileData?.imgUrl?:"")){
             true -> ImageHandler.loadImageCircle2(itemView.context, itemView.img_profile, profileData!!.imgUrl)
         }
         itemView.tv_username.text = profileData.username
-
-        when(profileData.name.length > MAX_NAME_LENGHT) {
-            true -> {
-                itemView.tv_name.text = String.format(TEXT_WITH_ELLIPSIZE, profileData.name.subSequence(0, MAX_NAME_LENGHT))
-            }
-            false -> {
-                itemView.tv_name.text = profileData.name
-            }
-        }
+        itemView.tv_name.text = profileData.name
 
         when(profileData.isKol) {
             true -> {
@@ -78,6 +71,12 @@ class ProfileViewHolder(itemView: View, val profileListListener: ProfileListList
                 itemView.btn_follow.buttonCompatType = ButtonCompat.SECONDARY
                 itemView.btn_follow.isClickable = true
 
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(itemView.constraintLayout)
+                constraintSet.connect(
+                        itemView.tv_name.id, ConstraintSet.END,
+                        itemView.label_following.id, ConstraintSet.START)
+                constraintSet.applyTo(itemView.constraintLayout)
                 itemView.label_following.visibility = View.VISIBLE
             }
             false -> {
@@ -85,6 +84,12 @@ class ProfileViewHolder(itemView: View, val profileListListener: ProfileListList
                 itemView.btn_follow.buttonCompatType = ButtonCompat.PRIMARY
                 itemView.btn_follow.isClickable = true
 
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(itemView.constraintLayout)
+                constraintSet.connect(
+                        itemView.tv_name.id, ConstraintSet.END,
+                        itemView.constraintLayout.id, ConstraintSet.END)
+                constraintSet.applyTo(itemView.constraintLayout)
                 itemView.label_following.visibility = View.GONE
             }
         }
