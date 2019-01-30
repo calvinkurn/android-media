@@ -51,6 +51,7 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
@@ -110,7 +111,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var dataStatistic: DataStatistic? = null
 
     @TopAdsStatisticsType
-    internal var selectedStatisticType: Int = 0
+    internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
 
     private var totalProductAd: Int = 0
     private var totalGroupAd: Int = 0
@@ -163,7 +164,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
         topAdsDashboardPresenter.resetDate()
-        selectedStatisticType = TopAdsStatisticsType.ALL_ADS
+        selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         totalProductAd = Integer.MIN_VALUE
         val refresh = RefreshHandler(activity, swipe_refresh_layout, RefreshHandler.OnRefreshHandlerListener {
             topAdsDashboardPresenter.clearStatisticsCache()
@@ -186,6 +187,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                         router?.openTopAdsDashboardApplink(it)
                     }
                 }}}
+
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
         setHasOptionsMenu(true)
@@ -216,7 +218,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     private fun initStatisticComponent() {
-        label_view_statistics.setOnClickListener { showBottomSheetStatisticTypeOptions() }
+        //label_view_statistics.setOnClickListener { showBottomSheetStatisticTypeOptions() }
         val tabLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         recyclerview_tabLayout.layoutManager = tabLayoutManager
         topAdsTabAdapter?.setListener(object : TopAdsTabAdapter.OnRecyclerTabItemClick {
@@ -281,21 +283,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         label_view_group_summary.setOnClickListener { onSummaryGroupClicked() }
         label_view_item_summary.setOnClickListener { onSummaryProductClicked() }
         label_view_keyword.setOnClickListener { onSummaryKeywordClicked() }
-        label_view_shop.setOnClickListener { onStoreClicked() }
-    }
-
-    private fun onStoreClicked() {
-        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP)
-        activity?.let {
-            if (GlobalConfig.isSellerApp()){
-                val intent = router?.getTopAdsDetailShopIntent(it)?.apply {
-                    putExtra(TopAdsDashboardConstant.EXTRA_IS_ENOUGH_DEPOSIT, true)
-                }
-                startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
-            } else {
-                router?.openTopAdsDashboardApplink(it)
-            }
-        }
     }
 
     private fun onSummaryKeywordClicked() {
@@ -378,6 +365,13 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun initShopInfoComponent() {
         text_view_add_deposit.setOnClickListener { goToAddCredit() }
         date_label_view.setOnClickListener { onDateLayoutClicked() }
+        text_view_credit_history.setOnClickListener { goToCreditHistory() }
+    }
+
+    private fun goToCreditHistory() {
+        context?.let {
+            startActivity(TopAdsCreditHistoryActivity.createInstance(it))
+        }
     }
 
     private fun onDateLayoutClicked() {
@@ -437,7 +431,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             if (data != null) {
                 val option = data.getIntExtra(TopAdsDashboardConstant.EXTRA_SELECTED_OPTION, -1)
                 when (option) {
-                    TopAdsAddingOption.SHOP_OPT -> onStoreClicked()
                     TopAdsAddingOption.GROUP_OPT -> onSummaryGroupClicked()
                     TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
                     TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
