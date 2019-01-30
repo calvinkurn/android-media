@@ -197,8 +197,10 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                             @Override
                             public void onError(Throwable e) {
-                                getView().hideProgressDialog();
-                                getView().showErrorNetwork(e);
+                                if (isViewAttached()) {
+                                    getView().hideProgressDialog();
+                                    getView().showErrorNetwork(e);
+                                }
                             }
 
                             @Override
@@ -214,9 +216,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     }
 
     private boolean isContinuingPayment(List<String> abTags) {
-        for (String abTag : abTags) {
-            if (abTag.equals(TAG_QR_PAYMENT)) {
-                return true;
+        if (abTags != null) {
+            for (String abTag : abTags) {
+                if (abTag.equals(TAG_QR_PAYMENT)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -237,11 +241,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().hideProgressDialog();
-                        if (e instanceof WalletException) {
-                            getView().showErrorGetInfo(e.getMessage());
-                        } else {
-                            getView().showErrorNetwork(e);
+                        if (isViewAttached()) {
+                            getView().hideProgressDialog();
+                            if (e instanceof WalletException) {
+                                getView().showErrorGetInfo(e.getMessage());
+                            } else {
+                                getView().showErrorNetwork(e);
+                            }
                         }
                     }
 
