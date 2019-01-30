@@ -18,12 +18,13 @@ class LocationDetectorHelper @Inject constructor(private val permissionCheckerHe
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
             permissionCheckerHelper.checkPermissions(activity, getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissions: Array<String>) {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(activity, permissionText)
                             onGetLocation(DeviceLocation())
                         }
 
-                        override fun onNeverAskAgain(permissions: Array<String>) {
-//                        Toast.makeText()
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(activity, permissionText)
                             onGetLocation(DeviceLocation())
                         }
 

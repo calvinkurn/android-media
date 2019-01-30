@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">permissionchecker</string>
+    <string name="permission_btn_ok">Ok</string>
+    <string name="permission_cancel">Batal</string>
+
+    <string name="needs_permission">Aplikasi ini membutuhkan izin untuk mengakses %s.
+        Perbolehkan?</string>
+    <string name="permission_denied">Anda tidak memberikan izin akses untuk %s</string>
+    <string name="permission_never_ask_again">Aplikasi ini membutuhkan izin untuk mengkases %s.
+        Anda bisa memberikan izin melalui pengaturan.</string>
+
+    <string name="permission_camera">Kamera</string>
+    <string name="permission_read_storage">Media penyimpanan</string>
+    <string name="permission_write_storage">Media penyimpanan</string>
+    <string name="permission_contacts">Kontak</string>
+    <string name="permission_location">Lokasi</string>
+    <string name="permission_accounts">Akun</string>
+    <string name="permission_phone">Telepon</string>
+    <string name="permission_audio">Microphone</string>
+
 </resources>

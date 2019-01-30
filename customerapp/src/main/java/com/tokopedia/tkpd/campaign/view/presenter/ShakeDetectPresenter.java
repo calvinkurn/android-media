@@ -48,7 +48,7 @@ import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.PARAM_LATITU
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.PARAM_LONGITUDE;
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.SCREEN_NAME;
 
-//import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -168,7 +168,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     }
                     ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
                     if (!deepLinkDelegate.supportsUri(s.getUrl())) {
-//                        getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+                        getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
                         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                         return;
                     }

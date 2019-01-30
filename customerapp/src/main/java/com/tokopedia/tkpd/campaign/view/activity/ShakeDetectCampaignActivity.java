@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.campaign.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
 import com.tokopedia.tkpd.R;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -70,6 +73,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        permissionCheckerHelper = new PermissionCheckerHelper();
         shakeShakeMessage = (TextView) findViewById(R.id.shake_shake_message);
         shakeShakeMessageButton =  findViewById(R.id.shake_shake_message_button);
         cancelButton = findViewById(R.id.cancel_button);
@@ -122,7 +126,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                    new PermissionCheckerHelper(),
+                    permissionCheckerHelper,
                     LocationServices.getFusedLocationProviderClient(getApplicationContext()));
             locationDetectorHelper.getLocation(onGetLocation(), this);
         } else {
@@ -286,6 +290,10 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(ShakeDetectCampaignActivity.this,
+                    requestCode, permissions,
+                    grantResults);
+        }
     }
 }
