@@ -9,11 +9,9 @@ data class ProfileViewModel (
         var name: String,
         var imgUrl: String,
         var username: String,
-        var bio: String,
         var followed: Boolean,
         var isKol: Boolean,
         var isAffiliate: Boolean,
-        var following: Int,
         var followers: Int,
         var post_count: Int,
         var position: Int

@@ -105,9 +105,6 @@ public class SearchProfileListGqlResponse {
         @SerializedName("username")
         @Expose
         private String username;
-        @SerializedName("bio")
-        @Expose
-        private String bio;
         @SerializedName("followed")
         @Expose
         private Boolean followed;
@@ -120,23 +117,9 @@ public class SearchProfileListGqlResponse {
         @SerializedName("isaffiliate")
         @Expose
         private Boolean isaffiliate;
-        @SerializedName("following")
-        @Expose
-        private Integer following;
         @SerializedName("followers")
         @Expose
         private Integer followers;
-        @SerializedName("thumbnails")
-        @Expose
-        private Object[] thumbnails;
-
-        public Object[] getThumbnails() {
-            return thumbnails;
-        }
-
-        public void setThumbnails(Object[] thumbnails) {
-            this.thumbnails = thumbnails;
-        }
 
         public String getId() {
             return id;
@@ -170,14 +153,6 @@ public class SearchProfileListGqlResponse {
             this.username = username;
         }
 
-        public String getBio() {
-            return bio;
-        }
-
-        public void setBio(String bio) {
-            this.bio = bio;
-        }
-
         public Boolean getFollowed() {
             return followed;
         }
@@ -208,14 +183,6 @@ public class SearchProfileListGqlResponse {
 
         public void setIsaffiliate(Boolean isaffiliate) {
             this.isaffiliate = isaffiliate;
-        }
-
-        public Integer getFollowing() {
-            return following;
-        }
-
-        public void setFollowing(Integer following) {
-            this.following = following;
         }
 
         public Integer getFollowers() {

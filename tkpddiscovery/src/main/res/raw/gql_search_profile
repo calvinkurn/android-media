@@ -12,12 +12,9 @@ aceSearchProfile(params: $params) {
       name
       avatar
       username
-      bio
       followed
-      thumbnails
       iskol
       isaffiliate
-      following
       followers
       post_count
     }
