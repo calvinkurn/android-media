@@ -1624,16 +1624,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
             TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
 
-            if (model.getTrackingList().size() > adapterPosition) {
-                TrackingRecommendationModel trackingRecommendationModel
-                        = model.getTrackingList().get(adapterPosition);
-
-                trackRecommendationClick(
-                        positionInFeed,
-                        adapterPosition,
-                        trackingRecommendationModel,
-                        FeedAnalytics.Element.AVATAR
-                );
+            for (TrackingRecommendationModel tracking : model.getTrackingList()) {
+                if (TextUtils.equals(tracking.getAuthorName(), shop.getName())) {
+                    trackRecommendationClick(
+                            positionInFeed,
+                            adapterPosition,
+                            tracking,
+                            FeedAnalytics.Element.FOLLOW
+                    );
+                    break;
+                }
             }
         }
     }
@@ -1645,16 +1645,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
             TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
 
-            if (model.getTrackingList().size() > adapterPosition) {
-                TrackingRecommendationModel trackingRecommendationModel
-                        = model.getTrackingList().get(adapterPosition);
-
-                trackRecommendationClick(
-                        positionInFeed,
-                        adapterPosition,
-                        trackingRecommendationModel,
-                        FeedAnalytics.Element.FOLLOW
-                );
+            for (TrackingRecommendationModel tracking : model.getTrackingList()) {
+                if (TextUtils.equals(tracking.getAuthorName(), data.getShop().getName())) {
+                    trackRecommendationClick(
+                            positionInFeed,
+                            adapterPosition,
+                            tracking,
+                            FeedAnalytics.Element.FOLLOW
+                    );
+                    break;
+                }
             }
         }
     }

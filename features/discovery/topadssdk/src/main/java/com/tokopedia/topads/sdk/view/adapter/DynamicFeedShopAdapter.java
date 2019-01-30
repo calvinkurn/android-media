@@ -92,6 +92,10 @@ public class DynamicFeedShopAdapter
         }
 
         private void bind(Data data) {
+            if (data == null) {
+                return;
+            }
+                
             initView(data);
             initListener(data);
         }
@@ -104,24 +108,28 @@ public class DynamicFeedShopAdapter
         }
 
         private void initView(Data data) {
-            List<ImageProduct> imageProductList = data.getShop().getImageProduct();
-            if (imageProductList.size() > 0) {
-                loadImageOrDefault(ivImageLeft, imageProductList.get(0).getImageUrl());
-            }
-            if (imageProductList.size() > 1) {
-                loadImageOrDefault(ivImageMiddle, imageProductList.get(1).getImageUrl());
-            }
-            if (imageProductList.size() > 2) {
-                loadImageOrDefault(ivImageRight, imageProductList.get(2).getImageUrl());
-            }
-
             Shop shop = data.getShop();
-            imageLoader.loadCircle(shop, ivProfile);
-            tvName.setText(fromHtml(shop.getName()));
-            tvDescription.setText(fromHtml(shop.getTagline()));
+            if (data.getShop() != null) {
+                if (shop.getImageProduct() != null) {
+                    List<ImageProduct> imageProductList = shop.getImageProduct();
+                    if (imageProductList.size() > 0) {
+                        loadImageOrDefault(ivImageLeft, imageProductList.get(0).getImageUrl());
+                    }
+                    if (imageProductList.size() > 1) {
+                        loadImageOrDefault(ivImageMiddle, imageProductList.get(1).getImageUrl());
+                    }
+                    if (imageProductList.size() > 2) {
+                        loadImageOrDefault(ivImageRight, imageProductList.get(2).getImageUrl());
+                    }
+                }
+
+                imageLoader.loadCircle(shop, ivProfile);
+                tvName.setText(fromHtml(shop.getName()));
+                tvDescription.setText(fromHtml(shop.getTagline()));
+                bindBadge(shop);
+            }
 
             bindFavorite(data);
-            bindBadge(shop);
         }
 
         private void initListener(Data data) {

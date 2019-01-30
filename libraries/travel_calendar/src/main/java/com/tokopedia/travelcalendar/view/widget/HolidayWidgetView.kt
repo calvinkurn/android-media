@@ -41,10 +41,17 @@ class HolidayWidgetView @JvmOverloads constructor(context: Context, attrs: Attri
         recyclerViewHoliday.setHasFixedSize(true)
         val linearLayoutManager = LinearLayoutManager(context)
         recyclerViewHoliday.layoutManager = linearLayoutManager
+        recyclerViewHoliday.setNestedScrollingEnabled(false);
 
         val holidayAdapter = HolidayAdapter(currentHolidayList)
         holidayAdapter.notifyDataSetChanged()
         recyclerViewHoliday.adapter = holidayAdapter
+
+        if (currentHolidayList.isEmpty()) {
+            visibility = View.GONE
+        } else {
+            visibility = View.VISIBLE
+        }
     }
 
     fun getCurrentHolidayList(): List<HolidayResult> {
