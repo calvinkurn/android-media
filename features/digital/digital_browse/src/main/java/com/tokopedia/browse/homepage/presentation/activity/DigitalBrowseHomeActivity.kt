@@ -14,7 +14,6 @@ import com.tokopedia.browse.common.applink.ApplinkConstant
 import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
-import com.tokopedia.browse.homepage.di.DaggerDigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
@@ -23,7 +22,8 @@ import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
 
-    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
+    @Inject
+    lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var fragmentDigital: Fragment? = null
 
@@ -100,17 +100,18 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         val TITLE_LAYANAN = "Lainnya"
 
         val LAYANAN_SCREEN = "/digital"
+        val DEFAULT_SCREEN = "/kategori-belanja"
 
         private var digitalBrowseHomeComponent: DigitalBrowseHomeComponent? = null
     }
 
-    override fun getScreenName(): String {
-        if(Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN){
-            return LAYANAN_SCREEN
+    override fun getScreenName(): String =
+        if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+            LAYANAN_SCREEN
+        } else {
+            DEFAULT_SCREEN
         }
 
-        return ""
-    }
 }
 
 @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
