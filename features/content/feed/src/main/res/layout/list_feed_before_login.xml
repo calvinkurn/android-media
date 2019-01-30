@@ -4,8 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_32" android:paddingStart="@dimen/dp_32"
-    android:paddingEnd="@dimen/dp_32" android:paddingRight="@dimen/dp_32"
+    android:paddingTop="@dimen/dp_32"
+    android:paddingBottom="@dimen/dp_32"
     android:background="@color/white"
     android:id="@+id/partial_empty_feed"
     android:layout_marginBottom="@dimen/dp_8">
@@ -17,6 +17,9 @@
         app:srcCompat="@drawable/ic_empty_state_cactus"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_24"/>
 
     <TextView
