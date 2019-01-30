@@ -282,7 +282,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
 
                 if (summaryViewModel != null) {
-                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice) ?: 0
+                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice)?.toLong() ?: 0
                     onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
                 }
 
@@ -334,7 +334,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
 
-            reloadRatesDebounceListener.onNeedToRecalculateRates(true)
+            reloadRatesDebounceListener.onNeedToRecalculateRates(false)
         }
     }
 
@@ -380,7 +380,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
             for (productChild: ProductChild in productViewModel.productChildrenList) {
                 if (productChild.isSelected) {
-                    summaryViewModel?.itemPrice = productChild.productPrice * quantityViewModel.orderQuantity
+                    summaryViewModel?.itemPrice = (productChild.productPrice * quantityViewModel.orderQuantity).toLong()
                     break
                 }
             }
@@ -392,15 +392,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
-        reloadRatesDebounceListener.onNeedToRecalculateRates(true)
+        reloadRatesDebounceListener.onNeedToRecalculateRates(false)
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
         val totalPayment = summaryViewModel?.itemPrice?.plus(summaryViewModel.shippingPrice)?.plus(summaryViewModel.servicePrice)?.plus(summaryViewModel.insurancePrice)
         fragmentViewModel.totalPayment = totalPayment
 
-        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(fragmentViewModel.totalPayment
-                ?: 0)
+        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentViewModel.totalPayment
+                ?: 0, false)
     }
 
     override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
@@ -433,7 +433,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onNeedToRecalculateRates() {
+    override fun onNeedToRecalculateRatesAfterChangeTemplate() {
         reloadRatesDebounceListener.onNeedToRecalculateRates(true)
     }
 
@@ -797,11 +797,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private fun initUpdateShippingRatesDebouncer() {
         compositeSubscription.add(Observable.create(Observable.OnSubscribe<Boolean> { subscriber ->
             reloadRatesDebounceListener = object : ReloadRatesDebounceListener {
-                override fun onNeedToRecalculateRates(boolean: Boolean) {
-                    subscriber.onNext(boolean)
+                override fun onNeedToRecalculateRates(forceReload: Boolean) {
+                    subscriber.onNext(forceReload)
                 }
             }
-        }).debounce(500, TimeUnit.MILLISECONDS)
+        }).debounce(1000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<Boolean>() {
@@ -813,8 +813,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                         e.printStackTrace()
                     }
 
-                    override fun onNext(boolean: Boolean) {
-                        if (fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
+                    override fun onNext(forceReload: Boolean) {
+                        if (forceReload || fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
                                 fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
                             bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
                             fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
@@ -836,7 +836,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     private interface ReloadRatesDebounceListener {
-        fun onNeedToRecalculateRates(boolean: Boolean)
+        fun onNeedToRecalculateRates(forceReload: Boolean)
     }
 
 }

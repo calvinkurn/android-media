@@ -67,7 +67,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
             }
 
             if (element.isStateHasChangedProfile) {
-                listener.onNeedToRecalculateRates()
+                listener.onNeedToRecalculateRatesAfterChangeTemplate()
             }
         }
     }

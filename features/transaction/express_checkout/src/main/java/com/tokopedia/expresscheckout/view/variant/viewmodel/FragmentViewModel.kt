@@ -10,7 +10,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierView
 
 data class FragmentViewModel(
         var atcResponseModel: AtcResponseModel? = null,
-        var totalPayment: Int? = 0,
+        var totalPayment: Long? = 0,
         var lastQuantity: Int? = 0,
         var lastPrice: Int? = 0,
         var shippingCourierViewModels: MutableList<ShippingCourierViewModel>? = null,

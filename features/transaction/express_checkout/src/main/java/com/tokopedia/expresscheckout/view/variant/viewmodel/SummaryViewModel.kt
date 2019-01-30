@@ -10,7 +10,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  */
 
 class SummaryViewModel(
-        var itemPrice: Int,
+        var itemPrice: Long,
         var shippingPrice: Int,
         var servicePrice: Int,
         var insurancePrice: Int,
@@ -19,7 +19,7 @@ class SummaryViewModel(
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel?) : this(
-            parcel?.readInt() ?: 0,
+            parcel?.readLong() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
@@ -31,7 +31,7 @@ class SummaryViewModel(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(itemPrice)
+        parcel.writeLong(itemPrice)
         parcel.writeInt(shippingPrice)
         parcel.writeInt(servicePrice)
         parcel.writeInt(insurancePrice)
