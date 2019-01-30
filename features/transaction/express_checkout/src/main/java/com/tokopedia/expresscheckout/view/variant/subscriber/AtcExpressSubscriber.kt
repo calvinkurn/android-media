@@ -15,6 +15,13 @@ import rx.Subscriber
 class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter) :
         Subscriber<GraphqlResponse>() {
 
+    companion object {
+        val INACTIVE_EXPREES_AND_REDIRECT_TO_OCS = 1
+        val INACTIVE_EXPREES_AND_REDIRECT_TO_NORMAL_ATC = 2
+        val NO_PROFILE_AND_REDIRECT_TO_OCS = 3
+        val NO_PROFILE_AND_REDIRECT_TO_NORMAL_ATC = 4
+    }
+
     private lateinit var domainModelMapper: AtcDomainModelMapper
     private lateinit var atcResponseModel: AtcResponseModel
 
@@ -33,8 +40,8 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
         if (expressCheckoutResponse.atcExpress.status.equals("OK")) {
             if (expressCheckoutResponse.atcExpress.data.errors.isNotEmpty()) {
                 when (expressCheckoutResponse.atcExpress.data.errorCode) {
-                    1, 3 -> view?.navigateAtcToOcs()
-                    2, 4 -> view?.navigateAtcToNcf()
+                    INACTIVE_EXPREES_AND_REDIRECT_TO_OCS, NO_PROFILE_AND_REDIRECT_TO_OCS -> view?.navigateAtcToOcs()
+                    INACTIVE_EXPREES_AND_REDIRECT_TO_NORMAL_ATC, NO_PROFILE_AND_REDIRECT_TO_NORMAL_ATC -> view?.navigateAtcToNcf()
                     else -> {
                         view?.finishWithError(expressCheckoutResponse.atcExpress.data.errors.joinToString(" "))
                     }
