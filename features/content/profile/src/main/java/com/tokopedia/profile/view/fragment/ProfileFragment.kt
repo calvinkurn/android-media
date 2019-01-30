@@ -674,7 +674,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         sharingIntent.type = TEXT_PLAIN
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
         startActivity(
-                Intent.createChooser(sharingIntent, getString(R.string.profile_share_this_profile))
+                Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
         )
         profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
     }
