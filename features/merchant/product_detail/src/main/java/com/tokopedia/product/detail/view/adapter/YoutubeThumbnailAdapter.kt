@@ -15,7 +15,8 @@ import com.tokopedia.product.detail.data.util.thumbnailUrl
 import kotlinx.android.synthetic.main.item_youtube_thumbnail.view.*
 import java.lang.Exception
 
-class YoutubeThumbnailAdapter(private val videos: MutableList<Video>)
+class YoutubeThumbnailAdapter(private val videos: MutableList<Video>,
+                              private val clickItemListener: ((Video, Int)->Unit)? = null)
     : RecyclerView.Adapter<YoutubeThumbnailAdapter.YoutubeThumbnailViewHolder>() {
 
     lateinit var recyclerView: RecyclerView
@@ -58,5 +59,9 @@ class YoutubeThumbnailAdapter(private val videos: MutableList<Video>)
         super.onAttachedToRecyclerView(recyclerView)
     }
 
-    class YoutubeThumbnailViewHolder(val view: View): RecyclerView.ViewHolder(view)
+    inner class YoutubeThumbnailViewHolder(val view: View): RecyclerView.ViewHolder(view){
+        init {
+            itemView.setOnClickListener { clickItemListener?.invoke(videos[adapterPosition], adapterPosition) }
+        }
+    }
 }

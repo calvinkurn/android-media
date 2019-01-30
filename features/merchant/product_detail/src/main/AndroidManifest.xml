@@ -10,6 +10,10 @@
         <activity android:name=".view.activity.ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
+
+        <activity android:name=".view.activity.ProductYoutubePlayerActivity"
+            android:screenOrientation="landscape"/>
+
     </application>
 
 </manifest>

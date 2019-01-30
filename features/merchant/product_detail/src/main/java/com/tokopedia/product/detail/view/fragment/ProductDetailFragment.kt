@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfo
 import com.tokopedia.product.detail.data.model.ProductParams
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
@@ -62,8 +63,8 @@ class ProductDetailFragment: BaseDaggerFragment() {
     private var isAppBarCollapsed = false
     private var menu: Menu? = null
 
-    private val analyticTracker: AnalyticTracker? by lazy {
-        (context?.applicationContext as? AbstractionRouter)?.analyticTracker
+    private val productDetailTracking: ProductDetailTracking by lazy {
+        ProductDetailTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
     }
 
     var productInfo: ProductInfo? = null
@@ -316,10 +317,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
 
     private fun onDiscussionClicked() {
 
-        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.ProductTalk.EVENT_LABEL)
+        productDetailTracking.eventTalkClicked()
 
         activity?.let {
             val router = it.applicationContext as? ProductDetailRouter ?: return
@@ -331,12 +329,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
     }
 
     private fun onReviewClicked() {
-
-        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.ProductReview.EVENT_LABEL)
-
+        productDetailTracking.eventReviewClicked()
         if (productInfo != null){
             //TODO SENT MOENGAGE
             activity?.let {
@@ -425,17 +418,11 @@ class ProductDetailFragment: BaseDaggerFragment() {
 
     private fun reportProduct() {
         if (productInfoViewModel.isUserSessionActive()){
-            analyticTracker?.sendEventTracking(ProductTrackingConstant.Report.EVENT,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK,
-                    ProductTrackingConstant.Report.EVENT_LABEL)
+            productDetailTracking.eventReportLogin()
 
             //TODO: SHOW REPORT DIALOG
         } else {
-            analyticTracker?.sendEventTracking(ProductTrackingConstant.Report.EVENT,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK,
-                    ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
+            productDetailTracking.eventReportNoLogin()
         }
     }
 
@@ -448,10 +435,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
                 startActivityForResult(router.getLoginIntent(it), REQUEST_CODE_LOGIN)
             }
             if (hasVariant())
-                analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
-                    ProductTrackingConstant.Category.PDP.toLowerCase(),
-                    ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
-                    ""/*generated variant */)
+                productDetailTracking.eventCartMenuClicked(""/*generated variant */)
         }
     }
 

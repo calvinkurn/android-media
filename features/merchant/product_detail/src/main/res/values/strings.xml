@@ -39,4 +39,6 @@
     <string name="label_product_wholesale">Harga Grosir</string>
     <string name="label_product_installment">Cicilan</string>
     <string name="label_format_wholesale">Mulai dari %1$s</string>
+
+    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
 </resources>
