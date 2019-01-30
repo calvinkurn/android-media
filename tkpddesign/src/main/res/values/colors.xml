@@ -78,6 +78,7 @@
     <color name="bg_button_border_outline">#E0E0E0</color>
     <color name="white_two">#e0e0e0</color>
     <color name="gray_background">#fff2f3f4</color>
+    <color name="white_four">@color/white_two</color> <!-- not recommended -->
 
     <color name="pinkish_grey">#bdbdbd</color>
     <color name="widget_card_with_action_separator">#cfcfcf</color>
@@ -110,4 +111,9 @@
 
     <color name="tkpd_light_green">#008000</color>
     <color name="tkpd_prod_price">#B44141</color>
+
+    <!-- will be deleted, ampasan dari core -->
+    <color name="grey_title">#888888</color>
+    <color name="shadow_1">#00CCCCCC</color>
+    <color name="grey_400">#bdbdbd</color>
 </resources>

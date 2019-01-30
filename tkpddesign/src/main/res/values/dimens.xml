@@ -100,4 +100,17 @@
     <dimen name="hc_oval_width">33dp</dimen>
     <dimen name="hc_oval_height">64dp</dimen>
     <dimen name="hc_ktp_height">93dp</dimen>
+
+
+    <dimen name="fonts">14sp</dimen> <!-- not recommended from core-->
+    <dimen name="page_with_pad">290dp</dimen> <!-- not recommended from core-->
+    <dimen name="btn_height">44dp</dimen> <!-- not recommended from core-->
+    <dimen name="padding_ms">8dp</dimen> <!-- not recommended from core-->
+    <dimen name="new_margin_med">16dp</dimen> <!-- not recommended from core-->
+    <dimen name="margin_ms">8dp</dimen> <!-- not recommended from core-->
+    <dimen name="margin_small">10dp</dimen> <!-- not recommended from core-->
+    <dimen name="padding_med">20dp</dimen> <!-- not recommended from core-->
+    <dimen name="img_hotprod">156dp</dimen>
+    <dimen name="margin_vs">5dp</dimen>
+    <dimen name="padding_small">10dp</dimen>
 </resources>
