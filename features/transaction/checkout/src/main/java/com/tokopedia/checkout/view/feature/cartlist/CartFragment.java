@@ -537,8 +537,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onTopAdsItemClicked(Product product) {
-        Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
-        context.startActivity(intent);
+        if (getActivity() != null) {
+            Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+            getActivity().startActivity(intent);
+        }
     }
 
     @Override
