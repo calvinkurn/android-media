@@ -51,6 +51,7 @@ import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
@@ -72,6 +73,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     @Inject
     lateinit var analytics: TopChatAnalytics
+
+    @Inject
+    lateinit var settingAnalytics: ChatSettingsAnalytics
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -137,7 +141,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onUnblockChatClicked(): () -> Unit {
         return {
-            analytics.trackClickUnblockChat()
+            analytics.trackClickUnblockChat(shopId)
             presenter.unblockChat(messageId, opponentRole, onError(), onSuccessUnblockChat())
         }
     }
@@ -656,7 +660,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     opponentName,
                     blockedStatus.isBlocked,
                     blockedStatus.isPromoBlocked,
-                    blockedStatus.blockedUntil)
+                    blockedStatus.blockedUntil,
+                    shopId)
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_CHAT)
         }
 

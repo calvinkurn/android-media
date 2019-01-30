@@ -47,6 +47,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
     private String messageId;
+    private String shopId;
     private String chatRole, senderName;
     private boolean shouldShowToast = false;
     private FrameLayout progressBarLayout;
@@ -69,6 +70,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
 
         if (getArguments() != null) {
             messageId = getArguments().getString(ApplinkConst.Chat.MESSAGE_ID);
+            shopId = getArguments().getString(ApplinkConst.Chat.SHOP_ID);
             this.chatSettingsResponse = getArguments().getParcelable(InboxChatConstant.CHATRESPONSEMODEL);
             isChatEnabled = getArguments().getBoolean(InboxChatConstant.CHAT_ENABLED, true);
             chatRole = getArguments().getString(InboxChatConstant.CHAT_ROLE);
@@ -100,8 +102,8 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
             chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
         }
         if (isChatEnabled) {
-            chatSettingsPresenter.onPersonalChatSettingChange(messageId, true, false);
-            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, true, false);
+            chatSettingsPresenter.onPersonalChatSettingChange(messageId, true, false, shopId);
+            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, true, false, shopId);
         } else if (chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked()) {
             setPromotionViewOpacity(true);
         }
@@ -275,9 +277,9 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
         }
 
         if (compoundButton.getId() == R.id.chat_personal_switch) {
-            chatSettingsPresenter.onPersonalChatSettingChange(messageId, isChecked, true);
+            chatSettingsPresenter.onPersonalChatSettingChange(messageId, isChecked, true, shopId);
         } else if (compoundButton.getId() == R.id.chat_promotion_switch) {
-            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, isChecked, true);
+            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, isChecked, true, shopId);
         }
     }
 
