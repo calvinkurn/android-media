@@ -54,6 +54,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
@@ -146,6 +147,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private List<Visitable> listMessage;
     private Handler youtubeRunnable;
     private long enterTimeStamp;
+    private boolean isTraceStopped = false;
 
     public GroupChatActivity() {
     }
@@ -199,6 +201,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     public static final long PAUSE_RESUME_TRESHOLD_TIME = TimeUnit.SECONDS.toMillis(2);
+    private static final String PLAY_TRACE = "mp_play_detail";
 
     private static final long TOOLTIP_DELAY = 1500L;
 
@@ -257,10 +260,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private UserSession userSession;
 
+    private PerformanceMonitoring performanceMonitoring;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        performanceMonitoring = PerformanceMonitoring.start(PLAY_TRACE);
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
         } else if (getIntent().getExtras() != null) {
@@ -1017,6 +1022,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         try {
             setChannelInfoView(channelInfoViewModel);
             hideLoading();
+            stopTrace();
             if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
                 trackAdsEE(channelInfoViewModel);
             }
@@ -1039,6 +1045,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
         }
     }
 

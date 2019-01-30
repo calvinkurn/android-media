@@ -17,6 +17,8 @@ public class PaymentGateway {
     @SerializedName("gateway_name")
     @Expose
     private String gatewayName;
+    @SerializedName("gateway_fee")
+    private float gatewayFee;
 
     public int getGatewayId() {
         return gatewayId;
@@ -40,5 +42,13 @@ public class PaymentGateway {
 
     public void setGatewayName(String gatewayName) {
         this.gatewayName = gatewayName;
+    }
+
+    public float getGatewayFee() {
+        return gatewayFee;
+    }
+
+    public void setGatewayFee(float gatewayFee) {
+        this.gatewayFee = gatewayFee;
     }
 }

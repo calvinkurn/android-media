@@ -151,6 +151,7 @@ subprojects {
                 substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:27.1.1')
                 substitute module('android.arch.core:runtime') with module('android.arch.core:runtime:1.1.1')
                 substitute module('android.arch.core:common') with module('android.arch.core:common:1.1.1')
+                substitute module('org.apache.commons:commons-lang3') with module('org.apache.commons:commons-lang3:3.5')
             }
         }
     }

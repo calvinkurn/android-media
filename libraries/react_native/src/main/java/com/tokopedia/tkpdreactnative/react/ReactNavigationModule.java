@@ -17,7 +17,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.Dialog;

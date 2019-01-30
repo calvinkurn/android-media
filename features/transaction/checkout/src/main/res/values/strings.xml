@@ -143,6 +143,7 @@
     <string name="label_hide_other_item">Sembunyikan</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_pay">Bayar</string>
+    <string name="label_pay_cod">Bayar di Tempat</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
     <string name="cart_item_count_format" formatted="false">Harga (%s Barang)</string>
     <string name="cart_item_button_checkout_count_format" formatted="false">Checkout (%s)</string>
@@ -190,15 +191,11 @@
     <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="note_counter_format" formatted="false">%d/%d</string>
     <string name="promo_format" formatted="false">-%s</string>
-    <string name="title_bottomsheet_shipment_duration">Pilih Durasi Pengiriman</string>
-    <string name="title_shipment_courier_bottomsheet">Pilih Kurir Pengiriman</string>
     <string name="label_button_choose_courier_recommendation">Pilih</string>
     <string name="label_button_change_shipping_duration">Ubah Durasi</string>
     <string name="label_button_change_courier_recommendation">Ubah Kurir</string>
     <string name="label_hardcoded_courier_ticker_bold_part">pk 14:00</string>
     <string name="label_hardcoded_shipping_duration_info">Durasi dihitung sejak barang diserahkan ke kurir</string>
-    <string name="label_title_showcase_shipping_duration">Pengiriman</string>
-    <string name="label_body_showcase_shipping_duration">Durasi dihitung sejak barang diserahkan ke kurir.</string>
     <string name="label_button_change_note">Ubah Catatan</string>
     <string name="label_select_all_product">Pilih semua produk</string>
     <string name="message_checkout_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda checkout</string>
@@ -232,5 +229,8 @@
     <string name="title_activity_checkout_webview">Proteksi Gadget</string>
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
+    <string name="label_cod">Bayar di Tempat</string>
+    <string name="lebel_understood">Mengerti</string>
+    <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
 
 </resources>
