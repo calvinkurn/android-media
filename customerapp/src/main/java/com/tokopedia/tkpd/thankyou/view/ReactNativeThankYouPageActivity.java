@@ -12,6 +12,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -147,5 +149,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     private void closeThankyouPage() {
         super.onBackPressed();
+        RouteManager.route(this, ApplinkConst.HOME);
+        finish();
     }
 }
