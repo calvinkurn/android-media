@@ -360,3 +360,11 @@
 -keep class com.tokopedia.track.** { *; }
 -keep class com.tokopedia.track.interfaces.** { *; }
 -keep class * extends com.tokopedia.track.interfaces.ContextAnalytics { *; }
+
+# -- Coroutines --
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+-keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
