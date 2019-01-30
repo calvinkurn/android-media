@@ -69,6 +69,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
@@ -2694,7 +2695,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             topAds.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
                 @Override
                 public void onImpressionProductAdsItem(int position, Product product) {
-                    ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
+                    TopAdsGtmTracker.eventProductDetailProductView(getContext(), product, position);
                 }
             });
             topAds.setConfig(config);
@@ -2726,7 +2727,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        ProductPageTracking.eventTopAdsClicked(getActivity(), position, product);
+        TopAdsGtmTracker.eventProductDetailProductClick(getContext(), product, position);
     }
 
     @Override
