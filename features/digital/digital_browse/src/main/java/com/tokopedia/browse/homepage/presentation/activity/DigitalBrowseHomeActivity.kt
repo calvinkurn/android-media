@@ -109,7 +109,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
             return LAYANAN_SCREEN
         }
 
-        return super.getScreenName()
+        return ""
     }
 }
 
