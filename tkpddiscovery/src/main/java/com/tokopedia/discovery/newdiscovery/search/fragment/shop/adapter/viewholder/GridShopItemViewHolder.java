@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.discovery.R;
@@ -82,21 +82,20 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
 
         try{
             itemPreview1.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(itemPreview1, shopItem.getProductImages().get(0));
+            ImageHandler.loadImageAndCache(itemPreview1, shopItem.getProductImages().get(0));
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview1.setVisibility(View.INVISIBLE);
         }
 
         try{
             itemPreview2.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(itemPreview2, shopItem.getProductImages().get(1));
+            ImageHandler.loadImageAndCache(itemPreview2, shopItem.getProductImages().get(1));
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview2.setVisibility(View.INVISIBLE);
         }
 
         try{
-            itemPreview3.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(itemPreview3, shopItem.getProductImages().get(2));
+            ImageHandler.loadImageAndCache(itemPreview3, shopItem.getProductImages().get(2));
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview3.setVisibility(View.INVISIBLE);
         }
