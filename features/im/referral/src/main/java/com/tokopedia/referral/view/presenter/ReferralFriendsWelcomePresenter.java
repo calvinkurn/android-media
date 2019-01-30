@@ -59,7 +59,7 @@ public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<Friends
     @Override
     public String getSubHeaderFromFirebase() {
         String subHeaderMessage = remoteConfig.getString(RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, getView().getActivity().getString(R.string.referral_welcome_desc));
-        String user = "";
+        String user = "Topper";
         if(userSession.isLoggedIn()) user = userSession.getName();
         String owner = getView().getActivity().getIntent().getExtras().getString(Constants.Key.OWNER);
         try {
