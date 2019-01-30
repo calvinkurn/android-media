@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: '../buildconfig/dependencies/dependency-libraries.gradle'
+apply from: '../../buildconfig/dependencies/dependency-libraries.gradle'
 
 android {
     compileSdkVersion 28

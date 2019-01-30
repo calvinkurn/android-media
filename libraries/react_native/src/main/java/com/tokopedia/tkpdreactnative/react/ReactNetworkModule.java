@@ -1,6 +1,14 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.content.Context;
+
+import com.facebook.react.bridge.Arguments;
+
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableMap;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.utils.AuthUtil;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -8,7 +16,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
@@ -46,9 +53,12 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     ReactNativeNetworkComponent daggerRnNetworkComponent;
 
     private CompositeSubscription compositeSubscription;
+    private Context context;
 
     public ReactNetworkModule(ReactApplicationContext reactContext) {
         super(reactContext);
+
+        this.context = reactContext;
         if (reactContext.getApplicationContext() instanceof MainApplication) {
             AppComponent appComponent = ((MainApplication) reactContext.getApplicationContext()).getApplicationComponent();
             daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
@@ -117,6 +127,34 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    @ReactMethod
+    public void getGraphQLHeader(Promise promise) {
+        String[] sessionDatas = AuthUtil.getHeaderRequestReact(context);
+        String TkpdSessionId = sessionDatas[0];
+        String TkpdUserId = sessionDatas[1];
+        String AccountAuthorization = sessionDatas[2];
+        String OsType = sessionDatas[3];
+        String Device = sessionDatas[4];
+        String UserId = sessionDatas[5];
+        String XAppVersion = sessionDatas[6];
+        String XTkpdUserId = sessionDatas[7];
+        String XTkpdAppName = sessionDatas[8];
+        String XTkpdAppVersion = sessionDatas[9];
+
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.putString(AuthUtil.HEADER_SESSION_ID, TkpdSessionId);
+        writableMap.putString(AuthUtil.HEADER_TKPD_USER_ID, TkpdUserId);
+        writableMap.putString(AuthUtil.HEADER_AUTHORIZATION, AccountAuthorization);
+        writableMap.putString(AuthUtil.PARAM_OS_TYPE, OsType);
+        writableMap.putString(AuthUtil.HEADER_DEVICE, Device);
+        writableMap.putString(AuthUtil.HEADER_USER_ID, UserId);
+        writableMap.putString(AuthUtil.HEADER_X_APP_VERSION, XAppVersion);
+        writableMap.putString(AuthUtil.HEADER_X_TKPD_USER_ID, XTkpdUserId);
+        writableMap.putString(AuthUtil.HEADER_X_TKPD_APP_NAME, XTkpdAppName);
+        writableMap.putString(AuthUtil.HEADER_X_TKPD_APP_VERSION, XTkpdAppVersion);
+        promise.resolve(writableMap);
     }
 
     @ReactMethod
