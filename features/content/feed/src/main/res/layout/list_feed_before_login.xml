@@ -11,6 +11,7 @@
     android:layout_marginBottom="@dimen/dp_8">
 
     <ImageView
+        android:id="@+id/iv_image"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/img_height"
         app:srcCompat="@drawable/ic_empty_state_cactus"
@@ -21,7 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/feed_empty_title"
+        android:text="@string/feed_non_login_title"
         android:fontFamily="sans-serif"
         android:textColor="@color/grey_550"
         android:textSize="@dimen/font_medium"
@@ -30,20 +31,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_8"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/feed_empty_msg"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/grey_450"
-        android:textSize="@dimen/sp_14"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_4"/>
-
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_login"
-        android:layout_width="@dimen/button_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         app:buttonCompatType="primary"
@@ -51,6 +41,8 @@
         android:text="@string/empty_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_24"/>
 
 
