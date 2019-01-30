@@ -34,6 +34,7 @@ class TopAdsAutoTopUpFragment:
         TopAdsAutoTopUpPriceViewHolder.ItemListener {
     private var selectedItem = AutoTopUpItem()
     lateinit var viewModel: TopAdsAutoTopUpViewModel
+    private var isChanged: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,7 +72,6 @@ class TopAdsAutoTopUpFragment:
     private fun handleResponseSaving(it: ResponseSaving?) {
         if (it == null) return
         if (it.isSuccess){
-            ToasterNormal.make(view, getString(R.string.auto_topup_success_changed), ToasterNormal.LENGTH_SHORT).show()
             sendResultIntentOk()
         } else {
             ToasterError.make(view, ErrorHandler.getErrorMessage(context, it.throwable))
@@ -82,6 +82,7 @@ class TopAdsAutoTopUpFragment:
     private fun sendResultIntentOk() {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent())
+            finish()
         }
     }
 
@@ -96,7 +97,19 @@ class TopAdsAutoTopUpFragment:
         min_auto_topup_descr.text = getString(R.string.descr_min_autotopup, selectedItem.minCreditFmt)
         auto_topup_status.text = data.statusDesc
         auto_topup_toggle.isChecked = data.status.toInt() != 0
+        addListenerToToggle()
         super.renderList(data.availableNominals)
+    }
+
+    private fun addListenerToToggle() {
+        auto_topup_toggle.setOnCheckedChangeListener { _, isChecked ->
+            isChanged = true
+            notifyButtonSubmit()
+
+            auto_topup_status.setText(if (isChecked) R.string.topads_active
+            else R.string.topads_inactive)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -106,15 +119,16 @@ class TopAdsAutoTopUpFragment:
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getRecyclerView(view).addItemDecoration(DividerItemDecoration(activity))
-        auto_topup_toggle.setOnCheckedChangeListener { _, isChecked ->
-            auto_topup_status.setText(if (isChecked) R.string.topads_active
-                else R.string.topads_inactive)
-            adapter.notifyDataSetChanged()
-        }
+
         button_submit.setOnClickListener { viewModel.saveSelection(GraphqlHelper
                 .loadRawString(resources, R.raw.gql_topads_save_auto_topup_selection),
                 auto_topup_toggle.isChecked, selectedItem) }
+        notifyButtonSubmit()
         loadInitialData()
+    }
+
+    private fun notifyButtonSubmit() {
+        button_submit.isEnabled = isChanged
     }
 
     override fun onDestroyView() {
@@ -150,15 +164,18 @@ class TopAdsAutoTopUpFragment:
 
     override fun onSelected(element: AutoTopUpItem) {
         if (isActive()) {
-            selectedItem = element
-            min_auto_topup_descr.text = getString(R.string.descr_min_autotopup, selectedItem.minCreditFmt)
-            adapter.notifyDataSetChanged()
+            if (selectedItem.id != element.id) {
+                isChanged = true
+                notifyButtonSubmit()
+
+                selectedItem = element
+                min_auto_topup_descr.text = getString(R.string.descr_min_autotopup, selectedItem.minCreditFmt)
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 
     companion object {
-
-        private val EXTRA_SELECTION_POSITION = "EXTRA_SELECTION_POSITION"
 
         @JvmStatic
         fun createInstance(): Fragment = TopAdsAutoTopUpFragment()
