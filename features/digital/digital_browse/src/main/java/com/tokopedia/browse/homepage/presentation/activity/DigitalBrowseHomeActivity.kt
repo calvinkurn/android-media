@@ -100,17 +100,18 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         val TITLE_LAYANAN = "Lainnya"
 
         val LAYANAN_SCREEN = "/digital"
+        val DEFAULT_SCREEN = "/kategori-belanja"
 
         private var digitalBrowseHomeComponent: DigitalBrowseHomeComponent? = null
     }
 
-    override fun getScreenName(): String {
+    override fun getScreenName(): String =
         if(Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN){
-            return LAYANAN_SCREEN
+             LAYANAN_SCREEN
+        } else {
+            DEFAULT_SCREEN
         }
 
-        return super.getScreenName()
-    }
 }
 
 @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
