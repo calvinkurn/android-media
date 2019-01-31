@@ -275,14 +275,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
         val lastPos = loginLayout.childCount - 1
-        if (loginLayout.childCount > 1 && loginLayout.getChildAt(lastPos) !is ProgressBar) {
+        if (loginLayout.childCount >= 1 && loginLayout.getChildAt(lastPos) !is ProgressBar) {
             loginLayout.addView(pb, lastPos)
         }
     }
 
     override fun dismissLoadingDiscover() {
         val lastPos = loginLayout.childCount - 2
-        if (loginLayout.childCount > 2 && loginLayout.getChildAt(lastPos) is ProgressBar) {
+        if (loginLayout.childCount >= 2 && loginLayout.getChildAt(lastPos) is ProgressBar) {
             loginLayout.removeViewAt(lastPos)
         }
     }
