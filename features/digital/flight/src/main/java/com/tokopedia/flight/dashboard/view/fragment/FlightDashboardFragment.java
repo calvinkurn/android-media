@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -80,6 +81,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
     private static final String TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture";
     private static final String TAG_RETURN_CALENDAR = "flightCalendarReturn";
+    private static final String FLIGHT_TRACE = "tr_flight";
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
@@ -109,6 +111,9 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private FlightDashboardViewModel viewModel;
     private FlightDashboardPassDataViewModel passData;
 
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStop = false;
+
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
     }
@@ -128,6 +133,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     protected void initInjector() {
         getComponent(FlightDashboardComponent.class).inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_TRACE);
     }
 
     @Nullable
@@ -274,6 +285,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        stopTrace();
+
         passData = new FlightDashboardPassDataViewModel();
         presenter.attachView(this);
         presenter.initialize();
@@ -551,6 +564,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void navigateToLoginPage() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            stopTrace();
             startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
         }
     }
@@ -629,6 +643,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
+        }
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring.stopTrace();
+            isTraceStop = true;
         }
     }
 
