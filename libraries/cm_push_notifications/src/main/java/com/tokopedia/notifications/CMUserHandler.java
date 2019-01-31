@@ -37,22 +37,46 @@ public class CMUserHandler {
 
     private UpdateFcmTokenUseCase updateFcmTokenUseCase;
 
+    String token;
+
+    Handler handler = new Handler(Looper.getMainLooper());
 
     public CMUserHandler(Context context) {
         mContext = context;
     }
 
-    public void updateToken(String token, long remoteDelaySeconds) {
+    public void updateToken(String token, long remoteDelaySeconds, boolean userAction) {
         try {
             long delay = getRandomDelay(remoteDelaySeconds);
+            if (userAction)
+                delay = 0L;
+            this.token = token;
             Log.d(TAG, "HIT DELAY-" + delay);
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(() -> Completable.fromAction(() -> sendFcmTokenToServer(token))
-                    .subscribeOn(Schedulers.io()).subscribe(), delay);
+            handler.postDelayed(runnable, delay);
         } catch (Exception e) {
         }
 
     }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Completable.fromAction(() -> sendFcmTokenToServer(token))
+                    .subscribeOn(Schedulers.io()).subscribe();
+        }
+    };
+
+    public void cancelRunnable() {
+        try {
+            if (handler != null) {
+                handler.removeCallbacks(runnable);
+                Log.d(TAG, "HIT DELAY-cancelled");
+            }
+            updateFcmTokenUseCase.unsubscribe();
+        } catch (Exception e) {
+        }
+    }
+
 
     private void sendFcmTokenToServer(String token) {
         try {
@@ -63,12 +87,12 @@ public class CMUserHandler {
             Log.d(TAG, "HIT STARTED");
             String userId = getUserId();
             String gAdId = getGoogleAdId();
-            int appVersion = CMNotificationUtils.getCurrentAppVersion(mContext);
+            String appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext);
 
             if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
                     CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
                     CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId) ||
-                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersion)) {
+                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersionName)) {
 
                 updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
                 RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
@@ -76,8 +100,8 @@ public class CMUserHandler {
                         token,
                         CMNotificationUtils.getSdkVersion(),
                         CMNotificationUtils.getUniqueAppId(mContext),
-                        appVersion,
-                        CMNotificationUtils.getUserStatus(mContext, userId));
+                        appVersionName,
+                        CMNotificationUtils.getUserStatus(mContext, userId), CMNotificationUtils.getCurrentLocalTimeStamp());
 
                 updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
                     @Override
@@ -96,7 +120,7 @@ public class CMUserHandler {
                             CMNotificationUtils.saveToken(mContext, token);
                             CMNotificationUtils.saveUserId(mContext, userId);
                             CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
-                            CMNotificationUtils.saveAppVersion(mContext, appVersion);
+                            CMNotificationUtils.saveAppVersion(mContext, appVersionName);
                         }
                     }
                 });
@@ -143,8 +167,8 @@ public class CMUserHandler {
 
     private long getRandomDelay(long randomDelaySeconds) {
         Random rand = new Random();
-        int millis = rand.nextInt(1000) + 1;//in millis delay
-        int seconds = rand.nextInt((int) randomDelaySeconds) + 1;//in seconds
+        int millis = rand.nextInt(1000) + 1; //in millis delay
+        int seconds = rand.nextInt((int) randomDelaySeconds) + 1; //in seconds
         return (seconds * 1000 + millis);
     }
 

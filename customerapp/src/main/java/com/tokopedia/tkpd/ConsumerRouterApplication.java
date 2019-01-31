@@ -3152,8 +3152,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
         new IndiSession(activity).doLogout();
-
-        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+        refreshFCMTokenFromForegroundToCM();
     }
 
     @Override
@@ -3192,7 +3191,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return OrderListActivity.getInstance(context);
     }
 
-        @Override
+    @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
     }
@@ -3559,19 +3558,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void onLoginSuccess() {
-        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+        refreshFCMTokenFromForegroundToCM();
         onAppsFlyerInit();
-
-    }
-
-    @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-        CMPushNotificationManager.getInstance().setFcmTokenCMNotif(token);
 
     }
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
-        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
     }
+
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+        CMPushNotificationManager.getInstance().refreshTokenFromBackground(token, force);
+
+    }
+
+    @Override
+    public void refreshFCMTokenFromForegroundToCM() {
+        CMPushNotificationManager.getInstance()
+                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
+    }
+
 }

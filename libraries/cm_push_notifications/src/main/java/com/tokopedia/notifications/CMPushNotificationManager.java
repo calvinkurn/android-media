@@ -20,6 +20,8 @@ public class CMPushNotificationManager {
     private final String TAG = CMPushNotificationManager.class.getCanonicalName();
     private static final CMPushNotificationManager sInstance;
     private Context mContext;
+    CMUserHandler cmUserHandler;
+
 
     public static CMPushNotificationManager getInstance() {
         return sInstance;
@@ -50,8 +52,8 @@ public class CMPushNotificationManager {
      *
      * @param token
      */
-    public void setFcmTokenCMNotif(String token) {
-        if(checkFirebaseEnable()) {
+    public void refreshFCMTokenFromForeground(String token, boolean isForce) {
+        if (isForegroundTokenUpdateEnabled()) {
             CommonUtils.dumper("token: " + token);
             if (mContext == null) {
                 return;
@@ -59,7 +61,31 @@ public class CMPushNotificationManager {
             if (TextUtils.isEmpty(token)) {
                 return;
             }
-            (new CMUserHandler(mContext)).updateToken(token, getRemoteDelaySeconds());
+            if (cmUserHandler != null)
+                cmUserHandler.cancelRunnable();
+            cmUserHandler = new CMUserHandler(mContext);
+            cmUserHandler.updateToken(token, getRemoteDelaySeconds(), isForce);
+        }
+    }
+
+    /**
+     * Send FCM token to server
+     *
+     * @param token
+     */
+    public void refreshTokenFromBackground(String token, boolean force) {
+        if (isBackgroundTokenUpdateEnabled()) {
+            CommonUtils.dumper("token: " + token);
+            if (mContext == null) {
+                return;
+            }
+            if (TextUtils.isEmpty(token)) {
+                return;
+            }
+            if (cmUserHandler != null)
+                cmUserHandler.cancelRunnable();
+            cmUserHandler = new CMUserHandler(mContext);
+            cmUserHandler.updateToken(token, getRemoteDelaySeconds(), force);
         }
     }
 
@@ -81,7 +107,7 @@ public class CMPushNotificationManager {
                 return confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE);
             }
         } catch (Exception e) {
-            Log.e(TAG, "CMPushNotificationManager: isFromCMNotificationPlatform",e);
+            Log.e(TAG, "CMPushNotificationManager: isFromCMNotificationPlatform", e);
         }
         return false;
     }
@@ -105,11 +131,17 @@ public class CMPushNotificationManager {
         return bundle;
     }
 
-    private boolean checkFirebaseEnable() {
-        return (((CMRouter) getApplicationContext()).getBooleanRemoteConfig("app_cm_token_capture_enable", true));
+    private boolean isBackgroundTokenUpdateEnabled() {
+        return (((CMRouter) getApplicationContext()).getBooleanRemoteConfig("app_cm_token_capture_background_enable", true));
     }
 
-    private long getRemoteDelaySeconds(){
+    private long getRemoteDelaySeconds() {
         return (((CMRouter) getApplicationContext()).getLongRemoteConfig("app_token_send_delay", 60));
     }
+
+
+    private boolean isForegroundTokenUpdateEnabled() {
+        return (((CMRouter) getApplicationContext()).getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true));
+    }
+
 }
