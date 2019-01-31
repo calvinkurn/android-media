@@ -56,7 +56,7 @@ public class ImpressedImageView extends AppCompatImageView {
         path = new Path();
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImpressedImageView, 0, 0);
         try{
-            radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_radius, 8.0f);
+            radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_corner_radius, 8.0f);
         } finally {
             styledAttributes.recycle();
         }
