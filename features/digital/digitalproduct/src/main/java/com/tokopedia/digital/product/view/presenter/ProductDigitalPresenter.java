@@ -29,6 +29,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -107,17 +108,20 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
     private CategoryData categoryData;
+    private DigitalAnalytics digitalAnalytics;
 
     @Inject
     public ProductDigitalPresenter(
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase) {
+            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
+            DigitalAnalytics digitalAnalytics) {
         super(localCacheHandler);
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
+        this.digitalAnalytics = digitalAnalytics;
     }
 
     @Override
@@ -222,38 +226,43 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 renderCategoryDataAndBannerToView(
                         categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
+
+                digitalAnalytics.sendCategoryScreen(view.getActivity(), productDigitalData.getCategoryData().getName());
             }
         };
     }
 
     private void handleCategoryError(Throwable e) {
-        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-            /* Ini kalau ga ada internet */
-            view.renderErrorNoConnectionProductDigitalData(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException) {
-            /* Ini kalau timeout */
-            view.renderErrorTimeoutConnectionProductDigitalData(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
-            view.renderErrorProductDigitalData(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-            view.renderErrorProductDigitalData(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
+        if (isViewAttached()) {
+            view.stopTrace();
+            if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                /* Ini kalau ga ada internet */
+                view.renderErrorNoConnectionProductDigitalData(
+                        ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                );
+            } else if (e instanceof SocketTimeoutException) {
+                /* Ini kalau timeout */
+                view.renderErrorTimeoutConnectionProductDigitalData(
+                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                );
+            } else if (e instanceof ResponseErrorException) {
+                /* Ini kalau error dari API kasih message error */
+                view.renderErrorProductDigitalData(e.getMessage());
+            } else if (e instanceof ResponseDataNullException) {
+                /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                view.renderErrorProductDigitalData(e.getMessage());
+            } else if (e instanceof HttpErrorException) {
             /* Ini Http error, misal 403, 500, 404,
              code http errornya bisa diambil
              e.getErrorCode */
-            view.renderErrorHttpProductDigitalData(e.getMessage());
-        } else if (e instanceof ServerErrorException) {
-            view.clearContentRendered();
-            view.closeView();
-            ServerErrorHandlerUtil.handleError(e);
-        } else {
-            view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                view.renderErrorHttpProductDigitalData(e.getMessage());
+            } else if (e instanceof ServerErrorException) {
+                view.clearContentRendered();
+                view.closeView();
+                ServerErrorHandlerUtil.handleError(e);
+            } else {
+                view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
         }
     }
 
@@ -309,6 +318,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     )
             );
         }
+        view.stopTrace();
         renderCheckETollBalance();
         renderCheckPulsa();
     }

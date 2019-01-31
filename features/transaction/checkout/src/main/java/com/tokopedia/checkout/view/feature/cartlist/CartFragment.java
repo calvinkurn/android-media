@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -56,7 +55,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -76,6 +75,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -95,9 +96,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
+    private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
+
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
-    private static final String CART_TRACE = "cart_trace";
+    private static final String CART_TRACE = "mp_cart";
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
 
@@ -437,6 +440,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 refreshHandler.startRefresh();
             } else {
                 renderInitialGetCartListDataSuccess(cartListData);
+                stopTrace();
             }
         }
     }
@@ -530,6 +534,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.notifyDataSetChanged();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
+    }
+
+    @Override
+    public void onTopAdsItemClicked(Product product) {
+        Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+        context.startActivity(intent);
     }
 
     @Override
@@ -628,7 +638,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position) {
+    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
 
     }
 
@@ -786,11 +796,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
-        }
-
         sendAnalyticsScreenName(getScreenName());
         if (refreshHandler != null) {
             refreshHandler.finishRefresh();
@@ -846,6 +851,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 mIsMenuVisible = true;
                 getActivity().invalidateOptionsMenu();
             }
+        }
+
+        cartPageAnalytics.eventViewCartListFinishRender();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
         }
     }
 
@@ -1140,6 +1155,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         dPresenter.setCartListData(cartListData);
                         renderLoadGetCartDataFinish();
                         renderInitialGetCartListDataSuccess(cartListData);
+                        stopTrace();
                     }
                 }
             }

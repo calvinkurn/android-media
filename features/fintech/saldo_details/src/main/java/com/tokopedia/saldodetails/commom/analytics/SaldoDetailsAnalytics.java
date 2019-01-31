@@ -26,7 +26,7 @@ public class SaldoDetailsAnalytics {
         tracker.sendEventTracking(
                 SaldoDetailsConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 SaldoDetailsConstants.Category.SALDO_MAIN_SCREEN,
-                eventAction,
+                String.format(SaldoDetailsConstants.Action.SALDO_ANCHOR_EVENT_ACTION, eventAction.toLowerCase()),
                 SaldoDetailsConstants.EventLabel.SALDO_PAGE
         );
     }

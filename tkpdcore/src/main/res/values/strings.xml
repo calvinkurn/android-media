@@ -1013,7 +1013,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_update_receipt_number">Perbarui nomor resi anda</string>
     <!-- Success String -->
     <string name="success_send_msg">Sukses kirim pesan.</string>
-    <string name="title_activity_people_deposit">Saldo Saya</string>
+    <string name="title_activity_people_deposit">Detail Saldo</string>
     <string name="title_activity_people_withdraw_balance">Penarikan Saldo</string>
     <string name="title_activity_shipping_confirmation_detail">Detil Konfirmasi Pengiriman</string>
     <string name="title_activity_shipping_confirmation_prod_conf">Konfirmasi Pengiriman</string>
@@ -2159,8 +2159,6 @@ di Tokopedia Sekarang!</string>
     <string name="bri_transfer_info">*) Penarikan dana ke rekening BRI akan dikenakan biaya transfer Rp 1,500.- oleh bank BRI</string>
 
     <string name="title_app_referral_howitworks">Info lebih lanjut</string>
-
-    <string name="code_error">Kode error :</string>
 
     <string name="notif_channel_general">Notifikasi</string>
     <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>

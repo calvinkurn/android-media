@@ -6,29 +6,37 @@ include "features:communication:broadcast_message"
 include "features:communication:broadcast_message_common"
 
 include "features:content:affiliate_common"
+include "features:content:feed_component"
 include "features:content:kol"
 include "features:content:kol_common"
-include "features:content:affiliate_common"
 include "features:content:profile"
 
 include "features:digital:common_digital"
 include "features:digital:digitalproduct"
 
+include "features:discovery:flashsale_management"
+//include "features:discovery:flashsale_management_no_op"
+include 'features:discovery:flashsale_management_common'
 include "features:discovery:wishlist_common"
 include "features:discovery:topadssdk"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
+//include "features:fintech:saldo_details_no_op"
 
 include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticanalytics"
 include "features:logistic:logisticgeolocation"
+//include "features:logistic:logisticgeolocation_no_op"
 include "features:logistic:logisticinputreceiptshipment"
+//include "features:logistic:logisticinputreceiptshipment_no_op"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcommon"
 include "features:logistic:logisticuploadawb"
+//include "features:logistic:logisticuploadawb_no_op"
 include "features:logistic:tracking"
+//include "features:logistic:tracking_no_op"
 
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
@@ -50,8 +58,10 @@ include "features:merchant:shop_settings"
 //include "features:merchant:shop_settings_no_op" // toggle for no_op
 
 include "features:operational:contact_us"
+//include "features:operational:contact_us_no_op"
 
 include "features:payment:payment"
+//include "features:payment:payment_no_op"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
 //include "features:payment:payment_setting_no_op"

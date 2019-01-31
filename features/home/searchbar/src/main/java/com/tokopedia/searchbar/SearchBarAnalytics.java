@@ -38,16 +38,15 @@ public class SearchBarAnalytics {
         );
     }
 
-    public void eventTrackingWishlist(String screenName) {
+    public void eventTrackingWishlist(String item, String screenName) {
         if (analyticTracker == null)
             return;
 
         analyticTracker.sendEventTracking(
                 getDataEvent(screenName,
-                        SearchBarConstant.CLICK_WISHLIST,
+                        SearchBarConstant.CLICK_TOP_NAV,
                         SearchBarConstant.TOP_NAV,
-                        String.format("%s %s", SearchBarConstant.CLICK,
-                                SearchBarConstant.WISHLIST)));
+                        String.format("%s %s", SearchBarConstant.CLICK, item)));
     }
 
     public void eventTrackingNotification(String screenName) {

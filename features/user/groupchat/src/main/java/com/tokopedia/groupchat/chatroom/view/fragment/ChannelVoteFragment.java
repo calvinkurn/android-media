@@ -168,6 +168,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         KeyboardHandler.DropKeyboard(getContext(), getView());
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
+        if (getActivity() instanceof GroupChatContract.View) {
+            ((GroupChatContract.View) getActivity()).showInfoDialog();
+        }
     }
 
     @Override

@@ -57,6 +57,9 @@ public class ErrorHandlerSession extends ErrorHandler {
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             return showErrorCode ? formatString(e.getLocalizedMessage(), ((MessageErrorException)
                     e).getErrorCode()) : e.getLocalizedMessage();
+        } else if (e instanceof com.tokopedia.network.exception.MessageErrorException
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
+            return  e.getLocalizedMessage();
         } else {
             return ErrorHandler.getErrorMessage(context, e);
         }

@@ -1,5 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
+import android.support.annotation.DrawableRes
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.R
@@ -18,4 +19,16 @@ fun ImageView.loadImageCircle(url: String) {
 
 fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
     ImageHandler.loadImageRounded2(context, this, url, radius)
+}
+
+fun ImageView.loadImageWithoutPlaceholder(@DrawableRes drawableId: Int) {
+    ImageHandler.loadImageWithIdWithoutPlaceholder(this, drawableId)
+}
+
+fun ImageView.loadImageWithoutPlaceholder(url: String) {
+    ImageHandler.loadImageWithoutPlaceholderAndError( this, url)
+}
+
+fun ImageView.clearImage() {
+    ImageHandler.clearImage(this)
 }

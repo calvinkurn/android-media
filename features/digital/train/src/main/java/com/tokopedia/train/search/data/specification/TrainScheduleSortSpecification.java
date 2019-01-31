@@ -1,9 +1,12 @@
 package com.tokopedia.train.search.data.specification;
 
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.tokopedia.common.travel.constant.TravelSortOption;
+import com.tokopedia.train.common.specification.DbFlowSpecification;
 import com.tokopedia.train.common.specification.DbFlowWithOrderSpecification;
 import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
+import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +15,21 @@ import java.util.List;
  * @author rizkyfadillah on 15/03/18.
  */
 
-public class TrainScheduleSortSpecification implements DbFlowWithOrderSpecification {
+public class TrainScheduleSortSpecification implements DbFlowWithOrderSpecification, DbFlowSpecification {
 
     private int sortOptionId;
+    private int scheduleVariant;
 
-    public TrainScheduleSortSpecification(int sortOptionId) {
+    public TrainScheduleSortSpecification(int sortOptionId, int scheduleVariant) {
         this.sortOptionId = sortOptionId;
+        this.scheduleVariant = scheduleVariant;
+    }
+
+    @Override
+    public ConditionGroup getCondition() {
+        ConditionGroup conditions = ConditionGroup.clause();
+        conditions.and(TrainScheduleDbTable_Table.is_return_schedule.eq(scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE));
+        return conditions;
     }
 
     @Override

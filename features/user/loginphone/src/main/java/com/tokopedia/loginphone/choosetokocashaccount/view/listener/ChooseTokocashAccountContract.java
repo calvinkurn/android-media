@@ -4,11 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
-import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
+import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

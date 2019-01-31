@@ -2,14 +2,8 @@ package com.tokopedia.topads
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActivity
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity
-import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity
-import com.tokopedia.topads.group.view.activity.TopAdsGroupAdListActivity
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity
-import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity
 
 object TopAdsManagementInternalRouter {
 
@@ -66,6 +60,14 @@ object TopAdsManagementInternalRouter {
         Toast.makeText(context, "TopAds Add Keyword", Toast.LENGTH_SHORT).show()
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setData(Uri.parse("http://www.getTopAdsKeywordNewChooseGroupIntent.com"))
+        return intent
+    }
+
+    @JvmStatic
+    fun getTopAdsDetailProductIntent(context: Context): Intent {
+        Toast.makeText(context, "TopAds Detail Product", Toast.LENGTH_SHORT).show()
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setData(Uri.parse("http://www.getTopAdsDetailProductIntent.com"))
         return intent
     }
 }
