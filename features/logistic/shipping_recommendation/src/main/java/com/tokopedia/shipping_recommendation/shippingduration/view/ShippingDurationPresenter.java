@@ -1,8 +1,11 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
+import com.tokopedia.shipping_recommendation.FileUtils;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
@@ -71,7 +74,24 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           int selectedServiceId,
                                           List<ShopShipment> shopShipmentList) {
         if (getView() != null) {
+
+            // load local response_pilih_durasi
             getView().showLoading();
+            String raw = new FileUtils().readRawTextFile(getView().getActivity(), R.raw.response_pilih_durasi);
+            Gson gson = new Gson();
+            GetRatesCourierRecommendationData getRatesCourierRecommendationData = gson.fromJson(raw, GetRatesCourierRecommendationData.class);
+            ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
+            ShippingDurationConverter shippingDurationConverter = new ShippingDurationConverter();
+            shippingRecommendationData.setShippingDurationViewModels(shippingDurationConverter.
+                    convertToViewModel(
+                            getRatesCourierRecommendationData.getRatesData().getRatesDetailData().getServices(),
+                            shopShipmentList, shipmentDetailData, "", 0));
+            shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
+            getView().hideLoading();
+            getView().showData(shippingDurationViewModelList);
+            getView().stopTrace();
+
+            /*getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
             getCourierRecommendationUseCase.execute(query, shipmentDetailData, selectedServiceId, shopShipmentList,
                     new Subscriber<ShippingRecommendationData>() {
@@ -108,7 +128,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                 }
                             }
                         }
-                    });
+                    });*/
         }
     }
 

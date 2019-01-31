@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -35,6 +36,11 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     @Inject
     public GetCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
         this.shippingDurationConverter = shippingDurationConverter;
+    }
+
+    public void executeDummy(Subscriber<ShippingRecommendationData> subscriber,
+                             ShippingRecommendationData shippingRecommendationData) {
+        Observable.just(shippingRecommendationData).subscribe(subscriber);
     }
 
     public void execute(String query,
@@ -152,6 +158,19 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shipmentDetailData.getShipmentCartData().getCategoryIds());
         queryStringBuilder = setParam(queryStringBuilder, Param.LANG, Param.VALUE_LANG_ID);
 
+        /*boolean isBlackbox = shipmentDetailData.getIsBlackbox();
+        int blackbox = 0;
+        if (isBlackbox) blackbox = 1;
+
+        queryStringBuilder = setParam(queryStringBuilder, Param.IS_BLACKBOX, String.valueOf(blackbox));
+        queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shipmentDetailData.getAddressId()));
+
+        boolean isPreorder = shipmentDetailData.getPreorder();
+        int preorder = 0;
+        if (isPreorder) preorder = 1;
+
+        queryStringBuilder = setParam(queryStringBuilder, Param.PREORDER, String.valueOf(preorder));*/
+
         return queryStringBuilder.toString();
     }
 
@@ -176,6 +195,9 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String ORDER_VALUE = "$order_value";
         static final String CAT_ID = "$cat_id";
         static final String LANG = "$lang";
+        static final String IS_BLACKBOX = "$is_blackbox";
+        static final String ADDRESS_ID = "$address_id";
+        static final String PREORDER = "$preorder";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";

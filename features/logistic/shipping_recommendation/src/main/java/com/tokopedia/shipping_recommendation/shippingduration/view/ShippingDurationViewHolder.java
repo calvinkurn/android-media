@@ -30,6 +30,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvError;
     private TextView tvDuration;
     private TextView tvPrice;
+    private TextView tvTextDesc;
     private ImageView imgCheck;
     private View vSeparatorPrice;
     private View vSeparatorError;
@@ -52,6 +53,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvError = itemView.findViewById(R.id.tv_error);
         tvDuration = itemView.findViewById(R.id.tv_duration);
         tvPrice = itemView.findViewById(R.id.tv_price);
+        tvTextDesc = itemView.findViewById(R.id.tv_text_desc);
         imgCheck = itemView.findViewById(R.id.img_check);
         vSeparatorPrice = itemView.findViewById(R.id.v_separator_price);
         vSeparatorError = itemView.findViewById(R.id.v_separator_error);
@@ -73,6 +75,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         if (!TextUtils.isEmpty(shippingDurationViewModel.getErrorMessage())) {
             tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
             tvPrice.setVisibility(View.GONE);
+            tvTextDesc.setVisibility(View.GONE);
             tvError.setText(shippingDurationViewModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
             vSeparatorPrice.setVisibility(View.GONE);
@@ -84,6 +87,13 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             tvPrice.setVisibility(View.VISIBLE);
             vSeparatorError.setVisibility(View.GONE);
             vSeparatorPrice.setVisibility(View.VISIBLE);
+
+            if (!shippingDurationViewModel.getServiceData().getTexts().getTextServiceDesc().isEmpty()) {
+                tvTextDesc.setText(shippingDurationViewModel.getServiceData().getTexts().getTextServiceDesc());
+                tvTextDesc.setVisibility(View.VISIBLE);
+            } else {
+                tvTextDesc.setVisibility(View.GONE);
+            }
         }
 
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());

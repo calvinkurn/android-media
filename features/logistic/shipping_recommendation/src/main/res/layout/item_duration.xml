@@ -64,6 +64,15 @@
             tools:text="Mulai dari Rp10.000" />
 
         <TextView
+            android:id="@+id/tv_text_desc"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_price"
+            android:layout_marginTop="4dp"
+            tools:text="(Direkomendasikan untuk berat di atas 5kg)" />
+
+        <TextView
             android:id="@+id/tv_error"
             style="@style/TextSmallNormal"
             android:layout_width="wrap_content"
@@ -86,7 +95,7 @@
             android:id="@+id/v_separator_price"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_below="@+id/tv_price"
+            android:layout_below="@+id/tv_text_desc"
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/separator_color" />
 

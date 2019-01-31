@@ -41,6 +41,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_robinhood")
     @Expose
     private int isRobinhood;
+    @SerializedName("is_blackbox")
+    @Expose
+    private int isBlackbox;
     @SerializedName("promo_suggestion")
     @Expose
     private PromoSuggestion promoSuggestion;
@@ -89,6 +92,10 @@ public class ShipmentAddressFormDataResponse {
 
     public int getIsRobinhood() {
         return isRobinhood;
+    }
+
+    public int getIsBlackbox() {
+        return isBlackbox;
     }
 
     public PromoSuggestion getPromoSuggestion() {

@@ -86,6 +86,7 @@ public class ShipmentDataConverter {
                 for (GroupShop groupShop : groupAddress.getGroupShop()) {
                     shipmentCartItemModel = new ShipmentCartItemModel();
                     shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
+                    shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
                     setCartItemModelError(shipmentCartItemModel);
@@ -97,6 +98,7 @@ public class ShipmentDataConverter {
             for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
                 shipmentCartItemModel = new ShipmentCartItemModel();
                 shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
+                shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
                 setCartItemModelError(shipmentCartItemModel);
