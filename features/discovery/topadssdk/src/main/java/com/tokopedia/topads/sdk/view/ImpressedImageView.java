@@ -2,10 +2,12 @@ package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -28,19 +30,20 @@ public class ImpressedImageView extends AppCompatImageView {
     private static final String TAG = ImpressedImageView.class.getSimpleName();
     private ImageHolder image;
     private ViewHintListener hintListener;
-    private float radius = 8.0f;
+    private float radius = 0.0f;
     private Path path;
     private RectF rect;
     private int offset;
+    private TypedArray styledAttributes;
 
     public ImpressedImageView(Context context) {
         super(context);
-        init();
+        init(context, null);
     }
 
     public ImpressedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context, attrs);
     }
 
     @Override
@@ -49,8 +52,14 @@ public class ImpressedImageView extends AppCompatImageView {
         registerObserver(this);
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
         path = new Path();
+        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImpressedImageView, 0, 0);
+        try{
+            radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_radius, 8.0f);
+        } finally {
+            styledAttributes.recycle();
+        }
     }
 
     @Override
@@ -137,12 +146,24 @@ public class ImpressedImageView extends AppCompatImageView {
 
     public void setImage(ImageProduct image) {
         this.image = image;
-        Glide.with(getContext()).load(image.getImageUrl()).into(this);
+        if(image.getImageUrl().isEmpty()){
+            setBackgroundColor(
+                    ContextCompat.getColor(getContext(), R.color
+                            .topads_gray_default_bg));
+        } else {
+            Glide.with(getContext()).load(image.getImageUrl()).into(this);
+        }
     }
 
     public void setImage(CpmImage image) {
         this.image = image;
-        Glide.with(getContext()).load(image.getFullEcs()).into(this);
+        if(image.getFullEcs().isEmpty()){
+            setBackgroundColor(
+                    ContextCompat.getColor(getContext(), R.color
+                            .topads_gray_default_bg));
+        } else {
+            Glide.with(getContext()).load(image.getFullEcs()).into(this);
+        }
     }
 
     public interface ViewHintListener {

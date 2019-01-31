@@ -31,4 +31,7 @@
         <attr name="ads_title" format="string" />
         <attr name="ads_offset" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="ImpressedImageView">
+        <attr name="radius" format="float" />
+    </declare-styleable>
 </resources>
