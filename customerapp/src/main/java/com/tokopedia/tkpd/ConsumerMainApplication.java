@@ -68,6 +68,7 @@ import com.tokopedia.network.SessionUrl;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.data.source.CMNotificationUrls;
 import com.tokopedia.oms.data.source.OmsUrl;
+import com.tokopedia.otp.common.util.AppSignatureHelper;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
@@ -139,6 +140,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        AppSignatureHelper appSignature = new AppSignatureHelper(this);
+        appSignature.getAppSignatures()
+        Log.d("NISIS", appSignature.getAppSignatures().get(0))
+
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
         setVersionCode();
