@@ -1,6 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant.adapter
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 

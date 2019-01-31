@@ -2,9 +2,6 @@ package com.tokopedia.expresscheckout.view.variant;
 
 import android.content.Context;
 
-import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets;
-import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
