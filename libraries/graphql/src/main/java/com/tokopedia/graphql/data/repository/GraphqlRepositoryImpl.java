@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * This class will responsible for data fetching either from cloud or cache based on provided GraphqlCacheStrategy
@@ -52,8 +53,8 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                                         graphqlResponseInternal -> graphqlResponseInternal).toBlocking().first()
                         );
             } else {
-                return Observable.concat(getCachedResponse(requests, cacheStrategy),
-                        getCloudResponse(requests, cacheStrategy))
+                return Observable.concat(getCachedResponse(requests, cacheStrategy).subscribeOn(Schedulers.computation()),
+                        getCloudResponse(requests, cacheStrategy).subscribeOn(Schedulers.io()))
                         .first(data -> data != null);
             }
         }).map(response -> {
