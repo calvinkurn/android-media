@@ -46,8 +46,10 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
         domainModelMapper = CheckoutDomainModelMapper()
         val checkoutResponseModel = domainModelMapper.convertToDomainModel(checkoutResponse.checkoutResponse)
         val headerErrorCode = checkoutResponseModel.headerModel?.errorCode?.toInt() ?: 0
-        val dataErrorCode = checkoutResponseModel.checkoutDataModel?.error?.toInt() ?: 0
-        val headerMessage = checkoutResponseModel.headerModel?.messages?.get(0) ?: ""
+        val dataErrorCode = if (checkoutResponseModel.checkoutDataModel?.error?.isEmpty() == true) 0 else checkoutResponseModel.checkoutDataModel?.error?.toInt()
+                ?: 0
+        val headerMessage = if (checkoutResponseModel.headerModel?.messages?.isNotEmpty() == true) checkoutResponseModel.headerModel?.messages?.get(0)
+                ?: "" else ""
         val dataMessage = checkoutResponseModel.checkoutDataModel?.message ?: ""
 
         when {
