@@ -141,8 +141,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onCreate() {
         AppSignatureHelper appSignature = new AppSignatureHelper(this);
-        appSignature.getAppSignatures()
-        Log.d("NISIS", appSignature.getAppSignatures().get(0))
+        appSignature.getAppSignatures();
+        Log.d("NISIS", appSignature.getAppSignatures().get(0));
 
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
