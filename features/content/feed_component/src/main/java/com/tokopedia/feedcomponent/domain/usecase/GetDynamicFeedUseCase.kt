@@ -7,6 +7,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedMapper
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -27,6 +28,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
     init {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
                         .setSessionIncluded(true)
                         .build()
         )

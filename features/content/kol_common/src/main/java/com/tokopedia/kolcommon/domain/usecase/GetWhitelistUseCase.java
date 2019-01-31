@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.GraphqlConstant;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -36,6 +37,7 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
         this.setCacheStrategy(
                 new GraphqlCacheStrategy
                         .Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.val())
                         .setSessionIncluded(true)
                         .build()
         );
