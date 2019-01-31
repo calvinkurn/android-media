@@ -205,9 +205,11 @@ class PermissionCheckerHelper {
         dialog.alertDialog.setCanceledOnTouchOutside(true)
         dialog.setOnOkClickListener {
             requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
+            dialog.dismiss()
         }
         dialog.setOnCancelClickListener {
             listener.onPermissionDenied(permissionText)
+            dialog.dismiss()
         }
         dialog.show()
     }

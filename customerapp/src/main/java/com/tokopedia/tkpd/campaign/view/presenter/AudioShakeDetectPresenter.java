@@ -56,7 +56,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
     }
 
     @Override
-    public void onShakeDetect(DeviceLocation deviceLocation) {
+    public void onShakeDetect() {
         try {
             startRecording();
         } catch (IOException e) {

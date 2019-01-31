@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
 import com.tokopedia.tkpd.campaign.view.presenter.AudioShakeDetectPresenter;
 
@@ -60,7 +59,7 @@ public class ShakeShakeAudioCampaignActivity extends ShakeDetectCampaignActivity
     @NeedsPermission({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void isRequiredPermissionAvailable() {
         Toast.makeText(this, "Start Recording", Toast.LENGTH_LONG).show();
-        presenter.onShakeDetect(new DeviceLocation());
+        presenter.onShakeDetect();
 
     }
 
