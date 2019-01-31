@@ -4,6 +4,7 @@ import android.content.res.Resources
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -250,14 +251,18 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
-                val data = graphqlResponse.getSuccessData<AutoTopUpData.Response>()
-
-                if (data.response == null){
-                    view?.onErrorGetAutoTopUpStatus(Exception("Tidak ada data"))
-                } else if (data.response.errors.isEmpty()){
-                    view?.onSuccessGetAutoTopUpStatus(data.response.data)
+                val error = graphqlResponse.getError(AutoTopUpData.Response::class.java)
+                if (error == null || error.isEmpty()){
+                    val data: AutoTopUpData.Response = graphqlResponse.getData(AutoTopUpData.Response::class.java)
+                    if (data.response == null){
+                        view?.onErrorGetAutoTopUpStatus(Exception("Tidak ada data"))
+                    } else if (data.response.errors.isEmpty()){
+                        view?.onSuccessGetAutoTopUpStatus(data.response.data)
+                    } else {
+                        view?.onErrorGetAutoTopUpStatus(ResponseErrorException(data.response.errors))
+                    }
                 } else {
-                    view?.onErrorGetAutoTopUpStatus(ResponseErrorException(data.response.errors))
+                    throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
                 }
             }
         })
