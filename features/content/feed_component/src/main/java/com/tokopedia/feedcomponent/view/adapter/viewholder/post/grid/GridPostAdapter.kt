@@ -51,7 +51,9 @@ class GridPostAdapter(private val contentPosition: Int,
                 gridPostViewModel.itemList.size
         )
 
-        if (gridPostViewModel.itemList.size > MAX_FEED_SIZE && position == LAST_FEED_POSITION) {
+        if (gridPostViewModel.showGridButton
+                && gridPostViewModel.totalItems > MAX_FEED_SIZE
+                && position == LAST_FEED_POSITION) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION
             holder.bindOthers(
                     extraProduct,
@@ -60,8 +62,9 @@ class GridPostAdapter(private val contentPosition: Int,
                     gridPostViewModel.postId
             )
 
-        } else if (gridPostViewModel.itemList.size < MAX_FEED_SIZE
-                && gridPostViewModel.itemList.size > MAX_FEED_SIZE_SMALL
+        } else if (gridPostViewModel.showGridButton
+                && gridPostViewModel.totalItems < MAX_FEED_SIZE
+                && gridPostViewModel.totalItems > MAX_FEED_SIZE_SMALL
                 && position == LAST_FEED_POSITION_SMALL) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION_SMALL
             holder.bindOthers(
