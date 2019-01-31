@@ -863,4 +863,9 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
         super.onDestroy();
         presenter.detachView();
     }
+
+    @Override
+    public void stopTrace() {
+        //Not implemented here
+    }
 }

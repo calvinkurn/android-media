@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
@@ -109,6 +110,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     val GPLUS = "gplus"
     val PHONE_NUMBER = "tokocash"
 
+    private val LOGIN_LOAD_TRACE = "gb_login_trace"
+    private val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
+
+    private var isTraceStopped: Boolean = false
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+
     private lateinit var callbackManager: CallbackManager
 
     @Inject
@@ -166,6 +173,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    override fun stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace()
+            isTraceStopped = true
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu!!.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
         val menuItem = menu.findItem(ID_ACTION_REGISTER)
@@ -200,6 +214,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         callbackManager = CallbackManager.Factory.create()
+        performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -296,6 +312,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 presenter.login(emailPhoneEditText.text.toString().trim(),
                         passwordEditText.text.toString())
                 KeyboardHandler.hideSoftKeyboard(activity)
+                performanceMonitoring = PerformanceMonitoring.start(LOGIN_SUBMIT_TRACE)
                 true
             } else {
                 false

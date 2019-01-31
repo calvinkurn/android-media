@@ -57,6 +57,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
             }
 
             override fun onError(e: Throwable) {
+                view.stopTrace()
                 view.dismissLoadingDiscover()
                 ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
                     override fun onForbidden() {
@@ -70,6 +71,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
             }
 
             override fun onNext(discoverViewModel: DiscoverViewModel) {
+                view.stopTrace()
                 view.dismissLoadingDiscover()
                 if (!discoverViewModel.providers.isEmpty()) {
                     view.onSuccessDiscoverLogin(discoverViewModel.providers)
@@ -107,9 +109,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     private fun onSuccessValidate(model: RegisterValidationPojo) {
         if (TextUtils.equals(model.type, PHONE_TYPE)) {
             if (model.exist) {
-                viewEmailPhone.goToLoginPhoneVerifyPage(model.view.replace("-",""))
+                viewEmailPhone.goToLoginPhoneVerifyPage(model.view.replace("-", ""))
             } else {
-                viewEmailPhone.goToRegisterPhoneVerifyPage(model.view.replace("-",""))
+                viewEmailPhone.goToRegisterPhoneVerifyPage(model.view.replace("-", ""))
             }
 
         }
@@ -152,6 +154,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
             loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password),
                     LoginSubscriber(view.context, view.loginRouter,
                             email, view))
+        } else {
+            viewEmailPhone.stopTrace()
         }
     }
 
