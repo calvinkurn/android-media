@@ -86,6 +86,16 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
+import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
+import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
+import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
+import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
+import com.tokopedia.loyalty.common.PopUpNotif;
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
@@ -425,6 +435,8 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
@@ -534,7 +546,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReferralRouter,
         SaldoDetailsRouter,
         ILoyaltyRouter,
-        TrackingOptimizerRouter{
+        TrackingOptimizerRouter,
+        LoginRegisterPhoneRouter{
 
     private static final String EXTRA = "extra";
 
@@ -3670,5 +3683,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
+    }
+
+    @Override
+    public Intent getNoTokocashAccountIntent(Context context, String phoneNumber) {
+        return NotConnectedTokocashActivity.getNoTokocashAccountIntent(context, phoneNumber);
+    }
+
+    @NotNull
+    @Override
+    public Intent getCheckRegisterPhoneNumberIntent(@NotNull Context context) {
+        return CheckRegisterPhoneNumberActivity.getCallingIntent(context);
+    }
+
+    @NotNull
+    @Override
+    public Intent getChooseTokocashAccountIntent(@NotNull Context context, @NotNull ChooseTokoCashAccountViewModel data) {
+        return ChooseTokocashAccountActivity.getCallingIntent(context, data);
+    }
+
+    @NotNull
+    @Override
+    public Intent getTokoCashOtpIntent(@NotNull Context context, @NotNull String phoneNumber,
+                                       boolean canUseOtherMethod, @NotNull String defaultRequestMode) {
+        return TokoCashOtpActivity.getCallingIntent(context, phoneNumber, canUseOtherMethod, defaultRequestMode);
+    }
+
+    @NotNull
+    @Override
+    public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
+        return CheckLoginPhoneNumberActivity.getCallingIntent(context);
     }
 }

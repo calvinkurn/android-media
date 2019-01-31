@@ -1,9 +1,8 @@
-package com.tokopedia.loginphone.choosetokocashaccount.data;
+package com.tokopedia.sessioncommon.data.loginphone;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
 
 import java.util.List;
 
@@ -12,6 +11,8 @@ import java.util.List;
  */
 
 public class ChooseTokoCashAccountViewModel implements Parcelable {
+
+    public static final String ARGS_DATA = "data";
 
     private List<UserDetail> listAccount;
     private String phoneNumber;
