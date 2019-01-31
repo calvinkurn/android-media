@@ -16,8 +16,11 @@ class LocationDetectorHelper @Inject constructor(private val permissionCheckerHe
                                                  FusedLocationProviderClient,
                                                  applicationContext: Context) {
 
-    private val TYPE_DEFAULT_FROM_CLOUD: Int = 1
-    private val TYPE_DEFAULT_FROM_LOCAL: Int = 2
+    companion object {
+        const val TYPE_DEFAULT_FROM_CLOUD: Int = 1
+        const val TYPE_DEFAULT_FROM_LOCAL: Int = 2
+    }
+
     private val LOCATION_CACHE: String = "LOCATION_CACHE"
     private val PARAM_CACHE_DEVICE_LOCATION: String = "DEVICE_LOCATION"
 
