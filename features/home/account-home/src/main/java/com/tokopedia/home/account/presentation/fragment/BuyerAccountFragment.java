@@ -43,11 +43,10 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private BuyerAccountAdapter adapter;
+    private PerformanceMonitoring fpmBuyer;
 
     @Inject
     BuyerAccount.Presenter presenter;
-
-    private PerformanceMonitoring fpmBuyer;
 
     public static Fragment newInstance() {
         Fragment fragment = new BuyerAccountFragment();
