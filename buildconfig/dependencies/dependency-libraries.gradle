@@ -12,6 +12,7 @@ ext {
     tkpdOmsVersion = '2.22'
     tkpdPaginationVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
+    tkpdTrackingOptimizerVersion = '2.22'
     tkpdUseCaseVersion = '2.23'
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
@@ -22,12 +23,13 @@ ext {
             abstraction           : "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             applink               : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
             cacheapi              : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
+            cachemanager          : "com.tokopedia.cachemanager:cachemanager:${tkpdCacheManagerVersion}",
             design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
+            trackingOptimizer     : "com.tokopedia.trackingoptimizer:trackingoptimizer:${tkpdTrackingOptimizerVersion}",
             usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
-            cachemanager          : "com.tokopedia.cachemanager:cachemanager:${tkpdCacheManagerVersion}",
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -58,6 +60,7 @@ ext {
             reactNative       : ":libraries:react_native",
             remoteConfig      : ":libraries:remote_config",
             travelCalendar    : ":libraries:travel_calendar",
+            trackingOptimizer : ":libraries:tracking_optimizer",
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
             williamchart      : ":libraries:williamchart",
