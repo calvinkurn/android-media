@@ -226,7 +226,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         if (arguments != null && arguments!!.getBoolean(IS_AUTO_FILL, false)) {
             emailPhoneEditText.setText(arguments!!.getString(AUTO_FILL_EMAIL, ""))
-        } else if (arguments!!.getBoolean(IS_AUTO_LOGIN, false)) {
+        } else if (arguments != null && arguments!!.getBoolean(IS_AUTO_LOGIN, false)) {
             when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
                 LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
                 LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
@@ -259,15 +259,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
         val lastPos = loginLayout.childCount - 1
-        if (loginLayout.getChildAt(lastPos) !is ProgressBar) {
-            loginLayout.addView(pb, loginLayout.childCount - 1)
+        if (loginLayout.childCount > 1 && loginLayout.getChildAt(lastPos) !is ProgressBar) {
+            loginLayout.addView(pb, lastPos)
         }
     }
 
     override fun dismissLoadingDiscover() {
         val lastPos = loginLayout.childCount - 2
-        if (loginLayout.getChildAt(lastPos) is ProgressBar) {
-            loginLayout.removeViewAt(loginLayout.childCount - 2)
+        if (loginLayout.childCount > 2 && loginLayout.getChildAt(lastPos) is ProgressBar) {
+            loginLayout.removeViewAt(lastPos)
         }
     }
 
@@ -355,9 +355,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun goToForgotPassword() {
-        if (activity != null && activity!!.applicationContext is LoginRegisterRouter) {
-            val intent = (activity!!.applicationContext as LoginRegisterRouter)
-                    .getForgotPasswordIntent(activity, emailPhoneEditText.text.toString().trim())
+        (activity?.applicationContext as? LoginRegisterRouter)?.run {
+            val intent = getForgotPasswordIntent(activity, emailPhoneEditText.text.toString().trim())
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             startActivity(intent)
             analytics.eventClickForgotPasswordFromLogin(activity!!.applicationContext)
@@ -365,25 +364,23 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onSuccessDiscoverLogin(listProvider: ArrayList<DiscoverItemViewModel>) {
-        val COLOR_WHITE = "#FFFFFF"
 
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams.setMargins(0, 20, 0, 15)
         loginButtonsContainer.removeAllViews()
-        for (i in listProvider.indices) {
-            val colorInt = Color.parseColor(COLOR_WHITE)
-            val tv = LoginTextView(activity, colorInt)
-            tv.tag = listProvider[i].id
-            tv.setText(listProvider[i].name)
-            if (!TextUtils.isEmpty(listProvider[i].image)) {
-                tv.setImage(listProvider[i].image)
-            } else if (listProvider[i].imageResource != 0) {
-                tv.setImageResource(listProvider[i].imageResource)
+        listProvider.forEach {
+            val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
+            tv.tag = it.id
+            tv.setText(it.name)
+            if (!TextUtils.isEmpty(it.image)) {
+                tv.setImage(it.image)
+            } else if (it.imageResource != 0) {
+                tv.setImageResource(it.imageResource)
             }
             tv.setRoundCorner(10)
 
-            setDiscoverListener(listProvider[i], tv)
+            setDiscoverListener(it, tv)
             loginButtonsContainer.addView(tv, loginButtonsContainer.childCount, layoutParams)
         }
     }
