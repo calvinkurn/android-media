@@ -38,14 +38,14 @@
 
     <!--ONBOARDING-->
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
-    <string name="title_af_username">Perbarui Username</string>
-    <string name="af_make_by_me_profile">Sebelum Lanjut,\nPerbarui Username-mu Dulu, Yuk!</string>
-    <string name="af_type_username">Ketik Username:</string>
+    <string name="title_af_username">Perbarui Link Profil</string>
+    <string name="af_make_by_me_profile">Sebelum Lanjut,\nPerbarui Link Profilmu Dulu, Yuk!</string>
+    <string name="af_type_username">Ketik Link Unikmu:</string>
     <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
     <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
     <string name="af_save">Simpan</string>
     <string name="af_by_me_domain">tokopedia.me/</string>
-    <string name="af_minimal_character">Username minimum %d karakter</string>
+    <string name="af_minimal_character">Minimum %d karakter</string>
     <string name="af_recommend_this_product">Lanjutkan Kurasi dengan Produk Ini?</string>
     <string name="af_recommend">Rekomendasikan</string>
     <string name="af_continue">Lanjutkan</string>
