@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
@@ -26,6 +28,8 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
 
     private static final int DEFAULT_CORNER_RADIUS = 4;
     private static final int DEFAULT_STROKE_WIDTH = 2;
+    private static final String KEY_SHOP_IS_GOLD = "1";
+    private static final String KEY_SHOP_IS_INACTIVE = "4";
 
     private LinearLayout mainContent;
     private SquareImageView itemShopImage;
@@ -36,9 +40,8 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     private ImageView itemPreview1;
     private ImageView itemPreview2;
     private ImageView itemPreview3;
-    private View favoriteButton;
-    private TextView favoriteButtonText;
-    private ImageView favoriteButtonIcon;
+    private ButtonCompat btnFollowShop;
+    private View viewShopInactive;
     private Context context;
     private final ShopListener itemClickListener;
 
@@ -53,27 +56,33 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         itemPreview1 = (ImageView) itemView.findViewById(R.id.shop_item_preview_1);
         itemPreview2 = (ImageView) itemView.findViewById(R.id.shop_item_preview_2);
         itemPreview3 = (ImageView) itemView.findViewById(R.id.shop_item_preview_3);
-        favoriteButton = itemView.findViewById(R.id.shop_list_favorite_button);
-        favoriteButtonText = (TextView) itemView.findViewById(R.id.shop_list_favorite_button_text);
-        favoriteButtonIcon = (ImageView) itemView.findViewById(R.id.shop_list_favorite_button_icon);
+        btnFollowShop = itemView.findViewById(R.id.btn_follow_shop);
+        viewShopInactive = itemView.findViewById(R.id.view_shop_inactive);
         context = itemView.getContext();
         this.itemClickListener = itemClickListener;
     }
 
     @Override
     public void bind(final ShopViewModel.ShopItem shopItem) {
-        ImageHandler.loadImageThumbs(context, itemShopImage, shopItem.getShopImage());
+        ImageHandler.loadImageCircle2(context, itemShopImage, shopItem.getShopImage());
         itemShopName.setText(shopItem.getShopName());
-        if(shopItem.isOfficial() || shopItem.getShopGoldShop().equals("1")){
+        if(shopItem.isOfficial() || shopItem.getShopGoldShop().equals(KEY_SHOP_IS_GOLD)){
             itemShopBadge.setVisibility(View.VISIBLE);
             if(shopItem.isOfficial()) {
-                itemShopBadge.setImageResource(com.tokopedia.core2.R.drawable.ic_badge_official);
-            } else if(shopItem.getShopGoldShop().equals("1")){
+                itemShopBadge.setImageResource(R.drawable.ic_official_store_discovery);
+            } else if(shopItem.getShopGoldShop().equals(KEY_SHOP_IS_GOLD)){
                 itemShopBadge.setImageDrawable(GMConstant.getGMDrawable(context));
             }
         } else {
             itemShopBadge.setVisibility(View.GONE);
         }
+
+        if (shopItem.getShopStatus().equals(KEY_SHOP_IS_INACTIVE)) {
+            viewShopInactive.setVisibility(View.VISIBLE);
+        } else {
+            viewShopInactive.setVisibility(View.GONE);
+        }
+
         mainContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,8 +101,8 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
                     DEFAULT_CORNER_RADIUS,
                     DEFAULT_STROKE_WIDTH,
                     context.getResources().getColor(R.color.black_38),
-                    itemPreview1.getWidth(),
-                    itemPreview1.getHeight()
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_width),
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_height)
             );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview1.setVisibility(View.INVISIBLE);
@@ -108,8 +117,8 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
                     DEFAULT_CORNER_RADIUS,
                     DEFAULT_STROKE_WIDTH,
                     context.getResources().getColor(R.color.black_38),
-                    itemPreview2.getWidth(),
-                    itemPreview2.getHeight()
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_width),
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_height)
             );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview2.setVisibility(View.INVISIBLE);
@@ -124,16 +133,16 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
                     DEFAULT_CORNER_RADIUS,
                     DEFAULT_STROKE_WIDTH,
                     context.getResources().getColor(R.color.black_38),
-                    itemPreview3.getWidth(),
-                    itemPreview3.getHeight()
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_width),
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_height)
             );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview3.setVisibility(View.INVISIBLE);
         }
 
         adjustFavoriteButtonAppearance(context, shopItem.isFavorited());
-        favoriteButton.setEnabled(shopItem.isFavoriteButtonEnabled());
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
+        btnFollowShop.setEnabled(shopItem.isFavoriteButtonEnabled());
+        btnFollowShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (shopItem.isFavoriteButtonEnabled()) {
@@ -145,15 +154,27 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
 
     private void adjustFavoriteButtonAppearance(Context context, boolean isFavorited) {
         if (isFavorited) {
-            favoriteButton.setBackgroundResource(com.tokopedia.core2.R.drawable.white_button_rounded);
-            favoriteButtonText.setText("Favorit");
-            favoriteButtonText.setTextColor(context.getResources().getColor(com.tokopedia.core2.R.color.black_54));
-            favoriteButtonIcon.setImageResource(com.tokopedia.core2.R.drawable.shop_list_favorite_check);
+            btnFollowShop.setButtonCompatType(ButtonCompat.SECONDARY);
+            btnFollowShop.setText(context.getString(R.string.label_following_shop));
+            Drawable checkDrawable =
+                    context.getResources().getDrawable(R.drawable.shop_list_favorite_check);
+            btnFollowShop.setCompoundDrawablesWithIntrinsicBounds(
+                    checkDrawable,
+                    null,
+                    null,
+                    null
+            );
         } else {
-            favoriteButton.setBackgroundResource(com.tokopedia.core2.R.drawable.green_button_rounded);
-            favoriteButtonText.setText("Favoritkan");
-            favoriteButtonText.setTextColor(context.getResources().getColor(com.tokopedia.core2.R.color.white));
-            favoriteButtonIcon.setImageResource(com.tokopedia.core2.R.drawable.ic_add);
+            btnFollowShop.setButtonCompatType(ButtonCompat.PRIMARY);
+            btnFollowShop.setText(context.getString(R.string.label_follow_shop));
+            Drawable addDrawable =
+                    context.getResources().getDrawable(R.drawable.ic_add);
+            btnFollowShop.setCompoundDrawablesWithIntrinsicBounds(
+                    addDrawable,
+                    null,
+                    null,
+                    null
+            );
         }
     }
 }

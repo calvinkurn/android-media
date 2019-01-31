@@ -63,4 +63,13 @@
     <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
     <string name="empty_state_selected_filter_price_name">Filter Harga</string>
     <string name="related_search_title">Mungkin maksud Anda :</string>
+    <string name="label_following_shop">Following</string>
+    <string name="label_follow_shop">Follow</string>
+    <string name="post_count_value">%1$s post</string>
+    <string name="btn_follow_text">Follow</string>
+    <string name="btn_following_text">Following</string>
+    <string name="value_profile_count">%1$s profil</string>
+    <string name="value_status_followed">\u2022 Following</string>
+    <string name="label_shop_status">Status Toko:</string>
+    <string name="label_shop_inactive">Sudah Tidak Aktif</string>
 </resources>
