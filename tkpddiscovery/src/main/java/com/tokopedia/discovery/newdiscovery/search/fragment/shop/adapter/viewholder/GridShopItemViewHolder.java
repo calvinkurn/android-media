@@ -101,8 +101,8 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
                     DEFAULT_CORNER_RADIUS,
                     DEFAULT_STROKE_WIDTH,
                     context.getResources().getColor(R.color.black_38),
-                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_width),
-                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_height)
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_size),
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_size)
             );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview1.setVisibility(View.INVISIBLE);
@@ -117,8 +117,8 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
                     DEFAULT_CORNER_RADIUS,
                     DEFAULT_STROKE_WIDTH,
                     context.getResources().getColor(R.color.black_38),
-                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_width),
-                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_height)
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_size),
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_size)
             );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview2.setVisibility(View.INVISIBLE);
@@ -133,8 +133,8 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
                     DEFAULT_CORNER_RADIUS,
                     DEFAULT_STROKE_WIDTH,
                     context.getResources().getColor(R.color.black_38),
-                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_width),
-                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_height)
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_size),
+                    (int)context.getResources().getDimension(R.dimen.shop_item_preview_size)
             );
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             itemPreview3.setVisibility(View.INVISIBLE);
