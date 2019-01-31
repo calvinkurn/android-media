@@ -72,7 +72,8 @@ public class CMUserHandler {
                 handler.removeCallbacks(runnable);
                 Log.d(TAG, "HIT DELAY-cancelled");
             }
-            updateFcmTokenUseCase.unsubscribe();
+            if (updateFcmTokenUseCase != null)
+                updateFcmTokenUseCase.unsubscribe();
         } catch (Exception e) {
         }
     }
