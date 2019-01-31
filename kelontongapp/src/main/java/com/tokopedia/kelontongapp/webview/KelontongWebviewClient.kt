@@ -138,7 +138,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
     private fun handleMoengage(uri: Uri) {
         if(uri.host == MOENGAGE_LOGIN) {
-            if(uri.getQueryParameter(ID) != null) {
+            if(uri.getQueryParameter(MOENGAGE_USER_ID) != null) {
                 with (sharedPref.edit()) {
                     putString(MOENGAGE_USER_ID, uri.getQueryParameter(MOENGAGE_USER_ID))
                     apply()
