@@ -8,6 +8,8 @@ import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
+import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType;
+import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
 import com.tokopedia.user.session.UserSession;
 
@@ -38,10 +40,10 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
     protected void renderCrossSellingCart(CartDigitalInfoData cartDigitalInfoData) {
         super.renderCrossSellingCart(cartDigitalInfoData);
         switch (cartDigitalInfoData.getCrossSellingType()) {
-            case 1:
+            case DigitalCartCrossSellingType.DEALS:
                 getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
                 break;
-            case 2:
+            case DigitalCartCrossSellingType.MYBILLS:
                 getView().inflateMyBillsSubscriptionPage(cartDigitalInfoData, getView().getCartPassData());
                 break;
             default:

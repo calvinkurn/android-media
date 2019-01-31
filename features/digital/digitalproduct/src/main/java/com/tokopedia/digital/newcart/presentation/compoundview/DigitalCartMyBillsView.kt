@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.component.TextViewCompat
@@ -42,9 +43,13 @@ class DigitalCartMyBillsView : BaseCustomView {
         subscriptionCheckbox.isChecked = checked
     }
 
-    fun setHeaderTitle(title : String) {
+    fun setHeaderTitle(title: String) {
         headerTitleTextView.text = title
     }
 
-    fun isChecked() : Boolean = subscriptionCheckbox.isChecked
+    fun isChecked(): Boolean = subscriptionCheckbox.isChecked
+
+    fun setOnCheckedChangeListener(listener : CompoundButton.OnCheckedChangeListener){
+        subscriptionCheckbox.setOnCheckedChangeListener(listener)
+    }
 }

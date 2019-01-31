@@ -2,11 +2,13 @@ package com.tokopedia.digital.newcart.presentation.fragment
 
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -25,14 +27,13 @@ import javax.inject.Inject
 
 class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsContract.Presenter>(), DigitalCartMyBillsContract.View {
 
-
     private lateinit var progressBar: ProgressBar
     private lateinit var containerLayout: RelativeLayout
     private lateinit var categoryTextView: AppCompatTextView
-    private lateinit var mybillSubscription : DigitalCartMyBillsView
+    private lateinit var mybillSubscription: DigitalCartMyBillsView
 
-    interface InteractionListener{
-        fun updateToolbarTitle(title: String)
+    interface InteractionListener {
+        fun updateToolbarTitle(title: String?)
     }
 
     @Inject
@@ -69,7 +70,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     companion object {
-        fun newInstance(cartDigitalInfoData : CartDigitalInfoData, passData : DigitalCheckoutPassData) : DigitalCartMyBillsFragment{
+        fun newInstance(cartDigitalInfoData: CartDigitalInfoData, passData: DigitalCheckoutPassData): DigitalCartMyBillsFragment {
             val fragment = DigitalCartMyBillsFragment()
             val bundle = Bundle()
             bundle.putParcelable(ARG_CART_INFO, cartDigitalInfoData)
@@ -117,9 +118,30 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
         mybillSubscription.setChecked(checked)
         mybillSubscription.setDescription(description)
         mybillSubscription.setHeaderTitle(headerTitle)
+        mybillSubscription.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+            run {
+                presenter.onSubcriptionCheckedListener(isChecked)
+            }
+        })
     }
 
     override fun updateCheckoutButtonText(buttonTitle: String) {
         checkoutHolderView.setTextButton(buttonTitle)
+    }
+
+    override fun showMyBillsSubscriptionView() {
+        mybillSubscription.visibility = View.VISIBLE
+    }
+
+    override fun hideMyBillsSubscriptionView() {
+        mybillSubscription.visibility = View.GONE
+    }
+
+    override fun renderMyBillsDescriptionView(title: String) {
+        mybillSubscription.setDescription(title)
+    }
+
+    override fun updateToolbarTitle(headerTitle: String?) {
+        interactionListener?.updateToolbarTitle(headerTitle)
     }
 }
