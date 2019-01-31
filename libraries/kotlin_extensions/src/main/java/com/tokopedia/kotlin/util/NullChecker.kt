@@ -13,8 +13,8 @@ private const val NULL_PATTERN = """\n\s*"\S+":\s*null"""
 @JvmOverloads
 fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boolean {
     val whenNull = { errorMessage: String ->
-        actionWhenNull(errorMessage)
         printDebug(errorMessage)
+        actionWhenNull(errorMessage)
     }
 
     if (`object` == null) {
@@ -47,6 +47,6 @@ fun throwExceptionWhenNull(`object`: Any?, actionWhenNull: (String) -> Unit = { 
 
 private fun printDebug(errorMessage: String) {
     if (GlobalConfig.isAllowDebuggingTools()) {
-        Log.d("NullChecker", errorMessage)
+        Log.e("NullChecker", errorMessage)
     }
 }
