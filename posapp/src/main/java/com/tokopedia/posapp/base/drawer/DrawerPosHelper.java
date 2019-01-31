@@ -56,6 +56,9 @@ public class DrawerPosHelper extends DrawerHelper
     }
 
     @Override
+    public void showFlashaleMenu() {}
+
+    @Override
     public ArrayList<DrawerItem> createDrawerData() {
         ArrayList<DrawerItem> data = new ArrayList<>();
 

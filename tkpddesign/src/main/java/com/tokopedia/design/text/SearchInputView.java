@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class SearchInputView extends BaseCustomView {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.SECONDS.toMillis(0);
+    protected View view;
 
     public interface Listener {
 
@@ -83,7 +84,6 @@ public class SearchInputView extends BaseCustomView {
     }
 
     private void init(AttributeSet attrs) {
-        init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SearchInputView);
         try {
             searchDrawable = styledAttributes.getDrawable(R.styleable.SearchInputView_siv_search_icon);
@@ -92,20 +92,16 @@ public class SearchInputView extends BaseCustomView {
         } finally {
             styledAttributes.recycle();
         }
+        init();
     }
 
-    private void init() {
-        View view = inflate(getContext(), getLayout(), this);
+    protected void init() {
+        view = inflate(getContext(), getLayout(), this);
         searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
         searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
         closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
-    }
 
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         if (searchDrawable != null) {
             searchImageView.setImageDrawable(searchDrawable);
         }
@@ -129,14 +125,12 @@ public class SearchInputView extends BaseCustomView {
         closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchTextView.setText("");
                 if (reset != null) {
                     reset.onSearchReset();
                 }
-                searchTextView.setText("");
             }
         });
-        invalidate();
-        requestLayout();
     }
 
     public void setSearchText(String searchText) {

@@ -38,7 +38,7 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
     private DrawerItemDataBinder drawerItemDataBinder;
     private DrawerGroupDataBinder drawerGroupDataBinder;
     private DrawerSeparatorDataBinder drawerSeparatorDataBinder;
-    private LocalCacheHandler drawerCache;
+    protected LocalCacheHandler drawerCache;
 
     private ArrayList<DrawerItem> data;
     private int selectedItem;

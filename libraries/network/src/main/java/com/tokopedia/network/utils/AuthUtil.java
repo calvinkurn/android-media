@@ -18,6 +18,10 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.tokopedia.user.session.UserSession;
+import com.google.gson.Gson;
+import android.content.Context;
+
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
  *         Modified by kulomady add method without params
@@ -46,13 +50,13 @@ public class AuthUtil {
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
-    private static final String HEADER_SESSION_ID = "tkpd-SessionId";
+    public static final String HEADER_SESSION_ID = "tkpd-sessionid";
     public static final String HEADER_OS_VERSION = "os_version";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
     private static final String PARAM_HASH = "hash";
-    private static final String PARAM_OS_TYPE = "os_type";
+    public static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
 
@@ -248,5 +252,39 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public static String getHeaderRequestReactNative(Context context) {
+        UserSession session = new UserSession(context);
+        Map<String, String> header = new HashMap<>();
+        header.put(HEADER_SESSION_ID, session.getDeviceId());
+        header.put(HEADER_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
+        header.put(HEADER_AUTHORIZATION, String.format("Bearer %s", session.getAccessToken()));
+        header.put(PARAM_OS_TYPE, "1");
+        header.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
+        header.put(HEADER_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
+        header.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        header.put(HEADER_X_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
+        header.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        header.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        Gson gson = new Gson();
+        return gson.toJson(header);
+    }
+
+    public static String[] getHeaderRequestReact(Context context) {
+        UserSession session = new UserSession(context);
+        String TkpdSessionId = session.getDeviceId();
+        String TkpdUserId = session.isLoggedIn() ? session.getUserId() : "0";
+        String AccountAuthorization = String.format("Bearer %s", session.getAccessToken());
+        String OsType = "1";
+        String Device = String.format("android-%s", GlobalConfig.VERSION_NAME);
+        String UserId = session.isLoggedIn() ? session.getUserId() : "0";
+        String XAppVersion = String.valueOf(GlobalConfig.VERSION_NAME);
+        String XTkpdUserId = session.isLoggedIn() ? session.getUserId() : "0";
+        String XTkpdAppName = GlobalConfig.getPackageApplicationName();
+        String XTkpdAppVersion = "android-" + GlobalConfig.VERSION_NAME;
+
+        String[] sessionDatas = { TkpdSessionId, TkpdUserId, AccountAuthorization, OsType, Device, UserId, XAppVersion, XTkpdUserId, XTkpdAppName, XTkpdAppVersion };
+        return sessionDatas;
     }
 }

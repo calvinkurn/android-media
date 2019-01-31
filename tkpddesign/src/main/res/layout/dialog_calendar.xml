@@ -6,17 +6,17 @@
 
     <CalendarView
         android:id="@+id/calendar"
-        android:layout_height="@dimen/page_with_pad"
-        android:layout_width="@dimen/page_with_pad"
-        android:dateTextAppearance="@dimen/fonts" />
+        android:layout_height="@dimen/dp_290"
+        android:layout_width="@dimen/dp_290"
+        android:dateTextAppearance="@dimen/sp_14" />
 
     <LinearLayout
         android:layout_height="wrap_content"
-        android:layout_width="@dimen/page_with_pad">
+        android:layout_width="@dimen/dp_290">
 
         <TextView
             android:id="@+id/today"
-            android:layout_height="@dimen/btn_height"
+            android:layout_height="@dimen/dp_44"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/ok"
-            android:layout_height="@dimen/btn_height"
+            android:layout_height="@dimen/dp_44"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
