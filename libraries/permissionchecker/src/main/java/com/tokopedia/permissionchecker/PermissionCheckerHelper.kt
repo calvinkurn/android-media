@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull
 class PermissionCheckerHelper {
 
     val REQUEST_PERMISSION_CODE = 789
+    private val TEXT_TITLE: Int = R.string.permission_title
     private val TEXT_OK: Int = R.string.permission_btn_ok
     private val TEXT_CANCEL: Int = R.string.permission_cancel
     private val TEXT_NEED_PERMISSION: Int = R.string.needs_permission
@@ -198,6 +199,7 @@ class PermissionCheckerHelper {
         }
 
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(context.getString(TEXT_TITLE))
         dialog.setDesc(getNeedPermissionMessage(context, permissionText))
         dialog.setBtnOk(context.getString(TEXT_OK))
         dialog.setBtnCancel(context.getString(TEXT_CANCEL))
