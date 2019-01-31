@@ -1,7 +1,9 @@
 package com.tokopedia.locationmanager
 
 import android.app.Activity
+import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import java.util.*
 import javax.inject.Inject
@@ -10,11 +12,39 @@ import javax.inject.Inject
  * @author by nisie on 25/01/19.
  */
 class LocationDetectorHelper @Inject constructor(private val permissionCheckerHelper: PermissionCheckerHelper,
-                                                 private val fusedLocationProvider: FusedLocationProviderClient) {
+                                                 private val fusedLocationProvider:
+                                                 FusedLocationProviderClient,
+                                                 applicationContext: Context) {
+
+    private val TYPE_DEFAULT_FROM_CLOUD: Int = 1
+    private val TYPE_DEFAULT_FROM_LOCAL: Int = 2
+    private val LOCATION_CACHE: String = "LOCATION_CACHE"
+    private val PARAM_CACHE_DEVICE_LOCATION: String = "DEVICE_LOCATION"
+
+    private val cacheManager = PersistentCacheManager(applicationContext, LOCATION_CACHE)
 
     fun getLocation(onGetLocation: ((DeviceLocation) -> Unit),
-                    activity: Activity) {
+                    activity: Activity,
+                    type: Int = TYPE_DEFAULT_FROM_CLOUD) {
 
+        when (type) {
+            TYPE_DEFAULT_FROM_CLOUD -> getDataFromCloud(onGetLocation, activity)
+            TYPE_DEFAULT_FROM_LOCAL -> getDataFromLocal(onGetLocation)
+        }
+    }
+
+    private fun getDataFromLocal(onGetLocation: (DeviceLocation) -> Unit) {
+        val deviceLocation = cacheManager.get(PARAM_CACHE_DEVICE_LOCATION, DeviceLocation::class
+                .java, DeviceLocation())
+
+        if (deviceLocation != null) {
+            onGetLocation(deviceLocation)
+        } else {
+            onGetLocation(DeviceLocation())
+        }
+    }
+
+    private fun getDataFromCloud(onGetLocation: (DeviceLocation) -> Unit, activity: Activity) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
             permissionCheckerHelper.checkPermissions(activity, getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
@@ -42,9 +72,15 @@ class LocationDetectorHelper @Inject constructor(private val permissionCheckerHe
             if (location != null) {
                 val wayLatitude = location.latitude
                 val wayLongitude = location.longitude
-                onGetLocation(DeviceLocation(wayLatitude, wayLongitude, Date().time))
+                val deviceLocation = DeviceLocation(wayLatitude, wayLongitude, Date().time)
+                saveToCache(deviceLocation)
+                onGetLocation(deviceLocation)
             }
         }
+    }
+
+    private fun saveToCache(deviceLocation: DeviceLocation) {
+        cacheManager.put(PARAM_CACHE_DEVICE_LOCATION, deviceLocation)
     }
 
     private fun getPermissions(): Array<String> {
