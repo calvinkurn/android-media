@@ -33,3 +33,6 @@ include "libraries:YouTubeAndroidPlayerApi"
 include "libraries:youtubeutil"
 include "track"
 include "trackinterface"
+
+include "libraries:linker"
+include "libraries:promoautoapplyusecase"

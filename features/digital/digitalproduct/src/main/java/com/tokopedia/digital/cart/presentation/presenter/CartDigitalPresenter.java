@@ -23,8 +23,9 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.CacheUtil;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
@@ -598,13 +599,13 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
     @Override
     public void autoApplyCouponIfAvailable(String digitalCategoryId) {
-        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getActivity());
+        String savedCoupon = CacheUtil.getValueFromCache(getView().getActivity(), TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE);
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucher(savedCoupon, digitalCategoryId);
         }
     }
 
     private void removeBranchPromoIfNeeded() {
-        BranchSdkUtils.removeCouponCode(getView().getActivity());
+        CacheUtil.removeValueFromCache(getView().getActivity(), TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE);
     }
 }

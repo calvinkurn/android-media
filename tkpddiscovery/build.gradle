@@ -38,6 +38,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)

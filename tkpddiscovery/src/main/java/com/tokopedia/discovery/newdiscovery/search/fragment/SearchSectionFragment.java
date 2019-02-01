@@ -26,6 +26,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.share.ShareBottomSheet;
@@ -269,15 +270,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
         SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
 
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.DISCOVERY_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
                 .build();
 
         if(getActivity() instanceof HotlistActivity){
-            shareData.setType(ShareData.HOTLIST_TYPE);
+            shareData.setType(LinkerData.HOTLIST_TYPE);
         } else {
             SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
         }

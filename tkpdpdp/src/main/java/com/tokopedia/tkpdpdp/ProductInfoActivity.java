@@ -37,6 +37,7 @@ import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
@@ -110,7 +111,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         return intent;
     }
 
-    public static Intent createInstance(Context context, @NonNull ShareData shareData) {
+    public static Intent createInstance(Context context, @NonNull LinkerData shareData) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);
@@ -176,7 +177,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
         Bundle bundle = this.bundleData;
         boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
-        ShareData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
+        LinkerData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
 
         if (isAddingProduct) {
             ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, true);
@@ -204,7 +205,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
-    public void shareProductInfo(@NonNull ShareData shareData) {
+    public void shareProductInfo(@NonNull LinkerData shareData) {
         presenter.processToShareProduct(this, shareData);
         new DefaultShare(this, shareData).show();
     }
