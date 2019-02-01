@@ -69,8 +69,8 @@ ext {
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
-            track             : ":track",
-            trackinterface    : ":trackinterface",
+            track             : ":libraries:track",
+            trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view"
     ]
 }
