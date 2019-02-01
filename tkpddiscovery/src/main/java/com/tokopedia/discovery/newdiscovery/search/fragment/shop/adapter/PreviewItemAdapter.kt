@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.viewholder.ItemPreviewViewHolder
+import kotlinx.android.synthetic.main.item_preview_shop.view.*
 
 class PreviewItemAdapter(val context : Context,
                          val imgSize : Int) : RecyclerView.Adapter<ItemPreviewViewHolder>() {
@@ -22,7 +23,12 @@ class PreviewItemAdapter(val context : Context,
         notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPreviewViewHolder {
-        val view : View = LayoutInflater.from(context).inflate(R.layout.item_preview_shop, parent)
+        val view : View = LayoutInflater.from(context).inflate(R.layout.item_preview_shop,
+                parent,
+                false)
+        view.img_preview.layoutParams.width = imgSize
+        view.img_preview.layoutParams.height = imgSize
+
         return ItemPreviewViewHolder(view)
     }
 

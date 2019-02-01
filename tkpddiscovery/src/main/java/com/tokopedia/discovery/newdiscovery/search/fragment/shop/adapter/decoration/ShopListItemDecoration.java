@@ -13,12 +13,7 @@ public class ShopListItemDecoration extends RecyclerView.ItemDecoration {
                                RecyclerView parent, RecyclerView.State state) {
         outRect.left = 4;
         outRect.right = 4;
-        outRect.bottom = 4;
-
-        if (parent.getChildLayoutPosition(view) == 0) {
-            outRect.top = 16;
-        } else {
-            outRect.top = 0;
-        }
+        outRect.bottom = -4;
+        outRect.top = 0;
     }
 }

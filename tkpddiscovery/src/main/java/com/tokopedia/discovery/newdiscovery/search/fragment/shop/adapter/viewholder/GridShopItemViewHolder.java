@@ -27,8 +27,6 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_item_shop;
 
-    private static final int DEFAULT_CORNER_RADIUS = 4;
-    private static final int DEFAULT_STROKE_WIDTH = 2;
     private static final String KEY_SHOP_IS_GOLD = "1";
     private static final String KEY_SHOP_IS_INACTIVE = "4";
 
@@ -122,7 +120,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     }
 
     protected int getPreviewImageSize(Context context){
-        return (int)context.getResources().getDimension(R.dimen.shop_item_preview_size);
+        return (int)context.getResources().getDimension(R.dimen.shop_item_preview_size_grid);
     }
 
     protected void hideShopPreviewItems(View viewPreviewItems){
