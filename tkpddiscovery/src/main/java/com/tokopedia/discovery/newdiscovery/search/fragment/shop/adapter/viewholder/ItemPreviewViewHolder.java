@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.viewholder
+package com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
