@@ -63,6 +63,7 @@ ext {
             trackingOptimizer : ":libraries:tracking_optimizer",
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
+            websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil       : ":libraries:youtubeutil",

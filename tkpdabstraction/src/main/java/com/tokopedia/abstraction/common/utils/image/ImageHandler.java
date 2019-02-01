@@ -728,6 +728,20 @@ public class ImageHandler {
                 .into(getCircleImageViewTarget(imageView));
     }
 
+    public static void loadImageWithListener(ImageView imageview, String url,
+                                             RequestListener<String,
+                                                     GlideDrawable> requestListener) {
+        if (url != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .listener(requestListener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageview);
+        }
+    }
+
     public static void clearImage(ImageView imageView) {
         if (imageView != null) {
             Glide.clear(imageView);
@@ -748,5 +762,19 @@ public class ImageHandler {
         bm.compress(compressFormat, 100, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public static void loadImageBlurredWithListener(ImageView imageView, String url, int
+            blurWidth, int blurHeight, RequestListener<String, GlideDrawable> listener) {
+        if (url != null) {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .override(blurWidth, blurHeight)
+                    .listener(listener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageView);
+        }
     }
 }

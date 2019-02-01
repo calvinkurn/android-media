@@ -44,6 +44,8 @@ yang ditemukan</string>
         Pesan</string>
     <string name="chat_yesterday_date">Kemarin</string>
     <string name="chat_today_date">Hari ini</string>
+    <string name="undersize_image">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
+    <string name="oversize_image">Ukuran gambar maksimal 15Mb</string>
 
     <!-- Chat Template -->
     <string name="add_template_chat_title">Tambah Template Pesan</string>
@@ -79,6 +81,7 @@ yang ditemukan</string>
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
     <string name="delete_chat_question">Hapus chat?</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
+
     <string name="chat_promotion_text">Chat Promosi</string>
     <string name="chat_information_text">Berisi informasi promo, notifikasi harga, dan penawaran menarik lainnya</string>
     <string name="chat_promotion_blocked_validity" formatted="false">Anda berhenti menerima chat promosi dari %s hingga %s</string>
@@ -96,4 +99,18 @@ yang ditemukan</string>
     <string name="error_chat_message">Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi</string>
     <string name="bm_title">Broadcast Chat</string>
     <string name="bm_showcase_desc">Promosikan barang atau toko melalui chat ke followers Anda dengan fitur baru ini</string>
+
+    <string name="success_add_to_cart">Berhasil menambahkan ke cart</string>
+
+    <string name="mark_as_read">Tandai sudah dibaca</string>
+    <string name="mark_as_unread">Tandai belum dibaca</string>
+
+    <string name="option_organize_chat">Atur Chat</string>
+    <string name="option_broadcast">Broadcast Chat</string>
+    <string name="drawer_title_setting">Pengaturan</string>
+
+    <string name="title_understand">Mengerti</string>
+    <string name="title_save">Simpan</string>
+
+
 </resources>

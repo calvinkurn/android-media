@@ -23,7 +23,9 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
@@ -31,6 +33,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -90,6 +93,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -220,10 +224,10 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActiv
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -271,8 +275,9 @@ public abstract class SellerRouterApplication extends MainApplication
         LoginRegisterRouter,
         UnifiedOrderListRouter,
         CoreNetworkRouter,
-        TrackingOptimizerRouter,
-        FlashSaleRouter  {
+        ChatbotRouter,
+        TrackingOptimizerRouter ,
+        FlashSaleRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -836,7 +841,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
+        return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
                 customSubject, customMessage, source, avatar);
     }
 
@@ -844,7 +849,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
 
-        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
+        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                 customSubject, customMessage, source, avatar);
 
     }
@@ -852,14 +857,14 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
-        return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
+        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
 
     }
 
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
-        return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
+        return TopChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
     }
 
     @Override
@@ -1494,18 +1499,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
-        Intent intent = new Intent(context, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(
-                TextUtils.isEmpty(url) ? TkpdBaseURL.BASE_CONTACT_US : url, context
-        ));
-        intent.putExtra(ContactUsConstant.EXTRAS_IS_CHAT_BOT, isFromChatBot);
-        return intent;
-    }
-
-    @Override
     public Intent getChatBotIntent(Context context, String messageId) {
-        return ChatRoomActivity.getChatBotIntent(context, messageId);
+        return  RouteManager.getIntent(context, ApplinkConst.CHATBOT
+                .replace(String.format("{%s}",ApplinkConst.Chat.MESSAGE_ID), messageId));
     }
 
     @Override
@@ -2015,6 +2011,37 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
+        return null;
+    }
+
+    @Override
+    public String getContactUsBaseURL() {
+        return TkpdBaseURL.ContactUs.URL_HELP;
+    }
+
+    @Override
+    public Class getDeeplinkClass() {
+        return DeepLinkActivity.class;
+    }
+
+    @Override
+    public void refereshFcmTokenToCMNotif(String token) {
+
+    }
+
+    @Override
+    public void onLoginSuccess() {
+
+    }
+
+    @Override
+    public boolean isSaldoNativeEnabled() {
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
+    }
+
+    @Override
+    public Intent getSaldoDepositIntent(Context context) {
         return null;
     }
 
