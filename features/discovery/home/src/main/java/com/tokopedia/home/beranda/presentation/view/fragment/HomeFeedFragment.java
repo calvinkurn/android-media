@@ -16,6 +16,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
+import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
@@ -35,9 +36,11 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Inject
     HomeFeedPresenter presenter;
 
+    private int totalScrollY;
     private int tabIndex;
     private int recomId;
     private HomeEggListener homeEggListener;
+    private HomeTabFeedListener homeTabFeedListener;
 
     public static HomeFeedFragment newInstance(int tabIndex, int recomId) {
         HomeFeedFragment homeFeedFragment = new HomeFeedFragment();
@@ -86,8 +89,19 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         getRecyclerView(getView()).addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                totalScrollY += dy;
                 if (homeEggListener != null) {
                     homeEggListener.hideEggOnScroll();
+                }
+                if (homeTabFeedListener != null) {
+                    homeTabFeedListener.onFeedContentScrolled(dy, totalScrollY);
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (homeTabFeedListener != null) {
+                    homeTabFeedListener.onFeedContentScrollStateChanged(newState);
                 }
             }
         });
@@ -125,5 +139,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Override
     protected String getScreenName() {
         return ConstantKey.Analytics.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
+    }
+
+    public void scrollToTop() {
+        getRecyclerView(getView()).smoothScrollToPosition(0);
     }
 }

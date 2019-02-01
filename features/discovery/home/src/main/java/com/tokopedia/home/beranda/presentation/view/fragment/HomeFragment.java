@@ -47,6 +47,7 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
+import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.SectionContainer;
@@ -57,6 +58,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.constant.ConstantKey;
@@ -93,7 +95,7 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener,
-        NotificationListener, FragmentListener, HomeEggListener {
+        NotificationListener, FragmentListener, HomeEggListener, HomeTabFeedListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "beranda_trace";
@@ -127,7 +129,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
     private ViewPager homeFeedsViewPager;
-    private TabLayout homeFeedsTabLayout;
+    private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
     private int lastOffset;
 
@@ -271,8 +273,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this, getFragmentManager(), feedTabModelList);
         homeFeedsViewPager.setOffscreenPageLimit(DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT);
         homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
-        homeFeedsTabLayout.setupWithViewPager(homeFeedsViewPager);
-        homeFeedsTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        homeFeedsTabLayout.setup(homeFeedsViewPager);
+        homeFeedsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                homeFeedPagerAdapter.getHomeFeedFragmentList().get(tab.getPosition()).scrollToTop();
+            }
+        });
     }
 
     private void scrollToRecommendList() {
@@ -1070,5 +1087,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void hideEggOnScroll() {
         hideEggFragmentOnScrolling();
+    }
+
+    @Override
+    public void onFeedContentScrolled(int dy, int totalScrollY) {
+        homeFeedsTabLayout.adjustTabCollapseOnScrolled(dy, totalScrollY);
+    }
+
+    @Override
+    public void onFeedContentScrollStateChanged(int newState) {
+        if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+            homeFeedsTabLayout.scrollActiveTabToLeftScreen();
+        } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            homeFeedsTabLayout.snapCollapsingTab();
+        }
     }
 }

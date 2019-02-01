@@ -45,4 +45,8 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return feedTabModelList.get(position).getName();
     }
+
+    public List<HomeFeedFragment> getHomeFeedFragmentList() {
+        return homeFeedFragmentList;
+    }
 }
