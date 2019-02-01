@@ -88,38 +88,38 @@ public class NullCheckerTest {
 
     @Test
     fun shouldReturnErrorWhenGivenNullObject() {
-        val book = gson.fromJson(objectNull, Shop::class.java)
-        val actual = isContainNull(book)
+        val shop = gson.fromJson(objectNull, Shop::class.java)
+        val actual = isContainNull(shop)
         Assert.assertTrue(actual)
     }
 
     @Test
     fun shouldReturnErrorWhenGivenNullString() {
-        val book = gson.fromJson(stringNull, Shop::class.java)
-        val actual = isContainNull(book)
+        val shop = gson.fromJson(stringNull, Shop::class.java)
+        val actual = isContainNull(shop)
         Assert.assertTrue(actual)
     }
 
     @Test
     fun shouldReturnErrorWhenGivenNullArray() {
-        val book = gson.fromJson(arrayNull, Shop::class.java)
-        val actual = isContainNull(book)
+        val shop = gson.fromJson(arrayNull, Shop::class.java)
+        val actual = isContainNull(shop)
         Assert.assertTrue(actual)
     }
 
     @Test
     fun shouldNotReturnErrorAndHavingDefaultValueWhenGivenNullField() {
-        val book = gson.fromJson(primitiveNull, Shop::class.java)
-        val actual = isContainNull(book)
+        val shop = gson.fromJson(primitiveNull, Shop::class.java)
+        val actual = isContainNull(shop)
         Assert.assertFalse(actual)
-        Assert.assertFalse(book.isGold)
+        Assert.assertFalse(shop.isGold)
     }
 
     @Test
     fun shouldReturnNotErrorAndHavingDefaultValueWhenFieldIsNotProvidedByJson() {
-        val book = gson.fromJson(fieldNotProvided, Shop::class.java)
-        val actual = isContainNull(book)
+        val shop = gson.fromJson(fieldNotProvided, Shop::class.java)
+        val actual = isContainNull(shop)
         Assert.assertFalse(actual)
-        Assert.assertEquals("", book.name)
+        Assert.assertEquals("", shop.name)
     }
 }
