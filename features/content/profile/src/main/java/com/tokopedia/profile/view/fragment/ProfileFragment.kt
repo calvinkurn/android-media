@@ -125,7 +125,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_dashboard) {
             if (isAffiliate) goToDashboard()
-            else goToOnboading()
+            else goToAffiliateExplore()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -696,7 +696,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     }
 
                     override fun onEmptyButtonClicked() {
-                        goToOnboading()
+                        goToAffiliateExplore()
                         profileAnalytics.eventClickEmptyStateCta()
                     }
                 }
@@ -758,12 +758,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         dialog.setOnCancelClickListener { dialog.dismiss() }
         return dialog
-    }
-
-    private fun goToOnboading() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_ONBOARDING)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivityForResult(intent, ONBOARDING_CODE)
     }
 
     private fun goToAffiliateExplore() {
