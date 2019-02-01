@@ -64,4 +64,7 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
     public static final String AFFILIATE_EXPLORE_ENABLE_FILTER = "affiliate_explore_enable_filter";
+    public static final String AFFILIATE_PROFILE_SHARE_ALL = "android_customer_enable_profile_share_allow_all";
+    public static final String AFFILIATE_PROFILE_SHARE_RULES = "android_customer_enable_profile_share_rules";
+
 }

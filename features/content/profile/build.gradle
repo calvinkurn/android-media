@@ -35,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.kol)

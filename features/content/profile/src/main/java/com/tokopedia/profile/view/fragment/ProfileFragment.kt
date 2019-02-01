@@ -45,6 +45,9 @@ import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.showcase.ShowCaseBuilder
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
@@ -71,6 +74,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var affiliatePostQuota: AffiliatePostQuota? = null
 
     override lateinit var profileRouter: ProfileModuleRouter
+
+    lateinit var remoteConfig: RemoteConfig
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -544,12 +549,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     ProfileActivity.TRUE
             )
         }
+
         if (context!!.applicationContext is ProfileModuleRouter) {
             profileRouter = context!!.applicationContext as ProfileModuleRouter
         } else {
             throw IllegalStateException("Application must implement "
                     .plus(ProfileModuleRouter::class.java.simpleName))
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
     }
@@ -810,10 +818,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun isAutomaticOpenShareUser(): Boolean {
         val userId = userSession.userId.toIntOrNull() ?: 0
-        return userId % 50 == 17
+        return (userId % 50 == 17
                 || userId % 50 == 23
                 || userId == 32044530 //dev's userId
                 || userId == 6215930 //QA's userId
                 || userId == 17211048 //QA's userId
+                || remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_ALL, false))
+                && remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_RULES, true)
     }
 }

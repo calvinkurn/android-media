@@ -280,4 +280,12 @@
         <key>mainapp_digital_channel_recommendation</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_customer_enable_profile_share_allow_all</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_customer_enable_profile_share_rules</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
