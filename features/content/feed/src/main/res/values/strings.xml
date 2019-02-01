@@ -72,8 +72,10 @@
     <string name="string_btn_whitelist">Buat Post</string>
 
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
+    <string name="feed_see_shop">Lihat Toko</string>
     <string name="feed_see_profile">Lihat Profil</string>
     <string name="feed_report">Laporkan</string>
     <string name="feed_delete">Hapus</string>
     <string name="feed_cancel">Batal</string>
+    <string name="feed_non_login_title">Mau tahu update terbaru Toko dan Konten kesayanganmu?</string>
 </resources>

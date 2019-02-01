@@ -31,6 +31,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
+import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
@@ -256,24 +257,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
         if (afterPost && !onlyOnePost) {
-            ToasterNormal
-                    .make(view,
-                            getString(R.string.profile_recommend_success),
-                            BaseToaster.LENGTH_LONG
-                    )
-                    .setAction(getString(R.string.profile_add_more)) {
-                        goToAffiliateExplore()
-                    }
-                    .show()
+            showAfterPostToaster(affiliatePostQuota?.number != 0)
             afterPost = false
+
         } else if (afterEdit) {
-            ToasterNormal
-                    .make(view,
-                            getString(R.string.profile_edit_success),
-                            BaseToaster.LENGTH_LONG
-                    )
-                    .setAction(getString(R.string.af_title_ok)) {}
-                    .show()
+            showAfterEditToaster()
             afterEdit = false
         }
     }
@@ -496,11 +484,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         affiliatePostQuota?.let {
             it.number += 1
-            try {
-                recommendationQuota.text = String.format(it.format, it.number)
-            } catch (e: IllegalFormatException) {
-            } catch (e: NullPointerException) {
-            }
+            bindCurationQuota(it)
         }
 
 
@@ -588,6 +572,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    private fun showAfterPostToaster(addAction: Boolean) {
+        if (addAction) {
+            view?.showNormalToaster(getString(R.string.profile_recommend_success), getString(R.string.profile_add_more)) {
+                goToAffiliateExplore()
+            }
+        } else {
+            view?.showNormalToaster(getString(R.string.profile_recommend_success))
+        }
+    }
+
+    private fun showAfterEditToaster() {
+        view?.showNormalToaster(getString(R.string.profile_edit_success), getString(R.string.af_title_ok)) {
+        }
+    }
+
     private fun addFooter(headerViewModel: ProfileHeaderViewModel,
                           affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
@@ -595,37 +594,41 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(affiliatePostQuota.formatted)) {
-                recommendationQuota.visibility = View.VISIBLE
-                recommendationQuota.text = affiliatePostQuota.formatted
-            } else {
-                recommendationQuota.visibility = View.GONE
-            }
-            addRecommendation.setOnClickListener {
+            bindCurationQuota(affiliatePostQuota)
+            addCuration.setOnClickListener {
                 goToAffiliateExplore()
                 profileAnalytics.eventClickTambahRekomendasi()
             }
-            addRecommendation.setOnLongClickListener {
+            addCuration.setOnLongClickListener {
                 showToast(getString(R.string.profile_add_recommendation))
                 true
             }
 
-            shareOwn.setOnClickListener(shareLink(headerViewModel.link))
-            shareOwn.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_profile))
+            shareProfile.setOnClickListener(shareLink(headerViewModel.link))
+            shareProfile.setOnLongClickListener {
+                showToast(getString(R.string.profile_share_this_profile))
                 true
             }
 
-            showShowCaseDialog(shareOwn)
+            showShowCaseDialog(shareProfile)
         } else {
             footerOwn.visibility = View.GONE
             footerOther.visibility = View.VISIBLE
 
             shareOther.setOnClickListener(shareLink(headerViewModel.link))
             shareOther.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_profile))
+                showToast(getString(R.string.profile_share_this_profile))
                 true
             }
+        }
+    }
+
+    private fun bindCurationQuota(affiliatePostQuota: AffiliatePostQuota) {
+        if (affiliatePostQuota.number == 0) {
+            addCuration.text = getString(R.string.profile_see_by_me_prouct)
+        } else {
+            val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
+            addCuration.text = addCurationText
         }
     }
 
@@ -666,7 +669,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             sharingIntent.type = TEXT_PLAIN
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
             startActivity(
-                    Intent.createChooser(sharingIntent, getString(R.string.profile_share_profile))
+                    Intent.createChooser(sharingIntent, getString(R.string.profile_share_this_profile))
             )
             profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
         }

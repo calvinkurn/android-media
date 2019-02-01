@@ -7,7 +7,7 @@ import org.json.JSONObject;
 /**
  * Created by Herdi_WORK on 21.02.17.
  */
-
+@Deprecated
 public interface IMoengageContainer
 {
     void initialize();

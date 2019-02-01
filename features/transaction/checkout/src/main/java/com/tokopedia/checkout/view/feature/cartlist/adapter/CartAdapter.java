@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
@@ -24,9 +23,11 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
@@ -49,16 +50,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private CompositeSubscription compositeSubscription;
     private RecyclerView.RecycledViewPool viewPool;
     private Map<Integer, Boolean> checkedItemState;
-    private UserSession userSession;
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
-                       CartItemAdapter.ActionListener cartItemActionListener,
-                       UserSession userSession) {
+                       CartItemAdapter.ActionListener cartItemActionListener) {
         this.cartDataList = new ArrayList<>();
         this.cartActionListener = cartActionListener;
         this.cartItemActionListener = cartItemActionListener;
-        this.userSession = userSession;
         compositeSubscription = new CompositeSubscription();
         viewPool = new RecyclerView.RecycledViewPool();
     }
@@ -112,7 +110,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewType == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS, parent, false);
-            return new CartTopAdsViewHolder(view);
+            return new CartTopAdsViewHolder(view, cartActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -537,5 +535,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void onShopItemCheckChanged(int itemPosition, boolean checked);
 
+        void onTopAdsItemClicked(Product product);
     }
 }

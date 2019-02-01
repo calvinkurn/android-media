@@ -33,7 +33,7 @@
             android:id="@+id/tv_event_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/orange"
+            android:textColor="@color/red_800"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             tools:text="Rp 552.00" />
@@ -48,7 +48,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        app:cardBackgroundColor="@color/price_pdp"
+        app:cardBackgroundColor="@color/red_800"
         app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="0dp">
 

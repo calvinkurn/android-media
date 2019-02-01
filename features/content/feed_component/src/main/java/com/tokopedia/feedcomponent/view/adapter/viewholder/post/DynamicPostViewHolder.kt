@@ -105,6 +105,15 @@ class DynamicPostViewHolder(v: View,
                 itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink) }
             }
 
+            if (template.avatarBadge && header.avatarBadgeImage.isNotBlank()) {
+                itemView.authorBadge.show()
+                itemView.authorBadge.loadImage(header.avatarBadgeImage)
+                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_8), 0)
+            } else {
+                itemView.authorBadge.hide()
+                itemView.authorTitle.setMargin(itemView.getDimens(R.dimen.dp_8), 0, itemView.getDimens(R.dimen.dp_8), 0)
+            }
+
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
                 itemView.authorTitle.text = header.avatarTitle
                 itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink) }
@@ -200,12 +209,10 @@ class DynamicPostViewHolder(v: View,
     private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text)) {
-                itemView.shareSpace.hide()
                 itemView.footerAction.show()
                 itemView.footerAction.text = footer.buttonCta.text
                 itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
             } else {
-                itemView.shareSpace.show()
                 itemView.footerAction.hide()
             }
 

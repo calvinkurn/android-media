@@ -97,7 +97,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     feed.tracking.type,
                     media.type,
                     media.tags.firstOrNull()?.linkType ?: "",
-                    media.appLink,
+                    media.thumbnail,
                     feed.id,
                     feed.content.cardbanner.body.media.size,
                     index
@@ -124,11 +124,26 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapTopadsShop(posts: MutableList<Visitable<*>>, feed: Feed,
                               template: Template) {
+        val trackingList = arrayListOf<TrackingRecommendationModel>()
+        feed.content.cardRecommendation.items.forEachIndexed { index, card ->
+            trackingList.add(TrackingRecommendationModel(
+                    feed.type,
+                    feed.activity,
+                    feed.tracking.type,
+                    card.media.firstOrNull()?.type ?: "",
+                    card.header.avatarTitle,
+                    card.header.followCta.authorType,
+                    card.header.followCta.authorID.toIntOrNull() ?: 0,
+                    index
+            ))
+        }
+
         posts.add(
                 TopadsShopViewModel(
                         feed.content.cardRecommendation.title,
                         feed.tracking.topads,
-                        template
+                        template,
+                        trackingList
                 )
         )
     }

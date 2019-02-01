@@ -66,6 +66,7 @@
     <dimen name="dp_121">121dp</dimen> <!-- not recommended -->
     <dimen name="dp_250">250dp</dimen> <!-- not recommended -->
     <dimen name="dp_280">280dp</dimen> <!-- not recommended -->
+    <dimen name="dp_290">290dp</dimen> <!-- not recommended -->
     <dimen name="dp_300">300dp</dimen> <!-- not recommended -->
     <dimen name="dp_340">340dp</dimen> <!-- not recommended -->
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
@@ -94,4 +95,9 @@
     <dimen name="dep_64">64dp</dimen>
     <integer name="int_3">3</integer>
     <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="ktp_view_width" >170dp</dimen>
+    <dimen name="ktp_view_height" >110dp</dimen>
+    <dimen name="hc_oval_width">33dp</dimen>
+    <dimen name="hc_oval_height">64dp</dimen>
+    <dimen name="hc_ktp_height">93dp</dimen>
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FlashSaleProductWidget">
+        <attr name="fspw_image_width" format="dimension" />
+        <attr name="fspw_hide_detail" format="boolean" />
+    </declare-styleable>
+</resources>

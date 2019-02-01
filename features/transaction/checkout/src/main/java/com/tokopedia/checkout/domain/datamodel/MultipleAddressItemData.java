@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 /**
  * Created by kris on 1/24/18. Tokopedia
