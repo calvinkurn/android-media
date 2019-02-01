@@ -31,4 +31,7 @@
     <dimen name="item_space">20dp</dimen>
     <dimen name="pading_4dp">4dp</dimen>
     <dimen name="count_down_item_size">24dp</dimen>
+    <dimen name="tab_home_feed_width">104dp</dimen>
+    <dimen name="tab_home_feed_max_height">52dp</dimen>
+    <dimen name="tab_home_feed_min_height">35dp</dimen>
 </resources>
