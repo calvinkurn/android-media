@@ -43,6 +43,10 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                 if (shippingDurationViewModel.serviceData.serviceId == profileServiceId) {
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
                         if (currentSpId != 0) {
+                            // Reset recommendation
+                            for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                                product.isRecommend = product.shipperProductId == currentSpId
+                            }
                             // Reload rates data come here
                             for (product: ProductData in shippingDurationViewModel.serviceData.products) {
                                 if (product.shipperProductId == currentSpId) {
