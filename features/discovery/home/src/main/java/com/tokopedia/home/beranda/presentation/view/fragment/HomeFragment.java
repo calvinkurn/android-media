@@ -273,7 +273,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this, getFragmentManager(), feedTabModelList);
         homeFeedsViewPager.setOffscreenPageLimit(DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT);
         homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
-        homeFeedsTabLayout.setup(homeFeedsViewPager);
+        homeFeedsTabLayout.setup(homeFeedsViewPager, convertToTabItemDataList(feedTabModelList));
         homeFeedsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -290,6 +290,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 homeFeedPagerAdapter.getHomeFeedFragmentList().get(tab.getPosition()).scrollToTop();
             }
         });
+    }
+
+    private List<CollapsingTabLayout.TabItemData> convertToTabItemDataList(List<FeedTabModel> feedTabModelList) {
+        List<CollapsingTabLayout.TabItemData> tabItemDataList = new ArrayList<>();
+        for (FeedTabModel feedTabModel : feedTabModelList) {
+            tabItemDataList.add(new CollapsingTabLayout.TabItemData(feedTabModel.getName()));
+        }
+        return tabItemDataList;
     }
 
     private void scrollToRecommendList() {

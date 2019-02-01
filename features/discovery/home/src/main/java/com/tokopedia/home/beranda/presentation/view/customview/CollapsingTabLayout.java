@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.tokopedia.home.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CollapsingTabLayout extends TabLayout {
 
     private static final long DEFAULT_ANIMATION_DURATION = 300;
@@ -27,6 +30,8 @@ public class CollapsingTabLayout extends TabLayout {
 
     private String tabTitles[] = new String[] { "For You", "Promo Akhir Tahun", "Populer Minggu Ini" };
     private int[] imageResId = { R.drawable.background_tab_feed_1, R.drawable.background_tab_feed_2, R.drawable.background_tab_feed_3 };
+
+    private List<TabItemData> tabItemDataList = new ArrayList<>();
 
     private int tabMaxHeight;
     private int tabMinHeight;
@@ -52,7 +57,9 @@ public class CollapsingTabLayout extends TabLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setup(ViewPager viewPager) {
+    public void setup(ViewPager viewPager, List<TabItemData> tabItemDataList) {
+        this.tabItemDataList.clear();
+        this.tabItemDataList.addAll(tabItemDataList);
         initResources();
         initAnimator();
         setSmoothScrollingEnabled(true);
@@ -298,7 +305,7 @@ public class CollapsingTabLayout extends TabLayout {
     private View getTabView(Context context, int position) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
-        textView.setText(tabTitles[position % 3]);
+        textView.setText(tabItemDataList.get(position).getTitle());
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
         imageView.setImageResource(imageResId[position % 3]);
         int dp16 = rootView.getResources().getDimensionPixelSize(R.dimen.dp_16);
@@ -353,6 +360,18 @@ public class CollapsingTabLayout extends TabLayout {
 
         public void setTabIndicator(ExpandingLineView tabIndicator) {
             this.tabIndicator = tabIndicator;
+        }
+    }
+
+    public static class TabItemData {
+        private String title;
+
+        public TabItemData(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
         }
     }
 }
