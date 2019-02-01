@@ -25,7 +25,7 @@
         android:maxLines="2"
         tools:text="AAA"/>
 
-    <com.example.henrypriyono.tesnestedrecyclerview.ExpandingLineView
+    <com.tokopedia.home.beranda.presentation.view.customview.ExpandingLineView
         android:id="@+id/tabIndicator"
         android:layout_width="25dp"
         android:layout_height="2dp"
