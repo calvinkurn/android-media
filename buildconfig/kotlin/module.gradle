@@ -9,7 +9,6 @@ kapt {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         vectorDrawables.useSupportLibrary = false
@@ -21,7 +20,7 @@ android {
     }
     buildTypes {
         debug{
-            testCoverageEnabled true
+            testCoverageEnabled false
         }
         release {
             minifyEnabled false
