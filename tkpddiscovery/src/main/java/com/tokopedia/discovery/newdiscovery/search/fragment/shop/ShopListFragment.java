@@ -27,6 +27,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.ShopListAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.decoration.ShopListItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
@@ -130,6 +131,7 @@ public class ShopListFragment extends SearchSectionFragment
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.addItemDecoration(new ShopListItemDecoration());
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
 

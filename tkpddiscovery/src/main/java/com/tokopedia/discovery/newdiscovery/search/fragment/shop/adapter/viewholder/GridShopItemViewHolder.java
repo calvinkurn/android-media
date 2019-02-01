@@ -2,6 +2,8 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.viewho
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.PreviewItemAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.gm.resource.GMConstant;
@@ -35,14 +38,11 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     private TextView itemShopName;
     private ImageView reputationView;
     private TextView shopLocation;
-    private ImageView itemPreview1;
-    private ImageView itemPreview2;
-    private ImageView itemPreview3;
     private View favoriteButton;
     private TextView favoriteButtonText;
     private ImageView favoriteButtonIcon;
     private View viewShopInactive;
-    private View viewPreview;
+    private RecyclerView rvItemPreview;
     private Context context;
     private final ShopListener itemClickListener;
 
@@ -54,14 +54,11 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         itemShopName = (TextView) itemView.findViewById(R.id.item_shop_name);
         reputationView = (ImageView) itemView.findViewById(R.id.reputation_view);
         shopLocation = (TextView) itemView.findViewById(R.id.shop_location);
-        itemPreview1 = (ImageView) itemView.findViewById(R.id.shop_item_preview_1);
-        itemPreview2 = (ImageView) itemView.findViewById(R.id.shop_item_preview_2);
-        itemPreview3 = (ImageView) itemView.findViewById(R.id.shop_item_preview_3);
         favoriteButton = itemView.findViewById(R.id.shop_list_favorite_button);
         favoriteButtonText = (TextView) itemView.findViewById(R.id.shop_list_favorite_button_text);
         favoriteButtonIcon = (ImageView) itemView.findViewById(R.id.shop_list_favorite_button_icon);
-        viewPreview = itemView.findViewById(R.id.view_preview);
         viewShopInactive = itemView.findViewById(R.id.view_shop_inactive);
+        rvItemPreview = itemView.findViewById(R.id.rv_item_preview);
         context = itemView.getContext();
         this.itemClickListener = itemClickListener;
     }
@@ -96,53 +93,20 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         shopLocation.setText(shopItem.getShopLocation());
         ImageHandler.LoadImage(reputationView, shopItem.getReputationImageUri());
 
-        try{
-            itemPreview1.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageRoundedWithBorder(
-                    itemPreview1,
+        if (shopItem.getProductImages().size() > 0){
+            rvItemPreview.setVisibility(View.VISIBLE);
+            PreviewItemAdapter previewItemAdapter = new PreviewItemAdapter(
                     context,
-                    shopItem.getProductImages().get(0),
-                    DEFAULT_CORNER_RADIUS,
-                    DEFAULT_STROKE_WIDTH,
-                    context.getResources().getColor(R.color.black_38),
-                    getPreviewImageSize(context),
                     getPreviewImageSize(context)
             );
-        } catch (NullPointerException|IndexOutOfBoundsException e) {
-            itemPreview1.setVisibility(View.INVISIBLE);
-            hideShopPreviewItems(viewPreview);
-        }
-
-        try{
-            itemPreview2.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageRoundedWithBorder(
-                    itemPreview2,
-                    context,
-                    shopItem.getProductImages().get(1),
-                    DEFAULT_CORNER_RADIUS,
-                    DEFAULT_STROKE_WIDTH,
-                    context.getResources().getColor(R.color.black_38),
-                    getPreviewImageSize(context),
-                    getPreviewImageSize(context)
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                    context, LinearLayoutManager.HORIZONTAL, false
             );
-        } catch (NullPointerException|IndexOutOfBoundsException e) {
-            itemPreview2.setVisibility(View.INVISIBLE);
-        }
-
-        try{
-            itemPreview3.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageRoundedWithBorder(
-                    itemPreview3,
-                    context,
-                    shopItem.getProductImages().get(2),
-                    DEFAULT_CORNER_RADIUS,
-                    DEFAULT_STROKE_WIDTH,
-                    context.getResources().getColor(R.color.black_38),
-                    getPreviewImageSize(context),
-                    getPreviewImageSize(context)
-            );
-        } catch (NullPointerException|IndexOutOfBoundsException e) {
-            itemPreview3.setVisibility(View.INVISIBLE);
+            rvItemPreview.setLayoutManager(linearLayoutManager);
+            rvItemPreview.setAdapter(previewItemAdapter);
+            previewItemAdapter.setData(shopItem.getProductImages());
+        } else {
+            hideShopPreviewItems(rvItemPreview);
         }
 
         adjustFavoriteButtonAppearance(context, shopItem.isFavorited());
