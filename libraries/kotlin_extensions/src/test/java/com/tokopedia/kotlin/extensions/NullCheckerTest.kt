@@ -4,7 +4,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.util.ContainNullException
 import com.tokopedia.kotlin.util.isContainNull
+import com.tokopedia.kotlin.util.throwExceptionWhenNull
 import junit.framework.Assert
 import org.junit.Before
 import org.junit.Test
@@ -121,5 +123,11 @@ public class NullCheckerTest {
         val actual = isContainNull(shop)
         Assert.assertFalse(actual)
         Assert.assertEquals("", shop.name)
+    }
+
+    @Test(expected = ContainNullException::class)
+    fun shouldThrowExceptionWhenJsonHasNull() {
+        val shop = gson.fromJson(objectNull, Shop::class.java)
+        throwExceptionWhenNull(shop)
     }
 }
