@@ -122,6 +122,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (item.getItemId() == R.id.filter_menu_item) {
             if (filtersBottomSheet != null) {
                 filtersBottomSheet.show(getChildFragmentManager(), "Filters");
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FILTER,
+                        "");
             }
             return true;
         }
@@ -285,9 +291,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 public void onPageSelected(int position) {
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                             "click " + filters.getCategories().get(0).getSubCategory().get(position).getName(),
-                            filters.getCategories().get(0).getSubCategory().get(position).getName());
+                            "");
 
                     CatalogListItemFragment fragment = (CatalogListItemFragment) mViewPagerAdapter.getRegisteredFragment(position);
 
@@ -368,6 +374,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void gotoMyCoupons() {
         startActivity(MyCouponListingActivity.getCallingIntent(getContext()));
+
+        AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_SELL_ALL_COUPON,
+                "");
     }
 
     @Override
@@ -431,6 +443,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(source.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));

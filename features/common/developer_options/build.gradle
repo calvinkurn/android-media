@@ -26,9 +26,11 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.core)
+
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

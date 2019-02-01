@@ -40,6 +40,7 @@
     <string name="empty_string">Anda tidak memiliki riwayat transaksi \n untuk sementara ini</string>
     <string name="app_name">contact_us</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
+    <string name="thanks_input">Terima kasih atas masukan Anda</string>
 
     <string name="title_help">Bantuan</string>
     <string name="please_wait">Please Wait...</string>
@@ -52,14 +53,14 @@
     <string name="more_items">+ %1$d barang lainnya</string>
     <string name="belum_ada_transaksi">Belum Ada Transaksi</string>
     <string name="segera_laporkan">Segera laporkan jika menemukan kendala seputar transaksi di Tokopedia</string>
-    <string name="type_here">Tulis pesan</string>
+    <string name="type_here">Tulis pesan (minimum 15 karakter)</string>
     <string name="on_going">Dalam Proses</string>
     <string name="closed">Ditutup</string>
     <string name="invoice_id">ID: #%1$s</string>
     <string name="need_rating">Beri Penilaian</string>
     <string name="max_image_warning">Maksimal 5 lampiran diizinkan</string>
     <string name="text_satisfied">Apakah sudah membantu?</string>
-    <string name="select_bad_reason">Beritahu kami apa yang salah?</string>
+    <string name="select_bad_reason">Keluhan tentang CS kami</string>
     <string name="cu_no_more_results">Tidak Ada Lagi Hasil</string>
     <string name="hint_attachment">Catatan: Mohon lampirkan data yang diminta</string>
     <string name="no_search_result">Tidak ditemukan hasil untuk pencarian Anda</string>
@@ -67,5 +68,14 @@
     <string name="invalid_images">Gambar Tidak Valid</string>
     <string name="network_error">Maaf terjadi kesalahan teknis, silakan dicoba lagi.</string>
     <string name="abandon_message_warning">Pesan Anda akan hilang jika keluar halaman ini. Anda yakin?</string>
+    <string name="enter_other_reason">Ada hal lain yang bisa diperbaiki?</string>
+    <string name="type_other_reason">Tulis Disini(minimum 15 karakter)</string>
+    <string name="bad_reason_1">Tidak paham masalah</string>
+    <string name="bad_reason_2">Solusi tidak berhasil</string>
+    <string name="bad_reason_3">Respons lambat</string>
+    <string name="bad_reason_4">Tidak kooperatif</string>
+    <string name="bad_reason_5">Jawaban terlalu kaku</string>
+    <string name="bad_reason_6">Kurang ramah</string>
+    <string name="other_reason">Lainnya</string>
 
 </resources>

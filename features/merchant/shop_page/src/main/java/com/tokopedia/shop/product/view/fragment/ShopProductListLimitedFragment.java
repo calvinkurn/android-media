@@ -61,6 +61,7 @@ import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
@@ -84,6 +85,7 @@ import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -187,7 +189,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             isOfficialStore = savedInstanceState.getBoolean(SAVED_SHOP_IS_OFFICIAL);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication());
+        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication(),
+                new TrackingQueue(getContext()));
         MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
                 .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())
                 .shopCommonModule(new ShopCommonModule())
@@ -595,6 +598,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         shopProductAdapter.notifyDataSetChanged();
         shopProductAdapter.refreshSticky();
+        if(getActivity() instanceof ShopPageView){
+            ((ShopPageView) getActivity()).stopPerformanceMonitor();
+        }
     }
 
     @Override
@@ -645,6 +651,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void showGetListError(Throwable throwable) {
+        if(getActivity() instanceof ShopPageView){
+            ((ShopPageView)getActivity()).stopPerformanceMonitor();
+        }
         hideLoading();
         updateStateScrollListener();
         if (shopProductAdapter.getShopProductViewModelList().size() > 0) {
@@ -1046,6 +1055,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             loadVoucherList();
             needLoadVoucher = false;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        shopPageTracking.sendAllTrackingQueue();
     }
 
     private void loadVoucherList() {

@@ -19,8 +19,14 @@ import rx.schedulers.Schedulers;
  * Created by ricoharisin on 7/8/15.
  * modified by alvarisi
  */
+@Deprecated
 public class GTMDataLayer {
 
+    /**
+     * {@link GTMAnalytics#pushGeneral(Map)}
+     * @param context
+     * @param values
+     */
     static void pushGeneral(Context context, Map<String, Object> values) {
         Log.i("GAv4", "UA-9801603-15: Send General");
 
@@ -60,6 +66,7 @@ public class GTMDataLayer {
         pushIris(context, "", values);
     }
 
+    @Deprecated
     static void pushEvent(Context context, String eventName, Map<String, Object> values) {
         Log.i("GAv4", "UA-9801603-15: Send Event");
 

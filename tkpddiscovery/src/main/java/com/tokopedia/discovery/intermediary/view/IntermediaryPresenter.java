@@ -165,6 +165,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                     getView().renderBanner(domainModel.getBannerModelList());
                 }
                 getView().backToTop();
+                getView().stopFirebaseTrace();
             }
         }
 

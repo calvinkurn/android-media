@@ -172,7 +172,7 @@
                                 android:layout_height="@dimen/dp_40"
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="@dimen/dp_10"
-                                android:background="@drawable/orange_button_rounded"
+                                android:background="@drawable/transaction_checkout_orange_button_rounded"
                                 android:fontFamily="sans-serif-medium"
                                 android:gravity="center"
                                 android:textAllCaps="false"
