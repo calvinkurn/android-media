@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation project(rootProject.ext.features.affiliateCommon)
+    implementation project(rootProject.ext.features.feedComponent)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

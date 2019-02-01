@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -13,7 +14,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
+import com.github.anrwatchdog.ANRWatchDog;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -32,6 +35,9 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -92,11 +98,11 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
-import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.user_identification_common.KycCommonUrl;
@@ -111,6 +117,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import io.hansel.hanselsdk.Hansel;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -144,10 +152,21 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
+        com.tokopedia.config.GlobalConfig.PREINSTALL_NAME = BuildConfig.PREINSTALL_NAME;
+        com.tokopedia.config.GlobalConfig.PREINSTALL_DESC = BuildConfig.PREINSTALL_DESC;
+        com.tokopedia.config.GlobalConfig.PREINSTALL_SITE = BuildConfig.PREINSTALL_SITE;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
 
         initializeDatabase();
+        TrackApp.initTrackApp(this);
+
+        TrackApp.getInstance().registerImplementation("GTM", GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation("Appsflyer", AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation("MoEngage", MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+
         super.onCreate();
         initReact();
 
@@ -163,6 +182,17 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
+
+        if (!GlobalConfig.DEBUG) {
+            new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+        }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        TrackApp.getInstance().delete();
+        TrackApp.deleteInstance();
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -279,7 +309,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
         TopChatUrl.TOPCHAT_JS_API = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
-        TravelCalendarUrl.GQL_BASE_URL = ConsumerAppBaseUrl.TRAVEL_CALENDAR_BASE_URL;
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
@@ -495,7 +524,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return md5StrBuff.toString();
     }
 
-    @Override
+
+    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
+
+    }
+
+
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }

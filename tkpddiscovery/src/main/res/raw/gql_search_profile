@@ -1,0 +1,22 @@
+query SearchProfile(
+ $params: String
+) {
+aceSearchProfile(params: $params) {
+    query
+    source
+    count
+    count_text
+    has_next
+    profiles {
+      id
+      name
+      avatar
+      username
+      followed
+      iskol
+      isaffiliate
+      followers
+      post_count
+    }
+  }
+}

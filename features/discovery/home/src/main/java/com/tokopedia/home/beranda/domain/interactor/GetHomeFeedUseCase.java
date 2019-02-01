@@ -17,7 +17,9 @@ import rx.Observable;
 public class GetHomeFeedUseCase extends UseCase<FeedResult> {
     public static final String PARAM_USER_ID = "userID";
     public static final String PARAM_CURSOR = "cursor";
-    public static final String PARAM_PAGE = "limit";
+    public static final String PARAM_LIMIT = "limit";
+
+    private static final int PRODUCT_PER_CARD_LIMIT = 4;
 
     private Context context;
     private GraphqlUseCase graphqlUseCase;
@@ -41,12 +43,12 @@ public class GetHomeFeedUseCase extends UseCase<FeedResult> {
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map(homeFeedMapper);
     }
 
-    public RequestParams getFeedPlusParam(int page, String userId, String
+    public RequestParams getFeedPlusParam(String userId, String
             currentCursor) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_USER_ID, Integer.parseInt(userId));
         params.putString(PARAM_CURSOR, currentCursor);
-        params.putInt(PARAM_PAGE, page);
+        params.putInt(PARAM_LIMIT, PRODUCT_PER_CARD_LIMIT);
         return params;
     }
 }

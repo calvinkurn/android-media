@@ -151,6 +151,10 @@ subprojects {
                 substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:27.1.1')
                 substitute module('android.arch.core:runtime') with module('android.arch.core:runtime:1.1.1')
                 substitute module('android.arch.core:common') with module('android.arch.core:common:1.1.1')
+                substitute module('android.arch.lifecycle:runtime') with module('android.arch.lifecycle:runtime:1.1.1')
+                substitute module('android.arch.lifecycle:viewmodel') with module('android.arch.lifecycle:viewmodel:1.1.1')
+                substitute module('android.arch.lifecycle:livedata-core') with module('android.arch.lifecycle:livedata-core:1.1.1')
+                substitute module('org.apache.commons:commons-lang3') with module('org.apache.commons:commons-lang3:3.5')
             }
         }
     }
@@ -163,4 +167,5 @@ gradle.buildFinished {
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-library-1.3.jar LICENSE.txt".execute()
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-integration-1.3.jar LICENSE.txt".execute()
 }
+
 

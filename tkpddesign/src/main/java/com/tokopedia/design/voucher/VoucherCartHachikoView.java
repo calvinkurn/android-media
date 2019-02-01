@@ -71,7 +71,7 @@ public class VoucherCartHachikoView extends BaseCustomView {
         labelUseVoucher.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onClickUseVoucher();
+                if (actionListener != null) actionListener.onClickUseVoucher();
             }
         });
 

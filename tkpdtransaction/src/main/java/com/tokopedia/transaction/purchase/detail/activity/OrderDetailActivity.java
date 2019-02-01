@@ -39,12 +39,12 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
@@ -161,6 +161,7 @@ public class OrderDetailActivity extends TActivity
         setInvoiceView(data);
         setBookingCode(data);
         setDescriptionView(data);
+        setCodView(data);
         setProtectionView(data);
         setPriceView(data);
         setButtonView(data);
@@ -365,6 +366,14 @@ public class OrderDetailActivity extends TActivity
         insurancePrice.setText(data.getInsurancePrice());
         additionalFee.setText(data.getAdditionalFee());
         totalPayment.setText(data.getTotalPayment());
+    }
+
+    private void setCodView(OrderDetailData data) {
+        View codLayout = findViewById(R.id.layout_cod);
+        TextView codFee = findViewById(R.id.textview_cod_fee);
+
+        codLayout.setVisibility(data.isHavingCod() ? View.VISIBLE : View.GONE);
+        codFee.setText(data.getCodFee());
     }
 
     private void setProtectionView(OrderDetailData data) {

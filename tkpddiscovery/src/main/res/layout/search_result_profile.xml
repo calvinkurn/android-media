@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        app:cardUseCompatPadding="true"
+        app:cardElevation="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_90">
+
+        <LinearLayout
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.tokopedia.design.image.SquareImageView
+                android:id="@+id/img_profile"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerCrop"
+                tools:background="@color/black_70"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48" />
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/dp_5"
+                    tools:context=".MainActivity">
+
+                    <TextView
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black_70"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_12"
+                        android:id="@+id/tv_name"
+                        android:drawablePadding="@dimen/dp_4"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:maxLines="1"
+                        tools:text="dsaijdsoijd  dsodoiadois"
+                        app:layout_constraintEnd_toStartOf="@+id/label_following"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_default="wrap" />
+
+                    <TextView
+                        android:id="@+id/label_following"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:visibility="gone"
+                        android:textSize="@dimen/sp_10"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black_38"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        app:layout_constraintBottom_toTopOf="@id/tv_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_name"
+                        app:layout_constraintTop_toBottomOf="@id/tv_name"
+                        android:text="@string/value_status_followed"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+                <TextView
+                    android:layout_marginBottom="@dimen/dp_5"
+                    android:gravity="center_vertical"
+                    android:id="@+id/tv_username"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/sp_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="\@putrititian"/>
+                <TextView
+                    android:gravity="center_vertical"
+                    android:id="@+id/tv_post_count"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/sp_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="15 post"/>
+            </LinearLayout>
+            <com.tokopedia.design.component.ButtonCompat
+                android:visibility="gone"
+                android:id="@+id/btn_follow"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_8"
+                app:buttonCompatType="primary"
+                app:buttonCompatSize="medium"
+                android:text="Follow"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

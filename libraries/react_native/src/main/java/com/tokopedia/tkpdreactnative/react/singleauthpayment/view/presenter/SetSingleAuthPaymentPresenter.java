@@ -2,8 +2,6 @@ package com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

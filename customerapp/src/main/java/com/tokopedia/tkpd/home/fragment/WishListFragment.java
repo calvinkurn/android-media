@@ -34,7 +34,6 @@ import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -53,6 +52,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 
 import java.util.ArrayList;
@@ -421,11 +421,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             }
             ToasterNormal.make(getView(),
                     message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart),v -> {
-                        if (getActivity().getApplication() != null) {
-                            wishlistAnalytics.eventClickCartWishlist();
-                            getActivity().startActivity(((PdpRouter) getActivity().getApplication())
-                                    .getCartIntent(getActivity()));
-                        }
+                            if (getActivity() != null && getActivity().getApplication() != null) {
+                                wishlistAnalytics.eventClickCartWishlist();
+                                getActivity().startActivity(((PdpRouter) getActivity().getApplication())
+                                        .getCartIntent(getActivity()));
+                            }
                     }).show();
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.train.scheduledetail.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -123,30 +124,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     protected PagerAdapter getViewPagerAdapter() {
-        return new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public CharSequence getPageTitle(int position) {
-                switch (position) {
-                    case 0 : return getString(R.string.train_schedule_detail_title_trip);
-                    case 1 : return getString(R.string.train_schedule_detail_title_price);
-                }
-                return null;
-            }
-
-            @Override
-            public Fragment getItem(int position) {
-                switch (position) {
-                    case 0 : return TrainScheduleDetailFragment.createInstance();
-                    case 1 : return TrainSchedulePriceDetailFragment.createInstance();
-                }
-                return null;
-            }
-
-            @Override
-            public int getCount() {
-                return PAGE_COUNT;
-            }
-        };
+        return null;
     }
 
     @Override
@@ -156,18 +134,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     public void showScheduleDetail(TrainScheduleViewModel trainScheduleViewModel, TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        containerScheduleDetail.setVisibility(View.VISIBLE);
-
         this.trainScheduleViewModel = trainScheduleViewModel;
-
-        Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, VIEWPAGER_INDEX_ZERO);
-        if (fragmentTrip instanceof TrainScheduleDetailFragment) {
-            ((TrainScheduleDetailFragment) fragmentTrip).showScheduleDetail(trainScheduleDetailViewModel);
-        }
-        Fragment fragmentPrice = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, VIEWPAGER_INDEX_ONE);
-        if (fragmentPrice instanceof TrainSchedulePriceDetailFragment) {
-            ((TrainSchedulePriceDetailFragment) fragmentPrice).showPrice(trainScheduleDetailViewModel);
-        }
+        viewPager.setAdapter(getFragmentsPagerAdapter(trainScheduleDetailViewModel));
+        containerScheduleDetail.setVisibility(View.VISIBLE);
 
         textHeaderOriginStationCode.setText(trainScheduleDetailViewModel.getOriginStationCode());
         textHeaderOriginCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
@@ -181,6 +150,44 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
                 trainScheduleDetailViewModel.getTrainClass(),
                 trainScheduleDetailViewModel.getTrainName(),
                 trainScheduleDetailViewModel.getTotalPrice());
+    }
+
+    private FragmentPagerAdapter getFragmentsPagerAdapter(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        return new FragmentPagerAdapter(getSupportFragmentManager()) {
+
+            @Nullable
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return getString(R.string.train_schedule_detail_title_trip);
+                    case 1:
+                        return getString(R.string.train_schedule_detail_title_price);
+                }
+                return null;
+            }
+
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return TrainScheduleDetailFragment.createInstance(trainScheduleDetailViewModel);
+                    case 1:
+                        return TrainSchedulePriceDetailFragment.createInstance(trainScheduleDetailViewModel);
+                }
+                return null;
+            }
+
+            @Override
+            public int getCount() {
+                return PAGE_COUNT;
+            }
+        };
+    }
+
+    @Override
+    protected void setupFragment(Bundle savedinstancestate) {
+
     }
 
     @Override
@@ -216,6 +223,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.travel_anim_stay,R.anim.travel_slide_out_up);
+        overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up);
     }
 }

@@ -2,12 +2,12 @@ package com.tokopedia.common.travel.presentation.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.presentation.dialog.SearchSortModel;
@@ -34,7 +34,7 @@ public class TravelSearchSortAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_travel_sort_search, null);
+                .inflate(R.layout.item_travel_sort_search, parent, false);
         return new ItemViewHolder(view);
     }
 
@@ -70,9 +70,9 @@ public class TravelSearchSortAdapter extends RecyclerView.Adapter {
         return searchSortList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView sortLabel;
+        private AppCompatTextView sortLabel;
         private AppCompatImageView checkboxImg;
         private RelativeLayout sortLayout;
 

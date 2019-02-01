@@ -30,7 +30,7 @@ public class InfoCardViewHolder extends AbstractViewHolder<InfoCardViewModel> {
         infoCardView.setImage(element.getIconRes());
         infoCardView.setMainText(element.getMainText());
         infoCardView.setSecondaryText(element.getSecondaryText());
-        infoCardView.setOnClickListener(v -> listener.onInfoCardClicked(element));
+        infoCardView.setOnClickListener(v -> listener.onInfoCardClicked(element, getAdapterPosition()));
         infoCardView.setTextNewVisiblity(element.isNewTxtVisiblle());
     }
 }
