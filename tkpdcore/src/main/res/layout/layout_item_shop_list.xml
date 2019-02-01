@@ -11,7 +11,6 @@
         android:id="@+id/shop_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_product_list"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -43,11 +42,12 @@
                     android:gravity="center_vertical">
 
                     <ImageView
+                        android:layout_marginTop="@dimen/dp_1"
                         android:id="@+id/item_shop_gold"
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
+                        android:layout_width="@dimen/dp_14"
+                        android:layout_height="@dimen/dp_14"
                         app:srcCompat="@drawable/ic_shop_gold"
-                        android:layout_marginRight="7dp"
+                        android:layout_marginRight="@dimen/dp_4"
                         android:visibility="gone" />
 
                     <TextView
@@ -85,26 +85,42 @@
 
             </LinearLayout>
 
-            <com.tokopedia.design.component.ButtonCompat
-                android:drawablePadding="@dimen/dp_10"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:id="@+id/btn_follow_shop"
-                app:buttonCompatSize="medium"
-                tools:text="Follow"
-                app:buttonCompatType="primary"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/shop_list_favorite_button"
+                android:layout_width="@dimen/dp_85"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_marginTop="10dp"/>
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:background="@drawable/green_button_rounded">
+
+                <ImageView
+                    android:id="@+id/shop_list_favorite_button_icon"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:background="@drawable/ic_add"/>
+
+                <TextView
+                    android:id="@+id/shop_list_favorite_button_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textSize="@dimen/sp_11"
+                    android:layout_marginLeft="@dimen/dp_6"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    tools:text="Follow"/>
+            </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/view_preview"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="@dimen/dp_16"
             android:orientation="horizontal">
 
             <ImageView
@@ -162,7 +178,9 @@
                 app:cardCornerRadius="@dimen/dp_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <com.tokopedia.design.component.TextViewCompat
+                <TextView
+                    android:drawableLeft="@drawable/ic_minus"
+                    android:drawablePadding="@dimen/dp_5"
                     android:textStyle="bold"
                     android:layout_marginLeft="@dimen/dp_5"
                     android:layout_marginRight="@dimen/dp_5"

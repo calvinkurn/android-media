@@ -34,6 +34,7 @@
     <dimen name="dp_51">51dp</dimen>
 
     <dimen name="shop_item_preview_size">32dp</dimen>
+    <dimen name="shop_item_preview_size_grid">24dp</dimen>
 
     <dimen name="spacing_show_case">12dp</dimen>
     <dimen name="arrow_width_show_case">16dp</dimen>
