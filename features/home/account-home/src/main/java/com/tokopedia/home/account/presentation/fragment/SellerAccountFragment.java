@@ -40,7 +40,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
-    private static final String FPM_SELLER = "mp_account_buyer";
+    private static final String FPM_SELLER = "mp_account_seller";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
