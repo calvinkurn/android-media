@@ -190,10 +190,10 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                         String desc = null;
                         int validateResponseCode = 0;
 
-                        if (errorsMessage.length == 2) {
+                        if (errorsMessage.length >= 2) {
                             desc = errorsMessage[1];
                         }
-                        if (errorsMessage.length == 3)
+                        if (errorsMessage.length >= 3)
                             validateResponseCode = Integer.parseInt(errorsMessage[2]);
                         getView().showValidationMessageDialog(item, title, desc, validateResponseCode);
 
