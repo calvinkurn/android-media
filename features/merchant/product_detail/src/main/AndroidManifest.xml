@@ -9,7 +9,8 @@
 
         <activity android:name=".view.activity.ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme.White"/>
 
         <activity android:name=".view.activity.ProductYoutubePlayerActivity"
             android:screenOrientation="landscape"/>

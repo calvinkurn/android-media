@@ -67,7 +67,7 @@
             <include layout="@layout/partial_product_rating_talk_courier"/>
             <include layout="@layout/partial_product_detail_visibility"/>
 
-            <include layout="@layout/partial_variant_rate_estimation"/>
+            <include layout="@layout/partial_variant_rate_estimation" />
             <include layout="@layout/partial_product_detail_wholesale"/>
             <include layout="@layout/partial_product_full_descr"/>
 
@@ -98,6 +98,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </android.support.design.widget.CoordinatorLayout>

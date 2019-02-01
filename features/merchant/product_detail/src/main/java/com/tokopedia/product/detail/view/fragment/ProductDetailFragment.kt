@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -14,7 +15,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -24,15 +24,12 @@ import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfo
 import com.tokopedia.product.detail.data.model.ProductParams
+import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
-import com.tokopedia.product.detail.data.util.ProductTrackingConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.view.fragment.productView.PartialButtonActionView
-import com.tokopedia.product.detail.view.fragment.productView.PartialHeaderView
-import com.tokopedia.product.detail.view.fragment.productView.PartialProductDescrFullView
-import com.tokopedia.product.detail.view.fragment.productView.PartialProductStatisticView
+import com.tokopedia.product.detail.view.fragment.productView.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
@@ -43,9 +40,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
+import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
 
-class ProductDetailFragment: BaseDaggerFragment() {
+class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
@@ -53,6 +51,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
+    lateinit var partialVariantAndRateEstView: PartialVariantAndRateEstView
     lateinit var productDescrView: PartialProductDescrFullView
     lateinit var actionButtonView: PartialButtonActionView
 
@@ -68,6 +67,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
     }
 
     var productInfo: ProductInfo? = null
+    var productVariant: ProductVariant? = null
 
     companion object {
         const val REQUEST_CODE_TALK_PRODUCT = 1
@@ -98,7 +98,6 @@ class ProductDetailFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
         arguments?.let {
             productId = it.getString(ARG_PRODUCT_ID)
             productKey = it.getString(ARG_PRODUCT_KEY)
@@ -112,12 +111,27 @@ class ProductDetailFragment: BaseDaggerFragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        //TODO REQUEST_CODE_BUY handling result
+        //if OK will change the qty, remark notes, and variant selection
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        productInfoViewModel.productInfoResp.observe(this, Observer { when(it){
-            is Success -> onSuccessGetProductInfo(it.data)
-            is Fail -> onErrorGetProductInfo(it.throwable)
-        } })
+        productInfoViewModel.productInfoResp.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetProductInfo(it.data)
+                is Fail -> onErrorGetProductInfo(it.throwable)
+            }
+        })
+        productInfoViewModel.productVariantResp.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetProductVariantInfo(it.data)
+                is Fail -> onErrorGetProductVariantInfo(it.throwable)
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -127,25 +141,29 @@ class ProductDetailFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!::headerView.isInitialized){
+        if (!::headerView.isInitialized) {
             headerView = PartialHeaderView.build(view)
         }
 
-        if (!::productStatsView.isInitialized){
+        if (!::partialVariantAndRateEstView.isInitialized) {
+            partialVariantAndRateEstView = PartialVariantAndRateEstView.build(base_variant)
+        }
+
+        if (!::productStatsView.isInitialized) {
             productStatsView = PartialProductStatisticView.build(view)
         }
 
-        if (!::productDescrView.isInitialized){
+        if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(view)
         }
 
-        if (!::actionButtonView.isInitialized){
+        if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(view)
         }
 
         initView()
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
@@ -164,7 +182,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
         setupByConfiguration(resources.configuration)
         appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: Int) {
-                when(state){
+                when (state) {
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
@@ -173,7 +191,8 @@ class ProductDetailFragment: BaseDaggerFragment() {
                         isAppBarCollapsed = true
                         collapsedAppBar()
                     }
-                    AppBarState.IDLE -> {}
+                    AppBarState.IDLE -> {
+                    }
                 }
             }
         })
@@ -210,7 +229,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
     private fun initStatusBarLight() {
         activity?.run {
             if (window == null) return@run
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP  && isAdded) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = ContextCompat.getColor(this, R.color.green_600)
             }
@@ -246,7 +265,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
     private fun initStatusBarDark() {
         activity?.run {
             if (window == null) return@run
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP  && isAdded) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = ContextCompat.getColor(this, R.color.transparent_dark_40)
             }
@@ -261,11 +280,11 @@ class ProductDetailFragment: BaseDaggerFragment() {
     private fun setupByConfiguration(configuration: Configuration?) {
         configuration?.let {
             val screenWidth = resources.displayMetrics.widthPixels
-            if (it.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 layoutParams.height = screenWidth / 3
                 appbar.visibility = View.VISIBLE
-            } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT){
+            } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 layoutParams.height = screenWidth
                 appbar.visibility = View.VISIBLE
@@ -274,14 +293,16 @@ class ProductDetailFragment: BaseDaggerFragment() {
     }
 
     private fun loadProductData() {
-        if (productId != null || (productKey != null && shopDomain != null)){
+        if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(GraphqlHelper.loadRawString(resources, R.raw.gql_get_product_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_product_info),
                     ProductParams(productId, shopDomain, productKey), resources)
         }
     }
 
     override fun onDestroy() {
         productInfoViewModel.productInfoResp.removeObservers(this)
+        productInfoViewModel.productVariantResp.removeObservers(this)
         productInfoViewModel.clear()
         super.onDestroy()
     }
@@ -300,7 +321,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
                 productInfoViewModel.isShopOwner(data.basic.shopID) || GlobalConfig.isSellerApp(),
                 data.preorder)
 
-        if (data.wholesale.isNotEmpty()){
+        if (data.wholesale.isNotEmpty()) {
             val minPrice = data.wholesale.sortedBy { it.price }.get(0).price
             label_min_wholesale.text = getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
             label_wholesale.visibility = View.VISIBLE
@@ -315,22 +336,32 @@ class ProductDetailFragment: BaseDaggerFragment() {
         activity?.invalidateOptionsMenu()
     }
 
+    private fun onErrorGetProductVariantInfo(throwable: Throwable) {
+        //TODO variant error
+    }
+
+    private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
+        productVariant = data
+        partialVariantAndRateEstView.productVariant = data
+        partialVariantAndRateEstView.renderData(this::onVariantClicked)
+    }
+
     private fun onDiscussionClicked() {
 
         productDetailTracking.eventTalkClicked()
 
         activity?.let {
             val router = it.applicationContext as? ProductDetailRouter ?: return
-            startActivityForResult(router.getProductTalk(it, productInfo?.basic?.id.toString() ), REQUEST_CODE_TALK_PRODUCT)
+            startActivityForResult(router.getProductTalk(it, productInfo?.basic?.id.toString()), REQUEST_CODE_TALK_PRODUCT)
         }
-        if (productInfo != null){
+        if (productInfo != null) {
             //TODO SENT MOENGAGE
         }
     }
 
     private fun onReviewClicked() {
         productDetailTracking.eventReviewClicked()
-        if (productInfo != null){
+        if (productInfo != null) {
             //TODO SENT MOENGAGE
             activity?.let {
                 val router = it.applicationContext as? ProductDetailRouter ?: return
@@ -338,6 +369,17 @@ class ProductDetailFragment: BaseDaggerFragment() {
                         productInfo!!.basic.name))
             }
         }
+    }
+
+    private fun onVariantClicked() {
+        //go to variant Activity
+//        context?.let {
+//            startActivityForResult(ProductModalActivity.getIntent(it,
+//                    productInfo,
+//                    productVariant,
+//                    0, "", BUY), REQUEST_CODE_BUY)
+//        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -354,7 +396,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun handlingMenuPreparation(menu: Menu?){
+    private fun handlingMenuPreparation(menu: Menu?) {
         if (menu == null) return
 
         val menuShare = menu.findItem(R.id.action_share)
@@ -363,7 +405,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
         val menuWarehouse = menu.findItem(R.id.action_warehouse)
         val menuEtalase = menu.findItem(R.id.action_etalase)
 
-        if (productInfo == null){
+        if (productInfo == null) {
             menuShare.isVisible = false
             menuShare.isEnabled = false
             menuCart.isVisible = false
@@ -397,13 +439,25 @@ class ProductDetailFragment: BaseDaggerFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId){
-            android.R.id.home -> { activity?.onBackPressed(); true }
-            R.id.action_share -> { shareProduct(); true }
-            R.id.action_cart -> { gotoCart(); true}
-            R.id.action_report -> { reportProduct(); true }
-            R.id.action_warehouse -> { gotoWarehouse(); true }
-            R.id.action_etalase -> { gotoEtalase(); true }
+        return when (item?.itemId) {
+            android.R.id.home -> {
+                activity?.onBackPressed(); true
+            }
+            R.id.action_share -> {
+                shareProduct(); true
+            }
+            R.id.action_cart -> {
+                gotoCart(); true
+            }
+            R.id.action_report -> {
+                reportProduct(); true
+            }
+            R.id.action_warehouse -> {
+                gotoWarehouse(); true
+            }
+            R.id.action_etalase -> {
+                gotoEtalase(); true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -417,7 +471,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
     }
 
     private fun reportProduct() {
-        if (productInfoViewModel.isUserSessionActive()){
+        if (productInfoViewModel.isUserSessionActive()) {
             productDetailTracking.eventReportLogin()
 
             //TODO: SHOW REPORT DIALOG
@@ -429,7 +483,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
     private fun gotoCart() {
         activity?.let {
             val router = (it.applicationContext as? ProductDetailRouter) ?: return
-            if (productInfoViewModel.isUserSessionActive()){
+            if (productInfoViewModel.isUserSessionActive()) {
                 startActivity(router.getCartIntent(it))
             } else {
                 startActivityForResult(router.getLoginIntent(it), REQUEST_CODE_LOGIN)
@@ -461,7 +515,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
 
         productShare.share(productData, {
             showProgressLoading()
-        }){
+        }) {
             hideProgressLoading()
         }
     }

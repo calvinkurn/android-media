@@ -12,6 +12,7 @@
     android:paddingBottom="@dimen/dp_20"
     android:background="@drawable/bg_bottom_shadow_top_line"
     android:visibility="gone"
+    tools:visibility="visible"
     tools:ignore="RtlSymmetry">
 
     <com.tokopedia.design.component.TextViewCompat
