@@ -65,6 +65,9 @@ public interface IntermediaryContract {
         void launchLoginActivity(Bundle extras);
 
         String getUserId();
+
+        void stopFirebaseTrace();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

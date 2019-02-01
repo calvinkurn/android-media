@@ -20,6 +20,8 @@ public class MultipleAddressAdapterData implements Parcelable {
     private boolean isCashBack;
     private boolean isOfficialStore;
     private boolean isGoldMerchant;
+    private String officialStoreLogoUrl;
+    private String goldMerchantLogoUrl;
     private String cashBackInfo;
     private List<MultipleAddressItemData> itemListData;
     private String preOrderInfo;
@@ -38,6 +40,8 @@ public class MultipleAddressAdapterData implements Parcelable {
         isOfficialStore = in.readByte() != 0;
         isGoldMerchant = in.readByte() != 0;
         cashBackInfo = in.readString();
+        officialStoreLogoUrl = in.readString();
+        goldMerchantLogoUrl = in.readString();
         itemListData = in.createTypedArrayList(MultipleAddressItemData.CREATOR);
         preOrderInfo = in.readString();
     }
@@ -54,6 +58,8 @@ public class MultipleAddressAdapterData implements Parcelable {
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(cashBackInfo);
+        dest.writeString(officialStoreLogoUrl);
+        dest.writeString(goldMerchantLogoUrl);
         dest.writeTypedList(itemListData);
         dest.writeString(preOrderInfo);
     }
@@ -169,5 +175,21 @@ public class MultipleAddressAdapterData implements Parcelable {
 
     public void setGoldMerchant(boolean goldMerchant) {
         isGoldMerchant = goldMerchant;
+    }
+
+    public String getOfficialStoreLogoUrl() {
+        return officialStoreLogoUrl;
+    }
+
+    public void setOfficialStoreLogoUrl(String officialStoreLogoUrl) {
+        this.officialStoreLogoUrl = officialStoreLogoUrl;
+    }
+
+    public String getGoldMerchantLogoUrl() {
+        return goldMerchantLogoUrl;
+    }
+
+    public void setGoldMerchantLogoUrl(String goldMerchantLogoUrl) {
+        this.goldMerchantLogoUrl = goldMerchantLogoUrl;
     }
 }

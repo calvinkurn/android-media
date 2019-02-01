@@ -30,6 +30,8 @@ ext {
     roomVersion = '1.1.1'
 
     JunitVersion = '4.12'
+    JunitJupiterVersion = '5.1.1'
+    MockkVersion = '1.9.kotlin12'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
 
@@ -157,6 +159,9 @@ ext {
 
     testDependencies = [
             junit              : "junit:junit:4.12",
+            junitJupiterApi    : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
+            junitJupiterEngine : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
+            mockk              : "io.mockk:mockk:$MockkVersion",
             mockitorCore       : "org.mockito:mockito-core:1.10.19",
             uiautomator        : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon              : 'com.squareup.spoon:spoon-client:1.6.4',
@@ -193,7 +198,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.16",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.0",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
