@@ -51,7 +51,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.gson
