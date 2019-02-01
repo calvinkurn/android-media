@@ -108,11 +108,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         linkerData.name = productData.productName
         linkerData.description = productData.productName
         linkerData.imgUri = productData.productImageUrl
-        linkerData.ogUrl = null;
-        linkerData.uri =  productData.renderShareUri;
-        var linkerShareData = LinkerShareData();
-        linkerShareData.linkerData = linkerData;
-        return linkerShareData;
+        linkerData.ogUrl = null
+        linkerData.type = LinkerData.PRODUCT_TYPE
+        linkerData.uri =  productData.renderShareUri
+        var linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
     }
 
 

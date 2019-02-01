@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -21,10 +22,14 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.util.CacheUtil;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
+import com.tokopedia.linker.model.LinkerDeeplinkResult;
+import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -51,7 +56,7 @@ import com.tokopedia.user.session.UserSession;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
+public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver, DefferedDeeplinkCallback {
 
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
@@ -103,7 +108,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     protected void onStart() {
         super.onStart();
         getBranchDefferedDeeplink();
-        moveToHome();
     }
 
     protected void moveToHome() {
@@ -215,8 +219,34 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
         linkerDeeplinkData.setReferrable(this.getIntent().getData());
+        linkerDeeplinkData.setActivity(this);
 
         LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
-                linkerDeeplinkData, null, this));
+                linkerDeeplinkData, this, this));
+    }
+
+    @Override
+    public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
+        CacheUtil.storeWebToAppPromoCodeIfExist(linkerDefferedDeeplinkData.getPromoCode(), this);
+        String deeplink = linkerDefferedDeeplinkData.getDeeplink();
+        if (TextUtils.isEmpty(deeplink)) {
+            moveToHome();
+        } else {
+            Uri uri;
+            if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
+                uri = Uri.parse(deeplink);
+            } else {
+                uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+            }
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void onError(LinkerError linkerError) {
+        moveToHome();
     }
 }

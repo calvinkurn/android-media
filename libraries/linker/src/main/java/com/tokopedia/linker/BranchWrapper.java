@@ -69,7 +69,8 @@ public class BranchWrapper implements WrapperInterface {
                                                if (error == null) {
                                                    String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                                                    String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
-                                                   if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")) {
+                                                   if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")&&
+                                                           !TextUtils.isEmpty(deeplink)) {
                                                        deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                                                    }
                                                    if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
