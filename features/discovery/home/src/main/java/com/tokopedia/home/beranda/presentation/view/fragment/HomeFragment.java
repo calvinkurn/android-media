@@ -98,7 +98,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         NotificationListener, FragmentListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private static final String BERANDA_TRACE = "beranda_trace";
+    private static final String BERANDA_TRACE = "gl_beranda";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
