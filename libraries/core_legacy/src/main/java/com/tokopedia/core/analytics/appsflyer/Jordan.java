@@ -18,8 +18,6 @@ import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
-import com.tokopedia.core.analytics.container.PerfMonContainer;
-import com.tokopedia.core.TkpdCoreRouter;
 
 import java.util.Map;
 
@@ -44,11 +42,11 @@ public class Jordan {
         } else if (ctx instanceof Application) {
             application = (Application) ctx;
         }
-        context = application;
+        this.context = application;
     }
 
     private Jordan(Application application) {
-        context = application;
+        this.context = application;
     }
 
     public static Jordan init(Context context) {

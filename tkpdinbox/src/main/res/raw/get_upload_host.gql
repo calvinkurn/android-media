@@ -1,0 +1,13 @@
+{
+  get_resolution_upload_host(){
+    data{
+      generated_host{
+        server_id
+        upload_host
+        user_id
+        token
+      }
+    }
+    messageError
+  }
+}

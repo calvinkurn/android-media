@@ -14,10 +14,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
@@ -27,38 +25,32 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.common.constant.GMParamConstant;
+import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.gm.subscribe.tracking.GMTracking;
+import com.tokopedia.mitratoppers.MitraToppersRouter;
+import com.tokopedia.profile.view.activity.ProfileActivity;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
-import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.profile.view.activity.ProfileActivity;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
-import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 import java.util.ArrayList;
-
-import rx.Subscriber;
 
 /**
  * Created by nisie on 5/6/17.
@@ -76,10 +68,6 @@ public class DrawerSellerHelper extends DrawerHelper
 
     private SessionHandler sessionHandler;
 
-    private GetShopInfoUseCase getShopInfoUseCase;
-
-    private boolean isGoldMerchant;
-
     private RemoteConfig remoteConfig;
 
     public DrawerSellerHelper(Activity activity,
@@ -93,11 +81,6 @@ public class DrawerSellerHelper extends DrawerHelper
         shopIcon = (ImageView) activity.findViewById(R.id.icon);
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
-
-        if (activity.getApplicationContext() instanceof SellerModuleRouter) {
-            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) activity.getApplicationContext();
-            getShopInfoUseCase = sellerModuleRouter.getShopInfo();
-        }
 
     }
 
@@ -122,7 +105,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getProductMenu());
 
         data.add(getPaymentAndTopupMenu());
-        data.add(getGoldMerchantMenu(false));
+        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu(false));
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -149,20 +132,16 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
-        if (!TrackingUtils.getBoolean(context, AppEventTracking.GTM.CONTACT_US)) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
-                    R.drawable.ic_help,
-                    TkpdState.DrawerPosition.HELP,
-                    true));
-        }
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
+                R.drawable.ic_help,
+                TkpdState.DrawerPosition.HELP,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
         shopLayout.setVisibility(View.VISIBLE);
         footerShadow.setVisibility(View.VISIBLE);
-
-        isGoldMerchantAsync();
 
         return data;
     }
@@ -283,76 +262,9 @@ public class DrawerSellerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0);
     }
 
-    private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
-        String gm = context.getString(GMConstant.getGMTitleResource(context));
-        DrawerGroup gmMenu = new DrawerGroup(gm,
-                GMConstant.getGMDrawerDrawableResource(context),
-                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0);
-
-        String gmString = isGoldMerchant ?
-                context.getString(R.string.extend_gold_merchant, gm) :
-                context.getString(R.string.upgrade_gold_merchant, gm);
-
-        gmMenu.add(new DrawerItem(gmString,
-                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0));
-        gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
-                TkpdState.DrawerPosition.FEATURED_PRODUCT,
-                true
-        ));
-        return gmMenu;
-    }
-
-    private void isGoldMerchantAsync() {
-        getShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<ShopModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(ShopModel shopModel) {
-                DrawerGroup goldMerchantMenu = getGoldMerchantMenu(shopModel.info.isGoldMerchant());
-                goldMerchantMenu.setExpanded(false);
-
-                // update gold merchant
-                isGoldMerchant = shopModel.info.isGoldMerchant();
-
-                // find gold merchant index based on drawerposition
-                int goldMerchantIndex = -1;
-                for (int i = 0; i < adapter.getData().size(); i++) {
-                    if (adapter.getData().get(i).getId() == TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE) {
-                        goldMerchantIndex = i;
-                    }
-                }
-
-                DrawerGroup drawerGroup = (DrawerGroup) adapter.getData().get(goldMerchantIndex);
-                adapter.getData().removeAll(drawerGroup.getList());
-                adapter.getData().remove(goldMerchantIndex);
-
-                adapter.getData().add(goldMerchantIndex, goldMerchantMenu);
-
-                if (drawerGroup.isExpanded()) {
-                    adapter.getData().addAll(goldMerchantIndex + 1, goldMerchantMenu.getList());
-                    goldMerchantMenu.setExpanded(true);
-                }
-
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
-
     @Override
     public void initDrawer(Activity activity) {
-        this.adapter = DrawerAdapter.createAdapter(activity, this, drawerCache);
+        this.adapter = new SellerDrawerAdapter(activity, this, drawerCache);
         this.adapter.setData(createDrawerData());
         this.adapter.setHeader(new DrawerSellerHeaderDataBinder(adapter, activity, this, drawerCache));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity,
@@ -411,7 +323,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(DashboardActivity.createInstance(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
-                    if (context.getApplication() instanceof AbstractionRouter){
+                    if (context.getApplication() instanceof AbstractionRouter) {
                         new GMTracking((AbstractionRouter) context.getApplication())
                                 .sendClickHamburgerMenuEvent(item.label);
                     }
@@ -494,8 +406,14 @@ public class DrawerSellerHelper extends DrawerHelper
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
+                case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
+                    if (context.getApplication() instanceof FlashSaleRouter) {
+                        intent = ((FlashSaleRouter) context.getApplication()).getFlashSaleDashboardIntent(context);
+                        context.startActivity(intent);
+                    }
+                    break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    if (isGoldMerchant) {
+                    if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
                         UnifyTracking.eventClickMenuFeaturedProduct(context);
                         intent = new Intent(context, GMFeaturedProductActivity.class);
                         context.startActivity(intent);
@@ -566,7 +484,7 @@ public class DrawerSellerHelper extends DrawerHelper
     public void onGoToDeposit() {
         if (context.getApplicationContext() instanceof SellerModuleRouter) {
             SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) context.getApplicationContext();
-            sellerModuleRouter.getSaldoDepositIntent(context);
+            sellerModuleRouter.startSaldoDepositIntent(context);
             sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
         }
     }

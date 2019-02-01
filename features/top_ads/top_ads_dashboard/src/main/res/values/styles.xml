@@ -8,4 +8,8 @@
         <item name="title_text_size">@dimen/sp_14</item>
         <item name="lv_sub_title_text_size">@dimen/sp_14</item>
     </style>
+
+    <style name="Button.Submit.White.BorderGreen" parent="Button.Submit.White.Border.Green">
+        <item name="android:background">@drawable/bg_button_white_greenborder</item>
+    </style>
 </resources>

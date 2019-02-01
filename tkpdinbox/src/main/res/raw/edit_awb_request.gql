@@ -1,0 +1,12 @@
+mutation edit_awb($input: EditAWBRequest!){
+ edit_awb(input:$input){
+    status
+    messageError
+    data{
+      resolution{
+        id
+      }
+      cache_key
+    }
+  }
+}
