@@ -34,8 +34,8 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class ConsumerSplashScreen extends SplashScreen {
 
-    public static final String WARM_TRACE = "warm_start";
-    public static final String SPLASH_TRACE = "splash_start";
+    public static final String WARM_TRACE = "gl_warm_start";
+    public static final String SPLASH_TRACE = "gl_splash_screen";
 
     private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
