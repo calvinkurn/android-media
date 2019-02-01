@@ -187,12 +187,16 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                     String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
                     if (errorsMessage != null && errorsMessage.length > 0) {
                         String title = errorsMessage[0];
-                        if (errorsMessage.length <= 2) {
-                            getView().showRedeemFullError(item, null, title);
-                        } else {
-                            String desc = errorsMessage[1];
-                            getView().showRedeemFullError(item, title, desc);
+                        String desc = null;
+                        int validateResponseCode = 0;
+
+                        if (errorsMessage.length == 2) {
+                            desc = errorsMessage[1];
                         }
+                        if (errorsMessage.length == 3)
+                            validateResponseCode = Integer.parseInt(errorsMessage[2]);
+                        getView().showValidationMessageDialog(item, title, desc, validateResponseCode);
+
                     }
                 }
             }
