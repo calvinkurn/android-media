@@ -14,6 +14,7 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
+import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
@@ -34,7 +35,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
-//    private AbTestingOfficialStore abTestingOfficialStore;
+    private AbTestingOfficialStore abTestingOfficialStore;
 
     private int badgeNumber;
 
@@ -160,7 +161,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     public void notifyToolbarForAbTesting() {
         if (mainToolbar != null) {
-//            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
+            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
         }
     }
 }
