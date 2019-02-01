@@ -119,10 +119,8 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isAnimatedFirstTime) {
-                    if (System.currentTimeMillis() - animationStartTime < 2000)
-                        clearTokenAnimationAndCrack();
-                }
+                if (isBounceAnimationFirstTimeAndBeforeBound())
+                    clearTokenAnimationAndCrack();
                 isTokenClicked = true;
 
             }
@@ -143,6 +141,13 @@ public class WidgetTokenView extends FrameLayout {
             }
         });
 
+    }
+
+    private boolean isBounceAnimationFirstTimeAndBeforeBound() {
+        if (!isAnimatedFirstTime) {
+            return System.currentTimeMillis() - animationStartTime < 2000;
+        }
+        return false;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")

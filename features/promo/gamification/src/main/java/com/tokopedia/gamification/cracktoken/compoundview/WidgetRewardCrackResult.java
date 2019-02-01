@@ -30,6 +30,16 @@ import java.util.List;
 
 public class WidgetRewardCrackResult extends FrameLayout {
     private static final float REWARD_SCALE_FACTOR = 1.2f;
+    private static final String BENIFIT_TYPE_REWARD_POINT = "reward_point";
+    private static final String BENIFIT_TYPE_LOYALTY_POINT = "loyalty_point";
+    private static final String BENIFIT_TYPE_COUPON = "coupon";
+    private static final long REWARDS_VIEW_SCALE_UP_START_DELAY = 1000;
+    private static final long REWARDS_VIEW_SCALE_UP_DURATION = 150;
+    private static final int SLIDE_UP_TEXT_RELATIVE_DURATION = 200;
+    private static final long TRANSLATE_TEXT_UP_DURATION = 500;
+    private static final long NUMBER_COUNTER_DURATION = 1500;
+    private static final long REWARDS_VIEW_SCALE_DOWN_DURATION = 150;
+    private static final float BACKGROUND_SCALE_FACTOR_BOUND = 0.4f;
     private Context context;
     private RelativeLayout rlPoints, rlLoyalty, rlCoupons;
     private TextView tvPoints, tvLoyalty, tvCoupons;
@@ -44,6 +54,7 @@ public class WidgetRewardCrackResult extends FrameLayout {
     private ArrayList<TextView> tvCouponsList;
     private RelativeLayout rlParent;
     private int currentPoints, currentCoupons, currentLoyalty;
+    private float oneDigitWidth;
 
 
     public WidgetRewardCrackResult(@NonNull Context context) {
@@ -89,32 +100,32 @@ public class WidgetRewardCrackResult extends FrameLayout {
             } else {
                 textColor = getResources().getColor(R.color.default_reward_color);
             }
-            if ("reward_point".equalsIgnoreCase(crackBenefit.getBenefitType())) {
+            if (BENIFIT_TYPE_REWARD_POINT.equalsIgnoreCase(crackBenefit.getBenefitType())) {
 
-                scaleUpRewards(rlPoints, tvPoints, textColor, currentPoints, crackBenefit.getValueAfter(), TYPE_POINTS);
+                scaleUpRewardsView(rlPoints, tvPoints, textColor, currentPoints, crackBenefit.getValueAfter(), TYPE_POINTS);
 
-            } else if ("loyalty_point".equalsIgnoreCase(crackBenefit.getBenefitType())) {
-                scaleUpRewards(rlLoyalty, tvLoyalty, textColor, currentLoyalty, crackBenefit.getValueAfter(), TYPE_LOYALTY);
+            } else if (BENIFIT_TYPE_LOYALTY_POINT.equalsIgnoreCase(crackBenefit.getBenefitType())) {
+                scaleUpRewardsView(rlLoyalty, tvLoyalty, textColor, currentLoyalty, crackBenefit.getValueAfter(), TYPE_LOYALTY);
 
-            } else if ("coupon".equalsIgnoreCase(crackBenefit.getBenefitType())) {
-                scaleUpRewards(rlCoupons, tvCoupons, textColor, currentCoupons, crackBenefit.getValueAfter(), TYPE_COUPONS);
+            } else if (BENIFIT_TYPE_COUPON.equalsIgnoreCase(crackBenefit.getBenefitType())) {
+                scaleUpRewardsView(rlCoupons, tvCoupons, textColor, currentCoupons, crackBenefit.getValueAfter(), TYPE_COUPONS);
             }
         }
 
     }
 
-    private void scaleUpRewards(RelativeLayout rewardType, TextView rewardText, int textColor, int prevValue, int valueIncrease, final int viewType) {
+    private void scaleUpRewardsView(RelativeLayout rewardType, TextView rewardText, int textColor, int prevValue, int valueIncrease, final int viewType) {
         PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, REWARD_SCALE_FACTOR);
         PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, REWARD_SCALE_FACTOR);
 
         ObjectAnimator bouncePointsAnim = ObjectAnimator.ofPropertyValuesHolder(rewardType, scalex, scaley);
         rewardType.setPivotX(rewardType.getWidth());
-        bouncePointsAnim.setStartDelay(1000);
-        bouncePointsAnim.setDuration(150);
+        bouncePointsAnim.setStartDelay(REWARDS_VIEW_SCALE_UP_START_DELAY);
+        bouncePointsAnim.setDuration(REWARDS_VIEW_SCALE_UP_DURATION);
         bouncePointsAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if (animation.getAnimatedFraction() > 0.4) {
+                if (animation.getAnimatedFraction() > BACKGROUND_SCALE_FACTOR_BOUND) {
                     rewardText.setTextColor(textColor);
                     bouncePointsAnim.removeUpdateListener(this);
                 }
@@ -122,25 +133,20 @@ public class WidgetRewardCrackResult extends FrameLayout {
         });
         bouncePointsAnim.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {
-            }
+            public void onAnimationStart(Animator animation) { }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                addTextToAnimate(rewardType, rewardText, valueIncrease, textColor, viewType);
-                translateText(viewType);
+                addDummyTextInViewToAnimateBottomToUp(rewardType, rewardText, valueIncrease, textColor, viewType);
+                slideDummyTextBottomToUp(viewType);
                 startCountAnimation(rewardType, prevValue, valueIncrease, viewType);
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
+            public void onAnimationCancel(Animator animation) { }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
+            public void onAnimationRepeat(Animator animation) { }
         });
         bouncePointsAnim.start();
 
@@ -151,20 +157,24 @@ public class WidgetRewardCrackResult extends FrameLayout {
         textPaint = new Paint();
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.sp_12));
+        measureOneDigitWidth();
     }
 
-    private void addTextToAnimate(RelativeLayout rewardType, TextView rewardText, int valueIncrease, int textColor, int viewType) {
+    private void measureOneDigitWidth() {
+        String point = "0"; //Any one digit number
+        oneDigitWidth = textPaint.measureText(point);  //calculates how much width it would take on screen
+    }
+
+    private void addDummyTextInViewToAnimateBottomToUp(RelativeLayout rewardType, TextView rewardText, int valueIncrease, int textColor, int viewType) {
         String points = String.valueOf(valueIncrease);
-        String point = "6";
         int length = points.length();
         float dataWidth = textPaint.measureText(points);
-        float pointWidth = textPaint.measureText(point);
-        int coordinates[] = new int[2];
-        rewardType.getLocationOnScreen(coordinates);
-        int coordinates1[] = new int[2];
-        llRewards.getLocationOnScreen(coordinates1);
-        float x = coordinates[0] + (rewardType.getWidth() - rewardText.getPaddingRight() - dataWidth) * REWARD_SCALE_FACTOR;
-        float y = coordinates[1] - coordinates1[1] + (rewardType.getHeight() * REWARD_SCALE_FACTOR);
+        int backgroundHolderCoordinates[] = new int[2];
+        rewardType.getLocationOnScreen(backgroundHolderCoordinates);
+        int parentCoordinates[] = new int[2];
+        llRewards.getLocationOnScreen(parentCoordinates);
+        float x = backgroundHolderCoordinates[0] + (rewardType.getWidth() - rewardText.getPaddingRight() - dataWidth) * REWARD_SCALE_FACTOR;
+        float y = backgroundHolderCoordinates[1] - parentCoordinates[1] + (rewardType.getHeight() * REWARD_SCALE_FACTOR);
 
         for (int i = 0; i < length; i++) {
             TextView textView = new TextView(getContext());
@@ -178,14 +188,14 @@ public class WidgetRewardCrackResult extends FrameLayout {
             else
                 tvCouponsList.add(textView);
 
-            textView.setX(x + i * pointWidth);
+            textView.setX(x + i * oneDigitWidth);           //Position each dummy textview after each text view
             textView.setY(y);
             rlParent.addView(textView);
         }
 
     }
 
-    private void translateText(int viewType) {
+    private void slideDummyTextBottomToUp(int viewType) {
 
         ArrayList<TextView> tvList;
         if (viewType == TYPE_POINTS)
@@ -200,11 +210,11 @@ public class WidgetRewardCrackResult extends FrameLayout {
             TextView tvListItem = tvList.get(i);
             AnimationSet animatorSet = new AnimationSet(true);
             AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
-            alphaAnimation.setDuration(500);
+            alphaAnimation.setDuration(TRANSLATE_TEXT_UP_DURATION);
             animatorSet.addAnimation(alphaAnimation);
             TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, 0, 0f, -rlPoints.getHeight() + getResources().getDimensionPixelOffset(R.dimen.dp_12));
-            translateAnimationCrackResult.setStartOffset((listLength - 1 - i) * 200);
-            translateAnimationCrackResult.setDuration(500);
+            translateAnimationCrackResult.setStartOffset((listLength - 1 - i) * SLIDE_UP_TEXT_RELATIVE_DURATION);
+            translateAnimationCrackResult.setDuration(TRANSLATE_TEXT_UP_DURATION);
             animatorSet.addAnimation(translateAnimationCrackResult);
             animatorSet.setFillAfter(true);
             tvListItem.startAnimation(animatorSet);
@@ -214,7 +224,7 @@ public class WidgetRewardCrackResult extends FrameLayout {
 
     private void startCountAnimation(RelativeLayout rewardType, int valueBefore, int valueIncrease, int viewType) {
         ValueAnimator animator = ValueAnimator.ofInt(valueBefore, valueBefore + valueIncrease);
-        animator.setDuration(1500);
+        animator.setDuration(NUMBER_COUNTER_DURATION);
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -229,37 +239,19 @@ public class WidgetRewardCrackResult extends FrameLayout {
 
         animator.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
+            public void onAnimationStart(Animator animation) { }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 scaleDownPointsSection(rewardType);
-                for (TextView tv : tvPointsList) {
-                    llRewards.removeView(tv);
-                }
-                for (TextView tv : tvLoyaltyList) {
-                    llRewards.removeView(tv);
-                }
-                for (TextView tv : tvCouponsList) {
-                    llRewards.removeView(tv);
-                }
-                tvPointsList.clear();
-                tvLoyaltyList.clear();
-                tvCouponsList.clear();
-
+                clearDummyViews();
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
+            public void onAnimationCancel(Animator animation) { }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
+            public void onAnimationRepeat(Animator animation) { }
         });
         animator.start();
     }
@@ -268,20 +260,27 @@ public class WidgetRewardCrackResult extends FrameLayout {
         PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f);
         PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f);
         ObjectAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(rewardType, scalex, scaley);
-        bounceAnim.setDuration(150);
+        bounceAnim.setDuration(REWARDS_VIEW_SCALE_DOWN_DURATION);
         bounceAnim.start();
     }
 
-    public void hide() {
-        this.setVisibility(GONE);
-    }
-
-    public void show() {
-        this.setVisibility(VISIBLE);
+    private void clearDummyViews() {
+        for (TextView tv : tvPointsList) {
+            llRewards.removeView(tv);
+        }
+        for (TextView tv : tvLoyaltyList) {
+            llRewards.removeView(tv);
+        }
+        for (TextView tv : tvCouponsList) {
+            llRewards.removeView(tv);
+        }
+        tvPointsList.clear();
+        tvLoyaltyList.clear();
+        tvCouponsList.clear();
     }
 
     public void setRewards(int points, int coupons, int loyalty) {
-        reset();
+        resetView();
         currentPoints = points;
         currentCoupons = coupons;
         currentLoyalty = loyalty;
@@ -290,7 +289,7 @@ public class WidgetRewardCrackResult extends FrameLayout {
         tvLoyalty.setText(String.valueOf(loyalty));
     }
 
-    private void reset() {
+    private void resetView() {
         tvPoints.setTextColor(getResources().getColor(R.color.white));
         tvLoyalty.setTextColor(getResources().getColor(R.color.white));
         tvCoupons.setTextColor(getResources().getColor(R.color.white));

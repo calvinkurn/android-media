@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="#00000000"
+        android:background="@android:color/transparent"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/dp_40">
@@ -46,8 +46,8 @@
             android:id="@+id/rl_loyalty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16">
 
 
             <TextView

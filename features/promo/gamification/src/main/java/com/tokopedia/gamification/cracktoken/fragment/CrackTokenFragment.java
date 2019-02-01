@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -60,7 +59,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static android.view.View.VISIBLE;
 
 /**
  * @author Rizky on 28/03/18.
@@ -131,15 +129,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         toolbar = rootView.findViewById(R.id.toolbar);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.toko_points_title));
-        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.black));
         imageRemainingToken = toolbar.findViewById(R.id.image_remaining_token);
         tvCounter = toolbar.findViewById(R.id.tv_floating_counter);
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
-
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
-
+        setUpToolBar();
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
@@ -211,6 +205,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         });
 
         return rootView;
+    }
+
+    private void setUpToolBar() {
+        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.black));
     }
 
     private void setToolbarColor(int color) {
@@ -323,7 +323,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         } else {
             tvCounter.setText(remainingTokenString);
-            tvCounter.setVisibility(VISIBLE);
+            tvCounter.setVisibility(View.VISIBLE);
             flRemainingToken.setVisibility(View.VISIBLE);
 
         }

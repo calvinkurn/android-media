@@ -18,7 +18,7 @@
     <string name="error_reward_message">Terjadi Kesalahan Teknis</string>
     <string name="try_again_btn">Coba Lagi</string>
     <string name="return_to_home">Kembali ke Beranda</string>
-    <string name="rewards_increased_points">+%s %s</string>
-    <string name="rewards_increased_points_front_text">+%s\u0020</string>
+    <string name="rewards_increased_points">+%1$s %2$s</string>
+    <string name="rewards_increased_points_front_text">+%1$s\u0020</string>
 
 </resources>

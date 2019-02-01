@@ -58,6 +58,11 @@ public class WidgetCrackResult extends RelativeLayout {
     private static final int DURATION_ANIM_BG_CRACK_RESULT = 1000;
     private static final int DURATION_ALPHA_ANIM = 1500;
     private static final int DURATION_ALPHA_ANIM_TEXT = 500;
+    private static final long SLIDE_INFO_LEFT_TO_RIGHT_DURATION = 500;
+    private static final long SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY = 100;
+    private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION = 502;
+    private static final long COUNTER_ANIMATION_DURATION = 500;
+    private static final long COUNTER_ANIMATION_START_DELAY = 200;
 
     private ImageView imageViewBgCrackResult;
     private ImageView imageViewCrackResult;
@@ -236,7 +241,7 @@ public class WidgetCrackResult extends RelativeLayout {
                                 public void run() {
                                     float frontWidth = measureFrontTextWidth(textView.getTextSize(),
                                             String.format(getContext().getString(R.string.rewards_increased_points_front_text), String.valueOf(rewardText.getValueBefore())));
-                                    startSlideAnimation(textView, rewardText, frontWidth);
+                                    slideAnimationLeftToRight(textView, rewardText, frontWidth);
                                     initCountAnimation(textView, rewardText.getValueBefore(), rewardText.getValueAfter(), finalRewardStr);
                                 }
                             }, 100);
@@ -294,8 +299,7 @@ public class WidgetCrackResult extends RelativeLayout {
      * @param rewardText
      * @param textShift
      */
-    private void startSlideAnimation(TextView textView, CrackBenefit rewardText, float textShift) {
-
+    private void slideAnimationLeftToRight(TextView textView, CrackBenefit rewardText, float textShift) {
         int multiplierColor;
         if (HexValidator.validate(rewardText.getColor())) {
             multiplierColor = Color.parseColor(rewardText.getColor());
@@ -325,7 +329,7 @@ public class WidgetCrackResult extends RelativeLayout {
         }
         tvTierInfoList.add(textViewTierInfo);
         listCrackResultParent.addView(textViewTierInfo);
-        translateTextInfo(textViewTierInfo, textShift);
+        slideLeftToRightInfoText(textViewTierInfo, textShift);
 
     }
 
@@ -336,10 +340,10 @@ public class WidgetCrackResult extends RelativeLayout {
      * @param textViewTierInfo textview to be shifted
      * @param textShift        amount of shift
      */
-    private void translateTextInfo(TextView textViewTierInfo, float textShift) {
+    private void slideLeftToRightInfoText(TextView textViewTierInfo, float textShift) {
         TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift - getResources().getDimension(R.dimen.dp_2), 0f, 0f);
-        translateAnimationCrackResult.setDuration(500);
-        translateAnimationCrackResult.setStartTime(100);
+        translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
+        translateAnimationCrackResult.setStartTime(SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY);
         translateAnimationCrackResult.setFillAfter(true);
         translateAnimationCrackResult.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -350,7 +354,7 @@ public class WidgetCrackResult extends RelativeLayout {
             @Override
             public void onAnimationEnd(Animation animation) {
                 textViewTierInfo.setX(textViewTierInfo.getX() + textShift - getResources().getDimension(R.dimen.dp_2));
-                translateAndFadeOutText(textViewTierInfo, textShift);
+                slideAndFadeOutText(textViewTierInfo, textShift);
                 translateAnimationCrackResult.setAnimationListener(null);
             }
 
@@ -362,12 +366,12 @@ public class WidgetCrackResult extends RelativeLayout {
         textViewTierInfo.startAnimation(translateAnimationCrackResult);
     }
 
-    private void translateAndFadeOutText(TextView textViewTierInfo, float textShift) {
+    private void slideAndFadeOutText(TextView textViewTierInfo, float textShift) {
         AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
         alphaAnimation.setFillAfter(true);
-        alphaAnimation.setDuration(502);
+        alphaAnimation.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION);
         TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift, 0f, 0f);
-        translateAnimationCrackResult.setDuration(500);
+        translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
         translateAnimationCrackResult.setFillAfter(true);
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -396,8 +400,8 @@ public class WidgetCrackResult extends RelativeLayout {
 
     private void initCountAnimation(TextView textView, int valueBefore, int valueAfter, String text) {
         ValueAnimator animator = ValueAnimator.ofInt(valueBefore, valueAfter);
-        animator.setDuration(500);
-        animator.setStartDelay(200);
+        animator.setDuration(COUNTER_ANIMATION_DURATION);
+        animator.setStartDelay(COUNTER_ANIMATION_START_DELAY);
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
