@@ -10,6 +10,7 @@ import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
 
 import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.answers.Answers
 
 import io.fabric.sdk.android.Fabric
 import com.moengage.core.MoEngage
@@ -36,6 +37,7 @@ class KelontongMainApplication : Application() {
     private fun initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, Crashlytics())
+            Fabric.with(this, Answers())
             Crashlytics.setUserIdentifier(getString(R.string.app_name))
         }
     }
