@@ -69,17 +69,61 @@
                 tools:text="Nama Produk YANG PANJAAAANG ASLKDAJLSKDJALSKJD"/>
 
             <TextView
-                android:id="@+id/attach_product_chat_price"
+                android:id="@+id/attach_product_chat_price_old"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/attach_product_chat_name"
                 android:fontFamily="sans-serif-medium"
                 android:lineSpacingExtra="6sp"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_10"
+                android:textStyle="normal"
+                tools:text="Rp 2.099.000"
+                tools:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/attach_product_chat_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/attach_product_chat_price_old"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="6sp"
                 android:textColor="@color/orange_red"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
                 tools:text="Rp 2.099.000"
                 />
+
+            <LinearLayout
+                android:id="@+id/discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_toRightOf="@id/attach_product_chat_price"
+                android:layout_below="@id/attach_product_chat_price_old"
+                tools:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/drop_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat = "@drawable/ic_arrow_drop_price"
+                    />
+
+                <TextView
+                    android:id="@+id/discount_nominal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="6sp"
+                    android:textColor="@color/medium_green"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="normal"
+                    tools:text="10%"
+                    />
+            </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
 
