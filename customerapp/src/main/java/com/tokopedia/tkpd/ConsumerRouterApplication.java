@@ -2058,7 +2058,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getShopComponent().getShopInfoUseCase();
     }
 
-
+    @Override
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
@@ -2765,8 +2765,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
                                                           String trainReservationCode,
                                                           String galaCode) {
-        TrainRepository trainRepository = DaggerTrainComponent.builder().baseAppComponent(
-                this.getBaseAppComponent()).build().trainRepository();
+        TrainRepository trainRepository = TrainComponentUtils.getTrainComponent(this).trainRepository();
         TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
         return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
                 trainReservationId, trainReservationCode, galaCode
