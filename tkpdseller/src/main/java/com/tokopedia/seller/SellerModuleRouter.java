@@ -60,5 +60,7 @@ public interface SellerModuleRouter {
     void gotoTopAdsDashboard(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
+
+    Intent getSaldoDepositIntent(Context context);
 }
 
