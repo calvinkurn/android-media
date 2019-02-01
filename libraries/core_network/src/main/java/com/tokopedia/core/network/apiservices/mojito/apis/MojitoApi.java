@@ -23,6 +23,8 @@ import rx.Observable;
  * Created by ricoharisin on 4/15/16.
  * Modified by Mady add HomeCategoryMenu
  */
+
+@Deprecated
 public interface MojitoApi {
 
     String DEVICE = "device";

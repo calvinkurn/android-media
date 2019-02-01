@@ -24,6 +24,8 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.H
  * AccountsApi
  * Created by stevenfredian on 5/25/16.
  */
+
+@Deprecated
 public interface AccountsApi {
 
     @GET(TkpdBaseURL.Accounts.PATH_DISCOVER_LOGIN)

@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Angga.Prasetiyo on 19/01/2016.
  */
+
+@Deprecated
 public class Status {
     private static final String TAG = Status.class.getSimpleName();
 

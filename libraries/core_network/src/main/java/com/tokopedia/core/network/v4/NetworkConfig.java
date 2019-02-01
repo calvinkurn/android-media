@@ -6,6 +6,7 @@ import com.android.volley.Request;
  * Created by m.normansyah on 03/11/2015.
  */
 
+@Deprecated
 public interface NetworkConfig {
     int DEVELOPMENT_HOST_TYPE = 0;
     int STAGING_HOST_TYPE = 1;

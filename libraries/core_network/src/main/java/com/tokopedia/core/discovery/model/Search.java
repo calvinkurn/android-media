@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * @author kulomady on 12/22/16.
  */
+
+@Deprecated
 public class Search implements Parcelable {
 
     @SerializedName("searchable")

@@ -8,6 +8,8 @@ import retrofit2.Retrofit;
 /**
  * @author Kris on 2/24/2016.
  */
+
+@Deprecated
 public class EditShippingTestService extends BaseService<EditShippingApi>{
 
 

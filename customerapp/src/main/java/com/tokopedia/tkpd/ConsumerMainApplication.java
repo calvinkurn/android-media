@@ -36,6 +36,9 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -97,6 +100,7 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
@@ -162,6 +166,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         generateConsumerAppNetworkKeys();
 
         initializeDatabase();
+        TrackApp.initTrackApp(this);
+
+        TrackApp.getInstance().registerImplementation("GTM", GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation("Appsflyer", AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation("MoEngage", MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+
         super.onCreate();
         initReact();
 
@@ -181,6 +192,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        TrackApp.getInstance().delete();
+        TrackApp.deleteInstance();
     }
 
     private void createCustomSoundNotificationChannel() {

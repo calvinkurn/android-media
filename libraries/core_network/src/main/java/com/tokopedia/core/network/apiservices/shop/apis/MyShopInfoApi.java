@@ -17,6 +17,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface MyShopInfoApi {
 
     @FormUrlEncoded

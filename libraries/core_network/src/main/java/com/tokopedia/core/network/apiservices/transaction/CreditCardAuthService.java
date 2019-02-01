@@ -12,6 +12,7 @@ import retrofit2.Retrofit;
  * Created by kris on 10/13/17. Tokopedia
  */
 
+@Deprecated
 public class CreditCardAuthService extends AuthService<CreditCardAuthApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

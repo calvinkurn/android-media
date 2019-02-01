@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by noiz354 on 2/2/16.
  */
+@Deprecated
 public class ListProvince {
     @SerializedName("status")
     @Expose

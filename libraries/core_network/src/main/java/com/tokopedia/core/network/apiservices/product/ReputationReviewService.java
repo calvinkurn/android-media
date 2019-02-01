@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by alifa on 8/11/17.
  */
 
+@Deprecated
 public class ReputationReviewService extends AuthService<ReputationReviewApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

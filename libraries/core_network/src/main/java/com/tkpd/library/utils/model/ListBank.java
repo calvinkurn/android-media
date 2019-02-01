@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Created by noiz354 on 2/3/16.
  */
+@Deprecated
 public class ListBank {
     @SerializedName("status")
     @Expose

@@ -9,6 +9,7 @@ import java.util.List;
  * Created by m.normansyah on 2/24/16.
  * modified by mady for supporting new banner response
  */
+@Deprecated
 public class Banner {
 
     @SerializedName("meta")

@@ -10,6 +10,7 @@ import static com.tokopedia.core.var.TokoCashTypeDef.TOKOCASH_INACTIVE;
  * Created by nabillasabbaha on 11/15/17.
  */
 
+@Deprecated
 @IntDef({TOKOCASH_ACTIVE, TOKOCASH_INACTIVE})
 public @interface TokoCashTypeDef {
     int TOKOCASH_ACTIVE = 1;

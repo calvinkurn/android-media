@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
  * @author kulomady on 12/9/16.
  */
 
+@Deprecated
 public class StringUtils {
 
     public static String convertListToStringDelimiter(List<String> list, String delimiter) {

@@ -27,6 +27,7 @@ import rx.Observable;
  * Created by hangnadi on 3/9/17.
  */
 
+@Deprecated
 public interface ResolutionApi {
 
     String PATH_RESOLUTION_ID = "resolution_id";

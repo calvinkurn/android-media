@@ -11,6 +11,7 @@ import java.util.List;
  * Created by HenryPri on 16/06/17.
  */
 
+@Deprecated
 public class FeaturedProductItem {
     @SerializedName("name")
     String name;

@@ -49,6 +49,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * @author  ricoharisin on 3/23/17.
  */
 
+@Deprecated
 @Module(includes={InterceptorModule.class})
 public class OkHttpClientModule {
 

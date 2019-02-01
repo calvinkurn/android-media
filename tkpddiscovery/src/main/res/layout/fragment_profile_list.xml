@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:paddingLeft="@dimen/review_gallery_default_padding"
+            android:paddingRight="@dimen/review_gallery_default_padding"
+            android:divider="@android:color/transparent"
+            android:descendantFocusability="blocksDescendants"
+            android:dividerHeight="@dimen/dp_5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/dp_10"
+            android:clipToPadding="false"/>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+
+</RelativeLayout>

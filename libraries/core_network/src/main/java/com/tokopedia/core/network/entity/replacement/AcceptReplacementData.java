@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by hangnadi on 3/3/17.
  */
+
+@Deprecated
 public class AcceptReplacementData {
     @SerializedName("status")
     private int isSuccess;

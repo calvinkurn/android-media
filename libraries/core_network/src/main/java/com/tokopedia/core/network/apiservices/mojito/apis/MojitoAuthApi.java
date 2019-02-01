@@ -17,6 +17,8 @@ import rx.Observable;
  * MojitoAuthApi
  * Created by ricoharisin on 4/15/16.
  */
+
+@Deprecated
 public interface MojitoAuthApi {
 
     @DELETE(TkpdBaseURL.Mojito.PATH_PRODUCT + "{userId}/"

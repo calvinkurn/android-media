@@ -12,6 +12,8 @@ import rx.Observable;
 /**
  * @author sebastianuskh on 9/28/16.
  */
+
+@Deprecated
 public interface OpenShopPicture {
 
     @FormUrlEncoded

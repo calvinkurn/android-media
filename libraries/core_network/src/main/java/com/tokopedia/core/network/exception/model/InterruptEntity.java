@@ -4,6 +4,7 @@ package com.tokopedia.core.network.exception.model;
  * Created by alvarisi on 7/14/17.
  */
 
+@Deprecated
 public class InterruptEntity {
     private String code;
     private String id;

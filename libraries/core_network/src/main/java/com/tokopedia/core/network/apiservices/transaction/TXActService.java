@@ -12,6 +12,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public class TXActService extends AuthService<TXActApi> {
 
     private static final String TAG = TXActService.class.getSimpleName();

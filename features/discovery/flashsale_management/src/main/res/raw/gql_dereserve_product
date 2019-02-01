@@ -1,0 +1,15 @@
+mutation campaign_dereserve_product($campaign_id:Int!, $product_id:Int!, $shop_id:Int!){
+  campaign_dereserve_product(params:{
+    campaign_id:$campaign_id
+    product_id:$product_id
+    shop_id:$shop_id
+  }){
+    data{
+      criteria_id
+      is_available
+      message
+    }
+    message
+    status_code
+  }
+}

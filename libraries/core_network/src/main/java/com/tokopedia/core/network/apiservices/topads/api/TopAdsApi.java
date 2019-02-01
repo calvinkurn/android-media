@@ -14,6 +14,8 @@ import rx.Observable;
  * @author noiz354 on 3/23/16.
  *         modified by angga, migrate retrofit 2
  */
+
+@Deprecated
 public interface TopAdsApi {
 
     String PRODUCTS = "products";

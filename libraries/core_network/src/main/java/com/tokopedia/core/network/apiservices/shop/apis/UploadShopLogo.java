@@ -16,6 +16,8 @@ import rx.Observable;
 /**
  * @author Toped18 on 5/24/2016.
  */
+
+@Deprecated
 public interface UploadShopLogo {
 
     @Multipart

@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 
+@Deprecated
 public class Data implements Parcelable {
 
     @SerializedName("result")

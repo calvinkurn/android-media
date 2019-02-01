@@ -10,6 +10,8 @@ import com.tokopedia.core.util.GeneralUtils;
  * @since 27/11/2015
  * move code to RxJava and Retrofit 2 style.
  */
+
+@Deprecated
 public class PagingHandler extends com.tokopedia.core.database.model.PagingHandler {
 
 	public void setNewParameter(PagingHandlerModel pagingHanderModel){

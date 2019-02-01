@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by noiz354 on 6/28/16.
  */
+@Deprecated
 public interface Convert<E,F> {
     F from(E data);
     List<F> fromList(E... datas);

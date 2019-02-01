@@ -15,6 +15,8 @@ import okhttp3.ResponseBody;
 /**
  * @author Hendry on 28.02.2017.
  */
+
+@Deprecated
 public class TkpdErrorResponseInterceptor implements Interceptor {
     private static final int BYTE_COUNT = 2048;
     Class<? extends BaseResponseError> responseErrorClass;

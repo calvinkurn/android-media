@@ -15,6 +15,7 @@ import rx.Observable;
  * @author by alvarisi on 12/8/16.
  */
 
+@Deprecated
 public interface PushNotificationApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.FCM.UPDATE_FCM)

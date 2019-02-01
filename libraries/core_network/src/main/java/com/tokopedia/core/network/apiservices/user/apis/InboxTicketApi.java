@@ -14,6 +14,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface InboxTicketApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_GET_INBOX_TICKET)

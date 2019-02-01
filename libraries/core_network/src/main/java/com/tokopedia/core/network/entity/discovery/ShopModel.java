@@ -8,6 +8,7 @@ import java.util.List;
  * @author kulomady on 11/26/16.
  */
 
+@Deprecated
 public class ShopModel extends RecyclerViewItem {
     public static final int SHOP_MODEL_TYPE = 1_912_123;
     String shopImage;

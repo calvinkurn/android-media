@@ -10,6 +10,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
  */
+
+@Deprecated
 public class PromoTopAdsService extends AuthService<PromoTopAdsApi> {
     private static final String TAG = PromoTopAdsService.class.getSimpleName();
 

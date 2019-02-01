@@ -10,6 +10,8 @@ import com.tokopedia.core.product.model.productotherace.ProductOtherAce;
 /**
  * Created by ANGGA on 10/28/2015.
  */
+
+@Deprecated
 public class ProductOther implements Parcelable {
 
     @SerializedName("product_price")

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Deprecated
 public class GeneralUtils {
 
     public static Double parsePriceToDouble(String price, String currency) {

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class LocalCacheHandler {
 
     private Editor editor;

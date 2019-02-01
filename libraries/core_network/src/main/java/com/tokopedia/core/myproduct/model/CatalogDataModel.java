@@ -13,6 +13,8 @@ import java.util.ArrayList;
 /**
  * Created by m.normansyah on 18/01/2016.
  */
+
+@Deprecated
 public class CatalogDataModel {
 
     @SerializedName("data")

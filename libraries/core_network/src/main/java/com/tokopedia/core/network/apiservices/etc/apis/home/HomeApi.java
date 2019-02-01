@@ -24,6 +24,8 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.ProductFeedAp
  * HomeApi
  * Created by Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public interface HomeApi {
 
     @FormUrlEncoded

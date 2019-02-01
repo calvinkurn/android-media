@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
  * Created by sachinbansal on 4/6/18.
  */
 
+@Deprecated
 public class LogisticsAuthService extends AuthService<LogisticsApi> {
 
 

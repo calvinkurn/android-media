@@ -9,6 +9,7 @@ import retrofit2.Retrofit;
  * @author sebastianuskh on 9/28/16.
  */
 
+@Deprecated
 public class MyShopActAfterService extends AuthService<OpenShopPicture> {
 
     public MyShopActAfterService() {

@@ -5,6 +5,7 @@ import java.io.IOException;
 /**
  * Created by Tkpd_Eka on 8/11/2015.
  */
+@Deprecated
 public class CustomProtocolException extends IOException{
 
     public static final int REQUEST_DENIED = 403;

@@ -10,25 +10,41 @@ import com.tokopedia.core.gcm.utils.RouterUtils;
 
 public class ScreenTrackingBuilder {
     private static final String AF_UNAVAILABLE_VALUE = "none";
-    private final SessionHandler sessionHandler;
 
     private Authenticated authEvent;
-    private Activity mActivity;
-    private ScreenTracking.IOpenScreenAnalytics mOpenScreenAnalytics;
+    private String screenName;
 
-    public static ScreenTrackingBuilder newInstance(Activity activity,
+    public static ScreenTrackingBuilder newInstance(Context context,
                                                     ScreenTracking.IOpenScreenAnalytics openScreenAnalytics,
                                                     String afUniqueId) {
-        return new ScreenTrackingBuilder(activity, openScreenAnalytics, afUniqueId);
+        return new ScreenTrackingBuilder(context, openScreenAnalytics, afUniqueId);
     }
 
-    private ScreenTrackingBuilder(Activity activity,
+    public static ScreenTrackingBuilder newInstance(Context context,
+                                                    String screenName,
+                                                    String afUniqueId) {
+        return new ScreenTrackingBuilder(context, screenName, afUniqueId);
+    }
+
+    private ScreenTrackingBuilder(Context context,
                                   ScreenTracking.IOpenScreenAnalytics openScreenAnalytics,
                                   String afUniqueId) {
-        this.mOpenScreenAnalytics = openScreenAnalytics;
-        this.mActivity = activity;
+        if (openScreenAnalytics!= null) {
+            screenName = openScreenAnalytics.getScreenName();
+        }
+        initAuthEvent(context, afUniqueId);
+    }
+
+    private ScreenTrackingBuilder(Context context,
+                                  String screenName,
+                                  String afUniqueId) {
+        this.screenName = screenName;
+        initAuthEvent(context, afUniqueId);
+    }
+
+    private void initAuthEvent(Context context, String afUniqueId){
         authEvent = new Authenticated();
-        sessionHandler = RouterUtils.getRouterFromContext(activity).legacySessionHandler();
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
 
         authEvent.setUserFullName(sessionHandler.getLoginName());
         authEvent.setUserID(sessionHandler.getGTMLoginID());
@@ -48,10 +64,13 @@ public class ScreenTrackingBuilder {
         return this;
     }
 
-
     public void execute(Context context) {
-        if (mOpenScreenAnalytics != null && !TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
-            ScreenTracking.eventAuthScreen(context, authEvent, mOpenScreenAnalytics.getScreenName());
+        if (!TextUtils.isEmpty(screenName)) {
+            ScreenTracking.eventAuthScreen(context, authEvent, screenName);
         }
+    }
+
+    public void sendAuth(Context context) {
+        ScreenTracking.eventAuth(context, authEvent);
     }
 }

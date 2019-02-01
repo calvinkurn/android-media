@@ -19,6 +19,8 @@ import java.util.List;
 /**
  * Created by noiz354 on 3/17/16.
  */
+
+@Deprecated
 public class BrowseCatalogModel {
     @SerializedName("data")
     public Result result;

@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * @author by alifa on 5/17/17.
  */
 
+@Deprecated
 public class MonthsInstallmentItem implements Parcelable {
 
     private String value;
