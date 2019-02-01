@@ -1,11 +1,10 @@
-apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+//apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        vectorDrawables.useSupportLibrary = false
+        vectorDrawables.useSupportLibrary = true
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -22,7 +21,7 @@ android {
 
     buildTypes {
         debug{
-            testCoverageEnabled true
+            testCoverageEnabled false
         }
         release {
             minifyEnabled false
