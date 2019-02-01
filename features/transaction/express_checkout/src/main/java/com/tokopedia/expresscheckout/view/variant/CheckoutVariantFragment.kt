@@ -19,13 +19,13 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter
-import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
-import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
-import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
-import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListener
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel

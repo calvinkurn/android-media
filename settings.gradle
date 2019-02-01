@@ -1,3 +1,4 @@
+include ':express_checkout_common'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

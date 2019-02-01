@@ -1,8 +1,8 @@
 package com.tokopedia.expresscheckout.view.variant.subscriber
 
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.data.entity.response.checkout.CheckoutExpressGqlResponse
 import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDomainModelMapper
-import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber

@@ -294,6 +294,7 @@ ext {
             loyalty                       : ":features:promo:loyalty",
             loyaltyCommon                 : ":features:promo:loyalty_common",
             expressCheckout               : ":features:transaction:express_checkout",
+            expressCheckoutCommon         : ":features:transaction:express_checkout_common",
 
             attachproduct                 : ":features:user:attachproduct",
             bankdb                        : ":features:user:bankdb",

@@ -1,8 +1,8 @@
-package com.tokopedia.expresscheckout.view.errorview
+package com.tokopedia.expresscheckout.common.view.errorview
 
 import android.view.View
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.expresscheckout.R
+import com.tokopedia.expresscheckout.common.R
 import kotlinx.android.synthetic.main.fragment_bottomsheet_error.*
 
 /**

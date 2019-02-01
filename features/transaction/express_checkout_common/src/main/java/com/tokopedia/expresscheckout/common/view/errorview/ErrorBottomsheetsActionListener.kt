@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.view.errorview
+package com.tokopedia.expresscheckout.common.view.errorview
 
 /**
  * Created by Irfan Khoirul on 01/01/19.

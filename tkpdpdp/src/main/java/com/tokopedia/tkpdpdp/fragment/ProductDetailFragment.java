@@ -1859,8 +1859,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             break;
             case REQUEST_CODE_ATC_EXPRESS:
                 if (resultCode == RESULT_CODE_ERROR) {
-                    ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
-                            .show();
+                    String message = data.getStringExtra(EXTRA_MESSAGES_ERROR);
+                    if (message != null && message.length() > 0) {
+                        ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        // Todo : Show
+                    }
                 } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
                     checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
                 } else if (resultCode == RESULT_CODE_NAVIGATE_TO_NCF) {

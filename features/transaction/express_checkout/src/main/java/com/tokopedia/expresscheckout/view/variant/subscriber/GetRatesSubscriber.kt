@@ -1,6 +1,5 @@
 package com.tokopedia.expresscheckout.view.variant.subscriber
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
@@ -28,7 +27,7 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         view?.hideLoading()
         view?.onNeedToValidateButtonBuyVisibility()
         if (currentSpId == 0) {
-            view?.finishWithError(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
+            view?.finishWithError("")
         }
     }
 
