@@ -50,6 +50,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
@@ -312,6 +314,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private VarianCourierSimulationView varianCourierSimulationView;
     private PromoWidgetView promoWidgetView;
     private ImageFromBuyerView imageFromBuyerView;
+    private ErrorBottomsheets errorBottomsheets;
 
     MerchantVoucherListPresenter voucherListPresenter;
     private MerchantVoucherListWidget merchantVoucherListWidget;
@@ -608,6 +611,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
         }
+
+        errorBottomsheets = new ErrorBottomsheets();
     }
 
     private void showUseMerchantVoucherLoading() {
@@ -810,25 +815,29 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     checkVariant(source);
                     break;
                 case CHECKOUT_TYPE_EXPRESS:
-                    try {
-                        if (getActivity() != null) {
-                            AtcRequestParam atcRequestParam = new AtcRequestParam();
-                            atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
-                            atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
-                            atcRequestParam.setNotes("");
-                            atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
-                            Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                                    .getExpressCheckoutIntent(getActivity(), atcRequestParam);
-                            startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
-                            getActivity().overridePendingTransition(R.anim.pull_up, 0);
-                        }
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
+                    goToAtcExpress();
                     break;
             }
         } else {
             checkVariant(source);
+        }
+    }
+
+    private void goToAtcExpress() {
+        try {
+            if (getActivity() != null) {
+                AtcRequestParam atcRequestParam = new AtcRequestParam();
+                atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+                atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
+                atcRequestParam.setNotes("");
+                atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
+                Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                        .getExpressCheckoutIntent(getActivity(), atcRequestParam);
+                startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
+                getActivity().overridePendingTransition(R.anim.pull_up, 0);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
     }
 
@@ -1864,7 +1873,23 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
                                 .show();
                     } else {
-                        // Todo : Show
+                        errorBottomsheets.setData(
+                                "Terjadi Kendala Teknis",
+                                "Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi",
+                                "Lanjutkan Tanpa Template",
+                                true
+                        );
+                        errorBottomsheets.setActionListener(new ErrorBottomsheetsActionListener() {
+                            @Override
+                            public void onActionButtonClicked() {
+                                checkVariant(SOURCE_BUTTON_BUY_PDP);
+                            }
+
+                            @Override
+                            public void onRetryClicked() {
+                                goToAtcExpress();
+                            }
+                        });
                     }
                 } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
                     checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
