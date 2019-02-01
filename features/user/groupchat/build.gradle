@@ -57,7 +57,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -74,9 +73,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
 }
 
 apply from: '../../../publish_local.gradle'

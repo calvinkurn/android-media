@@ -307,5 +307,6 @@
 
     <string name="must_insert_email_or_phone">Email atau nomor ponsel harus diisi</string>
     <string name="change_2">Ubah</string>
+    <string name="failed_login_google">Akun gagal terautentikasi (%s). Mohon coba kembali.</string>
 
 </resources>

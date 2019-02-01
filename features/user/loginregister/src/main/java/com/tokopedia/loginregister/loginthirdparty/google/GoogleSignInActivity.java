@@ -18,9 +18,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.plus.Plus;
 import com.tokopedia.loginregister.R;
 
 import java.io.IOException;
@@ -59,12 +56,12 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
                 .requestProfile()
                 .build();
 
-        // Build a GoogleApiClient with access to GoogleSignIn.API and the options above.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .addApi(Plus.API)
-                .build();
+//        // Build a GoogleApiClient with access to GoogleSignIn.API and the options above.
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, this)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .addApi(Plus.API)
+//                .build();
 
 //        signOut();
         signIn();
