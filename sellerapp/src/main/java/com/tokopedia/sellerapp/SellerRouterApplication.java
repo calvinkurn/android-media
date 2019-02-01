@@ -34,6 +34,8 @@ import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
@@ -82,8 +84,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -235,6 +235,9 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -598,6 +601,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendEventTracking(Map<String, Object> eventTracking) {
+        UnifyTracking.eventClearEnhanceEcommerce(this);
         UnifyTracking.sendGTMEvent(getAppContext(), eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
@@ -1234,12 +1238,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTracking(Map<String, Object> eventTracking) {
-        UnifyTracking.eventClearEnhanceEcommerce(this);
-        UnifyTracking.sendGTMEvent(this, eventTracking);
-    }
-
-    @Override
     public void sendEnhanceECommerceTracking(@NotNull Map<String, Object> events) {
         TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
     }
@@ -1851,11 +1849,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
-    @Override
-    public Intent getCheckoutIntent(Activity activity) {
-        return null;
-    }
-
     @NonNull
     @Override
     public Fragment getFavoritedShopFragment(@NonNull String userId) {
@@ -2060,5 +2053,27 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
+    }
+
+    @Override
+    public boolean isSaldoNativeEnabled() {
+        return false;
+    }
+
+    @Override
+    public String getContactUsBaseURL() {
+        return TkpdBaseURL.ContactUs.URL_HELP;
+    }
+
+    public void onLoginSuccess() {
+    }
+
+    @Override
+    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Activity activity) {
+        return null;
     }
 }

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
@@ -39,10 +40,12 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
+    private static final String FPM_SELLER = "mp_account_seller";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private SellerAccountAdapter adapter;
+    private PerformanceMonitoring fpmSeller;
 
     @Inject
     SellerAccount.Presenter presenter;
@@ -58,6 +61,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fpmSeller = PerformanceMonitoring.start(FPM_SELLER);
         initInjector();
     }
 
@@ -107,6 +111,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             adapter.clearAllElements();
             adapter.setElement(model.getItems());
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -145,6 +150,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -154,6 +160,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmSeller.stopTrace();
     }
 
     @Override

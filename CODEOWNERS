@@ -138,3 +138,5 @@
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
 /kelontongapp                           @tokopedia/core-team
+
+/libraries/graph_view/                  @aarsy17
