@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticgeolocation.R;
@@ -41,7 +42,6 @@ import permissions.dispatcher.RuntimePermissions;
 public class GeolocationActivity extends BaseActivity implements ITransactionAnalyticsGeoLocationPinPoint {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
-    public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
     public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
 
@@ -62,7 +62,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                                         boolean isFromMarketPlaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
         bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
         intent.putExtras(bundle);
         return intent;
@@ -123,7 +123,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
         mBundle = getIntent().getExtras();
 
         if (mBundle != null) {
-            locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
+            locationPass = mBundle.getParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION);
         }
 
         if (locationPass != null) {

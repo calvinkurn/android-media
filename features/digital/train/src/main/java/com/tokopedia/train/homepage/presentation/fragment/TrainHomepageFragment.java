@@ -38,7 +38,9 @@ import com.tokopedia.train.homepage.presentation.widget.TrainPromoListView;
 import com.tokopedia.train.search.presentation.activity.TrainSearchDepartureActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,6 +55,8 @@ import javax.inject.Inject;
 public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHomepageView {
 
     private static final String PROMO_PATH = "promo";
+    private static final String TAG_DEPARTURE_CALENDAR = "trainCalendarDeparture";
+    private static final String TAG_RETURN_CALENDAR = "trainCalendarReturn";
     private static final int ORIGIN_STATION_REQUEST_CODE = 1001;
     private static final int DESTINATION_STATION_REQUEST_CODE = 1002;
     private static final int PASSENGER_REQUEST_CODE = 1004;
@@ -300,18 +304,38 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.DEPARTURE_TYPE),
-                DATE_PICKER_DEPARTURE_REQUEST_CODE);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
     }
 
     @Override
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.RETURN_TYPE),
-                DATE_PICKER_RETURN_REQUEST_CODE);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
+    }
+
+    private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
+                                       String tagFragment) {
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setMinDate(minDate)
+                .setMaxDate(maxDate)
+                .setSelectedDate(selectedDate)
+                .setShowHoliday(true)
+                .setTitle(title)
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                if (tagFragment.equals(TAG_DEPARTURE_CALENDAR)) {
+                    trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+                } else {
+                    trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
+                }
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), tagFragment);
     }
 
     @Override
@@ -380,24 +404,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                 if (resultCode == Activity.RESULT_OK) {
                     TrainPassengerViewModel passengerViewModel = data.getParcelableExtra(TrainPassengerPickerActivity.EXTRA_PASS_DATA);
                     trainHomepagePresenterImpl.onTrainPassengerChange(passengerViewModel);
-                }
-                break;
-            case DATE_PICKER_DEPARTURE_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
-                    Calendar calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
-                }
-                break;
-            case DATE_PICKER_RETURN_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
-                    Calendar calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                 }
                 break;
             case REQUEST_CODE_LOGIN:

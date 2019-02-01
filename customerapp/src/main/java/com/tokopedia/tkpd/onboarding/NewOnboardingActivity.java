@@ -24,6 +24,9 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 
 import com.github.paolorotolo.appintro.AppIntro;
@@ -76,6 +79,10 @@ public class NewOnboardingActivity extends AppIntro {
         setSkip();
         setNext();
         pager.setPageTransformer(false, new CustomAnimationPageTransformer());
+
+        if(GlobalConfig.IS_PREINSTALL) {
+            TrackingUtils.sendInstallSourceEvent(this);
+        }
     }
 
     private void initView() {
