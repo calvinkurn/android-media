@@ -102,9 +102,9 @@
                 <data
                     android:host="tokopedia.link"
                     android:scheme="https"/>
-                <data
-                    android:host="exclusive.tokopedia.net"
-                    android:scheme="https"/>
+                <!--<data-->
+                    <!--android:host="exclusive.tokopedia.net"-->
+                    <!--android:scheme="https"/>-->
             </intent-filter>
         </activity>
         <activity
