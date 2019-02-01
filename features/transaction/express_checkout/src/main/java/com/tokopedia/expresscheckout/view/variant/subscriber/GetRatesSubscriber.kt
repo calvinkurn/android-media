@@ -27,7 +27,9 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         e.printStackTrace()
         view?.hideLoading()
         view?.onNeedToValidateButtonBuyVisibility()
-        view?.finishWithError(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
+        if (currentSpId == 0) {
+            view?.finishWithError(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
+        }
     }
 
     override fun onNext(ratesData: ShippingRecommendationData) {
@@ -48,12 +50,13 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                                         prepareViewModel(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
                                         return
                                     } else {
-                                        view?.setShippingError(product.error.errorMessage)
+                                        view?.setShippingCourierError(product.error.errorMessage)
+                                        view?.updateShippingData(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
                                         return
                                     }
                                 }
                             }
-                            view?.setShippingError("Toko tidak mendukung durasi pengiriman ini")
+                            view?.setShippingDurationError("Toko tidak mendukung durasi pengiriman ini")
                             return
                         } else {
                             // First time load rates data come here
@@ -80,7 +83,7 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         if (currentSpId == 0) {
             view?.finishWithError(ratesData.errorMessage)
         } else {
-            view?.setShippingError(ratesData.errorMessage)
+            view?.setShippingDurationError(ratesData.errorMessage)
         }
     }
 

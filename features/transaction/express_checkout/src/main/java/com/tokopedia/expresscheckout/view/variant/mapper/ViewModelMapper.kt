@@ -236,6 +236,7 @@ class ViewModelMapper : DataMapper {
         profileViewModel.shippingDurationId = userProfileModel?.shipmentModel?.serviceId ?: 0
         profileViewModel.isDefaultProfileCheckboxChecked = false
         profileViewModel.isDurationError = false
+        profileViewModel.isCourierError = false
         profileViewModel.isEditable = false
         profileViewModel.isSelected = true
         profileViewModel.isShowDefaultProfileCheckBox = false

@@ -45,9 +45,22 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 itemView.tv_profile_payment_detail.text = element.paymentDetail
                 itemView.tv_change_profile.setOnClickListener { listener.onClickEditProfile() }
                 itemView.img_bt_profile_show_more_shipping_duration.setOnClickListener { listener.onClickEditDuration() }
-                if (!element.isDurationError) {
+                if (element.isDurationError) {
+                    itemView.ll_profile_courier.visibility = View.GONE
+                    itemView.tv_profile_shipping_duration_error.text = element.durationErrorMessage
+                    itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE
+                    itemView.tv_profile_shipping_courier_error.visibility = View.GONE
+                    itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { }
+                } else if (element.isCourierError) {
                     itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
                     itemView.tv_profile_shipping_duration_error.visibility = View.GONE
+                    itemView.tv_profile_shipping_courier_error.text = element.courierErrorMessage
+                    itemView.tv_profile_shipping_courier_error.visibility = View.VISIBLE
+                    itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
+                } else {
+                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
+                    itemView.tv_profile_shipping_duration_error.visibility = View.GONE
+                    itemView.tv_profile_shipping_courier_error.visibility = View.GONE
                     if (element.shippingCourier.isNotEmpty()) {
                         itemView.ll_profile_courier.visibility = View.VISIBLE
                         itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
@@ -55,11 +68,6 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                     } else {
                         itemView.ll_profile_courier.visibility = View.GONE
                     }
-                } else {
-                    itemView.ll_profile_courier.visibility = View.GONE
-                    itemView.tv_profile_shipping_duration_error.text = element.durationErrorMessage
-                    itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE
-                    itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { }
                 }
                 listener.onNeedToValidateButtonBuyVisibility()
 

@@ -23,7 +23,9 @@ data class ProfileViewModel(
         var shippingCourier: String,
         var shippingCourierId: Int,
         var durationErrorMessage: String,
+        var courierErrorMessage: String,
         var isDurationError: Boolean,
+        var isCourierError: Boolean,
         var isSelected: Boolean,
         var isEditable: Boolean,
         var isShowDefaultProfileCheckBox: Boolean,
@@ -47,6 +49,8 @@ data class ProfileViewModel(
             parcel?.readString() ?: "",
             parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
@@ -74,7 +78,9 @@ data class ProfileViewModel(
         parcel.writeString(shippingCourier)
         parcel.writeInt(shippingCourierId)
         parcel.writeString(durationErrorMessage)
+        parcel.writeString(courierErrorMessage)
         parcel.writeByte(if (isDurationError) 1 else 0)
+        parcel.writeByte(if (isCourierError) 1 else 0)
         parcel.writeByte(if (isSelected) 1 else 0)
         parcel.writeByte(if (isEditable) 1 else 0)
         parcel.writeByte(if (isShowDefaultProfileCheckBox) 1 else 0)

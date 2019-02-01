@@ -56,7 +56,9 @@ interface CheckoutVariantContract {
 
         fun finishWithError(messages: String)
 
-        fun setShippingError(message: String)
+        fun setShippingDurationError(message: String)
+
+        fun setShippingCourierError(message: String)
 
         fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?)
 

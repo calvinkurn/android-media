@@ -637,11 +637,23 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun setShippingError(message: String) {
+    override fun setShippingDurationError(message: String) {
         val profileViewModel = fragmentViewModel.getProfileViewModel()
         if (profileViewModel != null) {
             profileViewModel.isDurationError = true
             profileViewModel.durationErrorMessage = message
+            profileViewModel.shippingCourierId = 0
+            profileViewModel.shippingDurationId = 0
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
+        }
+    }
+
+    override fun setShippingCourierError(message: String) {
+        val profileViewModel = fragmentViewModel.getProfileViewModel()
+        if (profileViewModel != null) {
+            profileViewModel.isCourierError = true
+            profileViewModel.courierErrorMessage = message
+            profileViewModel.shippingCourierId = 0
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
     }
