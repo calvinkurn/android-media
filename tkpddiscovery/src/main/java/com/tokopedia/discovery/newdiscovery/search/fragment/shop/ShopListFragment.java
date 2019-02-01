@@ -10,11 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -69,8 +69,8 @@ public class ShopListFragment extends SearchSectionFragment
     private boolean isLoadingData;
     private boolean isNextPageAvailable = true;
 
-    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
-    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerviewListener linearLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerviewListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
     public static ShopListFragment newInstance(String query) {
@@ -114,7 +114,7 @@ public class ShopListFragment extends SearchSectionFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
-        return inflater.inflate(R.layout.fragment_base_discovery, null);
+        return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }
 
     @Override
@@ -137,18 +137,18 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void initListener() {
-        gridLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getGridLayoutManager()) {
+        gridLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getGridLayoutManager()) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (isAllowLoadMore()) {
                     loadMoreShop(totalItemsCount - 1);
                 }
             }
         };
 
-        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getLinearLayoutManager()) {
+        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getLinearLayoutManager()) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (isAllowLoadMore()) {
                     loadMoreShop(totalItemsCount - 1);
                 }

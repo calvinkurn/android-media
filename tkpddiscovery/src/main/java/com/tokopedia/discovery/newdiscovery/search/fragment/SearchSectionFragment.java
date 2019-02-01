@@ -28,8 +28,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.core.share.ShareBottomSheet;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
