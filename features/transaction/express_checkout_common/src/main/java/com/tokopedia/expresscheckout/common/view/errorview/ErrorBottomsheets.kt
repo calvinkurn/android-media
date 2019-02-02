@@ -1,9 +1,10 @@
 package com.tokopedia.expresscheckout.common.view.errorview
 
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.expresscheckout.common.R
-import kotlinx.android.synthetic.main.fragment_bottomsheet_error.*
 
 /**
  * Created by Irfan Khoirul on 01/01/19.
@@ -11,35 +12,45 @@ import kotlinx.android.synthetic.main.fragment_bottomsheet_error.*
 
 class ErrorBottomsheets : BottomSheets() {
 
+    lateinit var tvMessage: TextView
+    lateinit var btnAction: ButtonCompat
+    lateinit var btnRetry: ButtonCompat
+
     companion object {
         val RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT = "RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT"
         val RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT = "RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT"
     }
 
     lateinit var actionListener: ErrorBottomsheetsActionListener
-    var title: String = ""
+    var title = ""
+    var message = ""
+    var action = ""
+    var enableRetry = false
 
     override fun getLayoutResourceId(): Int {
         return R.layout.fragment_bottomsheet_error
     }
 
-    override fun initView(view: View?) {
+    override fun initView(view: View) {
+        tvMessage = view.findViewById<View>(R.id.tv_message) as TextView
+        btnAction = view.findViewById<View>(R.id.btn_action) as ButtonCompat
+        btnRetry = view.findViewById<View>(R.id.btn_retry) as ButtonCompat
 
+        if (enableRetry) {
+            btnRetry.visibility = View.VISIBLE
+            btnRetry.setOnClickListener { actionListener.onRetryClicked() }
+        } else {
+            btnRetry.visibility = View.GONE
+        }
+
+        btnAction.setOnClickListener { actionListener.onActionButtonClicked() }
     }
 
     fun setData(title: String, message: String, action: String, enableRetry: Boolean) {
         this.title = title
-        tv_message.text = message
-        btn_action.text = action
-
-        if (enableRetry) {
-            btn_retry.visibility = View.VISIBLE
-            btn_retry.setOnClickListener { actionListener.onRetryClicked() }
-        } else {
-            btn_retry.visibility = View.GONE
-        }
-
-        btn_action.setOnClickListener { actionListener.onActionButtonClicked() }
+        this.message = message
+        this.action = action
+        this.enableRetry = enableRetry
     }
 
     override fun title(): String {

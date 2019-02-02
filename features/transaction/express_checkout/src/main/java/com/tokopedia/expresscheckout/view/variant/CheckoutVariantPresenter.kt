@@ -90,7 +90,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         view.showLoading()
         getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
         getCourierRecommendationUseCase.execute(
-                query, shippingParam, 0, 0, shopShipmentModels,
+                query, 0, shippingParam, 0, 0, shopShipmentModels,
                 GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
         )
     }

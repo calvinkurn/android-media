@@ -50,14 +50,14 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<ShippingRecommendationData> subscriber) {
-        query = getQueryWithParams(query, shopShipments, shippingParam);
-        executeQuery(query, selectedSpId, selectedServiceId, shopShipments, subscriber);
+        query = getQueryWithParams(query, codHistory, shopShipments, shippingParam);
+        executeQuery(query, codHistory, selectedSpId, selectedServiceId, shippingParam, shopShipments, subscriber);
     }
 
-    private void executeQuery(String query, int selectedSpId, int selectedServiceId,
+    private void executeQuery(String query, int codHistory, int selectedSpId, int selectedServiceId, ShippingParam shippingParam,
                               List<ShopShipment> shopShipments, Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
-        query = getQueryWithParams(query, codHistory, shipmentDetailData);
+        query = getQueryWithParams(query, codHistory, shopShipments, shippingParam);
 
         GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 

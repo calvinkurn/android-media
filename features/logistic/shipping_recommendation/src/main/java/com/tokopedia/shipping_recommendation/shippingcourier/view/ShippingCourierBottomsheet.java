@@ -182,10 +182,8 @@ public class ShippingCourierBottomsheet extends BottomSheets
         boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(
-                    courierItemData, presenter.getRecipientAddressModel(), cartPosition, isCod,
+                    shippingCourierViewModel, courierItemData, presenter.getRecipientAddressModel(), cartPosition, isCod,
                     !TextUtils.isEmpty(productData.getPromoCode()), isNeedPinpoint);
-                    shippingCourierViewModel, courierItemData, presenter.getRecipientAddressModel(), cartPosition, hasCourierPromo,
-                    !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode()), isNeedPinpoint);
         }
         dismiss();
     }

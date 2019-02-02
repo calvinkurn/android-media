@@ -1890,6 +1890,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 goToAtcExpress();
                             }
                         });
+                        errorBottomsheets.show(getFragmentManager(), "");
                     }
                 } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
                     checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
