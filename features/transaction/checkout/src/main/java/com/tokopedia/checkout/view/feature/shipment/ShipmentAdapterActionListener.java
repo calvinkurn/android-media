@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
+import android.view.View;
+
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -90,4 +92,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onPurchaseProtectionChangeListener(int position);
 
     void navigateToProtectionMore(String url);
+
+    void onNotifierClicked(String url);
 }

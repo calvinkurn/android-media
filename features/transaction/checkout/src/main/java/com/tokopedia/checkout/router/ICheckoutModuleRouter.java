@@ -9,6 +9,7 @@ import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 
 import java.security.PublicKey;
 
@@ -68,4 +69,6 @@ public interface ICheckoutModuleRouter {
     Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
 
     Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
+
+    Intent getCodPageIntent(Context context, Data data);
 }

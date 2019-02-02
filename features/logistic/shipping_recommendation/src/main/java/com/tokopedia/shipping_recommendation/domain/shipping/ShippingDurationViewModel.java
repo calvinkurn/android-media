@@ -18,6 +18,8 @@ public class ShippingDurationViewModel implements Parcelable {
     private boolean selected;
     private boolean showShowCase;
     private String errorMessage;
+    private boolean isCodAvailable;
+    private String codText;
 
     public ShippingDurationViewModel() {
     }
@@ -94,5 +96,21 @@ public class ShippingDurationViewModel implements Parcelable {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public boolean isCodAvailable() {
+        return isCodAvailable;
+    }
+
+    public void setCodAvailable(boolean codAvailable) {
+        isCodAvailable = codAvailable;
+    }
+
+    public String getCodText() {
+        return codText;
+    }
+
+    public void setCodText(String codText) {
+        this.codText = codText;
     }
 }

@@ -48,9 +48,8 @@ dependencies {
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.logisticdistrictrecommendation)
     implementation project(rootProject.ext.features.logisticinsurance)
-
+    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.wishlistCommon)
-
     implementation project(rootProject.ext.features.shippingRecommendation)
 
     implementation rootProject.ext.playServicesDependencies.perfMon
@@ -63,6 +62,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {

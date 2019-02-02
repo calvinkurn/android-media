@@ -38,6 +38,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHold
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
@@ -47,15 +48,18 @@ import com.tokopedia.checkout.view.feature.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -66,6 +70,23 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet;
+import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -85,6 +106,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -105,6 +127,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
+
+    private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
+    private static final int REQUEST_CODE_COD = 1218;
     private static final String SHIPMENT_TRACE = "mp_shipment";
 
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
@@ -115,6 +140,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
+    public static final String BOTTOM_SHEET_TAG = "BOTTOM_SHEET_TAG";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -122,6 +148,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private CardView cardFooter;
     private TextView tvTotalPayment;
     private TextView tvSelectPaymentMethod;
+    private TextView tvSelectCodPayment;
     private TkpdProgressDialog progressDialogNormal;
     // For regular shipment
     private CourierBottomsheet courierBottomsheet;
@@ -148,6 +175,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
+    @Inject
+    CodAnalytics mTrackerCod;
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
 
@@ -263,6 +292,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cardFooter = view.findViewById(R.id.card_footer);
         tvTotalPayment = view.findViewById(R.id.tv_total_payment);
         tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
+        tvSelectCodPayment = view.findViewById(R.id.tv_select_cod);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new CartItemDecoration());
@@ -270,7 +300,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shipmentAdapter.checkDropshipperValidation();
+                shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
             }
         });
     }
@@ -339,6 +369,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.clearData();
         rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvShipment.setAdapter(shipmentAdapter);
+
+        CodModel tempCod = shipmentPresenter.getCodData();
+        if (tempCod != null && tempCod.isCod()) {
+            shipmentAdapter.addNotifierData(new ShipmentNotifierModel(
+                    tempCod.getMessageInfo(),
+                    tempCod.getMessageLink()
+            ));
+            mTrackerCod.eventViewBayarDiTempat();
+            tvSelectCodPayment.setVisibility(View.VISIBLE);
+            tvSelectCodPayment.setOnClickListener(this::proceedCod);
+        }
+
         shipmentAdapter.addPromoVoucherData(promoData);
         if (promoData != null) {
             cartPromoSuggestion.setVisible(false);
@@ -470,8 +512,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         PromoData promoData = shipmentAdapter.getPromoData();
         CartPromoSuggestion cartPromoSuggestion = shipmentPresenter.getCartPromoSuggestion();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-        if (recipientAddressModel != null) {
-            recipientAddressModel.setFromPdp(isFromPdp);
+        if (recipientAddressModel != null && isFromPdp) {
+            recipientAddressModel.setDisableMultipleAddress(true);
         }
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         ShipmentDonationModel shipmentDonationModel = shipmentPresenter.getShipmentDonationModel();
@@ -631,6 +673,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void setCourierPromoApplied(int itemPosition) {
         shipmentAdapter.setCourierPromoApplied(itemPosition);
+    }
+
+    @Override
+    public void proceedCod(View view) {
+        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
+    }
+
+    @Override
+    public void showBottomSheetError(String htmlMessage) {
+        if (getFragmentManager() != null) {
+            CodBottomSheetFragment bottomSheet = CodBottomSheetFragment.newInstance(htmlMessage);
+            bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
+        }
+    }
+
+    @Override
+    public void navigateToCodConfirmationPage(Data data) {
+        Intent intent = checkoutModuleRouter.getCodPageIntent(getContext(), data);
+        startActivity(intent);
     }
 
     @Override
@@ -960,7 +1021,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             !currentAddress.getDestinationDistrictId().equals(newAddress.getDestinationDistrictId()) ||
                             !currentAddress.getCityId().equals(newAddress.getCityId()) ||
                             !currentAddress.getProvinceId().equals(newAddress.getProvinceId())) {
-                        newAddress.setFromPdp(isOneClickShipment());
+                        if (isOneClickShipment() || (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod())) {
+                            newAddress.setDisableMultipleAddress(true);
+                        }
                         shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null).getChangeAddressRequestData());
                         shipmentPresenter.changeShippingAddress(newAddress, isOneClickShipment());
                     }
@@ -1145,13 +1208,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration) {
-        checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(isCourierPromo, duration);
+    public void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod) {
+        checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(isCourierPromo, duration, isCod);
     }
 
     @Override
-    public void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId) {
-        checkoutAnalyticsCourierSelection.eventClickChangeCourierOption(isCourierPromo, shippingProductId);
+    public void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod) {
+        checkoutAnalyticsCourierSelection.eventClickChangeCourierOption(isCourierPromo, shippingProductId, isCod);
     }
 
     @Override
@@ -1325,10 +1388,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onDropshipperValidationResult(boolean result, Object shipmentData,
-                                              int errorPosition) {
+                                              int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
-            shipmentPresenter.processCheckShipmentPrepareCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
-            shipmentPresenter.processSaveShipmentState();
+            switch (requestCode) {
+                case REQUEST_CODE_NORMAL_CHECKOUT:
+                    shipmentPresenter.processCheckShipmentPrepareCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
+                    shipmentPresenter.processSaveShipmentState();
+                    break;
+                case REQUEST_CODE_COD:
+                    shipmentPresenter.proceedCodCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
+            }
+
         } else if (shipmentData != null && !result) {
             sendAnalyticsDropshipperNotComplete();
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
@@ -1455,7 +1525,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChoosePaymentMethodButtonClicked() {
-        shipmentAdapter.checkDropshipperValidation();
+        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
     }
 
     @Override
@@ -1495,9 +1565,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         // Has courier promo means that one of duration has promo, not always current selected duration.
         // It's for analytics purpose
         if (shippingCourierViewModels.size() > 0) {
+            ServiceData serviceData = shippingCourierViewModels.get(0).getServiceData();
             sendAnalyticsOnClickDurationThatContainPromo(
-                    shippingCourierViewModels.get(0).getServiceData().getIsPromo() == 1,
-                    shippingCourierViewModels.get(0).getServiceData().getServiceName()
+                    (serviceData.getIsPromo() == 1),
+                    serviceData.getServiceName(), (serviceData.getCodData().getIsCod() == 1)
             );
         }
         if (flagNeedToSetPinpoint) {
@@ -1600,8 +1671,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
-                                 int cartItemPosition, boolean hasCourierPromo, boolean isPromoCourier, boolean isNeedPinpoint) {
-        sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId());
+                                 int cartItemPosition, boolean isCod, boolean hasCourierPromo, boolean isPromoCourier, boolean isNeedPinpoint) {
+        sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId(), isCod);
         if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                 recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
                 recipientAddressModel.getLongitude() == null ||
@@ -1651,10 +1722,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void showShippingDurationBottomsheet(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, List<ShopShipment> shopShipmentList, int cartPosition) {
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
+        int codHistory = -1;
+        if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
+            codHistory = shipmentPresenter.getCodData().getCounterCod();
+        }
         if (shipmentDetailData != null) {
             shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                     shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                    recipientAddressModel, cartPosition);
+                    recipientAddressModel, cartPosition, codHistory);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
@@ -1785,6 +1860,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         mTrackerPurchaseProtection.eventClickOnPelajari(url);
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
                 getString(R.string.title_activity_checkout_webview));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onNotifierClicked(String url) {
+        mTrackerCod.eventClickPelajariSelengkapnya();
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
+                getString(R.string.title_activity_checkout_tnc_webview),
+                CheckoutWebViewActivity.CALLER_CODE_COD);
         startActivity(intent);
     }
 

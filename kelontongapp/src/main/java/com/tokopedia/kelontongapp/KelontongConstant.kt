@@ -17,9 +17,9 @@ const val TARGET_APP = "mitraapp"
 
 const val NOTIFICATION_ID_GENERAL = 1600
 
-const val PREFERENCES_MITRA_APPLICATION = "mitra_application";
-const val PREFERENCES_FIREBASE_TOKEN = "mitra_firebase_token";
-const val PREFERENCES_FIRST_TIME = "mitra_first_time";
+const val PREFERENCES_MITRA_APPLICATION = "mitra_application"
+const val PREFERENCES_FIREBASE_TOKEN = "mitra_firebase_token"
+const val PREFERENCES_FIRST_TIME = "mitra_first_time"
 
 const val EVENT_NAME = "eventName"
 const val EVENT_VALUE = "eventValue"

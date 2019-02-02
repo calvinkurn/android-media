@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
@@ -38,7 +39,9 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -100,7 +103,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvFreeReturnLabel;
     private TextView tvPreOrder;
     private TextView tvCashback;
-    private LinearLayout llProductPoliciesLayout;
+    private FlexboxLayout llProductPoliciesLayout;
     private TextView tvItemCountAndWeight;
     private TextView tvNoteToSellerLabel;
     private TextView tvOptionalNoteToSeller;
@@ -683,7 +686,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            if (!shipmentDetailData.getSelectedCourier().isAllowDropshiper()) {
+            ShipmentItemData shipmentItemData = shipmentDetailData.getSelectedShipment();
+            if (shipmentItemData != null && (shipmentItemData.getServiceId() == CourierConstant.SERVICE_ID_INSTANT
+                    || shipmentItemData.getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY)) {
                 String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
                 String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
                 tvTickerInfo.setText(tickerInfo);

@@ -43,7 +43,8 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

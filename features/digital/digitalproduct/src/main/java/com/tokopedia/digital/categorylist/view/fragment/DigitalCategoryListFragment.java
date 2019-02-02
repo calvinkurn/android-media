@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
@@ -11,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -38,6 +40,7 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.ticker.TickerView;
+import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
@@ -90,6 +93,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private DigitalItemHeaderHolder headerSubscription;
     private DigitalItemHeaderHolder headerFavNumber;
     private TickerView tickerView;
+    private WarningTickerView terminateAnnouncementTicker;
+    private LinearLayout terminateAnnouncementLayout;
     private View separatorForTicker;
 
     private CompositeSubscription compositeSubscription;
@@ -214,6 +219,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         headerFavNumber = view.findViewById(R.id.header_fav_number);
         tickerView = view.findViewById(R.id.ticker_view);
         separatorForTicker = view.findViewById(R.id.separator_for_ticker);
+        terminateAnnouncementTicker = view.findViewById(R.id.ticker_terminate_announcement);
+        terminateAnnouncementLayout = view.findViewById(R.id.terminate_announcement_view);
 
         refreshHandler = new RefreshHandler(getActivity(), view, this);
 
@@ -304,6 +311,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         refreshHandler.finishRefresh();
         rvDigitalCategoryList.setLayoutManager(gridLayoutManager);
         adapter.addAllDataList(digitalCategoryListDataState);
+        if (GlobalConfig.isSellerApp()){
+            renderTerminateTicker();
+        }
     }
 
     @Override
@@ -540,5 +550,13 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private void hideCouponAppliedTicker() {
         tickerView.setVisibility(View.GONE);
         separatorForTicker.setVisibility(View.GONE);
+    }
+
+    private void renderTerminateTicker(){
+        terminateAnnouncementLayout.setVisibility(View.VISIBLE);
+        terminateAnnouncementTicker.setDescription(getString(R.string.digital_terminate_announcement));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            terminateAnnouncementTicker.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+        }
     }
 }

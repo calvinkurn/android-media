@@ -15,6 +15,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,16 +2,10 @@ package com.tokopedia.topchat.chattemplate.view.presenter;
 
 import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
+import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
-import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
@@ -31,15 +25,12 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
     private final SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase;
     private GetTemplateUseCase getTemplateUseCase;
-    private SessionHandler sessionHandler;
 
     @Inject
     TemplateChatSettingPresenter(GetTemplateUseCase getTemplateUseCase,
-                                 SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase,
-                                 SessionHandler sessionHandler) {
+                                 SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase) {
         this.getTemplateUseCase = getTemplateUseCase;
         this.setAvailabilityTemplateUseCase = setAvailabilityTemplateUseCase;
-        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -76,10 +67,10 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
                 if (temp == null) {
                     size = 0;
                     temp = new ArrayList<>();
-                }else {
+                } else {
                     size = temp.size();
                 }
-                temp.add(new TemplateChatModel(false,size));
+                temp.add(new TemplateChatModel(false, size));
                 getView().setTemplate(temp);
                 getView().setChecked(getTemplateViewModel.isEnabled());
                 getView().finishLoading();
@@ -99,14 +90,14 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
             @Override
             public void onError(Throwable e) {
-                getView().showError(ErrorHandler.getErrorMessage(e));
+                getView().showError(e);
                 getView().setChecked(!enabled);
                 getView().finishLoading();
             }
 
             @Override
             public void onNext(GetTemplateViewModel getTemplateViewModel) {
-                if(getTemplateViewModel.isSuccess()) {
+                if (getTemplateViewModel.isSuccess()) {
                     getView().successSwitch();
                 }
                 getView().finishLoading();
@@ -127,7 +118,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
             @Override
             public void onError(Throwable e) {
-                getView().showError(ErrorHandler.getErrorMessage(e));
+                getView().showError(e);
                 getView().revertArrange(from, to);
                 getView().finishLoading();
             }

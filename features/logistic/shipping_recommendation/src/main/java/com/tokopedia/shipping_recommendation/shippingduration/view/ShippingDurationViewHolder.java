@@ -30,9 +30,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvError;
     private TextView tvDuration;
     private TextView tvPrice;
+    private TextView tvCod;
     private ImageView imgCheck;
-    private View vSeparatorPrice;
-    private View vSeparatorError;
     private TextView tvDurationHeaderInfo;
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
@@ -53,11 +52,10 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvDuration = itemView.findViewById(R.id.tv_duration);
         tvPrice = itemView.findViewById(R.id.tv_price);
         imgCheck = itemView.findViewById(R.id.img_check);
-        vSeparatorPrice = itemView.findViewById(R.id.v_separator_price);
-        vSeparatorError = itemView.findViewById(R.id.v_separator_error);
         tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info);
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
+        tvCod = itemView.findViewById(R.id.tv_cod_availability);
     }
 
     public void bindData(ShippingDurationViewModel shippingDurationViewModel,
@@ -75,19 +73,17 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             tvPrice.setVisibility(View.GONE);
             tvError.setText(shippingDurationViewModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
-            vSeparatorPrice.setVisibility(View.GONE);
-            vSeparatorError.setVisibility(View.VISIBLE);
         } else {
             tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.black_70));
             tvError.setVisibility(View.GONE);
             tvPrice.setText(shippingDurationViewModel.getServiceData().getTexts().getTextRangePrice());
             tvPrice.setVisibility(View.VISIBLE);
-            vSeparatorError.setVisibility(View.GONE);
-            vSeparatorPrice.setVisibility(View.VISIBLE);
         }
 
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);
+        tvCod.setText(shippingDurationViewModel.getCodText());
+        tvCod.setVisibility(shippingDurationViewModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

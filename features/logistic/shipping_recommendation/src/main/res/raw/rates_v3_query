@@ -14,6 +14,7 @@
       order_value:"$order_value"
       cat_id:"$cat_id"
       lang:"$lang"
+      user_history:$user_history
   }) {
   ratesv3 {
     id
@@ -47,6 +48,10 @@
             error_message
         }
         status
+        cod {
+            is_cod
+            cod_text
+        }
         products {
             shipper_name
             shipper_id
@@ -83,6 +88,12 @@
             error {
                 error_id
                 error_message
+            }
+            cod {
+                is_cod_available
+                cod_price
+                cod_text
+                formatted_price
             }
         }
     }
