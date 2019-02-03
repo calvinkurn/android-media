@@ -78,6 +78,16 @@ val fieldNotProvided = """
     |}
 """.trimMargin()
 
+val stringContainNullWord = """
+    |{
+    |   "name": "Tokopedia",
+    |   "isGold": true,
+    |   "address": {
+    |       "alias": ["hahaha \"null\": Nullability is important in kotlin"]
+    |   }
+    |}
+""".trimMargin()
+
 
 public class NullCheckerTest {
 
@@ -123,6 +133,13 @@ public class NullCheckerTest {
         val actual = isContainNull(shop)
         Assert.assertFalse(actual)
         Assert.assertEquals("", shop.name)
+    }
+
+    @Test
+    fun shouldReturnNotErrorGivenContainingNullAsAWord() {
+        val shop = gson.fromJson(stringContainNullWord, Shop::class.java)
+        val actual = isContainNull(shop)
+        Assert.assertFalse(actual)
     }
 
     @Test(expected = ContainNullException::class)
