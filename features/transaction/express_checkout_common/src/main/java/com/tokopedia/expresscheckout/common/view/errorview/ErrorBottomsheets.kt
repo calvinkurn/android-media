@@ -40,7 +40,9 @@ class ErrorBottomsheets : BottomSheets() {
         btnAction.setOnClickListener { actionListener.onActionButtonClicked() }
         if (enableRetry) {
             btnRetry.visibility = View.VISIBLE
-            btnRetry.setOnClickListener { actionListener.onRetryClicked() }
+            btnRetry.setOnClickListener {
+                (actionListener as ErrorBottomsheetsActionListenerWithRetry).onRetryClicked()
+            }
         } else {
             btnRetry.visibility = View.GONE
         }

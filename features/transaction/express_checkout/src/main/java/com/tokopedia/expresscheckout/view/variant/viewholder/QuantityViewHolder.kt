@@ -91,6 +91,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
     private fun commitQuantityChange(element: QuantityViewModel) {
         setupMinButton(element)
         setupPlusButton(element)
+        listener.onNeedToValidateButtonBuyVisibility()
         if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
             listener.onChangeQuantity(element)
         }

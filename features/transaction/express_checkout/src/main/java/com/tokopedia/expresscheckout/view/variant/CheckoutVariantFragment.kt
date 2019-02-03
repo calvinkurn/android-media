@@ -445,14 +445,17 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         var hasError = false
         when {
             fragmentViewModel.getProfileViewModel()?.isDurationError == true -> hasError = true
+            fragmentViewModel.getProfileViewModel()?.isCourierError == true -> hasError = true
             fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
         }
 
         if (activity != null) {
             if (hasError) {
                 bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+                bt_buy.setOnClickListener { }
             } else {
                 bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+                bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentViewModel) }
             }
         }
     }
@@ -629,7 +632,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         onSummaryChanged(fragmentViewModel.getSummaryViewModel())
 
         rl_bottom_action_container.visibility = View.VISIBLE
-        bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentViewModel) }
         img_total_payment_info.setOnClickListener {
             recyclerView.smoothScrollToPosition(adapter.data.size - 1)
         }
@@ -684,6 +686,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 showErrorPinpoint(productData, profileViewModel)
             } else {
+                profileViewModel.isCourierError = productData.error.errorMessage.isNotEmpty()
                 profileViewModel.isDurationError = false
                 profileViewModel.shippingCourier = productData.shipperName
                 profileViewModel.shippingCourierId = productData.shipperProductId
@@ -800,6 +803,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             currentProfileViewModel.isStateHasRemovedProfile = false
             currentProfileViewModel.isSelected = true
             currentProfileViewModel.isDurationError = false
+            currentProfileViewModel.isCourierError = false
             currentProfileViewModel.isStateHasChangedProfile = true
             currentProfileViewModel.isShowDefaultProfileCheckBox =
                     selectedProfileViewModel.profileId != currentProfileViewModel.profileId
