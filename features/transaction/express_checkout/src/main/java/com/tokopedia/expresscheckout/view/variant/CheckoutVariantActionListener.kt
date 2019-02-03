@@ -1,6 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant
 
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by Irfan Khoirul on 03/12/18.
@@ -41,4 +42,6 @@ interface CheckoutVariantActionListener {
     fun onNeedToRecalculateRatesAfterChangeTemplate()
 
     fun onNeedToUpdateOnboardingStatus()
+
+    fun onGetCompositeSubscriber(): CompositeSubscription
 }

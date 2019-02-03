@@ -469,6 +469,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         setOnboardingStateHasNotShown(activity, false)
     }
 
+    override fun onGetCompositeSubscriber(): CompositeSubscription {
+        return compositeSubscription
+    }
+
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
         val quantityViewModel = fragmentViewModel.getQuantityViewModel()
         if (quantityViewModel != null) {

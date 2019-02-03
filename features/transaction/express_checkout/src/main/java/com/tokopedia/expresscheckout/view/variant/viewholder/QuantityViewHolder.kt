@@ -9,12 +9,26 @@ import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.QuantityViewModel
 import kotlinx.android.synthetic.main.item_quantity_detail_product_page.view.*
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<QuantityViewModel>(view) {
+class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
+
+    private var actionListener: CheckoutVariantActionListener
+    private lateinit var quantityChangeDebounceListener: QuantityChangeDebounceListener
+    private lateinit var element: QuantityViewModel
+
+    constructor(view: View, listener: CheckoutVariantActionListener) : super(view) {
+        this.actionListener = listener
+        initUpdateShippingRatesDebouncer()
+    }
 
     companion object {
         val LAYOUT = R.layout.item_quantity_detail_product_page
@@ -22,6 +36,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
 
     override fun bind(element: QuantityViewModel?) {
         if (element != null) {
+            this.element = element
             if (element.orderQuantity == 0) {
                 itemView.et_qty.setText(element.minOrderQuantity.toString())
             } else {
@@ -46,12 +61,8 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
                         e.printStackTrace()
                         element.orderQuantity = 0
                     }
-                    if (newQuantity != previousQuantity) {
-                        itemView.et_qty.setSelection(itemView.et_qty.length())
-                        previousQuantity = newQuantity
-                        element.orderQuantity = newQuantity
-                        commitQuantityChange(element)
-                    }
+                    val quantityModel = QuantityModel(previousQuantity, newQuantity)
+                    quantityChangeDebounceListener.onDoNext(quantityModel)
                 }
             })
 
@@ -91,9 +102,9 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
     private fun commitQuantityChange(element: QuantityViewModel) {
         setupMinButton(element)
         setupPlusButton(element)
-        listener.onNeedToValidateButtonBuyVisibility()
+        actionListener.onNeedToValidateButtonBuyVisibility()
         if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-            listener.onChangeQuantity(element)
+            actionListener.onChangeQuantity(element)
         }
     }
 
@@ -122,5 +133,44 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
 
         return needToUpdateView
     }
+
+    private fun initUpdateShippingRatesDebouncer() {
+        actionListener.onGetCompositeSubscriber().add(Observable.create(Observable.OnSubscribe<QuantityModel> { subscriber ->
+            quantityChangeDebounceListener = object : QuantityChangeDebounceListener {
+                override fun onDoNext(quantityModel: QuantityModel) {
+                    subscriber.onNext(quantityModel)
+                }
+            }
+        }).debounce(1000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<QuantityModel>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(quantityModel: QuantityModel) {
+                        if (quantityModel.newQuantity != quantityModel.previousQuantity) {
+                            itemView.et_qty.setSelection(itemView.et_qty.length())
+                            quantityModel.previousQuantity = quantityModel.newQuantity
+                            element.orderQuantity = quantityModel.newQuantity
+                            commitQuantityChange(element)
+                        }
+                    }
+                }))
+    }
+
+    private interface QuantityChangeDebounceListener {
+        fun onDoNext(quantityModel: QuantityModel)
+    }
+
+    data class QuantityModel(
+            var previousQuantity: Int,
+            var newQuantity: Int
+    )
 
 }
