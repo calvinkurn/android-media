@@ -568,6 +568,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
 
             override fun onRetryClicked() {
+                errorBottomSheets.dismiss()
                 when (retryAction) {
                     RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT -> {
                         presenter.checkoutExpress(fragmentViewModel)

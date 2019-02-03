@@ -1882,11 +1882,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         errorBottomsheets.setActionListener(new ErrorBottomsheetsActionListener() {
                             @Override
                             public void onActionButtonClicked() {
+                                errorBottomsheets.dismiss();
                                 checkVariant(SOURCE_BUTTON_BUY_PDP);
                             }
 
                             @Override
                             public void onRetryClicked() {
+                                errorBottomsheets.dismiss();
                                 goToAtcExpress();
                             }
                         });

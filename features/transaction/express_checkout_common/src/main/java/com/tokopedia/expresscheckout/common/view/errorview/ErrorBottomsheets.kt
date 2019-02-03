@@ -32,18 +32,18 @@ class ErrorBottomsheets : BottomSheets() {
     }
 
     override fun initView(view: View) {
-        tvMessage = view.findViewById<View>(R.id.tv_message) as TextView
         btnAction = view.findViewById<View>(R.id.btn_action) as ButtonCompat
         btnRetry = view.findViewById<View>(R.id.btn_retry) as ButtonCompat
-
+        tvMessage = view.findViewById<View>(R.id.tv_message) as TextView
+        tvMessage.text = message
+        btnAction.text = action
+        btnAction.setOnClickListener { actionListener.onActionButtonClicked() }
         if (enableRetry) {
             btnRetry.visibility = View.VISIBLE
             btnRetry.setOnClickListener { actionListener.onRetryClicked() }
         } else {
             btnRetry.visibility = View.GONE
         }
-
-        btnAction.setOnClickListener { actionListener.onActionButtonClicked() }
     }
 
     fun setData(title: String, message: String, action: String, enableRetry: Boolean) {

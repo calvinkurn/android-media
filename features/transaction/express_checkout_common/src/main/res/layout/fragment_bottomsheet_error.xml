@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_32">
 
     <TextView
         android:id="@+id/tv_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
         android:fontFamily="sans-serif"
-        android:letterSpacing="0.01"
         android:lineSpacingExtra="4sp"
         android:textColor="#8a000000"
         android:textSize="14sp"
@@ -22,6 +26,10 @@
         android:id="@+id/btn_action"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
         android:text="Pilih Metode Pembayaran Lain"
         app:buttonCompatSize="medium"
         app:buttonCompatType="primary" />
@@ -30,6 +38,10 @@
         android:id="@+id/btn_retry"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/bg_rectangle_grey"
         android:text="Coba Lagi"
         app:buttonCompatSize="medium" />

@@ -26,9 +26,7 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         e.printStackTrace()
         view?.hideLoading()
         view?.onNeedToValidateButtonBuyVisibility()
-        if (currentSpId == 0) {
-            view?.finishWithError("")
-        }
+        view?.setShippingDurationError("Toko tidak mendukung durasi pengiriman ini")
     }
 
     override fun onNext(ratesData: ShippingRecommendationData) {
