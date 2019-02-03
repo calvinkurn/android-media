@@ -23,6 +23,7 @@ import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter
@@ -551,10 +552,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 errorBottomsheets.dismiss()
                 showDurationOptions()
             }
-
-            override fun onRetryClicked() {
-                // do nothing
-            }
         }
     }
 
@@ -564,16 +561,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
             }
-
-            override fun onRetryClicked() {
-                // do nothing
-            }
         }
     }
 
     override fun showErrorAPI(retryAction: String) {
         showBottomSheetError("Terjadi kendala teknis", "Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi", "Lanjutkan Tanpa Template", true)
-        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
+        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListenerWithRetry {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
                 presenter.checkoutOneClickShipment(fragmentViewModel)
@@ -600,10 +593,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 errorBottomsheets.dismiss()
                 presenter.hitOldCheckout(fragmentViewModel)
             }
-
-            override fun onRetryClicked() {
-                // do nothing
-            }
         }
     }
 
@@ -617,10 +606,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 locationPass.districtName = profileViewModel.districtName
                 locationPass.cityName = profileViewModel.cityName
                 if (activity != null) startActivityForResult(router.getGeolocationIntent(activity as Context, locationPass), REQUEST_CODE_GEOLOCATION)
-            }
-
-            override fun onRetryClicked() {
-                // do nothing
             }
         }
     }

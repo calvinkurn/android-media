@@ -52,6 +52,7 @@ import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAtt
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
@@ -1879,7 +1880,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 "Lanjutkan Tanpa Template",
                                 true
                         );
-                        errorBottomsheets.setActionListener(new ErrorBottomsheetsActionListener() {
+                        errorBottomsheets.setActionListener(new ErrorBottomsheetsActionListenerWithRetry() {
                             @Override
                             public void onActionButtonClicked() {
                                 errorBottomsheets.dismiss();
