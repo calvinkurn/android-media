@@ -2,7 +2,6 @@ package com.tokopedia.expresscheckout.view.profile.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 /**
  * Created by Irfan Khoirul on 01/01/19.

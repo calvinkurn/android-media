@@ -10,9 +10,9 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
@@ -31,6 +31,7 @@ import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListene
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
@@ -51,7 +52,7 @@ import com.tokopedia.transaction.common.data.cartcheckout.CheckoutData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
-import com.tokopedia.transactiondata.entity.request.*
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber
@@ -59,6 +60,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -68,20 +70,31 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         CheckoutVariantContract.View, CheckoutVariantActionListener, CheckoutProfileFragmentListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
-    val contextView: Context get() = activity!!
-    private lateinit var presenter: CheckoutVariantContract.Presenter
+    @Inject
+    lateinit var presenter: CheckoutVariantContract.Presenter
+    @Inject
+    lateinit var itemDecorator: CheckoutVariantItemDecorator
+    @Inject
+    lateinit var tkpdProgressDialog: TkpdProgressDialog
+    @Inject
+    lateinit var fragmentViewModel: FragmentViewModel
+    @Inject
+    lateinit var compositeSubscription: CompositeSubscription
+    @Inject
+    lateinit var checkoutProfileBottomSheet: CheckoutProfileBottomSheet
+    @Inject
+    lateinit var shippingDurationBottomsheet: ShippingDurationBottomsheet
+    @Inject
+    lateinit var shippingCourierBottomsheet: ShippingCourierBottomsheet
+    @Inject
+    lateinit var errorBottomsheets: ErrorBottomsheets
+
+    private lateinit var router: ExpressCheckoutRouter
     private lateinit var adapter: CheckoutVariantAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var errorBottomSheets: ErrorBottomsheets
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
-    private lateinit var fragmentViewModel: FragmentViewModel
-    private lateinit var tkpdProgressDialog: TkpdProgressDialog
-    private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
-    private lateinit var shippingDurationBottomsheet: ShippingDurationBottomsheet
-    private lateinit var shippingCourierBottomsheet: ShippingCourierBottomsheet
-    private lateinit var checkoutProfileBottomSheet: CheckoutProfileBottomSheet
-    private lateinit var router: ExpressCheckoutRouter
+
     var isDataLoaded = false
 
     companion object {
@@ -99,32 +112,35 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        presenter = CheckoutVariantPresenter()
-        presenter.attachView(this)
+    override fun initInjector() {
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerCheckoutVariantComponent.builder()
+                        .baseAppComponent(baseAppComponent.baseAppComponent)
+                        .build()
+                        .inject(this)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
-        tkpdProgressDialog = TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS)
 
         recyclerView = getRecyclerView(view)
-        recyclerView.addItemDecoration(CheckoutVariantItemDecorator())
-        (recyclerView.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
+        recyclerView.addItemDecoration(itemDecorator)
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-        errorBottomSheets = ErrorBottomsheets()
-        fragmentViewModel = FragmentViewModel()
-        compositeSubscription = CompositeSubscription()
         initUpdateShippingRatesDebouncer()
-
-        shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance()
-        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance()
-        checkoutProfileBottomSheet = CheckoutProfileBottomSheet.newInstance()
-        checkoutProfileBottomSheet.setListener(this)
-
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        presenter.attachView(this)
+        shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this)
+        shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this)
+        checkoutProfileBottomSheet.setListener(this)
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onAttach(context: Context?) {
@@ -235,10 +251,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onClickInsuranceInfo(insuranceInfo: String) {
         if (activity != null) {
-            val tooltip = Tooltip(contextView)
-            tooltip.setTitle(contextView.getString(R.string.title_bottomsheet_insurance))
+            val tooltip = Tooltip(activity as Context)
+            tooltip.setTitle(activity?.getString(R.string.title_bottomsheet_insurance))
             tooltip.setDesc(insuranceInfo)
-            tooltip.setTextButton(contextView.getString(R.string.label_button_bottomsheet_close))
+            tooltip.setTextButton(activity?.getString(R.string.label_button_bottomsheet_close))
             tooltip.setIcon(R.drawable.ic_insurance)
             tooltip.btnAction.setOnClickListener {
                 tooltip.dismiss()
@@ -431,10 +447,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
         }
 
-        if (hasError) {
-            bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
-        } else {
-            bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_orange_enabled)
+        if (activity != null) {
+            if (hasError) {
+                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+            } else {
+                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+            }
         }
     }
 
@@ -470,10 +488,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return null
     }
 
-    override fun initInjector() {
-
-    }
-
     override fun loadData(page: Int) {
         if (!isDataLoaded) {
             presenter.loadExpressCheckoutData(arguments?.get(ARGUMENT_ATC_REQUEST) as AtcRequestParam)
@@ -498,21 +512,19 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateCheckoutToOcs() {
-        startActivity(router.getCheckoutIntent(contextView))
+        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context))
         activity?.finish()
     }
 
     override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {
-        startActivityForResult(
+        if (activity != null) startActivityForResult(
                 TopPayActivity.createInstance(activity, paymentPassData),
-                TopPayActivity.REQUEST_CODE
-        )
+                TopPayActivity.REQUEST_CODE)
         activity?.finish()
     }
 
     override fun navigateCheckoutToThankYouPage(appLink: String) {
-        val intent = RouteManager.getIntent(contextView, appLink)
-        startActivity(intent)
+        if (activity != null) startActivity(RouteManager.getIntent(activity, appLink))
         activity?.finish()
     }
 
@@ -525,18 +537,18 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {
-        errorBottomSheets.setData(title, message, action, enableRetry)
-        if (errorBottomSheets.isVisible) {
-            errorBottomSheets.dismiss()
+        errorBottomsheets.setData(title, message, action, enableRetry)
+        if (errorBottomsheets.isVisible) {
+            errorBottomsheets.dismiss()
         }
-        errorBottomSheets.show(fragmentManager, title)
+        errorBottomsheets.show(fragmentManager, title)
     }
 
     override fun showErrorCourier(message: String) {
         showBottomSheetError("Pilih Kurir Lain", message, "Pilih Kurir Lain", false)
-        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
-                errorBottomSheets.dismiss()
+                errorBottomsheets.dismiss()
                 showDurationOptions()
             }
 
@@ -548,9 +560,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun showErrorNotAvailable(message: String) {
         showBottomSheetError("Produk tidak tersedia", message, "Tutup", false)
-        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
-                errorBottomSheets.dismiss()
+                errorBottomsheets.dismiss()
             }
 
             override fun onRetryClicked() {
@@ -561,14 +573,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun showErrorAPI(retryAction: String) {
         showBottomSheetError("Terjadi kendala teknis", "Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi", "Lanjutkan Tanpa Template", true)
-        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
-                errorBottomSheets.dismiss()
+                errorBottomsheets.dismiss()
                 presenter.checkoutOneClickShipment(fragmentViewModel)
             }
 
             override fun onRetryClicked() {
-                errorBottomSheets.dismiss()
+                errorBottomsheets.dismiss()
                 when (retryAction) {
                     RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT -> {
                         presenter.checkoutExpress(fragmentViewModel)
@@ -583,9 +595,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun showErrorPayment(message: String) {
         showBottomSheetError("Pilih Metode Pembayaran Lain", message, "Pilih Metode Pembayaran", false)
-        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
-                errorBottomSheets.dismiss()
+                errorBottomsheets.dismiss()
                 presenter.hitOldCheckout(fragmentViewModel)
             }
 
@@ -598,13 +610,13 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private fun showErrorPinpoint(productData: ProductData?, profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
         showBottomSheetError("Tandai Lokasi Pengiriman", productData?.error?.errorMessage
                 ?: "", "Tandai Lokasi", false)
-        errorBottomSheets.actionListener = object : ErrorBottomsheetsActionListener {
+        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
-                errorBottomSheets.dismiss()
+                errorBottomsheets.dismiss()
                 val locationPass = LocationPass()
                 locationPass.districtName = profileViewModel.districtName
                 locationPass.cityName = profileViewModel.cityName
-                startActivityForResult(router.getGeolocationIntent(contextView, locationPass), REQUEST_CODE_GEOLOCATION)
+                if (activity != null) startActivityForResult(router.getGeolocationIntent(activity as Context, locationPass), REQUEST_CODE_GEOLOCATION)
             }
 
             override fun onRetryClicked() {
@@ -663,9 +675,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         if (shippingCourierViewModels != null) {
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
         }
-
-        shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this)
-        shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this)
 
         val profileViewModel = fragmentViewModel.getProfileViewModel()
         val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
@@ -844,7 +853,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     override fun onNext(forceReload: Boolean) {
                         if (forceReload || fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
                                 fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
-                            bt_buy.background = ContextCompat.getDrawable(contextView, R.drawable.bg_button_disabled)
+                            if (activity != null) bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
                             fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                             fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
                             presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice?.toLong()

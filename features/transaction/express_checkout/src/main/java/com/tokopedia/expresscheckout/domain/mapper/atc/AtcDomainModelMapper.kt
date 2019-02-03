@@ -17,12 +17,13 @@ import com.tokopedia.transactiondata.entity.response.variantdata.Child
 import com.tokopedia.transactiondata.entity.response.variantdata.Option
 import com.tokopedia.transactiondata.entity.response.variantdata.ProductVariantData
 import com.tokopedia.transactiondata.entity.response.variantdata.Variant
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 17/12/18.
  */
 
-class AtcDomainModelMapper : AtcDataMapper {
+class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
 
     override fun convertToDomainModel(atcResponse: AtcResponse): AtcResponseModel {
         val responseModel = AtcResponseModel()

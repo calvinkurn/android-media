@@ -1,15 +1,14 @@
 package com.tokopedia.expresscheckout.domain.mapper.profile
 
-import com.tokopedia.expresscheckout.data.entity.response.Header
 import com.tokopedia.expresscheckout.data.entity.response.profile.*
-import com.tokopedia.expresscheckout.domain.model.HeaderModel
 import com.tokopedia.expresscheckout.domain.model.profile.*
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 17/12/18.
  */
 
-class ProfileDomainModelMapper : ProfileDataMapper {
+class ProfileDomainModelMapper @Inject constructor() : ProfileDataMapper {
 
     override fun convertToDomainModel(profileResponse: ProfileResponse): ProfileResponseModel {
         val profileResponseModel = ProfileResponseModel()

@@ -11,7 +11,7 @@ import rx.Subscriber
  * Created by Irfan Khoirul on 29/01/19.
  */
 
-class CheckoutSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter)
+class DoCheckoutSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter)
     : Subscriber<CheckoutData>() {
 
     override fun onCompleted() {

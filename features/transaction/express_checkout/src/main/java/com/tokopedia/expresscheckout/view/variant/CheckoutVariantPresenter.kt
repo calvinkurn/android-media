@@ -1,53 +1,46 @@
 package com.tokopedia.expresscheckout.view.variant
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.data.entity.request.Cart
-import com.tokopedia.expresscheckout.data.entity.request.CheckoutParam
-import com.tokopedia.expresscheckout.data.entity.request.CheckoutRequestParam
-import com.tokopedia.expresscheckout.data.entity.request.Profile
-import com.tokopedia.expresscheckout.data.entity.response.atc.AtcExpressGqlResponse
-import com.tokopedia.expresscheckout.data.entity.response.checkout.CheckoutExpressGqlResponse
+import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
+import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDomainModelMapper
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.expresscheckout.domain.usecase.DoAtcExpressUseCase
+import com.tokopedia.expresscheckout.domain.usecase.DoCheckoutExpressUseCase
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.expresscheckout.view.variant.subscriber.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transactiondata.entity.request.*
 import com.tokopedia.usecase.RequestParams
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.View>(), CheckoutVariantContract.Presenter {
+class CheckoutVariantPresenter @Inject constructor(val doAtcExpressUseCase: DoAtcExpressUseCase,
+                                                   val doCheckoutExpressUseCase: DoCheckoutExpressUseCase,
+                                                   val getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
+                                                   val atcDomainModelMapper: AtcDomainModelMapper,
+                                                   val checkoutDomainModelMapper: CheckoutDomainModelMapper,
+                                                   var viewModelMapper: ViewModelMapper) :
+        BaseDaggerPresenter<CheckoutVariantContract.View>(), CheckoutVariantContract.Presenter {
 
-    private val getExpressCheckoutFormUseCase = GraphqlUseCase()
-    private val checkoutExpressUseCase = GraphqlUseCase()
-    private lateinit var getCourierRecommendationUseCase: GetCourierRecommendationUseCase
     private lateinit var atcResponseModel: AtcResponseModel
-    private lateinit var viewModelMapper: ViewModelMapper
-
-    override fun attachView(view: CheckoutVariantContract.View?) {
-        super.attachView(view)
-    }
 
     override fun detachView() {
-        getExpressCheckoutFormUseCase.unsubscribe()
+        doAtcExpressUseCase.unsubscribe()
         getCourierRecommendationUseCase.unsubscribe()
-        checkoutExpressUseCase.unsubscribe()
+        doCheckoutExpressUseCase.unsubscribe()
         super.detachView()
     }
 
@@ -56,29 +49,15 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
     }
 
     override fun prepareViewModel(productData: ProductData) {
-        viewModelMapper = ViewModelMapper()
         view?.updateFragmentViewModel(atcResponseModel)
         view?.showData(viewModelMapper.convertToViewModels(atcResponseModel, productData))
     }
 
     override fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam) {
-        view.showLoading()
+        view?.showLoading()
 
-        val variables = getAtcParams(atcRequestParam)
-
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
-                R.raw.mutation_atc_express), AtcExpressGqlResponse::class.java, variables)
-        getExpressCheckoutFormUseCase.clearRequest()
-        getExpressCheckoutFormUseCase.addRequest(graphqlRequest)
-        getExpressCheckoutFormUseCase.execute(RequestParams.create(), AtcExpressSubscriber(view, this))
-    }
-
-    private fun getAtcParams(atcRequestParam: AtcRequestParam): HashMap<String, Any?> {
-        val variables = HashMap<String, Any?>()
-        val jsonTreeAtcRequest = Gson().toJsonTree(atcRequestParam)
-        val jsonObjectAtcRequest = jsonTreeAtcRequest.asJsonObject
-        variables.put("params", jsonObjectAtcRequest)
-        return variables
+        doAtcExpressUseCase.setParams(atcRequestParam)
+        doAtcExpressUseCase.execute(RequestParams.create(), DoAtcExpressSubscriber(view, this, atcDomainModelMapper))
     }
 
     override fun loadShippingRates(price: Long, quantity: Int, selectedServiceId: Int, selectedSpId: Int) {
@@ -87,8 +66,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
         val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
 
-        view.showLoading()
-        getCourierRecommendationUseCase = GetCourierRecommendationUseCase(ShippingDurationConverter())
+        view?.showLoading()
         getCourierRecommendationUseCase.execute(
                 query, 0, shippingParam, 0, 0, shopShipmentModels,
                 GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
@@ -119,14 +97,11 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
     }
 
     override fun checkoutExpress(fragmentViewModel: FragmentViewModel) {
-        view.showLoadingDialog()
+        view?.showLoadingDialog()
 
         if (fragmentViewModel.getProfileViewModel()?.isStateHasRemovedProfile == false) {
-            val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
-                    R.raw.mutation_checkout_express), CheckoutExpressGqlResponse::class.java, getCheckoutExpressParams(fragmentViewModel))
-            checkoutExpressUseCase.clearRequest()
-            checkoutExpressUseCase.addRequest(graphqlRequest)
-            checkoutExpressUseCase.execute(RequestParams.create(), CheckoutExpressSubscriber(view, this))
+            doCheckoutExpressUseCase.setParams(fragmentViewModel, getDataCheckoutRequest(fragmentViewModel))
+            doCheckoutExpressUseCase.execute(RequestParams.create(), DoCheckoutExpressSubscriber(view, this, checkoutDomainModelMapper))
         } else {
             checkoutOneClickShipment(fragmentViewModel)
         }
@@ -137,7 +112,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
                 ?.subscribeOn(Schedulers.io())
                 ?.unsubscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(OneClickShipmentSubscriber(view, this));
+                ?.subscribe(DoOneClickShipmentAtcSubscriber(view, this));
     }
 
     private fun getCheckoutOcsParams(fragmentViewModel: FragmentViewModel): AddToCartRequest {
@@ -168,37 +143,6 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
             productId = fragmentViewModel.getProductViewModel()?.parentId ?: 0
         }
         return productId
-    }
-
-    private fun getCheckoutExpressParams(fragmentViewModel: FragmentViewModel): HashMap<String, Any?> {
-        val cart = Cart()
-        cart.setDefaultProfile = fragmentViewModel.getProfileViewModel()?.isDefaultProfileCheckboxChecked
-        cart.promoCode = ""
-        cart.isDonation = 0
-        cart.data = arrayListOf(getDataCheckoutRequest(fragmentViewModel))
-
-        val checkoutParam = CheckoutParam()
-        //        checkoutParam.accountName =
-        //        checkoutParam.accountNumber =
-        //        checkoutParam.bankId =
-
-        val profile = Profile()
-        profile.addressId = fragmentViewModel.getProfileViewModel()?.addressId
-        profile.description = ""
-        profile.gatewayCode = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
-        profile.status = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
-        profile.profileId = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
-        profile.checkoutParam = checkoutParam
-
-        val checkoutRequestParam = CheckoutRequestParam()
-        checkoutRequestParam.carts = cart
-        checkoutRequestParam.profile = profile
-
-        val variables = HashMap<String, Any?>()
-        val jsonTreeCheckoutRequest = Gson().toJsonTree(checkoutRequestParam)
-        val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
-        variables.put("params", jsonObjectCheckoutRequest)
-        return variables
     }
 
     private fun getDataCheckoutRequest(fragmentViewModel: FragmentViewModel): DataCheckoutRequest {
@@ -239,7 +183,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
                 ?.subscribeOn(Schedulers.io())
                 ?.unsubscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(CheckoutSubscriber(view, this));
+                ?.subscribe(DoCheckoutSubscriber(view, this));
     }
 
     private fun getOldCheckoutParams(fragmentViewModel: FragmentViewModel): CheckoutRequest {

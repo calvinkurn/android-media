@@ -6,14 +6,22 @@ import android.view.ViewGroup
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileActionListener
 import com.tokopedia.expresscheckout.view.profile.viewholder.ProfileViewHolder
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 01/01/19.
  */
 
-class CheckoutProfileAdapter(val data: ArrayList<ProfileViewModel>, val listener: CheckoutProfileActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CheckoutProfileAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    public fun setData(newData: ArrayList<ProfileViewModel>) {
+    val data = ArrayList<ProfileViewModel>()
+    private lateinit var listener: CheckoutProfileActionListener
+
+    fun setListener(listener: CheckoutProfileActionListener) {
+        this.listener = listener
+    }
+
+    fun setData(newData: ArrayList<ProfileViewModel>) {
         data.clear()
         data.addAll(newData)
         notifyDataSetChanged()
@@ -37,6 +45,5 @@ class CheckoutProfileAdapter(val data: ArrayList<ProfileViewModel>, val listener
             holder.bind(data[position])
         }
     }
-
 
 }

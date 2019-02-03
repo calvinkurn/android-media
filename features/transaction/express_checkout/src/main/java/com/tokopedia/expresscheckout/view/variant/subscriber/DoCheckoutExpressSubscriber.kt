@@ -11,7 +11,9 @@ import rx.Subscriber
  * Created by Irfan Khoirul on 11/01/19.
  */
 
-class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter) :
+class DoCheckoutExpressSubscriber(val view: CheckoutVariantContract.View?,
+                                  val presenter: CheckoutVariantContract.Presenter,
+                                  val domainModelMapper: CheckoutDomainModelMapper) :
         Subscriber<GraphqlResponse>() {
 
     companion object {
@@ -28,8 +30,6 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
         val STATE_CHECKOUT_ERROR_FAILED_PAYMENT = 3
     }
 
-    lateinit var domainModelMapper: CheckoutDomainModelMapper
-
     override fun onCompleted() {
 
     }
@@ -43,9 +43,9 @@ class CheckoutExpressSubscriber(val view: CheckoutVariantContract.View?, val pre
     override fun onNext(response: GraphqlResponse) {
         view?.hideLoadingDialog()
         val checkoutResponse = response.getData<CheckoutExpressGqlResponse>(CheckoutExpressGqlResponse::class.java)
-        domainModelMapper = CheckoutDomainModelMapper()
         val checkoutResponseModel = domainModelMapper.convertToDomainModel(checkoutResponse.checkoutResponse)
-        val headerErrorCode = checkoutResponseModel.headerModel?.errorCode?.toInt() ?: 0
+        val headerErrorCode = if (checkoutResponseModel.headerModel?.errorCode?.isEmpty() == true) 0 else checkoutResponseModel.headerModel?.errorCode?.toInt()
+                ?: 0
         val dataErrorCode = if (checkoutResponseModel.checkoutDataModel?.error?.isEmpty() == true) 0 else checkoutResponseModel.checkoutDataModel?.error?.toInt()
                 ?: 0
         val headerMessage = if (checkoutResponseModel.headerModel?.messages?.isNotEmpty() == true) checkoutResponseModel.headerModel?.messages?.get(0)

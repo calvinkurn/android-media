@@ -8,11 +8,14 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.profile.adapter.CheckoutProfileAdapter
+import com.tokopedia.expresscheckout.view.profile.di.DaggerCheckoutProfileComponent
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 01/01/19.
@@ -20,8 +23,11 @@ import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 
 class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View, CheckoutProfileActionListener {
 
-    private lateinit var adapter: CheckoutProfileAdapter
-    private lateinit var presenter: CheckoutProfileContract.Presenter
+    @Inject
+    lateinit var presenter: CheckoutProfileContract.Presenter
+    @Inject
+    lateinit var adapter: CheckoutProfileAdapter
+
     private lateinit var listener: CheckoutProfileFragmentListener
     private lateinit var tvContinueWithoutTemplate: TextView
     private lateinit var pbLoading: ProgressBar
@@ -54,18 +60,25 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         arguments = bundle
     }
 
+    private fun initInjector() {
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerCheckoutProfileComponent.builder()
+                        .baseAppComponent(baseAppComponent.baseAppComponent)
+                        .build()
+                        .inject(this)
+            }
+        }
+    }
+
     override fun initView(view: View?) {
+        initInjector()
+
         tvContinueWithoutTemplate = view?.findViewById<View>(R.id.tv_continue_without_template) as TextView
         pbLoading = view.findViewById<View>(R.id.pb_loading) as ProgressBar
         rvProfile = view.findViewById<View>(R.id.rv_profile) as RecyclerView
         llNetworkErrorView = view.findViewById<View>(R.id.ll_network_error_view) as LinearLayout
-
-        presenter = CheckoutProfilePresenter()
-        presenter.attachView(this)
-        presenter.loadData()
-
-        adapter = CheckoutProfileAdapter(ArrayList(), this)
-
         tvContinueWithoutTemplate.setOnClickListener {
             for (profileViewModel: ProfileViewModel in adapter.data) {
                 profileViewModel.isSelected = false
@@ -74,6 +87,10 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         }
         rvProfile.adapter = adapter
         rvProfile.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+        adapter.setListener(this)
+        presenter.attachView(this)
+        presenter.loadData()
     }
 
     override fun showLoading() {

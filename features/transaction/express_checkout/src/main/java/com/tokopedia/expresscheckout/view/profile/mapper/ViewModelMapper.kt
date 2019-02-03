@@ -3,12 +3,13 @@ package com.tokopedia.expresscheckout.view.profile.mapper
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileResponseModel
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 16/01/19.
  */
 
-class ViewModelMapper : DataMapper {
+class ViewModelMapper @Inject constructor() : DataMapper {
 
     override fun convertToViewModels(profileResponseModel: ProfileResponseModel): ArrayList<ProfileViewModel> {
         val profileViewModels = ArrayList<ProfileViewModel>()

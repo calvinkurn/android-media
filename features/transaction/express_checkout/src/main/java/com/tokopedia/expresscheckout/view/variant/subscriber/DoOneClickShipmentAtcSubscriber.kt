@@ -9,7 +9,7 @@ import rx.Subscriber
  * Created by Irfan Khoirul on 23/01/19.
  */
 
-class OneClickShipmentSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter)
+class DoOneClickShipmentAtcSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter)
     : Subscriber<AddToCartResult>() {
 
     override fun onCompleted() {

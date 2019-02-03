@@ -1,18 +1,21 @@
 package com.tokopedia.expresscheckout.view.variant.mapper
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class ViewModelMapper : DataMapper {
+class ViewModelMapper @Inject constructor() : DataMapper {
 
     override fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()

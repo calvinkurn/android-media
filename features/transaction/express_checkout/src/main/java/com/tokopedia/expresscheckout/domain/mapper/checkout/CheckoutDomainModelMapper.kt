@@ -3,12 +3,13 @@ package com.tokopedia.expresscheckout.domain.mapper.checkout
 import com.tokopedia.expresscheckout.data.entity.response.checkout.*
 import com.tokopedia.expresscheckout.domain.model.HeaderModel
 import com.tokopedia.expresscheckout.domain.model.checkout.*
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 17/12/18.
  */
 
-class CheckoutDomainModelMapper : CheckoutDataMapper {
+class CheckoutDomainModelMapper @Inject constructor() : CheckoutDataMapper {
 
     override fun convertToDomainModel(checkoutResponse: CheckoutResponse): CheckoutResponseModel {
         val checkoutResponseModel = CheckoutResponseModel()

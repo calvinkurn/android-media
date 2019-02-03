@@ -11,7 +11,9 @@ import rx.Subscriber
  * Created by Irfan Khoirul on 08/01/19.
  */
 
-class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presenter: CheckoutVariantContract.Presenter) :
+class DoAtcExpressSubscriber(val view: CheckoutVariantContract.View?,
+                             val presenter: CheckoutVariantContract.Presenter,
+                             val domainModelMapper: AtcDomainModelMapper) :
         Subscriber<GraphqlResponse>() {
 
     companion object {
@@ -21,7 +23,6 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
         val NO_PROFILE_AND_REDIRECT_TO_NORMAL_ATC = 4
     }
 
-    private lateinit var domainModelMapper: AtcDomainModelMapper
     private lateinit var atcResponseModel: AtcResponseModel
 
     override fun onCompleted() {
@@ -46,7 +47,6 @@ class AtcExpressSubscriber(val view: CheckoutVariantContract.View?, val presente
                     }
                 }
             } else {
-                domainModelMapper = AtcDomainModelMapper()
                 atcResponseModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse.atcExpress)
                 presenter.setAtcResponseModel(atcResponseModel)
                 val productModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
