@@ -91,6 +91,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
             getView().showData(shippingDurationViewModelList);
             getView().stopTrace();
 
+            // load network
             /*getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
             getCourierRecommendationUseCase.execute(query, shipmentDetailData, selectedServiceId, shopShipmentList,

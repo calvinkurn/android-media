@@ -1244,7 +1244,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad) {
 
-        // remote
+        // load network
         /*String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
         getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
