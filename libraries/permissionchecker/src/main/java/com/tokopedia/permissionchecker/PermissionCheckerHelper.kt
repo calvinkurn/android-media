@@ -70,8 +70,9 @@ class PermissionCheckerHelper {
      */
     fun checkPermission(@NotNull context: Context,
                         @NotNull permission: String,
-                        @NotNull listener: PermissionCheckListener) {
-        checkPermissions(context, arrayOf(permission), listener)
+                        @NotNull listener: PermissionCheckListener,
+                        @NotNull rationaleText : String = "") {
+        checkPermissions(context, arrayOf(permission), listener, rationaleText)
     }
 
     /**
@@ -85,7 +86,8 @@ class PermissionCheckerHelper {
 
     fun checkPermissions(@NotNull context: Context,
                          @NotNull permissions: Array<String>,
-                         @NotNull listener: PermissionCheckListener) {
+                         @NotNull listener: PermissionCheckListener,
+                         @NotNull rationaleText : String = "") {
         this.listener = listener
 
         if (!(context is Activity || context is Fragment)) {
@@ -94,7 +96,7 @@ class PermissionCheckerHelper {
 
         try {
             if (!hasPermission(context, permissions)) {
-                onPermissionNotGranted(context, permissions, listener)
+                onPermissionNotGranted(context, permissions, listener, rationaleText)
             } else {
                 listener.onPermissionGranted()
             }
@@ -114,11 +116,11 @@ class PermissionCheckerHelper {
     }
 
     private fun onPermissionNotGranted(context: Context, permissions: Array<String>, listener:
-    PermissionCheckListener) {
+    PermissionCheckListener, rationaleText: String) {
         if (!permissions.isEmpty() && permissions.size > 1) {
 
             var permissionCount = 0
-            var permissionText = ""
+            var listPermissionText = ""
             val iterator = permissions.iterator()
             while (iterator.hasNext()) {
                 val permission = iterator.next()
@@ -126,19 +128,21 @@ class PermissionCheckerHelper {
                     permissionCount += 1
 
                     val permissionName = getPermissionName(context, permission)
-                    if (permissionText.isBlank()) {
-                        permissionText = permissionName
-                    } else if (!permissionText.contains(permissionName)) {
-                        permissionText = String.format("%s, %s", permissionText, permissionName)
+                    if (listPermissionText.isBlank()) {
+                        listPermissionText = permissionName
+                    } else if (!listPermissionText.contains(permissionName)) {
+                        listPermissionText = String.format("%s, %s", listPermissionText, permissionName)
                     }
                 }
             }
 
             when {
-                permissionCount > 1 -> onShowRationale(context, permissions, permissionText,
+                permissionCount > 1 -> onShowRationale(context, permissions,
+                        if (rationaleText.isBlank()) listPermissionText else rationaleText,
                         listener)
                 permissionCount == 1 -> onShowRationale(context, permissions,
-                        permissionText.replace(",", "").trim(), listener)
+                        if (rationaleText.isBlank()) listPermissionText.replace(",", "").trim() else rationaleText
+                        , listener)
                 else -> requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
             }
 
