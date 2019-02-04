@@ -36,8 +36,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
-import com.tokopedia.gamification.cracktoken.model.CrackResult;
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 import com.tokopedia.gamification.cracktoken.util.BounceBackExponentialInterpolator;
 import com.tokopedia.gamification.util.HexValidator;
@@ -73,7 +74,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private LinearLayout listCrackResultText;
     private Button buttonReturn;
     private Button buttonCta;
-    private CrackResult crackResult;
+    private CrackResultEntity crackResult;
 
     private WidgetCrackResultListener listener;
     private FrameLayout listCrackResultParent;
@@ -82,11 +83,11 @@ public class WidgetCrackResult extends RelativeLayout {
     private List<TextView> tvTierInfoList;
 
     public interface WidgetCrackResultListener {
-        void onClickCtaButton(CrackResult crackResult, String titleBtn);
+        void onClickCtaButton(CrackResultEntity crackResult, String titleBtn);
 
-        void onTrackingCloseRewardButton(CrackResult crackResult);
+        void onTrackingCloseRewardButton(CrackResultEntity crackResult);
 
-        void onClickReturnButton(CrackResult crackResult, String titleBtn);
+        void onClickReturnButton(CrackResultEntity crackResult, String titleBtn);
 
         void onClickCloseButton();
 
@@ -94,7 +95,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
         void onCrackResultCleared();
 
-        void renderBenefits(List<CrackBenefit> benefits, String benefitType);
+        void renderBenefits(List<CrackBenefitEntity> benefits, String benefitType);
     }
 
     public WidgetCrackResult(Context context) {
@@ -125,7 +126,7 @@ public class WidgetCrackResult extends RelativeLayout {
         listCrackResultParent = view.findViewById(R.id.view_list_reward_parent);
     }
 
-    public void showCrackResult(CrackResult crackResult) {
+    public void showCrackResult(CrackResultEntity crackResult) {
         this.crackResult = crackResult;
         showCrackResultImageAnimation(crackResult);
         showCrackResultBackgroundAnimation();
@@ -135,7 +136,7 @@ public class WidgetCrackResult extends RelativeLayout {
         renderReturnButton(crackResult);
     }
 
-    private void showCrackResultImageAnimation(CrackResult crackResult) {
+    private void showCrackResultImageAnimation(CrackResultEntity crackResult) {
         int actionBarHeight = 0;
         TypedValue tv = new TypedValue();
         if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
@@ -205,7 +206,7 @@ public class WidgetCrackResult extends RelativeLayout {
         backgroundViewCrackResult.setVisibility(View.VISIBLE);
     }
 
-    public void showListCrackResultText(List<CrackBenefit> rewardTexts, String labelCrackResult) {
+    public void showListCrackResultText(List<CrackBenefitEntity> rewardTexts, String labelCrackResult) {
         textCrackResultLabel.setText(labelCrackResult);
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setDuration(DURATION_ALPHA_ANIM_TEXT);
@@ -220,7 +221,7 @@ public class WidgetCrackResult extends RelativeLayout {
             @Override
             public void onAnimationEnd(Animation animation) {
                 int childPosition = 0;
-                for (CrackBenefit rewardText : rewardTexts) {
+                for (CrackBenefitEntity rewardText : rewardTexts) {
 
                     if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
                         String rewardStr = "";
@@ -262,7 +263,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
             }
         });
-        for (CrackBenefit rewardText : rewardTexts) {
+        for (CrackBenefitEntity rewardText : rewardTexts) {
             TextView textView = new TextView(getContext());
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = Gravity.CENTER;
@@ -299,7 +300,7 @@ public class WidgetCrackResult extends RelativeLayout {
      * @param rewardText
      * @param textShift
      */
-    private void slideAnimationLeftToRight(TextView textView, CrackBenefit rewardText, float textShift) {
+    private void slideAnimationLeftToRight(TextView textView, CrackBenefitEntity rewardText, float textShift) {
         int multiplierColor;
         if (HexValidator.validate(rewardText.getColor())) {
             multiplierColor = Color.parseColor(rewardText.getColor());
@@ -426,7 +427,7 @@ public class WidgetCrackResult extends RelativeLayout {
         }
     }
 
-    public void renderReturnButton(final CrackResult crackResult) {
+    public void renderReturnButton(final CrackResultEntity crackResult) {
         if (crackResult.getReturnButton() != null) {
             if (crackResult.isCrackButtonVisible(crackResult.getReturnButton())) {
                 buttonReturn.setVisibility(VISIBLE);
@@ -445,7 +446,7 @@ public class WidgetCrackResult extends RelativeLayout {
         }
     }
 
-    public void renderCtaButton(final CrackResult crackResult) {
+    public void renderCtaButton(final CrackResultEntity crackResult) {
         if (crackResult.getCtaButton() != null) {
             if (crackResult.isCrackButtonVisible(crackResult.getCtaButton())) {
                 buttonCta.setVisibility(VISIBLE);

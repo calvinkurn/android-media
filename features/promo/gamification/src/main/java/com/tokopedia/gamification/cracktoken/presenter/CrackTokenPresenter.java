@@ -11,26 +11,29 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.cracktoken.model.CrackResult;
-import com.tokopedia.gamification.cracktoken.model.CrackResultStatus;
 import com.tokopedia.gamification.cracktoken.model.ExpiredCrackResult;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.GamificationSumCouponOuter;
+import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
+import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
+import com.tokopedia.gamification.data.entity.ResultStatusEntity;
+import com.tokopedia.gamification.data.entity.TokenAssetEntity;
+import com.tokopedia.gamification.data.entity.TokenBackgroundAssetEntity;
+import com.tokopedia.gamification.data.entity.TokenDataEntity;
+import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.data.entity.TokoPointDetailEntity;
-import com.tokopedia.gamification.domain.GetCrackResultEggUseCase;
-import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
-import com.tokopedia.gamification.floating.view.model.TokenAsset;
-import com.tokopedia.gamification.floating.view.model.TokenBackgroundAsset;
-import com.tokopedia.gamification.floating.view.model.TokenData;
-import com.tokopedia.gamification.floating.view.model.TokenUser;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -48,19 +51,20 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     private static final int INDEX_TOKEN_RIGHT = 6;
     private static final int INDEX_TOKEN_LEFT = 5;
 
-    private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
-    private GetCrackResultEggUseCase getCrackResultEggUseCase;
+    //    private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
+    private GraphqlUseCase getTokenTokopointsUseCase;
+    private GraphqlUseCase getCrackResultEggUseCase;
     private UserSession userSession;
-    private GraphqlUseCase mGetRewardsUseCase;
+    private GraphqlUseCase getRewardsUseCase;
 
     @Inject
-    public CrackTokenPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase,
-                               GetCrackResultEggUseCase getCrackResultEggUseCase,
-                               UserSession userSession, GraphqlUseCase mGetRewardsUseCase) {
+    public CrackTokenPresenter(GraphqlUseCase getTokenTokopointsUseCase,
+                               GraphqlUseCase getCrackResultEggUseCase,
+                               UserSession userSession, GraphqlUseCase getRewardsUseCase) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
         this.userSession = userSession;
-        this.mGetRewardsUseCase = mGetRewardsUseCase;
+        this.getRewardsUseCase = getRewardsUseCase;
     }
 
     @Override
@@ -83,57 +87,68 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     @Override
     public void crackToken(int tokenUserId, int campaignId) {
-        getCrackResultEggUseCase.execute(getCrackResultEggUseCase.createRequestParam(tokenUserId, campaignId),
-                new Subscriber<CrackResult>() {
-                    @Override
-                    public void onCompleted() {
+        Map<String, Object> queryParams = new HashMap<>();
+        queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID, tokenUserId);
+        queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
+        getCrackResultEggUseCase.clearRequest();
+        GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.crack_egg_result_mutation),
+                ResponseCrackResultEntity.class, queryParams);
+        getCrackResultEggUseCase.addRequest(sumTokenRequest);
+        getCrackResultEggUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if (!isViewAttached()) {
-                            return;
-                        }
-                        CrackResult errorCrackResult = createGeneralErrorCrackResult();
+            @Override
+            public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
+                CrackResultEntity errorCrackResult = createGeneralErrorCrackResult();
 
+                getView().onErrorCrackToken(errorCrackResult);
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ResponseCrackResultEntity responseCrackResultEntity = graphqlResponse.getData(ResponseCrackResultEntity.class);
+                if (responseCrackResultEntity != null && responseCrackResultEntity.getCrackResultEntity() != null) {
+                    CrackResultEntity crackResult = responseCrackResultEntity.getCrackResultEntity();
+                    crackResult.setBenefitLabel(getView().getSuccessRewardLabel());
+                    if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
+                        getView().onSuccessCrackToken(crackResult);
+                    } else if (crackResult.isCrackTokenExpired()) {
+                        CrackResultEntity expiredCrackResult = createExpiredCrackResult(
+                                crackResult.getResultStatus());
+                        getView().onErrorCrackToken(expiredCrackResult);
+                    } else {
+                        CrackResultEntity errorCrackResult = createGeneralErrorCrackResult();
                         getView().onErrorCrackToken(errorCrackResult);
                     }
+                }
 
-                    @Override
-                    public void onNext(CrackResult crackResult) {
-                        crackResult.setBenefitLabel(getView().getSuccessRewardLabel());
-                        if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
-                            getView().onSuccessCrackToken(crackResult);
-                        } else if (crackResult.isCrackTokenExpired()) {
-                            CrackResult expiredCrackResult = createExpiredCrackResult(
-                                    crackResult.getResultStatus());
-                            getView().onErrorCrackToken(expiredCrackResult);
-                        } else {
-                            CrackResult errorCrackResult = createGeneralErrorCrackResult();
-                            getView().onErrorCrackToken(errorCrackResult);
-                        }
-                    }
-                });
+            }
+        });
     }
 
-    private CrackResult createExpiredCrackResult(CrackResultStatus resultStatus) {
+    private CrackResultEntity createExpiredCrackResult(ResultStatusEntity resultStatus) {
         return new ExpiredCrackResult(getView().getContext(), resultStatus);
     }
 
-    private CrackResult createGeneralErrorCrackResult() {
+    private CrackResultEntity createGeneralErrorCrackResult() {
         return new GeneralErrorCrackResult(getView().getContext());
     }
 
     public void getRewardsCount() {
-        mGetRewardsUseCase.clearRequest();
+        getRewardsUseCase.clearRequest();
         GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_sum_coupon),
                 GamificationSumCouponOuter.class);
-        mGetRewardsUseCase.addRequest(sumTokenRequest);
+        getRewardsUseCase.addRequest(sumTokenRequest);
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_current_points),
                 TokoPointDetailEntity.class);
-        mGetRewardsUseCase.addRequest(graphqlRequestPoints);
-        mGetRewardsUseCase.execute(new Subscriber<GraphqlResponse>() {
+        getRewardsUseCase.addRequest(graphqlRequestPoints);
+        getRewardsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -167,7 +182,11 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     public void getGetTokenTokopoints() {
         getView().showLoading();
         getRewardsCount();
-        getTokenTokopointsUseCase.execute(new Subscriber<TokenData>() {
+        getTokenTokopointsUseCase.clearRequest();
+        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.token_tokopoint_query),
+                ResponseTokenTokopointEntity.class);
+        getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
+        getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -180,26 +199,28 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                 }
 
                 getView().hideLoading();
-                CrackResult crackResult = createGeneralErrorCrackResult();
+                CrackResultEntity crackResult = createGeneralErrorCrackResult();
                 getView().onErrorGetToken(crackResult);
             }
 
             @Override
-            public void onNext(TokenData tokenData) {
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ResponseTokenTokopointEntity responseTokenTokopointEntity = graphqlResponse.getData(ResponseTokenTokopointEntity.class);
                 getView().hideLoading();
-                getView().onSuccessGetToken(tokenData);
+                if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getTokopointsToken() != null)
+                    getView().onSuccessGetToken(responseTokenTokopointEntity.getTokopointsToken());
             }
         });
     }
 
     @Override
-    public void downloadAllAsset(Context context, TokenData tokenData) {
+    public void downloadAllAsset(Context context, TokenDataEntity tokenData) {
         getView().showLoading();
 
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
-        TokenBackgroundAsset tokenBackgroundAsset = tokenUser.getBackgroundAsset();
+        TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
+        TokenBackgroundAssetEntity tokenBackgroundAsset = tokenUser.getBackgroundAsset();
 
-        TokenAsset tokenAsset = tokenUser.getTokenAsset();
+        TokenAssetEntity tokenAsset = tokenUser.getTokenAsset();
 
         List<String> tokenAssetImageUrls = tokenAsset.getImageUrls();
         String full = tokenAssetImageUrls.get(INDEX_TOKEN_FULL);

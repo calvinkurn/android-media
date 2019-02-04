@@ -47,13 +47,14 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResul
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
-import com.tokopedia.gamification.cracktoken.model.CrackResult;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
+import com.tokopedia.gamification.data.entity.TokenDataEntity;
+import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
-import com.tokopedia.gamification.floating.view.model.TokenData;
-import com.tokopedia.gamification.floating.view.model.TokenUser;
 
 import java.util.List;
 
@@ -86,12 +87,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private AbstractionRouter abstractionRouter;
     private TextView infoTitlePage;
 
-    private ImageView ivCoverShadow;
     private ImageView imageRemainingToken;
     private TextView tvCounter;
     private FrameLayout flRemainingToken;
 
-    private TokenData tokenData;
+    private TokenDataEntity tokenData;
 
     private ImageView ivContainer;
     private long prevTimeStamp;
@@ -138,7 +138,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(CrackResult crackResult, String titleBtn) {
+            public void onClickCtaButton(CrackResultEntity crackResult, String titleBtn) {
                 if (crackResult.isCrackButtonDismiss(crackResult.getCtaButton())) {
                     widgetCrackResult.clearCrackResult();
 
@@ -153,7 +153,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void onClickReturnButton(CrackResult crackResult, String titleBtn) {
+            public void onClickReturnButton(CrackResultEntity crackResult, String titleBtn) {
                 if (crackResult.isCrackButtonDismiss(crackResult.getReturnButton())) {
                     widgetCrackResult.clearCrackResult();
 
@@ -194,12 +194,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void renderBenefits(List<CrackBenefit> benefits, String benefitType) {
+            public void renderBenefits(List<CrackBenefitEntity> benefits, String benefitType) {
                 widgetRewards.showCounterAnimations(benefits);
             }
 
             @Override
-            public void onTrackingCloseRewardButton(CrackResult crackResult) {
+            public void onTrackingCloseRewardButton(CrackResultEntity crackResult) {
                 trackingCloseRewardButtonClick(crackResult);
             }
         });
@@ -254,7 +254,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             if (prevTimeStamp > 0) {
                 long currentTimeStamp = System.currentTimeMillis();
                 int diffSeconds = (int) ((currentTimeStamp - prevTimeStamp) / 1000L);
-                TokenUser tokenUser = tokenData.getHome().getTokensUser();
+                TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
                 int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
                 tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
 
@@ -289,7 +289,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void renderViewCrackEgg() {
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
+        TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
 
         infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
 
@@ -304,7 +304,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 hideInfoTitle();
                 vibrate();
                 widgetTokenOnBoarding.hideHandOnBoarding(true);
-                TokenUser tokenUser = tokenData.getHome().getTokensUser();
+                TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
 
                 trackingLuckyEggClick();
@@ -394,7 +394,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetRewards.setVisibility(View.VISIBLE);
     }
 
-    private void showTimer(@NonNull TokenData tokenData) {
+    private void showTimer(@NonNull TokenDataEntity tokenData) {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -410,7 +410,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
 
-        TokenUser tokenUser = tokenData.getHome().getTokensUser();
+        TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
         if (tokenUser.getShowTime()) {
             textCountdownTimer.setVisibility(View.VISIBLE);
             showCountdownTimer(tokenUser.getTimeRemainingSeconds());
@@ -508,7 +508,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
-    public void onSuccessGetToken(TokenData tokenData) {
+    public void onSuccessGetToken(TokenDataEntity tokenData) {
         setToolbarColor(getResources().getColor(R.color.black));
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
@@ -526,13 +526,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
-    public void onErrorGetToken(CrackResult crackResult) {
+    public void onErrorGetToken(CrackResultEntity crackResult) {
         setToolbarColor(getResources().getColor(R.color.white));
         widgetCrackResult.showCrackResult(crackResult);
     }
 
     @Override
-    public void onSuccessCrackToken(final CrackResult crackResult) {
+    public void onSuccessCrackToken(final CrackResultEntity crackResult) {
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
             Glide.with(getContext())
@@ -558,7 +558,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
-    private void showCrackWidgetSuccess(final CrackResult crackResult) {
+    private void showCrackWidgetSuccess(final CrackResultEntity crackResult) {
         initCrackTokenSuccessHandler();
         crackTokenSuccessHandler.postDelayed(new Runnable() {
             @Override
@@ -592,7 +592,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     @Override
-    public void onErrorCrackToken(final CrackResult crackResult) {
+    public void onErrorCrackToken(final CrackResultEntity crackResult) {
         initCrackTokenErrorHandler();
         crackTokenErrorhandler.postDelayed(new Runnable() {
             @Override
@@ -699,7 +699,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
-    private void trackingCloseRewardButtonClick(CrackResult crackResult) {
+    private void trackingCloseRewardButtonClick(CrackResultEntity crackResult) {
         if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
             if (crackResult.isCrackTokenSuccess()) {
@@ -736,6 +736,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     public interface ActionListener {
-        void directPageToCrackEmpty(TokenData tokenData);
+        void directPageToCrackEmpty(TokenDataEntity tokenData);
     }
 }

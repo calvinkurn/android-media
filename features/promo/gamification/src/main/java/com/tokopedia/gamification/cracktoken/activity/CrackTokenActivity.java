@@ -13,7 +13,7 @@ import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
 import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
-import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.data.entity.TokenDataEntity;
 
 public class CrackTokenActivity extends BaseSimpleActivity implements CrackTokenFragment.ActionListener {
 
@@ -50,7 +50,7 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     }
 
     @Override
-    public void directPageToCrackEmpty(TokenData tokenData) {
+    public void directPageToCrackEmpty(TokenDataEntity tokenData) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
         if (fragment == null || !(fragment instanceof CrackEmptyTokenFragment))
             getSupportFragmentManager().beginTransaction().replace(R.id.parent_view,

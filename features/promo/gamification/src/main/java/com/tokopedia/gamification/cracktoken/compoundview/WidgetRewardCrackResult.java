@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.model.CrackBenefit;
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.util.HexValidator;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class WidgetRewardCrackResult extends FrameLayout {
     private LinearLayout llRewards;
     private Paint textPaint;
     private ArrayList<TextView> tvPointsList;
-    private List<CrackBenefit> crackBenefits;
+    private List<CrackBenefitEntity> crackBenefits;
     private static int TYPE_POINTS = 0;
     private static int TYPE_LOYALTY = 1;
     private static int TYPE_COUPONS = 2;
@@ -87,13 +87,13 @@ public class WidgetRewardCrackResult extends FrameLayout {
         tvCoupons = view.findViewById(R.id.tv_coupons);
     }
 
-    public void showCounterAnimations(List<CrackBenefit> crackBenefits) {
+    public void showCounterAnimations(List<CrackBenefitEntity> crackBenefits) {
         this.crackBenefits = crackBenefits;
         tvPointsList = new ArrayList<>();
         tvLoyaltyList = new ArrayList<>();
         tvCouponsList = new ArrayList<>();
         initTextPaint();
-        for (CrackBenefit crackBenefit : crackBenefits) {
+        for (CrackBenefitEntity crackBenefit : crackBenefits) {
             int textColor;
             if (HexValidator.validate(crackBenefit.getColor())) {
                 textColor = Color.parseColor(crackBenefit.getColor());

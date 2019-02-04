@@ -32,7 +32,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
-import com.tokopedia.gamification.floating.view.model.TokenAsset;
+import com.tokopedia.gamification.data.entity.TokenAssetEntity;
 
 import java.util.List;
 
@@ -213,7 +213,7 @@ public class WidgetTokenView extends FrameLayout {
         setVisibility(View.VISIBLE);
     }
 
-    public void setToken(TokenAsset tokenAsset) {
+    public void setToken(TokenAssetEntity tokenAsset) {
         List<String> imageUrls = tokenAsset.getImageUrls();
         String full = imageUrls.get(0);
         String cracked = imageUrls.get(4);

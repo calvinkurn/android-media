@@ -22,7 +22,7 @@ import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
-import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.data.entity.TokenDataEntity;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
@@ -37,11 +37,11 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
     private ImageView tokenEmptyImage;
     private Button getMoreTokenBtn;
     private View rootView;
-    private TokenData tokenData;
+    private TokenDataEntity tokenData;
     private TextView title;
     private ImageView ivContainer;
 
-    public static Fragment newInstance(TokenData tokenData) {
+    public static Fragment newInstance(TokenDataEntity tokenData) {
         Fragment fragment = new CrackEmptyTokenFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TOKEN_DATA_EXTRA, tokenData);
@@ -67,14 +67,14 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
 
         tokenData = getArguments().getParcelable(TOKEN_DATA_EXTRA);
 
-        title.setText(tokenData.getHome().getTokenEmptyState().getTitle());
-        getMoreTokenBtn.setText(tokenData.getHome().getTokenEmptyState().getButtonText());
+        title.setText(tokenData.getHome().getEmptyState().getTitle());
+        getMoreTokenBtn.setText(tokenData.getHome().getEmptyState().getButtonText());
 
-        ImageHandler.loadImageWithSignature(ivContainer, tokenData.getHome().getTokenEmptyState().getBackgroundImgUrl(),
-                new StringSignature(String.valueOf(tokenData.getHome().getTokenEmptyState().getVersion())));
+        ImageHandler.loadImageWithSignature(ivContainer, tokenData.getHome().getEmptyState().getBackgroundImgUrl(),
+                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
 
-        ImageHandler.loadImageWithSignature(tokenEmptyImage, tokenData.getHome().getTokenEmptyState().getImageUrl(),
-                new StringSignature(String.valueOf(tokenData.getHome().getTokenEmptyState().getVersion())));
+        ImageHandler.loadImageWithSignature(tokenEmptyImage, tokenData.getHome().getEmptyState().getImageUrl(),
+                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -104,8 +104,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
                 }
 
                 ApplinkUtil.navigateToAssociatedPage(getActivity(),
-                        tokenData.getHome().getTokenEmptyState().getButtonApplink(),
-                        tokenData.getHome().getTokenEmptyState().getButtonURL(),
+                        tokenData.getHome().getEmptyState().getButtonApplink(),
+                        tokenData.getHome().getEmptyState().getButtonURL(),
                         CrackTokenActivity.class);
             }
         });
