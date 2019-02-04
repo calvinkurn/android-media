@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.ProductDetailRouter
@@ -29,7 +30,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.imageviewer.ImageViewerActivity
 import com.tokopedia.product.detail.view.fragment.productView.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -377,7 +377,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position:Int) {
-        startActivity(ImageViewerActivity.getIntent(context!!,
+        startActivity(ImagePreviewActivity.getIntent(context!!,
                 getImageURIPaths(),
                 null,
                 position))

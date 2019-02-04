@@ -1,4 +1,4 @@
-package com.tokopedia.imageviewer
+package com.tokopedia.imagepreview
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -11,14 +11,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.IOException
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-object ImageViewerUtils{
+object ImagePreviewUtils{
 
     fun getUri(context: Context, outputMediaFile: File): Uri {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -63,12 +60,9 @@ object ImageViewerUtils{
             addImageToGallery(pictureFile.getPath(), context)
             path = pictureFile.getPath()
             fos.close()
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
-
         return path
     }
 

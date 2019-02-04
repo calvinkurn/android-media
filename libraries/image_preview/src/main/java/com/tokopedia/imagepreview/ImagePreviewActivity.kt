@@ -1,4 +1,4 @@
-package com.tokopedia.imageviewer
+package com.tokopedia.imagepreview
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -31,15 +31,14 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ticker.TouchViewPager
 import com.tokopedia.design.list.adapter.TouchImageAdapter
+import com.tokopedia.imagepreview.ImagePreviewUtils.getUri
+import com.tokopedia.imagepreview.ImagePreviewUtils.processPictureName
+import com.tokopedia.imagepreview.ImagePreviewUtils.saveImageFromBitmap
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.product.detail.R
-import com.tokopedia.imageviewer.ImageViewerUtils.getUri
-import com.tokopedia.imageviewer.ImageViewerUtils.processPictureName
-import com.tokopedia.imageviewer.ImageViewerUtils.saveImageFromBitmap
 import java.io.File
 import java.util.*
 
-class ImageViewerActivity : BaseSimpleActivity() {
+class ImagePreviewActivity : BaseSimpleActivity() {
     private var title: String? = null
     private var description: String? = null
     private var adapter: TouchImageAdapter? = null
@@ -73,7 +72,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
             setContentView(R.layout.activity_image_preview)
         }
 
-        adapter = TouchImageAdapter(this@ImageViewerActivity, fileLocations)
+        adapter = TouchImageAdapter(this@ImagePreviewActivity, fileLocations)
 
         findViewById<TextView>(R.id.tvTitle)?.setTextAndCheckShow(title)
         findViewById<TextView>(R.id.tvDescription)?.setTextAndCheckShow(description)
@@ -101,7 +100,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
         val file = File(path)
         val intent = Intent().apply {
             action = Intent.ACTION_VIEW
-            val uri = getUri(this@ImageViewerActivity, file)
+            val uri = getUri(this@ImagePreviewActivity, file)
             setDataAndType(uri, "image/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         }
@@ -124,7 +123,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.size == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this@ImageViewerActivity, getString(R.string.storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
+                Toast.makeText(this@ImagePreviewActivity, getString(R.string.storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
             } else {
                 actionDownloadAndSavePicture()
             }
@@ -139,11 +138,11 @@ class ImageViewerActivity : BaseSimpleActivity() {
         val filenameParam = processPictureName(viewPager.getCurrentItem())
         val notificationId = filenameParam.hashCode()
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationBuilder = NotificationCompat.Builder(this@ImageViewerActivity,
+        val notificationBuilder = NotificationCompat.Builder(this@ImagePreviewActivity,
                 ANDROID_GENERAL_CHANNEL)
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(R.string.download_in_process))
-                .setSmallIcon(R.drawable.chuck_ic_notification_white_24dp)
+                .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_big_notif_customerapp))
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
@@ -157,7 +156,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
                 var path: String?
                 try {
                     path = saveImageFromBitmap(
-                            this@ImageViewerActivity,
+                            this@ImagePreviewActivity,
                             resource,
                             filenameParam
                     );
@@ -173,11 +172,11 @@ class ImageViewerActivity : BaseSimpleActivity() {
                         action = Intent.ACTION_VIEW
                     }
                     val file = File(path);
-                    val uri = getUri(this@ImageViewerActivity, file);
+                    val uri = getUri(this@ImagePreviewActivity, file);
                     intent.setDataAndType(uri, "image/*");
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                    val pIntent = PendingIntent.getActivity(this@ImageViewerActivity, 0, intent, 0);
+                    val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0);
 
                     notificationBuilder.setContentText(getString(R.string.download_success))
                             .setProgress(0, 0, false)
@@ -186,7 +185,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
                     notificationBuilder.build().flags =
                             notificationBuilder.build().flags or Notification.FLAG_AUTO_CANCEL;
                     notificationManager.notify(notificationId, notificationBuilder.build());
-                    this@ImageViewerActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
                     val snackbar = SnackbarManager.make(
@@ -198,7 +197,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
                     }
                     snackbar.addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                            this@ImageViewerActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                            this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                                     WindowManager.LayoutParams.FLAG_FULLSCREEN)
                         }
                     })
@@ -211,7 +210,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
                 showFailedDownload(notificationId, notificationBuilder)
             }
         };
-        ImageHandler.loadImageBitmap2(this@ImageViewerActivity,
+        ImageHandler.loadImageBitmap2(this@ImagePreviewActivity,
                 fileLocations?.get(viewPager.getCurrentItem()),
                 targetListener);
     }
@@ -257,7 +256,7 @@ class ImageViewerActivity : BaseSimpleActivity() {
                       position: Int = 0,
                       title: String? = null,
                       description: String? = null): Intent {
-            val intent = Intent(context, ImageViewerActivity::class.java)
+            val intent = Intent(context, ImagePreviewActivity::class.java)
             val bundle = Bundle()
             bundle.putString(TITLE, title)
             bundle.putString(DESCRIPTION, description)
