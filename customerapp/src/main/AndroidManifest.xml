@@ -36,6 +36,9 @@
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="name, label">
         <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true"/>
+        <meta-data
             android:name="android.support.VERSION"
             android:value="26.1.0"
             tools:replace="android:value"/>
