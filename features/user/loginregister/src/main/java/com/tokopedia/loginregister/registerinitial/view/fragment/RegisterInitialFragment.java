@@ -65,7 +65,6 @@ import com.tokopedia.loginregister.welcomepage.WelcomePageActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
-import com.tokopedia.sessioncommon.data.Token;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
@@ -101,6 +100,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 110;
     private static final int REQUEST_ADD_NAME = 111;
     private static final int REQUEST_LOGIN_GOOGLE = 112;
+    private static final String GOOGLE_API_KEY = "AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo";
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -164,7 +164,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         if (getActivity() != null) {
             GoogleSignInOptions gso =
                     new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(Token.GOOGLE_API_KEY)
+                            .requestIdToken(GOOGLE_API_KEY)
                             .requestEmail()
                             .requestProfile()
                             .build();

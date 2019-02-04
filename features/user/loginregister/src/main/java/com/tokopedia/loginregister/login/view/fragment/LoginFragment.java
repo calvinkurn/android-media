@@ -68,7 +68,6 @@ import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.sessioncommon.data.Token;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
@@ -102,6 +101,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     private static final int REQUEST_VERIFY_PHONE = 108;
     private static final int REQUEST_ADD_NAME = 109;
     private static final int REQUEST_LOGIN_GOOGLE = 110;
+    private static final String GOOGLE_API_KEY = "AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo";
 
     public static final String IS_AUTO_LOGIN = "auto_login";
     public static final String AUTO_LOGIN_METHOD = "method";
@@ -219,7 +219,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             callbackManager = CallbackManager.Factory.create();
             GoogleSignInOptions gso =
                     new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(Token.GOOGLE_API_KEY)
+                            .requestIdToken(GOOGLE_API_KEY)
                             .requestEmail()
                             .requestProfile()
                             .build();
