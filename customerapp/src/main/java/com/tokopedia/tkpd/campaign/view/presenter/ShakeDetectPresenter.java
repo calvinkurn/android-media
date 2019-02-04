@@ -208,7 +208,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                             .getApplicationContext()),
                     activity.getApplicationContext());
             locationDetectorHelper.getLocation(onGetLocation(requestParams), activity,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD);
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    activity.getString(R.string.rationale_need_location_for_promotion));
         } else {
             requestParams.putString(PARAM_LATITUDE, "0.0");
             requestParams.putString(PARAM_LONGITUDE, "0.0");
