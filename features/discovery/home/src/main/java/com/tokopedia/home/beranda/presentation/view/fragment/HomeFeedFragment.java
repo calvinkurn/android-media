@@ -64,6 +64,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         tabIndex = getArguments().getInt(ARG_TAB_INDEX);
         recomId = getArguments().getInt(ARG_RECOM_ID);
         super.onViewCreated(view, savedInstanceState);
+        loadFirstPageData();
         initListeners();
     }
 
@@ -148,7 +149,11 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isAdded() && getActivity() != null && presenter != null && !hasLoadData) {
+        loadFirstPageData();
+    }
+
+    private void loadFirstPageData() {
+        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null && !hasLoadData) {
             hasLoadData = true;
             loadInitialData();
         }
