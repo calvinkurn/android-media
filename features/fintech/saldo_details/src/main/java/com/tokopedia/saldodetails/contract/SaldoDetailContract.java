@@ -15,21 +15,23 @@ public interface SaldoDetailContract {
     interface View extends CustomerView {
         Context getContext();
 
-        void setStartDate(String startDate);
+        /*void setStartDate(String startDate);
 
         void setEndDate(String endDate);
 
         String getStartDate();
 
-        String getEndDate();
+        String getEndDate();*/
 
-        Visitable getDefaultEmptyViewModel();
+        void showSaldoBalanceSeparator();
+
+//        Visitable getDefaultEmptyViewModel();
 
         Activity getActivity();
 
-        void finishLoading();
+//        void finishLoading();
 
-        SaldoDepositAdapter getAdapter();
+//        SaldoDepositAdapter getAdapter();
 
         void showErrorMessage(String s);
 
@@ -37,13 +39,13 @@ public interface SaldoDetailContract {
 
         String getString(int resId);
 
-        void removeError();
+//        void removeError();
 
         void hideWarning();
 
-        void setActionsEnabled(Boolean isEnabled);
+//        void setActionsEnabled(Boolean isEnabled);
 
-        void setLoading();
+//        void setLoading();
 
         void refresh();
 
@@ -51,7 +53,7 @@ public interface SaldoDetailContract {
 
         void setRetry();
 
-        void showEmptyState(String error);
+//        void showEmptyState(String error);
 
         void setRetry(String error);
 
@@ -63,6 +65,10 @@ public interface SaldoDetailContract {
 
         void showHoldWarning(String warningText);
 
+        void setBuyerSaldoBalance(String text);
+
+        void setSellerSaldoBalance(String formattedAmount);
+
         void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 
         void hideSaldoPrioritasFragment();
@@ -73,13 +79,21 @@ public interface SaldoDetailContract {
 
         boolean isSellerEnabled();
 
-        boolean isSellerFragment();
+        void hideSellerSaldoRL();
+
+        void showSellerSaldoRL();
+
+        void hideBuyerSaldoRL();
+
+        void showBuyerSaldoRL();
+
+        void hideSaldoBalanceSeparator();
     }
 
     interface Presenter extends CustomerPresenter<SaldoDetailContract.View> {
-        void setFirstDateParameter();
+//        void setFirstDateParameter();
 
-        void setCache();
+//        void setCache();
 
         void getSaldoBalance();
 
@@ -87,17 +101,17 @@ public interface SaldoDetailContract {
 
         void getMerchantSaldoDetails();
 
-        void onSearchClicked();
+//        void onSearchClicked();
 
-        void onEndDateClicked(SaldoDatePickerUtil datePicker);
+//        void onEndDateClicked(SaldoDatePickerUtil datePicker);
 
-        void onStartDateClicked(SaldoDatePickerUtil datePicker);
+//        void onStartDateClicked(SaldoDatePickerUtil datePicker);
 
-        void loadMore(int lastItemPosition, int visibleItem);
+//        void loadMore(int lastItemPosition, int visibleItem);
 
         void onDrawClicked(Intent intent);
 
-        void getSummaryDeposit();
+//        void getSummaryDeposit();
 
         void onRefresh();
     }

@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -22,16 +20,11 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.adapter.SaldoDetailPagerAdapter;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment;
-import com.tokopedia.saldodetails.view.ui.SaldoTabItem;
 import com.tokopedia.user.session.UserSession;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -41,16 +34,16 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     private static final int REQUEST_CODE_LOGIN = 1001;
     private static final String TAG = "DEPOSIT_FRAGMENT";
-    private TabLayout saldoTabLayout;
-    private ViewPager saldoViewPager;
-    private SaldoDetailPagerAdapter saldoDetailPagerAdapter;
-    private View saldoTabViewSeparator;
-    ArrayList<SaldoTabItem> saldoTabItems = new ArrayList<>();
+//    private TabLayout saldoTabLayout;
+//    private ViewPager saldoViewPager;
+//    private SaldoHistoryPagerAdapter saldoDetailPagerAdapter;
+//    private View saldoTabViewSeparator;
+//    ArrayList<SaldoTabItem> saldoTabItems = new ArrayList<>();
 
     @Inject
     UserSession userSession;
     private boolean isSeller;
-    private SaldoTabItem sellerSaldoTabItem;
+//    private SaldoTabItem sellerSaldoTabItem;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -65,22 +58,9 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         if (requestCode == REQUEST_CODE_LOGIN) {
             if (resultCode == RESULT_OK) {
                 inflateFragment();
-                loadSection();
             } else {
                 finish();
             }
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        checkUserLoginStatus();
-    }
-
-    private void checkUserLoginStatus() {
-        if (userSession != null && !userSession.isLoggedIn()) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
         }
     }
 
@@ -90,7 +70,6 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     @DeepLink(ApplinkConst.DEPOSIT)
     public static Intent createInstance(Context context) {
-        // TODO: 25/1/19 check for tab flag
         return new Intent(context, SaldoDepositActivity.class);
     }
 
@@ -107,14 +86,12 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     @Override
     protected Fragment getNewFragment() {
 
-        /*if (userSession.isLoggedIn()) {
-            return SaldoDepositFragment.createInstance();
+        if (userSession.isLoggedIn()) {
+            return SaldoDepositFragment.createInstance(isSeller);
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
             return null;
-        }*/
-
-        return null;
+        }
 
     }
 
@@ -124,7 +101,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         initInjector();
         initializeView();
         setUpToolbar();
-        loadSection();
+//        loadSection();
     }
 
     private void setUpToolbar() {
@@ -141,14 +118,14 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     }
 
-    private void loadSection() {
-        isSeller = !TextUtils.isEmpty(userSession.getShopId());
+    /*private void loadSection() {
+
         if (isSeller) {
             loadTwoTabItem();
         } else {
             loadOneTabItem();
         }
-        saldoDetailPagerAdapter = new SaldoDetailPagerAdapter(getSupportFragmentManager());
+        saldoDetailPagerAdapter = new SaldoHistoryPagerAdapter(getSupportFragmentManager());
         saldoDetailPagerAdapter.setItems(saldoTabItems);
         saldoViewPager.setAdapter(saldoDetailPagerAdapter);
         saldoTabLayout.setupWithViewPager(saldoViewPager);
@@ -173,9 +150,9 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
             }
         });
-    }
+    }*/
 
-    private void loadTwoTabItem() {
+    /*private void loadTwoTabItem() {
         saldoTabItems.clear();
 
         SaldoTabItem buyerSaldoTabItem = new SaldoTabItem();
@@ -203,19 +180,25 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         saldoTabItems.add(saldoTabItem);
         saldoTabLayout.setVisibility(View.GONE);
         saldoTabViewSeparator.setVisibility(View.GONE);
-    }
+    }*/
 
     private void initializeView() {
-        saldoTabLayout = findViewById(R.id.saldo_tab_layout);
+        /*saldoTabLayout = findViewById(R.id.saldo_tab_layout);
         saldoViewPager = findViewById(R.id.saldo_view_pager);
-        saldoTabViewSeparator = findViewById(R.id.saldo_tab_view_separator);
+        saldoTabViewSeparator = findViewById(R.id.saldo_tab_view_separator);*/
+        isSeller = !TextUtils.isEmpty(userSession.getShopId());
         TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
 
-        saldoHelp.setOnClickListener(v -> {
+        if (isSeller) {
+            saldoHelp.setVisibility(View.VISIBLE);
+            saldoHelp.setOnClickListener(v -> {
             /*RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     SaldoDetailsConstants.SALDO_HELP_URL));*/
-            Toast.makeText(SaldoDepositActivity.this, "Go to help page", Toast.LENGTH_LONG).show();
-        });
+                Toast.makeText(SaldoDepositActivity.this, "Go to help page", Toast.LENGTH_LONG).show();
+            });
+        } else {
+            saldoHelp.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -229,11 +212,11 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         }
     }
 
-    public TabLayout getSaldoTabLayout() {
+    /*public TabLayout getSaldoTabLayout() {
         return saldoTabLayout;
     }
 
     public View getBuyerTabView() {
         return Objects.requireNonNull(saldoTabLayout.getTabAt(0)).getCustomView();
-    }
+    }*/
 }

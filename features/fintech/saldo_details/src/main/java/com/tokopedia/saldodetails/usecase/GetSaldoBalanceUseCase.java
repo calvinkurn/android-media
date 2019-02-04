@@ -53,29 +53,29 @@ public class GetSaldoBalanceUseCase {
         graphqlUseCase.clearRequest();
         setRequesting(true);
 
-        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
+//        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
 
         HashMap<String, Object> usableRequestMap = new HashMap<>();
-        usableRequestMap.put(PARAM_SALDO_TYPE, VALUE_SALDO_TYPE_USABLE);
-        usableRequestMap.put(PARAM_IS_SELLER, isSeller);
+        /*usableRequestMap.put(PARAM_SALDO_TYPE, VALUE_SALDO_TYPE_USABLE);
+        usableRequestMap.put(PARAM_IS_SELLER, isSeller);*/
         GraphqlRequest graphqlRequestForUsable = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
                 GqlSaldoBalanceResponse.class,
                 usableRequestMap, GET_SALDO_BALANCE);
 
-        graphqlRequestList.add(graphqlRequestForUsable);
+//        graphqlRequestList.add(graphqlRequestForUsable);
 
-        HashMap<String, Object> holdRequestMap = new HashMap<>();
-        holdRequestMap.put(PARAM_SALDO_TYPE, VALUE_SALDO_TYPE_HOLD);
+//        HashMap<String, Object> holdRequestMap = new HashMap<>();
+        /*holdRequestMap.put(PARAM_SALDO_TYPE, VALUE_SALDO_TYPE_HOLD);
         holdRequestMap.put(PARAM_IS_SELLER, isSeller);
         GraphqlRequest graphqlRequestForHold = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
                 GqlHoldSaldoBalanceResponse.class,
                 holdRequestMap, GET_SALDO_BALANCE);
 
-        graphqlRequestList.add(graphqlRequestForHold);
+        graphqlRequestList.add(graphqlRequestForHold);*/
 
-        graphqlUseCase.addRequests(graphqlRequestList);
+        graphqlUseCase.addRequest(graphqlRequestForUsable);
 
         graphqlUseCase.execute(subscriber);
     }

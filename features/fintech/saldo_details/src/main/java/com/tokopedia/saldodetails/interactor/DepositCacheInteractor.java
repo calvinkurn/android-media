@@ -9,11 +9,11 @@ public interface DepositCacheInteractor {
 
     void setSummaryDepositCache(GqlDepositSummaryResponse result);
 
-    void setUsableBuyerSaldoBalanceCache(GqlSaldoBalanceResponse gqlSaldoBalanceResponse);
+    void setUsableBuyerSaldoBalanceCache(GqlSaldoBalanceResponse.Saldo gqlSaldoBalanceResponse);
 
     void getUsableBuyerSaldoBalanceCache(GetUsableSaldoBalanceCacheListener listener);
 
-    void setUsableSellerSaldoBalanceCache(GqlSaldoBalanceResponse gqlSaldoBalanceResponse);
+    void setUsableSellerSaldoBalanceCache(GqlSaldoBalanceResponse.Saldo gqlSaldoBalanceResponse);
 
     void getUsableSellerSaldoBalanceCache(GetUsableSaldoBalanceCacheListener listener);
 
@@ -24,7 +24,7 @@ public interface DepositCacheInteractor {
     }
 
     interface GetUsableSaldoBalanceCacheListener {
-        void onSuccess(GqlSaldoBalanceResponse result);
+        void onSuccess(GqlSaldoBalanceResponse.Saldo result);
 
         void onError(Throwable e);
     }

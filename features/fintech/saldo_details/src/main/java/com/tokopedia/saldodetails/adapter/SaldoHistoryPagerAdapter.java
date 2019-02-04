@@ -4,21 +4,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.tokopedia.saldodetails.view.ui.SaldoTabItem;
+import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaldoDetailPagerAdapter extends FragmentPagerAdapter {
+public class SaldoHistoryPagerAdapter extends FragmentPagerAdapter {
 
-    private List<SaldoTabItem> items;
+    private List<SaldoHistoryTabItem> items;
 
-    public SaldoDetailPagerAdapter(FragmentManager fragmentManager) {
+    public SaldoHistoryPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
         this.items = new ArrayList<>();
     }
 
-    public void setItems(List<SaldoTabItem> items) {
+    public void setItems(List<SaldoHistoryTabItem> items) {
         this.items.clear();
         this.items.addAll(items);
         notifyDataSetChanged();

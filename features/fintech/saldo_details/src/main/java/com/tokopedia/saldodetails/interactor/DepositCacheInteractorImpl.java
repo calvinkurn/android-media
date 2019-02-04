@@ -84,13 +84,13 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
     }
 
     @Override
-    public void setUsableBuyerSaldoBalanceCache(GqlSaldoBalanceResponse gqlSaldoBalanceResponse) {
+    public void setUsableBuyerSaldoBalanceCache(GqlSaldoBalanceResponse.Saldo gqlSaldoBalanceResponse) {
         Observable.just(gqlSaldoBalanceResponse)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(result -> {
                     cacheManager.save(CACHE_USABLE_BUYER_SALDO_BALANCE, CacheUtil.convertModelToString(result,
-                            new TypeToken<GqlSaldoBalanceResponse>() {
+                            new TypeToken<GqlSaldoBalanceResponse.Saldo>() {
                             }.getType()), CACHE_TIME_LIMIT);
                     return true;
                 })
@@ -113,13 +113,13 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
     }
 
     @Override
-    public void setUsableSellerSaldoBalanceCache(GqlSaldoBalanceResponse gqlSaldoBalanceResponse) {
+    public void setUsableSellerSaldoBalanceCache(GqlSaldoBalanceResponse.Saldo gqlSaldoBalanceResponse) {
         Observable.just(gqlSaldoBalanceResponse)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(result -> {
                     cacheManager.save(CACHE_USABLE_SELLER_SALDO_BALANCE, CacheUtil.convertModelToString(result,
-                            new TypeToken<GqlSaldoBalanceResponse>() {
+                            new TypeToken<GqlSaldoBalanceResponse.Saldo>() {
                             }.getType()), CACHE_TIME_LIMIT);
                     return true;
                 })
@@ -147,8 +147,8 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
         Observable.just(CACHE_USABLE_BUYER_SALDO_BALANCE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .map(s -> getConvertObjData(cacheManager.get(s), GqlSaldoBalanceResponse.class))
-                .subscribe(new Subscriber<GqlSaldoBalanceResponse>() {
+                .map(s -> getConvertObjData(cacheManager.get(s), GqlSaldoBalanceResponse.Saldo.class))
+                .subscribe(new Subscriber<GqlSaldoBalanceResponse.Saldo>() {
                     @Override
                     public void onCompleted() {
 
@@ -160,7 +160,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
                     }
 
                     @Override
-                    public void onNext(GqlSaldoBalanceResponse result) {
+                    public void onNext(GqlSaldoBalanceResponse.Saldo result) {
                         listener.onSuccess(result);
                     }
                 });
@@ -171,8 +171,8 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
         Observable.just(CACHE_USABLE_SELLER_SALDO_BALANCE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .map(s -> getConvertObjData(cacheManager.get(s), GqlSaldoBalanceResponse.class))
-                .subscribe(new Subscriber<GqlSaldoBalanceResponse>() {
+                .map(s -> getConvertObjData(cacheManager.get(s), GqlSaldoBalanceResponse.Saldo.class))
+                .subscribe(new Subscriber<GqlSaldoBalanceResponse.Saldo>() {
                     @Override
                     public void onCompleted() {
 
@@ -184,7 +184,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
                     }
 
                     @Override
-                    public void onNext(GqlSaldoBalanceResponse result) {
+                    public void onNext(GqlSaldoBalanceResponse.Saldo result) {
                         listener.onSuccess(result);
                     }
                 });

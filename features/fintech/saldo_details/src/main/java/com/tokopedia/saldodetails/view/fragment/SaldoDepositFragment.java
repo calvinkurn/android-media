@@ -7,11 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,26 +24,22 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
-import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
-import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
+import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
-import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
-import com.tokopedia.saldodetails.response.model.DepositHistoryList;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
 import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
@@ -54,11 +49,11 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>
-        implements SaldoDetailContract.View, SaldoItemListener, EmptyResultViewHolder.Callback, RefreshHandler.OnRefreshHandlerListener {
+public class SaldoDepositFragment extends BaseDaggerFragment
+        implements SaldoDetailContract.View, RefreshHandler.OnRefreshHandlerListener {
 
-    private static final String IS_USER_SELLER = "is_user_seller";
-    private static final String IS_SELLER_ENABLED = "is_user_enabled";
+    //    private static final String IS_USER_SELLER = "is_user_seller";
+    public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
 
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE = "seller_total_balance";
@@ -73,40 +68,52 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Inject
     UserSession userSession;
-    TextView totalBalance;
-    RelativeLayout startDateLayout;
+    TextView totalBalanceTV;
+    /*RelativeLayout startDateLayout;
     RelativeLayout endDateLayout;
     TextView startDateTV;
-    TextView endDateTV;
+    TextView endDateTV;*/
     TextView drawButton;
     RelativeLayout mainBalanceRL;
-    LinearLayout dateSelectorLL;
-    RecyclerView recyclerView;
+
+    //    RecyclerView recyclerView;
     RelativeLayout topSlideOffBar;
     RelativeLayout holdBalanceLayout;
     TextView amountBeingReviewed;
-    TextView depositSummaryTitleTV;
-    FrameLayout saldoFrameLayout;
+    //    TextView depositSummaryTitleTV;
+    View saldoFrameLayout;
     SaldoDatePickerUtil datePicker;
-    SaldoDepositAdapter adapter;
+    //    SaldoDepositAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     //    Snackbar snackbar;
     LinearLayout tickerMessageRL;
     TextView tickeRMessageTV;
     ImageView tickerMessageCloseButton;
 
+
+    private RelativeLayout buyerSaldoBalanceRL;
+    private RelativeLayout sellerSaldoBalanceRL;
+    private TextView buyerBalanceTV;
+    private TextView sellerBalanceTV;
     private Context context;
     private TextView checkBalanceStatus;
-    private boolean isSeller;
+    //    private boolean isSeller;
     private TextView totalBalanceTitle;
     private View totalBalanceInfo;
+    private View buyerBalanceInfoIcon;
+    private View sellerBalanceInfoIcon;
+    private View saldoBalanceSeparator;
     private boolean isSellerEnabled;
     private boolean hasShownShowCase = false;
+    private boolean isSeller;
+    ArrayList<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
 
-    public static SaldoDepositFragment createInstance(boolean isSeller, boolean isSellerEnabled) {
+    private SaldoHistoryPagerAdapter saldoHistoryPagerAdapter;
+
+    public static SaldoDepositFragment createInstance(/*boolean isSeller,*/ boolean isSellerEnabled) {
         SaldoDepositFragment saldoDepositFragment = new SaldoDepositFragment();
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IS_USER_SELLER, isSeller);
+//        bundle.putBoolean(IS_USER_SELLER, isSeller);
         bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled);
         saldoDepositFragment.setArguments(bundle);
         return saldoDepositFragment;
@@ -140,7 +147,16 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saldo_deposit, container, false);
         initViews(view);
+//        inflateSaldoHistoryLayout();
         return view;
+    }
+
+    private void inflateSaldoHistoryLayout() {
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.saldo_history_layout, SaldoTransactionHistoryFragment.
+                        createInstance(SaldoTransactionHistoryFragment.FOR_ALL, isSellerEnabled()))
+                .commit();
     }
 
     @Override
@@ -150,27 +166,26 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         initListeners();
     }
 
-    @Override
+    /*@Override
     public void loadData(int page) {
 
-    }
+    }*/
 
-    @Override
+   /* @Override
     protected SaldoDetailTransactionFactory getAdapterTypeFactory() {
         return new SaldoDetailTransactionFactory(this);
-    }
+    }*/
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {
 
         ArrayList<ShowCaseObject> list = new ArrayList<>();
-        if (isSeller && getActivity() instanceof SaldoDepositActivity) {
+        /*if (isSeller && getActivity() instanceof SaldoDepositActivity) {
             list.add(new ShowCaseObject(
                     ((SaldoDepositActivity) getActivity()).getSaldoTabLayout(),
                     getString(R.string.saldo_seller_tab_title),
@@ -203,15 +218,16 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
         } else {
             return null;
-        }
+        }*/
+        return list;
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
+        /*if (isVisibleToUser) {
             new Handler().postDelayed(this::setShowCase, SHOW_CASE_DELAY);
-        }
+        }*/
     }
 
     private void setShowCase() {
@@ -246,14 +262,21 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @SuppressLint("Range")
     private void initViews(View view) {
 
+        if (getArguments() != null) {
+//            isSeller = getArguments().getBoolean(IS_USER_SELLER);
+            isSellerEnabled = getArguments().getBoolean(IS_SELLER_ENABLED);
+        }
         totalBalanceTitle = view.findViewById(R.id.saldo_deposit_text);
         totalBalanceInfo = view.findViewById(R.id.saldo_deposit_text_info);
 
-        totalBalance = view.findViewById(R.id.total_balance);
-        startDateLayout = view.findViewById(R.id.start_date_layout);
+        buyerBalanceInfoIcon = view.findViewById(R.id.saldo_buyer_deposit_text_info);
+        sellerBalanceInfoIcon = view.findViewById(R.id.saldo_seller_deposit_text_info);
+
+        totalBalanceTV = view.findViewById(R.id.total_balance);
+        /*startDateLayout = view.findViewById(R.id.start_date_layout);
         endDateLayout = view.findViewById(R.id.end_date_layout);
         startDateTV = view.findViewById(R.id.start_date_tv);
-        endDateTV = view.findViewById(R.id.end_date_tv);
+        endDateTV = view.findViewById(R.id.end_date_tv);*/
         drawButton = view.findViewById(R.id.withdraw_button);
         topSlideOffBar = view.findViewById(R.id.deposit_header);
         holdBalanceLayout = view.findViewById(R.id.hold_balance_layout);
@@ -264,15 +287,23 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
         tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
         mainBalanceRL = view.findViewById(R.id.main_balance_rl);
-        depositSummaryTitleTV = view.findViewById(R.id.deposit_summary_title_tv);
-        dateSelectorLL = view.findViewById(R.id.date_selector_ll);
+//        depositSummaryTitleTV = view.findViewById(R.id.deposit_summary_title_tv);
+//        dateSelectorLL = view.findViewById(R.id.date_selector_ll);
+
+        buyerBalanceTV = view.findViewById(R.id.buyer_balance);
+        sellerBalanceTV = view.findViewById(R.id.seller_balance);
+        buyerSaldoBalanceRL = view.findViewById(R.id.saldo_buyer_balance_rl);
+        sellerSaldoBalanceRL = view.findViewById(R.id.saldo_seller_balance_rl);
+        saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
+
+
     }
 
-    @Override
+    /*@Override
     public RecyclerView getRecyclerView(View view) {
         this.recyclerView = super.getRecyclerView(view);
         return super.getRecyclerView(view);
-    }
+    }*/
 
     private void initListeners() {
         drawButton.setOnClickListener(v -> {
@@ -302,9 +333,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         });
 
         tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));
-        startDateLayout.setOnClickListener(onStartDateClicked());
-        endDateLayout.setOnClickListener(onEndDateClicked());
-        recyclerView.addOnScrollListener(onScroll());
+        /*startDateLayout.setOnClickListener(onStartDateClicked());
+        endDateLayout.setOnClickListener(onEndDateClicked());*/
+//        recyclerView.addOnScrollListener(onScroll());
     }
 
     private void showMustVerify() {
@@ -340,31 +371,66 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     protected void initialVar() {
-        if (getArguments() != null) {
-            isSeller = getArguments().getBoolean(IS_USER_SELLER);
-            isSellerEnabled = getArguments().getBoolean(IS_SELLER_ENABLED);
+
+
+        isSeller = !TextUtils.isEmpty(userSession.getShopId());
+        /*if (isSeller) {
+            loadMultipleTabItem();
+        } else {
+            loadOneTabItem();
         }
 
-        saldoDetailsPresenter.setSeller(isSeller);
+        saldoHistoryPagerAdapter = new SaldoHistoryPagerAdapter(getChildFragmentManager());
+        saldoHistoryPagerAdapter.setItems(saldoTabItems);
+        depositHistoryViewPager.setAdapter(saldoHistoryPagerAdapter);
+        depositHistoryTabLayout.setupWithViewPager(depositHistoryViewPager);*/
 
-        if (isSeller) {
+        saldoDetailsPresenter.setSeller(isSellerEnabled);
+
+       /* if (isSeller) {
             totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_seller));
             depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title_seller));
-        } else if (isSellerEnabled) {
-            totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_buyer));
-            depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title_buyer));
+        } else */
+        if (isSellerEnabled) {
+            totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
+//            depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title_buyer));
+
+            totalBalanceInfo.setVisibility(View.GONE);
+
+            buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
+            sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
         } else {
             totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_text));
-            depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title));
+//            depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title));
+
+
+            buyerSaldoBalanceRL.setVisibility(View.GONE);
+            sellerSaldoBalanceRL.setVisibility(View.GONE);
+            totalBalanceInfo.setVisibility(View.VISIBLE);
         }
 
-        totalBalanceInfo.setOnClickListener(v -> showBottomSheetInfoDialog());
+        totalBalanceInfo.setOnClickListener(v -> showBottomSheetInfoDialog(false));
+
+        buyerBalanceInfoIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomSheetInfoDialog(false);
+            }
+        });
+
+        sellerBalanceInfoIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomSheetInfoDialog(true);
+            }
+        });
+
         datePicker = new SaldoDatePickerUtil(getActivity());
-        adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
-        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
-        if (isSeller && getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
+//        adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
+//        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        recyclerView.setAdapter(adapter);
+        if (isSellerEnabled && getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
                     .isSaldoNativeEnabled()) {
@@ -378,11 +444,58 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     }
 
-    private void showBottomSheetInfoDialog() {
+    @Override
+    public void hideSaldoBalanceSeparator() {
+        saldoBalanceSeparator.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSaldoBalanceSeparator() {
+        saldoBalanceSeparator.setVisibility(View.VISIBLE);
+    }
+
+    /*private void loadOneTabItem() {
+        saldoTabItems.clear();
+        SaldoHistoryTabItem saldoTabItem = new SaldoHistoryTabItem();
+        saldoTabItem.setTitle("");
+        saldoTabItem.setFragment();
+        saldoTabItems.add(saldoTabItem);
+        depositHistoryTabLayout.setVisibility(View.GONE);
+        tabSeparator.setVisibility(View.GONE);
+    }
+
+    private void loadMultipleTabItem() {
+
+        saldoTabItems.clear();
+
+        SaldoHistoryTabItem allSaldoHistoryTabItem = new SaldoHistoryTabItem();
+        allSaldoHistoryTabItem.setTitle("Semua");
+        allSaldoHistoryTabItem.setFragment();
+
+        saldoTabItems.add(allSaldoHistoryTabItem);
+
+        SaldoHistoryTabItem buyerSaldoHistoryTabItem = new SaldoHistoryTabItem();
+        buyerSaldoHistoryTabItem.setTitle("Refund");
+        buyerSaldoHistoryTabItem.setFragment();
+
+        saldoTabItems.add(buyerSaldoHistoryTabItem);
+
+        SaldoHistoryTabItem sellerSaldoHistoryTabItem = new SaldoHistoryTabItem();
+        sellerSaldoHistoryTabItem.setTitle("Penghasilan");
+        sellerSaldoHistoryTabItem.setFragment();
+
+        saldoTabItems.add(sellerSaldoHistoryTabItem);
+
+        depositHistoryTabLayout.setVisibility(View.VISIBLE);
+        tabSeparator.setVisibility(View.VISIBLE);
+
+    }*/
+
+    private void showBottomSheetInfoDialog(boolean isSellerClicked) {
         UserStatusInfoBottomSheet userStatusInfoBottomSheet =
                 new UserStatusInfoBottomSheet(context);
 
-        if (isSeller) {
+        if (isSellerClicked) {
             userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_seller_desc));
             userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_seller));
         } else if (isSellerEnabled) {
@@ -397,18 +510,6 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         userStatusInfoBottomSheet.show();
     }
 
-    private RecyclerView.OnScrollListener onScroll() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                int lastItemPosition = linearLayoutManager.findLastVisibleItemPosition();
-                int visibleItem = linearLayoutManager.getItemCount() - 1;
-                saldoDetailsPresenter.loadMore(lastItemPosition, visibleItem);
-            }
-        };
-    }
-
     @Override
     protected void initInjector() {
 
@@ -418,13 +519,13 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         saldoDetailsPresenter.attachView(this);
     }
 
-    private View.OnClickListener onEndDateClicked() {
+    /*private View.OnClickListener onEndDateClicked() {
         return v -> saldoDetailsPresenter.onEndDateClicked(datePicker);
     }
 
     private View.OnClickListener onStartDateClicked() {
         return v -> saldoDetailsPresenter.onStartDateClicked(datePicker);
-    }
+    }*/
 
 
     @Override
@@ -441,9 +542,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     private void onFirstTimeLaunched() {
-        setActionsEnabled(false);
-        saldoDetailsPresenter.setFirstDateParameter();
-        saldoDetailsPresenter.setCache();
+//        setActionsEnabled(false);
+//        saldoDetailsPresenter.setFirstDateParameter();
+//        saldoDetailsPresenter.setCache();
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
     }
@@ -455,7 +556,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         return savedState != null;
     }
 
-    @Override
+    /*@Override
     public Visitable getDefaultEmptyViewModel() {
         EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.sp_empty_state_icon);
@@ -463,9 +564,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         emptyModel.setButtonTitle(getString(R.string.sp_goto_home));
         emptyModel.setCallback(this);
         return emptyModel;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void setStartDate(String date) {
         startDateTV.setText(date);
     }
@@ -483,12 +584,12 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public String getEndDate() {
         return endDateTV.getText().toString();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void finishLoading() {
         adapter.hideLoading();
-    }
+    }*/
 
     @Override
     public void showWithdrawalNoPassword() {
@@ -516,7 +617,13 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void setBalance(String summaryUsebleDepositIdr) {
-        totalBalance.setText(summaryUsebleDepositIdr);
+        if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
+            totalBalanceTV.setText(summaryUsebleDepositIdr);
+            totalBalanceTV.setVisibility(View.VISIBLE);
+        } else {
+            totalBalanceTV.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -531,7 +638,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         drawButton.setClickable(state);
     }
 
-    @Override
+    /*@Override
     public SaldoDepositAdapter getAdapter() {
         return adapter;
     }
@@ -539,7 +646,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public void setLoading() {
         adapter.showLoading();
-    }
+    }*/
 
     @SuppressLint("Range")
     @Override
@@ -581,8 +688,33 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
-    public boolean isSellerFragment() {
-        return isSeller;
+    public void hideSellerSaldoRL() {
+        sellerSaldoBalanceRL.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSellerSaldoRL() {
+        sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setBuyerSaldoBalance(String text) {
+        buyerBalanceTV.setText(text);
+    }
+
+    @Override
+    public void setSellerSaldoBalance(String formattedAmount) {
+        sellerBalanceTV.setText(formattedAmount);
+    }
+
+    @Override
+    public void hideBuyerSaldoRL() {
+        buyerSaldoBalanceRL.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showBuyerSaldoRL() {
+        buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -601,34 +733,35 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         }
     }
 
-    @Override
+   /* @Override
     public void removeError() {
         adapter.removeErrorNetwork();
-    }
+    }*/
 
     @Override
     public void hideWarning() {
         holdBalanceLayout.setVisibility(View.GONE);
     }
 
-    @Override
+    /*@Override
     public void setActionsEnabled(Boolean isEnabled) {
-        if (!isAdded() || startDateTV == null || endDateTV == null) {
+        *//*if (!isAdded() || startDateTV == null || endDateTV == null) {
             return;
         }
         startDateLayout.setEnabled(isEnabled);
-        endDateLayout.setEnabled(isEnabled);
-    }
+        endDateLayout.setEnabled(isEnabled);*//*
+    }*/
 
     @Override
     public void refresh() {
+
+        // TODO: 4/2/19 make history refresh
         saldoDetailsPresenter.onRefresh();
     }
 
     @Override
     public void showEmptyState() {
-        setActionsEnabled(false);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> saldoDetailsPresenter.getSummaryDeposit());
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> saldoDetailsPresenter.getSaldoBalance());
         try {
             View retryLoad = getView().findViewById(R.id.main_retry);
             retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
@@ -639,11 +772,10 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void setRetry() {
-        setActionsEnabled(false);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> saldoDetailsPresenter.getSummaryDeposit()).showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
 
-    @Override
+    /*@Override
     public void showEmptyState(String error) {
         setActionsEnabled(false);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
@@ -654,41 +786,29 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Override
     public void setRetry(String error) {
-        setActionsEnabled(false);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error,
-                () -> saldoDetailsPresenter.getSummaryDeposit()).showRetrySnackbar();
+                () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
 
-    @Override
+   /* @Override
     public void setTextColor(View view, int colorId) {
         ((TextView) view).setTextColor(colorId);
-    }
+    }*/
 
-    @Override
-    public void onEmptyContentItemTextClicked() {
-
-    }
-
-    @Override
-    public void onEmptyButtonClicked() {
-        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
-                .getHomeIntent(context);
-        startActivity(intent);
-    }
 
     @Override
     public void onRefresh(View view) {
         saldoDetailsPresenter.onRefresh();
     }
 
-    @Override
+  /*  @Override
     public void onItemClicked(DepositHistoryList depositHistoryList) {
 
-    }
+    }*/
 
     @Override
     public void onDestroy() {

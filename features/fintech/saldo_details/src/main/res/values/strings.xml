@@ -36,7 +36,7 @@
     <string name="sp_title_max_day">Pemilihan tanggal mutasi transaksi maksimal 31 hari</string>
     <string name="sp_end_date">Tanggal Akhir</string>
     <string name="sp_start_date">Tanggal Awal</string>
-    <string name="sp_transaction_history_heading">Pilih Tanggal Riwayat Saldo</string>
+    <string name="sp_transaction_history_heading">Riwayat Transaksi</string>
 
     <string name="sp_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
     <string name="sp_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
@@ -48,11 +48,12 @@
     <string name="saldo_intro_goto_balance_page">Cek Halaman Saldo</string>
     <string name="title_saldo_detail">Detail Saldo</string>
     <string name="saldo_help">Pelajari</string>
-    <string name="saldo_buyer_tab_title">Saldo Refund</string>
-    <string name="saldo_seller_tab_title">Saldo Penghasilan</string>
+    <string name="saldo_buyer_title">Refund</string>
+    <string name="saldo_seller_title">Penghasilan</string>
     <string name="saldo_total_balance_buyer">Nilai Saldo Refund</string>
     <string name="saldo_total_balance_seller">Nilai Saldo Penghasilan</string>
     <string name="saldo_total_balance_text">Nilai Saldo</string>
+    <string name="total_saldo_text">Total Saldo Aktif</string>
     <string name="saldo_balance_buyer_desc">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
     <string name="saldo_balance_seller_desc">Berisi dana hasil penjualan. Saldo Penghasilan tidak dapat digunakan untuk pembelanjaan. Tetapi dapat digunakan untuk berlangganan Power Merchant dan Kredit TopAds.</string>
     <string name="saldo_detail_intro_desc1">Berisi dana hasil penjualan dan tidak dapat digunakan untuk pembayaran. Juga berfungsi sebagai sumber dana untuk pemotongan  biaya kurir, komisi affiliate, dan transaksi lainnya.</string>
