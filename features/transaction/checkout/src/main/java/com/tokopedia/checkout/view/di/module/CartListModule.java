@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -27,7 +26,10 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
@@ -72,6 +74,12 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    UserSessionInterface provideUserSessionInterface() {
+        return new UserSession(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
     TopAdsGqlUseCase topAdsUseCase(Context context){
         return new TopAdsGqlUseCase(context);
     }
@@ -90,14 +98,14 @@ public class CartListModule {
                                                  AddWishListUseCase addWishListUseCase,
                                                  RemoveWishListUseCase removeWishListUseCase,
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
-                                                 TopAdsGqlUseCase topAdsGqlUseCase,
-                                                 UserSession userSession) {
+                                                 UserSessionInterface userSessionInterface,
+                                                 TopAdsGqlUseCase topAdsGqlUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase, topAdsGqlUseCase,
-                userSession);
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                userSessionInterface, topAdsGqlUseCase);
     }
 
     @Provides
@@ -108,8 +116,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartAdapter provideCartListAdapter(UserSession userSession) {
-        return new CartAdapter(cartActionListener, cartItemActionListener, userSession);
+    CartAdapter provideCartListAdapter() {
+        return new CartAdapter(cartActionListener, cartItemActionListener);
     }
 
     @Provides

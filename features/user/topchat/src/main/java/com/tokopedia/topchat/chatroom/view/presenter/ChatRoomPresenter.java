@@ -182,7 +182,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (!getView().isChatBot()) {
             getTemplate();
         }
-        initialChatSettings();
     }
 
     public void initialChatSettings() {

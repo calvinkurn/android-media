@@ -16,6 +16,7 @@ ext {
     tkpdExploreVersion = '2.22'
     tkpdEventVersion = '2.22'
     tkpdFeedVersion = '2.22'
+    tkpdFeedComponentVersion = '2.22'
     tkpdFlightVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -48,6 +49,7 @@ ext {
     tkpdTalkVersion = '2.22'
     tkpdLoginPhoneVersion = '2.22'
     tkpdLoginRegisterVersion = '2.22'
+    tkpdReferralVersion = '1.00'
     tkpdSessionCommonVersion = '2.22'
     tkpdTokocashVersion = '2.22'
     tkpdTokopointVersion = '2.22'
@@ -77,6 +79,7 @@ ext {
     groupIdLogistic = 'com.tokopedia.logistic'
     artifactIdDistrictRecommendation = 'district_recommendation'
     artifactIdLogisticAnalytics = 'logisticanalytics'
+    artifactIdLogisticCod = 'logisticCod'
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
     artifactIdLogisticUploadAwb = 'logisticuploadawb'
@@ -108,6 +111,7 @@ ext {
             explore                 : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                  : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                    : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            feedComponent           : "com.tokopedia.feedcomponent:feedComponent:${tkpdFeedComponentVersion}",
             affiliate               : "com.tokopedia.affiliate:affiliate:${tkpdAffiliateVersion}",
             affiliateCommon         : "com.tokopedia.affiliatecommon:affiliatecommon:${tkpdAffiliateCommonVersion}",
             flight                  : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
@@ -136,6 +140,7 @@ ext {
             profile                 : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
             promoCheckout           : "com.tokopedia.promocheckout:promo_checkout:${promoCheckoutVersion}",
             promoCheckoutCommon     : "com.tokopedia.promocheckout:promo_checkout_common:${promoCheckoutVersion}",
+            referral                : "com.tokopedia.referral:referral:${tkpdReferralVersion}",
             reputation              : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon        : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             ride                    : "com.tokopedia.ride:ride:${tkpdRideVersion}",
@@ -171,6 +176,7 @@ ext {
             broadcastMessageCommon        : ":features:communication:broadcast_message_common",
 
             feed                          : ":features:content:feed",
+            feedComponent                 : ":features:content:feed_component",
             explore                       : ":features:content:explore",
             interestPick                  : ":features:content:interest_pick",
             kol                           : ":features:content:kol",
@@ -197,6 +203,7 @@ ext {
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
 
+            homecredit                    : ":features:fintech:home_credit",
             instantLoan                   : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                  : ":features:fintech:mitra_toppers",
@@ -228,6 +235,7 @@ ext {
             logisticdistrictrecommendation: ":features:logistic:district_recommendation",
             logisticinsurance             : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
+            logisticCod             : ":features:logistic:cod",
 
 
             goldMerchant                  : ":features:merchant:gold_merchant",
@@ -239,6 +247,8 @@ ext {
             productManageItem             : ":features:merchant:product_manage_item",
             productManageList             : ":features:merchant:product_manage_list",
             productShare                  : ":features:merchant:product_share",
+            referral                      : ":features:im:referral",
+
             reputation                    : ":features:merchant:reputation",
             reputationCommon              : ":features:merchant:reputation_common",
             shopCommon                    : ":features:merchant:shop_common",
@@ -267,6 +277,7 @@ ext {
             tokopoints                    : ":features:promo:tokopoints",
             tokopointsNotification        : ":features:promo:tokopoints_notification",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
+            tokopointsNotification        : ":features:promo:tokopoints_notification",
             promoCheckout                 : ":features:promo:promo_checkout",
             promoCheckoutCommon           : ":features:promo:promo_checkout_common",
 
@@ -284,6 +295,7 @@ ext {
             transactionInvoice            : ":features:transaction:transactioninvoice",
             loyalty                       : ":features:promo:loyalty",
             loyaltyCommon                 : ":features:promo:loyalty_common",
+            shippingRecommendation      : ":features:logistic:shipping_recommendation",
 
             attachproduct                 : ":features:user:attachproduct",
             bankdb                        : ":features:user:bankdb",

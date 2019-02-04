@@ -66,5 +66,6 @@
     <string name="filters_save">Simpan</string>
     <string name="title_bottomsheet_filters">Filter Kupon</string>
     <string name="bottomsheet_filter_subtitle">Kisaran Points</string>
+    <string name="tp_history">Riwayat</string>
 
 </resources>

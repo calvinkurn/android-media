@@ -56,10 +56,12 @@
 /features/transaction/checkout/                 @tokopedia/minion-bob
 /features/transaction/transactionanalytics/     @tokopedia/minion-bob
 /features/transaction/transactiondata/          @tokopedia/minion-bob
+/features/logistic/cod/                         @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
 /features/logistic/logisticdata/                @tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          @tokopedia/minion-bob
 /features/logistic/logisticuploadawb/           @tokopedia/minion-bob
+/features/logistic/shipping_recommendation/     @tokopedia/minion-bob
 /features/logistic/tracking/                    @tokopedia/minion-bob
 
 /features/user/topchat/                         @tokopedia/minion-kevin
@@ -87,6 +89,7 @@
 /features/content/affiliate_common/     @tokopedia/minion-kevin
 /features/content/explore/              @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
+/features/content/feed_component/       @tokopedia/minion-kevin
 /features/content/interest_pick/        @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 /features/content/kol_common/           @tokopedia/minion-kevin
@@ -120,13 +123,15 @@
 
 /features/fintech/instant_loan          @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
+/features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
+/features/im/referral                   @tokopedia/minion-yoda
 
 /libraries/pagination                   @lavekush-t
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
 /libraries/cmnotification               @tokopedia/minion-yoda
-
+/kelontongapp                           @tokopedia/core-team

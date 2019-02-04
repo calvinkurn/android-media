@@ -27,7 +27,7 @@ public class RemoteConfigKey {
     public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
     public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
     public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
-    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message";
+    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
 
@@ -63,4 +63,8 @@ public class RemoteConfigKey {
     public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
+    public static final String AFFILIATE_EXPLORE_ENABLE_FILTER = "affiliate_explore_enable_filter";
+    public static final String fireBaseShareMsgKey = "app_referral_product_share_format";
+    public static final String fireBaseGuestShareMsgKey = "app_pdp_share_msg_guest";
+
 }

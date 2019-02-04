@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.emptycart.adapter.RecentViewAdapter;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
