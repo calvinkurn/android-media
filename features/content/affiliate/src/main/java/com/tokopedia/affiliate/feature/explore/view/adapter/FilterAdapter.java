@@ -76,7 +76,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 if (filter.isSelected()) {
                     moveSelectedSingleItemToFront(filter);
                 } else {
-                    moveAllSelectedToFront();
+                    moveAllSelectedToFront(filter);
                 }
             }
             filterClickedListener.onItemClicked(getOnlySelectedFilter());
@@ -205,17 +205,17 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         notifyDataSetChanged();
     }
 
-    private void moveAllSelectedToFront() {
+    private void moveAllSelectedToFront(FilterViewModel deselectedFilter) {
         List<FilterViewModel> items = new ArrayList<>();
-        items.addAll(getFilterListCurrentSelectedSorted());
-        items.addAll(getNotSelectedItems());
+        items.addAll(getOnlySelectedFilter());
+        items.addAll(getNotSelectedItems(deselectedFilter));
         addItem(items);
     }
 
-    private List<FilterViewModel> getNotSelectedItems() {
+    private List<FilterViewModel> getNotSelectedItems(FilterViewModel deselectedFilter) {
         List<FilterViewModel> items = new ArrayList<>();
         for (FilterViewModel item: getAllFilterList()) {
-            if (!item.isSelected()) {
+            if (!item.isSelected() && !item.getName().equals(deselectedFilter.getName())) {
                 items.add(item);
             }
         }
