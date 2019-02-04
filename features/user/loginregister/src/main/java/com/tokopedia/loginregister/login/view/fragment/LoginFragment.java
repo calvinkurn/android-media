@@ -68,6 +68,7 @@ import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.sessioncommon.data.Token;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
@@ -218,7 +219,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             callbackManager = CallbackManager.Factory.create();
             GoogleSignInOptions gso =
                     new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken()
+                            .requestIdToken(Token.GOOGLE_API_KEY)
                             .requestEmail()
                             .requestProfile()
                             .build();
@@ -631,7 +632,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
             analytics.eventClickLoginGoogle(getActivity().getApplicationContext());
 
-//            Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
             Intent signinIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signinIntent, REQUEST_LOGIN_GOOGLE);
         }
@@ -759,7 +759,8 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             presenter.loginGoogle(accessToken, email);
         } catch (ApiException e) {
             onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
-                    String.format(getString(R.string.failed_login_google), e.getStatusCode())
+                    String.format(getString(R.string.failed_login_google),
+                            String.valueOf(e.getStatusCode()))
             );
         }
     }

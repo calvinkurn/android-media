@@ -15,7 +15,7 @@ buildCache {
     }
 }
 
-include ':tkpddesign'
+/*include ':tkpddesign'
 include ':tkpdabstraction'
 include ':features:transaction:transactionanalytics'
 include ':tkpdcore'
@@ -23,8 +23,8 @@ include ':tkpdtransaction-common'
 include ':features:fintech:saldo_details'
 include ':features:im:referral'
 include ':features:promo:loyalty_common'
-apply from: "buildconfig/appcompile/compile-libraries.gradle"
-//apply from: "buildconfig/appcompile/compile-customerapp.gradle"
+*/apply from: "buildconfig/appcompile/compile-libraries.gradle"
+apply from: "buildconfig/appcompile/compile-customerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-customerapp-no-op.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
