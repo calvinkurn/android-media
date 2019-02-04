@@ -662,8 +662,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
-        homeFeedsTabLayout.setVisibility(View.GONE);
-        homeFeedsViewPager.setVisibility(View.GONE);
+        resetFeedState();
         removeNetworkError();
         if (presenter != null) {
             presenter.getHomeData();
@@ -672,6 +671,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
+    }
+
+    private void resetFeedState() {
+        homeFeedsTabLayout.setVisibility(View.GONE);
+        homeFeedsViewPager.setVisibility(View.GONE);
+        homeFeedsViewPager.setAdapter(null);
+        homeFeedsTabLayout.setup(homeFeedsViewPager, new ArrayList<>());
     }
 
     @Override
