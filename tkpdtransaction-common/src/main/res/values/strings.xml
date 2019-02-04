@@ -4,4 +4,8 @@
 
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
+    <string name="bottomsheet_title_global_error">Terjadi kendala teknis</string>
+    <string name="bottomsheet_message_global_error">Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi</string>
+    <string name="bottomsheet_action_global_error">Lanjutkan Tanpa Template</string>
+
 </resources>

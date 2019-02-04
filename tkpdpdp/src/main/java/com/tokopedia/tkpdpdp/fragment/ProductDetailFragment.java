@@ -1879,26 +1879,28 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
                                 .show();
                     } else {
-                        errorBottomsheets.setData(
-                                "Terjadi Kendala Teknis",
-                                "Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi",
-                                "Lanjutkan Tanpa Template",
-                                true
-                        );
-                        errorBottomsheets.setActionListener(new ErrorBottomsheetsActionListenerWithRetry() {
-                            @Override
-                            public void onActionButtonClicked() {
-                                errorBottomsheets.dismiss();
-                                checkVariant(SOURCE_BUTTON_BUY_PDP);
-                            }
+                        if (getActivity() != null) {
+                            errorBottomsheets.setData(
+                                    getActivity().getString(R.string.bottomsheet_title_global_error),
+                                    getActivity().getString(R.string.bottomsheet_message_global_error),
+                                    getActivity().getString(R.string.bottomsheet_action_global_error),
+                                    true
+                            );
+                            errorBottomsheets.setActionListener(new ErrorBottomsheetsActionListenerWithRetry() {
+                                @Override
+                                public void onActionButtonClicked() {
+                                    errorBottomsheets.dismiss();
+                                    checkVariant(SOURCE_BUTTON_BUY_PDP);
+                                }
 
-                            @Override
-                            public void onRetryClicked() {
-                                errorBottomsheets.dismiss();
-                                goToAtcExpress();
-                            }
-                        });
-                        errorBottomsheets.show(getFragmentManager(), "");
+                                @Override
+                                public void onRetryClicked() {
+                                    errorBottomsheets.dismiss();
+                                    goToAtcExpress();
+                                }
+                            });
+                            errorBottomsheets.show(getFragmentManager(), "");
+                        }
                     }
                 } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
                     checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
