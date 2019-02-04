@@ -21,7 +21,7 @@ public class FeedTabMapper implements Func1<GraphqlResponse, List<FeedTabModel>>
 
     private List<FeedTabModel> convertToFeedTabModelList(List<RecommendationTab> recommendationTabs) {
         List<FeedTabModel> feedTabModelList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             for (RecommendationTab recommendationTab : recommendationTabs) {
                 feedTabModelList.add(new FeedTabModel(
                         recommendationTab.getId(),
