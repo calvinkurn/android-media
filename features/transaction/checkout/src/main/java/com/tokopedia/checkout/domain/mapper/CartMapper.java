@@ -125,6 +125,7 @@ public class CartMapper implements ICartMapper {
                         && data.getProduct().getProductPreorder().getDurationText() != null) {
                     cartItemDataOrigin.setPreOrderInfo("PO " + data.getProduct().getProductPreorder().getDurationText());
                 }
+                cartItemDataOrigin.setCod(data.getProduct().isCod());
                 cartItemDataOrigin.setFavorite(false);
                 cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
                 cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());

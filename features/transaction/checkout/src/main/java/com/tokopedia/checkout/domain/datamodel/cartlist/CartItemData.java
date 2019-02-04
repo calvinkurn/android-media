@@ -135,6 +135,7 @@ public class CartItemData implements Parcelable {
         private int weightUnit;
         private String weightFormatted;
         private boolean isPreOrder;
+        private boolean isCod;
         private boolean isFreeReturn;
         private boolean isCashBack;
         private boolean isFavorite;
@@ -477,6 +478,14 @@ public class CartItemData implements Parcelable {
 
         public void setOriginalQty(int originalQty) {
             this.originalQty = originalQty;
+        }
+
+        public boolean isCod() {
+            return isCod;
+        }
+
+        public void setCod(boolean cod) {
+            isCod = cod;
         }
 
         public OriginData() {

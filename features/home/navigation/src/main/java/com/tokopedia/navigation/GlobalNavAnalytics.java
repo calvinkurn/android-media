@@ -31,7 +31,7 @@ public class GlobalNavAnalytics {
         analyticTracker.sendEventTracking(
                 CLICK_HOMEPAGE,
                 String.format("%s %s %s", HOME_PAGE, BOTTOM, NAV),
-                String.format("%s %s %s", CLICK, name, NAV),
+                String.format("%s %s %s", CLICK, name.toLowerCase(), NAV),
                 ""
         );
     }
@@ -112,5 +112,14 @@ public class GlobalNavAnalytics {
         LocalCacheHandler cache = new LocalCacheHandler(context, GlobalNavConstant.Cache.KEY_FIRST_TIME);
         cache.putBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, true);
         cache.applyEditor();
+    }
+
+    public void eventClickNewestInfo() {
+        analyticTracker.sendEventTracking(
+                "clickNotifCenter",
+                "notif center",
+                "click on info terbaru",
+                ""
+        );
     }
 }

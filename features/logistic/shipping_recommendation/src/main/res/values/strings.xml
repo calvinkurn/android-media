@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">shipping_rates_recommendation</string>
+
+    <string name="title_bottomsheet_shipment_duration">Pilih Durasi Pengiriman</string>
+    <string name="title_shipment_courier_bottomsheet">Pilih Kurir Pengiriman</string>
+    <string name="label_title_showcase_shipping_duration">Pengiriman</string>
+    <string name="label_body_showcase_shipping_duration">Durasi dihitung sejak barang diserahkan ke kurir.</string>
+    <string name="label_shipping_show_case_finish">Mengerti</string>
+    <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
+    <string name="label_text_promo_potency">Potensi Promo</string>
+    <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
+
+</resources>

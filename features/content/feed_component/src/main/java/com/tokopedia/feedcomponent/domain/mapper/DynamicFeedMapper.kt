@@ -138,10 +138,14 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
 
+        val topadsShopList = feed.tracking.topads.filter {
+            it.shop != null && it.shopClickUrl != null
+        } as MutableList
+
         posts.add(
                 TopadsShopViewModel(
                         feed.content.cardRecommendation.title,
-                        feed.tracking.topads,
+                        topadsShopList,
                         template,
                         trackingList
                 )
@@ -224,7 +228,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     true
 
         return feed.content.cardpost.header.avatarTitle.isNotEmpty() &&
-                feed.content.cardpost.body.media.size > 0 &&
+                feed.content.cardpost.body.media.isNotEmpty() &&
                 contentList.size > 0 &&
                 isGridNotEmpty
     }
