@@ -137,18 +137,17 @@ class PermissionCheckerHelper {
             }
 
             when {
-                permissionCount > 1 -> onShowRationale(context, permissions,
-                        if (rationaleText.isBlank()) listPermissionText else rationaleText,
-                        listener)
+                permissionCount > 1 -> onShowRationale(context, permissions, listPermissionText ,
+                        listener, rationaleText)
                 permissionCount == 1 -> onShowRationale(context, permissions,
-                        if (rationaleText.isBlank()) listPermissionText.replace(",", "").trim() else rationaleText
-                        , listener)
+                        listPermissionText.replace(",", "").trim()
+                        , listener, rationaleText)
                 else -> requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
             }
 
         } else if (!permissions.isEmpty()
                 && shouldShowRequestPermissionRationale(context, permissions[0])) {
-            onShowRationale(context, permissions, permissions[0], listener)
+            onShowRationale(context, permissions, permissions[0], listener, rationaleText)
         } else if (!permissions.isEmpty()) {
             requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
         }
@@ -194,7 +193,8 @@ class PermissionCheckerHelper {
 
 
     private fun onShowRationale(context: Context, permissions: Array<String>,
-                                permissionText: String, listener: PermissionCheckListener) {
+                                permissionText: String, listener: PermissionCheckListener,
+                                rationaleText : String) {
 
         val activity: Activity = context as? Activity ?: if (context is Fragment) {
             context.activity as Activity
@@ -204,7 +204,7 @@ class PermissionCheckerHelper {
 
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(context.getString(TEXT_TITLE))
-        dialog.setDesc(getNeedPermissionMessage(context, permissionText))
+        dialog.setDesc(getNeedPermissionMessage(context, permissionText, rationaleText))
         dialog.setBtnOk(context.getString(TEXT_OK))
         dialog.setBtnCancel(context.getString(TEXT_CANCEL))
         dialog.alertDialog.setCancelable(true)
@@ -220,9 +220,9 @@ class PermissionCheckerHelper {
         dialog.show()
     }
 
-
-    private fun getNeedPermissionMessage(context: Context, permissionText: String): String {
-        return String.format(context.getString(TEXT_NEED_PERMISSION), permissionText)
+    private fun getNeedPermissionMessage(context: Context, permissionText: String, rationaleText: String): String {
+        return if (rationaleText.isBlank()) String.format(context.getString(TEXT_NEED_PERMISSION),
+                permissionText) else rationaleText
     }
 
     private fun hasPermission(context: Context, permissions: Array<String>): Boolean {

@@ -135,5 +135,6 @@
     <string name="drawer_title_challenges">Challenges</string>
     <string name="share_link">Share Link!!!</string>
     <string name="produk_yang_mungkin_anda_suka">Produk yang mungkin Anda suka</string>
-    <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk mengikuti promo di lokasi</string>
+    <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
+        pengiriman dan mendapatkan rekomendasi produk. Perbolehkan?</string>
 </resources>
