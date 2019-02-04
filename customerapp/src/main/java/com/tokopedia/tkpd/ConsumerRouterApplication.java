@@ -90,6 +90,7 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
@@ -132,7 +133,6 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter;
-import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActivity;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.nps.NpsRouter;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -1103,7 +1103,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam) {
-        return CheckoutVariantActivity.Companion.createIntent(activity, atcRequestParam);
+        return ExpressCheckoutInternalRouter.createIntent(activity, atcRequestParam);
     }
 
     @Override

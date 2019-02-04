@@ -1,11 +1,11 @@
 package com.tokopedia.expresscheckout.view.variant
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
+import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.EXTRA_ATC_REQUEST
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.data.expresscheckout.Constant.*
 
@@ -14,19 +14,6 @@ import com.tokopedia.transaction.common.data.expresscheckout.Constant.*
  */
 
 class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
-
-    companion object {
-        const val EXTRA_ATC_REQUEST = "EXTRA_ATC_REQUEST"
-
-        @JvmStatic
-        fun createIntent(context: Activity?, atcRequestParam: AtcRequestParam): Intent {
-            val intent = Intent(context, CheckoutVariantActivity::class.java)
-            intent.putExtra(EXTRA_ATC_REQUEST, atcRequestParam)
-
-            return intent
-        }
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

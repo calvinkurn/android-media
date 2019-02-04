@@ -301,6 +301,7 @@ ext {
             loyalty                       : ":features:promo:loyalty",
             loyaltyCommon                 : ":features:promo:loyalty_common",
             expressCheckout               : ":features:transaction:express_checkout",
+//            expressCheckout               : ":features:transaction:express_checkout_no_op",
             expressCheckoutCommon         : ":features:transaction:express_checkout_common",
 
             attachproduct               : ":features:user:attachproduct",

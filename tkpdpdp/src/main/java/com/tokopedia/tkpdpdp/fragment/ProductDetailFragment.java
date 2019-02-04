@@ -818,6 +818,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 case CHECKOUT_TYPE_EXPRESS:
                     goToAtcExpress();
                     break;
+                default:
+                    checkVariant(source);
+                    break;
             }
         } else {
             checkVariant(source);
@@ -834,8 +837,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
                 Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                         .getExpressCheckoutIntent(getActivity(), atcRequestParam);
-                startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
-                getActivity().overridePendingTransition(R.anim.pull_up, 0);
+                if (intent != null) {
+                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
+                    getActivity().overridePendingTransition(R.anim.pull_up, 0);
+                }
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
