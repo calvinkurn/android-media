@@ -40,6 +40,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     private int totalScrollY;
     private int tabIndex;
     private int recomId;
+    private boolean hasLoadData;
     private HomeEggListener homeEggListener;
     private HomeTabFeedListener homeTabFeedListener;
 
@@ -134,6 +135,20 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                     name,
                     price
             );
+        }
+    }
+
+    @Override
+    protected boolean callInitialLoadAutomatically() {
+        return false;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && !hasLoadData) {
+            hasLoadData = true;
+            loadInitialData();
         }
     }
 
