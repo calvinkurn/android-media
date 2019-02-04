@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
 
 import java.util.ArrayList;
@@ -307,7 +309,7 @@ public class CollapsingTabLayout extends TabLayout {
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
         textView.setText(tabItemDataList.get(position).getTitle());
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
-        imageView.setImageResource(imageResId[position % 3]);
+        ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl());
         int dp16 = rootView.getResources().getDimensionPixelSize(R.dimen.dp_16);
         if (position == 0) {
             rootView.setPadding(dp16, 0, 0, 0);
@@ -365,13 +367,19 @@ public class CollapsingTabLayout extends TabLayout {
 
     public static class TabItemData {
         private String title;
+        private String imageUrl;
 
-        public TabItemData(String title) {
+        public TabItemData(String title, String imageUrl) {
             this.title = title;
+            this.imageUrl = imageUrl;
         }
 
         public String getTitle() {
             return title;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
         }
     }
 }

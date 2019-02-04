@@ -295,7 +295,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private List<CollapsingTabLayout.TabItemData> convertToTabItemDataList(List<FeedTabModel> feedTabModelList) {
         List<CollapsingTabLayout.TabItemData> tabItemDataList = new ArrayList<>();
         for (FeedTabModel feedTabModel : feedTabModelList) {
-            tabItemDataList.add(new CollapsingTabLayout.TabItemData(feedTabModel.getName()));
+            tabItemDataList.add(new CollapsingTabLayout.TabItemData(feedTabModel.getName(), feedTabModel.getImageUrl()));
         }
         return tabItemDataList;
     }

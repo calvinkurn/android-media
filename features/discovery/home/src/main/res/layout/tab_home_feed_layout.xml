@@ -5,12 +5,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/tabBackgroundImage"
+    <android.support.v7.widget.CardView
         android:layout_width="@dimen/tab_home_feed_width"
         android:layout_height="match_parent"
-        android:src="@drawable/background_tab_feed_1"
-        />
+        app:cardCornerRadius="@dimen/dp_10"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+        <ImageView
+            android:id="@+id/tabBackgroundImage"
+            android:layout_width="@dimen/tab_home_feed_width"
+            android:layout_height="@dimen/tab_home_feed_max_height"
+            android:scaleType="centerCrop"
+            android:src="@drawable/background_tab_feed_2"
+            />
+
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/tabTitle"
