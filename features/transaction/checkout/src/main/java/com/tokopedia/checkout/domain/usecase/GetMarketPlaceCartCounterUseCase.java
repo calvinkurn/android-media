@@ -2,9 +2,9 @@ package com.tokopedia.checkout.domain.usecase;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.checkout.CartConstant;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transactiondata.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;

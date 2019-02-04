@@ -186,6 +186,12 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setOnClickListener(v -> {
             //call validate api the show dialog
             mPresenter.startValidateCoupon(item);
+
+            AnalyticsTrackerUtil.sendEvent(holder.btnContinue.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                    item.getBaseCode());
         });
 
         holder.imgBanner.setOnClickListener(v -> {

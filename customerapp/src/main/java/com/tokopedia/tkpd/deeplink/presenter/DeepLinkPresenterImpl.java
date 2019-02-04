@@ -10,12 +10,12 @@ import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -24,7 +24,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -44,6 +43,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
+import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
@@ -54,12 +54,12 @@ import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
+import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -70,18 +70,19 @@ import rx.Subscriber;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
- *         modified by Alvarisi
+ * modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
-    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
+    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
+    private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
-    public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
-    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
+    private static final String PARAM_TITLEBAR = "titlebar";
 
+    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -273,7 +274,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                    */
                 case DeepLinkChecker.APPLINK:
                     if (linkSegment != null && linkSegment.size() > 0) {
-                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false);
+                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false, true);
                         screenName = AppScreen.SCREEN_WEBVIEW;
                     } else {
                         return;
@@ -463,9 +464,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void prepareOpenWebView(Uri uriData) {
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
-            openWebView(uriData, uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"));
+            openWebView(uriData,
+                    uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"),
+                    uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
+                            (PARAM_TITLEBAR).equalsIgnoreCase("true"));
         } else {
-            openWebView(uriData, false);
+            openWebView(uriData, false, uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
+                    (PARAM_TITLEBAR).equalsIgnoreCase("true"));
         }
     }
 
@@ -473,8 +478,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
 
-    private void openWebView(Uri encodedUri, boolean allowingOverriding) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString()), allowingOverriding);
+    private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar) {
+        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString
+                ()), allowingOverriding, showTitlebar);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
         viewListener.actionChangeToolbarWithBackToNative();
     }
@@ -519,6 +525,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopModel.info.getShopId());
                     context.startActivity(intent);
                 } else {
+                    if (!GlobalConfig.DEBUG) {
+                        Crashlytics.logException(new ShopNotFoundException());
+                    }
                     prepareOpenWebView(uriData);
                 }
             }

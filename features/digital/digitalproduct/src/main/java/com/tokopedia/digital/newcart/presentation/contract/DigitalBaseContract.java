@@ -103,9 +103,6 @@ public interface DigitalBaseContract {
 
         String getString(@StringRes int resId);
 
-        void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData,
-                              DigitalCheckoutPassData cartPassData);
-
         void setCheckoutParameter(CheckoutDataParameter.Builder builder);
 
         boolean isAlreadyShowPostPaid();
@@ -114,6 +111,7 @@ public interface DigitalBaseContract {
                                 String content,
                                 String confirmButtonTitle,
                                 String userId);
+
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{

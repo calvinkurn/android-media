@@ -1,6 +1,8 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.content.Context
+import android.os.Build
+import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -79,16 +81,16 @@ fun View.showErrorToaster(errorMessage: String, actionMessage: String?, action: 
     toaster.show()
 }
 
-fun View.showNormalToaster(errorMessage: String) {
-    this.showNormalToaster(errorMessage, null as String?) { }
+fun View.showNormalToaster(successMessage: String) {
+    this.showNormalToaster(successMessage, null as String?) { }
 }
 
-fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
-    this.showNormalToaster(errorMessage, context.getString(actionMessage), action)
+fun View.showNormalToaster(successMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
+    this.showNormalToaster(successMessage, context.getString(actionMessage), action)
 }
 
-fun View.showNormalToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
-    val toaster = ToasterNormal.make(this, errorMessage, BaseToaster.LENGTH_LONG)
+fun View.showNormalToaster(successMessage: String, actionMessage: String?, action: () -> Unit) {
+    val toaster = ToasterNormal.make(this, successMessage, BaseToaster.LENGTH_LONG)
     actionMessage?.let { message ->
         toaster.setAction(message) {
             action()
@@ -105,4 +107,18 @@ fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
     NetworkErrorHelper.showEmptyState(this.context, this, errorMessage) {
         action()
     }
+}
+
+fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
+    val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+    layoutParams.setMargins(left, top, right, bottom)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        layoutParams.marginStart = left
+        layoutParams.marginEnd = right
+    }
+}
+
+fun View.getDimens(@DimenRes id: Int): Int {
+    return this.context.resources.getDimension(id).toInt()
 }

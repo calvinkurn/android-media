@@ -6,7 +6,10 @@ import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
+import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalDealCheckoutFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -30,4 +33,6 @@ public interface DigitalCartComponent {
     void inject(DigitalDealCheckoutFragment digitalDealCheckoutFragment);
 
     DigitalPostPaidLocalCache digitalPostPaidLocalCache();
+
+    void inject(@NotNull DigitalCartMyBillsFragment digitalCartMyBillsFragment);
 }

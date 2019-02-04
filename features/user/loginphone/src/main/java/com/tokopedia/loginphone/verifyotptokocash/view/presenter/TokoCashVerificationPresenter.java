@@ -7,7 +7,7 @@ import com.tokopedia.loginphone.choosetokocashaccount.domain.LoginPhoneNumberUse
 import com.tokopedia.loginphone.choosetokocashaccount.view.subscriber.LoginPhoneNumberSubscriber;
 import com.tokopedia.loginphone.verifyotptokocash.domain.interactor.RequestOtpTokoCashUseCase;
 import com.tokopedia.loginphone.verifyotptokocash.domain.interactor.VerifyOtpTokoCashUseCase;
-import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
+import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.VerifyOtpTokoCashPojo;
 import com.tokopedia.loginphone.verifyotptokocash.view.subscriber.RequestOtpTokoCashSubscriber;
 import com.tokopedia.loginphone.verifyotptokocash.view.viewlistener.TokoCashVerificationContract;

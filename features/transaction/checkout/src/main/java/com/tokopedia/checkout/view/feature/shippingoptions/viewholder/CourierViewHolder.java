@@ -7,11 +7,11 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.view.feature.shipment.TypeFaceUtil;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierAdapter;
-import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentOptionData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentOptionData;
 
 import java.util.List;
 

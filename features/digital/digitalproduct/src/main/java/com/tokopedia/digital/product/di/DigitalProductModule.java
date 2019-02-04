@@ -2,6 +2,8 @@ package com.tokopedia.digital.product.di;
 
 import android.content.Context;
 
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -19,6 +21,7 @@ import com.tokopedia.digital.common.data.source.CategoryListDataSource;
 import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -195,6 +198,12 @@ public class DigitalProductModule {
     @DigitalProductScope
     DigitalGetHelpUrlUseCase provideDigitalGetHelpUrlUseCase(IDigitalCategoryRepository digitalCategoryRepository) {
         return new DigitalGetHelpUrlUseCase(digitalCategoryRepository);
+    }
+
+    @Provides
+    @DigitalProductScope
+    DigitalAnalytics provideDigitalAnalytics(AbstractionRouter abstractionRouter, @ApplicationContext Context context){
+        return new DigitalAnalytics(abstractionRouter.getAnalyticTracker(), context);
     }
 
 

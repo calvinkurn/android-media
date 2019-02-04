@@ -41,6 +41,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderErrorNoConnectionProductDigitalData(String message);
 
+    void stopTrace();
+
     void renderErrorTimeoutConnectionProductDigitalData(String message);
 
     CategoryData getCategoryDataState();

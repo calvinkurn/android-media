@@ -24,11 +24,15 @@ import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponentInstance;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
+import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
-public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>, DigitalCartDefaultFragment.InteractionListener, DigitalCartDealsFragment.InteractionListener {
+public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>,
+        DigitalCartDefaultFragment.InteractionListener,
+        DigitalCartDealsFragment.InteractionListener,
+        DigitalCartMyBillsFragment.InteractionListener{
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private DigitalCheckoutPassData cartPassData;
 
@@ -98,6 +102,11 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     @Override
     public void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData passData) {
         inflateFragment(DigitalCartDealsFragment.newInstance(passData, cartDigitalInfoData));
+    }
+
+    @Override
+    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
+        inflateFragment(DigitalCartMyBillsFragment.Companion.newInstance(cartDigitalInfoData, cartPassData));
     }
 
     private void inflateFragment(Fragment fragment) {

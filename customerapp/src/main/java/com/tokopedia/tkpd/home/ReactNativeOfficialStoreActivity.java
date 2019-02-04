@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,16 +8,21 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<GeneralReactNativeFragment> {
+
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
+    private static final String MP_OFFICIAL_STORE = "mp_official_store";
     private static final String CATEGORY = "Category";
     private static final String KEY_CATEGORY = "key_category";
 
     @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORES_CATEGORY})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(MP_OFFICIAL_STORE);
         return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(
                 context,
                 ReactConst.Screen.OFFICIAL_STORE,
@@ -67,5 +73,11 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Gene
         }
 
         return "";
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // No super to avoid crash transactionTooLarge
     }
 }
