@@ -112,7 +112,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     private void getCampaign(Double latitude, Double longitude) {
         String screenName = ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_");
-        getCampaignUseCase.execute(GetCampaignUseCase.Companion.generateParam(
+        getCampaignUseCase.execute(GetCampaignUseCase.generateParam(
                 screenName,
                 latitude,
                 longitude,
