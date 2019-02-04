@@ -3430,6 +3430,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public String getDefferedDeeplinkPathIfExists() {
+        //TODO decide whether to remove this
         String dd4Seesion = "";
         dd4Seesion = LinkerManager.getInstance().getDefferedDeeplinkForSession();
         if(TextUtils.isEmpty(dd4Seesion)){

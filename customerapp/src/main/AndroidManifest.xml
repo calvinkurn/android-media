@@ -106,6 +106,12 @@
                     <!--android:host="exclusive.tokopedia.net"-->
                     <!--android:scheme="https"/>-->
             </intent-filter>
+            <intent-filter>
+                <data android:scheme="https" android:host="open"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".deeplink.activity.DeepLinkActivity"
