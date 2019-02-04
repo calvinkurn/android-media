@@ -15,15 +15,18 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
+import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -44,13 +47,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
-import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.PARAM_LATITUDE;
-import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.PARAM_LONGITUDE;
-import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.SCREEN_NAME;
-
-import com.tokopedia.tkpd.R;
-
 /**
  * Created by sandeepgoyal on 14/02/18.
  */
@@ -58,8 +54,8 @@ import com.tokopedia.tkpd.R;
 public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContract.View> implements ShakeDetectContract.Presenter {
 
 
-    private final ShakeUseCase shakeUseCase;
     protected final Context context;
+    private final GetCampaignUseCase getCampaignUseCase;
     protected boolean isFirstShake;
     private RemoteConfig remoteConfig;
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
@@ -70,8 +66,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     private PermissionCheckerHelper permissionCheckerHelper;
 
     @Inject
-    public ShakeDetectPresenter(ShakeUseCase shakeDetectUseCase, @ApplicationContext Context context) {
-        this.shakeUseCase = shakeDetectUseCase;
+    public ShakeDetectPresenter(ShakeUseCase shakeUseCase,
+                                GetCampaignUseCase getCampaignUseCase,
+                                @ApplicationContext Context context) {
+        this.getCampaignUseCase = getCampaignUseCase;
         this.context = context;
         initRemoteConfig();
     }
@@ -100,97 +98,174 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             vibrate();
 
         } else {
-            if (shakeUseCase != null)
-                shakeUseCase.unsubscribe();
+            if (getCampaignUseCase != null)
+                getCampaignUseCase.unsubscribe();
             if (isFirstShake) {
                 isFirstShake = false;
                 secondShakeHappen = true;
             }
             getView().setInvisibleCounter();
             getView().setCancelButtonVisible();
-            RequestParams requestParams = RequestParams.create();
-            addLocationParameterBeforeRequest(requestParams, getView().getCurrentActivity());
+            addLocationParameterBeforeRequest(getView().getCurrentActivity());
         }
     }
 
-    private void getCampaign(RequestParams requestParams) {
-        requestParams.putString(IS_AUDIO, "false");
-        if (ShakeDetectManager.sTopActivity != null) {
-            requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_"));
-        }
-        shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
-            @Override
-            public void onCompleted() {
-                getView().finish();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-                CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-
-                intent.putExtra("isSuccess", false);
-
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                } else if (e instanceof SocketTimeoutException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof CampaignException) {
-                    if (((CampaignException) e).isMissingAuthorizationCredentials()) {
-                        intent.putExtra("needLogin", true);
-                    } else {
-                        getView().showErrorGetInfo(e.getMessage());
-                        return;
+    private void getCampaign(Double latitude, Double longitude) {
+        String screenName = ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_");
+        getCampaignUseCase.execute(GetCampaignUseCase.Companion.generateParam(
+                screenName,
+                latitude,
+                longitude,
+                false),
+                new Subscriber<GraphqlResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        getView().finish();
                     }
 
-                } else if (e instanceof ResponseDataNullException) {
-                    getView().showErrorNetwork(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    getView().showErrorNetwork(e.getMessage());
-                } else if (e instanceof ServerErrorException) {
-                    getView().showErrorNetwork(ErrorHandler.getErrorMessage(context, e));
-                } else {
-                    getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
-                    return;
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                        CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
 
+                        intent.putExtra("isSuccess", false);
 
-                getView().sendBroadcast(intent);
-                getView().finish();
+                        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                        } else if (e instanceof SocketTimeoutException) {
+                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        } else if (e instanceof CampaignException) {
+                            if (((CampaignException) e).isMissingAuthorizationCredentials()) {
+                                intent.putExtra("needLogin", true);
+                            } else {
+                                getView().showErrorGetInfo(e.getMessage());
+                                return;
+                            }
 
-            }
+                        } else if (e instanceof ResponseDataNullException) {
+                            getView().showErrorNetwork(e.getMessage());
+                        } else if (e instanceof HttpErrorException) {
+                            getView().showErrorNetwork(e.getMessage());
+                        } else if (e instanceof ServerErrorException) {
+                            getView().showErrorNetwork(ErrorHandler.getErrorMessage(context, e));
+                        } else {
+                            getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
+                            return;
+                        }
 
-            @Override
-            public void onNext(final CampaignResponseEntity s) {
-                if (!s.isEnable()) {
-                    CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
-                    return;
-                }
-                if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
-                        s.getUrl() != null && s.getUrl().isEmpty()) {
-                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                    getView().showMessage(s.getMessage());
-                    return;
-                }
-                ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-                if (!deepLinkDelegate.supportsUri(s.getUrl())) {
-                        getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
-                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                    return;
-                }
-                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-                intent.putExtra("isSuccess", true);
-                intent.putExtra("data", s.getUrl());
+                        getView().sendBroadcast(intent);
+                        getView().finish();
+                    }
 
-                // Vibrate for 500 milliseconds
-                if (s.getVibrate() == 1)
-                    vibrate();
-                getView().sendBroadcast(intent);
-                CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
+                    @Override
+                    public void onNext(GraphqlResponse graphqlResponse) {
+                        CampaignResponseEntity s =
+                                graphqlResponse.getData(CampaignResponseEntity.class);
 
-                //Open next activity based upon the result from server
-            }
-        });
+                        if (!s.isEnable()) {
+                            CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
+                            return;
+                        }
+                        if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
+                                s.getUrl() != null && s.getUrl().isEmpty()) {
+                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+                            getView().showMessage(s.getMessage());
+                            return;
+                        }
+                        ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
+                        if (!deepLinkDelegate.supportsUri(s.getUrl())) {
+                            getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+                            return;
+                        }
+                        Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                        intent.putExtra("isSuccess", true);
+                        intent.putExtra("data", s.getUrl());
+
+                        // Vibrate for 500 milliseconds
+                        if (s.getVibrate() == 1)
+                            vibrate();
+                        getView().sendBroadcast(intent);
+                        CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
+
+                        //Open next activity based upon the result from server
+
+                    }
+                });
+
+//        shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
+//            @Override
+//            public void onCompleted() {
+//                getView().finish();
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+//                CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+//
+//                intent.putExtra("isSuccess", false);
+//
+//                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+//                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+//                } else if (e instanceof SocketTimeoutException) {
+//                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+//                } else if (e instanceof CampaignException) {
+//                    if (((CampaignException) e).isMissingAuthorizationCredentials()) {
+//                        intent.putExtra("needLogin", true);
+//                    } else {
+//                        getView().showErrorGetInfo(e.getMessage());
+//                        return;
+//                    }
+//
+//                } else if (e instanceof ResponseDataNullException) {
+//                    getView().showErrorNetwork(e.getMessage());
+//                } else if (e instanceof HttpErrorException) {
+//                    getView().showErrorNetwork(e.getMessage());
+//                } else if (e instanceof ServerErrorException) {
+//                    getView().showErrorNetwork(ErrorHandler.getErrorMessage(context, e));
+//                } else {
+//                    getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
+//                    return;
+//                }
+//
+//
+//                getView().sendBroadcast(intent);
+//                getView().finish();
+//
+//            }
+//
+//            @Override
+//            public void onNext(final CampaignResponseEntity s) {
+//                if (!s.isEnable()) {
+//                    CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
+//                    return;
+//                }
+//                if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
+//                        s.getUrl() != null && s.getUrl().isEmpty()) {
+//                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+//                    getView().showMessage(s.getMessage());
+//                    return;
+//                }
+//                ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
+//                if (!deepLinkDelegate.supportsUri(s.getUrl())) {
+//                        getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+//                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+//                    return;
+//                }
+//                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+//                intent.putExtra("isSuccess", true);
+//                intent.putExtra("data", s.getUrl());
+//
+//                // Vibrate for 500 milliseconds
+//                if (s.getVibrate() == 1)
+//                    vibrate();
+//                getView().sendBroadcast(intent);
+//                CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
+//
+//                //Open next activity based upon the result from server
+//            }
+//        });
 
     }
 
@@ -199,7 +274,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         this.permissionCheckerHelper = permissionCheckerHelper;
     }
 
-    private void addLocationParameterBeforeRequest(RequestParams requestParams, Activity activity) {
+    private void addLocationParameterBeforeRequest(Activity activity) {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
@@ -207,22 +282,18 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     LocationServices.getFusedLocationProviderClient(activity
                             .getApplicationContext()),
                     activity.getApplicationContext());
-            locationDetectorHelper.getLocation(onGetLocation(requestParams), activity,
+            locationDetectorHelper.getLocation(onGetLocation(), activity,
                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                     activity.getString(R.string.rationale_need_location_for_promotion));
         } else {
-            requestParams.putString(PARAM_LATITUDE, "0.0");
-            requestParams.putString(PARAM_LONGITUDE, "0.0");
-            getCampaign(requestParams);
+            getCampaign(0.0, 0.0);
         }
 
     }
 
-    private Function1<DeviceLocation, Unit> onGetLocation(RequestParams requestParams) {
+    private Function1<DeviceLocation, Unit> onGetLocation() {
         return (deviceLocation) -> {
-            requestParams.putString(PARAM_LATITUDE, String.valueOf(deviceLocation.getLatitude()));
-            requestParams.putString(PARAM_LONGITUDE, String.valueOf(deviceLocation.getLongitude()));
-            getCampaign(requestParams);
+            getCampaign(deviceLocation.getLatitude(), deviceLocation.getLongitude());
             return null;
         };
     }
@@ -258,14 +329,14 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             subscription.unsubscribe();
         getView().setInvisibleCounter();
         isFirstShake = false;
-        if (shakeUseCase != null)
-            shakeUseCase.unsubscribe();
+        if (getCampaignUseCase != null)
+            getCampaignUseCase.unsubscribe();
         getView().finish();
     }
 
     @Override
     public void onDestroyView() {
-        if (shakeUseCase != null) shakeUseCase.unsubscribe();
+        if (getCampaignUseCase != null) getCampaignUseCase.unsubscribe();
     }
 
     @Override

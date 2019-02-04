@@ -10,17 +10,13 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.core.network.exception.ServerErrorRequestDeniedException;
-import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceException;
-import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.configuration.WavRecorder;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
+import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.usecase.RequestParams;
 
@@ -50,8 +46,10 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
 
 
     @Inject
-    public AudioShakeDetectPresenter(PostAudioDataUseCase shakeDetectUseCase, @ApplicationContext Context context) {
-        super(shakeDetectUseCase, context);
+    public AudioShakeDetectPresenter(PostAudioDataUseCase shakeDetectUseCase,
+                                     GetCampaignUseCase getCampaignUseCase,
+                                     @ApplicationContext Context context) {
+        super(shakeDetectUseCase, getCampaignUseCase, context);
         this.postShakeDetectUseCase = shakeDetectUseCase;
     }
 

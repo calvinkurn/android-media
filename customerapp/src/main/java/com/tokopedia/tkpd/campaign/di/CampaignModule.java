@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.campaign.di;
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -32,6 +33,11 @@ import retrofit2.Retrofit;
 
 @Module(includes = TokoCashModule.class)
 public class CampaignModule {
+
+    @Provides
+    Resources provideResources(@ApplicationContext Context context) {
+        return context.getResources();
+    }
 
     @Provides
     PostBarCodeDataUseCase providePostBarCodeDataUseCase(CampaignDataRepository bookingRideRepository) {

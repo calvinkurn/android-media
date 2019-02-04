@@ -15,7 +15,7 @@ import rx.Observable;
 /**
  * Created by sandeepgoyal on 14/02/18.
  */
-
+@Deprecated
 public class ShakeUseCase extends UseCase<CampaignResponseEntity> {
 
     public static final String IS_AUDIO ="is_audio";
