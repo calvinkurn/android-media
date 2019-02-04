@@ -382,9 +382,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
-        clearData();
         presenter.updateCursor("");
-        presenter.refreshExploreData();
+        presenter.getExploreData(true);
     }
 
     @Override

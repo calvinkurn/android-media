@@ -395,9 +395,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-		if (!GlobalConfig.DEBUG) {
-        		Crashlytics.logException(t);
-        	}
         String errorMessage;
         if (t instanceof TomeException) {
             errorMessage = t.getMessage();

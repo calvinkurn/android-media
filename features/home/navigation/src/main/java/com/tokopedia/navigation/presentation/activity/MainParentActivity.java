@@ -322,9 +322,12 @@ public class MainParentActivity extends BaseActivity implements
             RouteManager.route(this, ApplinkConst.OFFICIAL_STORES);
             return false;
         }
-        if (position == CART_MENU || position == ACCOUNT_MENU)
-            if (!presenter.isUserLogin())
-                return false;
+
+        if ((position == CART_MENU || position == ACCOUNT_MENU || position == INBOX_MENU) && !presenter.isUserLogin()) {
+            RouteManager.route(this, ApplinkConst.LOGIN);
+            return false;
+        }
+
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
@@ -366,12 +369,6 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
-    }
-
-    public boolean isUserLogin() {
-        if (!userSession.isLoggedIn())
-            RouteManager.route(this, ApplinkConst.LOGIN);
-        return userSession.isLoggedIn();
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
