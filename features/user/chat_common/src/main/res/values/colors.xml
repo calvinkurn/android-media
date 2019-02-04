@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="green_selected">#f3fef3</color>
+    <color name="grey_time_machine">#fbfbfb</color>
+
+    <color name="color_chat_admin">#ffc00f</color>
+    <color name="color_chat_system">#e0e0e0</color>
+    <color name="color_chat_buyer">#2AB4C2</color>
+    <color name="color_chat_seller">#b94a48</color>
+    <color name="black_alpha_12">#26000000</color>
+    <color name="color_white_fafafa">#fafafa</color>
+    <color name="color_notification">#ea212d</color>
+    <color name="topchat_admin_label_text_color">#ca8600</color>
+    <color name="topchat_admin_label_shape_color">#ffeaac</color>
+    <color name="topchat_seller_label_shape_color">#daf5db</color>
+    <color name="time_color">#909090</color>
+    <color name="tkpd_yellow_status">#FFF6BF</color>
+
+</resources>

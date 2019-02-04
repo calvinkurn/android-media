@@ -1,20 +1,17 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
-apply plugin: 'io.hansel.preprocessor'
 
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url 'https://hansel.io/maven' }
         mavenCentral()
         jcenter()
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'com.google.gms:google-services:4.1.0'
-        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -51,7 +48,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("debug.keystore")
+//            storeFile file("debug.keystore")
         }
     }
 
@@ -68,6 +65,7 @@ android {
         release {
             signingConfig signingConfigs.debug
             minifyEnabled true
+            debuggable false
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             } else {
@@ -80,6 +78,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    flavorDimensions "server"
+
+    productFlavors {
+        live {
+            dimension "server"
+        }
+        staging {
+            dimension "server"
+        }
+    }
 }
 
 dependencies {
@@ -91,9 +100,19 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    api(rootProject.ext.serviceDependencies.crashlyticsAnswers) {
+        transitive = true
+    }
 
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation rootProject.ext.analyticsDependencies.installRef
+
+    implementation (rootProject.ext.analyticsDependencies.moengage) {
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
+    }
+    implementation rootProject.ext.analyticsDependencies.moengageFirebase
 
     testImplementation rootProject.ext.testDependencies.junit
 }

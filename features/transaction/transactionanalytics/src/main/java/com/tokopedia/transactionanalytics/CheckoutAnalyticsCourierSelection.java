@@ -549,21 +549,25 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration) {
+    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration, boolean isCod) {
+        String label = (isCourierPromo ? "promo" : "non promo") +
+                " - " + duration + (isCod ? " - cod" : "");
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+                label
         );
     }
 
-    public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId) {
+    public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId, boolean isCod) {
+        String label = (isCourierPromo ? "promo" : "non promo") +
+                " - " + shippingProductId + (isCod ? " - cod" : "");
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHANGE_COURIER_OPTION,
-                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+                label
         );
     }
 }

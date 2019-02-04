@@ -58,7 +58,7 @@ public class AnalyticsTrackerUtil {
         String VIEW_TICKER = "view ticker";
         String CLICK_LIHAT_SEMUA = "click lihat semua";
         String CLICK_BANTUAN = "click bantuan tokopoints";
-        String CLICK_EGG = "click egg";
+        String CLICK_EGG = "click floating lucky egg";
         String CLICK_EGG_EMPTY = "click raih points dan kumpulkan loyalty";
         String CLICK_EGG_BELI = "click beli - untuk dapat lucky egg";
         String CLICK_EGG_BAYAR = "click bayar - untuk dapat lucky egg";
@@ -80,6 +80,18 @@ public class AnalyticsTrackerUtil {
         String VIEW_MY_COUPON_DETAIL = "view my coupon detail";
         String VIEW_MY_COUPON = "view my coupon";
         String CLICK_COUPON = "click coupon";
+        String CLICK_PENUKARAN = "click penukaran point";
+        String CLICK_KUPON_SAYA = "click kupon saya";
+        String CLICK_DYNAMIC_CAT = "click dynamic category";
+        String VIEW_DYNAMIC_CAT = "view dynamic category";
+        String CLICK_FLOATING_LUCKY = "click floating lucky egg";
+        String CLICK_FILTER = "click filter";
+        String PILIH_FILTER = "pilih filter";
+        String CLICK_SAVE_FILTER = "click simpan filter";
+        String SWIPE_COUPON = "swipe untuk lihat code";
+        String COPY_CODE = "salin kode swipe";
+        String CLICK_MEM_BOTTOM = "click footer status membership";
+        String CLICK_SELL_ALL_COUPON = "click kupon milik saya";
     }
 
     public static void sendEvent(Context context, String event, String category,

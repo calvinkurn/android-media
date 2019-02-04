@@ -31,6 +31,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
+import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
@@ -44,6 +45,9 @@ import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.showcase.ShowCaseBuilder
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
@@ -70,6 +74,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var affiliatePostQuota: AffiliatePostQuota? = null
 
     override lateinit var profileRouter: ProfileModuleRouter
+
+    lateinit var remoteConfig: RemoteConfig
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -124,7 +130,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_dashboard) {
             if (isAffiliate) goToDashboard()
-            else goToOnboading()
+            else goToAffiliateExplore()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -255,26 +261,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
-        if (afterPost && !onlyOnePost) {
-            ToasterNormal
-                    .make(view,
-                            getString(R.string.profile_recommend_success),
-                            BaseToaster.LENGTH_LONG
-                    )
-                    .setAction(getString(R.string.profile_add_more)) {
-                        goToAffiliateExplore()
-                    }
-                    .show()
+        if (afterPost) {
+            when {
+                isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
+                onlyOnePost -> showShowCaseDialog(shareProfile)
+                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
+            }
             afterPost = false
+
         } else if (afterEdit) {
-            ToasterNormal
-                    .make(view,
-                            getString(R.string.profile_edit_success),
-                            BaseToaster.LENGTH_LONG
-                    )
-                    .setAction(getString(R.string.af_title_ok)) {}
-                    .show()
+            showAfterEditToaster()
             afterEdit = false
+
         }
     }
 
@@ -496,11 +494,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         affiliatePostQuota?.let {
             it.number += 1
-            try {
-                recommendationQuota.text = String.format(it.format, it.number)
-            } catch (e: IllegalFormatException) {
-            } catch (e: NullPointerException) {
-            }
+            bindCurationQuota(it)
         }
 
 
@@ -555,12 +549,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     ProfileActivity.TRUE
             )
         }
+
         if (context!!.applicationContext is ProfileModuleRouter) {
             profileRouter = context!!.applicationContext as ProfileModuleRouter
         } else {
             throw IllegalStateException("Application must implement "
                     .plus(ProfileModuleRouter::class.java.simpleName))
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
     }
@@ -588,6 +585,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    private fun showAfterPostToaster(addAction: Boolean) {
+        if (addAction) {
+            view?.showNormalToaster(getString(R.string.profile_recommend_success), getString(R.string.profile_add_more)) {
+                goToAffiliateExplore()
+            }
+        } else {
+            view?.showNormalToaster(getString(R.string.profile_recommend_success))
+        }
+    }
+
+    private fun showAfterEditToaster() {
+        view?.showNormalToaster(getString(R.string.profile_edit_success), getString(R.string.af_title_ok)) {
+        }
+    }
+
     private fun addFooter(headerViewModel: ProfileHeaderViewModel,
                           affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
@@ -595,53 +607,52 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(affiliatePostQuota.formatted)) {
-                recommendationQuota.visibility = View.VISIBLE
-                recommendationQuota.text = affiliatePostQuota.formatted
-            } else {
-                recommendationQuota.visibility = View.GONE
-            }
-            addRecommendation.setOnClickListener {
+            bindCurationQuota(affiliatePostQuota)
+            addCuration.setOnClickListener {
                 goToAffiliateExplore()
                 profileAnalytics.eventClickTambahRekomendasi()
             }
-            addRecommendation.setOnLongClickListener {
+            addCuration.setOnLongClickListener {
                 showToast(getString(R.string.profile_add_recommendation))
                 true
             }
 
-            shareOwn.setOnClickListener(shareLink(headerViewModel.link))
-            shareOwn.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_profile))
+            shareProfile.setOnClickListener(shareLinkClickListener(headerViewModel.link))
+            shareProfile.setOnLongClickListener {
+                showToast(getString(R.string.profile_share_this_profile))
                 true
             }
-
-            showShowCaseDialog(shareOwn)
         } else {
             footerOwn.visibility = View.GONE
             footerOther.visibility = View.VISIBLE
 
-            shareOther.setOnClickListener(shareLink(headerViewModel.link))
+            shareOther.setOnClickListener(shareLinkClickListener(headerViewModel.link))
             shareOther.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_profile))
+                showToast(getString(R.string.profile_share_this_profile))
                 true
             }
         }
     }
 
-    private fun showShowCaseDialog(view: View?) {
-        if (afterPost && onlyOnePost) {
-            val showCaseTag = this::class.java.simpleName
-            val showCaseDialog = createShowCaseDialog()
-            val showcases = ArrayList<ShowCaseObject>()
-            showcases.add(ShowCaseObject(
-                    view,
-                    getString(R.string.profile_showcase_title),
-                    getString(R.string.profile_showcase_description),
-                    ShowCaseContentPosition.UNDEFINED))
-            showCaseDialog.show(this.activity, showCaseTag, showcases)
-            afterPost = false
+    private fun bindCurationQuota(affiliatePostQuota: AffiliatePostQuota) {
+        if (affiliatePostQuota.number == 0) {
+            addCuration.text = getString(R.string.profile_see_by_me_prouct)
+        } else {
+            val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
+            addCuration.text = addCurationText
         }
+    }
+
+    private fun showShowCaseDialog(view: View?) {
+        val showCaseTag = this::class.java.simpleName
+        val showCaseDialog = createShowCaseDialog()
+        val showcases = ArrayList<ShowCaseObject>()
+        showcases.add(ShowCaseObject(
+                view,
+                getString(R.string.profile_showcase_title),
+                getString(R.string.profile_showcase_description),
+                ShowCaseContentPosition.UNDEFINED))
+        showCaseDialog.show(this.activity, showCaseTag, showcases)
     }
 
     private fun createShowCaseDialog(): ShowCaseDialog {
@@ -659,17 +670,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .build()
     }
 
-    private fun shareLink(link: String): View.OnClickListener {
+    private fun shareLinkClickListener(link: String): View.OnClickListener {
         return View.OnClickListener {
-            val shareBody = String.format(getString(R.string.profile_share_text), link)
-            val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
-            sharingIntent.type = TEXT_PLAIN
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
-            startActivity(
-                    Intent.createChooser(sharingIntent, getString(R.string.profile_share_profile))
-            )
-            profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+            shareLink(link)
         }
+    }
+
+    private fun shareLink(link: String) {
+        val shareBody = String.format(getString(R.string.profile_share_text), link)
+        val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+        sharingIntent.type = TEXT_PLAIN
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
+        startActivity(
+                Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
+        )
+        profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
     }
 
     private fun getEmptyModel(isShowAffiliateContent: Boolean,
@@ -693,7 +708,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     }
 
                     override fun onEmptyButtonClicked() {
-                        goToOnboading()
+                        goToAffiliateExplore()
                         profileAnalytics.eventClickEmptyStateCta()
                     }
                 }
@@ -757,12 +772,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         return dialog
     }
 
-    private fun goToOnboading() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_ONBOARDING)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivityForResult(intent, ONBOARDING_CODE)
-    }
-
     private fun goToAffiliateExplore() {
         val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_EXPLORE)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -799,5 +808,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun isAutomaticOpenShareUser(): Boolean {
+        val userId = userSession.userId.toIntOrNull() ?: 0
+        return (userId % 50 == 17
+                || userId % 50 == 23
+                || userId == 32044530 //dev's userId
+                || userId == 6215930 //QA's userId
+                || userId == 17211048 //QA's userId
+                || remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_ALL, false))
+                && remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_RULES, true)
     }
 }

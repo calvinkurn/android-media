@@ -4,6 +4,7 @@ import android.content.Context
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi
 import com.tokopedia.seller.shop.common.di.ShopQualifier
@@ -35,11 +36,15 @@ import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRep
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository
+import com.tokopedia.user.session.UserSessionInterface
 
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.Dispatchers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import javax.inject.Named
 
 /**
  * Created by hadi.putra on 23/04/18.
@@ -48,6 +53,10 @@ import retrofit2.Retrofit
 @TopAdsDashboardScope
 @Module
 class TopAdsDashboardModule {
+
+    @Provides
+    @TopAdsDashboardScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
 
     @Provides
     @TopAdsDashboardScope
@@ -190,4 +199,11 @@ class TopAdsDashboardModule {
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
+    @Provides
+    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+
+    @TopAdsDashboardScope
+    @Provides
+    @Named("Main")
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

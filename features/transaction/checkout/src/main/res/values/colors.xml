@@ -1,31 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_cart_item_error">#fce3e4</color>
-    <color name="bg_cart_item_warning">#fffcd3</color>
-    <color name="text_cart_item_error_red">#d30b16</color>
-    <color name="text_courier_error_red">#d50000</color>
-    <color name="yellow_ticker">#ecdb77</color>
-    <color name="background_no_pinpoint">#ccfffffe</color>
-    <color name="grey_nonactive_text">#42000000</color>
-    <color name="separator_color">#e0e0e0</color>
-    <color name="background_cashback_enable">#e3f9e3</color>
-    <color name="cashback_text_color">#42b549</color>
-    <color name="black_56">#8f000000</color>
-    <color name="shipping_duration_info_black">#d2000000</color>
-    <color name="error_red_background">#fdebec</color>
-    <color name="error_red_outline">#f05f68</color>
-    <color name="error_red_text">#d50000</color>
-    <color name="warning_yellow_background">#fffcf5</color>
-    <color name="warning_yellow_outline">#ffe38f</color>
-    <color name="disabled_washout_foreground">#88FFFFFF</color>
-    <color name="font_disabled">#33000000</color>
-    <color name="bg_promo_potency">#fce3e4</color>
-    <color name="text_promo_potency">#d50000</color>
-
-    <color name="checkout_shadow_color_1">#00AAAAAA</color>
-    <color name="checkout_shadow_color_2">#10AAAAAA</color>
-    <color name="checkout_shadow_color_3">#15AAAAAA</color>
-    <color name="checkout_shadow_color_4">#20AAAAAA</color>
-    <color name="checkout_shadow_color_5">#25AAAAAA</color>
 
 </resources>

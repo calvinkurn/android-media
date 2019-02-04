@@ -384,7 +384,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         triggerClearNewFeedNotification();
-        adapter.clearData();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
@@ -400,9 +399,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void setLastCursorOnFirstPage(String lastCursor) {
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_FEED);
-        cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
-        cache.applyEditor();
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            LocalCacheHandler cache = new LocalCacheHandler(
+                    getActivity().getApplicationContext(),
+                    KEY_FEED
+            );
+            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
+            cache.applyEditor();
+        }
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,
@@ -852,13 +856,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void registerNewFeedReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_FEED);
-        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).registerReceiver(newFeedReceiver, intentFilter);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(BROADCAST_FEED);
+
+            LocalBroadcastManager
+                    .getInstance(getActivity().getApplicationContext())
+                    .registerReceiver(newFeedReceiver, intentFilter);
+        }
     }
 
     private void unRegisterNewFeedReceiver() {
-        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            LocalBroadcastManager
+                    .getInstance(getActivity().getApplicationContext())
+                    .unregisterReceiver(newFeedReceiver);
+        }
     }
 
     private void loadData(boolean isVisibleToUser) {

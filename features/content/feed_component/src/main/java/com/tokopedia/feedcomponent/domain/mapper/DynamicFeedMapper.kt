@@ -97,7 +97,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     feed.tracking.type,
                     media.type,
                     media.tags.firstOrNull()?.linkType ?: "",
-                    media.appLink,
+                    media.thumbnail,
                     feed.id,
                     feed.content.cardbanner.body.media.size,
                     index
@@ -197,7 +197,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body)
+        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body, template)
         val trackingPostModel = mapPostTracking(feed)
 
         if (shouldAddCardPost(feed, contentList)) {
@@ -229,7 +229,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 isGridNotEmpty
     }
 
-    private fun mapPostContent(body: Body): MutableList<BasePostViewModel> {
+    private fun mapPostContent(body: Body, template: Template): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
 
         for (media in body.media) {
@@ -237,7 +237,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
-                CONTENT_GRID -> list.add(mapPostGrid(media))
+                CONTENT_GRID -> list.add(mapPostGrid(media, template))
             }
         }
 
@@ -304,7 +304,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         )
     }
 
-    private fun mapPostGrid(media: Media): GridPostViewModel {
+    private fun mapPostGrid(media: Media, template: Template): GridPostViewModel {
         val itemList: MutableList<GridItemViewModel> = ArrayList()
 
         for (item in media.mediaItems) {
@@ -321,7 +321,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 itemList,
                 media.text,
                 media.appLink,
-                media.totalItems
+                media.totalItems,
+                template.cardpost.body.mediaGridButton
         )
     }
 

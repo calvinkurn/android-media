@@ -12,6 +12,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -19,7 +21,8 @@ import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
-
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 import com.tokopedia.tokocash.CacheUtil;
 
@@ -30,13 +33,16 @@ import java.util.Arrays;
 
 public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
+    private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
 
     private ReactInstanceManager reactInstanceManager;
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"
@@ -143,5 +149,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     private void closeThankyouPage() {
         super.onBackPressed();
+        RouteManager.route(this, ApplinkConst.HOME);
+        finish();
     }
 }

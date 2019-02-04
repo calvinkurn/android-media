@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:id="@+id/calendar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_16">
+
+        <com.tokopedia.design.component.Tabs
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:background="@color/white"
+            android:elevation="@dimen/dp_3"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/tkpd_main_green"
+            app:tabTextAppearance="@style/Tabs.Secondary"
+            app:tabTextColor="@color/font_black_disabled_38" />
+
+        <com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
+            android:id="@+id/quick_filter_months"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tab_layout"
+            android:background="@color/white" />
+
+        <com.tokopedia.travelcalendar.view.widget.CalendarPickerView
+            android:id="@+id/calendar_picker_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/quick_filter_months"
+            android:background="@color/white"
+            android:paddingTop="@dimen/dp_15" />
+
+        <com.tokopedia.travelcalendar.view.widget.HolidayWidgetView
+            android:id="@+id/holiday_widget_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/calendar_picker_view"
+            android:layout_alignParentBottom="true"
+            android:background="@color/grey_calendar_holiday" />
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

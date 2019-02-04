@@ -45,6 +45,8 @@ public class Authenticated extends BaseGTMModel {
     public static final String ANDROID_ID = "androidId";
     public static final String ADS_ID = "adsId";
 
+    public static final String GA_CLIENT_ID = "clientId";
+
     private Map<String, Object> contactInfo = new HashMap<>();
     private Map<String, Object> userDefaultShipping = new HashMap<>();
 
