@@ -69,7 +69,7 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_camera_denied, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.READ_EXTERNAL_STORAGE:
-                Toast.makeText(context, R.string.permission_storage_denied, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.` `, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                 Toast.makeText(context, R.string.permission_storage_denied, Toast.LENGTH_LONG).show();

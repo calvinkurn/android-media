@@ -29,6 +29,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.activity.ImagePreviewActivity
 import com.tokopedia.product.detail.view.fragment.productView.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -41,6 +42,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import java.util.*
 import javax.inject.Inject
 
 class ProductDetailFragment : BaseDaggerFragment() {
@@ -314,7 +316,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onSuccessGetProductInfo(data: ProductInfo) {
         productInfo = data
         headerView.renderData(data)
-        view_picture.renderData(data.pictures)
+        view_picture.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         actionButtonView.renderData(data.basic.status,
@@ -369,6 +371,39 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         productInfo!!.basic.name))
             }
         }
+    }
+
+    /**
+     * go to preview image activity to show larger image of Product
+     */
+    private fun onPictureProductClicked(position:Int) {
+        startActivity(ImagePreviewActivity.getIntent(context!!,
+                getImageURIPaths(),
+                null,
+                position))
+    }
+
+    fun getImageURIPaths(): ArrayList<String> {
+        val arrayList = ArrayList<String>()
+        productInfo?.run {
+            for (productImage in pictures) {
+                arrayList.add(productImage.urlOriginal)
+            }
+        }
+
+        if (hasVariant()) {
+            //TODO
+            /*for (child in productVariant.getChildren()) {
+                if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId() !== productData.getInfo().getProductId()) {
+                    arrayList.add(child.getPicture().getOriginal())
+                }
+            }
+            val imagesSet = LinkedHashSet(arrayList)
+            val finalImage = ArrayList<String>()
+            finalImage.addAll(imagesSet)
+            return finalImage*/
+        }
+        return arrayList
     }
 
     private fun onVariantClicked() {

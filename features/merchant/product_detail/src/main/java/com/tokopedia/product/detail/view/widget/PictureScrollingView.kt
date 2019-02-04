@@ -14,8 +14,11 @@ import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 
 class PictureScrollingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr){
+) : FrameLayout(context, attrs, defStyleAttr) {
     private var urlTemp = ""
+    var position: Int = 0
+        get() = view_pager?.currentItem ?: 0
+
     init {
         instatiateView()
     }
@@ -24,17 +27,17 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderDataTemp(productParams: ProductParams){
+    fun renderDataTemp(productParams: ProductParams) {
         val pagerAdapter = PicturePagerAdapter(context,
-                mutableListOf(Picture(urlOriginal = productParams.productImage!!)))
+                mutableListOf(Picture(urlOriginal = productParams.productImage!!)), null, null)
         view_pager.adapter = pagerAdapter
         indicator_picture.setViewPager(view_pager)
         indicator_picture.notifyDataSetChanged()
         urlTemp = productParams.productImage!!
     }
 
-    fun renderData(pictures: List<Picture>) {
-        val photoList = if (pictures.isEmpty()){
+    fun renderData(pictures: List<Picture>, onPictureClickListener: ((Int) -> Unit)?) {
+        val photoList = if (pictures.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
             val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
@@ -45,9 +48,10 @@ class PictureScrollingView @JvmOverloads constructor(
         } else
             pictures.toMutableList()
 
-        val pagerAdapter = PicturePagerAdapter(context, photoList, urlTemp)
+        val pagerAdapter = PicturePagerAdapter(context, photoList, urlTemp, onPictureClickListener)
         view_pager.adapter = pagerAdapter
         indicator_picture.setViewPager(view_pager)
         indicator_picture.notifyDataSetChanged()
     }
+
 }
