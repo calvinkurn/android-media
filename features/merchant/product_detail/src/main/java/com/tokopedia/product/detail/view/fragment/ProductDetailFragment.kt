@@ -29,7 +29,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.view.activity.ImagePreviewActivity
+import com.tokopedia.imageviewer.ImageViewerActivity
 import com.tokopedia.product.detail.view.fragment.productView.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -377,7 +377,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position:Int) {
-        startActivity(ImagePreviewActivity.getIntent(context!!,
+        startActivity(ImageViewerActivity.getIntent(context!!,
                 getImageURIPaths(),
                 null,
                 position))

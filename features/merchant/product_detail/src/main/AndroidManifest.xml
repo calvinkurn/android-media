@@ -20,7 +20,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name=".view.activity.ImagePreviewActivity"
+        <activity android:name="com.tokopedia.imageviewer.ImageViewerActivity"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen"/>
 
         <provider

@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.activity
+package com.tokopedia.imageviewer
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -18,7 +18,7 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-object ImagePreviewUtils{
+object ImageViewerUtils{
 
     fun getUri(context: Context, outputMediaFile: File): Uri {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
