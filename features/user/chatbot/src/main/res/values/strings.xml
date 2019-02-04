@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">chatbot</string>
+
+    <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
+    <string name="total_invoice">Total: </string>
+    <string name="title_reason_bottom_sheet">Beritahu kami apa yang salah?</string>
+    <string name="undersize_image">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
+    <string name="oversize_image">Ukuran gambar maksimal 15Mb</string>
+</resources>

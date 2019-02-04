@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginphone.R;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
-import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
+import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 
 import java.util.List;
 

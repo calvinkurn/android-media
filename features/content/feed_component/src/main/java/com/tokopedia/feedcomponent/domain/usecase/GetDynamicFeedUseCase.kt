@@ -7,6 +7,9 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedMapper
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -21,6 +24,15 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
                                                 private val graphqlUseCase: GraphqlUseCase,
                                                 private val dynamicPostMapper: DynamicFeedMapper)
     : UseCase<DynamicFeedDomainModel>() {
+
+    init {
+        graphqlUseCase.setCacheStrategy(
+                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
+                        .setSessionIncluded(true)
+                        .build()
+        )
+    }
 
     override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
         val query: String = GraphqlHelper.loadRawString(

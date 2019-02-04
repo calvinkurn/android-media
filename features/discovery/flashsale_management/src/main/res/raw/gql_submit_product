@@ -1,0 +1,14 @@
+mutation campaign_submit_product($camp_id:Int!, $shop_id:Int!, $product_id:Int){
+  campaign_submit_product(params:{
+        camp_id:$camp_id
+        shop_id:$shop_id
+        product_id:$product_id}){
+          data{
+              criteria_id
+              is_available
+              message
+          }
+          message
+          status_code
+      }
+}

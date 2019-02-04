@@ -122,8 +122,11 @@
     <string name="ticket_close">Kembali</string>
     <string name="ticket_updatedAt">Diredeem pada</string>
     <string name="enter_additional_data">Silahkan Isi Data Pelanggan Tambahan</string>
+    <string name="digital_event_reset_label">Reset</string>
+    <string name="digital_event_all_time_label">Semua Waktu</string>
 
 
+    <string name="reset">Reset</string>
     <!-- need to changed -->
 
 </resources>

@@ -10,8 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
@@ -115,7 +115,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(unixdate * 1000);
             System.out.println("Formatted Date:" + formatter.format(calendar.getTime()));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         setTime(element, getAdapterPosition());
@@ -170,11 +170,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         if (labelS != null && labelS.length() > 0 && !labelS.equals(InboxChatConstant.USER_TAG)) {
             label.setVisibility(View.VISIBLE);
             label.setText(labelS);
-            if(labelS.equals(InboxChatConstant.SELLER_TAG)){
+            if (labelS.equals(InboxChatConstant.SELLER_TAG)) {
                 label.setBackgroundResource(R.drawable.topchat_seller_label);
                 label.setTextColor(itemView.getContext().getResources().getColor(R.color.medium_green));
-            }
-            else {
+            } else {
                 label.setBackgroundResource(R.drawable.topchat_admin_label);
                 label.setTextColor(itemView.getContext().getResources().getColor(R.color.topchat_admin_label_text_color));
             }
@@ -193,7 +192,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(element.getSpanMode() == ChatListViewModel.NO_SPAN){
+                if (element.getSpanMode() == ChatListViewModel.NO_SPAN) {
                     int position = getAdapterPosition();
                     if (element.isChecked()) {
                         setReadState();
@@ -213,7 +212,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter.isInActionMode()){
+                if (presenter.isInActionMode()) {
                     if (element.isChecked()) {
                         setReadState();
                         presenter.onDeselect(position);
@@ -221,7 +220,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                         setSelectedState();
                         presenter.onSelected(position);
                     }
-                }else {
+                } else {
                     if (presenter.getSelected() == 0) {
                         presenter.goToDetailMessage(mainView.getContext(), position, element);
                     } else if (element.isChecked()) {
@@ -241,11 +240,11 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
             @Override
             public void onClick(View v) {
 
-                if(messageItem == null){
+                if (messageItem == null) {
                     return;
                 }
 
-                if (presenter.isInActionMode()){
+                if (presenter.isInActionMode()) {
                     if (messageItem.isChecked()) {
                         setReadState();
                         presenter.onDeselect(position);
@@ -253,7 +252,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                         setSelectedState();
                         presenter.onSelected(position);
                     }
-                }else {
+                } else {
                     if (messageItem.getLabel() != null
                             && !messageItem.getLabel().equals(InboxChatConstant.ADMIN_TAG)
                             && !messageItem.getLabel().equals(InboxChatConstant.OFFICIAL_TAG)
