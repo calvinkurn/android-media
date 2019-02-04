@@ -53,8 +53,10 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         return homeFeedFragment;
     }
 
-    public void setListener(HomeEggListener homeEggListener) {
+    public void setListener(HomeEggListener homeEggListener,
+                            HomeTabFeedListener homeTabFeedListener) {
         this.homeEggListener = homeEggListener;
+        this.homeTabFeedListener = homeTabFeedListener;
     }
 
     @Override

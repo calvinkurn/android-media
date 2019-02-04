@@ -272,7 +272,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
         homeFeedsTabLayout.setVisibility(View.VISIBLE);
         homeFeedsViewPager.setVisibility(View.VISIBLE);
-        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this, getFragmentManager(), feedTabModelList);
+        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this,
+                this, getFragmentManager(), feedTabModelList);
         homeFeedsViewPager.setOffscreenPageLimit(DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT);
         homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
         homeFeedsTabLayout.setup(homeFeedsViewPager, convertToTabItemDataList(feedTabModelList));

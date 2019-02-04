@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tokopedia.home.beranda.listener.HomeEggListener;
+import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 
@@ -16,7 +17,9 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
     private List<FeedTabModel> feedTabModelList = new ArrayList<>();
     private List<HomeFeedFragment> homeFeedFragmentList;
 
-    public HomeFeedPagerAdapter(HomeEggListener homeEggListener, FragmentManager fm,
+    public HomeFeedPagerAdapter(HomeEggListener homeEggListener,
+                                HomeTabFeedListener homeTabFeedListener,
+                                FragmentManager fm,
                                 List<FeedTabModel> feedTabModelList) {
         super(fm);
         this.feedTabModelList = feedTabModelList;
@@ -26,7 +29,7 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
                     i,
                     Integer.parseInt(feedTabModelList.get(i).getId())
             );
-            homeFeedFragment.setListener(homeEggListener);
+            homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
             homeFeedFragmentList.add(homeFeedFragment);
         }
     }
