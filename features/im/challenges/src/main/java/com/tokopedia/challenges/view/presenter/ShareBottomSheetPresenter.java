@@ -301,7 +301,9 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                     return;
                 }
             } else if (getView().getSubmissionItem().getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
-                mediaUrl = getView().getSubmissionItem().getMedia().get(0).getImageUrl();
+                if(getView().getSubmissionItem().getSharing()!=null &&getView().getSubmissionItem().getSharing().getMetaTags()!=null){
+                    mediaUrl = getView().getSubmissionItem().getSharing().getMetaTags().getOgImage();
+                }
             } else if (getView().getSubmissionItem().getMedia() != null && getView().getSubmissionItem().getMedia().get(0).getVideo() != null && getView().getSubmissionItem().getMedia().get(0).getVideo().getSources() != null) {
                 mediaUrl = getView().getSubmissionItem().getMedia().get(0).getVideo().getSources().get(1).getSource();
                 isVideo = true;

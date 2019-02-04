@@ -191,10 +191,19 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult, false);
-            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_POST_PAGE,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE);
+            if (submissionResult.getCollection() != null && submissionResult.getMe() != null) {
+                if (presenter.getParticipatedStatus(submissionResult)) {
+                    analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                            submissionResult.getCollection().getTitle());
+                } else {
+                    analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                            submissionResult.getCollection().getTitle());
+                }
+            }
         });
 
         likeBtn.setOnClickListener(v -> {
