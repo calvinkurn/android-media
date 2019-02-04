@@ -75,7 +75,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
-        resetPageFeed();
     }
 
     @Override
@@ -311,10 +310,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             getTokocashBalance();
             getTokopoint();
         }
-    }
-
-    public void resetPageFeed() {
-        //TODO will be implemented
     }
 
     public void setCursor(String currentCursor) {

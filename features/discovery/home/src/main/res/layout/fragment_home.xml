@@ -70,12 +70,14 @@
                 app:tabPaddingEnd="@dimen/dp_2"
                 app:tabMode="scrollable"
                 android:background="@color/white"
+                android:visibility="gone"
                 app:tabIndicatorHeight="0dp"/>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager_home_feeds"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

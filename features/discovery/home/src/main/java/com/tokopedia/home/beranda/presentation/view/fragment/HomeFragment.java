@@ -270,6 +270,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
+        homeFeedsTabLayout.setVisibility(View.VISIBLE);
+        homeFeedsViewPager.setVisibility(View.VISIBLE);
         HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this, getFragmentManager(), feedTabModelList);
         homeFeedsViewPager.setOffscreenPageLimit(DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT);
         homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
@@ -659,18 +661,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
+        homeFeedsTabLayout.setVisibility(View.GONE);
+        homeFeedsViewPager.setVisibility(View.GONE);
         removeNetworkError();
         if (presenter != null) {
-            resetFeedState();
             presenter.getHomeData();
             presenter.getHeaderData(false);
+            presenter.getFeedTabData();
         }
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
-    }
-
-    private void resetFeedState() {
-        presenter.resetPageFeed();
     }
 
     @Override
