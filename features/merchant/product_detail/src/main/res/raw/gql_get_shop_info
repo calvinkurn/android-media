@@ -1,0 +1,37 @@
+query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
+    shopInfoByID(input: {
+        shopIDs: $shopIds,
+        fields: $fields,
+        domain: $shopDomain
+    }){
+        shopCore{
+            shopID
+            domain
+            name
+            url
+        }
+        shopAssets{
+            avatar
+            cover
+        }
+        shopLastActive
+        location
+        shopTerms
+        isAllowManage
+        isOwner
+        goldOS {
+            isGold
+            isGoldBadge
+            isOfficial
+        }
+        favoriteData{
+            totalFavorite
+            alreadyFavorited
+        }
+        statusInfo {
+            shopStatus
+            statusMessage
+            statusTitle
+        }
+    }
+}

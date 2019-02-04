@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.product.detail.data.model.Campaign
-import com.tokopedia.product.detail.data.model.Video
+import com.tokopedia.product.detail.data.model.product.Campaign
+import com.tokopedia.product.detail.data.model.product.Video
 
 const val MAX_PERCENT = 100
 

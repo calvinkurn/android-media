@@ -7,8 +7,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.Picture
-import com.tokopedia.product.detail.data.model.ProductParams
+import com.tokopedia.product.detail.data.model.product.Picture
+import com.tokopedia.product.detail.data.model.product.ProductParams
 import com.tokopedia.product.detail.view.adapter.PicturePagerAdapter
 import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 

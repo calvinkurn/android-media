@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -22,17 +21,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.ProductInfo
-import com.tokopedia.product.detail.data.model.ProductParams
+import com.tokopedia.product.detail.data.model.product.ProductInfo
+import com.tokopedia.product.detail.data.model.product.ProductParams
+import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
-import com.tokopedia.product.detail.data.util.ProductTrackingConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.view.fragment.productView.PartialButtonActionView
-import com.tokopedia.product.detail.view.fragment.productView.PartialHeaderView
-import com.tokopedia.product.detail.view.fragment.productView.PartialProductDescrFullView
-import com.tokopedia.product.detail.view.fragment.productView.PartialProductStatisticView
+import com.tokopedia.product.detail.view.fragment.productView.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
@@ -55,6 +51,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
     lateinit var productStatsView: PartialProductStatisticView
     lateinit var productDescrView: PartialProductDescrFullView
     lateinit var actionButtonView: PartialButtonActionView
+    lateinit var productShopView: PartialShopView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -118,6 +115,21 @@ class ProductDetailFragment: BaseDaggerFragment() {
             is Success -> onSuccessGetProductInfo(it.data)
             is Fail -> onErrorGetProductInfo(it.throwable)
         } })
+        productInfoViewModel.shopResp.observe(this, Observer {
+            it?.run { renderProductInfo2(this) }
+        })
+    }
+
+    private fun renderProductInfo2(shopInfo: ShopInfo) {
+        productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
+        val data = productInfo ?: return
+
+        actionButtonView.renderData(data.basic.status,
+                (productInfoViewModel.isShopOwner(data.basic.shopID)
+                        || shopInfo.isAllowManage == 1) && GlobalConfig.isSellerApp(),
+                data.preorder)
+        actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
+        headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -141,6 +153,10 @@ class ProductDetailFragment: BaseDaggerFragment() {
 
         if (!::actionButtonView.isInitialized){
             actionButtonView = PartialButtonActionView.build(view)
+        }
+
+        if (!::productShopView.isInitialized){
+            productShopView = PartialShopView.build(view)
         }
 
         initView()
@@ -282,6 +298,7 @@ class ProductDetailFragment: BaseDaggerFragment() {
 
     override fun onDestroy() {
         productInfoViewModel.productInfoResp.removeObservers(this)
+        productInfoViewModel.shopResp.removeObservers(this)
         productInfoViewModel.clear()
         super.onDestroy()
     }
@@ -296,9 +313,6 @@ class ProductDetailFragment: BaseDaggerFragment() {
         view_picture.renderData(data.pictures)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
-        actionButtonView.renderData(data.basic.status,
-                productInfoViewModel.isShopOwner(data.basic.shopID) || GlobalConfig.isSellerApp(),
-                data.preorder)
 
         if (data.wholesale.isNotEmpty()){
             val minPrice = data.wholesale.sortedBy { it.price }.get(0).price

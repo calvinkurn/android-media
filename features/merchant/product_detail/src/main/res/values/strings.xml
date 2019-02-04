@@ -46,4 +46,9 @@
     <string name="label_asuransi">Asuransi</string>
     <string name="label_category">Kategori</string>
     <string name="label_etalase">Etalase</string>
+    <string name="product_shop_label">Penjual</string>
+    <string name="label_chat_seller">Chat Penjual</string>
+    <string name="label_favorite">Favoritkan</string>
+    <string name="label_favorited">Followed</string>
+    <string name="template_shop_last_login">\u2022 %s</string>
 </resources>

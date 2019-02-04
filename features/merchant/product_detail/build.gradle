@@ -25,6 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.features.productShare)
+    implementation project(rootProject.ext.features.goldMerchantResource)
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex

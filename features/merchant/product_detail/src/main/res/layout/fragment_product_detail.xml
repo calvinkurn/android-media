@@ -55,6 +55,7 @@
         android:clipToPadding="false"
         android:descendantFocusability="blocksDescendants"
         android:fillViewport="true"
+        android:paddingBottom="@dimen/dp_20"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout android:id="@+id/root_view"
@@ -70,6 +71,7 @@
             <include layout="@layout/partial_variant_rate_estimation"/>
             <include layout="@layout/partial_product_detail_wholesale"/>
             <include layout="@layout/partial_product_full_descr"/>
+            <include layout="@layout/partial_product_shop_info"/>
 
         </LinearLayout>
 

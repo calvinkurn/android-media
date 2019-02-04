@@ -10,9 +10,11 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.ProductInfo
-import com.tokopedia.product.detail.data.model.ProductParams
+import com.tokopedia.product.detail.data.model.product.ProductInfo
+import com.tokopedia.product.detail.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.util.discountedPrice
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
@@ -37,11 +39,9 @@ class PartialHeaderView private constructor(private val view: View){
         }
     }
 
-    fun renderDataTemp(productParams: ProductParams){
-        with(view){
-            product_name.text = MethodChecker.fromHtml(productParams.productName)
-            tv_price_pdp.text = productParams.productPrice
-        }
+    fun showOfficialStore(shown: Boolean){
+        if (shown) view.label_official_store.visible()
+        else view.label_official_store.gone()
     }
 
     fun renderData(data: ProductInfo) {

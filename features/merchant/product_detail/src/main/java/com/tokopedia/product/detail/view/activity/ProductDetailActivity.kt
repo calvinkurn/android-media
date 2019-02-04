@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.ProductParams
+import com.tokopedia.product.detail.data.model.product.ProductParams
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
