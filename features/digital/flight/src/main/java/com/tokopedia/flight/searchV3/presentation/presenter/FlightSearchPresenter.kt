@@ -91,8 +91,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         }
 
                         override fun onNext(t: FlightJourneyViewModel?) {
-                            flightAnalytics.eventSearchProductClickFromDetail(view.getSearchPassData(), journeyViewModel)
-                            deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(journeyViewModel!!))
+                            flightAnalytics.eventSearchProductClickFromDetail(view.getSearchPassData(), t)
+                            deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(t!!))
                         }
 
                     })
