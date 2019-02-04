@@ -8,6 +8,8 @@
         tools:node="remove"
         tools:selector="com.google.firebase"/>
 
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
+
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="true"

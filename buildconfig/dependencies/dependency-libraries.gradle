@@ -16,6 +16,7 @@ ext {
     tkpdUseCaseVersion = '2.23'
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
+    tkpdGraphViewVersion = '2.22'
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
@@ -62,13 +63,15 @@ ext {
             trackingOptimizer : ":libraries:tracking_optimizer",
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
+            websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil       : ":libraries:youtubeutil",
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
-            track             : ":track",
-            trackinterface    : ":trackinterface",
+            track             : ":libraries:track",
+            trackinterface    : ":libraries:trackinterface",
+            graphView         :":libraries:graph_view"
     ]
 }

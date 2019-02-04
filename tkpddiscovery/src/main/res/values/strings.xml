@@ -9,6 +9,7 @@
     <string name="title_product">Produk</string>
     <string name="title_catalog">Katalog</string>
     <string name="title_shop">Toko</string>
+    <string name="title_profile">Profil</string>
     <string name="sort">Sort</string>
     <string name="filter">Filter</string>
     <string name="grid">Grid</string>
@@ -63,4 +64,11 @@
     <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
     <string name="empty_state_selected_filter_price_name">Filter Harga</string>
     <string name="related_search_title">Mungkin maksud Anda :</string>
+    <string name="post_count_value">%1$s post</string>
+
+    <string name="btn_follow_text">Follow</string>
+    <string name="btn_following_text">Following</string>
+
+    <string name="value_profile_count">%1$s profil</string>
+    <string name="value_status_followed">\u2022 Following</string>
 </resources>

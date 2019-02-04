@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
@@ -65,6 +66,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
 
+    private static final String TRAIN_CHECKOUT_TRACE = "tr_train_checkout";
     private static final String PARAM_CHECKOUT_CLIENT = "android";
     private static final String PARAM_CHECKOUT_VERSION = "kai-" + GlobalConfig.VERSION_NAME;
 
@@ -102,6 +104,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private TrainScheduleDetailViewModel returnTripViewModel;
 
     private String appliedVoucherCode;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static Fragment newInstance(TrainSoftbook trainSoftbook,
                                        TrainScheduleBookingPassData trainScheduleBookingPassData) {
@@ -119,6 +123,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         trainScheduleBookingPassData = getArguments().getParcelable(ARGS_TRAIN_SCHEDULE_BOOKING);
 
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(TRAIN_CHECKOUT_TRACE);
     }
 
     @Override
@@ -476,6 +481,14 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private void hideCheckoutLoading() {
         progressBar.setVisibility(View.GONE);
         containerTrainReview.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override
