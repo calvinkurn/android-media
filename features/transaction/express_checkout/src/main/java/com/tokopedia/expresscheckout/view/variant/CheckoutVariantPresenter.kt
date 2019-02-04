@@ -27,12 +27,12 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantPresenter @Inject constructor(val doAtcExpressUseCase: DoAtcExpressUseCase,
-                                                   val doCheckoutExpressUseCase: DoCheckoutExpressUseCase,
-                                                   val getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
-                                                   val atcDomainModelMapper: AtcDomainModelMapper,
-                                                   val checkoutDomainModelMapper: CheckoutDomainModelMapper,
-                                                   var viewModelMapper: ViewModelMapper) :
+class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCase: DoAtcExpressUseCase,
+                                                   private val doCheckoutExpressUseCase: DoCheckoutExpressUseCase,
+                                                   private val getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
+                                                   private val atcDomainModelMapper: AtcDomainModelMapper,
+                                                   private val checkoutDomainModelMapper: CheckoutDomainModelMapper,
+                                                   private var viewModelMapper: ViewModelMapper) :
         BaseDaggerPresenter<CheckoutVariantContract.View>(), CheckoutVariantContract.Presenter {
 
     private lateinit var atcResponseModel: AtcResponseModel
@@ -61,7 +61,7 @@ class CheckoutVariantPresenter @Inject constructor(val doAtcExpressUseCase: DoAt
     }
 
     override fun loadShippingRates(price: Long, quantity: Int, selectedServiceId: Int, selectedSpId: Int) {
-        val query = GraphqlHelper.loadRawString(view.getActivityContext()?.getResources(), R.raw.rates_v3_query)
+        val query = GraphqlHelper.loadRawString(view.getActivityContext()?.resources, R.raw.rates_v3_query)
         val shippingParam = getShippingParam(quantity, price)
 
         val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
@@ -112,7 +112,7 @@ class CheckoutVariantPresenter @Inject constructor(val doAtcExpressUseCase: DoAt
                 ?.subscribeOn(Schedulers.io())
                 ?.unsubscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(DoOneClickShipmentAtcSubscriber(view, this));
+                ?.subscribe(DoOneClickShipmentAtcSubscriber(view, this))
     }
 
     private fun getCheckoutOcsParams(fragmentViewModel: FragmentViewModel): AddToCartRequest {
@@ -183,7 +183,7 @@ class CheckoutVariantPresenter @Inject constructor(val doAtcExpressUseCase: DoAt
                 ?.subscribeOn(Schedulers.io())
                 ?.unsubscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(DoCheckoutSubscriber(view, this));
+                ?.subscribe(DoCheckoutSubscriber(view, this))
     }
 
     private fun getOldCheckoutParams(fragmentViewModel: FragmentViewModel): CheckoutRequest {

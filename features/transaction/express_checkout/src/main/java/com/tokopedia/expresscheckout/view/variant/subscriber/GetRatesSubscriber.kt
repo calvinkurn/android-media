@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.subscriber
 
+import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
@@ -26,7 +27,7 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         e.printStackTrace()
         view?.hideLoading()
         view?.onNeedToValidateButtonBuyVisibility()
-        view?.setShippingDurationError("Toko tidak mendukung durasi pengiriman ini")
+        view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported) ?: "")
     }
 
     override fun onNext(ratesData: ShippingRecommendationData) {
@@ -57,7 +58,7 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                                     }
                                 }
                             }
-                            view?.setShippingDurationError("Toko tidak mendukung durasi pengiriman ini")
+                            view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported) ?: "")
                             return
                         } else {
                             // First time load rates data come here

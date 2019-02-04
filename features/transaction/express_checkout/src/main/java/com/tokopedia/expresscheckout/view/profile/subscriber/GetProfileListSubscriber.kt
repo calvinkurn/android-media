@@ -16,6 +16,10 @@ class GetProfileListSubscriber(val view: CheckoutProfileContract.View?, val pres
 
     private lateinit var domainModelMapper: ProfileDataMapper
 
+    companion object {
+        const val STATUS_OK = "OK"
+    }
+
     override fun onCompleted() {
 
     }
@@ -29,7 +33,7 @@ class GetProfileListSubscriber(val view: CheckoutProfileContract.View?, val pres
     override fun onNext(response: GraphqlResponse) {
         view?.hideLoading()
         val profileResponse = response.getData<ProfileListGqlResponse>(ProfileListGqlResponse::class.java)
-        if (profileResponse.data.status == "OK") {
+        if (profileResponse.data.status == STATUS_OK) {
             domainModelMapper = ProfileDomainModelMapper()
             val profileResponseModel = domainModelMapper.convertToDomainModel(profileResponse.data)
             presenter.prepareViewModel(profileResponseModel)

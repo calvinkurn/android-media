@@ -16,7 +16,7 @@ import com.tokopedia.transaction.common.data.expresscheckout.Constant.*
 class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
     companion object {
-        val EXTRA_ATC_REQUEST = "EXTRA_ATC_REQUEST"
+        const val EXTRA_ATC_REQUEST = "EXTRA_ATC_REQUEST"
 
         @JvmStatic
         fun createIntent(context: Activity?, atcRequestParam: AtcRequestParam): Intent {

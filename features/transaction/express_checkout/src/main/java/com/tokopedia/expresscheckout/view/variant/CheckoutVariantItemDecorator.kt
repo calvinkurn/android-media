@@ -13,16 +13,20 @@ class CheckoutVariantItemDecorator : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
         val dimen: Int? = view?.context?.resources?.getDimension(R.dimen.dp_8)?.toInt()
-        val position = parent?.getChildAdapterPosition(view);
-        if (position == (parent?.adapter?.itemCount)?.minus(1)) {
-            outRect?.bottom = dimen?.times(2)
-            outRect?.top = dimen
-        } else if (position == 0) {
-            outRect?.bottom = dimen
-            outRect?.top = dimen?.times(2)
-        } else {
-            outRect?.bottom = dimen
-            outRect?.top = dimen
+        val position = parent?.getChildAdapterPosition(view)
+        when (position) {
+            (parent?.adapter?.itemCount)?.minus(1) -> {
+                outRect?.bottom = dimen?.times(2)
+                outRect?.top = dimen
+            }
+            0 -> {
+                outRect?.bottom = dimen
+                outRect?.top = dimen?.times(2)
+            }
+            else -> {
+                outRect?.bottom = dimen
+                outRect?.top = dimen
+            }
         }
     }
 

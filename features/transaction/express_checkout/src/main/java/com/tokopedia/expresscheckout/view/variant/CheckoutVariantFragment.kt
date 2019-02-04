@@ -96,12 +96,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
 
-    var isDataLoaded = false
+    private var isDataLoaded = false
 
     companion object {
-        val REQUEST_CODE_GEOLOCATION = 63
+        const val REQUEST_CODE_GEOLOCATION = 63
 
-        val ARGUMENT_ATC_REQUEST = "ARGUMENT_ATC_REQUEST"
+        const val ARGUMENT_ATC_REQUEST = "ARGUMENT_ATC_REQUEST"
 
         fun createInstance(atcRequestParam: AtcRequestParam): CheckoutVariantFragment {
             val bundle = Bundle()
@@ -284,7 +284,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             var newSelectedProductChild: ProductChild? = null
             for (productChild: ProductChild in productViewModel.productChildrenList) {
                 var matchOptionId = 0
-                for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
+                for ((_, value) in productViewModel.selectedVariantOptionsIdMap) {
                     if (value in productChild.optionsId) {
                         matchOptionId++
                     }
@@ -343,10 +343,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             // Set option id state with checking result
                             if (!hasAvailableChild) {
                                 optionViewModel.hasAvailableChild = false
-                                optionViewModel.currentState == optionViewModel.STATE_NOT_AVAILABLE
+                                optionViewModel.currentState = optionViewModel.STATE_NOT_AVAILABLE
                             } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
                                 optionViewModel.hasAvailableChild = true
-                                optionViewModel.currentState == optionViewModel.STATE_NOT_SELECTED
+                                optionViewModel.currentState = optionViewModel.STATE_NOT_SELECTED
                             }
                         }
                         onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
@@ -553,7 +553,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showErrorCourier(message: String) {
-        showBottomSheetError("Pilih Kurir Lain", message, "Pilih Kurir Lain", false)
+        showBottomSheetError(getString(R.string.bottomsheet_title_choose_other_method), message, getString(R.string.bottomsheet_action_choose_other_courier), false)
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
@@ -563,7 +563,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showErrorNotAvailable(message: String) {
-        showBottomSheetError("Produk tidak tersedia", message, "Tutup", false)
+        showBottomSheetError(getString(R.string.bottomsheet_title_product_not_available), message, getString(R.string.bottomsheet_action_close), false)
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
@@ -572,7 +572,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showErrorAPI(retryAction: String) {
-        showBottomSheetError("Terjadi kendala teknis", "Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi", "Lanjutkan Tanpa Template", true)
+        showBottomSheetError(getString(R.string.bottomsheet_title_global_error), getString(R.string.bottomsheet_message_global_error), getString(R.string.bottomsheet_action_global_error), true)
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListenerWithRetry {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
@@ -594,7 +594,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showErrorPayment(message: String) {
-        showBottomSheetError("Pilih Metode Pembayaran Lain", message, "Pilih Metode Pembayaran", false)
+        showBottomSheetError(getString(R.string.bottomsheet_title_change_payment_method), message, getString(R.string.bottomsheet_action_choose_payment_method), false)
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
@@ -604,8 +604,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     private fun showErrorPinpoint(productData: ProductData?, profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
-        showBottomSheetError("Tandai Lokasi Pengiriman", productData?.error?.errorMessage
-                ?: "", "Tandai Lokasi", false)
+        showBottomSheetError(getString(R.string.bottomsheet_title_no_pinpoint), productData?.error?.errorMessage
+                ?: "", getString(R.string.bottomsheet_action_pin_location), false)
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()

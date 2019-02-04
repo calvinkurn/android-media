@@ -35,7 +35,8 @@ class ProfileViewHolder(val view: View, val listener: CheckoutProfileActionListe
                 itemView.tv_main_template.visibility = View.GONE
             }
 
-            itemView.tv_template_title.text = "Template ${element.templateTitle}"
+            val templateTitle = "Template ${element.templateTitle}"
+            itemView.tv_template_title.text = templateTitle
             itemView.tv_profile_address.text = getHtmlFormat("<b>${element.addressTitle}</b> ${element.addressDetail}")
             ImageHandler.loadImageRounded2(itemView.context, itemView.img_payment_method, element.paymentImageUrl)
             itemView.tv_payment_detail.text = element.paymentDetail

@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.subscriber
 
+import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.data.entity.response.checkout.CheckoutExpressGqlResponse
 import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDomainModelMapper
@@ -65,10 +66,10 @@ class DoCheckoutExpressSubscriber(val view: CheckoutVariantContract.View?,
                 view?.showErrorPayment(dataMessage)
             }
             headerMessage == STATE_HEADER_ERROR_PRODUCT_NOT_ACTIVE -> {
-                view?.showErrorNotAvailable("Stok produk ini sedang kosong. Silakan ganti dengan produk serupa.")
+                view?.showErrorNotAvailable(view.getActivityContext()?.getString(R.string.label_error_stock_not_available) ?: "")
             }
             headerMessage == STATE_HEADER_ERROR_SHOP_NOT_ACTIVE -> {
-                view?.showErrorNotAvailable("Toko ini sedang tutup. Silakan gunakan toko lain.")
+                view?.showErrorNotAvailable(view.getActivityContext()?.getString(R.string.label_error_shop_closed) ?: "")
             }
             else -> view?.showErrorAPI(RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT)
         }

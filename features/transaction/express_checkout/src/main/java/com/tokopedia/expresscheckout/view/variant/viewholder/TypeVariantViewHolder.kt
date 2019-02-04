@@ -39,7 +39,8 @@ class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionL
                 }
             }
 
-            itemView.tv_variant_name.text = element.variantName + " : "
+            val variantName = "${element.variantName} : "
+            itemView.tv_variant_name.text = variantName
             itemView.tv_variant_value.text = element.variantSelectedValue
             val chipsLayoutManager = ChipsLayoutManager.newBuilder(itemView.context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)

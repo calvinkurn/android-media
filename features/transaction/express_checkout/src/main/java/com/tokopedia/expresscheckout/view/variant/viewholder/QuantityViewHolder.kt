@@ -31,6 +31,7 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
     }
 
     companion object {
+        const val QUANTITY_PLACEHOLDER = "{{value}}"
         val LAYOUT = R.layout.item_quantity_detail_product_page
     }
 
@@ -113,9 +114,9 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
         var needToUpdateView = false
 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
-            error = element.errorProductMinQuantity.replace("{{value}}", "${element.minOrderQuantity}", false)
+            error = element.errorProductMinQuantity.replace(QUANTITY_PLACEHOLDER, "${element.minOrderQuantity}", false)
         } else if (element.orderQuantity > element.maxOrderQuantity) {
-            error = element.errorProductMaxQuantity.replace("{{value}}", "${element.maxOrderQuantity}", false)
+            error = element.errorProductMaxQuantity.replace(QUANTITY_PLACEHOLDER, "${element.maxOrderQuantity}", false)
         }
 
         if (error != null) {

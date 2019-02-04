@@ -5,5 +5,20 @@
     <string name="label_insurance_info_short_yes">Transaksi ini terlindungi asuransi</string>
     <string name="label_insurance_info_short_no">Transaksi ini tidak terlindungi asuransi</string>
     <string name="title_choose_other_template">Pilih Template Lain</string>
+    <string name="bottomsheet_title_no_pinpoint">Tandai Lokasi Pengiriman</string>
+    <string name="bottomsheet_action_pin_location">Tandai Lokasi</string>
+    <string name="bottomsheet_title_change_payment_method">Pilih Metode Pembayaran Lain</string>
+    <string name="bottomsheet_action_choose_payment_method">Pilih Metode Pembayaran</string>
+    <string name="bottomsheet_title_global_error">Terjadi kendala teknis</string>
+    <string name="bottomsheet_message_global_error">Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi</string>
+    <string name="bottomsheet_action_global_error">Lanjutkan Tanpa Template</string>
+    <string name="bottomsheet_title_product_not_available">Produk tidak tersedia</string>
+    <string name="bottomsheet_action_close">Tutup</string>
+    <string name="bottomsheet_title_choose_other_method">Pilih Kurir Lain</string>
+    <string name="bottomsheet_action_choose_other_courier">Pilih Kurir Lain</string>
+    <string name="label_stock_available">Stok Tersedia</string>
+    <string name="label_error_duration_not_supported">Toko tidak mendukung durasi pengiriman ini</string>
+    <string name="label_error_stock_not_available">Stok produk ini sedang kosong. Silakan ganti dengan produk serupa.</string>
+    <string name="label_error_shop_closed">Toko ini sedang tutup. Silakan gunakan toko lain.</string>
 
 </resources>
