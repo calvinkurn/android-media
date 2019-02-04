@@ -34,6 +34,9 @@ public class Attributes {
     @SerializedName("client_id")
     @Expose
     private String clientId;
+    @SerializedName("subscribe")
+    @Expose
+    private boolean subscribe;
 
     @SerializedName("deals_ids")
     @Expose
@@ -69,5 +72,9 @@ public class Attributes {
 
     public void setDealsIds(List<Integer> dealsIds) {
         this.dealsIds = dealsIds;
+    }
+
+    public void setSubscribe(boolean subscribe) {
+        this.subscribe = subscribe;
     }
 }
