@@ -64,6 +64,6 @@ public class MainParentPresenter {
     }
 
     public boolean isUserLogin(){
-        return mainParentView.isUserLogin();
+        return userSession.isLoggedIn();
     }
 }

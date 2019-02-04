@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -27,13 +27,13 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.attachproduct)
+
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
-
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -44,10 +44,19 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.websocket)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.chatcommon)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation project(rootProject.ext.features.transactioncommon)
+
+
 
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -68,16 +77,16 @@ dependencies {
     }
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.miscDependencies.parcelerApi
-    annotationProcessor rootProject.ext.miscDependencies.parceler
+    kapt rootProject.ext.miscDependencies.parceler
 
     implementation rootProject.ext.playServicesDependencies.maps
 
@@ -85,6 +94,8 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.appIntro
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation 'io.reactivex:rxkotlin:0.60.0'
 }
 
 apply from: '../../../publish_local.gradle'

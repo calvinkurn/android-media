@@ -18,6 +18,7 @@ import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.di.module.DataUtilModule;
 import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 

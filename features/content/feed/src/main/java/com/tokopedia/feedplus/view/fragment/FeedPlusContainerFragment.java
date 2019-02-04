@@ -14,10 +14,10 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
+import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,9 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private UserSession userSession;
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
+    private AbTestingOfficialStore abTestingOfficialStore;
 
     private int badgeNumber;
 
@@ -59,7 +59,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initVar();
         initView();
     }
 
@@ -69,8 +68,12 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     @Override
-    protected void initInjector() {
+    protected void initInjector() { }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        notifyToolbarForAbTesting();
     }
 
     @Override
@@ -89,11 +92,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
             mainToolbar.setNotificationNumber(number);
         }
     }
-
-    private void initVar() {
-        userSession = new UserSession(getContext());
-    }
-
+    
     private void initView() {
         setAdapter();
         if (hasCategoryIdParam()) {
@@ -105,15 +104,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private void setAdapter() {
         List<FeedPlusTabItem> tabItemList = new ArrayList<>();
 
-        if (userSession.isLoggedIn()) {
-            tabItemList.add(new FeedPlusTabItem(
-                    getString(R.string.tab_my_feed),
-                    getFeedPlusFragment())
-            );
-            tabLayout.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.setVisibility(View.GONE);
-        }
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_my_feed),
+                getFeedPlusFragment())
+        );
 
         tabItemList.add(new FeedPlusTabItem(
                 getString(R.string.tab_explore),
@@ -163,5 +157,11 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         return viewPager != null
                 && tabLayout != null
                 && tabLayout.getTabCount() - 1 >= 0;
+    }
+
+    public void notifyToolbarForAbTesting() {
+        if (mainToolbar != null) {
+            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,9 +14,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
@@ -46,7 +49,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         ProductInfoView,
         DetailFragmentInteractionListener,
         ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
-        BottomSheets.BottomSheetDismissListener {
+        BottomSheets.BottomSheetDismissListener, ActionUIDelegate<String, String> {
 
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
@@ -54,6 +57,8 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     private Uri uriData;
     private Bundle bundleData;
+    private ProgressDialog loading;
+
 
     ProductInfoResultReceiver mReceiver;
 
@@ -71,9 +76,27 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
                 .putExtras(extras);
     }
 
+    /**
+     * To add lazy load, make sure to add PDP query parameter from {@link ApplinkConst.Query}
+     *
+     * @param context
+     * @param extras
+     * @return
+     */
     @DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
+        if (!TextUtils.isEmpty(extras.getString(ApplinkConst.Query.PDP_ID))) {
+            ProductPass productPass = ProductPass.Builder.aProductPass()
+                    .setProductId(extras.getString(ApplinkConst.Query.PDP_ID, ""))
+                    .setProductPrice(extras.getString(ApplinkConst.Query.PDP_PRICE, ""))
+                    .setProductName(extras.getString(ApplinkConst.Query.PDP_NAME, ""))
+                    .setDateTimeInMilis(Long.parseLong(extras.getString(ApplinkConst.Query.PDP_DATE, "0")))
+                    .setProductImage(extras.getString(ApplinkConst.Query.PDP_IMAGE, ""))
+                    .build();
+            extras.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS, productPass);
+        }
         return new Intent(context, ProductInfoActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
@@ -367,6 +390,28 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void onDismiss() {
         closeView();
+    }
+
+    @Override
+    public void waitForResult(int actionId, String dataObj) {
+        showProgressDialog();
+    }
+
+    @Override
+    public void stopWaiting(int actionId, String dataObj) {
+        hideProgressDialog();
+    }
+
+    private void hideProgressDialog(){
+        if(loading != null)
+            loading.dismiss();
+    }
+
+    private void showProgressDialog() {
+        if(loading == null) loading = new ProgressDialog(this);
+        loading.setCancelable(false);
+        loading.setMessage(getString(R.string.title_loading));
+        loading.show();
     }
 
     // Work Around IF your press back and youtube thumbnail doesn't intalized yet }

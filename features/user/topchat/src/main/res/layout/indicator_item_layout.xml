@@ -24,7 +24,7 @@
             android:id="@+id/icon"
             android:layout_width="@dimen/indicator_icon_size"
             android:layout_height="@dimen/indicator_icon_size"
-            android:padding="@dimen/padding_vvs"
+            android:padding="@dimen/dp_3"
             tools:src="@drawable/ic_chat_personal"/>
     </FrameLayout>
 

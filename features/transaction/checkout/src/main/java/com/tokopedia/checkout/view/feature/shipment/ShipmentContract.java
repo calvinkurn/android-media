@@ -4,26 +4,28 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,9 +111,17 @@ public interface ShipmentContract {
 
         void setCourierPromoApplied(int itemPosition);
 
+        void proceedCod(android.view.View view);
+
+        void showBottomSheetError(String htmlMessage);
+
+        void navigateToCodConfirmationPage(Data data);
+
         void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void showToastFailedTickerPromo(String text);
+
+        void stopTrace();
     }
 
     interface AnalyticsActionListener {
@@ -189,9 +199,9 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnDisplayLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
 
-        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration);
+        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod);
 
-        void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
+        void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -285,7 +295,10 @@ public interface ShipmentContract {
 
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
 
-        void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label);
+        CodModel getCodData();
+
+        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment);
+
     }
 
 }
