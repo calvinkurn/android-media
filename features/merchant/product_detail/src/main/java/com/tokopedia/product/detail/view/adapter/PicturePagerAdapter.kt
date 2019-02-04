@@ -12,7 +12,8 @@ import com.tokopedia.product.detail.data.model.product.Picture
 
 class PicturePagerAdapter(private val context: Context,
                           private val pictures: MutableList<Picture> = mutableListOf(),
-                          private var urlTemp: String? = null): PagerAdapter() {
+                          private var urlTemp: String? = null,
+                          private val onPictureClickListener: ((Int) -> Unit)?) : PagerAdapter() {
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
@@ -23,10 +24,10 @@ class PicturePagerAdapter(private val context: Context,
         val imageView = ImageView(context)
         imageView.adjustViewBounds = true
         val currentOrientation = context.resources.configuration.orientation
-        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             imageView.scaleType = ImageView.ScaleType.FIT_CENTER
 
-            if (!urlTemp.isNullOrEmpty() && position == 0){
+            if (!urlTemp.isNullOrEmpty() && position == 0) {
                 Glide.with(context).load(urlImage)
                         .dontAnimate().dontTransform().fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -34,7 +35,7 @@ class PicturePagerAdapter(private val context: Context,
                                 .dontAnimate().dontTransform().fitCenter()
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE))
                         .into(imageView)
-            } else if (!urlImage.isEmpty()){
+            } else if (!urlImage.isEmpty()) {
                 Glide.with(context)
                         .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -44,7 +45,7 @@ class PicturePagerAdapter(private val context: Context,
         } else {
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
 
-            if (!urlTemp.isNullOrEmpty() && position == 0){
+            if (!urlTemp.isNullOrEmpty() && position == 0) {
                 Glide.with(context).load(urlImage)
                         .dontAnimate().dontTransform().centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -52,7 +53,7 @@ class PicturePagerAdapter(private val context: Context,
                                 .dontAnimate().dontTransform().centerCrop()
                                 .diskCacheStrategy(DiskCacheStrategy.SOURCE))
                         .into(imageView)
-            } else if (!urlImage.isEmpty()){
+            } else if (!urlImage.isEmpty()) {
                 Glide.with(context)
                         .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -60,6 +61,7 @@ class PicturePagerAdapter(private val context: Context,
                         .into(imageView)
             }
         }
+        imageView.setOnClickListener { onPictureClickListener?.invoke(position) }
         container.addView(imageView, 0)
         return imageView
     }
@@ -68,7 +70,7 @@ class PicturePagerAdapter(private val context: Context,
         container.removeView(`object` as ImageView)
     }
 
-    fun addAllImages(images: List<Picture>){
+    fun addAllImages(images: List<Picture>) {
         pictures.clear()
         pictures.addAll(images.sortedWith(object : Comparator<Picture> {
             override fun compare(o1: Picture, o2: Picture): Int = o1.status.compareTo(o2.status)
@@ -76,7 +78,7 @@ class PicturePagerAdapter(private val context: Context,
         notifyDataSetChanged()
     }
 
-    fun addFirst(picture: Picture){
+    fun addFirst(picture: Picture) {
         pictures.clear()
         pictures.add(picture)
         urlTemp = picture.urlOriginal

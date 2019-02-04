@@ -286,5 +286,6 @@
     </declare-styleable>
     <declare-styleable name="TouchViewPager">
         <attr name="can_swipe" format="boolean" />
+        <attr name="default_measure" format="boolean" />
     </declare-styleable>
 </resources>

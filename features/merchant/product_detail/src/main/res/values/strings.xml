@@ -46,6 +46,11 @@
     <string name="label_asuransi">Asuransi</string>
     <string name="label_category">Kategori</string>
     <string name="label_etalase">Etalase</string>
+    <string name="catatan_untuk_penjual_opsional">Catatan untuk Penjual (Opsional</string>
+    <string name="title_total_price">Total Harge</string>
+    <string name="product_detail">Detail Produk</string>
+    <string name="quantity_total">Jumlah</string>
+
     <string name="product_shop_label">Penjual</string>
     <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_favorite">Favoritkan</string>

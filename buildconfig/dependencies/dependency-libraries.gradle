@@ -46,6 +46,7 @@ ext {
             config            : ":libraries:global_config",
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
+            imagePreview      : ":libraries:image_preview",
             imageuploader     : ":libraries:imageuploader",
             kotlinExtensions  : ":libraries:kotlin_extensions",
             network           : ":libraries:network",

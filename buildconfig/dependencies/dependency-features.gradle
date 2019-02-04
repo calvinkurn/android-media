@@ -240,6 +240,7 @@ ext {
             productDraftDatabase        : ":features:merchant:product_draft_database",
             productManageItem           : ":features:merchant:product_manage_item",
             productManageList           : ":features:merchant:product_manage_list",
+            productManageDetail         : ":features:merchant:product_detail",
             productShare                : ":features:merchant:product_share",
             reputation                  : ":features:merchant:reputation",
             reputationCommon            : ":features:merchant:reputation_common",
