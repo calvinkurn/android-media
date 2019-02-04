@@ -146,7 +146,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && !hasLoadData) {
+        if (isVisibleToUser && isAdded() && getActivity() != null && presenter != null && !hasLoadData) {
             hasLoadData = true;
             loadInitialData();
         }
