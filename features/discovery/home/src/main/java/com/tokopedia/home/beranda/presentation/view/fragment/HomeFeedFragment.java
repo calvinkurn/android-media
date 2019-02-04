@@ -59,6 +59,12 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         this.homeTabFeedListener = homeTabFeedListener;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.layout_home_feed_fragment, container, false);
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         tabIndex = getArguments().getInt(ARG_TAB_INDEX);
