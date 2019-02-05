@@ -42,6 +42,7 @@ public class LoginRegisterAnalytics {
     private static final String CATEGORY_REGISTER_PAGE = "register page";
     private static final String CATEGORY_WELCOME_PAGE = "welcome page";
     private static final String CATEGORY_LOGIN_PAGE = "login page";
+    private static final String CATEGORY_LOGIN_WITH_PHONE = "login with phone";
 
     private static final String ACTION_CLICK = "Click";
     private static final String ACTION_REGISTER = "Register";
@@ -396,6 +397,69 @@ public class LoginRegisterAnalytics {
                 CATEGORY_LOGIN_PAGE,
                 actionLoginMethod,
                 "failed"
+        );
+    }
+
+    public void trackClickOnNext() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "click"
+        );
+    }
+
+    public void trackChangeButtonClicked() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button ubah",
+                ""
+        );
+    }
+
+    public void trackClickForgotPassword() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on lupa kata sandi",
+                ""
+        );
+    }
+
+    public void trackClickRegisterOnFooter() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar bottom",
+                ""
+        );
+    }
+
+    public void trackClickRegisterOnMenu() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar top",
+                ""
+        );
+    }
+
+    public void trackClickOnLoginButton() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button masuk",
+                ""
+        );
+    }
+
+    public void trackOnBackPressed() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click back",
+                ""
         );
     }
 }

@@ -1,20 +1,13 @@
 package com.tokopedia.topchat.chattemplate.view.presenter;
 
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase;
+import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase;
+import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
-import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
-import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +20,16 @@ import rx.Subscriber;
  */
 
 public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateChatContract.View>
-                    implements EditTemplateChatContract.Presenter{
+        implements EditTemplateChatContract.Presenter {
 
     private final EditTemplateUseCase editTemplateUseCase;
     private final CreateTemplateUseCase createTemplateUseCase;
     private final DeleteTemplateUseCase deleteTemplateUseCase;
 
     @Inject
-    EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase, CreateTemplateUseCase createTemplateUseCase, DeleteTemplateUseCase deleteTemplateUseCase){
+    EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase,
+                              CreateTemplateUseCase createTemplateUseCase,
+                              DeleteTemplateUseCase deleteTemplateUseCase) {
         this.editTemplateUseCase = editTemplateUseCase;
         this.createTemplateUseCase = createTemplateUseCase;
         this.deleteTemplateUseCase = deleteTemplateUseCase;
@@ -58,7 +53,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
         final int index = list.indexOf(text);
         List<String> temp = new ArrayList<>();
         temp.addAll(list);
-        if(index<0){
+        if (index < 0) {
             temp.add(s);
             createTemplateUseCase.execute(CreateTemplateUseCase.generateParam(s), new Subscriber<EditTemplateViewModel>() {
                 @Override
@@ -68,23 +63,22 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().showError(ErrorHandler.getErrorMessage(e));
+                    getView().showError(e);
                 }
 
                 @Override
                 public void onNext(EditTemplateViewModel editTemplateViewModel) {
-                    if(editTemplateViewModel.isSuccess()) {
-
+                    if (editTemplateViewModel.isSuccess()) {
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
-                    }else {
-                        getView().showError("");
+                    } else {
+                        getView().showError(new IOException());
                     }
                 }
             });
-        }else {
+        } else {
             temp.set(index, s);
-            editTemplateUseCase.execute(EditTemplateUseCase.generateParam(index+1,s), new Subscriber<EditTemplateViewModel>() {
+            editTemplateUseCase.execute(EditTemplateUseCase.generateParam(index + 1, s), new Subscriber<EditTemplateViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -92,16 +86,16 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().showError(ErrorHandler.getErrorMessage(e));
+                    getView().showError(e);
                 }
 
                 @Override
                 public void onNext(EditTemplateViewModel editTemplateViewModel) {
-                    if(editTemplateViewModel.isSuccess()) {
+                    if (editTemplateViewModel.isSuccess()) {
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
-                    }else {
-                        getView().showError("");
+                    } else {
+                        getView().showError(new IOException());
                     }
                 }
             });
@@ -110,7 +104,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
     @Override
     public void deleteTemplate(final int index) {
-        deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index+1), new Subscriber<EditTemplateViewModel>() {
+        deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index + 1), new Subscriber<EditTemplateViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -118,16 +112,16 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
             @Override
             public void onError(Throwable e) {
-                getView().showError(ErrorHandler.getErrorMessage(e));
+                getView().showError(e);
             }
 
             @Override
             public void onNext(EditTemplateViewModel editTemplateViewModel) {
-                if(editTemplateViewModel.isSuccess()) {
+                if (editTemplateViewModel.isSuccess()) {
                     getView().onResult(editTemplateViewModel, index);
                     getView().finish();
-                }else {
-                    getView().showError("");
+                } else {
+                    getView().showError(new IOException());
                 }
             }
         });

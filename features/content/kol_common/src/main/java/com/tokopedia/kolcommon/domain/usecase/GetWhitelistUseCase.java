@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -31,6 +34,13 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
     @Inject
     public GetWhitelistUseCase(@ApplicationContext Context context) {
         this.context = context;
+        this.setCacheStrategy(
+                new GraphqlCacheStrategy
+                        .Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.val())
+                        .setSessionIncluded(true)
+                        .build()
+        );
     }
 
     public GraphqlRequest getRequest(HashMap<String, Object> variables) {
