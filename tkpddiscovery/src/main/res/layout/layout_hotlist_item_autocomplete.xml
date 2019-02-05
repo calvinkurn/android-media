@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16"
+    android:background="@color/white"
+    xmlns:tools="http://schemas.android.com/tools">
+    <ImageView
+        android:id="@+id/img_hotlist"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/title_hotlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:text="TextView"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="@+id/img_hotlist"
+        app:layout_constraintStart_toEndOf="@+id/img_hotlist"
+        app:layout_constraintTop_toTopOf="@+id/img_hotlist"
+        tools:text="Pin Custom" />
+</android.support.constraint.ConstraintLayout>
