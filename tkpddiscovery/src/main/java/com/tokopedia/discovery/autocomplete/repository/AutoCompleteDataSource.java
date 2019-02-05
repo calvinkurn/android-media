@@ -31,7 +31,7 @@ public class AutoCompleteDataSource {
     }
 
     public Observable<List<SearchData>> getUniverseAutoComplete(HashMap<String, Object> param) {
-        return browseApi.getUniverseAutoCompleteV8(param)
+        return browseApi.getUniverseAutoComplete(param)
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .doOnNext(new Action1<Response<SearchResponse>>() {
                     @Override
