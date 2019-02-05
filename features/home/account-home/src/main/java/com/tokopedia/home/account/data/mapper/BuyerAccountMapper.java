@@ -194,7 +194,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         }
 
         menuGrid = new MenuGridViewModel();
-        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
+        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction_1));
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
 
@@ -425,14 +425,29 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
     private List<MenuGridItemViewModel> getDigitalOrderMenu() {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
-        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_belanja,
-                context.getString(R.string.title_menu_market_place),
-                ApplinkConst.MARKETPLACE_ORDER,
-                0,
-                PEMBELI,
-                context.getString(R.string.title_menu_transaction)
-        );
+        MenuGridItemViewModel gridItem =  null;
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_belanja,
+                    context.getString(R.string.title_menu_market_place),
+                    ApplinkConst.MARKETPLACE_ORDER,
+                    0,
+                    PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            );
+        }else {
+
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_belanja,
+                    context.getString(R.string.title_menu_market_place),
+                    ApplinkConst.PURCHASE_HISTORY,
+                    0,
+                    PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            );
+        }
+
+
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_top_up_bill,

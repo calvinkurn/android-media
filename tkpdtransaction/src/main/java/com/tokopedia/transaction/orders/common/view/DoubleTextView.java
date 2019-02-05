@@ -18,6 +18,7 @@ public class DoubleTextView extends LinearLayout {
     private LinearLayout layout = null;
     private TextView topTextView = null;
     private TextView bottomTextView = null;
+    private LinearLayout llBottomTextView = null;
     private Context mContext = null;
 
     public DoubleTextView(Context context, int orientation) {
@@ -34,7 +35,7 @@ public class DoubleTextView extends LinearLayout {
         layout = (LinearLayout) li.inflate(layoutId, this, true);
         topTextView = (TextView) layout.findViewById(R.id.top_text);
         bottomTextView = (TextView) layout.findViewById(R.id.bottom_text);
-
+        llBottomTextView = layout.findViewById(R.id.ll_bottom_text);
     }
 
     public void setBottonTextViewGravity(int gravity) {
@@ -105,6 +106,10 @@ public class DoubleTextView extends LinearLayout {
             bottomTextView.setTypeface(Typeface.DEFAULT);
     }
 
+    public void setBottomTextRightPadding(int left,int top,int right, int bottom) {
+        bottomTextView.setPadding(left,top,right,bottom);
+    }
+
     @SuppressWarnings("unused")
     public void setBottomTextColor(int bottomTextColor) {
         this.bottomTextView.setTextColor(bottomTextColor);
@@ -115,7 +120,12 @@ public class DoubleTextView extends LinearLayout {
     }
 
     public void setBottomGravity(int gravity) {
-        this.bottomTextView.setGravity(gravity);
+        if(this.llBottomTextView != null) {
+            this.llBottomTextView.setGravity(gravity);
+        }
     }
 
+    public void setBottomTextBackgroundColor(int s) {
+        this.bottomTextView.getBackground().mutate().setTint(s);
+    }
 }

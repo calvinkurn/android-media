@@ -9,6 +9,10 @@ public class Items {
     @SerializedName("categoryID")
     @Expose
     private int categoryID;
+
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -190,6 +194,14 @@ public class Items {
 
     public void setWeight(String weight) {
         this.weight = weight;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

@@ -225,8 +225,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         if(title.backgroundColor() !=null && !title.backgroundColor().isEmpty()){
             Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
-            drawable.setTint(Integer.parseInt(title.backgroundColor()));
             doubleTextView.setBottomTextBackground(drawable);
+            doubleTextView.setBottomTextRightPadding(20,10,20,10);
+
+            doubleTextView.setBottomTextBackgroundColor(Color.parseColor(title.backgroundColor()));
         }
         statusDetail.addView(doubleTextView);
     }
@@ -426,8 +428,17 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
             if (!actionButton.getActionColor().getTextColor().equals("")) {
                 textView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
             }
-            if (!TextUtils.isEmpty(actionButton.getUri())) {
-                textView.setOnClickListener(clickActionButton(actionButton));
+            if(actionButton.getLabel().equalsIgnoreCase("Beli Lagi")) {
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.onBuyAgain(getAppContext().getResources());
+                    }
+                });
+            }else {
+                if (!TextUtils.isEmpty(actionButton.getUri())) {
+                    textView.setOnClickListener(clickActionButton(actionButton));
+                }
             }
             actionBtnLayout.addView(textView);
         }
@@ -483,7 +494,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         }
         return view -> {
             if (actionButton.getActionButtonPopUp() != null && !TextUtils.isEmpty(actionButton.getActionButtonPopUp().getTitle())) {
-                final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+                final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
+                    @Override
+                    public int layoutResId() {
+                        if(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
+                            return R.layout.dialog_seller_finish;
+                        }else {
+                            return super.layoutResId();
+                        }
+                    }
+                };
                 dialog.setTitle(actionButton.getActionButtonPopUp().getTitle());
                 dialog.setDesc(actionButton.getActionButtonPopUp().getBody());
                 if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {

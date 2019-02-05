@@ -91,7 +91,7 @@
             android:exported="false" />
 
         <activity android:name=".orders.orderdetails.view.activity.RequestCancelActivity"
-            android:label="@string/title_activity_people_tx_details"
+            android:label="@string/title_activity_people_reason"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
     </application>

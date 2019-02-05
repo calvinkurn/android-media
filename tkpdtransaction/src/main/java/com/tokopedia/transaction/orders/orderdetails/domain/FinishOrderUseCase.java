@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
@@ -27,8 +28,8 @@ public class FinishOrderUseCase extends RestRequestSupportInterceptorUseCase {
     private String endpoint;
 
     @Inject
-    public FinishOrderUseCase(Interceptor interceptor, Context context) {
-        super(interceptor,context);
+    public FinishOrderUseCase(List<Interceptor> interceptor, Context context) {
+         super(interceptor,context);
     }
 
     public void setRequestParams(RequestParams params) {

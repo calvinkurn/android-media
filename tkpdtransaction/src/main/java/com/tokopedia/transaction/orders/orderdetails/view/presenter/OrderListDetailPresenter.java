@@ -1,25 +1,33 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
+import android.content.res.Resources;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
+import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
@@ -27,6 +35,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
+import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -61,6 +70,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     FinishOrderUseCase finishOrderUseCase;
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
+    OrderDetails orderDetails;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -119,10 +129,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 if (response != null) {
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
+                    orderDetails = data.orderDetails();
                 }
             }
         });
     }
+
+
 
     @Override
     public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position, boolean flag) {
@@ -168,10 +181,86 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     }
                 });
     }
+    public static final String PRODUCT_ID = "product_id";
+    public static final String QUANTITY = "quantity";
+    public static final String NOTES = "notes";
+    public static final String SHOP_ID = "shop_id";
+
+
+    private JsonArray generateInputQueryBuyAgain(OrderDetails data) {
+        List<Items> orderDetailItemData = data.getItems();
+        JsonArray jsonArray = new JsonArray();
+        for (Items item : orderDetailItemData) {
+            JsonObject passenger = new JsonObject();
+
+            int productId = 0;
+            int quantity = 0;
+            int shopId = 0;
+            String notes = "";
+            try {
+                productId = item.getId();
+                quantity = item.getQuantity();
+                shopId = data.getShopInfo().getShopId();
+                notes = item.getDescription();
+            }catch (Exception e){
+                Log.e("error parse", e.getMessage());
+            }
+            passenger.addProperty(PRODUCT_ID, productId);
+            passenger.addProperty(QUANTITY, quantity);
+            passenger.addProperty(NOTES, notes);
+            passenger.addProperty(SHOP_ID, shopId);
+            jsonArray.add(passenger);
+        }
+        return jsonArray;
+    }
 
     @Override
     public List<ActionButton> getActionList() {
         return actionButtonList;
+    }
+    private GraphqlUseCase buyAgainUseCase;
+    @Override
+    public void onBuyAgain(Resources resources) {
+        Map<String, Object> variables = new HashMap<>();
+        JsonObject passenger = new JsonObject();
+
+        variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.buy_again), ResponseBuyAgain.class, variables);
+
+        buyAgainUseCase = new GraphqlUseCase();
+        buyAgainUseCase.clearRequest();
+        buyAgainUseCase.addRequest(graphqlRequest);
+
+        buyAgainUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(getView() != null) {
+                    getView().hideProgressBar();
+                    getView().showMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse objects) {
+                if(getView() != null) {
+                    getView().hideProgressBar();
+                    ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
+                    if(responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1){
+                        getView().showMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                    }else{
+                        getView().showMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
+                    }
+                }
+
+            }
+        });
     }
 
     private void setDetailsData(OrderDetails details) {
@@ -265,6 +354,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         requestParams.putString("reason_cancel", cancelReason);
         requestParams.putString("user_id", userId);
         requestParams.putString("order_id", orderId);
+        requestParams.putString("device_id", userSession.getDeviceId());
         if (cancelOrReplacement != 1) {
             requestParams.putInt("r_code", cancelOrReplacement);
         }
@@ -281,6 +371,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                             @Override
                                             public void onError(Throwable e) {
                                                 CommonUtils.dumper(e.getStackTrace());
+                                                getView().showMessage(e.getMessage());
                                                 getView().hideProgressBar();
                                             }
 
@@ -313,6 +404,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("user_id", userId);
         requestParams.putString("order_id", orderId);
+        requestParams.putString("device_id", userSession.getDeviceId());
         getView().showProgressBar();
 
         finishOrderUseCase.setRequestParams(requestParams);
@@ -329,6 +421,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     return;
                 CommonUtils.dumper(e.getStackTrace());
                 getView().hideProgressBar();
+                getView().showMessage(e.getMessage());
             }
 
             @Override

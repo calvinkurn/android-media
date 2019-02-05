@@ -1,9 +1,11 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
@@ -94,6 +96,8 @@ public interface OrderListDetailContract {
         void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
         List<ActionButton> getActionList();
+
+        void onBuyAgain(Resources resources);
     }
 
     interface ActionInterface {

@@ -25,7 +25,7 @@ public class PostCancelReasonUseCase extends RestRequestSupportInterceptorUseCas
     private String url = "";
 
     @Inject
-    public PostCancelReasonUseCase(Interceptor interceptor, Context context) {
+    public PostCancelReasonUseCase(List<Interceptor> interceptor, Context context) {
         super(interceptor, context);
     }
 
