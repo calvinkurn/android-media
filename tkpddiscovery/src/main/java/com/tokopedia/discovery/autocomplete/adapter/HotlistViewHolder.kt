@@ -22,11 +22,9 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
     }
 
     override fun bind(element: HotlistSearch) {
-        ImageHandler.loadImageRounded(
-                view.context,
+        ImageHandler.loadImageAndCache(
                 view.img_hotlist,
-                element.imageUrl,
-                5.0f)
+                element.imageUrl)
 
         view.img_hotlist.setOnClickListener {
             clickListener.onItemClicked(element.applink, element.url)

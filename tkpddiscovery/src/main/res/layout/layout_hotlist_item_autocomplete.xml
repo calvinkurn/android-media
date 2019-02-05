@@ -6,25 +6,31 @@
     android:padding="@dimen/dp_16"
     android:background="@color/white"
     xmlns:tools="http://schemas.android.com/tools">
-    <ImageView
-        android:id="@+id/img_hotlist"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/dp_4"
+        app:cardElevation="@dimen/dp_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/img_hotlist"
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="@dimen/dp_64"
+            tools:srcCompat="@tools:sample/avatars" />
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/title_hotlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
-        android:text="TextView"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@+id/img_hotlist"
-        app:layout_constraintStart_toEndOf="@+id/img_hotlist"
-        app:layout_constraintTop_toTopOf="@+id/img_hotlist"
+        app:layout_constraintBottom_toBottomOf="@+id/card_view"
+        app:layout_constraintStart_toEndOf="@+id/card_view"
+        app:layout_constraintTop_toTopOf="@+id/card_view"
         tools:text="Pin Custom" />
 </android.support.constraint.ConstraintLayout>
