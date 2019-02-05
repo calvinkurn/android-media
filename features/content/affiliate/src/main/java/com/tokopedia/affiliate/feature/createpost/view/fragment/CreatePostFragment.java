@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -229,12 +230,21 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     public void onErrorNotAffiliate() {
         if (getActivity() != null) {
+            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+
             String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
                     .concat(PRODUCT_ID_QUERY_PARAM)
                     .concat(viewModel.getProductId());
-            Intent intent = RouteManager.getIntent(getActivity(), onboardingApplink);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            Intent onboardingIntent = RouteManager.getIntent(getActivity(), onboardingApplink);
+            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            taskStackBuilder.addNextIntent(onboardingIntent);
+
+            Intent educationIntent = RouteManager.getIntent(
+                    getActivity(),
+                    ApplinkConst.AFFILIATE_EDUCATION);
+            taskStackBuilder.addNextIntent(educationIntent);
+
+            taskStackBuilder.startActivities();
             getActivity().finish();
         }
     }

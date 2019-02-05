@@ -41,7 +41,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_25"
         android:text="@string/rp_5980000"
-        android:textColor="@color/price_pdp"
+        android:textColor="@color/red_800"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 

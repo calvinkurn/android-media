@@ -122,7 +122,7 @@ public class BaseDiscoveryActivity
         finish();
     }
 
-    private void openApplink(String applink) {
+    public void openApplink(String applink) {
         if (!TextUtils.isEmpty(applink)) {
             ((DiscoveryRouter) getApplicationContext())
                     .goToApplinkActivity(this, applink);

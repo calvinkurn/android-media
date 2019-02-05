@@ -352,6 +352,8 @@ dependencies {
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.logisticinsurance)
     implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.chatbot)
+    implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
@@ -412,6 +414,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
@@ -541,6 +544,8 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
 }
 

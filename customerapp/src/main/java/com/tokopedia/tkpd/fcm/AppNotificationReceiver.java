@@ -14,11 +14,9 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
-import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.tkpd.ConsumerMainApplication;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 
 import java.util.Map;
 
@@ -82,9 +80,6 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     private int getCurrentNotifIdByActivity(){
         if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() == null){
             return 0;
-        }
-        if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-            return Constant.NotificationId.CHAT;
         }
         return 0;
     }
