@@ -243,7 +243,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
-    public void startActivityForResult(String applink, int requestCode, Promise promise) {
+    public void navigateWithResult(String applink, int requestCode, Promise promise) {
         if(RouteManager.isSupportApplink(context, applink) && getCurrentActivity() != null) {
             Intent intent = RouteManager.getIntent(getCurrentActivity(), applink);
             getCurrentActivity().startActivityForResult(intent, requestCode);
