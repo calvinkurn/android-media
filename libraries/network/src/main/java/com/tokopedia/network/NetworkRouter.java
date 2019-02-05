@@ -24,8 +24,6 @@ public interface NetworkRouter {
 
     void showServerError(Response response);
 
-    void showForceHockeyAppDialog();
-
     void logInvalidGrant(Response response);
 
     FingerprintModel getFingerprintModel();

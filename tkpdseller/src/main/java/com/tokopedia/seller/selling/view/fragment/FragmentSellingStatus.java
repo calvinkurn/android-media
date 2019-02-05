@@ -36,7 +36,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;

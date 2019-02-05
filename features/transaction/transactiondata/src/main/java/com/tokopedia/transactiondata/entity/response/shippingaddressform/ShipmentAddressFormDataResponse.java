@@ -38,6 +38,12 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("donation")
     @Expose
     private Donation donation;
+    @SerializedName("cod")
+    @Expose
+    private Cod cod;
+    @SerializedName("message")
+    @Expose
+    private Message message;
     @SerializedName("is_robinhood")
     @Expose
     private int isRobinhood;
@@ -87,6 +93,14 @@ public class ShipmentAddressFormDataResponse {
         return donation;
     }
 
+    public Cod getCod() {
+        return cod;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
     public int getIsRobinhood() {
         return isRobinhood;
     }
@@ -98,4 +112,5 @@ public class ShipmentAddressFormDataResponse {
     public AutoApply getAutoApply() {
         return autoApply;
     }
+
 }

@@ -36,6 +36,7 @@ abstract class CacheManager(val context: Context) {
 
     fun generateUniqueRandomNumber() = System.currentTimeMillis().toString() + Random().nextInt(RANDOM_RANGE)
 
+    @JvmOverloads
     fun <T> get(customId: String, type: Type, defaultValue: T? = null): T? {
         try {
             val jsonString: String? = cacheRepository.get(id + customId)
