@@ -64,6 +64,8 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
     public static final String AFFILIATE_EXPLORE_ENABLE_FILTER = "affiliate_explore_enable_filter";
-    public static final String CAMPAIGN_TOKEN_CAPTURE_ENABLE = "app_cm_token_capture_enable";
-    public static final String TOKEN_CAPTURE_DELAY = "app_token_send_delay";
+
+    public static final String CAMPAIGN_TOKEN_CAPTURE_BACKGROUND_ENABLE = "app_cm_token_capture_background_enable";
+    public static final String CAMPAIGN_TOKEN_CAPTURE_FOREGROUND_ENABLE = "app_cm_token_capture_foreground_enable";
+    public static final String CAMPAIGN_TOKEN_CAPTURE_DELAY = "app_token_send_delay";
 }
