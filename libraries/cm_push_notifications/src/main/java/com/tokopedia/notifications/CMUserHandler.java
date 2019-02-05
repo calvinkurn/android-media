@@ -51,7 +51,6 @@ public class CMUserHandler {
             if (userAction)
                 delay = 0L;
             this.token = token;
-            Log.d(TAG, "HIT DELAY-" + delay);
             handler.postDelayed(runnable, delay);
         } catch (Exception e) {
         }
@@ -70,7 +69,6 @@ public class CMUserHandler {
         try {
             if (handler != null) {
                 handler.removeCallbacks(runnable);
-                Log.d(TAG, "HIT DELAY-cancelled");
             }
             if (updateFcmTokenUseCase != null)
                 updateFcmTokenUseCase.unsubscribe();
@@ -85,7 +83,6 @@ public class CMUserHandler {
                 //ignore temporary fcm token
                 return;
             }
-            Log.d(TAG, "HIT STARTED");
             String userId = getUserId();
             String gAdId = getGoogleAdId();
             String appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext);

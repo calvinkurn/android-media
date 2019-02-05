@@ -20,7 +20,7 @@ public class CMPushNotificationManager {
     private final String TAG = CMPushNotificationManager.class.getCanonicalName();
     private static final CMPushNotificationManager sInstance;
     private Context mContext;
-    CMUserHandler cmUserHandler;
+    private CMUserHandler cmUserHandler;
 
 
     public static CMPushNotificationManager getInstance() {
