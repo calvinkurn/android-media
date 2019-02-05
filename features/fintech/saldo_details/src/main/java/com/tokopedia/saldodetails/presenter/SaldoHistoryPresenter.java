@@ -100,7 +100,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     }
 
     private void setData(GqlDepositSummaryResponse data) {
-        if (!isViewAttached() || getView().getAdapter() == null) {
+        if (!isViewAttached() || getView().getAdapter() == null || data == null) {
             return;
         }
         getView().getAdapter().addElement(data.getDepositActivityResponse().getDepositHistoryList());

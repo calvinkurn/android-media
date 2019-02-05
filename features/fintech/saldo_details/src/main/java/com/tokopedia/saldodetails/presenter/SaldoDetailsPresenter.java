@@ -44,16 +44,16 @@ import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUND
 public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContract.View>
         implements SaldoDetailContract.Presenter, MerchantSaldoDetailsActionListener {
 
-    private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
-    private static final long MAX_DAYS_DIFFERENCE = 31;
-    private static final long SEARCH_DELAY = 500;
-    private static final java.lang.String DATE_FORMAT_VIEW = "dd MMM yyyy";
     public static final int REQUEST_WITHDRAW_CODE = 1;
-    private String paramStartDate;
+    /*private String paramStartDate;
     private String paramEndDate;
     private static final String BUNDLE_TOTAL_BALANCE = "total_balance";
     private static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
     private static final String DATE_FORMAT_WS = "yyyy/MM/dd";
+    private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
+    private static final long MAX_DAYS_DIFFERENCE = 31;
+    private static final long SEARCH_DELAY = 500;
+    private static final String DATE_FORMAT_VIEW = "dd MMM yyyy";*/
 
     private Bundle withdrawActivityBundle = new Bundle();
 
@@ -204,7 +204,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     @Override
     public void getSaldoBalance() {
 
-        getSaldoBalanceUseCase.setSellerStatus(isSeller());
         getSaldoBalanceUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -435,7 +434,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     }*/
 
-    private String getDateParam(String date) {
+    /*private String getDateParam(String date) {
         return date.replace("/", "-");
     }
 
@@ -460,7 +459,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             getView().showInvalidDateError(getView().getString(R.string.sp_error_invalid_date));
         }
         return isValid;
-    }
+    }*/
 
 
    /* private void setData(GqlDepositSummaryResponse data) {

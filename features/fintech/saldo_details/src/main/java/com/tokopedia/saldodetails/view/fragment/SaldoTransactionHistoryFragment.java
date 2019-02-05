@@ -118,19 +118,20 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         saldoHistoryPresenter.setCache();
     }
 
-    private boolean restoreStateFromArguments() {
+    /*private boolean restoreStateFromArguments() {
         Bundle b = getArguments();
         if (b == null) b = new Bundle();
         savedState = b.getBundle("internalSavedViewState8954201239547");
         return savedState != null;
-    }
+    }*/
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (!restoreStateFromArguments()) {
+        /*if (!restoreStateFromArguments()) {
             onFirstTimeLaunched();
-        }
+        }*/
+        onFirstTimeLaunched();
     }
 
 

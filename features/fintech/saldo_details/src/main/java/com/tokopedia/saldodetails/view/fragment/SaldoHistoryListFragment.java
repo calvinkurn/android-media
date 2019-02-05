@@ -107,6 +107,12 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     }
 
     @Override
+    public RecyclerView getRecyclerView(View view) {
+        this.recyclerView = super.getRecyclerView(view);
+        return super.getRecyclerView(view);
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
