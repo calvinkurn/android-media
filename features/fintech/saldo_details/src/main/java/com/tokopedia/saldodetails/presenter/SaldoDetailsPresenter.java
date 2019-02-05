@@ -28,9 +28,6 @@ import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.inject.Inject;
 

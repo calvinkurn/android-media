@@ -15,15 +15,11 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -106,6 +102,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean isSellerEnabled;
     private boolean hasShownShowCase = false;
     private boolean isSeller;
+    private SaldoTransactionHistoryFragment saldoHistoryFragment;
     ArrayList<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
 
     private SaldoHistoryPagerAdapter saldoHistoryPagerAdapter;
@@ -151,13 +148,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         return view;
     }
 
-    private void inflateSaldoHistoryLayout() {
+    /*private void inflateSaldoHistoryLayout() {
         getChildFragmentManager()
                 .beginTransaction()
                 .replace(R.id.saldo_history_layout, SaldoTransactionHistoryFragment.
                         createInstance(SaldoTransactionHistoryFragment.FOR_ALL, isSellerEnabled()))
                 .commit();
-    }
+    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -296,7 +293,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         sellerSaldoBalanceRL = view.findViewById(R.id.saldo_seller_balance_rl);
         saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
 
-
+        saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(R.id.saldo_history_layout);
     }
 
     /*@Override
@@ -654,10 +651,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
     }
 
-    @Override
+    /*@Override
     public void showInvalidDateError(String errorMessage) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMessage);
-    }
+    }*/
 
     @Override
     public void showHoldWarning(String text) {
@@ -754,8 +751,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void refresh() {
-
-        // TODO: 4/2/19 make history refresh
+        saldoHistoryFragment.onRefresh();
         saldoDetailsPresenter.onRefresh();
     }
 

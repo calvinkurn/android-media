@@ -21,13 +21,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
+import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter;
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
+import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager;
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
 import com.tokopedia.user.session.UserSession;
 
@@ -54,7 +57,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     private RelativeLayout startDateLayout;
     private RelativeLayout endDateLayout;
     private View tabSeparator;
-    private ViewPager depositHistoryViewPager;
+    private HeightWrappingViewPager depositHistoryViewPager;
     private TabLayout depositHistoryTabLayout;
 
     private LinearLayout dateSelectorLL;
@@ -76,7 +79,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     private boolean isSeller;
     private List<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
     private SaldoHistoryTabItem singleTabItem;
-    private int activePosition;
+    private int activePosition = -1;
     private SaldoHistoryTabItem allSaldoHistoryTabItem;
     private SaldoHistoryTabItem buyerSaldoHistoryTabItem;
     private SaldoHistoryTabItem sellerSaldoHistoryTabItem;
@@ -115,7 +118,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     private void onFirstTimeLaunched() {
         setActionsEnabled(false);
         saldoHistoryPresenter.setFirstDateParameter();
-        saldoHistoryPresenter.setCache();
+        saldoHistoryPresenter.getSummaryDeposit();
     }
 
     /*private boolean restoreStateFromArguments() {
@@ -163,6 +166,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             loadOneTabItem();
         }
 
+        saldoHistoryPresenter.setSeller(isSeller);
         saldoHistoryPagerAdapter = new SaldoHistoryPagerAdapter(getChildFragmentManager());
         saldoHistoryPagerAdapter.setItems(saldoTabItems);
         depositHistoryViewPager.setAdapter(saldoHistoryPagerAdapter);
@@ -215,12 +219,18 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         depositHistoryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                activePosition = position;
+                if (activePosition != position) {
+                    onRefresh();
+                    activePosition = position;
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
-                activePosition = position;
+                if (activePosition != position) {
+                    onRefresh();
+                    activePosition = position;
+                }
             }
 
             @Override
@@ -349,26 +359,50 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     @Override
     public void finishLoading() {
+        if (getSingleTabAdapter() != null) {
+            getSingleTabAdapter().hideLoading();
+        }
 
+        if (getAllHistoryAdapter() != null) {
+            getAllHistoryAdapter().hideLoading();
+        }
+
+        if (getBuyerHistoryAdapter() != null) {
+            getBuyerHistoryAdapter().hideLoading();
+        }
+
+        if (getSellerHistoryAdapter() != null) {
+            getSellerHistoryAdapter().hideLoading();
+        }
     }
 
     @Override
     public void showErrorMessage(String s) {
-
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), s);
     }
 
     @Override
-    public void showInvalidDateError(String s) {
-
+    public void showInvalidDateError(String errorMessage) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
     public void removeError() {
+        if (getSingleTabAdapter() != null) {
+            getSingleTabAdapter().removeErrorNetwork();
+        }
 
-    }
+        if (getAllHistoryAdapter() != null) {
+            getAllHistoryAdapter().removeErrorNetwork();
+        }
 
-    @Override
-    public void hideWarning() {
+        if (getBuyerHistoryAdapter() != null) {
+            getBuyerHistoryAdapter().removeErrorNetwork();
+        }
+
+        if (getSellerHistoryAdapter() != null) {
+            getSellerHistoryAdapter().removeErrorNetwork();
+        }
 
     }
 
@@ -388,8 +422,55 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     }*/
 
     @Override
-    public SaldoDepositAdapter getAdapter() {
+    public SaldoDepositAdapter getSingleTabAdapter() {
+        if (singleTabItem != null) {
+            return ((SaldoHistoryListFragment) singleTabItem.getFragment()).getAdapter();
+        } else {
+            return createNewAdapter();
+        }
+    }
 
+    @Override
+    public SaldoDepositAdapter getAllHistoryAdapter() {
+        if (allSaldoHistoryTabItem != null) {
+            return ((SaldoHistoryListFragment) allSaldoHistoryTabItem.getFragment()).getAdapter();
+        } else {
+            return createNewAdapter();
+        }
+    }
+
+
+    @Override
+    public SaldoDepositAdapter getBuyerHistoryAdapter() {
+        if (buyerSaldoHistoryTabItem != null) {
+            return ((SaldoHistoryListFragment) buyerSaldoHistoryTabItem.getFragment()).getAdapter();
+        } else {
+            return createNewAdapter();
+        }
+    }
+
+    @Override
+    public SaldoDepositAdapter getSellerHistoryAdapter() {
+
+        if (sellerSaldoHistoryTabItem != null) {
+            return ((SaldoHistoryListFragment) sellerSaldoHistoryTabItem.getFragment()).getAdapter() == null ?
+                    createNewAdapter() : ((SaldoHistoryListFragment) sellerSaldoHistoryTabItem.getFragment()).getAdapter();
+        } else {
+            return createNewAdapter();
+        }
+    }
+
+    private SaldoDepositAdapter createNewAdapter() {
+        return new SaldoDepositAdapter(new SaldoDetailTransactionFactory(new SaldoItemListener() {
+            @Override
+            public void setTextColor(View view, int colorId) {
+
+            }
+        }));
+    }
+
+    @Override
+    public SaldoDepositAdapter getAdapter() {
         if (!isSellerEnabled()) {
             return ((SaldoHistoryListFragment) singleTabItem.getFragment()).getAdapter();
         } else if (activePosition == 0) {
@@ -400,7 +481,18 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             return ((SaldoHistoryListFragment) sellerSaldoHistoryTabItem.getFragment()).getAdapter();
         }
 
-        return null;
+        return new SaldoDepositAdapter(new SaldoDetailTransactionFactory(new SaldoItemListener() {
+            @Override
+            public void setTextColor(View view, int colorId) {
+
+            }
+        }));
+    }
+
+    @Override
+    public void onDestroy() {
+        saldoHistoryPresenter.detachView();
+        super.onDestroy();
     }
 
     @Override
@@ -422,4 +514,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         saldoHistoryPresenter.attachView(this);
     }
 
+    public void onRefresh() {
+        saldoHistoryPresenter.onRefresh();
+    }
 }

@@ -13,11 +13,12 @@ import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+import static com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.cacheDuration;
 
 public class GetSaldoBalanceUseCase {
 
@@ -25,7 +26,6 @@ public class GetSaldoBalanceUseCase {
     private GraphqlUseCase graphqlUseCase;
     private Context context;
     private boolean isRequesting;
-    private long cacheDuration = TimeUnit.HOURS.toSeconds(2);
 
     @Inject
     public GetSaldoBalanceUseCase(@ApplicationContext Context context) {

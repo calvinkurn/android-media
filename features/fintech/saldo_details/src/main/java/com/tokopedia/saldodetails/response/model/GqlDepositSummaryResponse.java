@@ -1,67 +1,53 @@
-package com.tokopedia.saldodetails.response.model;
-
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
-public class GqlDepositSummaryResponse {
-
-    @SerializedName("depositActivity")
-    DepositActivityResponse depositActivityResponse;
-
-    public DepositActivityResponse getDepositActivityResponse() {
-        return depositActivityResponse;
-    }
-
-    public void setDepositActivityResponse(DepositActivityResponse depositActivityResponse) {
-        this.depositActivityResponse = depositActivityResponse;
-    }
-
-    public class DepositActivityResponse {
-
-        @SerializedName("message")
-        String message;
-
-        @SerializedName("have_error")
-        boolean haveError;
-
-        @SerializedName("have_next_page")
-        boolean haveNextPage;
-
-        @SerializedName("deposit_history_list")
-        List<DepositHistoryList> depositHistoryList;
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public boolean isHaveError() {
-            return haveError;
-        }
-
-        public void setHaveError(boolean haveError) {
-            this.haveError = haveError;
-        }
-
-        public boolean isHaveNextPage() {
-            return haveNextPage;
-        }
-
-        public void setHaveNextPage(boolean haveNextPage) {
-            this.haveNextPage = haveNextPage;
-        }
-
-        public List<DepositHistoryList> getDepositHistoryList() {
-            return depositHistoryList;
-        }
-
-        public void setDepositHistoryList(List<DepositHistoryList> depositHistoryList) {
-            this.depositHistoryList = depositHistoryList;
-        }
-
-    }
-}
+//package com.tokopedia.saldodetails.response.model;
+//
+//import com.google.gson.annotations.SerializedName;
+//
+//public class GqlDepositSummaryResponse {
+//
+//    @SerializedName("allDepositHistory")
+//    private
+//    DepositActivityResponse allDepositHistory;
+//
+//    @SerializedName("buyerDepositHistory")
+//    private
+//    DepositActivityResponse buyerDepositHistory;
+//
+//    @SerializedName("sellerDepositHistory")
+//    private
+//    DepositActivityResponse sellerDepositHistory;
+//
+//    public DepositActivityResponse getAllDepositHistory() {
+//        return allDepositHistory;
+//    }
+//
+//    public void setAllDepositHistory(DepositActivityResponse allDepositHistory) {
+//        this.allDepositHistory = allDepositHistory;
+//    }
+//
+//    public DepositActivityResponse getBuyerDepositHistory() {
+//        return buyerDepositHistory;
+//    }
+//
+//    public void setBuyerDepositHistory(DepositActivityResponse buyerDepositHistory) {
+//        this.buyerDepositHistory = buyerDepositHistory;
+//    }
+//
+//    public DepositActivityResponse getSellerDepositHistory() {
+//        return sellerDepositHistory;
+//    }
+//
+//    public void setSellerDepositHistory(DepositActivityResponse sellerDepositHistory) {
+//        this.sellerDepositHistory = sellerDepositHistory;
+//    }
+//
+//
+//    /*public DepositActivityResponse getDepositActivityResponse() {
+//        return depositActivityResponse;
+//    }
+//
+//    public void setDepositActivityResponse(DepositActivityResponse depositActivityResponse) {
+//        this.depositActivityResponse = depositActivityResponse;
+//    }*/
+//
+//
+//}

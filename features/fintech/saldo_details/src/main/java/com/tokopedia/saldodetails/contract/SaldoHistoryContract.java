@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
-import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
 public class SaldoHistoryContract {
@@ -31,6 +30,14 @@ public class SaldoHistoryContract {
 
         SaldoDepositAdapter getAdapter();
 
+        SaldoDepositAdapter getAllHistoryAdapter();
+
+        SaldoDepositAdapter getBuyerHistoryAdapter();
+
+        SaldoDepositAdapter getSellerHistoryAdapter();
+
+        SaldoDepositAdapter getSingleTabAdapter();
+
         void showErrorMessage(String s);
 
         void showInvalidDateError(String s);
@@ -38,8 +45,6 @@ public class SaldoHistoryContract {
         String getString(int resId);
 
         void removeError();
-
-        void hideWarning();
 
         void setActionsEnabled(Boolean isEnabled);
 
@@ -61,8 +66,6 @@ public class SaldoHistoryContract {
 
     public interface Presenter extends CustomerPresenter<SaldoHistoryContract.View> {
         void setFirstDateParameter();
-
-        void setCache();
 
         void onSearchClicked();
 

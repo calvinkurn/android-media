@@ -1,5 +1,5 @@
 query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dateTo: String!, $isSeller: Boolean!) {
-    depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, isSeller: $isSeller) {
+    buyerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, isSeller: $isSeller) {
     message
     have_error
     have_next_page

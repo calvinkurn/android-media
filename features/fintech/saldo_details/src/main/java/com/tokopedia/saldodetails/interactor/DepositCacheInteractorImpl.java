@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
-import com.tokopedia.saldodetails.response.model.GqlDepositSummaryResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 
@@ -29,7 +28,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
         cacheManager = ((SaldoDetailsRouter) context.getApplicationContext()).getGlobalCacheManager();
     }
 
-    @Override
+    /*@Override
     public void setSummaryDepositCache(GqlDepositSummaryResponse result) {
         Observable.just(result)
                 .subscribeOn(Schedulers.newThread())
@@ -81,7 +80,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
                         listener.onSuccess(result);
                     }
                 });
-    }
+    }*/
 
     @Override
     public void setUsableBuyerSaldoBalanceCache(GqlSaldoBalanceResponse.Saldo gqlSaldoBalanceResponse) {

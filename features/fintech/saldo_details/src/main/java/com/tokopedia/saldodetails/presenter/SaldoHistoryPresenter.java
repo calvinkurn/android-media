@@ -10,9 +10,8 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
-import com.tokopedia.saldodetails.interactor.DepositCacheInteractor;
-import com.tokopedia.saldodetails.interactor.DepositCacheInteractorImpl;
-import com.tokopedia.saldodetails.response.model.GqlDepositSummaryResponse;
+import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse;
+import com.tokopedia.saldodetails.response.model.GqlBuyerDepositSummaryResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
@@ -40,7 +39,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     GetDepositSummaryUseCase getDepositSummaryUseCase;
 
     private PagingHandler paging;
-    private DepositCacheInteractor depositCacheInteractor;
+//    private DepositCacheInteractor depositCacheInteractor;
 
     private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
     private static final long MAX_DAYS_DIFFERENCE = 31;
@@ -56,7 +55,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
     @Inject
     public SaldoHistoryPresenter(@ApplicationContext Context context) {
-        depositCacheInteractor = new DepositCacheInteractorImpl(context);
+//        depositCacheInteractor = new DepositCacheInteractorImpl(context);
         this.paging = new PagingHandler();
     }
 
@@ -83,12 +82,14 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
         getSummaryDeposit();
     }
 
-    @Override
+    /*@Override
     public void setCache() {
         depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
             @Override
             public void onSuccess(GqlDepositSummaryResponse cache) {
-                setData(cache);
+                if (cache != null) {
+                    setData(cache);
+                }
                 getSummaryDeposit();
             }
 
@@ -97,16 +98,47 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 getSummaryDeposit();
             }
         });
-    }
+    }*/
 
-    private void setData(GqlDepositSummaryResponse data) {
+    private void setData(GqlAllDepositSummaryResponse data) {
         if (!isViewAttached() || getView().getAdapter() == null || data == null) {
             return;
         }
-        getView().getAdapter().addElement(data.getDepositActivityResponse().getDepositHistoryList());
-        if (getView().getAdapter().getItemCount() == 0) {
-            getView().getAdapter().addElement(getView().getDefaultEmptyViewModel());
+
+
+        getView().getAllHistoryAdapter().addElement(data.getAllDepositHistory().getDepositHistoryList());
+        if (getView().getAllHistoryAdapter().getItemCount() == 0) {
+            getView().getAllHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
+
+        getView().getBuyerHistoryAdapter().addElement(data.getBuyerDepositHistory().getDepositHistoryList());
+        if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
+            getView().getBuyerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
+        }
+
+        getView().getSellerHistoryAdapter().addElement(data.getSellerDepositHistory().getDepositHistoryList());
+        if (getView().getSellerHistoryAdapter().getItemCount() == 0) {
+            getView().getSellerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
+        }
+
+        if (paging.CheckNextPage()) {
+            showLoading();
+        } else {
+            hideLoading();
+        }
+    }
+
+    private void setData(GqlBuyerDepositSummaryResponse data) {
+        if (!isViewAttached() || getView().getBuyerHistoryAdapter() == null || data == null) {
+            return;
+        }
+
+
+        getView().getAllHistoryAdapter().addElement(data.getBuyerDepositHistory().getDepositHistoryList());
+        if (getView().getAllHistoryAdapter().getItemCount() == 0) {
+            getView().getAllHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
+        }
+
         if (paging.CheckNextPage()) {
             showLoading();
         } else {
@@ -121,7 +153,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     }
 
     private void hideLoading() {
-        if (isViewAttached()) {
+        if (isViewAttached() && getView().getAdapter() != null) {
             getView().getAdapter().hideLoading();
             getView().finishLoading();
         }
@@ -218,6 +250,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             showLoading();
             getView().setActionsEnabled(false);
 
+            getDepositSummaryUseCase.setIsSeller(isSeller());
             getDepositSummaryUseCase.setRequesting(true);
             getDepositSummaryUseCase.setRequestVariables(getSummaryDepositParam());
 
@@ -267,48 +300,115 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             return;
         }
         getView().setActionsEnabled(true);
-        if (graphqlResponse != null &&
-                graphqlResponse.getData(GqlDepositSummaryResponse.class) != null) {
 
-            GqlDepositSummaryResponse gqlDepositSummaryResponse =
-                    graphqlResponse.getData(GqlDepositSummaryResponse.class);
+        if (isSeller()) {
+            if (graphqlResponse != null &&
+                    graphqlResponse.getData(GqlAllDepositSummaryResponse.class) != null) {
 
-            if (gqlDepositSummaryResponse != null &&
-                    !gqlDepositSummaryResponse.getDepositActivityResponse().isHaveError()) {
+                GqlAllDepositSummaryResponse gqlDepositSummaryResponse =
+                        graphqlResponse.getData(GqlAllDepositSummaryResponse.class);
 
-                if (paging.getPage() == 1) {
-                    getView().getAdapter().clearAllElements();
-                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
-                }
-                paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse()
-                        .isHaveNextPage());
-                setData(gqlDepositSummaryResponse);
-            } else {
-                if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
-                        getDepositActivityResponse() != null) {
-                    if (getView().getAdapter().getItemCount() == 0) {
-                        getView().showEmptyState(gqlDepositSummaryResponse.
-                                getDepositActivityResponse().getMessage());
-                    } else {
-                        getView().setRetry(gqlDepositSummaryResponse.
-                                getDepositActivityResponse().getMessage());
+                if (gqlDepositSummaryResponse != null &&
+                        !gqlDepositSummaryResponse.getAllDepositHistory().isHaveError()) {
+
+                    if (paging.getPage() == 1) {
+                        getView().getAllHistoryAdapter().clearAllElements();
+                        getView().getBuyerHistoryAdapter().clearAllElements();
+                        getView().getSellerHistoryAdapter().clearAllElements();
+//                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
+                    }
+                    /*paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse()
+                            .isHaveNextPage());*/
+
+                    setData(gqlDepositSummaryResponse);
+                } else {
+                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                            getAllDepositHistory() != null) {
+                        if (getView().getAllHistoryAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(gqlDepositSummaryResponse.
+                                    getAllDepositHistory().getMessage());
+                        } else {
+                            getView().setRetry(gqlDepositSummaryResponse.
+                                    getAllDepositHistory().getMessage());
+                        }
+                    }
+
+                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                            getBuyerDepositHistory() != null) {
+                        if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(gqlDepositSummaryResponse.
+                                    getBuyerDepositHistory().getMessage());
+                        } else {
+                            getView().setRetry(gqlDepositSummaryResponse.
+                                    getBuyerDepositHistory().getMessage());
+                        }
+                    }
+
+                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                            getSellerDepositHistory() != null) {
+                        if (getView().getSellerHistoryAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(gqlDepositSummaryResponse.
+                                    getSellerDepositHistory().getMessage());
+                        } else {
+                            getView().setRetry(gqlDepositSummaryResponse.
+                                    getSellerDepositHistory().getMessage());
+                        }
                     }
                 }
-            }
 
-        } else {
-            if (getView().getAdapter().getItemCount() == 0) {
-                getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
             } else {
-                getView().setRetry(getView().getString(R.string.sp_empty_state_error));
-            }
+                if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
+                    getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                } else {
+                    getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                }
 
+            }
+        } else {
+            if (graphqlResponse != null &&
+                    graphqlResponse.getData(GqlBuyerDepositSummaryResponse.class) != null) {
+
+                GqlBuyerDepositSummaryResponse gqlDepositSummaryResponse =
+                        graphqlResponse.getData(GqlBuyerDepositSummaryResponse.class);
+
+                if (gqlDepositSummaryResponse != null &&
+                        !gqlDepositSummaryResponse.getBuyerDepositHistory().isHaveError()) {
+
+                    if (paging.getPage() == 1) {
+                        getView().getSingleTabAdapter().clearAllElements();
+//                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
+                    }
+                    paging.setHasNext(gqlDepositSummaryResponse.getBuyerDepositHistory()
+                            .isHaveNextPage());
+                    setData(gqlDepositSummaryResponse);
+                } else {
+                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                            getBuyerDepositHistory() != null) {
+                        if (getView().getSingleTabAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(gqlDepositSummaryResponse.
+                                    getBuyerDepositHistory().getMessage());
+                        } else {
+                            getView().setRetry(gqlDepositSummaryResponse.
+                                    getBuyerDepositHistory().getMessage());
+                        }
+                    }
+                }
+
+            } else {
+                if (getView().getSingleTabAdapter() != null && getView().getSingleTabAdapter().getItemCount() == 0) {
+                    getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                } else {
+                    getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                }
+
+            }
         }
+
         finishLoading();
     }
 
     private void finishLoading() {
-        if(isViewAttached()) {
+        if (isViewAttached()) {
             getView().finishLoading();
         }
     }
