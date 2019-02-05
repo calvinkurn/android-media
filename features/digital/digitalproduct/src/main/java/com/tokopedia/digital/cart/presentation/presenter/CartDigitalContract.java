@@ -25,6 +25,8 @@ public class CartDigitalContract {
 
         void renderErrorAddToCart(String message);
 
+        void stopTrace();
+
         void renderErrorHttpAddToCart(String message);
 
         void renderErrorNoConnectionAddToCart(String message);
@@ -89,8 +91,6 @@ public class CartDigitalContract {
 
         String getIdemPotencyKey();
 
-        void checkCallPermissionForNOTP();
-
         Context getApplicationContext();
 
         Activity getActivity();
@@ -102,6 +102,12 @@ public class CartDigitalContract {
         CartDigitalInfoData getCartDataInfo();
 
         void navigateToLoggedInPage();
+
+        void showPostPaidDialog(String title,
+                                String content,
+                                String confirmButtonTitle);
+
+        boolean isAlreadyShowPostPaid();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -121,10 +127,6 @@ public class CartDigitalContract {
         void processPatchOtpCart(String digitalCategoryId);
 
         void autoApplyCouponIfAvailable(String digitalCategoryId);
-
-        void callPermissionCheckSuccess();
-
-        void callPermissionCheckFail();
 
         void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData,  int extraComeFrom);
 

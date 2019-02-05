@@ -6,14 +6,17 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.product.model.share.ShareData;
+import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-
-import rx.Observable;
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 
 import java.util.ArrayList;
+
+import rx.Observable;
 
 /**
  * @author madi on 5/15/17.
@@ -73,4 +76,6 @@ public interface PdpRouter {
     void eventImageClickOnReview(Context context,
                                  String productId,
                                  String reviewId);
+
+    void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate);
 }

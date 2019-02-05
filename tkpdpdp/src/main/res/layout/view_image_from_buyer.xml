@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow"
-    android:padding="@dimen/dp_10"
+    android:padding="@dimen/pdp_content_padding"
     android:paddingBottom="@dimen/dp_10"
     android:paddingTop="@dimen/dp_10">
 
@@ -13,6 +13,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/pdp_title_text_size"
         android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/title_image_from_buyer"
@@ -22,7 +23,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_10">
 
     </android.support.v7.widget.RecyclerView>
 

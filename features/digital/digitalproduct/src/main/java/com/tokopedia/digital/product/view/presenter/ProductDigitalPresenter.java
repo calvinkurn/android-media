@@ -29,6 +29,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -107,17 +108,20 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
     private CategoryData categoryData;
+    private DigitalAnalytics digitalAnalytics;
 
     @Inject
     public ProductDigitalPresenter(
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase) {
+            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
+            DigitalAnalytics digitalAnalytics) {
         super(localCacheHandler);
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
+        this.digitalAnalytics = digitalAnalytics;
     }
 
     @Override
@@ -134,6 +138,32 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
                 categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT, true
         ), getSubscriberProductDigitalData());
+    }
+
+    @Override
+    public void getCategoryData(String categoryId, String operatorId, String productId, String clientNumber) {
+        view.showInitialProgressLoading();
+
+        getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
+                categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT, true
+        ), new Subscriber<ProductDigitalData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                handleCategoryError(e);
+            }
+
+            @Override
+            public void onNext(ProductDigitalData productDigitalData) {
+                view.hideInitialProgressLoading();
+
+                view.goToCartPage(productDigitalData);
+            }
+        });
     }
 
     @Override
@@ -161,35 +191,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionProductDigitalData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException) {
-                    /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionProductDigitalData(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.renderErrorProductDigitalData(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorProductDigitalData(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
-                    view.renderErrorHttpProductDigitalData(e.getMessage());
-                } else if (e instanceof ServerErrorException) {
-                    view.clearContentRendered();
-                    view.closeView();
-                    ServerErrorHandlerUtil.handleError(e);
-                } else {
-                    view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                handleCategoryError(e);
             }
 
             @Override
@@ -221,12 +223,47 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                                         .build());
                     }
                 }
-
                 renderCategoryDataAndBannerToView(
                         categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
+
+                digitalAnalytics.sendCategoryScreen(view.getActivity(), productDigitalData.getCategoryData().getName());
             }
         };
+    }
+
+    private void handleCategoryError(Throwable e) {
+        if (isViewAttached()) {
+            view.stopTrace();
+            if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                /* Ini kalau ga ada internet */
+                view.renderErrorNoConnectionProductDigitalData(
+                        ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                );
+            } else if (e instanceof SocketTimeoutException) {
+                /* Ini kalau timeout */
+                view.renderErrorTimeoutConnectionProductDigitalData(
+                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                );
+            } else if (e instanceof ResponseErrorException) {
+                /* Ini kalau error dari API kasih message error */
+                view.renderErrorProductDigitalData(e.getMessage());
+            } else if (e instanceof ResponseDataNullException) {
+                /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                view.renderErrorProductDigitalData(e.getMessage());
+            } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+             code http errornya bisa diambil
+             e.getErrorCode */
+                view.renderErrorHttpProductDigitalData(e.getMessage());
+            } else if (e instanceof ServerErrorException) {
+                view.clearContentRendered();
+                view.closeView();
+                ServerErrorHandlerUtil.handleError(e);
+            } else {
+                view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
+        }
     }
 
     private boolean isPulsaOrPaketDataOrRoaming(String categoryId) {
@@ -240,7 +277,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                                                    List<GuideData> guideDataList,
                                                    HistoryClientNumber historyClientNumber) {
         this.categoryData = categoryData;
-
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
                     .renderCategoryDataAndBannerToView(view.getActivity(),
@@ -249,6 +285,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             view.renderCategory(digitalProductView, categoryData, historyClientNumber);
 
             if (!GlobalConfig.isSellerApp()) {
+                view.showPromoContainer();
                 if (bannerDataList.size() > 0 && guideDataList.size() > 0) {
                     view.renderPromoGuideTab(TAB_COUNT_TWO, PROMO_TAB);
                 } else if (bannerDataList.size() > 0 && guideDataList.size() == 0) {
@@ -281,7 +318,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     )
             );
         }
-
+        view.stopTrace();
         renderCheckETollBalance();
         renderCheckPulsa();
     }
@@ -298,7 +335,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 renderCheckPulsa();
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
                         view.getActivity().getString(R.string.message_ussd_title));
-                UnifyTracking.eventUssdAttempt(view.getActivity().getString(R.string.status_failed_label) + view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                UnifyTracking.eventUssdAttempt(view.getActivity(), view.getActivity().getString(R.string.status_failed_label) + view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         } else {
             view.showAccessibilityAlertDialog();
@@ -356,7 +393,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     /* Ini kalau ga ada internet */
                     view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
                     view.showPulsaBalanceError(
@@ -369,9 +405,9 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
                     view.showPulsaBalanceError(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
+                    /* Ini Http error, misal 403, 500, 404,
+                    code http errornya bisa diambil
+                    e.getErrorCode */
                     view.showPulsaBalanceError(e.getMessage());
                 } else if (e instanceof ServerErrorException) {
                     ServerErrorHandlerUtil.handleError(e);
@@ -470,7 +506,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             return new OperatorBuilder().createOperator();
     }
 
-
     @Override
     public String getDeviceMobileNumber(int selectedSim) {
         return DeviceUtil.getMobileNumber(view.getActivity(), selectedSim);
@@ -490,16 +525,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     private void startUssdCheckBalanceTimer() {
         ussdHandler = new Handler();
-        ussdHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ussdTimeOut = true;
-                if (view != null && view.getActivity() != null) {
-                    view.showPulsaBalanceError(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
-                }
+        ussdHandler.postDelayed(() -> {
+            ussdTimeOut = true;
+            if (view != null && view.getActivity() != null) {
+                view.showPulsaBalanceError(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }, ussdTimeOutTime);
-
     }
 
     @Override
@@ -532,7 +563,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         localCacheHandler.applyEditor();
     }
 
-
     @Override
     public boolean isCarrierSignalsNotAvailable(String carrierName) {
         final String noSignalStr = view.getActivity().getString(R.string.label_no_signal);
@@ -542,7 +572,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         }
         carrierName = carrierName.toLowerCase();
         return (carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSignalStr.toLowerCase()));
-
     }
 
     @Override

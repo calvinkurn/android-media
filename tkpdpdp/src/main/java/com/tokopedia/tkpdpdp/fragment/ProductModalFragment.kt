@@ -27,7 +27,7 @@ class ProductModalFragment : BaseDaggerFragment() {
 
     companion object {
 
-        private const val DEFAULT_MAXIMUM_STOCK_PICKER = 99999
+        private const val DEFAULT_MAXIMUM_STOCK_PICKER = 1000
 
         private const val ARGS_PRODUCT_VARIANT = "VARIANT_DATA"
         private const val ARGS_PRODUCT_DETAIL = "PRODUCT_DETAIL_DATA"
@@ -117,10 +117,15 @@ class ProductModalFragment : BaseDaggerFragment() {
         } else {
             for (item in productData!!.wholesalePrice) {
                 if (selectedQuantity!! >= item.wholesaleMinRaw && selectedQuantity!! <= item.wholesaleMaxRaw) {
-                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(item.wholesalePriceRaw * selectedQuantity!!, true)
+                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            item.wholesalePriceRaw.toLong() *
+                                    selectedQuantity!!.toLong(), true)
                 }
             }
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productData?.info?.productPriceUnformatted!! * selectedQuantity!!, true)
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    productData?.info?.productPriceUnformatted!!.toLong() *
+                            selectedQuantity!!.toLong(),
+                    true)
         }
     }
 
@@ -233,6 +238,18 @@ class ProductModalFragment : BaseDaggerFragment() {
         number_picker_quantitiy_product.setOnPickerActionListener { num ->
             selectedQuantity = num
             text_product_price.text = generateTextCartPrice()
+
+            if (num < number_picker_quantitiy_product.getMinValue()) {
+                activity?.let {
+                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.button_save_grey)
+                }
+                new_button_save.isClickable = false;
+            } else {
+                activity?.let {
+                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.orange_button_rounded)
+                }
+                new_button_save.isClickable = true;
+            }
         }
 
         if (isCampaign()) {

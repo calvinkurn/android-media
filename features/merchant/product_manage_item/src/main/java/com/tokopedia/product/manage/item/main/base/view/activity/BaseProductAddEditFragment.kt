@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -29,6 +30,7 @@ import com.tokopedia.product.manage.item.category.view.activity.ProductEditCateg
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ProductStatus
+import com.tokopedia.product.manage.item.common.util.ProductVariantConstant
 import com.tokopedia.product.manage.item.common.util.StockTypeDef
 import com.tokopedia.product.manage.item.description.view.activity.ProductEditDescriptionActivity
 import com.tokopedia.product.manage.item.description.view.model.ProductDescription
@@ -83,17 +85,20 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         presenter.getShopInfo()
 
         savedInstanceState?.run {
-            if(containsKey(EXTRA_IS_OFFICIAL_STORE)){
+            if (containsKey(EXTRA_IS_OFFICIAL_STORE)) {
                 officialStore = getBoolean(EXTRA_IS_OFFICIAL_STORE)
             }
-            if(containsKey(EXTRA_IS_FREE_RETURN)){
+            if (containsKey(EXTRA_IS_FREE_RETURN)) {
                 isFreeReturn = getBoolean(EXTRA_IS_FREE_RETURN)
             }
-            if(containsKey(EXTRA_IS_GOLD_MERCHANT)){
+            if (containsKey(EXTRA_IS_GOLD_MERCHANT)) {
                 isGoldMerchant = getBoolean(EXTRA_IS_GOLD_MERCHANT)
             }
+            currentProductAddViewModel = cacheManager.get(SAVED_PRODUCT_VIEW_MODEL, ProductAddViewModel::class.java)
         }
-        currentProductAddViewModel = cacheManager.get(SAVED_PRODUCT_VIEW_MODEL,ProductAddViewModel::class.java) ?: ProductAddViewModel()
+        if (currentProductAddViewModel == null) {
+            currentProductAddViewModel = ProductAddViewModel()
+        }
         return inflater.inflate(R.layout.fragment_base_product_edit, container, false)
     }
 
@@ -118,7 +123,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewEtalaseProduct.setOnClickListener { startProductEtalaseActivity() }
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
-        button_save.setOnClickListener{
+        button_save.setOnClickListener {
             if (currentProductAddViewModel?.isDataValid(this) == true) {
                 saveDraft(true)
             }
@@ -175,7 +180,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun startProductEtalaseActivity() {
         if (appRouter != null && appRouter is ProductEditModuleRouter) {
             activity?.run {
-                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId?:-1),
+                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId
+                        ?: -1),
                         REQUEST_CODE_GET_ETALASE)
             }
 
@@ -205,7 +211,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_NAME -> {
                     val productName: ProductName = data.getParcelableExtra(EXTRA_NAME)
-                    if(productName.name != currentProductAddViewModel?.productName?.name){
+                    if (productName.name != currentProductAddViewModel?.productName?.name) {
                         currentProductAddViewModel?.resetCatalog()
                     }
                     currentProductAddViewModel?.productName = productName
@@ -216,7 +222,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_STOCK -> {
                     val productStock: ProductStock = data.getParcelableExtra(EXTRA_STOCK)
-                    if(currentProductAddViewModel?.productStock?.stockCount?:0 != productStock.stockCount){
+                    if (currentProductAddViewModel?.productStock?.stockCount ?: 0 != productStock.stockCount) {
                         currentProductAddViewModel?.productVariantViewModel?.changeStockTo(getStatusStockViewVariant(productStock))
                     }
                     currentProductAddViewModel?.productStock = productStock
@@ -229,7 +235,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     val isMoveToGm: Boolean = data.getBooleanExtra(EXTRA_IS_MOVE_TO_GM, false)
                     if (isMoveToGm) {
                         saveDraft(false)
-                        UnifyTracking.eventClickYesGoldMerchantAddProduct()
+                        UnifyTracking.eventClickYesGoldMerchantAddProduct(activity)
                         goToGoldMerchantPage()
                         activity?.finish()
                     }
@@ -334,7 +340,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 visibility = View.VISIBLE
                 text = currentProductViewModel?.productCatalog?.catalogName
             }
-        }else{
+        } else {
             textViewCatalog.run {
                 visibility = View.GONE
                 text = ""
@@ -352,13 +358,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (!TextUtils.isEmpty(currentProductViewModel.productDescription?.description)) {
             labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
             labelViewDescriptionProduct.setSubTitle("")
-        }else{
+        } else {
             labelViewDescriptionProduct.setContent("")
             labelViewDescriptionProduct.setSubTitle(getString(R.string.product_subtitle_product_description))
         }
         if ((currentProductViewModel.productPrice?.price ?: 0.0) > 0) {
             labelViewPriceProduct.setSubTitle("")
-            val currencyString = CurrencyFormatUtil.convertPriceValue(currentProductViewModel.productPrice?.price?:0.0, true)
+            val currencyString = CurrencyFormatUtil.convertPriceValue(currentProductViewModel.productPrice?.price
+                    ?: 0.0, true)
             when (currentProductViewModel.productPrice?.currencyType) {
                 CurrencyTypeDef.TYPE_USD -> labelViewPriceProduct.setContent(getString(R.string.usd_format, currencyString))
                 CurrencyTypeDef.TYPE_IDR -> labelViewPriceProduct.setContent(getString(R.string.rupiah_format, currencyString))
@@ -440,9 +447,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onSuccessGetProductVariantCat(productVariantByCatModelList: MutableList<ProductVariantByCatModel>?) {
-        if(productVariantByCatModelList != null){
+        if (productVariantByCatModelList != null) {
             currentProductAddViewModel?.productVariantByCatModelList = productVariantByCatModelList as ArrayList<ProductVariantByCatModel>
-        }else{
+        } else {
             currentProductAddViewModel?.productVariantByCatModelList = ArrayList()
         }
         populateView(currentProductAddViewModel)
@@ -453,10 +460,19 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startProductVariantActivity() {
+        context?.let {
+            val app = it.applicationContext
+            if (app is AbstractionRouter){
+                app.analyticTracker.sendEventTracking(ProductVariantConstant.TRACKING_EVENT,
+                        ProductVariantConstant.TRACKING_EVENT_CATEGORY,
+                        ProductVariantConstant.TRACKING_EVENT_ACTION, null)
+            }
+        }
         currentProductAddViewModel?.run {
             if (productVariantByCatModelList.size == 0) {
                 NetworkErrorHelper.createSnackbarWithAction(activity) {
-                    presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId?.toLong() ?: 0L)
+                    presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId?.toLong()
+                            ?: 0L)
                 }.showRetrySnackbar()
                 return
             }
@@ -467,7 +483,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         productVariantByCatModelList, productVariantViewModel,
                         productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR,
                         productPrice?.price ?: 0.0,
-                        getStatusStockViewVariant(productStock?: ProductStock()),
+                        getStatusStockViewVariant(productStock ?: ProductStock()),
                         officialStore, productStock?.sku, isEdittingDraft(),
                         productSizeChart, hasOriginalVariantLevel1 == true,
                         hasOriginalVariantLevel2 == true,
@@ -478,13 +494,13 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun getStatusStockViewVariant(productStock: ProductStock) =
-        if(!productStock.isActive){
-            StockTypeDef.TYPE_WAREHOUSE
-        }else if(productStock.isActive && productStock.stockCount > 0){
-            StockTypeDef.TYPE_ACTIVE_LIMITED
-        }else{
-            StockTypeDef.TYPE_ACTIVE
-        }
+            if (!productStock.isActive) {
+                StockTypeDef.TYPE_WAREHOUSE
+            } else if (productStock.isActive && productStock.stockCount > 0) {
+                StockTypeDef.TYPE_ACTIVE_LIMITED
+            } else {
+                StockTypeDef.TYPE_ACTIVE
+            }
 
 
     private fun sendAnalyticsAdd(viewModel: ProductViewModel?) {
@@ -493,9 +509,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         )
         for (labelAnalytics in listLabelAnalytics) {
             if (isAddStatus()) {
-                UnifyTracking.eventAddProductAdd(labelAnalytics)
+                UnifyTracking.eventAddProductAdd(activity, labelAnalytics)
             } else if (isEditStatus()) {
-                UnifyTracking.eventAddProductEdit(labelAnalytics)
+                UnifyTracking.eventAddProductEdit(activity, labelAnalytics)
             }
         }
     }
@@ -516,33 +532,33 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         showWarning(getString(R.string.product_error_product_category_empty), View.OnClickListener {
             startCatalogActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
     }
 
     override fun onErrorEtalase() {
         showWarning(getString(R.string.product_error_product_etalase_empty), View.OnClickListener {
             startProductEtalaseActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
     }
 
     override fun onErrorPrice() {
         showWarning(getString(R.string.error_empty_price), View.OnClickListener {
             startPriceActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
     }
 
     override fun onErrorWeight() {
         showWarning(getString(R.string.error_empty_weight), View.OnClickListener {
             startLogisticActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
     }
 
     override fun onErrorImage() {
         NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_picture_empty))
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE)
     }
 
     @SuppressLint("Range")

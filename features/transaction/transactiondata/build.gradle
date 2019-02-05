@@ -14,9 +14,18 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
+project.ext {
+    artifactId = "${artifactIdTransactionData}"
+    groupId = "${groupIdTransaction}"
+    versionName = "${transactionGroupVersion}"
+    artifactName = "${artifactIdTransactionData}-release"
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.transactioncommon)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
@@ -27,3 +36,4 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+apply from: "$rootProject.projectDir/publish_local.gradle"

@@ -21,8 +21,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -30,6 +28,8 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,8 +63,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        setContentView(R.layout.activity_splash);
 
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -101,7 +99,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         handleBranchDefferedDeeplink();
     }
 
-    private void moveToHome() {
+    protected void moveToHome() {
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -212,39 +210,15 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             moveToHome();
         } else {
             try {
-                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID(this));
                 branch.initSession(new Branch.BranchReferralInitListener() {
                     @Override
                     public void onInitFinished(JSONObject referringParams, BranchError error) {
                         if (isFinishing()) {
                             return;
                         }
-
                         if (error == null) {
-                            try {
-                                BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
-
-                                String deeplink = referringParams.getString("$android_deeplink_path");
-                                if (deeplink == null) {
-                                    moveToHome();
-                                } else {
-                                    Uri uri;
-                                    if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
-                                        uri = Uri.parse(deeplink);
-                                    } else {
-                                        uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                                    }
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setData(uri);
-                                    startActivity(intent);
-                                    finish();
-
-                                }
-
-                            } catch (JSONException e) {
-                                moveToHome();
-
-                            }
+                            handlingInitBranchSession(referringParams);
                         } else {
                             moveToHome();
                         }
@@ -254,6 +228,29 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             } catch (Exception e) {
                 // Do nothing
             }
+        }
+    }
+
+    protected void handlingInitBranchSession(JSONObject referringParams){
+        try {
+            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
+            String deeplink = referringParams.getString("$android_deeplink_path");
+            if (deeplink == null) {
+                moveToHome();
+            } else {
+                Uri uri;
+                if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
+                    uri = Uri.parse(deeplink);
+                } else {
+                    uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(uri);
+                startActivity(intent);
+                finish();
+            }
+        } catch (JSONException e) {
+            moveToHome();
         }
     }
 

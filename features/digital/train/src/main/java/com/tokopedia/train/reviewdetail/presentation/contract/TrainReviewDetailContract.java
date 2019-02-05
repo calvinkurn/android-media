@@ -20,6 +20,8 @@ public class TrainReviewDetailContract {
 
         void showReturnTrip(TrainScheduleViewModel returnTrip);
 
+        void stopTrace();
+
         void showScheduleTripsPrice(TrainScheduleDetailViewModel first, TrainScheduleDetailViewModel second);
 
         void hideReturnTrip();
@@ -41,6 +43,10 @@ public class TrainReviewDetailContract {
         void showExpiredPaymentDialog();
 
         void showCheckoutFailed(String message);
+
+        String getPassengerTypeAdult();
+
+        String getPassengerTypeChild();
 
     }
 

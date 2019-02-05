@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.view.LayoutInflater
@@ -16,17 +14,13 @@ import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
-import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
-import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher
 import com.tokopedia.product.manage.item.main.base.data.model.ProductWholesaleViewModel
 import com.tokopedia.product.manage.item.price.model.ProductPrice
-import com.tokopedia.product.manage.item.utils.ProductEditOptionMenuAdapter
-import com.tokopedia.product.manage.item.utils.ProductEditOptionMenuBottomSheets
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
@@ -53,7 +47,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private var wholesalePrice: ArrayList<ProductWholesaleViewModel> = ArrayList()
 
     private lateinit var idrTextWatcher: CurrencyIdrTextWatcher
-    private lateinit var usdTextWatcher: CurrencyUsdTextWatcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,12 +68,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        idrTextWatcher = object : CurrencyIdrTextWatcher(spinnerCounterInputViewPrice.counterEditText) {
-            override fun onNumberChanged(number: Double) {
-                isPriceValid()
-            }
-        }
-        usdTextWatcher = object : CurrencyUsdTextWatcher(spinnerCounterInputViewPrice.counterEditText) {
+        idrTextWatcher = object : CurrencyIdrTextWatcher(counterEditText.editText) {
             override fun onNumberChanged(number: Double) {
                 isPriceValid()
             }
@@ -92,10 +80,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                     setResult(false)
                 }
             }}
-
-        spinnerCounterInputViewPrice.spinnerTextView.editText.setOnClickListener({
-            showBottomSheetsCurrency()
-        })
 
         editTextMinOrder.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(editable: Editable) {
@@ -119,8 +103,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
         labelViewWholesale.setOnClickListener {
             startActivityForResult(ProductAddWholesaleActivity
-                    .getIntent(context, wholesalePrice, selectedCurrencyType, spinnerCounterInputViewPrice
-                            .counterEditText.text.toString().replace(",", "").toDouble(),
+                    .getIntent(context, wholesalePrice, selectedCurrencyType, counterEditText
+                            .editText.text.toString().replace(",", "").toDouble(),
                             isOfficialStore, hasVariant), REQUEST_CODE_GET_WHOLESALE) }
     }
 
@@ -147,8 +131,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun showDataPrice(productPrice: ProductPrice){
         selectedCurrencyType = productPrice.currencyType
         setPriceTextChangedListener()
-        spinnerCounterInputViewPrice.counterValue = productPrice.price
-        spinnerCounterInputViewPrice.setCounterError(null)
+        counterEditText.setValue(productPrice.price)
+        counterEditText.setError(null)
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
         setLabelViewWholesale(wholesalePrice)
@@ -165,7 +149,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
-    private fun getPriceValue() = spinnerCounterInputViewPrice.counterValue
+    private fun getPriceValue() = counterEditText.doubleValue
 
     private fun getMinOrderValue() = editTextMinOrder.doubleValue
 
@@ -175,7 +159,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun isPriceValid(): Boolean {
         if (!ProductPriceRangeUtils.isPriceValid(getPriceValue(), selectedCurrencyType, isOfficialStore) || getPriceValue() == DEFAULT_PRICE) {
-            spinnerCounterInputViewPrice.setCounterError(
+            counterEditText.setError(
                             getString(R.string.product_error_product_price_not_valid,
                             ProductPriceRangeUtils.getMinPriceString(selectedCurrencyType, isOfficialStore),
                             ProductPriceRangeUtils.getMaxPriceString(selectedCurrencyType, isOfficialStore)))
@@ -186,7 +170,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             labelViewWholesale.visibility = View.VISIBLE
             dividerLabelViewWholesale.visibility = View.VISIBLE
         }
-        spinnerCounterInputViewPrice.setCounterError(null)
+        counterEditText.setError(null)
         return true
     }
 
@@ -208,55 +192,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
         editTextMaxOrder.setError(null)
         return true
-    }
-
-    private fun getCurrencyTypeTitle(type: Int) =  getString(
-            when (type) {
-                CurrencyTypeDef.TYPE_IDR -> R.string.product_label_rupiah
-                CurrencyTypeDef.TYPE_USD -> R.string.product_label_usd
-                else -> -1
-            })
-
-    private fun showBottomSheetsCurrency() {
-        val checkedBottomSheetMenu = ProductEditOptionMenuBottomSheets()
-                .setMode(ProductEditOptionMenuAdapter.MODE_CHECKABLE)
-                .setTitle(getString(R.string.product_label_currency))
-
-        checkedBottomSheetMenu.setMenuItemSelected(object : ProductEditOptionMenuBottomSheets.OnMenuItemSelected {
-            override fun onItemSelected(itemId: Int) {
-                checkedBottomSheetMenu.dismiss()
-                if (!isAdded) {
-                    return
-                }
-                if(itemId != selectedCurrencyType){
-                    if (!isGoldMerchant && itemId == CurrencyTypeDef.TYPE_USD) {
-                        if (GlobalConfig.isSellerApp()) {
-                            UnifyTracking.eventSwitchRpToDollarAddProduct()
-                            showDialogGoToGM()
-                        } else {
-                            Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content),
-                                    getString(R.string.product_error_must_be_gold_merchant, getString(GMConstant.getGMTitleResource(context))),
-                                    Snackbar.LENGTH_LONG)
-                                    .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
-                                    .show()
-                        }
-                    } else {
-                        selectedCurrencyType = itemId
-                        setPriceTextChangedListener()
-                        spinnerCounterInputViewPrice.counterValue = DEFAULT_PRICE
-                        spinnerCounterInputViewPrice.counterEditText.setSelection(spinnerCounterInputViewPrice.counterEditText.text.length)
-                        spinnerCounterInputViewPrice.setCounterError(null)
-                    }
-                }
-            }
-        })
-
-        checkedBottomSheetMenu.addItem(CurrencyTypeDef.TYPE_IDR, getCurrencyTypeTitle(CurrencyTypeDef.TYPE_IDR),
-                selectedCurrencyType == CurrencyTypeDef.TYPE_IDR)
-        checkedBottomSheetMenu.addItem(CurrencyTypeDef.TYPE_USD, getCurrencyTypeTitle(CurrencyTypeDef.TYPE_USD),
-                selectedCurrencyType == CurrencyTypeDef.TYPE_USD)
-
-        checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }
 
     private fun showDialogGoToGM(){
@@ -328,13 +263,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     }
 
     private fun setPriceTextChangedListener(){
-        spinnerCounterInputViewPrice.spinnerTextView.editText.setText(getCurrencyTypeTitle(selectedCurrencyType))
-        spinnerCounterInputViewPrice.removeTextChangedListener(idrTextWatcher)
-        spinnerCounterInputViewPrice.removeTextChangedListener(usdTextWatcher)
         if (selectedCurrencyType == CurrencyTypeDef.TYPE_IDR) {
-            spinnerCounterInputViewPrice.addTextChangedListener(idrTextWatcher)
+            counterEditText.addTextChangedListener(idrTextWatcher)
         } else {
-            spinnerCounterInputViewPrice.addTextChangedListener(usdTextWatcher)
+            counterEditText.removeTextChangedListener(idrTextWatcher)
         }
     }
 
@@ -345,14 +277,15 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun setEditTextPriceState(wholesaleList: ArrayList<ProductWholesaleViewModel>){
         if (wholesaleList.size == 0 && !hasVariant) {
             setEnablePriceForm(true)
-            spinnerCounterInputViewPrice.counterEditText.setSelection(spinnerCounterInputViewPrice.counterEditText.text.length)
+            counterEditText.editText.setSelection(
+                    counterEditText.editText.text.length)
         } else {
             setEnablePriceForm(false)
         }
     }
 
     private fun setEnablePriceForm(isEnabled : Boolean){
-        spinnerCounterInputViewPrice.isEnabled = isEnabled
+        counterEditText.isEnabled = isEnabled
         imageViewEdit.visibility = if(isEnabled) View.GONE else View.VISIBLE
     }
 
@@ -366,13 +299,13 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun isDataValid(): Boolean{
         if(!isPriceValid()){
-            spinnerCounterInputViewPrice.requestFocus()
-            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
+            counterEditText.requestFocus()
+            UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
             return false
         }
         if(!isMinOrderValid()){
             editTextMinOrder.requestFocus()
-            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
+            UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
             return false
         }
         return true

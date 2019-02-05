@@ -9,8 +9,8 @@ import android.util.Log;
 import android.widget.MediaController;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.rescenter.player.customview.CustomVideoView;

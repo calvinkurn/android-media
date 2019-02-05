@@ -9,8 +9,9 @@ import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartContract;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartPresenter;
-import com.tokopedia.checkout.view.feature.emptycart.adapter.WishlistAdapter;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 
 import dagger.Module;
@@ -50,14 +51,22 @@ public class EmptyCartModule {
 
     @Provides
     @EmptyCartScope
+    UserSessionInterface provideUserSessionInterface() {
+        return new UserSession(emptyCartFragment.getContext());
+    }
+
+    @Provides
+    @EmptyCartScope
     EmptyCartContract.Presenter provideShipmentPresenter(GetCartListUseCase getCartListUseCase,
                                                          GetWishlistUseCase getWishlistUseCase,
                                                          GetRecentViewUseCase getRecentViewUseCase,
                                                          CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                          CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                                                         CompositeSubscription compositeSubscription) {
+                                                         CompositeSubscription compositeSubscription,
+                                                         UserSessionInterface userSessionInterface) {
         return new EmptyCartPresenter(getCartListUseCase, getWishlistUseCase, getRecentViewUseCase,
-                cancelAutoApplyCouponUseCase, cartApiRequestParamGenerator, compositeSubscription);
+                cancelAutoApplyCouponUseCase, cartApiRequestParamGenerator, compositeSubscription,
+                userSessionInterface);
     }
 
 }

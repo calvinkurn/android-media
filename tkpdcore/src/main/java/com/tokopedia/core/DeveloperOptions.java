@@ -26,6 +26,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core2.R;
 
 @DeepLink("tokopedia://setting/dev-opts")
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
@@ -33,7 +34,9 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_CHUCK_ENABLED = "is_enable";
     public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
+    public static final String SP_REACT_ENABLE_SHAKE = "SP_REACT_ENABLE_SHAKE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
+    public static final String IS_ENABLE_SHAKE_REACT = "IS_ENABLE_SHAKE_REACT";
     public static final String RN_DEV_LOGGER = "rn_dev_logger";
     private static final String IP_GROUPCHAT = "ip_groupchat";
     private static final String LOG_GROUPCHAT = "log_groupchat";
@@ -50,6 +53,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private AppCompatButton remoteConfigCheckBtn;
     private AppCompatButton remoteConfigSaveBtn;
     private ToggleButton toggleReactDeveloperMode;
+    private ToggleButton toggleReactEnableDeveloperOptions;
     private SharedPreferences sharedPreferences;
 
     private TextView vGoTochuck;
@@ -100,6 +104,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
 
         toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
+        toggleReactEnableDeveloperOptions = findViewById(R.id.toggle_reactnative_dev_options);
+        toggleReactEnableDeveloperOptions.setChecked(true);
 
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
@@ -144,6 +150,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
             }
         });
+        
         testOnBoarding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,6 +176,29 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                     Toast.makeText(DeveloperOptions.this, "React Native set to development mode", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(IS_RELEASE_MODE, false);
+                    editor.apply();
+                }
+            }
+        });
+
+        sharedPreferences = getSharedPreferences(SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(IS_ENABLE_SHAKE_REACT)){
+            boolean stateDeveloperOptions = sharedPreferences.getBoolean(IS_ENABLE_SHAKE_REACT, false);
+            toggleReactEnableDeveloperOptions.setChecked(stateDeveloperOptions);
+        }
+
+        toggleReactEnableDeveloperOptions.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    Toast.makeText(DeveloperOptions.this, "RN Dev Options is disabled", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(IS_ENABLE_SHAKE_REACT, true);
+                    editor.apply();
+                } else {
+                    Toast.makeText(DeveloperOptions.this, "RN Dev Options is enabled", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(IS_ENABLE_SHAKE_REACT, false);
                     editor.apply();
                 }
             }

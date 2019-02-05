@@ -57,6 +57,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                     getView().hideLoading();
                     getView().showPage();
                     getView().showErrorGetSeatMaps(e.getMessage());
+                    getView().stopTrace();
                 }
             }
 
@@ -68,6 +69,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                 if (getView().getExpireDate() != null && !getView().getExpireDate().isEmpty()) {
                     getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, getView().getExpireDate()));
                 }
+                getView().stopTrace();
             }
         });
     }
@@ -116,7 +118,9 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     @Override
     public void onRunningOutOfTime() {
-        getView().showExpiredPaymentDialog();
+        if (isViewAttached()) {
+            getView().showExpiredPaymentDialog();
+        }
     }
 
     @Override
@@ -130,7 +134,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         getView().showLoading();
         List<ChangeSeatMapRequest> requests = transformSeatRequest(getBookCode(),
                 getView().getOriginalPassenger(),
-                getView().getPassengers());
+                getView().getPassengers(), true);
         trainChangeSeatUseCase.execute(
                 trainChangeSeatUseCase.createRequest(requests), new Subscriber<List<TrainPassengerSeat>>() {
                     @Override
@@ -168,7 +172,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         getView().showLoading();
         List<ChangeSeatMapRequest> requests = transformSeatRequest(getBookCode(),
                 getView().getOriginalPassenger(),
-                getView().getPassengers());
+                getView().getPassengers(), false);
         if (requests.size() > 0) {
             getView().showPage();
             getView().hideLoading();
@@ -317,7 +321,8 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     private List<ChangeSeatMapRequest> transformSeatRequest(String bookCode,
                                                             List<TrainSeatPassengerViewModel> originalPassenger,
-                                                            List<TrainSeatPassengerViewModel> passengers) {
+                                                            List<TrainSeatPassengerViewModel> passengers,
+                                                            boolean includeOriginalPassenger) {
         List<ChangeSeatMapRequest> requests = new ArrayList<>();
         ChangeSeatMapRequest request;
         for (TrainSeatPassengerViewModel passenger : originalPassenger) {
@@ -330,9 +335,18 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                         request = new ChangeSeatMapRequest();
                         request.setBookCode(bookCode);
                         request.setName(passenger.getName());
-                        request.setSeat(passenger.getSeatViewModel().getRow() + passenger.getSeatViewModel().getColumn());
-                        request.setWagonCode(passenger.getSeatViewModel().getWagonCode());
+                        request.setSeat(changeSeat.getRow() + changeSeat.getColumn());
+                        request.setWagonCode(changeSeat.getWagonCode());
                         requests.add(request);
+                    } else {
+                        if (includeOriginalPassenger){
+                            request = new ChangeSeatMapRequest();
+                            request.setBookCode(bookCode);
+                            request.setName(passenger.getName());
+                            request.setSeat(originSeat.getRow() + originSeat.getColumn());
+                            request.setWagonCode(originSeat.getWagonCode());
+                            requests.add(request);
+                        }
                     }
                     break;
                 }

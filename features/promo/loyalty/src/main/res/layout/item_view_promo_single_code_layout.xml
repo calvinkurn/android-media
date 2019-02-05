@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_single_code_group_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/tv_promo_code_label"
+    android:paddingTop="@dimen/dp_12">
+
+    <RelativeLayout
+        android:layout_width="@dimen/code_container_multiple_width"
+        android:layout_height="@dimen/code_container_multiple_height"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/round_button">
+
+        <TextView
+            android:id="@+id/tv_single_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/orange_red"
+            tools:text="BRIG6P" />
+
+        <ImageView
+            android:id="@+id/iv_copy_to_clipboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            app:srcCompat="@drawable/ic_copy_mobile"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_button">
+
+        <TextView
+            android:id="@+id/tv_ordinal_number"
+            android:layout_width="@dimen/icon_sequence_circle_diameter"
+            android:layout_height="@dimen/icon_sequence_circle_diameter"
+            android:gravity="center"
+            tools:text="1" />
+    </LinearLayout>
+
+</FrameLayout>

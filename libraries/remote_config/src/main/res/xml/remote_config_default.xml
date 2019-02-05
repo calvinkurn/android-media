@@ -233,7 +233,7 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_kai_native_enable</key>
+        <key>mainapp_kai_native</key>
         <value>true</value>
     </entry>
     <entry>
@@ -274,6 +274,22 @@
     </entry>
     <entry>
         <key>app_enable_power_merchant_rebrand</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_digital_channel_recommendation</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_enable_profile_share_allow_all</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_customer_enable_profile_share_rules</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_enable_login_revamp_phone</key>
         <value>true</value>
     </entry>
 </defaultsMap>

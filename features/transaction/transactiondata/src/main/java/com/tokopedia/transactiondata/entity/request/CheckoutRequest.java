@@ -22,6 +22,19 @@ public class CheckoutRequest {
     @Expose
     public List<DataCheckoutRequest> data = new ArrayList<>();
 
+    public boolean isHavingPurchaseProtectionEnabled() {
+        for (DataCheckoutRequest datum : data) {
+            for (ShopProductCheckoutRequest shopProduct : datum.shopProducts) {
+                for (ProductDataCheckoutRequest productDatum : shopProduct.productData) {
+                    if (productDatum.isPurchaseProtection()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private CheckoutRequest(Builder builder) {
         promoCode = builder.promoCode;
         isDonation = builder.isDonation;

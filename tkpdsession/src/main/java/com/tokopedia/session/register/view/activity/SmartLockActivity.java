@@ -220,10 +220,10 @@ public class SmartLockActivity extends AppCompatActivity implements
         } else if (requestCode == RC_SAVE) {
             Log.d(TAG, "Result code: " + resultCode);
             if (resultCode == RESULT_OK) {
-                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.SAVE_PASSWORD);
+                UnifyTracking.eventSmartLock(this, AppEventTracking.EventLabel.SAVE_PASSWORD);
                 Log.d(TAG, "Credential Save: OK");
             } else {
-                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.NEVER);
+                UnifyTracking.eventSmartLock(this,AppEventTracking.EventLabel.NEVER);
                 Log.e(TAG, "Credential Save Failed");
             }
             goToContent();

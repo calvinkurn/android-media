@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -169,6 +170,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setPriceRange(domain.getPriceRange());
             model.setTopLabel(domain.getTopLabel());
             model.setBottomLabel(domain.getBottomLabel());
+            model.setCategoryBreadcrumb(domain.getCategoryBreadcrumb());
 
             list.add(model);
         }
@@ -209,7 +211,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         if (banner.getHotlistPromoInfo() != null) {
             HotlistPromoInfo info = banner.getHotlistPromoInfo();
             headerViewModel.setHotlistPromo(mappingHotlistPromo(info));
-            TrackingUtils.impressionHotlistPromo(banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
+            TrackingUtils.impressionHotlistPromo(MainApplication.getAppContext(), banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
         }
         return headerViewModel;
     }

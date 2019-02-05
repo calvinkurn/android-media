@@ -110,7 +110,6 @@ public class CategoryDetailDataSource {
                     if(response != null && response.body() != null && response.body().size() > 0) {
                         return response.body().get(0).getData();
                     }
-
                     return null;
                 })
                 .doOnNext(saveCategoryDetailToCache(categoryId))
@@ -261,7 +260,6 @@ public class CategoryDetailDataSource {
     }
 
     private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
-
         String query = loadRawString(context.getResources(), R.raw.common_digital_category_favourites_query);
 
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";

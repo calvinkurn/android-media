@@ -26,6 +26,7 @@ import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
@@ -64,6 +65,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
+    private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
 
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
@@ -71,7 +73,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     ICartDigitalInteractor cartDigitalInteractor,
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
+                                    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+                                    DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
         this.digitalModuleRouter = digitalModuleRouter;
@@ -79,6 +82,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
+        this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
     }
 
     @Override
@@ -91,6 +95,9 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onViewCreated() {
+        if (!userSession.isLoggedIn()){
+            getView().closeViewWithMessageAlert(getView().getString(R.string.digital_cart_login_message));
+        }
         getView().hideCartView();
         getView().showFullPageLoading();
         RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
@@ -140,22 +147,24 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
@@ -183,17 +192,16 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         if (getView().getCartPassData().getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             processToInstantCheckout();
         } else {
-            switch (cartDigitalInfoData.getCrossSellingType()) {
-                case 1:
-                    getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
-                    break;
-                default:
-                    getView().showCartView();
-                    getView().hideFullPageLoading();
-                    renderBaseCart(cartDigitalInfoData);
-                    break;
-            }
+            digitalAnalytics.sendCartScreen(getView().getActivity());
+
+            renderCrossSellingCart(cartDigitalInfoData);
         }
+    }
+
+    protected void renderCrossSellingCart(CartDigitalInfoData cartDigitalInfoData) {
+        getView().showCartView();
+        getView().hideFullPageLoading();
+        renderBaseCart(cartDigitalInfoData);
     }
 
 
@@ -207,34 +215,34 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         digitalInstantCheckoutUseCase.execute(requestParams, getSubscriberInstantCheckout());
     }
 
-
     protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
-        if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
-            getView().renderHachikoCart();
-            if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
-                getView().renderHachikoPromoAndCouponLabel();
-            } else {
-                getView().renderHachikoPromoLabelOnly();
-            }
-        } else {
-            getView().hideHachikoCart();
-        }
+        setHachikoPromoVisibility(cartDigitalInfoData);
 
-        digitalAnalytics.eventClickVoucher(cartDigitalInfoData.getAttributes().getCategoryName(),
+        digitalAnalytics.eventClickVoucher(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
                 cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
                 cartDigitalInfoData.getAttributes().getOperatorName()
         );
 
-        getView().renderCategoryInfo(cartDigitalInfoData.getAttributes().getCategoryName());
-        getView().renderDetailMainInfo(cartDigitalInfoData.getMainInfo());
-        getView().renderAdditionalInfo(new ArrayList<>(cartDigitalInfoData.getAdditionalInfos()));
+        renderCartInfo(cartDigitalInfoData);
 
-        renderDataInputPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
-                cartDigitalInfoData.getAttributes().getUserInputPrice());
+        renderDataInputPrice(
+                String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
+                cartDigitalInfoData.getAttributes().getUserInputPrice()
+        );
 
         getView().renderCheckoutView(
-                cartDigitalInfoData.getAttributes().getPricePlain());
+                cartDigitalInfoData.getAttributes().getPricePlain()
+        );
 
+        renderAutoApplyPromo(cartDigitalInfoData);
+
+        branchAutoApplyCouponIfAvailable();
+
+        renderPostPaidPopUp(cartDigitalInfoData);
+    }
+
+    private void renderAutoApplyPromo(CartDigitalInfoData cartDigitalInfoData) {
         if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
                 cartDigitalInfoData.getAttributes().getAutoApplyVoucher() != null &&
                 cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isSuccess()) {
@@ -251,8 +259,38 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 renderCouponAndVoucher(voucherDigital);
             }
         }
+    }
 
-        branchAutoApplyCouponIfAvailable();
+    private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
+        getView().renderCategoryInfo(cartDigitalInfoData.getAttributes().getCategoryName());
+        getView().renderDetailMainInfo(cartDigitalInfoData.getMainInfo());
+        getView().renderAdditionalInfo(new ArrayList<>(cartDigitalInfoData.getAdditionalInfos()));
+    }
+
+    private void setHachikoPromoVisibility(CartDigitalInfoData cartDigitalInfoData) {
+        if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
+            getView().renderHachikoCart();
+            if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                getView().renderHachikoPromoAndCouponLabel();
+            } else {
+                getView().renderHachikoPromoLabelOnly();
+            }
+        } else {
+            getView().hideHachikoCart();
+        }
+    }
+
+    private void renderPostPaidPopUp(CartDigitalInfoData cartDigitalInfoData) {
+        if (!getView().isAlreadyShowPostPaid()
+                && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
+                && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+            getView().showPostPaidDialog(
+                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle(),
+                    userSession.getUserId()
+            );
+        }
     }
 
     private void branchAutoApplyCouponIfAvailable() {
@@ -413,27 +451,31 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onReceiveVoucherCode(String code, String message, long discount, int isCoupon) {
-        VoucherDigital voucherDigital = new VoucherDigital();
-        VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-        voucherAttributeDigital.setVoucherCode(code);
-        voucherAttributeDigital.setDiscountAmountPlain(discount);
-        voucherAttributeDigital.setMessage(message);
-        voucherAttributeDigital.setIsCoupon(isCoupon);
-        voucherDigital.setAttributeVoucher(voucherAttributeDigital);
-        renderCouponAndVoucher(voucherDigital);
+        if (isViewAttached()){
+            VoucherDigital voucherDigital = new VoucherDigital();
+            VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+            voucherAttributeDigital.setVoucherCode(code);
+            voucherAttributeDigital.setDiscountAmountPlain(discount);
+            voucherAttributeDigital.setMessage(message);
+            voucherAttributeDigital.setIsCoupon(isCoupon);
+            voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+            renderCouponAndVoucher(voucherDigital);
+        }
     }
 
     @Override
     public void onReceiveCoupon(String couponTitle, String couponMessage, String couponCode, long couponDiscountAmount, int isCoupon) {
-        VoucherDigital voucherDigital = new VoucherDigital();
-        VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-        voucherAttributeDigital.setIsCoupon(isCoupon);
-        voucherAttributeDigital.setTitle(couponTitle);
-        voucherAttributeDigital.setVoucherCode(couponCode);
-        voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
-        voucherAttributeDigital.setMessage(couponMessage);
-        voucherDigital.setAttributeVoucher(voucherAttributeDigital);
-        renderCouponAndVoucher(voucherDigital);
+        if (isViewAttached()){
+            VoucherDigital voucherDigital = new VoucherDigital();
+            VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+            voucherAttributeDigital.setIsCoupon(isCoupon);
+            voucherAttributeDigital.setTitle(couponTitle);
+            voucherAttributeDigital.setVoucherCode(couponCode);
+            voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
+            voucherAttributeDigital.setMessage(couponMessage);
+            voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+            renderCouponAndVoucher(voucherDigital);
+        }
     }
 
     @Override
@@ -480,7 +522,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
 
     @NonNull
-    private RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
+    protected RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
         RequestBodyCheckout requestBodyCheckout = new RequestBodyCheckout();
         requestBodyCheckout.setType("checkout");
         com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Attributes attributes =
@@ -491,7 +533,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         attributes.setClientId(digitalModuleRouter.getTrackingClientId());
-        attributes.setDealsIds(getDealIds());
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
@@ -500,10 +541,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 )))
         );
         return requestBodyCheckout;
-    }
-
-    protected List<Integer> getDealIds() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -560,30 +597,32 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    /* Ini kalau ga ada internet */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException) {
-                    /* Ini kalau timeout */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        /* Ini kalau ga ada internet */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException) {
+                        /* Ini kalau timeout */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        /* Ini kalau error dari API kasih message error */
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        /* Ini diluar dari segalanya hahahaha */
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
@@ -610,22 +649,24 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
@@ -648,30 +689,32 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    /* Ini kalau ga ada internet */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException) {
-                    /* Ini kalau timeout */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    getView().renderErrorInstantCheckout(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    getView().renderErrorInstantCheckout(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        /* Ini kalau ga ada internet */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException) {
+                        /* Ini kalau timeout */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        /* Ini kalau error dari API kasih message error */
+                        getView().renderErrorInstantCheckout(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                        getView().renderErrorInstantCheckout(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        /* Ini diluar dari segalanya hahahaha */
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
@@ -684,7 +727,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
 
-    protected CheckoutDataParameter.Builder buildCheckoutData(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
+    CheckoutDataParameter.Builder buildCheckoutData(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
         CheckoutDataParameter.Builder builder = new CheckoutDataParameter.Builder();
         builder.cartId(cartDigitalInfoData.getId());
         builder.accessToken(accessToken);

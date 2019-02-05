@@ -26,9 +26,9 @@ import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 import com.tokopedia.design.component.EditTextCompat;
-import com.tokopedia.design.component.NumberPickerWithCounterView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
+import com.tokopedia.tkpdpdp.customview.NumberPickerWithCounterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,8 @@ import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
 import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 
-public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
+public class VariantActivity extends TActivity  implements
+        VariantOptionAdapter.OnVariantOptionChoosedListener {
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
@@ -62,7 +63,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final int STATE_BUTTON_BUY = 1123;
     public static final int STATE_BUTTON_CART = 2234;
     public static final int STATE_VARIANT_DEFAULT = 0;
-    public static final int DEFAULT_MAXIMUM_STOCK_PICKER = 99999;
+    public static final int DEFAULT_MAXIMUM_STOCK_PICKER = 1000;
     public static final int DEFAULT_MINIMUM_STOCK_PICKER = 1;
 
     private TextView topBarTitle;
@@ -189,6 +190,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 }
             });
         }
+        widgetQty.setMinValue(
+                Integer.valueOf(productDetailData.getInfo().getProductMinOrder())
+        );
         renderHeaderInfo();
         setUpByConfiguration(getResources().getConfiguration());
     }
@@ -202,7 +206,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private void setUpByConfiguration(Configuration configuration) {
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
-                UnifyTracking.eventPDPOrientationChanged(Integer.toString(productDetailData.getInfo().getProductId()));
+                UnifyTracking.eventPDPOrientationChanged(this, Integer.toString(productDetailData.getInfo().getProductId()));
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
                 localCacheHandler.applyEditor();
             }
@@ -213,9 +217,20 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
         etNotesSeller.setText(selectedRemarkNotes);
-        widgetQty.setOnPickerActionListener(num -> {
-            selectedQuantity = num;
-            textCartPrice.setText(generateTextCartPrice());
+        widgetQty.setOnPickerActionListener(new com.tokopedia.design.component.NumberPickerWithCounterView.OnPickerActionListener() {
+            @Override
+            public void onNumberChange(int num) {
+                selectedQuantity = num;
+                textCartPrice.setText(VariantActivity.this.generateTextCartPrice());
+
+                if(num < widgetQty.getMinValue()){
+                    buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
+                    buttonBuy.setClickable(false);
+                } else{
+                    buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.orange_button_rounded));
+                    buttonBuy.setClickable(true);
+                }
+            }
         });
         try {
             widgetQty.setInitialState(
@@ -254,10 +269,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         } else {
             for (ProductWholesalePrice item : productDetailData.getWholesalePrice()) {
                 if (selectedQuantity >= item.getWholesaleMinRaw() && selectedQuantity <= item.getWholesaleMaxRaw()) {
-                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getWholesalePriceRaw() * selectedQuantity, true);
+                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            (long) item.getWholesalePriceRaw() * (long) selectedQuantity, true);
                 }
             }
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * selectedQuantity, true);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    (long) productDetailData.getInfo().getProductPriceUnformatted() *
+                            (long) selectedQuantity, true);
         }
     }
 
@@ -343,7 +361,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP);
             setResult(RESULT_OK, intent);
             finish();
-            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
         };
     }
 
@@ -353,7 +371,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART);
             setResult(RESULT_OK, intent);
             finish();
-            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
         };
     }
 
@@ -604,9 +622,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         List<String> joinVariant = productVariant.generateVariantValueIntoList(productDetailData.getInfo().getProductId());
 
         if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_SIZE)) {
-            UnifyTracking.eventSelectSizeVariant(option.getValue());
+            UnifyTracking.eventSelectSizeVariant(this, option.getValue());
         } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {
-            UnifyTracking.eventSelectColorVariant(option.getValue());
+            UnifyTracking.eventSelectColorVariant(this, option.getValue());
         }
     }
 
@@ -625,7 +643,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
         setResult(RESULT_OK, intent);
         finish();
-        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
     }
-
 }

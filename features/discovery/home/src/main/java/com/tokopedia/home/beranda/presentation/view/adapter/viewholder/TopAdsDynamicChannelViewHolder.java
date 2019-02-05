@@ -57,6 +57,4 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<TopAdsDyn
     @Override
     public void onAddFavorite(int position, Data data) { }
 
-    @Override
-    public void onAddWishList(int position, Data data) { }
 }

@@ -3,19 +3,14 @@ package com.tokopedia.digital.cart.presentation.compoundview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 2/22/17.
@@ -23,16 +18,11 @@ import butterknife.ButterKnife;
 
 public class CheckoutHolderView extends RelativeLayout {
 
-    @BindView(R2.id.tv_value_price)
-    TextView tvPrice;
-    @BindView(R2.id.tv_value_discount)
-    TextView tvDiscount;
-    @BindView(R2.id.holder_voucher_discount)
-    LinearLayout holderVoucherDiscount;
-    @BindView(R2.id.tv_value_sub_total)
-    TextView tvSubTotalPrice;
-    @BindView(R2.id.btn_next)
-    TextView btnNext;
+    private TextView tvPrice;
+    private TextView tvDiscount;
+    private LinearLayout holderVoucherDiscount;
+    private TextView tvSubTotalPrice;
+    private TextView btnNext;
 
     private long pricePlain = 0;
     private long voucherDiscount = 0;
@@ -56,7 +46,12 @@ public class CheckoutHolderView extends RelativeLayout {
         LayoutInflater.from(context).inflate(
                 R.layout.view_holder_checkout_digital_module, this, true
         );
-        ButterKnife.bind(this);
+
+        tvPrice = findViewById(R.id.tv_value_price);
+        tvDiscount = findViewById(R.id.tv_value_discount);
+        holderVoucherDiscount = findViewById(R.id.holder_voucher_discount);
+        tvSubTotalPrice = findViewById(R.id.tv_value_sub_total);
+        btnNext = findViewById(R.id.btn_next);
     }
 
     public void renderData(
@@ -65,12 +60,7 @@ public class CheckoutHolderView extends RelativeLayout {
         this.pricePlain = pricePlain;
         tvPrice.setText(price);
         tvSubTotalPrice.setText(totalPrice);
-        btnNext.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onClickButtonNext();
-            }
-        });
+        btnNext.setOnClickListener(v -> actionListener.onClickButtonNext());
     }
 
     public void disableVoucherDiscount() {
@@ -114,6 +104,5 @@ public class CheckoutHolderView extends RelativeLayout {
     public interface IAction {
         void onClickButtonNext();
     }
-
 
 }

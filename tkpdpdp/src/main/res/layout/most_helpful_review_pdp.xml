@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow"
-    android:padding="@dimen/dp_10">
+    android:paddingLeft="@dimen/pdp_content_padding"
+    android:paddingRight="@dimen/pdp_content_padding"
+    android:paddingBottom="@dimen/pdp_content_padding">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,7 +16,8 @@
         android:layout_marginBottom="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_15"
         android:text="@string/title_most_helpful"
-        android:textColor="@color/black_70"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/pdp_title_text_size"
         android:textStyle="bold" />
 
     <com.tkpd.library.ui.widget.TouchViewPager
@@ -22,8 +25,8 @@
         android:layout_width="@dimen/dp_340"
         android:layout_height="@dimen/dp_240"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_25"
+        android:layout_marginRight="@dimen/dp_25"
         android:layout_marginBottom="@dimen/dp_5"
         android:visibility="visible" />
 

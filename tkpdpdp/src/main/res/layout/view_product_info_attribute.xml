@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/view_attribute"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    tools:visibility="visible"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_shadow_bottom">
+
+    <LinearLayout
+        android:layout_margin="@dimen/dp_16"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:background="@drawable/pdp_product_info_bg">
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_seen_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_dilihat"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/sp_15" />
+
+            <TextView
+                android:id="@+id/tv_seen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pdp_text_color"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_success_rate"
+                app:layout_constraintEnd_toEndOf="@+id/tv_seen_label"
+                app:layout_constraintStart_toStartOf="@+id/tv_seen_label"
+                app:layout_constraintTop_toTopOf="@+id/tv_success_rate"
+                tools:text="2,3 rb" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_success_rate_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="@string/label_transaksi_berhasil"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/sp_15" />
+
+            <TextView
+                android:id="@+id/tv_success_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pdp_text_color"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
+                android:gravity="center"
+                tools:text="97.5% (1340 produk)" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_wishlist_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_wishlist_pdp"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/sp_15"
+                android:layout_gravity="center"/>
+
+            <FrameLayout
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ProgressBar
+                    android:id="@+id/progress_bar_wishlist_count"
+                    android:layout_width="@dimen/dp_25"
+                    android:layout_height="@dimen/dp_25"
+                    android:layout_gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_success_rate"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_wishlist_label"
+                    app:layout_constraintStart_toStartOf="@+id/tv_wishlist_label"
+                    app:layout_constraintTop_toTopOf="@+id/tv_success_rate" />
+
+                <TextView
+                    android:id="@+id/tv_wishlist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pdp_text_color"
+                    android:textSize="@dimen/sp_13"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    android:layout_gravity="center"
+                    tools:text="234" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.partialDetails;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 
 import java.util.ArrayList;

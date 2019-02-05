@@ -45,6 +45,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     private String priceRange;
     private String topLabel;
     private String bottomLabel;
+    private String categoryBreadcrumb;
 
     public HotlistProductViewModel() {
         isWishlistButtonEnabled = true;
@@ -242,6 +243,14 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         this.bottomLabel = bottomLabel;
     }
 
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
+    }
+
     public Map<String, Object> generateImpressionDataLayer() {
         return DataLayer.mapOf(
                 "name", getProductName(),
@@ -250,7 +259,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
                         getPrice()
                 )),
                 "brand", "none / other",
-                "category", "none / other",
+                "category", getCategoryBreadcrumb(),
                 "variant", "none / other",
                 "list", getTrackerName(),
                 "position", getTrackerPosition(),
@@ -289,7 +298,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
                 "id", getProductID(),
                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
                 "brand", "none / other",
-                "category", "none / other",
+                "category", getCategoryBreadcrumb(),
                 "variant", "none / other",
                 "position", getTrackerPosition(),
                 "dimension38", getHomeAttribution()
@@ -453,6 +462,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         dest.writeString(this.priceRange);
         dest.writeString(this.topLabel);
         dest.writeString(this.bottomLabel);
+        dest.writeString(this.categoryBreadcrumb);
     }
 
     protected HotlistProductViewModel(Parcel in) {
@@ -483,6 +493,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         this.priceRange = in.readString();
         this.topLabel = in.readString();
         this.bottomLabel = in.readString();
+        this.categoryBreadcrumb = in.readString();
     }
 
     public static final Creator<HotlistProductViewModel> CREATOR = new Creator<HotlistProductViewModel>() {

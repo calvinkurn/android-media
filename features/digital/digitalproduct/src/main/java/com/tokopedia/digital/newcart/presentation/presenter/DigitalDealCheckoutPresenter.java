@@ -1,10 +1,15 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
+import android.support.annotation.NonNull;
+
+import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
+import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
@@ -32,8 +37,22 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     private UserSession userSession;
 
     @Inject
-    public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase, DigitalAnalytics digitalAnalytics, DigitalModuleRouter digitalModuleRouter, ICartDigitalInteractor cartDigitalInteractor, UserSession userSession, DigitalCheckoutUseCase digitalCheckoutUseCase, DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
-        super(digitalAddToCartUseCase, digitalAnalytics, digitalModuleRouter, cartDigitalInteractor, userSession, digitalCheckoutUseCase, digitalInstantCheckoutUseCase);
+    public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
+                                        DigitalAnalytics digitalAnalytics,
+                                        DigitalModuleRouter digitalModuleRouter,
+                                        ICartDigitalInteractor cartDigitalInteractor,
+                                        UserSession userSession,
+                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
+                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+                                        DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+        super(digitalAddToCartUseCase,
+                digitalAnalytics,
+                digitalModuleRouter,
+                cartDigitalInteractor,
+                userSession,
+                digitalCheckoutUseCase,
+                digitalInstantCheckoutUseCase,
+                digitalPostPaidLocalCache);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
     }
@@ -216,13 +235,20 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         getView().navigateToDealDetailPage(productViewModel.getUrl());
     }
 
-    @Override
-    protected List<Integer> getDealIds() {
+    private List<Integer> getDealIds() {
         List<Integer> dealIds = new ArrayList<>();
         for (DealProductViewModel viewModel : getView().getSelectedDeals()) {
             dealIds.add((int) viewModel.getId());
         }
         return dealIds;
+    }
+
+    @NonNull
+    @Override
+    protected RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
+        RequestBodyCheckout requestBodyCheckout = super.getRequestBodyCheckout(checkoutData);
+        requestBodyCheckout.getAttributes().setDealsIds(getDealIds());
+        return requestBodyCheckout;
     }
 
     @Override

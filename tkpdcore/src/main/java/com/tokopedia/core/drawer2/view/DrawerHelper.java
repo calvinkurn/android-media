@@ -12,7 +12,7 @@ import android.util.Log;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -22,11 +22,11 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.referral.view.activity.ReferralActivity;
 
 import java.util.ArrayList;
 
@@ -74,12 +74,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             case TkpdState.DrawerPosition.LOGIN:
                 intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
                 context.startActivityForResult(intent, REQUEST_LOGIN);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Login", "Login");
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, "Login", "Login");
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 intent = ((TkpdCoreRouter) context.getApplication()).getRegisterIntent(context);
                 context.startActivityForResult(intent, REQUEST_LOGIN);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Register",AppEventTracking.EventLabel.REGISTER);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, "Register",AppEventTracking.EventLabel.REGISTER);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 if (context.getApplication() instanceof TkpdCoreRouter) {
@@ -89,7 +89,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                     ((TkpdCoreRouter) context.getApplication())
                             .sendTrackingGroupChatLeftNavigation();
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.MESSAGE);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.MESSAGE);
 
                 }
                 break;
@@ -97,7 +97,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 intent = ((TkpdCoreRouter) context.getApplication()).getInboxTalkCallingIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
 
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
@@ -106,7 +106,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                             .getInboxReputationIntent(context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
 
                 }
                 break;
@@ -114,7 +114,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 intent = InboxRouter.getInboxTicketActivityIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.HELP);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.HELP);
 
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
@@ -123,13 +123,13 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(ManageGeneral.class.getCanonicalName(), AppEventTracking.EventLabel.SETTING);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, ManageGeneral.class.getCanonicalName(), AppEventTracking.EventLabel.SETTING);
 
                 break;
             case TkpdState.DrawerPosition.APPSHARE:
                 context.startActivity(new Intent(context, ReferralActivity.class));
                 sendReferralGTMNavigationEvent(item);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(ReferralActivity.class.getCanonicalName(), AppEventTracking.EventLabel.REFERRAL);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, ReferralActivity.class.getCanonicalName(), AppEventTracking.EventLabel.REFERRAL);
 
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
@@ -137,20 +137,20 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 intent.putExtra(InboxRouter.PARAM_URL,
                         URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), "Contact_Us");
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), "Contact_Us");
 
                 break;
             case TkpdState.DrawerPosition.HELP:
                 intent = InboxRouter.getContactUsActivityIntent(context);
                 context.startActivity(intent);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.HELP);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.HELP);
 
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
                 SessionHandler session = new SessionHandler(context);
                 session.Logout(context);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Home", "Logout");
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, "Home", "Logout");
 
                 break;
             default:
@@ -159,7 +159,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     }
 
     protected void sendGTMNavigationEvent(String label) {
-        UnifyTracking.eventDrawerClick(label);
+        UnifyTracking.eventDrawerClick(context, label);
     }
 
     protected static void startIntent(Context context, Class<?> cls) {
@@ -170,6 +170,10 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public DrawerAdapter getAdapter() {
         return adapter;
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
     public void setAdapter(DrawerAdapter adapter) {

@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.omsApi)
+    implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -43,7 +44,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.applink)
-
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.payment)
 

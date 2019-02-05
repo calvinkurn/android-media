@@ -20,6 +20,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -32,7 +33,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.RefreshHandler;
@@ -110,6 +111,7 @@ public class HotlistFragment extends BrowseSectionFragment
     private static final int REQUEST_ACTIVITY_SORT_HOTLIST = 2021;
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 1111;
+    private static final String PERFORMANCE_TRACE_HOTLIST = "mp_hotlist";
 
     protected BottomNavigationListener bottomNavigationListener;
     protected RefreshHandler refreshHandler;
@@ -133,7 +135,10 @@ public class HotlistFragment extends BrowseSectionFragment
     HotlistFragmentPresenter presenter;
     @Inject
     UserSessionInterface userSession;
+
     private String trackerAttribution;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStopped;
 
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
@@ -251,6 +256,7 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_HOTLIST);
         trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
             setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));
@@ -280,7 +286,7 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void trackImpressionProduct(Map<String, Object> dataLayer) {
-        HotlistPageTracking.eventEnhance(dataLayer);
+        HotlistPageTracking.eventEnhance(getActivity(),dataLayer);
     }
 
     @Override
@@ -439,18 +445,18 @@ public class HotlistFragment extends BrowseSectionFragment
                 setSpanCount(2);
                 getGridLayoutManager().setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                HotlistPageTracking.eventHotlistDisplay("grid");
+                HotlistPageTracking.eventHotlistDisplay(getActivity(),"grid");
                 break;
             case GRID_2:
                 setSpanCount(1);
                 getGridLayoutManager().setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                HotlistPageTracking.eventHotlistDisplay("full");
+                HotlistPageTracking.eventHotlistDisplay(getActivity(),"full");
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                HotlistPageTracking.eventHotlistDisplay("list");
+                HotlistPageTracking.eventHotlistDisplay(getActivity(),"list");
                 break;
         }
         refreshBottomBarGridIcon();
@@ -543,7 +549,7 @@ public class HotlistFragment extends BrowseSectionFragment
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                HotlistPageTracking.eventHotlistSort(selectedSortName);
+                HotlistPageTracking.eventHotlistSort(getActivity(),selectedSortName);
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 reloadData();
@@ -551,7 +557,7 @@ public class HotlistFragment extends BrowseSectionFragment
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
                 if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
+                    HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
                 } else {
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
@@ -598,11 +604,6 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void onAddFavorite(int position, Data data) {
 
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
-        presenter.addWishlist(data.getProduct().getId());
     }
 
     @Override
@@ -760,7 +761,7 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void onHashTagClicked(String name, String url, String departmentID) {
         IntermediaryActivity.moveTo(getActivity(), departmentID, name);
-        HotlistPageTracking.eventClickHastag(url);
+        HotlistPageTracking.eventClickHastag(getActivity(),url);
     }
 
     @Override
@@ -790,7 +791,7 @@ public class HotlistFragment extends BrowseSectionFragment
                         )
                 )
         );
-        HotlistPageTracking.eventEnhance(map);
+        HotlistPageTracking.eventEnhance(getActivity(),map);
     }
 
     @Override
@@ -858,7 +859,7 @@ public class HotlistFragment extends BrowseSectionFragment
         } else {
             openLoginActivity(productID);
         }
-        HotlistPageTracking.eventAddWishlist(position, productName, productID);
+        HotlistPageTracking.eventAddWishlist(getActivity(),position, productName, productID);
     }
 
     @Override
@@ -901,6 +902,10 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void hideRefresh() {
         refreshHandler.setRefreshing(false);
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     @Override
@@ -956,7 +961,7 @@ public class HotlistFragment extends BrowseSectionFragment
             list.add(product);
 
             hotlist.setProductList(list);
-            TrackingUtils.eventClickHotlistProductFeatured(hotlist);
+            TrackingUtils.eventClickHotlistProductFeatured(getActivity(),hotlist);
         }
     }
 
@@ -986,7 +991,7 @@ public class HotlistFragment extends BrowseSectionFragment
             }
             hotlist.setProductList(list);
 
-            TrackingUtils.eventImpressionHotlistProductFeatured(hotlist);
+            TrackingUtils.eventImpressionHotlistProductFeatured(getActivity(),hotlist);
         }
 
     }

@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -43,7 +43,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvSellerCostAdditionFee;
     private TextView mTvInsuranceFeeLabel;
     private TextView mTvPromoOrCouponLabel;
-    private TextView mTvPromoMessage;
     private TextView mTvDonationLabel;
     private TextView mTvDonationPrice;
 
@@ -62,7 +61,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvPurchaseProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
         mTvPurchaseProtectionFee = itemView.findViewById(R.id.tv_purchase_protection_fee);
         mTvPromoDiscount = itemView.findViewById(R.id.tv_promo);
-        mTvPromoMessage = itemView.findViewById(R.id.tv_promo_message);
         mTvSellerCostAdditionLabel = itemView.findViewById(R.id.tv_seller_cost_addition);
         mTvSellerCostAdditionFee = itemView.findViewById(R.id.tv_seller_cost_addition_fee);
         mTvInsuranceFeeLabel = itemView.findViewById(R.id.tv_insurance_fee_label);
@@ -73,7 +71,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
 
-    public void bindViewHolder(ShipmentCostModel shipmentCost, CartItemPromoHolderData promo) {
+    public void bindViewHolder(ShipmentCostModel shipmentCost, PromoData promo) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
@@ -88,46 +86,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
                 getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice())));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
-        if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
-            formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
-            mTvPromoMessage.setVisibility(View.VISIBLE);
-            if (promo != null) {
-                if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
-                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_coupon));
-                } else if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
-                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_promo));
-                }
-            }
-        } else {
-            mTvPromoMessage.setVisibility(View.GONE);
-        }
-    }
-
-    private void formatPromoMessage(TextView textView, String promoMessage) {
-        String formatText = " Hapus";
-        promoMessage += formatText;
-        int startSpan = promoMessage.indexOf(formatText);
-        int endSpan = promoMessage.indexOf(formatText) + formatText.length();
-        Spannable formattedPromoMessage = new SpannableString(promoMessage);
-        final int color = ContextCompat.getColor(textView.getContext(), R.color.tkpd_main_green);
-        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        formattedPromoMessage.setSpan(new ClickableSpan() {
-            @Override
-            public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(color);
-                textPaint.setUnderlineText(false);
-            }
-
-            @Override
-            public void onClick(View widget) {
-                shipmentAdapterActionListener.onRemovePromoCode();
-            }
-        }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setText(formattedPromoMessage);
     }
 
     private String getTotalItemLabel(Context context, int totalItem) {

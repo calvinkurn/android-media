@@ -60,7 +60,7 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
 
             @Override
             public void onError(Throwable e) {
-                SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getProductID(),getView().getScreenName());
+                SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getAppContext(), getView().getProductID(),getView().getScreenName());
                 getView().setEmptyLayoutVisible();
                 getView().setContentLayoutGone();
             }
@@ -71,7 +71,7 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
                     getView().setProductList(productsItems);
                 }else {
                     getView().setEmptyLayoutVisible();
-                    SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getProductID(),getView().getScreenName());
+                    SimilarSearchTracking.eventUserSeeNoSimilarProduct((getView().getAppContext()), getView().getProductID(),getView().getScreenName());
                     getView().setContentLayoutGone();
                 }
             }
@@ -99,14 +99,14 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
     }
 
     private void addWishlist(String productId, String userId, int adapterPosition) {
-        SimilarSearchTracking.eventAddWishList(productId);
+        SimilarSearchTracking.eventAddWishList(getView().getAppContext(), productId);
         addWishlistActionUseCase.createObservable(productId, userId,
                 wishListListener);
     }
 
 
     private void removeWishlist(String productId, String userId, int adapterPosition) {
-        SimilarSearchTracking.eventRemoveWishList(productId);
+        SimilarSearchTracking.eventRemoveWishList(getView().getAppContext(), productId);
         removeWishlistActionUseCase.createObservable(productId,
                 userId, wishListListener);
     }

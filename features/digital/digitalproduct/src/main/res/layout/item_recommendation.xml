@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:maxWidth="100dp"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dp_4"
+    android:paddingLeft="@dimen/dp_4"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_4"
+    android:paddingRight="@dimen/dp_4"
+    android:paddingBottom="@dimen/dp_16">
+
+    <ImageView
+        android:id="@+id/icon_operator"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:background="@drawable/container_circle_corners_border"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/text_product_name"
+        style="@style/TextView.Micro.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:lines="1"
+        android:textStyle="bold"
+        tools:text="Rp 1.000.000" />
+
+    <TextView
+        android:id="@+id/text_client_number"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        tools:text="081322867354" />
+
+</LinearLayout>

@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
@@ -14,9 +13,12 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipment;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipmentMapping;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 
 import java.util.ArrayList;
@@ -66,13 +68,18 @@ public class ShipmentMapper implements IShipmentMapper {
 
         if (shipmentAddressFormDataResponse.getAutoApply() != null) {
             AutoApplyData autoApplyData = new AutoApplyData();
-            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoApply().getCode());
+            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoapplyV2().getCode());
             autoApplyData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoApply().getDiscountAmount());
-            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoApply().getIsCoupon());
-            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoApply().getMessageSuccess());
-            autoApplyData.setPromoId(shipmentAddressFormDataResponse.getAutoApply().getPromoId());
+            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoapplyV2().getIsCoupon());
+            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getText());
+            int promoId = 0;
+            if(!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())){
+                Integer.valueOf(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId());
+            }
+            autoApplyData.setPromoId(promoId);
             autoApplyData.setSuccess(shipmentAddressFormDataResponse.getAutoApply().isSuccess());
-            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoApply().getTitleDescription());
+            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoapplyV2().getTitleDescription());
+            autoApplyData.setState(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getState());
             dataResult.setAutoApplyData(autoApplyData);
         }
 
@@ -82,6 +89,16 @@ public class ShipmentMapper implements IShipmentMapper {
             donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
             donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
             dataResult.setDonation(donation);
+        }
+
+        if (shipmentAddressFormDataResponse.getCod() != null) {
+            CodModel cod = new CodModel();
+            cod.setCod(shipmentAddressFormDataResponse.getCod().isCod());
+            cod.setCounterCod(shipmentAddressFormDataResponse.getCod().getCounterCod());
+            cod.setMessageInfo(shipmentAddressFormDataResponse.getMessage().getMessageInfo());
+            cod.setMessageLink(shipmentAddressFormDataResponse.getMessage().getMessageLink());
+            cod.setMessageLogo(shipmentAddressFormDataResponse.getMessage().getMessageLogo());
+            dataResult.setCod(cod);
         }
 
         if (!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
@@ -145,9 +162,14 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setShopImage(groupShop.getShop().getShopImage());
                             shopResult.setShopUrl(groupShop.getShop().getShopUrl());
                             shopResult.setShopStatus(groupShop.getShop().getShopStatus());
-                            shopResult.setGold(groupShop.getShop().getIsGold() == 1);
-                            shopResult.setGoldBadge(groupShop.getShop().isGoldBadge());
+                            shopResult.setGold(groupShop.getShop().getGoldMerchant().isGoldBadge());
+                            shopResult.setGoldBadge(groupShop.getShop().getGoldMerchant().isGoldBadge());
                             shopResult.setOfficial(groupShop.getShop().getIsOfficial() == 1);
+                            if (groupShop.getShop().getIsOfficial() == 1) {
+                                shopResult.setShopBadge(groupShop.getShop().getOfficialStore().getOsLogoUrl());
+                            } else if (groupShop.getShop().getGoldMerchant().getIsGold() == 1) {
+                                shopResult.setShopBadge(groupShop.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
+                            }
                             shopResult.setFreeReturns(groupShop.getShop().getIsFreeReturns() == 1);
                             shopResult.setAddressId(groupShop.getShop().getAddressId());
                             shopResult.setPostalCode(groupShop.getShop().getPostalCode());
@@ -203,7 +225,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 AnalyticsProductCheckoutData analyticsProductCheckoutData = new AnalyticsProductCheckoutData();
                                 analyticsProductCheckoutData.setProductId(String.valueOf(product.getProductId()));
 
-                                if(product.getProductTrackerData() != null) {
+                                if (product.getProductTrackerData() != null) {
                                     analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
                                     analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
                                 }
@@ -358,7 +380,7 @@ public class ShipmentMapper implements IShipmentMapper {
     private String generateShopType(com.tokopedia.transactiondata.entity.response.shippingaddressform.Shop shop) {
         if (shop.getIsOfficial() == 1)
             return SHOP_TYPE_OFFICIAL_STORE;
-        else if (shop.getIsGold() == 1)
+        else if (shop.getGoldMerchant().isGoldBadge())
             return SHOP_TYPE_GOLD_MERCHANT;
         else return SHOP_TYPE_REGULER;
     }

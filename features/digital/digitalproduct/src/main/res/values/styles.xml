@@ -122,6 +122,11 @@
         <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
 
+    <style name="DigitalPostPaidCheckbox" parent="CheckBox">
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
     <style name="Button.Secondary">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

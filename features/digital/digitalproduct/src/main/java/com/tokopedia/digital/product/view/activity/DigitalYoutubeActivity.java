@@ -31,4 +31,5 @@ public class DigitalYoutubeActivity extends YoutubePlayerActivity {
         videoUrl = getIntent().getStringExtra(EXTRA_YOUTUBE_VIDEO_URL);
         return videoUrl;
     }
+
 }

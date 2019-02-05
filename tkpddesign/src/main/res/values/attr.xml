@@ -208,6 +208,11 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="PrefixEditText">
+        <attr name="prefix" format="string" />
+        <attr name="prefixTextColor" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="TextViewCompat">
         <attr name="fontSize" format="enum">
             <enum name="headline" value="1" />
@@ -247,7 +252,8 @@
         <attr name="buttonCompatType" format="enum">
             <enum name="primary" value="1" />
             <enum name="secondary" value="2" />
-            <enum name="disable" value="3" />
+            <enum name="transaction" value="3" />
+            <enum name="disable" value="4" />
         </attr>
         <attr name="buttonCompatSize" format="enum">
             <enum name="big" value="4" />

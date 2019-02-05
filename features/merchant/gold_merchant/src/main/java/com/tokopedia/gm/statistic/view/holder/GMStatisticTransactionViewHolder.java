@@ -58,7 +58,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         viewNotGM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction(view.getContext());
                 if (listener != null) {
                     listener.onViewNotGmClicked();
                 }
@@ -76,7 +76,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
                 Intent intent = new Intent(context, GMStatisticTransactionActivity.class);
                 context.startActivity(intent);
 
-                UnifyTracking.eventClickGMStatSeeDetailTransaction();
+                UnifyTracking.eventClickGMStatSeeDetailTransaction(view.getContext());
             }
         });
         monthNamesAbrev = transactionDataCardView.getContext().getResources()

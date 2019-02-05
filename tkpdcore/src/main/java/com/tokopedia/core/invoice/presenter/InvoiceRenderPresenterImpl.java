@@ -3,7 +3,7 @@ package com.tokopedia.core.invoice.presenter;
 import android.content.Context;
 
 import com.tkpd.library.utils.ConnectionDetector;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.invoice.interactor.InvoiceNetInteractor;
 import com.tokopedia.core.invoice.interactor.InvoiceNetInteractorImpl;
 import com.tokopedia.core.invoice.listener.InvoiceViewListener;

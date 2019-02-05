@@ -17,7 +17,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.Dialog;
@@ -38,12 +38,16 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  */
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
+    private static final int LOGIN_REQUEST_CODE = 1005;
+    private final Context appContext;
+
     private Context context;
     private ProgressDialog progressDialog;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
+        this.appContext = reactContext.getApplicationContext();
     }
 
     @Override
@@ -187,7 +191,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
-        TrackingUtils.eventTrackingEnhancedEcommerce(maps);
+        TrackingUtils.eventTrackingEnhancedEcommerce(appContext, maps);
     }
 
     @ReactMethod

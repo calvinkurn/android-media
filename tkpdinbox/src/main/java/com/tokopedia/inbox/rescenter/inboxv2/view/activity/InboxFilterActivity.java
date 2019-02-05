@@ -67,12 +67,12 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
         inboxFilterModel = getIntent().getParcelableExtra(PARAM_FILTER_MODEL);
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core.R.id.container,
+                    .replace(com.tokopedia.core2.R.id.container,
                             getSupportFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
                     .commit();
         }
     }
@@ -123,7 +123,7 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
         if (item.getItemId() == R.id.action_reset) {
             Fragment fragment = InboxFilterFragment.getResetFragmentInstance(inboxFilterModel);
             getSupportFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
                     .commit();
             return true;
         } else

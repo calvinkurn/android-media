@@ -18,6 +18,8 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -108,9 +110,9 @@ public class DeviceUtil {
     }
 
     public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam() {
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
         RequestBodyAppsFlyer requestBodyAppsFlyer = new RequestBodyAppsFlyer();
-        requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId());
+        requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId(MainApplication.getAppContext()));
         requestBodyAppsFlyer.setDeviceId(analHandler.getAdsId());
         return requestBodyAppsFlyer;
     }

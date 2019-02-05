@@ -22,6 +22,7 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalUrl;
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor;
+import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
@@ -103,16 +104,6 @@ public class DigitalModule {
     }
 
     @DigitalScope
-    @Provides
-    @DigitalRestApiRetrofit
-    public Retrofit.Builder provideRetrofitBuilder(@DigitalRestApiRetrofit Gson gson) {
-        return new Retrofit.Builder()
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-    }
-
-    @DigitalScope
     @DigitalRestApiRetrofit
     @Provides
     public Gson provideFlightGson() {
@@ -121,6 +112,17 @@ public class DigitalModule {
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create();
+    }
+
+    @DigitalScope
+    @Provides
+    @DigitalRestApiRetrofit
+    public Retrofit.Builder provideRetrofitBuilder(@DigitalRestApiRetrofit Gson gson) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new DigitalResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 
     @Provides

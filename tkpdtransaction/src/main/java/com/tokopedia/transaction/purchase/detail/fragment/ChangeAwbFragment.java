@@ -86,7 +86,7 @@ public class ChangeAwbFragment extends TkpdFragment {
                 if (refNumberField.getText().toString().isEmpty()) {
                     RefNumberInputLayout.setError(
                             getActivity()
-                                    .getString(com.tokopedia.core.R.string.error_note_empty)
+                                    .getString(com.tokopedia.core2.R.string.error_note_empty)
                     );
                 } else {
                     if (getArguments() != null) {

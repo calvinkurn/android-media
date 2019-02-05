@@ -4,6 +4,7 @@ package com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
+import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
 
@@ -104,6 +105,9 @@ public class Channel {
     @SerializedName("settings")
     @Expose
     private SettingGroupChat settingGroupChat;
+    @SerializedName("overlay_message")
+    @Expose
+    private OverlayMessagePojo overlayMessage;
 
     public int getChannelId() {
         return channelId;
@@ -283,5 +287,9 @@ public class Channel {
 
     public SettingGroupChat getSettingGroupChat() {
         return settingGroupChat;
+    }
+
+    public OverlayMessagePojo getOverlayMessage() {
+        return overlayMessage;
     }
 }

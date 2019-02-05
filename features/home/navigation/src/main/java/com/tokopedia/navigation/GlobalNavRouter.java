@@ -20,15 +20,13 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage);
+    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc);
 
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getInboxTicketCallingIntent(Context context);
 
     ApplicationUpdate getAppUpdate(Context context);
-
-    void showHockeyAppDialog(Activity activity);
 
     Intent getOnBoardingIntent(Activity activity);
 

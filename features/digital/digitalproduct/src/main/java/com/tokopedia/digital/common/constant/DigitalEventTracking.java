@@ -33,11 +33,25 @@ public interface DigitalEventTracking {
         String REMOVE_DEAL_OFFER = "remove deals offer";
         String CLICK_SKIP = "click skip";
         String ERROR_TO_ADD_DEAL = "error to add deals";
+        String CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk";
+        String CLICK_RECOMMENDATION_WIDGET = "click recommendation widget";
     }
 
     interface Label {
         String DEFAULT_EMPTY_VALUE = "";
         String NO_PROMO = "no promo";
+        String PROMO = "no promo";
+        String SITE = "tokopediadigital";
     }
 
+
+    interface Screen {
+        String DIGITAL_CATEGORY = "/digital/";
+        String DIGITAL_CHECKOUT = "/digital/checkout";
+    }
+
+    interface Misc{
+        String ACTION_FIELD_STEP1 = "cart page loaded";
+        String ACTION_FIELD_STEP2 = "click payment option button";
+    }
 }

@@ -30,4 +30,5 @@ public abstract class DigitalProductBaseDaggerActivity extends BaseSimpleActivit
         }
         return component;
     }
+
 }

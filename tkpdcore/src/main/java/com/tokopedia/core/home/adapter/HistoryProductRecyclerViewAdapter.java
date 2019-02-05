@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -94,7 +94,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             @Override
             public void onClick(View view) {
                 if(position < data.size()) {
-                    UnifyTracking.eventFeedRecent(data.get(position).getName());
+                    UnifyTracking.eventFeedRecent(view.getContext(), data.get(position).getName());
                     ((PdpRouter) ((BaseActivity) context)
                             .getApplication())
                             .goToProductDetail(context, getProductDataToPass(data.get(position)));

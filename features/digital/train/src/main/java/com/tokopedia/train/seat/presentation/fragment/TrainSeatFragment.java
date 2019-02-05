@@ -17,6 +17,8 @@ import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
@@ -35,7 +37,6 @@ import com.tokopedia.train.seat.presentation.presenter.TrainSeatPresenter;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
-import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatChangesDialog;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPagerIndicator;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
@@ -51,6 +52,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private static final String EXTRA_SOFTBOOK = "EXTRA_SOFTBOOK";
     private static final String EXTRA_PASSDATA = "EXTRA_PASSDATA";
     private static final String EXTRA_DEPARTURE_STATE = "EXTRA_DEPARTURE_STATE";
+    private static final String TRAIN_SELECT_SEAT_TRACE = "tr_train_select_seat";
     @Inject
     TrainSeatPresenter presenter;
     @Inject
@@ -74,6 +76,9 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private TrainSoftbook trainSoftbook;
     private TrainScheduleBookingPassData passData;
     private boolean isDeparture;
+
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     private InteractionListener interactionListener;
 
@@ -101,6 +106,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         passData = getArguments().getParcelable(EXTRA_PASSDATA);
         isDeparture = getArguments().getBoolean(EXTRA_DEPARTURE_STATE);
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(TRAIN_SELECT_SEAT_TRACE);
     }
 
     @Override
@@ -456,6 +462,14 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                     }
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
         }
     }
 

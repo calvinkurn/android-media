@@ -1,8 +1,10 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -30,13 +32,16 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
 
     private final ICartRepository cartRepository;
     private final IVoucherCouponMapper voucherCouponMapper;
+    private CheckPromoCodeUseCase checkPromoCodeUseCase;
 
 
     @Inject
     public CheckPromoCodeCartListUseCase(ICartRepository cartRepository,
-                                         IVoucherCouponMapper voucherCouponMapper) {
+                                         IVoucherCouponMapper voucherCouponMapper,
+                                         @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase) {
         this.cartRepository = cartRepository;
         this.voucherCouponMapper = voucherCouponMapper;
+        this.checkPromoCodeUseCase = checkPromoCodeUseCase;
     }
 
 
@@ -50,12 +55,22 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
 
         if (paramUpdateCart != null)
             return cartRepository.updateCartData(paramUpdateCart)
-                    .flatMap(updateCartDataResponse -> cartRepository.checkPromoCodeCartList(paramCheckPromo)
+                    .flatMap(updateCartDataResponse -> checkPromoCodeUseCase.createObservable(checkPromoCodeUseCase.createRequestParams(
+                            paramCheckPromo.get(PARAM_PROMO_CODE), false,
+                            (paramCheckPromo.get(PARAM_PROMO_SUGGESTED) != null &&
+                                    paramCheckPromo.get(PARAM_PROMO_SUGGESTED).equals(PARAM_VALUE_SUGGESTED)),
+                            paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT) != null &&
+                                    Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                             .map(
                                     voucherCouponMapper::convertPromoCodeCartListData
                             ));
         else
-            return cartRepository.checkPromoCodeCartList(paramCheckPromo)
+            return checkPromoCodeUseCase.createObservable(checkPromoCodeUseCase.createRequestParams(
+                    paramCheckPromo.get(PARAM_PROMO_CODE), false,
+                    (paramCheckPromo.get(PARAM_PROMO_SUGGESTED) != null &&
+                            paramCheckPromo.get(PARAM_PROMO_SUGGESTED).equals(PARAM_VALUE_SUGGESTED)),
+                    paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT) != null &&
+                            Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                     .map(
                             voucherCouponMapper::convertPromoCodeCartListData
                     );

@@ -5,10 +5,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.product.manage.item.common.util.ItemPickerType;
+import com.tokopedia.seller.R;
 
 /**
  * Created by nathan on 6/23/17.

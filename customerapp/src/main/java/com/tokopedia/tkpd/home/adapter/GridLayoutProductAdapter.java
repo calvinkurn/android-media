@@ -254,7 +254,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View view) {
                 if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
-                    UnifyTracking.eventWishlistView(product.getName());
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getName());
 
                     Bundle bundle = new Bundle();
                     Intent intent
@@ -264,7 +264,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
-                    UnifyTracking.eventWishlistView(product.getProductName());
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getProductName());
                     context.startActivity(
                             ProductDetailRouter.createInstanceProductDetailInfoActivity(
                                     context, getProductDataToPass((RecentView) data.get(position))
@@ -383,7 +383,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventWishlistBuy();
+                UnifyTracking.eventWishlistBuy(v.getContext());
                 if (wishlistView != null) wishlistView.displayAddToCart(productId);
             }
         };

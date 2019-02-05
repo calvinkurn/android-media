@@ -41,13 +41,9 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
         tvPopularProductDescription.setOnClickListener(goToProductDetailClickListener);
     }
 
-    private void clickAddProductTracking() {
-        UnifyTracking.eventClickAddProduct();
-    }
-
     private void clickGMStat() {
         if (getPopularProduct != null) {
-            UnifyTracking.eventClickGMStatProduct(getPopularProduct.getProductName());
+            UnifyTracking.eventClickGMStatProduct(popularProductCardView.getContext(), getPopularProduct.getProductName());
         }
     }
 

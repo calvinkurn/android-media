@@ -43,8 +43,6 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                itemView.getResources().getDimensionPixelSize(R.dimen.home_card_category_item_margin), true));
     }
 
     @Override
@@ -81,14 +79,14 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    eventClickUseCase(sectionViewModel.getSectionList().get(position), position);
+                    eventClickUseCase(view.getContext(), sectionViewModel.getSectionList().get(position), position);
                     listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.getSectionList().get(position)));
 
                 }
             });
         }
 
-        private void eventClickUseCase(LayoutSections layoutSections, int position) {
+        private void eventClickUseCase(Context context, LayoutSections layoutSections, int position) {
             if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
                 HomePageTracking.eventClickHomeUseCase(context, layoutSections.getTitle());
             } else {

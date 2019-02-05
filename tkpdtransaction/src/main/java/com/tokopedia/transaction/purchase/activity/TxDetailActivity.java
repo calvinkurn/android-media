@@ -419,7 +419,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
         presenter.processFinish(this, orderData);
-        UnifyTracking.eventReceivedShipping();
+        UnifyTracking.eventReceivedShipping(this);
     }
 
     @OnClick(R2.id.btn_do_complain)
@@ -430,7 +430,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @OnClick(R2.id.track_btn)
     void actionTracking() {
         presenter.processTrackOrder(this, orderData);
-        UnifyTracking.eventTrackOrder();
+        UnifyTracking.eventTrackOrder(this);
     }
 
     @OnClick(R2.id.btn_request_cancel_order)

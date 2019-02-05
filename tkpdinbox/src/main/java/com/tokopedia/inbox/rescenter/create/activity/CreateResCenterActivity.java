@@ -172,7 +172,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         } else {
             super.onBackPressed();
         }
-        UnifyTracking.eventCreateResoAbandon();
+        UnifyTracking.eventCreateResoAbandon(this);
     }
 
     @Override

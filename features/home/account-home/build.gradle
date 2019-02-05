@@ -23,10 +23,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.logout)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.userIdentificationCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -45,4 +48,7 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }

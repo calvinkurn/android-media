@@ -15,6 +15,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.notifcenter.NotifCenterRouter
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.R.string.notif_no_info_desc
+import com.tokopedia.notifcenter.analytics.NotifCenterAnalytics
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
@@ -33,6 +34,10 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
     @Inject
     lateinit var presenter: NotifCenterPresenter
+
+    @Inject
+    lateinit var analytics : NotifCenterAnalytics
+
     private lateinit var adapter: NotifCenterAdapter
     private lateinit var notifCenterRouter: NotifCenterRouter
     private lateinit var menuList: ArrayList<Menus.ItemMenus>
@@ -131,6 +136,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     }
 
     override fun openRedirectUrl(url: String) {
+        analytics.trackClickList()
         activity?.let {
             notifCenterRouter.openRedirectUrl(it, url)
         }
@@ -156,6 +162,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                 if (lastVisibleItemPosition + LOAD_MORE_THRESHOLD > adapter.itemCount
                         && canLoadMore
                         && !isLoading()) {
+                    analytics.trackScrollToBottom()
+
                     presenter.fetchData()
                 }
             }
@@ -179,6 +187,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                 menus.setOnItemMenuClickListener { itemMenus, _ ->
                     resetParam()
                     adapter.clearAllElements()
+                    analytics.trackClickFilter(itemMenus.title)
+
                     when (itemMenus.title) {
                         NotifFilterViewModel.FILTER_BUYER_TEXT -> presenter
                                 .updateFilterId(NotifFilterViewModel.FILTER_BUYER_ID)
@@ -186,6 +196,20 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                         NotifFilterViewModel.FILTER_SELLER_TEXT -> presenter
                                 .updateFilterId(NotifFilterViewModel.FILTER_SELLER_ID)
 
+                        NotifFilterViewModel.FILTER_FOR_YOU_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_FOR_YOU_ID)
+
+                        NotifFilterViewModel.FILTER_PROMO_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_PROMO_ID)
+
+                        NotifFilterViewModel.FILTER_INSIGHT_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_INSIGHT_ID)
+
+                        NotifFilterViewModel.FILTER_FEATURE_UPDATE_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_FEATURE_UPDATE_ID)
+
+                        NotifFilterViewModel.FILTER_EVENT_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_EVENT_ID)
                         else -> presenter
                                 .updateFilterId(NotifFilterViewModel.FILTER_ALL_ID)
                     }
@@ -219,9 +243,11 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
             menuList = ArrayList<Menus.ItemMenus>()
             menuList.add(filterAllMenu)
-            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_BUYER_TEXT))
-            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_SELLER_TEXT))
-
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_FOR_YOU_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_PROMO_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_INSIGHT_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_FEATURE_UPDATE_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_EVENT_TEXT))
         }
         return menuList
     }

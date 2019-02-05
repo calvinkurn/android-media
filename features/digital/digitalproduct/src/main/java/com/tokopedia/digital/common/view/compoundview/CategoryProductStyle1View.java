@@ -16,7 +16,6 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
 import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView;
@@ -28,8 +27,6 @@ import com.tokopedia.digital.utils.DeviceUtil;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
-
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
@@ -37,47 +34,45 @@ public class CategoryProductStyle1View extends
         BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber>
         implements ProductAdditionalInfoView.ActionListener {
 
-    @BindView(R2.id.tv_title_category)
-    TextView tvTitle;
-    @BindView(R2.id.holder_client_number)
-    LinearLayout holderClientNumber;
-    @BindView(R2.id.holder_chooser_product)
-    LinearLayout holderChooserProduct;
-    @BindView(R2.id.holder_additional_info_product)
-    LinearLayout holderAdditionalInfoProduct;
-    @BindView(R2.id.holder_price_info_product)
-    LinearLayout holderPriceInfoProduct;
-    @BindView(R2.id.btn_buy_digital)
-    TextView btnBuyDigital;
-    @BindView(R2.id.cb_instant_checkout)
-    CheckBox cbInstantCheckout;
-    @BindView(R2.id.layout_checkout)
-    RelativeLayout layoutCheckout;
-    @BindView(R2.id.tooltip_instant_checkout)
-    ImageView tooltipInstantCheckout;
+    private TextView tvTitle;
+    private LinearLayout holderClientNumber;
+    private LinearLayout holderChooserProduct;
+    private LinearLayout holderAdditionalInfoProduct;
+    private LinearLayout holderPriceInfoProduct;
+    private TextView btnBuyDigital;
+    private CheckBox cbInstantCheckout;
+    private RelativeLayout layoutCheckout;
+    private ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
     private ClientNumberInputView clientNumberInputView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public CategoryProductStyle1View(Context context) {
         super(context);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public CategoryProductStyle1View(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public CategoryProductStyle1View(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected void onCreateView() {
+        tvTitle = findViewById(R.id.tv_title_category);
+        holderClientNumber = findViewById(R.id.holder_client_number);
+        holderChooserProduct = findViewById(R.id.holder_chooser_product);
+        holderAdditionalInfoProduct = findViewById(R.id.holder_additional_info_product);
+        holderPriceInfoProduct = findViewById(R.id.holder_price_info_product);
+        btnBuyDigital = findViewById(R.id.btn_buy_digital);
+        cbInstantCheckout = findViewById(R.id.cb_instant_checkout);
+        layoutCheckout = findViewById(R.id.layout_checkout);
+        tooltipInstantCheckout = findViewById(R.id.tooltip_instant_checkout);
+
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
@@ -104,7 +99,7 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
+        if (operatorSelected != null && operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
             this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         }
     }
@@ -224,8 +219,7 @@ public class CategoryProductStyle1View extends
 
     private void setOperator(Operator operator) {
         operatorSelected = operator;
-        clientNumberInputView.tvErrorClientNumber.setText("");
-        clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
+        clientNumberInputView.hideClientNumberError();
         clientNumberInputView.enableImageOperator(operator.getImage());
         clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
         if (operator.getRule().getProductViewStyle() == SINGLE_PRODUCT) {

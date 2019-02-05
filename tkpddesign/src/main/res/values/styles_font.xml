@@ -342,6 +342,15 @@
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
 
+    <style name="TextView.Micro10">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/sp_10</item>
+    </style>
+
+    <style name="TextView.Micro10.BlackSecondary">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
 
     <style name="TextView.Micro11">
         <item name="android:fontFamily">sans-serif</item>

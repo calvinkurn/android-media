@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shadow_top_bottom">
+    android:background="@drawable/card_shadow_top_bottom">
 
     <com.tokopedia.kol.feature.post.view.widget.BaseKolView
         android:id="@+id/base_kol_view"

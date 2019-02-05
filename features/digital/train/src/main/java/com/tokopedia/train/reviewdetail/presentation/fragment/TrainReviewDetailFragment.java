@@ -21,6 +21,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ticker.TickerView;
@@ -47,7 +49,6 @@ import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDet
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
-import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +66,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
 
+    private static final String TRAIN_CHECKOUT_TRACE = "tr_train_checkout";
     private static final String PARAM_CHECKOUT_CLIENT = "android";
     private static final String PARAM_CHECKOUT_VERSION = "kai-" + GlobalConfig.VERSION_NAME;
 
@@ -102,6 +104,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private TrainScheduleDetailViewModel returnTripViewModel;
 
     private String appliedVoucherCode;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static Fragment newInstance(TrainSoftbook trainSoftbook,
                                        TrainScheduleBookingPassData trainScheduleBookingPassData) {
@@ -119,6 +123,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         trainScheduleBookingPassData = getArguments().getParcelable(ARGS_TRAIN_SCHEDULE_BOOKING);
 
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(TRAIN_CHECKOUT_TRACE);
     }
 
     @Override
@@ -172,7 +177,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
         });
 
         cardReturnTrip.setActionListener(() -> {
@@ -182,7 +187,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
         });
 
         buttonSubmit.setOnClickListener(v -> {
@@ -192,12 +197,14 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                         returnTripViewModel
                 );
             } else {
-                trainAnalytics.eventProceedToPayment(
-                        departureTripViewModel.getOriginStationCode(),
-                        departureTripViewModel.getDestinationStationCode(),
-                        departureTripViewModel.getTrainClass(),
-                        departureTripViewModel.getTrainName()
-                );
+                if (departureTripViewModel != null) {
+                    trainAnalytics.eventProceedToPayment(
+                            departureTripViewModel.getOriginStationCode(),
+                            departureTripViewModel.getDestinationStationCode(),
+                            departureTripViewModel.getTrainClass(),
+                            departureTripViewModel.getTrainName()
+                    );
+                }
             }
 
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
@@ -376,6 +383,16 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
+    public String getPassengerTypeAdult() {
+        return getString(R.string.kai_homepage_adult_passenger);
+    }
+
+    @Override
+    public String getPassengerTypeChild() {
+        return getString(R.string.kai_homepage_infant_passenger);
+    }
+
+    @Override
     public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
         this.departureTripViewModel = departureTrip;
         this.returnTripViewModel = returnTrip;
@@ -464,6 +481,14 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private void hideCheckoutLoading() {
         progressBar.setVisibility(View.GONE);
         containerTrainReview.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override

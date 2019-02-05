@@ -70,13 +70,13 @@ public class ChangeInactivePhoneRequestSubmittedActivity extends BaseSimpleActiv
         TextView duplicateRequestTV = findViewById(R.id.duplicate_request_view);
 
         if (isDuplicateRequest) {
-            ScreenTracking.screen(getWaitingConfirmationScreenName());
-            UpdateInactivePhoneEventTracking.eventViewWaitingForConfirmationPage();
+            ScreenTracking.screen(this, getWaitingConfirmationScreenName());
+            UpdateInactivePhoneEventTracking.eventViewWaitingForConfirmationPage(this);
             newRequestDetailLayout.setVisibility(View.GONE);
             duplicateRequestTV.setVisibility(View.VISIBLE);
         } else {
-            ScreenTracking.screen(getSuccessConfirmationScreenName());
-            UpdateInactivePhoneEventTracking.eventViewSubmitSuccessPage();
+            ScreenTracking.screen(this, getSuccessConfirmationScreenName());
+            UpdateInactivePhoneEventTracking.eventViewSubmitSuccessPage(this);
             newRequestDetailLayout.setVisibility(View.VISIBLE);
             duplicateRequestTV.setVisibility(View.GONE);
             emailTV.setText(email);

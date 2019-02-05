@@ -24,8 +24,8 @@ public class DeepLinkAnalyticsImpl implements DeepLinkAnalyticsPresenter {
     public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(campaign);
-        UnifyTracking.eventCampaign(campaignUri);
+        UnifyTracking.eventCampaign(activity, campaign);
+        UnifyTracking.eventCampaign(activity, campaignUri);
     }
 
     public void processUTM(Activity activity, Uri applink){

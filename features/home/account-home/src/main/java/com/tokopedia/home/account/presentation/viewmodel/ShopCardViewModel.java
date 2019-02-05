@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+import com.tokopedia.topads.common.data.model.DataDeposit;
 
 /**
  * @author okasurya on 7/26/18.
@@ -17,6 +18,7 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
     private String reputationImageUrl;
     private String verificationStatusName;
     private int verificationStatus;
+    private DataDeposit dataDeposit;
 
     public String getShopId() {
         return shopId;
@@ -82,6 +84,14 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.verificationStatus = verificationStatus;
     }
 
+    public DataDeposit getDataDeposit() {
+        return dataDeposit;
+    }
+
+    public void setDataDeposit(DataDeposit dataDeposit) {
+        this.dataDeposit = dataDeposit;
+    }
+
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -105,6 +115,7 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
         dest.writeString(this.reputationImageUrl);
         dest.writeString(this.verificationStatusName);
         dest.writeInt(this.verificationStatus);
+        dest.writeParcelable(this.dataDeposit, flags);
 
     }
 
@@ -117,6 +128,7 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.reputationImageUrl = in.readString();
         this.verificationStatusName = in.readString();
         this.verificationStatus = in.readInt();
+        this.dataDeposit = in.readParcelable(DataDeposit.class.getClassLoader());
     }
 
     public static final Creator<ShopCardViewModel> CREATOR = new Creator<ShopCardViewModel>() {

@@ -221,7 +221,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
         onErrorGetReserveDomain(errorMessage);

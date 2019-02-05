@@ -11,4 +11,5 @@
     <string name="string_attach_product_price_per_product">Harga / barang</string>
     <string name="string_attach_product_name_field">Nama produk :</string>
     <string name="string_attach_product_my_empty_product">Toko Anda belum memiliki produk</string>
+    <string name="action_buy">Beli</string>
 </resources>

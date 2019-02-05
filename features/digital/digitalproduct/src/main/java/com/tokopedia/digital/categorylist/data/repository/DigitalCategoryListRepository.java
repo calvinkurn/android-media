@@ -110,10 +110,9 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
                             );
                     if (homeCategoryMenuItem != null && homeCategoryMenuItem.getData() != null
                             && !homeCategoryMenuItem.getData().getLayoutSections().isEmpty()) {
-                        globalCacheManager.store(new SimpleDatabaseModel.Builder()
-                                .key(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST)
-                                .value(stringResponse.body())
-                                .build());
+                        globalCacheManager.setKey(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST);
+                        globalCacheManager.setValue(stringResponse.body());
+                        globalCacheManager.store();
                     }
                     return digitalListDataMapper.transformDigitalCategoryItemDataList(
                             homeCategoryMenuItem

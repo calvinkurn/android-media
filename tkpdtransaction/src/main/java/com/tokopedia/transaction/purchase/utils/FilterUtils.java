@@ -2,7 +2,7 @@ package com.tokopedia.transaction.purchase.utils;
 
 import android.content.Context;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.purchase.model.TxFilterItem;
 

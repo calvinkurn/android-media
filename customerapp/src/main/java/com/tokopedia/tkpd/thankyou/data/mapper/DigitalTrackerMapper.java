@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
@@ -19,6 +20,7 @@ import rx.functions.Func1;
 public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<PurchaseData>>, Boolean> {
     // apparently digital doesnt need shipping but this value seems to be mandatory on EE
     private static final String DEFAULT_DIGITAL_SHIPPING = "0";
+    private static final String TOKOPEDIA_DIGITAL = "tokopediadigital";
 
     private SessionHandler sessionHandler;
 
@@ -29,8 +31,8 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
     @Override
     public Boolean call(Response<DigitalDataWrapper<PurchaseData>> response) {
         if (response != null && response.body() != null && response.body().getData() != null) {
-            PurchaseTracking.digital(getMappedData(response.body().getData()));
-            BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(response.body().getData()));
+            PurchaseTracking.digital(MainApplication.getAppContext(), getMappedData(response.body().getData()));
+            BranchSdkUtils.sendCommerceEvent(MainApplication.getAppContext(), getTrackignBranchIOData(response.body().getData()));
             return true;
         }
 
@@ -45,6 +47,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         purchase.setPaymentType(data.getPaymentType());
         purchase.setPaymentStatus(data.getPaymentStatus());
         purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setCurrentSite(TOKOPEDIA_DIGITAL);
         purchase.setItemPrice(String.valueOf(parseStringToInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
         if (isActionFieldValid(data)) {
             purchase.setTransactionID(data.getEcommerce().getPurchase().getActionField().getId());

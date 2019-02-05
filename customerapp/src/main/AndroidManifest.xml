@@ -7,7 +7,6 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -39,9 +38,6 @@
             android:name="android.support.VERSION"
             android:value="26.1.0"
             tools:replace="android:value"/>
-        <meta-data
-            android:name="net.hockeyapp.android.appIdentifier"
-            android:value="528b17702bf941a581f15e188677306b "/>
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
@@ -102,6 +98,9 @@
                 <data
                     android:host="tokopedia.link"
                     android:scheme="https"/>
+                <data
+                    android:host="exclusive.tokopedia.net"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
         <activity
@@ -133,17 +132,7 @@
                     android:scheme="https"/>
 
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="exclusive.tokopedia.net"
-                    android:scheme="https"/>
-            </intent-filter>
-
+            
         </activity>
 
         <meta-data
@@ -292,6 +281,12 @@
 
         <activity
             android:name=".home.ReactNativeBrandListOsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity

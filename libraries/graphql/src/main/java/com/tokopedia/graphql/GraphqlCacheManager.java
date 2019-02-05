@@ -3,14 +3,12 @@ package com.tokopedia.graphql;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.tokopedia.graphql.data.model.DbMetadata;
-import com.tokopedia.graphql.data.model.GraphqlDatabaseModel;
-import com.tokopedia.graphql.data.model.GraphqlDatabaseModel_Table;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.db.GraphqlDatabase;
+import com.tokopedia.graphql.data.db.GraphqlDatabaseDao;
+import com.tokopedia.graphql.data.db.GraphqlDatabaseModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GraphqlCacheManager {
@@ -19,9 +17,10 @@ public class GraphqlCacheManager {
     private String Value;
     private long expiredTime = 0;
     private static String TAG = "GraphqlCacheManager";
+    private GraphqlDatabaseDao databaseDao;
 
     public GraphqlCacheManager() {
-
+        databaseDao = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao();
     }
 
     public GraphqlCacheManager setKey(String key) {
@@ -53,7 +52,7 @@ public class GraphqlCacheManager {
         simpleDB.key = Key;
         simpleDB.value = Value;
         simpleDB.expiredTime = expiredTime;
-        simpleDB.save();
+        databaseDao.insertSingle(simpleDB);
     }
 
     public void store(GraphqlDatabaseModel data) {
@@ -65,16 +64,17 @@ public class GraphqlCacheManager {
         simpleDB.key = key;
         simpleDB.value = value;
         simpleDB.expiredTime = System.currentTimeMillis() + durationInSeconds * 1000L;
-        simpleDB.save();
+        databaseDao.insertSingle(simpleDB);
     }
 
     public void delete(String key) {
-        new Delete().from(GraphqlDatabaseModel.class).where(GraphqlDatabaseModel_Table.key.is(key)).execute();
+        GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
+        simpleDB.key = key;
+        databaseDao.delete(simpleDB);
     }
 
     public String get(String key) {
-        GraphqlDatabaseModel cache = new Select().from(GraphqlDatabaseModel.class)
-                .where(GraphqlDatabaseModel_Table.key.is(key)).querySingle();
+        GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key);
         if (cache == null)
             return null;
         if (isExpired(cache.expiredTime)) {
@@ -85,30 +85,25 @@ public class GraphqlCacheManager {
     }
 
     public boolean isExpired(String key) {
-        GraphqlDatabaseModel cache = new Select().from(GraphqlDatabaseModel.class)
-                .where(GraphqlDatabaseModel_Table.key.is(key)).querySingle();
+        GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key);
         return cache == null || isExpired(cache.expiredTime);
     }
 
     public void bulkInsert(List<String> key, List<String> value) {
-        final DatabaseWrapper database = FlowManager.getDatabase(DbMetadata.NAME).getWritableDatabase();
-        database.beginTransaction();
+        List<GraphqlDatabaseModel> models = new ArrayList<>();
         try {
             for (int i = 0; i < key.size(); i++) {
                 GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
                 simpleDB.key = key.get(i);
                 simpleDB.value = value.get(i);
-                simpleDB.save();
+                models.add(simpleDB);
             }
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-        }
+            databaseDao.insertMultiple(models);
+        } catch (Exception e){e.getLocalizedMessage();}
     }
 
     public String getValueString(String key) {
-        GraphqlDatabaseModel cache = new Select().from(GraphqlDatabaseModel.class)
-                .where(GraphqlDatabaseModel_Table.key.is(key)).querySingle();
+        GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key);
         if (cache == null)
             return null;
         if (isExpired(cache.expiredTime)) {
@@ -139,12 +134,11 @@ public class GraphqlCacheManager {
     }
 
     public void deleteAll() {
-        new Delete().from(GraphqlDatabaseModel.class).execute();
+        databaseDao.deleteTable();
     }
 
     public static boolean isAvailable(String key) {
-        GraphqlDatabaseModel cache = new Select().from(GraphqlDatabaseModel.class)
-                .where(GraphqlDatabaseModel_Table.key.is(key)).querySingle();
+        GraphqlDatabaseModel cache = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao().getGraphqlModel(key);
         return cache != null;
     }
 }

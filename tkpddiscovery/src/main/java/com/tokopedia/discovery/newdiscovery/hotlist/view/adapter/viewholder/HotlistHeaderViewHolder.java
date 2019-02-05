@@ -112,15 +112,15 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         hotlistPromoView.renderData(hotlistPromo, new HotlistPromoView.CallbackListener() {
             @Override
             public void onTncButtonClick(String titlePromo, String voucherCode) {
-                TrackingUtils.clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+                TrackingUtils.clickTnCButtonHotlistPromo(hotlistPromoView.getContext(),hotlistTitle, titlePromo, voucherCode);
             }
 
             @Override
             public void onCopyButtonClick(String titlePromo, String voucherCode) {
-                TrackingUtils.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+                TrackingUtils.clickCopyButtonHotlistPromo(hotlistPromoView.getContext(),hotlistTitle, titlePromo, voucherCode);
             }
         });
-        HotlistPageTracking.eventHotlistPromoImpression(hotlistTitle, hotlistPromo.getTitle(), hotlistPromo.getVoucherCode());
+        HotlistPageTracking.eventHotlistPromoImpression(hotlistPromoView.getContext(), hotlistTitle, hotlistPromo.getTitle(), hotlistPromo.getVoucherCode());
     }
 
     private static class HasTagAdapter extends RecyclerView.Adapter<HasTagAdapter.ItemViewHolder> {

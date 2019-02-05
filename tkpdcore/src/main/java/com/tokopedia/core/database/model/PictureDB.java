@@ -9,9 +9,9 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.container.ProductDbContainer;
 import com.tokopedia.core.database.DatabaseConstant;
-import com.tokopedia.core.database.DbFlowDatabase;
 
 /**
  * Created by m.normansyah on 12/27/15.

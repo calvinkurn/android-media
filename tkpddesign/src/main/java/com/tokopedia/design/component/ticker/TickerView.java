@@ -251,7 +251,7 @@ public class TickerView extends BaseCustomView {
         setTextColor(defaultTextColor);
         setPageIndicatorOnColor(defaultPageIndicatorOnColor);
         setPageIndicatorOffColor(defaultPageIndicatorOffColor);
-        setTickerHeight(tickerHeight);
+        //setTickerHeight(tickerHeight);
         prepareView();
         invalidate();
         requestLayout();
@@ -370,8 +370,9 @@ public class TickerView extends BaseCustomView {
             public void run() {
                 if (tickerViewPager != null) {
                     tickerViewPager.setCurrentItem(0);
-                    tickerViewPager.measureCurrentView(tickerViewPager.getChildAt(0));
-                    setVisibility(VISIBLE);
+                    if(listMessage.size() > 0) {
+                        setVisibility(VISIBLE);
+                    }
                 }
             }
         }, DEFAULT_POST_DELAYED_VALUE);
@@ -470,4 +471,7 @@ public class TickerView extends BaseCustomView {
         return listMessage!= null && !listMessage.isEmpty() && listMessage.contains(message);
     }
 
+    public int getCount(){
+        return listMessage.size();
+    }
 }

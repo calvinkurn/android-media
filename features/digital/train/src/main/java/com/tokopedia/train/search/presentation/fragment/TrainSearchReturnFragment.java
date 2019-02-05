@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.tokopedia.common.travel.widget.DepartureTripLabelView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
@@ -33,10 +32,7 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     @Inject
     TrainSearchReturnPresenter presenterReturn;
 
-    private TextView titleDepartureInfoTv;
-    private TextView trainNameTv;
-    private TextView detailDepartureInfoTv;
-    private LinearLayout departureDetailLayout;
+    private DepartureTripLabelView departureTripLabelView;
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
 
     public static TrainSearchReturnFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel,
@@ -74,10 +70,7 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        titleDepartureInfoTv = view.findViewById(R.id.title_departure_info);
-        trainNameTv = view.findViewById(R.id.train_name);
-        detailDepartureInfoTv = view.findViewById(R.id.detail_departure_info);
-        departureDetailLayout = view.findViewById(R.id.layout_departure_detail);
+        departureTripLabelView = view.findViewById(R.id.departure_trip_label);
 
         presenterReturn.getDetailSchedules(getArguments().getString(TrainSearchReturnActivity.EXTRA_SEARCH_ID_SCHEDULE));
     }
@@ -113,21 +106,30 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
 
     @Override
     public void loadDetailSchedule(TrainScheduleViewModel viewModel) {
-        departureDetailLayout.setVisibility(View.VISIBLE);
+        departureTripLabelView.setVisibility(View.VISIBLE);
+        departureTripLabelView.setValueName(viewModel.getTrainName());
+
         String dateDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_SEARCH,
                 TrainDateUtil.DEFAULT_VIEW_FORMAT, trainSearchPassDataViewModel.getDepartureDate());
-        titleDepartureInfoTv.setText(String.format("%s - %s", getString(R.string.train_search_departure_title), dateDepartureString));
-        trainNameTv.setText(viewModel.getTrainName());
+        departureTripLabelView.setValueTitle(String.format("%s - %s", getString(R.string.train_search_departure_title), dateDepartureString));
+
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, viewModel.getDepartureTimestamp());
         String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, viewModel.getArrivalTimestamp());
-        detailDepartureInfoTv.setText(String.format(" | %s - %s", timeDepartureString, timeArrivalString));
+
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                TrainDateUtil.FORMAT_DAY, viewModel.getDepartureTimestamp());
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                TrainDateUtil.FORMAT_DAY, viewModel.getArrivalTimestamp());
+        int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
+        String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
+        departureTripLabelView.setValueDepartureTime(String.format(" | %s - %s %s", timeDepartureString, timeArrivalString, deviationDayString));
     }
 
     @Override
     public void hideDetailDepartureSchedule(Throwable e) {
-        departureDetailLayout.setVisibility(View.GONE);
+        departureTripLabelView.setVisibility(View.GONE);
     }
 
     @Override

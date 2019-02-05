@@ -12,10 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
@@ -81,7 +81,7 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventTopAdsProductEditGroupName();
+                UnifyTracking.eventTopAdsProductEditGroupName(getActivity());
                 saveAd();
             }
         });

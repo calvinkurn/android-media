@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String keroDiscomToken;
     private int keroUnixTime;
     private Donation donation;
+    private CodModel cod;
     private boolean useCourierRecommendation;
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
@@ -133,6 +135,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.autoApplyData = autoApplyData;
     }
 
+    public CodModel getCod() {
+        return cod;
+    }
+
+    public void setCod(CodModel cod) {
+        this.cod = cod;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -185,4 +195,18 @@ public class CartShipmentAddressFormData implements Parcelable {
             return new CartShipmentAddressFormData[size];
         }
     };
+
+    public boolean isAvailablePurchaseProtection() {
+        for (GroupAddress address : groupAddress) {
+            for (GroupShop groupShop : address.getGroupShop()) {
+                for (Product product : groupShop.getProducts()) {
+                    if(product.getPurchaseProtectionPlanData() != null &&
+                            product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

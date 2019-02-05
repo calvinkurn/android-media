@@ -124,7 +124,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     public void loadCountdownView(Result challengeResult, boolean isPastChallenge) {
-        if (challengeResult == null) {
+        if (challengeResult == null || getView() == null) {
             return;
         }
         if (isPastChallenge) {
@@ -146,6 +146,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     private void getWinnerList() {
+        if (getView() == null) return;
         getWinnersUseCase.execute(getView().getSubmissionsParams(), new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -168,6 +169,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
 
     public void loadSubmissions() {
+        if (getView() == null) return;
         getSubmissionChallengesUseCase.execute(getView().getSubmissionsParams(), new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -212,14 +214,16 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     private void checkSettings() {
-
+        if (getView() == null)
+            return;
         getView().showProgressBar();
         getChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeId());
         getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
 
             @Override
             public void onCompleted() {
-                getView().hideProgressBar();
+                if (getView() != null)
+                    getView().hideProgressBar();
             }
 
             @Override
@@ -250,6 +254,8 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     private void getSubmissionInChallenge() {
+        if (getView() == null)
+            return;
         getView().showProgressBar();
         getSubmissionInChallengeUseCase.setRequestParams(getView().getChallengeId());
         getSubmissionInChallengeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
