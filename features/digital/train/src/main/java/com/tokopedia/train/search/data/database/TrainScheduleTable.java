@@ -35,6 +35,8 @@ public class TrainScheduleTable {
     private boolean cheapestFlag;
     private boolean fastestFlag;
     private boolean isReturnSchedule;
+    private int minAdultFare;
+    private int minDuration;
 
     @NonNull
     public String getIdSchedule() {
@@ -115,6 +117,14 @@ public class TrainScheduleTable {
 
     public int getAvailableSeat() {
         return availableSeat;
+    }
+
+    public int getMinAdultFare() {
+        return minAdultFare;
+    }
+
+    public int getMinDuration() {
+        return minDuration;
     }
 
     public boolean isCheapestFlag() {
@@ -219,5 +229,13 @@ public class TrainScheduleTable {
 
     public void setReturnSchedule(boolean returnSchedule) {
         isReturnSchedule = returnSchedule;
+    }
+
+    public void setMinAdultFare(int minAdultFare) {
+        this.minAdultFare = minAdultFare;
+    }
+
+    public void setMinDuration(int minDuration) {
+        this.minDuration = minDuration;
     }
 }

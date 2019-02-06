@@ -28,12 +28,11 @@ import com.tokopedia.train.homepage.data.TrainPromoCloudDataStore;
 import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
 import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
-import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
-import com.tokopedia.train.search.data.TrainScheduleDbDataStore;
 import com.tokopedia.train.search.data.database.TrainScheduleDao;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
+import com.tokopedia.train.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.train.seat.data.TrainSeatCloudDataStore;
 import com.tokopedia.train.station.data.TrainStationCacheDataStore;
 import com.tokopedia.train.station.data.TrainStationCloudDataStore;
@@ -217,12 +216,6 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainScheduleDbDataStore provideTrainScheduleDbDataStore() {
-        return new TrainScheduleDbDataStore();
-    }
-
-    @TrainScope
-    @Provides
     public TrainScheduleCloudDataStore provideTrainScheduleCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
         return new TrainScheduleCloudDataStore(trainApi, context);
     }
@@ -241,16 +234,10 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainScheduleCacheDataStore provideTrainScheduleCacheDataStore(@ApplicationContext Context context) {
-        return new TrainScheduleCacheDataStore(context);
-    }
-
-    @TrainScope
-    @Provides
-    public TrainScheduleDataStoreFactory provideTrainScheduleDataStoreFactory(TrainScheduleDbDataStore trainScheduleDbDataStore,
+    public TrainScheduleDataStoreFactory provideTrainScheduleDataStoreFactory(TrainScheduleDao trainScheduleDao,
                                                                               TrainScheduleCloudDataStore trainScheduleCloudDataStore,
-                                                                              TrainScheduleCacheDataStore trainScheduleCacheDataStore) {
-        return new TrainScheduleDataStoreFactory(trainScheduleDbDataStore, trainScheduleCacheDataStore, trainScheduleCloudDataStore);
+                                                                              TrainScheduleMapper scheduleMapper) {
+        return new TrainScheduleDataStoreFactory(trainScheduleDao, trainScheduleCloudDataStore, scheduleMapper);
     }
 
     @TrainScope

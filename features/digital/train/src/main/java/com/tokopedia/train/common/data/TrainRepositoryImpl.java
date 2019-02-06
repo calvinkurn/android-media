@@ -16,7 +16,6 @@ import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherEntity;
 import com.tokopedia.train.reviewdetail.data.specification.TrainCheckVoucherSpecification;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.train.search.data.specification.TrainAvailabilitySearchSpecification;
-import com.tokopedia.train.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
@@ -67,6 +66,8 @@ public class TrainRepositoryImpl implements TrainRepository {
         this.trainPromoCloudDataStore = trainPromoCloudDataStore;
     }
 
+// STATION ===============================
+
     @Override
     public Observable<List<TrainStation>> getPopularStations() {
         return trainStationDataStoreFactory.getPopularStation();
@@ -92,11 +93,11 @@ public class TrainRepositoryImpl implements TrainRepository {
         return trainStationDataStoreFactory.getStationCitiesByKeyword(keyword);
     }
 
-//TODO ===============================
+// SCHEDULE ===============================
 
     @Override
     public Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant) {
-        return trainScheduleDataStoreFactory.getScheduleTrain(new TrainScheduleSpecification(mapParam), scheduleVariant);
+        return trainScheduleDataStoreFactory.getSchedules(new TrainScheduleSpecification(mapParam), scheduleVariant);
     }
 
     @Override
@@ -111,7 +112,7 @@ public class TrainRepositoryImpl implements TrainRepository {
 
     @Override
     public Observable<TrainScheduleViewModel> getDetailSchedule(String idSchedule) {
-        return trainScheduleDataStoreFactory.getDetailScheduleById(new TrainDetailScheduleSpecification(idSchedule));
+        return trainScheduleDataStoreFactory.getDetailScheduleById(idSchedule);
     }
 
     @Override
@@ -120,7 +121,7 @@ public class TrainRepositoryImpl implements TrainRepository {
         return trainScheduleDataStoreFactory.getCountSchedule(filterSearchData, scheduleVariant, arrivalTimestampSelected);
     }
 
-// TODO ================================
+// ALL ================================
 
     @Override
     public Observable<List<TrainChangeSeatEntity>> changeSeats(List<ChangeSeatMapRequest> requests) {
