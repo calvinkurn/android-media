@@ -55,7 +55,7 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
         adsBannerView.loadTopAds();
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink, CpmData data) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 catalogListener.onBannerAdsClicked(applink);
             }
         });

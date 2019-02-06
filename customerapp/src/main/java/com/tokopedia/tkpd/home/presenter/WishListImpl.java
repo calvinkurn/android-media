@@ -337,7 +337,7 @@ public class WishListImpl implements WishList {
         if (mPaging.getPage() == 1) {
             data.clear();
             if (wishlistData.getWishlistDataList().size() == 0)
-                wishListView.setSearchNotFound();
+                wishListView.setSearchNotFound(query);
         }
         wishListView.displayPull(false);
 
@@ -616,7 +616,7 @@ public class WishListImpl implements WishList {
                     data.clear();
                     dataWishlist.clear();
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0)
-                        wishListView.setSearchNotFound();
+                        wishListView.setSearchNotFound(query);
                 }
                 gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
 

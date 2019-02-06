@@ -8,6 +8,6 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 
 public interface TopAdsBannerClickListener {
 
-    void onBannerAdsClicked(String applink, CpmData data);
+    void onBannerAdsClicked(int position, String applink, CpmData data);
 
 }

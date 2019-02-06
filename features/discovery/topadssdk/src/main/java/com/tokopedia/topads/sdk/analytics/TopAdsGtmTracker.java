@@ -357,7 +357,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventIntermediaryShopPromoClick(Context context, String hotlistKey, CpmData cpm, int position) {
+    public static void eventIntermediaryShopPromoClick(Context context, CpmData cpm, int position) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -370,7 +370,7 @@ public class TopAdsGtmTracker {
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", hotlistKey+" - topads headline shop",
+                                                    "name", "intermediary - topads headline shop",
                                                     "creative", cpm.getRedirect(),
                                                     "position", position))
                             ))
@@ -379,7 +379,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventIntermediaryProductPromoClick(Context context, String hotlistKey, CpmData cpm, int position) {
+    public static void eventIntermediaryProductPromoClick(Context context, CpmData cpm, int position) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -392,7 +392,7 @@ public class TopAdsGtmTracker {
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", hotlistKey+" - topads headline product",
+                                                    "name", "intermediary - topads headline product",
                                                     "creative", cpm.getRedirect(),
                                                     "position", position))
                             ))

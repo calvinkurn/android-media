@@ -56,7 +56,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         imageView.setViewHintListener(new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
-                if(impressionListener!=null){
+                if (impressionListener != null) {
                     impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
                 }
             }
@@ -67,7 +67,8 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             @Override
             public void onClick(View v) {
                 if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener.onBannerAdsClicked(element.getProduct().getApplinks(), element.getCpmData());
+                    topAdsBannerClickListener.onBannerAdsClicked((getAdapterPosition() + 1),
+                            element.getProduct().getApplinks(), element.getCpmData());
                     new ImpresionTask().execute(element.getProduct().getImageProduct().getImageClickUrl());
                 }
             }

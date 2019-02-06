@@ -91,7 +91,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
         topAdsBannerView.setConfig(bannerAdsConfig);
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String appLink, CpmData data) {
+            public void onBannerAdsClicked(int position, String appLink, CpmData data) {
                 productListener.onBannerAdsClicked(appLink);
             }
         });

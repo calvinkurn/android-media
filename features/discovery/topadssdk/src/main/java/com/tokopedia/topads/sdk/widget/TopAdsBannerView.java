@@ -218,7 +218,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
                         @Override
                         public void onClick(View view) {
                             if (topAdsBannerClickListener != null) {
-                                topAdsBannerClickListener.onBannerAdsClicked(data.getApplinks(), data);
+                                topAdsBannerClickListener.onBannerAdsClicked(0, data.getApplinks(), data);
                                 new ImpresionTask().execute(data.getAdClickUrl());
                             }
                         }

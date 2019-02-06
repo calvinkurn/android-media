@@ -79,7 +79,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink, CpmData data) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 productListener.onBannerAdsClicked(applink);
                 if(applink.contains(SHOP)) {
                     TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, getAdapterPosition());

@@ -71,6 +71,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivi
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -81,6 +82,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
@@ -155,6 +157,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
+    private static final String SHOP = "SHOP";
 
     public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
@@ -291,6 +294,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         topAdsView.setAdsItemClickListener(this);
         topAdsView.setAdsListener(this);
+        topAdsView.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventIntermediaryProductView(getContext(), "", product, position);
+            }
+        });
         topAdsView.setConfig(config);
         topAdsView.loadTopAds();
 
@@ -309,7 +318,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         topAdsBannerView.setConfig(configAdsBanner);
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String appLink, CpmData data) {
+            public void onBannerAdsClicked(int position, String appLink, CpmData data) {
                 TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
                 if (router.isSupportedDelegateDeepLink(appLink)) {
                     router.actionApplink(getActivity(), appLink);
@@ -318,6 +327,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                     intent.putExtra("url", appLink);
                     startActivity(intent);
                 }
+                if(appLink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventIntermediaryShopPromoClick(getContext(), data, position);
+                } else {
+                    TopAdsGtmTracker.eventIntermediaryProductPromoClick(getContext(), data, position);
+                }
+            }
+        });
+        topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventIntermediaryPromoView(getContext(), data, position);
             }
         });
         topAdsBannerView.loadTopAds();
@@ -680,6 +700,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
+        TopAdsGtmTracker.eventIntermediaryProductClick(getContext(), "", product, position);
     }
 
     @Override

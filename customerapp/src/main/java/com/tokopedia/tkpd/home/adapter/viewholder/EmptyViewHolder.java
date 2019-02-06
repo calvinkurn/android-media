@@ -12,6 +12,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -19,6 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.tkpd.R;
@@ -58,8 +60,14 @@ public class EmptyViewHolder extends RecyclerView.ViewHolder implements
         actionBtn.setOnClickListener(clickListener);
     }
 
-    public void loadTopAds() {
+    public void loadTopAds(String query) {
         topAdsView.loadTopAds();
+        topAdsView.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventWishlistProductView(context, product, query, position);
+            }
+        });
     }
 
     @Override
