@@ -15,7 +15,7 @@ public class Utils {
 
     public static String getDateTime(String isoTime) {
         SimpleDateFormat inputFormat = new SimpleDateFormat(DATE_FORMAT, getLocale());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM YYYY", getLocale());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", getLocale());
         try {
             Date date = inputFormat.parse(isoTime);
             return dateFormat.format(date);
