@@ -198,7 +198,6 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
-import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.TopAdsComponentInstance;
@@ -702,14 +701,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void openImagePreview(Context context, ArrayList<String> images,
                                  int position) {
 
-    }
-
-    @Override
-    public void openImagePreviewFromChat(Context context, ArrayList<String> images,
-                                         ArrayList<String> imageDesc, String title, String date) {
-        Intent intent = PreviewProductImageDetail.getCallingIntentChat(context, images, imageDesc,
-                title, date);
-        context.startActivity(intent);
     }
 
     private void goToDefaultRoute(Context context) {

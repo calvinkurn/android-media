@@ -377,7 +377,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position:Int) {
-        startActivity(ImagePreviewActivity.getIntent(context!!,
+        startActivity(ImagePreviewActivity.getCallingIntent(context!!,
                 getImageURIPaths(),
                 null,
                 position))

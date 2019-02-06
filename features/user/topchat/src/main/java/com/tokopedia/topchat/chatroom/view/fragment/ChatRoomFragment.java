@@ -61,6 +61,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
@@ -478,8 +479,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         ArrayList<String> strings = new ArrayList<>();
         strings.add(attachment.getAttributes().getImageUrl());
 
-        ((TopChatRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
-                strings, new ArrayList<String>(), title, fullTime);
+        startActivity(ImagePreviewActivity.getCallingIntent(getContext(),
+                strings,
+                null,
+                0, title, fullTime));
     }
 
     @Override
@@ -487,8 +490,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         ArrayList<String> strings = new ArrayList<>();
         strings.add(imageUrl);
 
-        ((TopChatRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
-                strings, new ArrayList<String>(), title, replyTime);
+        startActivity(ImagePreviewActivity.getCallingIntent(getContext(),
+                strings,
+                null,
+                0, title, replyTime));
     }
 
     @Override

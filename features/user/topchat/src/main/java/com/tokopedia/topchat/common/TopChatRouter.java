@@ -16,7 +16,4 @@ public interface TopChatRouter {
     void openRedirectUrl(Activity activity, String url);
 
     Intent getSplashScreenIntent(Context context);
-
-    void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>
-            imageDesc, String title, String date);
 }
