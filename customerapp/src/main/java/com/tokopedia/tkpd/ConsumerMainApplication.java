@@ -162,7 +162,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation("Appsflyer", AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation("MoEngage", MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-
+        Hansel.init(this);
         super.onCreate();
         initReact();
 
@@ -173,7 +173,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
-        Hansel.init(this);
         PushManager.getInstance().setMessageListener(new CustomPushListener());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
