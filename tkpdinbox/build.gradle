@@ -43,7 +43,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.imageuploader)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
