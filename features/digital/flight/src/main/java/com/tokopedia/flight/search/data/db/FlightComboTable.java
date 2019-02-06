@@ -9,9 +9,6 @@ import android.support.annotation.NonNull;
  */
 @Entity
 public class FlightComboTable {
-    //    @PrimaryKey(autoGenerate = true)
-    //    private int id;
-//    @NonNull
     @PrimaryKey
     @NonNull
     private String comboId;
