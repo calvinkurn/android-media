@@ -115,7 +115,9 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
             );
             rvItemPreview.setLayoutManager(linearLayoutManager);
             rvItemPreview.setAdapter(previewItemAdapter);
-            rvItemPreview.addItemDecoration(getDecoration());
+            if (rvItemPreview.getItemDecorationCount() == 0) {
+                rvItemPreview.addItemDecoration(getDecoration());
+            }
             previewItemAdapter.setData(shopItem.getProductImages());
         } else {
             hideShopPreviewItems(rvItemPreview);
@@ -134,7 +136,11 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     }
 
     protected RecyclerView.ItemDecoration getDecoration() {
-        return new ShopListItemDecoration(2,2,0,0);
+        return new ShopListItemDecoration(
+                context.getResources().getDimensionPixelSize(R.dimen.dp_2),
+                context.getResources().getDimensionPixelSize(R.dimen.dp_2),
+                0,
+                0);
     }
 
     protected int getPreviewImageSize(Context context){
