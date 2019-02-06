@@ -75,6 +75,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return false;
     }
 
+    private String getTax(PaymentData paymentData) {
+        float tax = paymentData.getFeeAmount();
+        if(paymentData.getPaymentGateway() != null) {
+            tax += paymentData.getPaymentGateway().getGatewayFee();
+        }
+        return Float.toString(tax);
+    }
+
     private Purchase getAppsFlyerTrackingData(List<OrderData> orders) {
         Purchase purchase = new Purchase();
         float price = 0;
@@ -100,7 +108,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return purchase;
     }
 
-    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode) {
+    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode, String tax) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
@@ -114,6 +122,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        purchase.setAffiliation(getShopName(orderData));
+        purchase.setTax(tax);
         purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
@@ -223,7 +233,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private String getProductCategory(OrderDetail orderDetail) {
         if (orderDetail.getProduct() != null
                 && orderDetail.getProduct().getProductCategory() != null) {
-            return orderDetail.getProduct().getProductCategory().getCategoryName();
+            return orderDetail.getProduct().getProductCategory().getCategoryNameLevel1()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel2()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel3();
         }
 
         return "";

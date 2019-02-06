@@ -32,6 +32,11 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity"
+            android:label="@string/title_top_ads_credit_history"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.activity.TopAdsPaymentCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:theme="@style/Theme.White"

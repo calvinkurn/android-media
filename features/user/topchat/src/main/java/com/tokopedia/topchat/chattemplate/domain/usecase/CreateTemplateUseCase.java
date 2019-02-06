@@ -1,12 +1,12 @@
 package com.tokopedia.topchat.chattemplate.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
-import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -14,12 +14,13 @@ import rx.Observable;
  * Created by stevenfredian on 12/27/17.
  */
 
-public class CreateTemplateUseCase extends UseCase<EditTemplateViewModel>{
+public class CreateTemplateUseCase extends UseCase<EditTemplateViewModel> {
 
     private final EditTemplateRepository templateRepository;
 
-    public CreateTemplateUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EditTemplateRepository templateRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public CreateTemplateUseCase(EditTemplateRepository templateRepository) {
+        super();
         this.templateRepository = templateRepository;
     }
 

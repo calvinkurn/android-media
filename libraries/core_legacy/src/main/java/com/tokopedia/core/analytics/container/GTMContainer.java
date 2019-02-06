@@ -223,6 +223,13 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
+        sendCustomAuth(shopID, shopType, pageType, productId);
+        sendScreen(screenName);
+        return this;
+    }
+
+    @Override
+    public GTMContainer sendCustomAuth(String shopID, String shopType, String pageType, String productId) {
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(sessionHandler.getLoginName());
         authEvent.setUserID(sessionHandler.getGTMLoginID());
@@ -232,10 +239,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setProductId(productId);
         authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
 
-        CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-
-        eventAuthenticate(authEvent).sendScreen(screenName);
-
+        eventAuthenticate(authEvent);
         return this;
     }
 
@@ -249,7 +253,7 @@ public class GTMContainer implements IGTMContainer {
 
 
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
-            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
@@ -257,11 +261,12 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
 
         } else {
-            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
@@ -270,7 +275,8 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
         }
 

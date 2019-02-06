@@ -111,4 +111,11 @@ public class WarningTickerView extends FrameLayout {
         }
         return result;
     }
+
+
+    public void setJustificationMode(int justificationMode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            tvDescription.setJustificationMode(justificationMode);
+        }
+    }
 }

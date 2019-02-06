@@ -21,7 +21,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.uber:okbuck:0.40.1'
+        classpath 'com.uber:okbuck:0.41.0'
         classpath ('com.android.tools.build:gradle:3.2.0') {
             exclude module: 'proguard-gradle'
         }
@@ -74,6 +74,7 @@ allprojects {
 apply plugin: 'com.uber.okbuck'
 
 okbuck {
+
     buildToolVersion = "27.0.3"
     target = "android-27"
     linearAllocHardLimit = [
@@ -157,6 +158,10 @@ subprojects {
                 substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:27.1.1')
                 substitute module('android.arch.core:runtime') with module('android.arch.core:runtime:1.1.1')
                 substitute module('android.arch.core:common') with module('android.arch.core:common:1.1.1')
+                substitute module('android.arch.lifecycle:runtime') with module('android.arch.lifecycle:runtime:1.1.1')
+                substitute module('android.arch.lifecycle:viewmodel') with module('android.arch.lifecycle:viewmodel:1.1.1')
+                substitute module('android.arch.lifecycle:livedata-core') with module('android.arch.lifecycle:livedata-core:1.1.1')
+                substitute module('org.apache.commons:commons-lang3') with module('org.apache.commons:commons-lang3:3.5')
             }
         }
     }

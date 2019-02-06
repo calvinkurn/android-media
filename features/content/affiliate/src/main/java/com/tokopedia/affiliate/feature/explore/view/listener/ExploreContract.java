@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.feature.explore.view.listener;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -10,7 +9,6 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 
 import java.util.List;
@@ -72,6 +70,7 @@ public interface ExploreContract {
 
         void onSuccessGetAutoComplete(List<AutoCompleteViewModel> modelList);
 
+        void stopTrace();
     }
 
     interface Presenter extends CustomerPresenter<View> {

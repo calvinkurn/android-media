@@ -24,6 +24,8 @@ import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -189,6 +191,7 @@ import org.json.JSONObject;
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
         SaldoDetailsAppLinkModule.class,
+        ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
 
@@ -250,6 +253,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
                     new SaldoDetailsAppLinkModuleLoader(),
+                    new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader()
             );
         }

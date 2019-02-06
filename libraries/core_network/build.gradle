@@ -25,7 +25,6 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.volley
-    implementation rootProject.ext.serviceDependencies.hockeyApp
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation rootProject.ext.testDependencies.androidAnnotation
 

@@ -94,6 +94,8 @@ public interface FlightDashboardContract {
         void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date time);
 
         void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate);
+
+        void stopTrace();
     }
 
     interface Presenter extends CustomerPresenter<View> {

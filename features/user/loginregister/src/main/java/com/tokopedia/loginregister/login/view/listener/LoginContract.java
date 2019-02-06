@@ -67,6 +67,8 @@ public interface LoginContract {
         void onErrorLoginSosmed(String loginMethodName, String errorCodeMessage);
 
         void onSuccessLoginEmail();
+
+        void stopTrace();
     }
 
     interface Presenter extends CustomerPresenter<View> {
