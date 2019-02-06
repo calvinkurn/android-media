@@ -96,7 +96,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_WELCOME_PAGE = 115
     private val REQUEST_LOGIN_GOOGLE = 116
 
-    private val GOOGLE_API_KEY = "AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo"
+    private val GOOGLE_API_KEY = "AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg"
 
 
     val IS_AUTO_LOGIN = "auto_login"
