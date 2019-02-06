@@ -20,12 +20,15 @@ public interface ReactConst {
     int REACT_LOGIN_REQUEST_CODE = 1005;
 
     interface Screen {
+        String HOTLIST = "HotList";
         String OFFICIAL_STORE = "official-store";
         String PROMO = "promo-page";
         String PROMO_TERMS = "promo-terms";
         String SUB_PROMO = "sub-promo";
         String THANK_YOU_PAGE = "thankyou-page";
         String DISCOVERY_PAGE = "discovery-page";
+        String EXPLORE_PAGE = "explore-page";
+        String CONTENT_DETAIL = "content-detail";
         String BRANDLIST_PAGE = "brandlist-page";
         String HOW_TO_PAY = "how-to-pay";
     }
