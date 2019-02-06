@@ -292,4 +292,8 @@
         <key>mainapp_enable_login_revamp_phone</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_flight_new_search_flow</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

@@ -55,6 +55,9 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
 
 import org.jetbrains.annotations.NotNull;
@@ -113,6 +116,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private FlightDashboardViewModel viewModel;
     private FlightDashboardPassDataViewModel passData;
 
+    private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStop = false;
 
@@ -141,6 +145,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(FLIGHT_TRACE);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
@@ -609,9 +614,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setIsOneWay(currentDashboardViewModel.isOneWay())
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
-//        startActivityForResult(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
-                 getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW)) {
+            startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
+                    getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+        } else {
+            startActivityForResult(com.tokopedia.flight.search.presentation.activity.
+                    FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+        }
     }
 
     @Override
