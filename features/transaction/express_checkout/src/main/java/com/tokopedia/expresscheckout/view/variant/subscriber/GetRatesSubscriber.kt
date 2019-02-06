@@ -38,6 +38,11 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         } else if (ratesData.shippingDurationViewModels != null && ratesData.shippingDurationViewModels.size > 0) {
             // Check is service id available
             for (shippingDurationViewModel: ShippingDurationViewModel in ratesData.shippingDurationViewModels) {
+                // Reset promo data since not needed by express checkout
+                shippingDurationViewModel.serviceData.isPromo = 0
+                for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                    product.promoCode = ""
+                }
                 if (shippingDurationViewModel.serviceData.serviceId == profileServiceId) {
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
                         if (currentSpId != 0) {
