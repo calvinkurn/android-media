@@ -193,17 +193,15 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             processToInstantCheckout();
         } else {
             digitalAnalytics.sendCartScreen(getView().getActivity());
-            switch (cartDigitalInfoData.getCrossSellingType()) {
-                case 1:
-                    getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
-                    break;
-                default:
-                    getView().showCartView();
-                    getView().hideFullPageLoading();
-                    renderBaseCart(cartDigitalInfoData);
-                    break;
-            }
+
+            renderCrossSellingCart(cartDigitalInfoData);
         }
+    }
+
+    protected void renderCrossSellingCart(CartDigitalInfoData cartDigitalInfoData) {
+        getView().showCartView();
+        getView().hideFullPageLoading();
+        renderBaseCart(cartDigitalInfoData);
     }
 
 
@@ -217,34 +215,34 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         digitalInstantCheckoutUseCase.execute(requestParams, getSubscriberInstantCheckout());
     }
 
-
     protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
-        if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
-            getView().renderHachikoCart();
-            if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
-                getView().renderHachikoPromoAndCouponLabel();
-            } else {
-                getView().renderHachikoPromoLabelOnly();
-            }
-        } else {
-            getView().hideHachikoCart();
-        }
+        setHachikoPromoVisibility(cartDigitalInfoData);
 
-        digitalAnalytics.eventClickVoucher(cartDigitalInfoData.getAttributes().getCategoryName(),
+        digitalAnalytics.eventClickVoucher(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
                 cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
                 cartDigitalInfoData.getAttributes().getOperatorName()
         );
 
-        getView().renderCategoryInfo(cartDigitalInfoData.getAttributes().getCategoryName());
-        getView().renderDetailMainInfo(cartDigitalInfoData.getMainInfo());
-        getView().renderAdditionalInfo(new ArrayList<>(cartDigitalInfoData.getAdditionalInfos()));
+        renderCartInfo(cartDigitalInfoData);
 
-        renderDataInputPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
-                cartDigitalInfoData.getAttributes().getUserInputPrice());
+        renderDataInputPrice(
+                String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
+                cartDigitalInfoData.getAttributes().getUserInputPrice()
+        );
 
         getView().renderCheckoutView(
-                cartDigitalInfoData.getAttributes().getPricePlain());
+                cartDigitalInfoData.getAttributes().getPricePlain()
+        );
 
+        renderAutoApplyPromo(cartDigitalInfoData);
+
+        branchAutoApplyCouponIfAvailable();
+
+        renderPostPaidPopUp(cartDigitalInfoData);
+    }
+
+    private void renderAutoApplyPromo(CartDigitalInfoData cartDigitalInfoData) {
         if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
                 cartDigitalInfoData.getAttributes().getAutoApplyVoucher() != null &&
                 cartDigitalInfoData.getAttributes().getAutoApplyVoucher().isSuccess()) {
@@ -261,10 +259,25 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 renderCouponAndVoucher(voucherDigital);
             }
         }
+    }
 
-        branchAutoApplyCouponIfAvailable();
+    private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
+        getView().renderCategoryInfo(cartDigitalInfoData.getAttributes().getCategoryName());
+        getView().renderDetailMainInfo(cartDigitalInfoData.getMainInfo());
+        getView().renderAdditionalInfo(new ArrayList<>(cartDigitalInfoData.getAdditionalInfos()));
+    }
 
-        renderPostPaidPopUp(cartDigitalInfoData);
+    private void setHachikoPromoVisibility(CartDigitalInfoData cartDigitalInfoData) {
+        if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
+            getView().renderHachikoCart();
+            if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                getView().renderHachikoPromoAndCouponLabel();
+            } else {
+                getView().renderHachikoPromoLabelOnly();
+            }
+        } else {
+            getView().hideHachikoCart();
+        }
     }
 
     private void renderPostPaidPopUp(CartDigitalInfoData cartDigitalInfoData) {
@@ -509,7 +522,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
 
     @NonNull
-    private RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
+    protected RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
         RequestBodyCheckout requestBodyCheckout = new RequestBodyCheckout();
         requestBodyCheckout.setType("checkout");
         com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Attributes attributes =
@@ -520,7 +533,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         attributes.setClientId(digitalModuleRouter.getTrackingClientId());
-        attributes.setDealsIds(getDealIds());
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
@@ -529,10 +541,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 )))
         );
         return requestBodyCheckout;
-    }
-
-    protected List<Integer> getDealIds() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -719,7 +727,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
 
-    protected CheckoutDataParameter.Builder buildCheckoutData(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
+    CheckoutDataParameter.Builder buildCheckoutData(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
         CheckoutDataParameter.Builder builder = new CheckoutDataParameter.Builder();
         builder.cartId(cartDigitalInfoData.getId());
         builder.accessToken(accessToken);

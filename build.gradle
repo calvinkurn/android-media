@@ -18,7 +18,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.uber:okbuck:0.40.1'
+        classpath 'com.uber:okbuck:0.41.0'
         classpath ('com.android.tools.build:gradle:3.2.0') {
             exclude module: 'proguard-gradle'
         }
@@ -68,6 +68,7 @@ allprojects {
 apply plugin: 'com.uber.okbuck'
 
 okbuck {
+
     buildToolVersion = "27.0.3"
     target = "android-27"
     linearAllocHardLimit = [

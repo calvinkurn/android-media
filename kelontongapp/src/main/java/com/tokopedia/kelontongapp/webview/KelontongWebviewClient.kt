@@ -19,6 +19,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.webkit.WebResourceError
 import com.appsflyer.AppsFlyerLib
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
+import com.moe.pushlibrary.MoEHelper
 import com.tokopedia.kelontongapp.*
 import org.json.JSONObject
 import org.json.JSONArray
@@ -45,6 +48,9 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
         return if (uri.scheme.startsWith(APPSFLYER_URL_SCHEME)) {
             handleAppsFlyer(uri)
             false
+        } else if (uri.scheme.startsWith(MOENGAGE_URL_SCHEME)) {
+            handleMoengage(uri)
+            false
         } else {
             view.loadUrl(uri.toString())
             true
@@ -53,9 +59,19 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
     override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
         super.onReceivedError(view, request, error)
-        if (activity is KelontongMainActivity) {
-            activity.onReceivedErrorView()
+        val customEvent = CustomEvent("onReceivedError Webview")
+        if (error != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                customEvent.putCustomAttribute("errorCode", "${error.errorCode}")
+                customEvent.putCustomAttribute("message", "${error.description}")
+            }
         }
+        if (request != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                customEvent.putCustomAttribute("url", "${request.url}")
+            }
+        }
+        Answers.getInstance().logCustom(customEvent)
     }
 
     fun checkPermission(): Boolean {
@@ -66,7 +82,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     }
 
     fun requestPermission() {
-        ActivityCompat.requestPermissions(activity, arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE),
+        ActivityCompat.requestPermissions(activity, arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE, ACCESS_FINE_LOCATION),
                 PERMISSION_REQUEST_CODE)
     }
 
@@ -75,17 +91,19 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
             PERMISSION_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
                 val cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                val locationAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED
 
                 if (!(writeAccepted && cameraAccepted))
                     Toast.makeText(activity, "Mohon untuk memberikan izin akses kamera dan menulis file.", Toast.LENGTH_SHORT).show()
 
+                if (!locationAccepted)
+                    Toast.makeText(activity, "Mohon untuk memberikan izin lokasi.", Toast.LENGTH_SHORT).show()
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (activity.shouldShowRequestPermissionRationale(CAMERA)) {
-                        showMessageOKCancel("Mohon untuk memberikan izin akses kamera dan menulis file.", object : DialogInterface.OnClickListener {
-                            override fun onClick(dialog: DialogInterface?, which: Int) {
-                                requestPermission()
-                            }
-                        })
+                    if (activity.shouldShowRequestPermissionRationale(CAMERA) && activity.shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
+                        showMessageOKCancel("Mohon untuk memberikan izin akses kamera dan menulis file.",
+                                DialogInterface.OnClickListener { _, _ ->
+                                    requestPermission() })
                         return
                     }
                 }
@@ -118,9 +136,18 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
                 .show()
     }
 
-    companion object {
-
-        private val PERMISSION_REQUEST_CODE = 2312
+    private fun handleMoengage(uri: Uri) {
+        if(uri.host == MOENGAGE_LOGIN) {
+            if(uri.getQueryParameter(MOENGAGE_USER_ID) != null) {
+                with (sharedPref.edit()) {
+                    putString(MOENGAGE_USER_ID, uri.getQueryParameter(MOENGAGE_USER_ID))
+                    apply()
+                }
+                MoEHelper.getInstance(activity).setUniqueId(MOENGAGE_USER_ID)
+            }
+        } else if (uri.host == MOENGAGE_LOGOUT) {
+            MoEHelper.getInstance(activity).logoutUser()
+        }
     }
 
     private fun handleAppsFlyer(uri: Uri) {
@@ -133,7 +160,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
                 AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter(ID))
             }
         } else {
-            var eventName: String? = uri.getQueryParameter(EVENT_NAME)
+            val eventName: String? = uri.getQueryParameter(EVENT_NAME)
             val eventValue: MutableMap<String, Any> = HashMap()
 
             val event: JSONObject
@@ -150,5 +177,9 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
             AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
         }
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 2312
     }
 }

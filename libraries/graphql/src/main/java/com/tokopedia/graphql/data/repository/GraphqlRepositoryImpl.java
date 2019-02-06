@@ -46,6 +46,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 return getCloudResponse(requests, cacheStrategy);
             } else if (cacheStrategy.getType() == CacheType.CACHE_ONLY) {
                 return mGraphqlCache.getResponse(requests, cacheStrategy);
+            } else if (cacheStrategy.getType() == CacheType.CLOUD_THEN_CACHE){
+                return getCloudResponse(requests, cacheStrategy)
+                        .onErrorReturn(
+                                throwable -> getCachedResponse(requests, cacheStrategy).map(
+                                        graphqlResponseInternal -> graphqlResponseInternal).toBlocking().first()
+                        );
             } else {
                 return Observable.concat(getCachedResponse(requests, cacheStrategy).subscribeOn(Schedulers.computation()),
                         getCloudResponse(requests, cacheStrategy).subscribeOn(Schedulers.io()))

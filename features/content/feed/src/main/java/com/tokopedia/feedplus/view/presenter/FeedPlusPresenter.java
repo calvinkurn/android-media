@@ -349,6 +349,7 @@ public class FeedPlusPresenter
                     @Override
                     public void onNext(DynamicFeedFirstPageDomainModel firstPageDomainModel) {
                         getView().finishLoading();
+                        getView().clearData();
 
                         DynamicFeedDomainModel model = firstPageDomainModel
                                 .getDynamicFeedDomainModel();
