@@ -30,8 +30,8 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
         view.setOnClickListener {
             AutoCompleteTracking.eventClickInHotlist(
                     view.context,
+                    element.searchTerm,
                     element.keyword,
-                    element.eventName,
                     element.eventId,
                     adapterPosition,
                     element.applink

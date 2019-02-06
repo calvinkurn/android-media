@@ -42,7 +42,7 @@ public class AutoCompleteTracking {
     public static final String PRODUCT_POSITION = "position";
     public static final String NONE_OTHER = "none / other";
     private static final String LABEL_RECENT_VIEW_CLICK = "po: %s - applink: %s";
-    private static final String LABEL_HOTLIST_CLICK = "keyword: %s - hotlist: %s - hotlist id: $s - po: {{position}} - applink: {{destination screen name}";
+    private static final String LABEL_HOTLIST_CLICK = "keyword: %s - hotlist: %s - hotlist id: %s - po: %s - applink: %s";
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
 
     public static void eventClickPopularSearch(Context context, String label) {
