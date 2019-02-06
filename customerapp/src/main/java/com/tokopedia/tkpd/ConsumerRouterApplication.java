@@ -3632,6 +3632,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMPushNotificationManager.getInstance().refreshTokenFromBackground(token, force);
     }
 
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
+    }
 
     @Override
     public void refreshFCMTokenFromForegroundToCM() {

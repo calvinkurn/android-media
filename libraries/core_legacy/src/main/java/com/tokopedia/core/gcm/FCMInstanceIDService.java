@@ -31,7 +31,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         updateMoEngageToken(refreshedToken);
         Hansel.setNewToken(this, refreshedToken);
         updateApsFlyerToken(refreshedToken);
-        ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMTokenFromBackgroundToCM(refreshedToken, true);
+        ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(refreshedToken);
     }
 
     private void updateApsFlyerToken(String refreshedToken) {
