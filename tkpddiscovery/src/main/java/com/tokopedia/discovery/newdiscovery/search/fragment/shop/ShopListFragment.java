@@ -135,7 +135,7 @@ public class ShopListFragment extends SearchSectionFragment
                 new ShopListItemDecoration(
                         getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
                         getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
-                        -(getContext().getResources().getDimensionPixelSize(R.dimen.dp_2)),
+                        -(getContext().getResources().getDimensionPixelSize(R.dimen.dp_1)),
                         0
                 )
         );
