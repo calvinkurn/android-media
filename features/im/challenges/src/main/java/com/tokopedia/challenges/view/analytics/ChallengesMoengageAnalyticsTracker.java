@@ -50,7 +50,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         values.put(challenge_joined, is_participated);
         sendEvent(activity, Challenge_Post_Opened, values);
     }
@@ -59,7 +59,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         values.put(challenge_joined, is_participated);
         values.put(channel, channelName);
         sendEvent(activity, Challenge_Post_Shared, values);
@@ -69,7 +69,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         sendEvent(activity, Challenge_Delete_Submission, values);
     }
 
@@ -77,7 +77,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         sendEvent(activity, Challenge_Submit_Start, values);
     }
 
