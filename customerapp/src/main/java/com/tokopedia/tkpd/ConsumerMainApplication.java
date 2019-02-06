@@ -114,7 +114,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
-import io.hansel.hanselsdk.Hansel;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -162,7 +161,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation("Appsflyer", AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation("MoEngage", MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        Hansel.init(this);
         super.onCreate();
         initReact();
 
