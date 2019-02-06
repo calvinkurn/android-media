@@ -13,16 +13,16 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.EmptyChatModel;
-import com.tokopedia.topchat.chatlist.viewmodel.TimeMachineListViewModel;
-import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -39,7 +39,6 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private EmptyModel emptyModel;
     private LoadingMoreModel loadingModel;
     private InboxChatPresenter presenter;
-    private TimeMachineListViewModel timeMachineChatModel;
     private EmptyChatModel emptyChatModel;
     private EmptyChatModel emptySearchModel;
 
@@ -53,7 +52,6 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.loadingModel = new LoadingMoreModel();
         this.presenter = presenter;
         this.listMove = new ArrayList<>();
-        this.timeMachineChatModel = new TimeMachineListViewModel("");
     }
 
     @Override
@@ -132,12 +130,22 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void removeWithMessageId(String messageId) {
         if (list != null && !list.isEmpty() && !TextUtils.isEmpty(messageId)) {
-            for (Visitable visitable : list) {
+//            for (Visitable visitable : list) {
+//                if (visitable instanceof ChatListViewModel
+//                        && messageId.equals(((ChatListViewModel) visitable).getId())) {
+//                    int position = list.indexOf(visitable);
+//                    list.remove(visitable);
+////                    notifyItemRemoved(position);
+//                }
+//            }
+
+            for (Iterator<Visitable> iterator = list.iterator(); iterator.hasNext(); ) {
+                Visitable visitable = iterator.next();
                 if (visitable instanceof ChatListViewModel
                         && messageId.equals(((ChatListViewModel) visitable).getId())) {
                     int position = list.indexOf(visitable);
-                    list.remove(visitable);
-//                    notifyItemRemoved(position);
+                    iterator.remove();
+                    notifyItemRemoved(position);
                 }
             }
         }
@@ -237,7 +245,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void moveToTop(String messageId, String lastReply, WebSocketResponse response, boolean
-            showNotif) {
+            showNotif, boolean isMoveToTop) {
         boolean isNew = true;
         String currentId;
         for (int i = 0; i < list.size(); i++) {
@@ -245,6 +253,11 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 ChatListViewModel temp = (ChatListViewModel) list.get(i);
                 currentId = String.valueOf(temp.getId());
                 if (currentId.equals(messageId)) {
+
+                    if(!isMoveToTop){
+                        break;
+                    }
+
                     if (showNotif) {
                         int unread = temp.getUnreadCounter();
                         unread++;
@@ -284,6 +297,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             temp.setTime(response.getData().getMessage().getTimeStampUnix());
             temp.setName(response.getData().getFrom());
             temp.setRole(response.getData().getFromRole());
+            temp.setLabel(response.getData().getFromRole());
             temp.setImage(response.getData().getImageUri());
             if (this.list.size() == 1 && list.get(0) instanceof EmptyChatModel) {
                 this.list.clear();
@@ -322,8 +336,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                         temp.setTime(String.valueOf(new Date().getTime()));
                         temp.setTyping(false);
                     }
-                    list.remove(i);
-                    list.add(0, temp);
+                    notifyItemChanged(i);
                     break;
                 }
 
@@ -343,24 +356,8 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void showTimeMachine() {
-        if (list.size() == 1
-                && list.get(0) instanceof EmptyChatModel) {
-            ((EmptyChatModel) this.list.get(0)).setHasTimeMachine(true);
-        } else if (list.size() > 0) {
-            this.list.add(timeMachineChatModel);
-            notifyItemInserted(list.size() - 1);
-        }
-    }
-
     public void removeList(List<Pair> originList, List<DeleteChatViewModel> list) {
-        if (this.list.size() == list.size()
-                && this.list.get(1) instanceof TimeMachineListViewModel) {
-            this.list.clear();
-            this.list.add(emptyChatModel);
-            showTimeMachine();
-            notifyDataSetChanged();
-        } else if (this.list.size() == list.size()) {
+        if (this.list.size() == list.size()) {
             this.list.clear();
             this.list.add(emptyChatModel);
             notifyDataSetChanged();

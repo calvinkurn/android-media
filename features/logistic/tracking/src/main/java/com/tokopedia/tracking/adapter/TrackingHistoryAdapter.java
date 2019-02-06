@@ -36,14 +36,15 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
     @Override
     public TrackingHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_trailing_bullet, parent, false);
+                .inflate(R.layout.adapter_tracking_history_view_holder, parent, false);
         return new TrackingHistoryViewHolder(parent.getContext(), view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TrackingHistoryViewHolder holder, int position) {
 
-        holder.title.setText(dateUtil.getFormattedDate(trackingHistoryData.get(position).getTime()));
+        holder.title.setText(dateUtil.getFormattedDate(trackingHistoryData.get(position).getDate()));
+        holder.time.setText(dateUtil.getFormattedTime(trackingHistoryData.get(position).getTime()));
         setTitleColor(holder, position);
 
         holder.comment.setVisibility(View.GONE);
@@ -82,6 +83,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private TextView title;
 
+        private TextView time;
+
         private TextView description;
 
         private ImageView dot;
@@ -96,6 +99,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             this.context = context;
 
             title = itemView.findViewById(R.id.title);
+
+            time = itemView.findViewById(R.id.date);
 
             description = itemView.findViewById(R.id.description);
 

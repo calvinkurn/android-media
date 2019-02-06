@@ -94,6 +94,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
     
     private void initView() {
+        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
         setAdapter();
         if (hasCategoryIdParam()) {
             goToExplore();

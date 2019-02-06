@@ -34,6 +34,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
+import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
@@ -96,8 +97,6 @@ import com.tokopedia.tkpdpdp.ProductDetailUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
-import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
@@ -285,7 +284,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
-        ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SQLoginUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         PaymentFingerprintConstant.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
@@ -308,7 +306,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
-        TopChatUrl.TOPCHAT_JS_API = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
@@ -343,6 +340,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         CMNotificationUrls.CAMPAIGN_MANAGEMENT_DOMAIN = ConsumerAppBaseUrl.CAMPAIGN_MANAGEMENT_DOMAIN;
         Config.TOPADS_BASE_URL = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
+        ChatUrl.Companion.setTOPCHAT(ConsumerAppBaseUrl.CHAT_DOMAIN);
     }
 
 
