@@ -18,12 +18,6 @@ class AddCreditCardActivity : BaseSimpleActivity() {
         fun createIntent(context: Context) : Intent {
             return Intent(context, AddCreditCardActivity::class.java)
         }
-
-        @DeepLink(ApplinkConst.ADD_CREDIT_CARD)
-        @JvmStatic
-        fun createApplinkIntent(context: Context, bundle: Bundle): Intent {
-            return Intent(context, AddCreditCardActivity::class.java)
-        }
     }
 
     object DeeplinkIntent {
