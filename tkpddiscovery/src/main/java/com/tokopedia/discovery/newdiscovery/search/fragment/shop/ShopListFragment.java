@@ -74,6 +74,21 @@ public class ShopListFragment extends SearchSectionFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
+    public enum Spacing
+    {
+        LEFT(4),
+        RIGHT(4),
+        BOTTOM(-4),
+        TOP(0);
+
+        public final int value;
+
+        Spacing(int val)
+        {
+            this.value = val;
+        }
+    }
+
     public static ShopListFragment newInstance(String query) {
         Bundle args = new Bundle();
         args.putString(EXTRA_QUERY, query);
@@ -131,7 +146,12 @@ public class ShopListFragment extends SearchSectionFragment
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
-        recyclerView.addItemDecoration(new ShopListItemDecoration(4,4,-4,0));
+        recyclerView.addItemDecoration(new ShopListItemDecoration(
+                Spacing.LEFT.value,
+                Spacing.RIGHT.value,
+                Spacing.BOTTOM.value,
+                Spacing.TOP.value));
+
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
 
