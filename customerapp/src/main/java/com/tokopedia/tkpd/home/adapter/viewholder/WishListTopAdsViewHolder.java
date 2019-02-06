@@ -36,6 +36,7 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
     private TopAdsCarouselView topAdsCarouselView;
     private UserSession userSession;
     private Context context;
+    private String keyword = "";
 
     public WishListTopAdsViewHolder(View itemView) {
         super(itemView);
@@ -44,12 +45,13 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
         userSession = new UserSession(itemView.getContext());
     }
 
-    public void renderTopAds(TopAdsModel topAdsModel) {
+    public void renderTopAds(TopAdsModel topAdsModel, String query) {
+        this.keyword = query;
         topAdsCarouselView.setAdsItemClickListener(this);
         topAdsCarouselView.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.eventWishlistProductView(context, product, position);
+                TopAdsGtmTracker.eventWishlistProductView(context, product, keyword, position);
             }
         });
         topAdsCarouselView.setData(topAdsModel);
@@ -67,7 +69,7 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         context.startActivity(intent);
-        TopAdsGtmTracker.eventWishlistProductClick(context, product, position);
+        TopAdsGtmTracker.eventWishlistProductClick(context, product, keyword, position);
     }
 
     @Override

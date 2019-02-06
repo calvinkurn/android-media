@@ -384,7 +384,7 @@ public class HotlistFragment extends BrowseSectionFragment
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
                 TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
-                        getHotlistAlias(), product, position);
+                        product, position);
             }
         });
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnScrollListener() {
@@ -547,7 +547,7 @@ public class HotlistFragment extends BrowseSectionFragment
         intent.putExtras(bundle);
         startActivity(intent);
         TopAdsGtmTracker.eventHotlistProductClick(getContext(), getQueryModel().getQueryKey(),
-                getHotlistAlias(), product, position);
+                product, position);
     }
 
     @Override

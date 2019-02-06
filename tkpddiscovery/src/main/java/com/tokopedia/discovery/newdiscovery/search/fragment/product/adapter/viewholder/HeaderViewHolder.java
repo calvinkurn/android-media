@@ -16,10 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -30,9 +28,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
@@ -87,21 +82,20 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             public void onBannerAdsClicked(String applink, CpmData data) {
                 productListener.onBannerAdsClicked(applink);
                 if(applink.contains(SHOP)) {
-                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, "", data, getAdapterPosition());
+                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, getAdapterPosition());
                 } else {
-                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, "", data, getAdapterPosition());
+                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, getAdapterPosition());
                 }
             }
         });
         adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionHeadlineAdsItem(int position, CpmData data) {
-                TopAdsGtmTracker.eventSearchResultPromoShopView(context, "", data, position);
+                TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
             }
 
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.eventSearchResultPromoProductView(context, "", product, position);
             }
         });
     }

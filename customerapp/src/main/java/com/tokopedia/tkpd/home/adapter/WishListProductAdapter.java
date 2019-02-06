@@ -188,8 +188,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
-                TopAdsModel topAdsModel = ((TopAdsWishlistItem) data.get(position)).getTopAdsModel();
-                ((WishListTopAdsViewHolder) viewHolder).renderTopAds(topAdsModel);
+                TopAdsWishlistItem topAdsWishlistItem = (TopAdsWishlistItem) data.get(position);
+                ((WishListTopAdsViewHolder) viewHolder).renderTopAds(topAdsWishlistItem.getTopAdsModel(),
+                        topAdsWishlistItem.getQuery());
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
