@@ -54,16 +54,16 @@ public class TopAdsFilterGroupActivity extends BaseFilterActivity {
         int filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, -1);
         switch (filterStatus){
             case 0:
-                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_ALL);
+                UnifyTracking.eventTopAdsProductGroupsFilter(this,AppEventTracking.EventLabel.GROUP_STATUS_FILTER_ALL);
                 break;
             case 1:
-                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_ACTIVE);
+                UnifyTracking.eventTopAdsProductGroupsFilter(this,AppEventTracking.EventLabel.GROUP_STATUS_FILTER_ACTIVE);
                 break;
             case 2:
-                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_NOT_SEND);
+                UnifyTracking.eventTopAdsProductGroupsFilter(this,AppEventTracking.EventLabel.GROUP_STATUS_FILTER_NOT_SEND);
                 break;
             case 3:
-                UnifyTracking.eventTopAdsProductGroupsFilter(AppEventTracking.EventLabel.GROUP_STATUS_FILTER_INACTIVE);
+                UnifyTracking.eventTopAdsProductGroupsFilter(this,AppEventTracking.EventLabel.GROUP_STATUS_FILTER_INACTIVE);
                 break;
             default:
                 break;

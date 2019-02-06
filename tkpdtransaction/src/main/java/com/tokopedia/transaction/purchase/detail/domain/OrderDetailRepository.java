@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.domain;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.apiservices.replacement.ReplacementActService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
@@ -12,7 +11,7 @@ import com.tokopedia.transaction.network.MyShopOrderActService;
 import com.tokopedia.transaction.network.ProductChangeService;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Func1;
 
 /**

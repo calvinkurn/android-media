@@ -1,13 +1,17 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
+import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationRequestUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -24,10 +28,16 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
         implements FlightCancellationReviewContract.Presenter {
 
     private FlightCancellationRequestUseCase flightCancellationRequestUseCase;
+    private FlightCancellationEstimateRefundUseCase flightCancellationEstimateRefundUseCase;
+    private UserSession userSession;
 
     @Inject
-    public FlightCancellationReviewPresenter(FlightCancellationRequestUseCase flightCancellationRequestUseCase) {
+    public FlightCancellationReviewPresenter(FlightCancellationRequestUseCase flightCancellationRequestUseCase,
+                                             FlightCancellationEstimateRefundUseCase flightCancellationEstimateRefundUseCase,
+                                             UserSession userSession) {
         this.flightCancellationRequestUseCase = flightCancellationRequestUseCase;
+        this.flightCancellationEstimateRefundUseCase = flightCancellationEstimateRefundUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -44,6 +54,13 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
         }
 
         getView().setCancellationWrapperViewModel(flightCancellationWrapperViewModel);
+
+        actionFetchEstimateRefund();
+    }
+
+    @Override
+    public void onRetryFetchEstimate() {
+        actionFetchEstimateRefund();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -54,18 +71,17 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
 
         String reason = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getReason() : null;
+        String reasonId = (viewModel.getCancellationReasonAndAttachment() != null) ?
+                viewModel.getCancellationReasonAndAttachment().getReasonId() : null;
         List<FlightCancellationAttachmentViewModel> attachmentViewModelList = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getAttachments() : null;
-        Long estimatedRefund = (viewModel.getCancellationReasonAndAttachment() != null) ?
-                viewModel.getCancellationReasonAndAttachment().getEstimateRefund() : null;
-
 
         flightCancellationRequestUseCase.execute(
                 flightCancellationRequestUseCase.createRequest(
                         getView().getInvoiceId(),
                         reason,
+                        reasonId,
                         attachmentViewModelList,
-                        estimatedRefund,
                         viewModel.getGetCancellations()
                 ),
                 new Subscriber<CancellationRequestEntity>() {
@@ -76,7 +92,6 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
 
                     @Override
                     public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
                         getView().showCancellationError(throwable);
                         getView().hideLoading();
                     }
@@ -94,6 +109,21 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
         );
     }
 
+    private void setRefundView() {
+        if (isRefundable()) {
+            if (getView().getCancellationWrapperViewModel().getCancellationReasonAndAttachment().isShowEstimateRefund()) {
+                getView().showEstimateValue();
+                getView().hideRefundDetail();
+            } else {
+                getView().hideEstimateValue();
+                getView().showRefundDetail(R.string.flight_cancellation_review_refund_to_email_detail);
+            }
+        } else {
+            getView().hideEstimateValue();
+            getView().showRefundDetail(R.string.flight_cancellation_review_no_refund_detail);
+        }
+    }
+
     private boolean isRefundable() {
         boolean isRefundable = false;
 
@@ -105,5 +135,54 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
         }
 
         return isRefundable;
+    }
+
+    private void actionFetchEstimateRefund() {
+        getView().showLoading();
+
+        FlightCancellationWrapperViewModel viewModel = getView().getCancellationWrapperViewModel();
+
+        String reason = (viewModel.getCancellationReasonAndAttachment() != null) ?
+                viewModel.getCancellationReasonAndAttachment().getReason() : null;
+        String reasonId = (viewModel.getCancellationReasonAndAttachment() != null) ?
+                viewModel.getCancellationReasonAndAttachment().getReasonId() : null;
+
+        flightCancellationEstimateRefundUseCase.execute(
+                flightCancellationEstimateRefundUseCase.createRequestParam(
+                        getView().getCancellationWrapperViewModel().getInvoice(),
+                        userSession.getUserId(),
+                        getView().getCancellationWrapperViewModel().getGetCancellations(),
+                        reason,
+                        Integer.parseInt(reasonId)
+                ),
+                new Subscriber<EstimateRefundResultEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached() && !isUnsubscribed()) {
+                            getView().hideLoading();
+                            getView().showErrorFetchEstimateRefund(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
+                        }
+                    }
+
+                    @Override
+                    public void onNext(EstimateRefundResultEntity estimateRefundResultEntity) {
+                        getView().hideLoading();
+                        getView().getCancellationWrapperViewModel().getCancellationReasonAndAttachment()
+                                .setEstimateRefund(estimateRefundResultEntity.getAttribute().getValueNumeric());
+                        getView().getCancellationWrapperViewModel().getCancellationReasonAndAttachment()
+                                .setEstimateFmt(estimateRefundResultEntity.getAttribute().getValue());
+                        getView().getCancellationWrapperViewModel().getCancellationReasonAndAttachment()
+                                .setShowEstimateRefund(estimateRefundResultEntity.getAttribute().isShowEstimate());
+                        getView().renderView();
+
+                        setRefundView();
+                    }
+                }
+        );
     }
 }

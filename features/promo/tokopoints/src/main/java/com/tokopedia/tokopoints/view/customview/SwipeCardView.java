@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,9 +22,10 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-public class SwipeCardView extends CardView implements View.OnTouchListener {
+public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
     private final static int MIN_SWIPE_AMOUNT_PX = 10;
     private final static int CONTAINER_TEXT = 0;
@@ -72,6 +74,12 @@ public class SwipeCardView extends CardView implements View.OnTouchListener {
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(getContext(), getResources().getString(R.string.tp_mes_copy_code), Toast.LENGTH_LONG).show();
             }
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                    AnalyticsTrackerUtil.ActionKeys.COPY_CODE,
+                    mTextCoupon.getText().toString());
         });
     }
 

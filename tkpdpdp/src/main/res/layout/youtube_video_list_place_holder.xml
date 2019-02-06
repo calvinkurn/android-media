@@ -1,54 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_shadow_bottom"
     android:id="@+id/ll_wrapper"
     android:orientation="vertical"
+    tools:visibility="visible"
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_10">
+    android:padding="@dimen/pdp_content_padding">
 
     <TextView
-        android:id="@+id/desc"
+        android:id="@+id/title_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
-        android:textColor="@color/black_70"
+        android:paddingBottom="@dimen/dp_8"
+        android:text="@string/title_desc"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/pdp_title_text_size"
         android:textStyle="bold" />
 
     <com.tokopedia.tkpdpdp.customview.ProductVideoHorizontalScroll
+        android:visibility="gone"
+        tools:visibility="visible"
         android:id="@+id/product_video_horizontal_scroll"
+        android:transitionName="@string/transition_video_horizontal_scroll"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_16"
+        tools:layout_height="100dp"
+        tools:layout_width="match_parent" />
 
-    <LinearLayout
-        android:id="@+id/tv_desc"
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_10">
+        android:layout_marginTop="@dimen/dp_8"
+        android:autoLink="all"
+        android:ellipsize="end"
+        android:longClickable="false"
+        android:maxLines="@integer/default_description_lines"
+        tools:text="Descriptions"
+        android:textColor="@color/pdp_text_color"
+        android:transitionName="@string/transition_description"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/fonts"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.tokopedia.tkpdpdp.customview.DescriptionTextView
-                android:id="@+id/tv_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Descriptions"
-                android:textColor="@color/black_54"
-                android:textIsSelectable="false"
-                android:longClickable="false"
-                android:textSize="@dimen/fontm"
-                android:autoLink="all" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/label_see_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="8dp"
+        android:text="@string/label_see_details"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/fonts"/>
 
 </LinearLayout>

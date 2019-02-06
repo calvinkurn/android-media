@@ -15,7 +15,6 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.MySubmissionsListAdapter;
 import com.tokopedia.challenges.view.adapter.MySubmissionsViewHolder;
-import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
@@ -40,7 +39,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private Boolean isFirst = true;
     private LinearLayoutManager layoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
-
 
     @Override
     protected void initInjector() {
@@ -123,7 +121,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         EmptyStateViewHelper.showEmptyState(
                 getActivity(), getView(),
                 getString(R.string.ch_oops),
-                getString(R.string.ch_not_participated_error_msg) ,
+                getString(R.string.ch_not_participated_error_msg),
                 getString(R.string.ch_try_again), R.drawable.empty_mysubmission_active,
                 getMySubmissionsRetryListener()
         );

@@ -1,33 +1,36 @@
 <resources>
     <string name="title_profile">Profile</string>
     <string name="title_profile_dashboard">Dashboard</string>
-    <string name="profile_add_image">Tambah Gambar</string>
+    <string name="profile_add_image">Tambah Foto</string>
     <string name="profile_go_to_product">Lihat Produk</string>
     <string name="profile_followers_number" formatted="false">%s Followers</string>
     <string name="profile_following_number" formatted="false">%s Following</string>
     <string name="profile_followers_and_following" formatted="false">%s • %s</string>
     <string name="profile_follow">Follow</string>
     <string name="profile_following">Following</string>
-    <string name="profile_rec_qutoa" formatted="false">Sisa jatah rekomendasi: %s</string>
-    <string name="profile_add_rec">Tambah Rekomendasi</string>
-    <string name="profile_share_profile">Bagikan Profile Ini</string>
-    <string name="profile_share_text">Lihat profil ini, deh! Ada produk rekomendasi buatmu, lho: %s</string>
-    <string name="profile_add_recommendation">Tambah Rekomendasimu dan Dapatkan Komisinya!</string>
-    <string name="profile_showcase_title">Bagikan Profil Untuk Raih Komisi</string>
-    <string name="profile_showcase_description">Ayo bagikan dan ajak teman untuk beli rekomendasimu!</string>
-    <string name="profile_no_content">Konten Yang Anda Cari Tidak Tersedia</string>
-    <string name="profile_see_others"> Lihat Profile Lainnya</string>
-    <string name="profile_recommend_to_friends">Rekomendasikan Produk ke Teman, Sekarang Bisa Dapat Komisi!</string>
-    <string name="profile_find_out">Cari Tahu Caranya</string>
+    <string name="profile_rec_qutoa" formatted="false">Sisa jatah kurasi: %s</string>
+    <string name="profile_add_rec">Tambah Kurasi</string>
+    <string name="profile_see_by_me_prouct">Lihat Produk By Me</string>
+    <string name="profile_share_profile">Bagikan Profil</string>
+    <string name="profile_share_this_profile">Bagikan Profile Ini</string>
+    <string name="profile_share_title">Bagikan Kurasimu untuk raih Komisi!</string>
+    <string name="profile_share_text">Lihat profil ini, deh! Ada produk pilihan buatmu, lho: %s</string>
+    <string name="profile_add_recommendation">Mulai Kurasi Produk Kesukaanmu dan Raih Komisinya!</string>
+    <string name="profile_showcase_title">Bagikan Profilmu, Yuk!</string>
+    <string name="profile_showcase_description">Raih Komisi tiap produk pilihanmu dibeli!</string>
+    <string name="profile_no_content">Oops, Belum Ada Kurasi di Profil Ini</string>
+    <string name="profile_see_others"> Lihat Kurasi Lain</string>
+    <string name="profile_recommend_to_friends">Kamu Suka Produk Apa? Bagikan Lewat By Me, Yuk!</string>
+    <string name="profile_find_out">Coba By Me</string>
     <string name="follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>
     <string name="follow_success_check_now">Cek Sekarang</string>
-    <string name="profile_recommend_success">Rekomendasi berhasil ditambahkan</string>
-    <string name="profile_edit_success">Rekomendasi berhasil diperbarui</string>
+    <string name="profile_recommend_success">Kurasi berhasil ditambahkan</string>
+    <string name="profile_edit_success">Kurasi berhasil diperbarui</string>
     <string name="profile_add_more">Tambah Lagi</string>
-    <string name="profile_delete_post">Hapus Rekomendasi</string>
-    <string name="profile_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari rekomendasi ini</string>
-    <string name="profile_post_deleted">Rekomendasi berhasil dihapus</string>
-    <string name="profile_recommend_get_commission">Rekomendasikan Produk ke Teman, Bisa Dapat Komisi!</string>
+    <string name="profile_delete_post">Hapus Kurasi</string>
+    <string name="profile_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
+    <string name="profile_post_deleted">Kurasi berhasil dihapus</string>
+    <string name="profile_recommend_get_commission">Bagikan Produk kesukaanmu, Sekarang Bisa Dapat Komisi!</string>
     <string name="profile_tokopedia_app">Segera coba fiturnya di aplikasi Tokopedia versi terbaru.</string>
     <string name="profile_try_now">Coba Sekarang</string>
     <string name="profile_surprise">Ssst, Akan Ada Kejutan di Profilmu!</string>

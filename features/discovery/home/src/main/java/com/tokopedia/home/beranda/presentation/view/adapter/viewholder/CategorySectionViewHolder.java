@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -21,8 +21,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridS
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
-
-import butterknife.ButterKnife;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -39,15 +37,12 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
     public CategorySectionViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         this.listener = listener;
-        adapter = new SectionItemAdapter(listener);
+        adapter = new SectionItemAdapter(itemView.getContext(), listener);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                itemView.getResources().getDimensionPixelSize(R.dimen.home_card_category_item_margin), true));
     }
 
     @Override
@@ -57,17 +52,19 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
     public static class SectionItemAdapter extends RecyclerView.Adapter<SectionItemViewHolder> {
 
+        private final Context context;
         private CategorySectionViewModel sectionViewModel;
         private HomeCategoryListener listener;
 
-        public SectionItemAdapter(HomeCategoryListener listener) {
+        public SectionItemAdapter(Context context, HomeCategoryListener listener) {
+            this.context = context;
             this.listener = listener;
         }
 
         public void setSectionViewModel(CategorySectionViewModel sectionViewModel) {
             this.sectionViewModel = sectionViewModel;
             notifyDataSetChanged();
-            HomeTrackingUtils.homeUsedCaseImpression(sectionViewModel.getSectionList());
+            HomeTrackingUtils.homeUsedCaseImpression(context, sectionViewModel.getSectionList());
         }
 
         @Override
@@ -82,21 +79,22 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    eventClickUseCase(sectionViewModel.getSectionList().get(position), position);
+                    eventClickUseCase(view.getContext(), sectionViewModel.getSectionList().get(position), position);
                     listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.getSectionList().get(position)));
 
                 }
             });
         }
 
-        private void eventClickUseCase(LayoutSections layoutSections, int position) {
+        private void eventClickUseCase(Context context, LayoutSections layoutSections, int position) {
             if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
-                HomePageTracking.eventClickHomeUseCase(layoutSections.getTitle());
+                HomePageTracking.eventClickHomeUseCase(context, layoutSections.getTitle());
             } else {
-                HomePageTracking.eventClickDynamicIcons(layoutSections.getTitle());
+                HomePageTracking.eventClickDynamicIcons(context, layoutSections.getTitle());
 
             }
-            HomeTrackingUtils.homeUsedCaseClick(layoutSections.getTitle(), position + 1, layoutSections.getApplink());
+            HomeTrackingUtils.homeUsedCaseClick(context,
+                    layoutSections.getTitle(), position + 1, layoutSections.getApplink());
 
         }
 

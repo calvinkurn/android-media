@@ -22,9 +22,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
-    implementation project(rootProject.ext.features.topAdsManagementCommon)
-    implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -33,12 +30,21 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.seller)
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.multiDex
@@ -67,6 +73,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../../../publish_local.gradle'

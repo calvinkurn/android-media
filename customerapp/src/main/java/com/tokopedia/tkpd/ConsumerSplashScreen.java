@@ -1,14 +1,17 @@
 package com.tokopedia.tkpd;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -16,6 +19,8 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.firebase.perf.metrics.Trace;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -29,14 +34,24 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class ConsumerSplashScreen extends SplashScreen {
 
-    public static final String WARM_TRACE = "warm_start";
-    public static final String SPLASH_TRACE = "splash_start";
+    public static final String WARM_TRACE = "gl_warm_start";
+    public static final String SPLASH_TRACE = "gl_splash_screen";
 
     private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
 
-    private Trace warmTrace;
-    private Trace splashTrace;
+    private PerformanceMonitoring warmTrace;
+    private PerformanceMonitoring splashTrace;
+
+    @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        Intent destination;
+        destination = new Intent(context, ConsumerSplashScreen.class)
+                .setData(uri.build())
+                .putExtras(extras);
+        return destination;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +60,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
         super.onCreate(savedInstanceState);
 
-        mainLayout = findViewById(R.id.layout_splash);
         renderDynamicImage();
 
         finishWarmStart();
@@ -60,23 +74,19 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void startWarmStart() {
-        warmTrace = TrackingUtils.startTrace(WARM_TRACE);
-    }
-
-    private void startSplashTrace() {
-        splashTrace = TrackingUtils.startTrace(SPLASH_TRACE);
+        warmTrace = PerformanceMonitoring.start(WARM_TRACE);
     }
 
     private void finishWarmStart() {
-        if (warmTrace != null) {
-            warmTrace.stop();
-        }
+        warmTrace.stopTrace();
+    }
+
+    private void startSplashTrace() {
+        splashTrace = PerformanceMonitoring.start(SPLASH_TRACE);
     }
 
     private void finishSplashTrace() {
-        if (splashTrace != null) {
-            splashTrace.stop();
-        }
+        splashTrace.stopTrace();
     }
 
     private void renderDynamicImage() {
@@ -86,7 +96,8 @@ public class ConsumerSplashScreen extends SplashScreen {
         if (TextUtils.isEmpty(imageUrl)) {
             return;
         }
-
+        setContentView(R.layout.activity_splash);
+        mainLayout = findViewById(R.id.layout_splash);
         Glide.with(this)
                 .load(imageUrl)
                 .asBitmap()

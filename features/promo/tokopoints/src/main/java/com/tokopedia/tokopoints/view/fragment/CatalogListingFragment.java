@@ -14,6 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -43,6 +46,7 @@ import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
+import com.tokopedia.tokopoints.view.model.CatalogFilterPointRange;
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
@@ -56,7 +60,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class CatalogListingFragment extends BaseDaggerFragment implements CatalogListingContract.View, View.OnClickListener {
+public class CatalogListingFragment extends BaseDaggerFragment implements CatalogListingContract.View, View.OnClickListener, FiltersBottomSheet.OnSaveFilterCallback {
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
@@ -82,6 +86,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
     private boolean isPointsAvailable = false;
+    private FiltersBottomSheet filtersBottomSheet;
+    private MenuItem menuItemFilter;
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CatalogListingFragment();
@@ -100,7 +106,32 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         initInjector();
         View view = inflater.inflate(R.layout.tp_fragment_catalog_listing, container, false);
         initViews(view);
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.tp_menu_catalog_listing, menu);
+        menuItemFilter = menu.findItem(R.id.filter_menu_item);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.filter_menu_item) {
+            if (filtersBottomSheet != null) {
+                filtersBottomSheet.show(getChildFragmentManager(), "Filters");
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FILTER,
+                        "");
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -144,12 +175,13 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     @Override
-    public void refreshTab(int categoryId, int subCategoryId) {
+    public void refreshTab() {
         CatalogListItemFragment fragment = (CatalogListItemFragment) mViewPagerAdapter.getRegisteredFragment(mPagerSortType.getCurrentItem());
         if (fragment != null
                 && fragment.isAdded()) {
             if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
-                fragment.getPresenter().getCatalog(categoryId, subCategoryId);
+                fragment.getPresenter().setPointRange(mPresenter.getPointRangeId());
+                fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId(), true);
             }
         }
     }
@@ -212,6 +244,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     public void onSuccessFilter(CatalogFilterBase filters) {
         hideLoader();
 
+        //Setting up filters
+        setUpFilters(filters.getPointRanges());
         //Setting up subcategories types tabs
         if (filters == null
                 || filters.getCategories() == null
@@ -219,7 +253,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
-            mPagerSortType.postDelayed(() -> refreshTab(0, 0), CommonConstant.TAB_SETUP_DELAY_MS);
+            //TODO please replace with
+            mPresenter.setCurrentCategoryId(0);
+            mPresenter.setCurrentSubCategoryId(0);
+            mPagerSortType.postDelayed(() -> refreshTab(), CommonConstant.TAB_SETUP_DELAY_MS);
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
                 && (filters.getCategories().get(0).isHideSubCategory() || filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
@@ -233,7 +270,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             } else {
                 updateToolbarTitle(filters.getCategories().get(0).getName());
             }
-            mPagerSortType.postDelayed(() -> refreshTab(filters.getCategories().get(0).getId(), 0), CommonConstant.TAB_SETUP_DELAY_MS);
+            mPresenter.setCurrentCategoryId(filters.getCategories().get(0).getId());
+            mPresenter.setCurrentSubCategoryId(0);
+            mPagerSortType.postDelayed(() -> refreshTab(), CommonConstant.TAB_SETUP_DELAY_MS);
         } else if (filters.getCategories().get(0) != null
                 && filters.getCategories().get(0).getSubCategory() != null) {
             mTabSortType.setVisibility(View.VISIBLE);
@@ -252,17 +291,19 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 public void onPageSelected(int position) {
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                             "click " + filters.getCategories().get(0).getSubCategory().get(position).getName(),
-                            filters.getCategories().get(0).getSubCategory().get(position).getName());
+                            "");
 
                     CatalogListItemFragment fragment = (CatalogListItemFragment) mViewPagerAdapter.getRegisteredFragment(position);
 
                     if (fragment != null
                             && fragment.isAdded()) {
                         if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
-                            fragment.getPresenter().getCatalog(filters.getCategories().get(0).getId(),
-                                    filters.getCategories().get(0).getSubCategory().get(position).getId());
+                            mPresenter.setCurrentCategoryId(filters.getCategories().get(0).getId());
+                            mPresenter.setCurrentSubCategoryId(filters.getCategories().get(0).getSubCategory().get(position).getId());
+                            fragment.getPresenter().setPointRange(mPresenter.getPointRangeId());
+                            fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId(), true);
                         }
                     }
 
@@ -288,8 +329,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mPagerSortType.postDelayed(() -> {
                 int selectedTabIndex = getSelectedCategoryIndex(filters.getCategories().get(0).getSubCategory());
                 if (selectedTabIndex == 0) { // Special handling for zeroth index
-                    refreshTab(filters.getCategories().get(0).getId(),
-                            filters.getCategories().get(0).getSubCategory().get(0).getId());
+                    mPresenter.setCurrentCategoryId(filters.getCategories().get(0).getId());
+                    mPresenter.setCurrentSubCategoryId(filters.getCategories().get(0).getSubCategory().get(0).getId());
+                    refreshTab();
 
                     try {
                         if (filters.getCategories().get(0).getSubCategory().get(0).getTimeRemainingSeconds() > 0) {
@@ -298,7 +340,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                         } else {
                             mContainerFlashTimer.setVisibility(View.GONE);
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 } else {
@@ -306,6 +348,21 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 }
             }, CommonConstant.TAB_SETUP_DELAY_MS);
         }
+    }
+
+    private void setUpFilters(List<CatalogFilterPointRange> pointRanges) {
+        if (pointRanges != null && pointRanges.size() != 0 && isSeeAllPage()) {
+            if (menuItemFilter != null)
+                menuItemFilter.setVisible(true);
+            filtersBottomSheet = new FiltersBottomSheet();
+            pointRanges.get(0).setSelected(true);       //set Default selected
+            mPresenter.setPointRangeId(pointRanges.get(0).getId());        //set Default Id
+            filtersBottomSheet.setData(pointRanges, this);
+        } else {
+            if (menuItemFilter != null)
+                menuItemFilter.setVisible(false);
+        }
+
     }
 
 
@@ -317,6 +374,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void gotoMyCoupons() {
         startActivity(MyCouponListingActivity.getCallingIntent(getContext()));
+
+        AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_SELL_ALL_COUPON,
+                "");
     }
 
     @Override
@@ -379,10 +442,16 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             }
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(source.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
         }
 
     }
@@ -435,7 +504,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_up);
+                    R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
             bottomViewMembership.setVisibility(View.VISIBLE);
         }
@@ -447,7 +516,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_large));
             Animation slideDown = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_down);
+                    R.anim.tp_bottom_down);
             bottomViewMembership.startAnimation(slideDown);
             bottomViewMembership.setVisibility(View.GONE);
         }
@@ -475,6 +544,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails) {
         if (tokenDetail != null) {
             try {
+                if (tokenDetail.isOffFlag()) {
+                    return;
+                }
+
                 containerEgg.setVisibility(View.VISIBLE);
                 TextView textCount = getView().findViewById(R.id.text_token_count);
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
@@ -482,7 +555,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
                 this.mLobDetails = lobDetails;
-                textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
+                textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
                 ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
                 if (mSumToken == 0) {
@@ -571,5 +644,22 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         }
 
         return counter;
+    }
+
+    @Override
+    public void onSaveFilter(CatalogFilterPointRange filter, int selectedPosition) {
+        if (filter != null) {
+            if (menuItemFilter != null) {
+                if (selectedPosition == 0) {
+                    menuItemFilter.setIcon(R.drawable.ic_filter_button_unselected);
+                } else {
+                    menuItemFilter.setIcon(R.drawable.ic_filter_button_selected);
+                }
+            }
+            if (mPresenter.getPointRangeId() != filter.getId()) {
+                mPresenter.setPointRangeId(filter.getId());
+                refreshTab();
+            }
+        }
     }
 }

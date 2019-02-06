@@ -39,7 +39,6 @@ import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
 import com.tokopedia.posapp.auth.login.view.PosLogin;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 
 import java.util.ArrayList;

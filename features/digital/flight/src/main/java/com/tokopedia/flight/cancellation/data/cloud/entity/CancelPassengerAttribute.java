@@ -12,7 +12,10 @@ import java.util.List;
 public class CancelPassengerAttribute {
     @SerializedName("passengers")
     @Expose
-    List<Passenger> passengers;
+    private List<Passenger> passengers;
+    @SerializedName("cancellation_reason")
+    @Expose
+    private List<Reason> reasons;
 
     public List<Passenger> getPassengers() {
         return passengers;
@@ -21,4 +24,13 @@ public class CancelPassengerAttribute {
     public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
+
+    public List<Reason> getReasons() {
+        return reasons;
+    }
+
+    public void setReasons(List<Reason> reasons) {
+        this.reasons = reasons;
+    }
+
 }

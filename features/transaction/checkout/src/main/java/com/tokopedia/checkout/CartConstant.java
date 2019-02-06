@@ -7,4 +7,5 @@ public class CartConstant {
     public static final String IS_HAS_CART = "IS_HAS_CART";
     public static final String CART = "CART";
     public static final String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
+    public static final String TERM_AND_CONDITION_URL = "https://www.tokopedia.com/asuransi/purchase-protection/syarat-dan-ketentuan/";
 }

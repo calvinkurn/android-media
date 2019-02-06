@@ -45,6 +45,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
 import com.tokopedia.tokopoints.view.util.TabUtil;
+import com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -840,7 +841,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         CouponCatalogInfoPagerAdapter adapter = new CouponCatalogInfoPagerAdapter(getActivityContext(), info, tnc);
-        ViewPager pager = getView().findViewById(R.id.view_pager_info);
+        WrapContentHeightViewPager pager = getView().findViewById(R.id.view_pager_info);
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -873,6 +874,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         TabLayout tabs = getView().findViewById(R.id.tab_layout_info);
         pager.setAdapter(adapter);
+        pager.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
 

@@ -17,7 +17,7 @@ import com.tokopedia.feedplus.R;
 
 public class TopAdsInfoBottomSheet {
 
-    public static String ADS_URL = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
+    public static String ADS_URL = "https://seller.tokopedia.com/edu/about-topads/iklan/?source=tooltip&medium=android";
 
     public static final String TAG = "TAIBS";
     private BottomSheetDialog dialog;

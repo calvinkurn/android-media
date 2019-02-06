@@ -16,31 +16,10 @@ public class AutoApplyData implements Parcelable {
     private String titleDescription;
     private String messageSuccess;
     private int promoId;
+    private String state;
 
     public AutoApplyData() {
     }
-
-    protected AutoApplyData(Parcel in) {
-        success = in.readByte() != 0;
-        code = in.readString();
-        isCoupon = in.readInt();
-        discountAmount = in.readInt();
-        titleDescription = in.readString();
-        messageSuccess = in.readString();
-        promoId = in.readInt();
-    }
-
-    public static final Creator<AutoApplyData> CREATOR = new Creator<AutoApplyData>() {
-        @Override
-        public AutoApplyData createFromParcel(Parcel in) {
-            return new AutoApplyData(in);
-        }
-
-        @Override
-        public AutoApplyData[] newArray(int size) {
-            return new AutoApplyData[size];
-        }
-    };
 
     public boolean isSuccess() {
         return success;
@@ -98,19 +77,51 @@ public class AutoApplyData implements Parcelable {
         this.promoId = promoId;
     }
 
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getState() {
+        return state;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeByte((byte) (success ? 1 : 0));
-        parcel.writeString(code);
-        parcel.writeInt(isCoupon);
-        parcel.writeInt(discountAmount);
-        parcel.writeString(titleDescription);
-        parcel.writeString(messageSuccess);
-        parcel.writeInt(promoId);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.success ? (byte) 1 : (byte) 0);
+        dest.writeString(this.code);
+        dest.writeInt(this.isCoupon);
+        dest.writeInt(this.discountAmount);
+        dest.writeString(this.titleDescription);
+        dest.writeString(this.messageSuccess);
+        dest.writeInt(this.promoId);
+        dest.writeString(this.state);
     }
+
+    protected AutoApplyData(Parcel in) {
+        this.success = in.readByte() != 0;
+        this.code = in.readString();
+        this.isCoupon = in.readInt();
+        this.discountAmount = in.readInt();
+        this.titleDescription = in.readString();
+        this.messageSuccess = in.readString();
+        this.promoId = in.readInt();
+        this.state = in.readString();
+    }
+
+    public static final Creator<AutoApplyData> CREATOR = new Creator<AutoApplyData>() {
+        @Override
+        public AutoApplyData createFromParcel(Parcel source) {
+            return new AutoApplyData(source);
+        }
+
+        @Override
+        public AutoApplyData[] newArray(int size) {
+            return new AutoApplyData[size];
+        }
+    };
 }

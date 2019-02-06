@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class CatalogFilterPointRange {
@@ -20,6 +21,9 @@ public class CatalogFilterPointRange {
 
     @SerializedName("text")
     private String text;
+
+    @Expose(serialize = false, deserialize = false)
+    private boolean isSelected = false;
 
     public int getId() {
         return id;
@@ -67,6 +71,14 @@ public class CatalogFilterPointRange {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     @Override

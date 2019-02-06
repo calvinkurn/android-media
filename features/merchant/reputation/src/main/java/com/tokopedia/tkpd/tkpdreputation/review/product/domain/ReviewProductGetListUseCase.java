@@ -30,6 +30,10 @@ public class ReviewProductGetListUseCase extends UseCase<DataResponseReviewProdu
     public static final String RATING = "rating";
     public static final String DEFAULT_PER_PAGE = "10";
     public static final String USER_ID = "user_id";
+    public static final String WITH_ATTACHMENT = "with_attachment";
+    public static final String WITH_ATTACHMENT_IMAGE_VALUE = "1";
+    public static final String DEFAULT_NO_ATTACHMENT = "0";
+
     private final ReputationRepository reputationRepository;
     private GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase;
 
@@ -46,7 +50,8 @@ public class ReviewProductGetListUseCase extends UseCase<DataResponseReviewProdu
                 requestParams.getString(PRODUCT_ID, ""),
                 requestParams.getString(PAGE, ""),
                 requestParams.getString(PER_PAGE, ""),
-                requestParams.getString(RATING, "")
+                requestParams.getString(RATING, ""),
+                requestParams.getString(WITH_ATTACHMENT, DEFAULT_NO_ATTACHMENT)
                 )
                 .flatMap(new Func1<DataResponseReviewProduct, Observable<DataResponseReviewProduct>>() {
                     @Override
@@ -96,6 +101,11 @@ public class ReviewProductGetListUseCase extends UseCase<DataResponseReviewProdu
         requestParams.putString(PER_PAGE, DEFAULT_PER_PAGE);
         requestParams.putString(RATING, rating);
         requestParams.putString(USER_ID, userId);
+        return requestParams;
+    }
+
+    public RequestParams withPhotoParams(RequestParams requestParams){
+        requestParams.putString(WITH_ATTACHMENT, WITH_ATTACHMENT_IMAGE_VALUE);
         return requestParams;
     }
 }

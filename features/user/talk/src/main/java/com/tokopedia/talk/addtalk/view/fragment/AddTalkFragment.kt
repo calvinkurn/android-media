@@ -37,6 +37,9 @@ class AddTalkFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: AddTalkPresenter
 
+    @Inject
+    lateinit var analytics: TalkAnalytics
+
     lateinit var adapter: QuickReplyAdapter
 
     var productId: String = ""
@@ -56,6 +59,13 @@ class AddTalkFragment : BaseDaggerFragment(),
 
     override fun getScreenName(): String {
         return TalkAnalytics.SCREEN_NAME_ADD_TALK
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            analytics.sendScreen(this, screenName)
+        }
     }
 
     companion object {
@@ -113,7 +123,8 @@ class AddTalkFragment : BaseDaggerFragment(),
         if (throwable is MessageErrorException) {
             ToasterError.make(view, throwable.message, Snackbar.LENGTH_LONG).show()
         } else {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable) ?: "", Snackbar.LENGTH_LONG).show()
+            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable)
+                    ?: "", Snackbar.LENGTH_LONG).show()
         }
 
     }
@@ -130,9 +141,9 @@ class AddTalkFragment : BaseDaggerFragment(),
         KeyboardHandler.hideSoftKeyboard(activity)
         super.onDestroyView()
     }
-                
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-    }            
+    }
 }

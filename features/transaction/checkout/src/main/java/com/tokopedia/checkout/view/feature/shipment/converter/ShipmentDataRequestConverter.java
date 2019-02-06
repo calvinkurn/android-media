@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view.feature.shipment.converter;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -179,6 +179,7 @@ public class ShipmentDataRequestConverter {
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
         return new ProductDataCheckoutRequest.Builder()
                 .productId(cartItem.getProductId())
+                .purchaseProtection(cartItem.isProtectionOptIn())
                 .productName(cartItem.getAnalyticsProductCheckoutData().getProductName())
                 .productPrice(cartItem.getAnalyticsProductCheckoutData().getProductPrice())
                 .productBrand(cartItem.getAnalyticsProductCheckoutData().getProductBrand())
@@ -191,6 +192,7 @@ public class ShipmentDataRequestConverter {
                 .productCategoryId(cartItem.getAnalyticsProductCheckoutData().getProductCategoryId())
                 .productListName(cartItem.getAnalyticsProductCheckoutData().getProductListName())
                 .productAttribution(cartItem.getAnalyticsProductCheckoutData().getProductAttribution())
+                .cartId(cartItem.getCartId())
                 .build();
     }
 

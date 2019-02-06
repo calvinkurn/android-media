@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.tkpdpdp.customview.SquareCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/dp_4"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_0">
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        tools:src="@color/accent"
+        android:id="@+id/review_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ImageView>
+</com.tokopedia.tkpdpdp.customview.SquareCardView>

@@ -39,7 +39,7 @@ public interface CatalogListingContract {
 
         Resources getResources();
 
-        void refreshTab(int categoryId, int subCategoryId);
+        void refreshTab();
 
         boolean isAddedView();
 
@@ -54,5 +54,17 @@ public interface CatalogListingContract {
         void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire);
 
         void getPointData();
+
+        void setPointRangeId(int id);
+
+        int getPointRangeId();
+
+        void setCurrentCategoryId(int id);
+
+        int getCurrentCategoryId();
+
+        void setCurrentSubCategoryId(int id);
+
+        int getCurrentSubCategoryId();
     }
 }

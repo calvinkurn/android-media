@@ -27,6 +27,7 @@
     <string name="default_request_error_null_data">Data Kosong. Mohon ulangi beberapa saat lagi</string>
     <string name="default_request_error_unknown_short">Terjadi kesalahan</string>
     <string name="msg_no_connection_trouble">Terjadi Kendala pada Koneksi Internet.</string>
+    <string name="cs_notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
 
     <string name="error_no_connection2">Mohon periksa koneksi internet Anda</string>
     <string name="close">Tutup</string>
@@ -49,6 +50,7 @@
     <string name="appupdate_update">Update</string>
     <string name="appupdate_later">Nanti</string>
     <string name="appupdate_close">Tutup</string>
+    <string name="retry_label">Ulangi</string>
 
     <!-- Permission Util -->
     <string name="dialog_cancel">BATAL</string>
@@ -61,6 +63,9 @@
     <string name="permission_accounts">Akun</string>
     <string name="permission_phone">Telepon</string>
 
+    <string name="need_permission">Aplikasi ini membutuhkan izin untuk mengakses %s.
+        Perbolehkan?</string>
+
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
     <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
     <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
@@ -71,6 +76,7 @@
     <string name="need_permission_send_SMS">Aplikasi ini membutuhkan izin mengirim SMS. Perbolehkan?</string>
     <string name="need_permission_Phone">need to add message for USSD call</string>
 
+    <string name="permission_denied">Anda tidak memberikan izin akses untuk %s.</string>
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
     <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
@@ -81,6 +87,9 @@
     <string name="permission_sms_denied">Anda tidak memberikan izin akses untuk membaca sms.</string>
     <string name="permission_send_sms_denied">Anda tidak memberikan izin akses untuk mengirim sms.</string>
     <string name="permission_phone_denied">Anda tidak memberikan izin akses untuk telepon.</string>
+
+    <string name="permission_neverask">Anda tidak memberikan izin akses untuk %s. Anda bisa
+        memberikan izin melalui Pengaturan.</string>
 
 
     <string name="permission_camera_neverask">Anda tidak memberikan izin akses untuk Kamera. Anda bisa memberikan izin melalui Pengaturan.</string>

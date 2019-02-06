@@ -23,7 +23,9 @@
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
+    <string name="title_kyc_setting">Dokumen Data Diri</string>
     <string name="title_address_setting">Daftar Alamat</string>
+    <string name="title_sampai_project">Tokopedia Corner</string>
     <string name="screentitle_account_setting">Atur Akun</string>
     <string name="title_shop_info_setting">Informasi</string>
     <string name="title_shop_etalase_setting">Etalase</string>
@@ -125,6 +127,7 @@
     <string name="title_menu_reksadana">Reksa Dana</string>
     <string name="title_menu_event">Event</string>
     <string name="title_menu_gold">Emas</string>
+    <string name="title_menu_gift_card">Gift Card</string>
     <string name="title_menu_zakat">Zakat</string>
     <string name="title_menu_donation">Donasi</string>
     <string name="title_menu_show_all">Lihat\nSemua</string>
@@ -169,7 +172,6 @@
         <b>Menguntungkan</b>.</string>
     <string name="top_features">Top Features</string>
     <string name="topads_desc">Media iklan Produk dan Toko</string>
-    <string name="gold_merchant">Gold Merchant</string>
     <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
     <string name="seller_center">Seller Center</string>
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
@@ -182,5 +184,8 @@
 
     <string name="title_menu_challenge">Tokopedia Challenge</string>
     <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
+    <string name="title_menu_affiliate">Raih Komisi di By Me</string>
+    <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
+    <string name="curate_product_by_me">Kurasi Produk di By Me</string>
 
 </resources>

@@ -18,17 +18,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.adapter.NumberListAdapter;
-import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @author rizkyfadillah on 10/4/2017.
@@ -37,12 +34,9 @@ import butterknife.BindView;
 public class DigitalSearchNumberFragment extends BasePresenterFragment
         implements NumberListAdapter.OnClientNumberClickListener {
 
-    @BindView(R2.id.recyclerview_number_list)
-    RecyclerView rvNumberList;
-    @BindView(R2.id.edittext_search_number)
-    EditText editTextSearchNumber;
-    @BindView(R2.id.btn_clear_number)
-    Button btnClearNumber;
+    private RecyclerView rvNumberList;
+    private EditText editTextSearchNumber;
+    private Button btnClearNumber;
 
     private NumberListAdapter numberListAdapter;
 
@@ -124,6 +118,10 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        rvNumberList = view.findViewById(R.id.recyclerview_number_list);
+        editTextSearchNumber = view.findViewById(R.id.edittext_search_number);
+        btnClearNumber = view.findViewById(R.id.btn_clear_number);
+
         setClientNumberInputType();
 
         if (TextUtils.isEmpty(number)) {

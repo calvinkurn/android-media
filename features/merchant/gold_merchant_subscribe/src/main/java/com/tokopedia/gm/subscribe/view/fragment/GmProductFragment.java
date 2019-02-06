@@ -70,7 +70,7 @@ public abstract class GmProductFragment
 
     public void confirmSelection() {
         if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
-            UnifyTracking.eventClickSubscribeGoldMerchant(adapter.getProductSelection());
+            UnifyTracking.eventClickSubscribeGoldMerchant(getActivity(), adapter.getProductSelection());
             listener.finishProductSelection(currentSelectedProductId, returnType);
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.gm_subscribe_no_product_selected));

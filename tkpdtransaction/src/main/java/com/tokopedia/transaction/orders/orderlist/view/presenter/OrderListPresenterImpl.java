@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             return;
         getView().showProcessGetData(orderCategory);
         Map<String, Object> variables = new HashMap<>();
-        variables.put("orderCategory", orderCategory);
+        variables.put(OrderCategory.KEY_LABEL, orderCategory);
         variables.put("Page", page);
         variables.put("PerPage", 10);
         variables.put("orderId", orderId);

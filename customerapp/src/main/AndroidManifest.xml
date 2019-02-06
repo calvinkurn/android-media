@@ -7,7 +7,6 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -102,6 +101,9 @@
                 <data
                     android:host="tokopedia.link"
                     android:scheme="https"/>
+                <data
+                    android:host="exclusive.tokopedia.net"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
         <activity
@@ -131,7 +133,9 @@
                 <data
                     android:host="tokopedia.onelink.me"
                     android:scheme="https"/>
+
             </intent-filter>
+            
         </activity>
 
         <meta-data
@@ -280,6 +284,12 @@
 
         <activity
             android:name=".home.ReactNativeBrandListOsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity

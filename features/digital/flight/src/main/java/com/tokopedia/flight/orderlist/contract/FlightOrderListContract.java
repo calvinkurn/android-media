@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.List;
@@ -36,11 +37,11 @@ public interface FlightOrderListContract {
 
         void showLessThan6HoursDialog();
 
-        void showNonRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, String departureTime);
+        void showNonRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, List<FlightOrderJourney> orderJourneyList);
 
-        void showRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, String departureTime);
+        void showRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, List<FlightOrderJourney> orderJourneyList);
 
-        void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> item);
+        void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> items);
 
         void loadPageData(int page);
 
@@ -63,7 +64,7 @@ public interface FlightOrderListContract {
 
         void onCancelButtonClicked(FlightOrderSuccessViewModel flightOrderSuccessViewModel);
 
-        void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item);
+        void checkIfFlightCancellable(List<FlightOrderJourney> orderJourneyList, String invoiceId, List<FlightCancellationJourney> items);
 
         void onMoreAirlineInfoClicked();
     }

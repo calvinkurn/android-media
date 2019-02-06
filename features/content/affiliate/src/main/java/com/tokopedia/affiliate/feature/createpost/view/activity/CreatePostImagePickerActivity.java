@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.affiliate.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
@@ -32,8 +33,8 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
 
     public static Intent getInstance(Context context, ArrayList<String> selectedImageList,
                                      int maxImage) {
-        ImagePickerBuilder builder = new ImagePickerBuilder(context.getString(com.tokopedia.kol.R
-                .string.title_post),
+        ImagePickerBuilder builder = new ImagePickerBuilder(
+                context.getString(R.string.title_af_choose_photo),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA},
                 GalleryType.IMAGE_ONLY,
                 DEFAULT_MAX_IMAGE_SIZE_IN_KB,

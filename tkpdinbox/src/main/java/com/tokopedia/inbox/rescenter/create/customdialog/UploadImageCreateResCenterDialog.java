@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.view.Window;
 
 import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 

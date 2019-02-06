@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation project(rootProject.ext.libraries.applink)
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}

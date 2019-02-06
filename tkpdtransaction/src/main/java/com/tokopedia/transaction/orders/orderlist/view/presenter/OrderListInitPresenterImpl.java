@@ -21,15 +21,11 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
 
 
     @Override
-    public void getInitData(String orderCategory, int typeRequest, int page) {
-
-
+    public void getInitData() {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(),
                 R.raw.initorderlist), TabData.class);
-
-
-        initUseCase.setRequest(graphqlRequest);
+        initUseCase.addRequest(graphqlRequest);
 
         initUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -55,5 +51,10 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
                 }
             }
         });
+    }
+
+    @Override
+    public void destroyView() {
+        initUseCase.unsubscribe();
     }
 }

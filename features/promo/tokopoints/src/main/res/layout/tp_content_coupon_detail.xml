@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                app:elevation="@dimen/dp_0">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/img_banner_coupon"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintDimensionRatio="h,3:1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/text_size_14"
+                    android:fontFamily="sans-serif-medium"
+                    tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:background="@color/white_three"
+                    android:paddingStart="@dimen/dp_16"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingBottom="@dimen/dp_8">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/img_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/bg_tp_time_greeen" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_date_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tp_margin_small"
+                        android:layout_marginLeft="@dimen/tp_margin_small"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/img_time"
+                        app:layout_constraintStart_toEndOf="@+id/img_time"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/text_time_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/tp_text_size_xxsmall"
+                            android:visibility="visible"
+                            tool:text="Berlaku hingga:" />
+
+                        <ProgressBar
+                            android:id="@+id/progress_timer"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:indeterminate="false"
+                            android:progressDrawable="@drawable/bg_tp_timer_bg"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
+                            app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
+                            app:layout_constraintRight_toRightOf="@+id/text_time_value"
+                            app:layout_constraintTop_toTopOf="@+id/text_time_value" />
+
+                        <TextView
+                            android:id="@+id/text_time_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/tp_text_size_small"
+                            app:layout_constraintTop_toBottomOf="@+id/text_time_label"
+                            tool:text="16 Aug 2019" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/iv_rp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_8"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/ll_min_txn_container"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_tp_rp" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_min_txn_container"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tp_margin_small"
+                        android:layout_marginLeft="@dimen/tp_margin_small"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/tv_min_txn_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_6"
+                            android:layout_marginRight="@dimen/dp_6"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/tp_text_size_xxsmall"
+                            tool:text="Minimum Transaksi" />
+
+                        <TextView
+                            android:id="@+id/tv_min_txn_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/tp_text_size_small"
+                            android:visibility="visible"
+                            tool:text="Rp 3000000" />
+                    </LinearLayout>
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.design.widget.AppBarLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <android.support.design.widget.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <com.tokopedia.design.component.Tabs
+                        android:id="@+id/tab_layout_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tabIndicatorColor="@color/tkpd_main_green"
+                        app:tabMode="scrollable"
+                        app:tabSelectedTextColor="@color/tkpd_main_green"
+                        app:tabTextAppearance="@style/TokoPointsTabs"
+                        app:tabTextColor="@color/black_38">
+
+                        <android.support.design.widget.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tp_label_tnc" />
+
+                        <android.support.design.widget.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tp_label_how_to_use" />
+
+                    </com.tokopedia.design.component.Tabs>
+                </android.support.design.widget.AppBarLayout>
+
+                <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
+                    android:id="@+id/view_pager_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/ll_bottom_button"
+        layout="@layout/tp_layout_coupon_detail_button"
+        android:visibility="invisible" />
+
+</LinearLayout>

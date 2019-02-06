@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

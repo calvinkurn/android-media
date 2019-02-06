@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -13,11 +12,9 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
         classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
-        classpath 'com.google.gms:google-services:3.0.0'
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -41,26 +38,31 @@ project.ext {
 
 dependencies {
     implementation fileTree(include: '*.jar', dir: 'libs')
-
-    api (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.analytics)
+
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.transactioncommon)
+
+    implementation project(rootProject.ext.features.saldodetails)
+    implementation project(rootProject.ext.features.referral)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation project(rootProject.ext.features.loyaltyCommon)
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
@@ -138,13 +140,14 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation rootProject.ext.analyticsDependencies.logentries
-    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
 
-    implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.saldodetails)
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
-apply plugin: 'com.google.gms.google-services'
 apply from: '../publish_local.gradle'

@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.viewmodel;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
@@ -104,7 +104,7 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
                             "id", viewModel.getProductId(),
                             "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(viewModel.getPriceInt())),
                             "brand", "none / other",
-                            "category", "none / other",
+                            "category", viewModel.getCategoryBreadcrumb(),
                             "variant", "none / other",
                             "list", String.format(STATIC_FORMAT_RECOMMENDATION, getPositionFeedCard(), STATIC_VALUE_YOUR_RECOMMENDATION, viewModel.getRecommedationType()),
                             "position", i + 1
@@ -145,7 +145,7 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
                                                 "id", getListProduct().get(adapterPosition).getProductId(),
                                                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getListProduct().get(adapterPosition).getPriceInt())),
                                                 "brand", "none / other",
-                                                "category", "none / other",
+                                                "category", getListProduct().get(adapterPosition).getCategoryBreadcrumb(),
                                                 "variant", "none / other",
                                                 "list", String.format(STATIC_FORMAT_RECOMMENDATION, getPositionFeedCard(), STATIC_VALUE_YOUR_RECOMMENDATION, getListProduct().get(adapterPosition).getRecommedationType()),
                                                 "position", adapterPosition + 1

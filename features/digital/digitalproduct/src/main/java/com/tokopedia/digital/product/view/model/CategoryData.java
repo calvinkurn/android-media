@@ -3,6 +3,9 @@ package com.tokopedia.digital.product.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

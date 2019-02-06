@@ -10,24 +10,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
 import com.tokopedia.home.account.di.component.SellerAccountComponent;
-
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
-import com.tokopedia.home.account.presentation.view.InfoCardView;
-import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 
@@ -43,10 +40,12 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
+    private static final String FPM_SELLER = "mp_account_seller";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private SellerAccountAdapter adapter;
+    private PerformanceMonitoring fpmSeller;
 
     @Inject
     SellerAccount.Presenter presenter;
@@ -62,6 +61,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fpmSeller = PerformanceMonitoring.start(FPM_SELLER);
         initInjector();
     }
 
@@ -101,7 +101,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void getData() {
-        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home));
+        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
+                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit));
     }
 
     @Override
@@ -110,6 +111,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             adapter.clearAllElements();
             adapter.setElement(model.getItems());
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -148,6 +150,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -157,6 +160,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -171,8 +175,21 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public void onTickerClosed() {
+        if (adapter.getItemCount() > 0 &&
+                adapter.getItemAt(0) instanceof TickerViewModel) {
+            adapter.removeElementAt(0);
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    void notifyItemChanged(int position) {
+        adapter.notifyItemChanged(position);
     }
 }

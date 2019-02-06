@@ -2,7 +2,7 @@ package com.tokopedia.core.peoplefave.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.peoplefave.listener.PeopleFavoritedShopFragmentView;

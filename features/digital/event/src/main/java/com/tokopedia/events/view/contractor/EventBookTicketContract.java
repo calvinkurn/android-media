@@ -22,8 +22,6 @@ public class EventBookTicketContract {
 
         void renderFromDetails(EventsDetailsViewModel homedata);
 
-        void setHolder(int resID, String label, ImageTextViewHolder holder);
-
         void showPayButton(int ticketQuantity, int price, String type);
 
         void hidePayButton();

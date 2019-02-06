@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.constraint.ConstraintLayout
+            <RelativeLayout
                 android:id="@+id/base_main_content"
                 android:layout_width="match_parent"
                 android:descendantFocusability="blocksDescendants"
@@ -93,8 +93,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="Show me the Slice!" />
 
                 <TextView
@@ -102,8 +102,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                    android:layout_below="@+id/tv_title"
                     tools:text="#challenge" />
 
                 <RelativeLayout
@@ -111,7 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_hashtag">
+                    android:layout_below="@+id/tv_hashtag">
 
                     <TextView
                         android:id="@+id/tv_expiry_date"
@@ -120,6 +121,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
                         tools:text="Due date: 30th July 2018" />
 
@@ -130,8 +133,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_16"
                         android:background="@drawable/bg_round_solid_green_radius_huge"
                         android:gravity="center_vertical"
                         android:paddingBottom="@dimen/dp_6"
@@ -182,7 +187,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_expiry">
+                    android:layout_below="@+id/cl_expiry">
 
                     <View
                         android:id="@+id/divider"
@@ -252,7 +257,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_about">
+                    android:layout_below="@+id/cl_about">
 
                     <View
                         android:id="@+id/divider2"
@@ -293,7 +298,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_video_player">
+                    android:layout_below="@+id/cl_video_player">
 
                     <View
                         android:id="@+id/divider5"
@@ -337,7 +342,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_awards">
+                    android:layout_below="@+id/cl_awards">
 
 
                     <View
@@ -381,7 +386,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_winners">
+                    android:layout_below="@+id/cl_winners">
 
 
                     <View
@@ -429,12 +434,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/grey_200"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_submissions" />
+                    android:layout_below="@+id/cl_submissions" />
 
 
                 <LinearLayout
@@ -444,9 +449,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider4">
+                    android:layout_below="@+id/divider4">
 
                     <TextView
                         android:id="@+id/tv_how_buzz_points"
@@ -487,11 +490,11 @@
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/grey_200"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_how_buzzpoints" />
+                    android:layout_below="@+id/cl_how_buzzpoints" />
 
                 <TextView
                     android:id="@+id/tv_tnc"
@@ -505,10 +508,9 @@
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/sp_12"
                     android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider6" />
+                    android:layout_below="@+id/divider6" />
 
-            </android.support.constraint.ConstraintLayout>
+            </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
 
     </android.support.design.widget.CoordinatorLayout>

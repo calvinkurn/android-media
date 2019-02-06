@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imageViewPager"
         android:layout_marginBottom="@dimen/dp_4"
-        app:tabBackground="@drawable/affiliate_tab_selector"
+        app:tabBackground="@drawable/kol_tab_selector"
         app:tabGravity="center"
         app:tabIndicatorHeight="0dp" />
 
@@ -80,7 +80,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
-            android:text="@string/kol_add_image"
+            android:text="@string/kol_add_photo"
             android:textAllCaps="false"
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_12"

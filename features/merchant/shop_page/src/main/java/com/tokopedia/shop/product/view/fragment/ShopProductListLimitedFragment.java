@@ -61,6 +61,7 @@ import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
@@ -84,6 +85,7 @@ import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -121,6 +123,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     public static final String SAVED_SELECTED_ETALASE_ID = "saved_etalase_id";
     public static final String SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name";
+    public static final String SAVED_SHOP_ID = "saved_shop_id";
+    public static final String SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official";
+    public static final String SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant";
     public static final int NUM_VOUCHER_DISPLAY = 3;
 
     @Inject
@@ -152,6 +157,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private List<ShopEtalaseViewModel> shopEtalaseViewModelList;
     private boolean needLoadVoucher;
 
+    private String shopId = null;
+    private boolean isOfficialStore, isGoldMerchant;
+
     public static ShopProductListLimitedFragment createInstance(String shopAttribution) {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
         Bundle bundle = new Bundle();
@@ -176,9 +184,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         } else {
             selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID);
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME);
+            shopId = savedInstanceState.getString(SAVED_SHOP_ID);
+            isGoldMerchant = savedInstanceState.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT);
+            isOfficialStore = savedInstanceState.getBoolean(SAVED_SHOP_IS_OFFICIAL);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication());
+        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication(),
+                new TrackingQueue(getContext()));
         MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
                 .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())
                 .shopCommonModule(new ShopCommonModule())
@@ -196,8 +208,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
-                ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
+                if (shopInfo!= null) {
+                    Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
+                    ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
+                }
             }
         });
         bottomActionView.setVisibility(View.GONE);
@@ -251,11 +265,17 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     public void displayProduct(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
+        this.isOfficialStore = shopInfo.getInfo().isShopOfficial();
+        this.isGoldMerchant = shopInfo.getInfo().isGoldMerchant();
+        this.shopId = shopInfo.getInfo().getShopId();
         loadInitialData();
     }
 
     public void setShopInfo(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
+        this.isOfficialStore = shopInfo.getInfo().isShopOfficial();
+        this.isGoldMerchant = shopInfo.getInfo().isGoldMerchant();
+        this.shopId = shopInfo.getInfo().getShopId();
     }
 
     public void clearCache() {
@@ -281,7 +301,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
 
         showLoading();
-        String shopId = shopInfo.getInfo().getShopId();
+        shopId = shopInfo.getInfo().getShopId();
         if (shopEtalaseViewModelList == null || shopEtalaseViewModelList.size() == 0) {
             //load etalase list first
             shopProductLimitedListPresenter.getShopEtalaseListByShop(shopId,
@@ -578,6 +598,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         shopProductAdapter.notifyDataSetChanged();
         shopProductAdapter.refreshSticky();
+        if(getActivity() instanceof ShopPageView){
+            ((ShopPageView) getActivity()).stopPerformanceMonitor();
+        }
     }
 
     @Override
@@ -628,6 +651,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void showGetListError(Throwable throwable) {
+        if(getActivity() instanceof ShopPageView){
+            ((ShopPageView)getActivity()).stopPerformanceMonitor();
+        }
         hideLoading();
         updateStateScrollListener();
         if (shopProductAdapter.getShopProductViewModelList().size() > 0) {
@@ -676,7 +702,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 }
             }
         }
-        String shopId = shopInfo.getInfo().getShopId();
+        shopId = shopInfo.getInfo().getShopId();
         shopProductLimitedListPresenter.getProductListHighlight(shopId,
                 !shopInfo.getInfo().isOpen(),
                 shopInfo.getInfo().isShopOfficial(),
@@ -706,6 +732,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void promoClicked(String url) {
+        if (getActivity() == null) {
+            return;
+        }
         boolean urlProceed = ShopProductOfficialStoreUtils.proceedUrl(getActivity(), url, shopInfo.getInfo().getShopId(),
                 shopProductLimitedListPresenter.isLogin(),
                 shopProductLimitedListPresenter.getDeviceId(),
@@ -728,7 +757,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, shopEtalaseViewModel.getEtalaseBadge());
         if (shopPageTracking != null) {
-            String shopId = shopInfo.getInfo().getShopId();
+            shopId = shopInfo.getInfo().getShopId();
             shopPageTracking.clickEtalaseChip(
                     shopProductLimitedListPresenter.isMyShop(shopId),
                     selectedEtalaseName,
@@ -838,17 +867,19 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         this.selectedEtalaseId = etalaseId;
                         this.selectedEtalaseName = etalaseName;
                     } else {
-                        Intent intent = ShopProductListActivity.createIntent(getActivity(),
-                                shopInfo.getInfo().getShopId(), "",
-                                etalaseId, attribution, sortName);
-                        startActivity(intent);
+                        if (shopInfo!= null) {
+                            Intent intent = ShopProductListActivity.createIntent(getActivity(),
+                                    shopInfo.getInfo().getShopId(), "",
+                                    etalaseId, attribution, sortName);
+                            startActivity(intent);
+                        }
                     }
                     shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
                     shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, etalaseBadge);
 
                     needReloadData = true;
 
-                    if (shopPageTracking != null) {
+                    if (shopPageTracking != null && shopInfo!= null) {
                         shopPageTracking.clickMenuFromMoreMenu(
                                 shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                                 etalaseName,
@@ -864,11 +895,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             case REQUEST_CODE_SORT:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     String sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
+                    if (shopId == null)
+                        return;
+
                     if (shopPageTracking != null) {
-                        shopPageTracking.clickSortBy(shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
-                                sortName, CustomDimensionShopPage.create(shopInfo));
+                        shopPageTracking.clickSortBy(shopProductLimitedListPresenter.isMyShop(shopId),
+                                sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant));
                     }
-                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(),
+                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopId,
                             "", selectedEtalaseId, "", sortName));
                 }
                 break;
@@ -1023,6 +1057,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        shopPageTracking.sendAllTrackingQueue();
+    }
+
     private void loadVoucherList() {
         if (shopInfo != null) {
             merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
@@ -1042,6 +1082,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         super.onSaveInstanceState(outState);
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId);
         outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName);
+        outState.putString(SAVED_SHOP_ID, shopId);
+        outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore);
+        outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant);
     }
 
     @Override
@@ -1049,5 +1092,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         super.onAttachActivity(context);
         shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
     }
+
+
 
 }

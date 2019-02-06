@@ -11,6 +11,24 @@ public class BaseItemAutoCompleteSearch {
     private String eventId;
     private String eventName;
     private String searchTerm;
+    private String productId;
+    private String productPrice;
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
 
     public String getKeyword() {
         return keyword;

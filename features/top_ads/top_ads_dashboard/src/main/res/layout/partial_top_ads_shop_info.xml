@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LabelLayout"
+    android:paddingBottom="@dimen/dp_0"
+    android:id="@+id/view_group_deposit"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image_view_shop_icon"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:scaleType="fitXY"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_penjualan" />
+
+        <TextView
+            android:id="@+id/text_view_shop_title"
+            style="@style/TextView.Title.Bold"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginStart="@dimen/dp_15"
+            android:text="@string/top_ads_statistic_info_default_value"
+            app:layout_constraintLeft_toRightOf="@+id/image_view_shop_icon"
+            app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/label_top_ads_impression" />
+
+        <TextView
+            android:id="@+id/text_view_deposit_desc"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:text="@string/top_ads_desc_credit_label"
+            app:layout_constraintLeft_toLeftOf="@+id/text_view_shop_title"
+            app:layout_constraintStart_toStartOf="@+id/text_view_shop_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_shop_title" />
+
+        <TextView
+            android:id="@+id/text_view_deposit_value"
+            style="@style/TextView.Small"
+            app:layout_constraintLeft_toLeftOf="@+id/text_view_shop_title"
+            app:layout_constraintStart_toStartOf="@+id/text_view_shop_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_deposit_desc"
+            android:text="@string/top_ads_statistic_info_default_value"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/text_view_credit_history"
+            style="@style/Button.Submit.White.Border"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:minHeight="@dimen/dp_32"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/font_black_disabled_38"
+            android:layout_marginLeft="@dimen/dp_0"
+            android:layout_marginStart="@dimen/dp_0"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:text="@string/label_credit_history" />
+
+        <Button
+            android:id="@+id/text_view_add_deposit"
+            style="@style/Button.Submit.White.BorderGreen"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:minHeight="@dimen/dp_32"
+            android:textSize="@dimen/sp_12"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_0"
+            android:layout_marginEnd="@dimen/dp_0"
+            android:text="@string/label_add_credit" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

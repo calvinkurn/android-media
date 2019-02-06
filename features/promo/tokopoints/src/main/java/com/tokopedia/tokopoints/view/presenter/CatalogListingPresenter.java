@@ -28,6 +28,9 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         implements CatalogListingContract.Presenter {
     private GraphqlUseCase mGetHomePageData;
     private GraphqlUseCase mGetPointData;
+    private int pointRange;
+    private int currentCategoryId = 0;
+    private int currentSubCategoryId = 0;
 
     @Inject
     public CatalogListingPresenter(GraphqlUseCase getHomePageData, GraphqlUseCase getPointData) {
@@ -166,6 +169,36 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
             }
         });
+    }
+
+    @Override
+    public void setPointRangeId(int id) {
+        this.pointRange = id;
+    }
+
+    @Override
+    public int getPointRangeId() {
+        return pointRange;
+    }
+
+    @Override
+    public void setCurrentCategoryId(int id) {
+        currentCategoryId = id;
+    }
+
+    @Override
+    public int getCurrentCategoryId() {
+        return currentCategoryId;
+    }
+
+    @Override
+    public void setCurrentSubCategoryId(int id) {
+        currentSubCategoryId = id;
+    }
+
+    @Override
+    public int getCurrentSubCategoryId() {
+        return currentSubCategoryId;
     }
 
     public String getCategoryName(List<CatalogSubCategory> catalogCategories, int selectedCategoryId) {

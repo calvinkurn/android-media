@@ -12,6 +12,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
@@ -68,14 +69,21 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         tvTitle.setText(element.getTitle());
         tvOrderDate.setText(FlightDateUtil.formatToUi(element.getCreateTime()));
         tvOrderId.setText(String.format("%s %s", itemView.getContext().getString(R.string.flight_order_order_id_prefix), element.getId()));
-        tvDepartureCity.setText(getAirportTextForView(
-                element.getOrderJourney().getDepartureAiportId(),
-                element.getOrderJourney().getDepartureCityCode(),
-                element.getOrderJourney().getDepartureCity()));
-        tvArrivalCity.setText(getAirportTextForView(
-                element.getOrderJourney().getArrivalAirportId(),
-                element.getOrderJourney().getArrivalCityCode(),
-                element.getOrderJourney().getArrivalCity()));
+
+        if (element.getOrderJourney().size() > 0) {
+            renderArrow(element.getOrderJourney());
+            FlightOrderJourney orderJourney = element.getOrderJourney().get(0);
+            tvDepartureCity.setText(getAirportTextForView(
+                    orderJourney.getDepartureAiportId(),
+                    orderJourney.getDepartureCityCode(),
+                    orderJourney.getDepartureCity()));
+            tvArrivalCity.setText(getAirportTextForView(
+                    orderJourney.getArrivalAirportId(),
+                    orderJourney.getArrivalCityCode(),
+                    orderJourney.getArrivalCity()));
+            renderDepartureSchedule(element.getOrderJourney());
+        }
+
         tvMainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,10 +93,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
             }
         });
 
-        setSingleArrow();
-
         renderCancellationStatus(element);
-        renderDepartureSchedule(element.getOrderJourney());
     }
 
 
@@ -104,16 +109,21 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
 
     @Override
     protected void onDetailOptionClicked() {
-        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
-        passData.setOrderId(item.getId());
-        passData.setDepartureAiportId(item.getOrderJourney().getDepartureAiportId());
-        passData.setDepartureCity(item.getOrderJourney().getDepartureCity());
-        passData.setDepartureTime(item.getOrderJourney().getDepartureTime());
-        passData.setArrivalAirportId(item.getOrderJourney().getArrivalAirportId());
-        passData.setArrivalCity(item.getOrderJourney().getArrivalCity());
-        passData.setArrivalTime(item.getOrderJourney().getArrivalTime());
-        passData.setStatus(item.getStatus());
-        adapterInteractionListener.onDetailOrderClicked(passData);
+        if (item.getOrderJourney().size() == 1) {
+            FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
+            passData.setOrderId(item.getId());
+            FlightOrderJourney orderJourney = item.getOrderJourney().get(0);
+            passData.setDepartureAiportId(orderJourney.getDepartureAiportId());
+            passData.setDepartureCity(orderJourney.getDepartureCity());
+            passData.setDepartureTime(orderJourney.getDepartureTime());
+            passData.setArrivalAirportId(orderJourney.getArrivalAirportId());
+            passData.setArrivalCity(orderJourney.getArrivalCity());
+            passData.setArrivalTime(orderJourney.getArrivalTime());
+            passData.setStatus(item.getStatus());
+            adapterInteractionListener.onDetailOrderClicked(passData);
+        } else {
+            adapterInteractionListener.onDetailOrderClicked(item.getId());
+        }
     }
 
     @Override

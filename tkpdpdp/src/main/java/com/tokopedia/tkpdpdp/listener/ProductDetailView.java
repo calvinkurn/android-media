@@ -1,11 +1,14 @@
 package com.tokopedia.tkpdpdp.listener;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
@@ -13,16 +16,17 @@ import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +42,15 @@ public interface ProductDetailView extends ViewListener {
     String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
     String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
 
-    void onByMeClicked(AffiliateInfoViewModel affiliate);
+    void onByMeClicked(AffiliateInfoViewModel affiliate, boolean isRegularPdp);
 
     void renderAffiliateButton(AffiliateInfoViewModel affiliate);
 
     void onWishlistCountLoaded(String wishlistCountText);
 
+    void onImageReviewLoaded(List<ImageReviewItem> data);
+
+    void onProductInfoShortClicked(Intent intent);
     /**
      * Saat salah satu kategori product di klik.
      *
@@ -138,7 +145,7 @@ public interface ProductDetailView extends ViewListener {
      *
      * @param data  data yang dikirim
      */
-    void onProductShareClicked(@NonNull ShareData data);
+    void onProductShareClicked(@NonNull ProductDetailData data);
 
     /**
      * Pada saat rating product diklik
@@ -158,6 +165,8 @@ public interface ProductDetailView extends ViewListener {
     void onInstallmentClicked(@NonNull Bundle bundle);
 
     void onDescriptionClicked(@NonNull Bundle bundle);
+
+    void onDescriptionClicked(@NonNull Intent intent);
 
     /**
      * Pada saat ada error pada toko
@@ -354,7 +363,9 @@ public interface ProductDetailView extends ViewListener {
 
     void refreshData();
 
-    void onSuccesLoadRateEstimaion(RatesModel ratesModel);
+    void onSuccesLoadRateEstimation(RatesModel ratesModel);
+
+    void onErrorLoadRateEstimation();
 
     void moveToEstimationDetail();
 
@@ -364,4 +375,7 @@ public interface ProductDetailView extends ViewListener {
 
     boolean isFromExploreAffiliate();
 
+    void onImageFromBuyerClick(int viewType, String reviewId);
+
+    void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position);
 }

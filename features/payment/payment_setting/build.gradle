@@ -16,10 +16,10 @@ buildscript {
 }
 
 project.ext {
-    artifactId = 'payment-setting'
-    groupId = 'com.tokopedia.payment'
-    versionName = "${tkpdPaymentVersion}"
-    artifactName ="payment_setting-release"
+    artifactId = "${artifactIdPaymentSetting}"
+    groupId = "${groupIdPayment}"
+    versionName = "${paymentGroupVersion}"
+    artifactName = "${artifactIdPaymentSetting}-release"
 }
 
 dependencies {
@@ -32,10 +32,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.userSession)
+
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
 }
 
 apply from: '../../../publish_local.gradle'

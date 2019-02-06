@@ -15,11 +15,10 @@
     <string name="text_af_click">Klik</string>
     <string name="text_af_buy">Dibeli</string>
     <string name="text_af_default_saldo">Rp. 0</string>
-    <string name="text_af_recommendation_left">Jatah Rekomendasi Tersisa</string>
-    <string name="text_empty_start_recommendation_string">Mulai Rekomendasi, Yuk!</string>
-    <string name="text_empty_start_recommendation_btn">Mulai Rekomendasi</string>
-    <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah rekomendasi yang bisa diambil.</string>
-    <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah rekomendasi yang bisa diambil.</string>
+    <string name="text_empty_start_recommendation_string">Mulai Kurasi, Yuk!</string>
+    <string name="text_empty_start_recommendation_btn">Mulai Kurasi</string>
+    <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah kurasi yang bisa diambil.</string>
+    <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Produk di By Me</string>
@@ -27,43 +26,53 @@
     <string name="text_empty_search_desc">Coba lakukan pencarian dengan kata kunci baru</string>
     <string name="text_empty_search_btn">Lakukan Pencarian Baru</string>
     <string name="text_product_not_found">Produk Tidak Ditemukan</string>
-    <string name="text_full_affiliate_title">Jatah Rekomendasimu Habis</string>
-    <string name="text_full_affiliate">Kamu hanya bisa merekomendasi hingga 15 produk. Atur rekomendasi untuk menambah yang baru.</string>
-    <string name="text_full_affiliate_ok">Lihat Rekomendasi Saya</string>
+    <string name="text_full_affiliate_title">Jatah Kurasimu Habis</string>
+    <string name="text_full_affiliate">Kamu hanya bisa membuat kurasi untuk 15 produk. Atur kurasimu untuk menambah yang baru</string>
+    <string name="text_full_affiliate_ok">Atur Kurasi</string>
     <string name="text_full_affiliate_no">Batal</string>
     <string name="text_item_commission">Komisi</string>
+    <string name="text_back_to_top">Kembali ke atas</string>
+    <string name="text_button_apply">Terapkan</string>
+    <string name="text_title_filter">Filter</string>
+    <string name="text_button_sort">Urutkan</string>
+    <string name="title_showcase">Cek dan Bagikan Hasil Kurasimu</string>
+    <string name="desc_showcase">Semua kurasi akan disimpan di profilmu</string>
 
     <!--ONBOARDING-->
-    <string name="title_af_onboarding">Tokopedia By Me</string>
-    <string name="af_about_comission">Tentang Komisi</string>
-    <string name="af_try_now">Coba Sekarang</string>
-    <string name="af_onboarding_make_profile_desc">Mulai buat profil By Me, pilih produk rekomendasi, dan bagikan ke teman untuk meraih Komisi!</string>
-    <string name="af_onboarding_start_by_me">Ekspresikan Dirimu Lewat Produk Pilihan</string>
-    <string name="af_make_by_me_profile">Mulai Buat Profil By Me</string>
-    <string name="af_type_username">Ketik Username:</string>
+    <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
+    <string name="title_af_username">Perbarui Link Profil</string>
+    <string name="af_make_by_me_profile">Sebelum Lanjut,\nPerbarui Link Profilmu Dulu, Yuk!</string>
+    <string name="af_type_username">Ketik Link Unikmu:</string>
     <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
     <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
     <string name="af_save">Simpan</string>
     <string name="af_by_me_domain">tokopedia.me/</string>
-    <string name="af_complete_profile">Lengkapi Profil By Me Milikmu</string>
-    <string name="af_select_product_recommendation">Pilih produk rekomendasi terbaik untuk dibagikan ke media sosialmu.</string>
-    <string name="af_see_product_selection">Lihat Pilihan Produk</string>
-    <string name="af_minimal_character">Username minimum %d karakter</string>
-    <string name="af_recommend_this_product">Rekomendasikan Produk ini?</string>
+    <string name="af_minimal_character">Minimum %d karakter</string>
+    <string name="af_recommend_this_product">Lanjutkan Kurasi dengan Produk Ini?</string>
     <string name="af_recommend">Rekomendasikan</string>
+    <string name="af_continue">Lanjutkan</string>
     <string name="af_see_other_product">Lihat Produk Lainnya</string>
 
     <!--CREATE POST-->
-    <string name="af_add_images">Tambah Gambar</string>
+    <string name="af_add_images">Tambah Foto</string>
     <string name="af_done">Selesai</string>
-    <string name="af_add_more_image_to_product">Tambah gambar agar produk rekomendasimu semakin dilirik.</string>
+    <string name="af_add_more_image_to_product">Buat Produk Pilihanmu Lebih Menarik dengan Foto Ala Kamu!</string>
     <string name="af_see_example">Lihat Contoh</string>
     <string name="title_af_image_picker">Gambar Produk</string>
     <string name="title_af_image_editor">Image Editor</string>
-    <string name="title_af_create_post">Tambah Gambar</string>
-    <string name="title_af_create_post_example">Contoh Gambar</string>
-    <string name="af_use_image_to_show">Gunakan gambar yang menampilkan produk rekomendasimu.</string>
+    <string name="title_af_create_post">Tambah Foto</string>
+    <string name="title_af_choose_photo">Pilih Foto</string>
+    <string name="title_af_create_post_example">Contoh Foto</string>
+    <string name="af_use_image_to_show">Gunakan foto yang menampilkan produk pilihanmu.</string>
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
+
+    <!--EDUCATION-->
+    <string name="af_skip">Lewatkan</string>
+    <string name="af_start_curating">Mulai Kurasi Produk</string>
+    <string name="af_share_and_commission">Bagikan By Me dan Raih Komisinya!</string>
+    <string name="af_choose_favorite_product">Pilih produk favoritmu</string>
+    <string name="af_curate_product_profile">Kurasi produknya di profilmu</string>
+    <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
 
 </resources>

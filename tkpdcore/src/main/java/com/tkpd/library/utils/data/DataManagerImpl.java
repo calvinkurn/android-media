@@ -14,10 +14,11 @@ import com.tkpd.library.utils.data.model.ListCity;
 import com.tkpd.library.utils.data.model.ListDistricts;
 import com.tkpd.library.utils.data.model.ListProvince;
 import com.tkpd.library.utils.data.model.ListShippingCity;
-import com.tokopedia.core.R;
+import com.tkpd.library.utils.data.model.ListShippingCity.Shipping_city;
+import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheDuration;
-import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
@@ -44,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -607,7 +607,7 @@ public class DataManagerImpl implements DataManager {
                                                  city.setProvince(province);
                                                  city.save();
 
-                                                 for (District d : ListShippingCity.fromShippingCities(shippingCity)) {
+                                                 for (District d : fromShippingCities(shippingCity)) {
                                                      d.setDistrictCity(city);
                                                      d.save();
                                                  }
@@ -679,6 +679,21 @@ public class DataManagerImpl implements DataManager {
 
     }
 
+    public District fromShippingCity(Shipping_city shippingCity){
+        District district = new District();
+        district.setDistrictId(shippingCity.getDistrictId());
+        district.setDistrictName(shippingCity.getDistrictName());
+        district.setDistrictJneCode("-1");
+        return district;
+    }
+
+    public List<District> fromShippingCities(List<Shipping_city> shipping_cities){
+        ArrayList<District> result = new ArrayList<>();
+        for(Shipping_city s : shipping_cities){
+            result.add(fromShippingCity(s));
+        }
+        return result;
+    }
 
 
     private Boolean isShippingCityExpired() {

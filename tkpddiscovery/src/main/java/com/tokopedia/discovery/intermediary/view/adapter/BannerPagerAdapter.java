@@ -64,7 +64,7 @@ public class BannerPagerAdapter extends PagerAdapter {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventBannerClickCategory(categoryId,bannerList.get(position).getUrl());
+                    UnifyTracking.eventBannerClickCategory(view.getContext(), categoryId,bannerList.get(position).getUrl());
                     if (listener != null) {
                         listener.onPromoClick(
                                 bannerList.get(position).getApplink(),

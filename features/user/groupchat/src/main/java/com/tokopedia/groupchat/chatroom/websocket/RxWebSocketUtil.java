@@ -1,9 +1,7 @@
 package com.tokopedia.groupchat.chatroom.websocket;
 
-import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -31,14 +29,14 @@ public class RxWebSocketUtil {
 
     private OkHttpClient client;
 
-    private Map<String, Observable<WebSocketInfo>> observableMap;
-    private Map<String, WebSocket> webSocketMap;
+    private Observable<WebSocketInfo> observableMap;
+    private WebSocket webSocketMap;
     private boolean showLog = true;
     private String logTag = "MainActivity RxWebSocket";
 
     private RxWebSocketUtil(int delay, int maxRetries, int pingInterval) {
-        observableMap = new ArrayMap<>();
-        webSocketMap = new ArrayMap<>();
+        observableMap = null;
+        webSocketMap = null;
         client = new OkHttpClient.Builder().pingInterval(pingInterval, TimeUnit.MILLISECONDS).build();
         this.delay = delay;
         this.maxRetries = maxRetries;
@@ -61,8 +59,8 @@ public class RxWebSocketUtil {
 
     public Observable<WebSocketInfo> getWebSocketInfo(final String url, String accessToken, String groupChatToken) {
         String urlWithGCToken = String.format("%s%s%s", url, "&token=", groupChatToken);
-        Observable<WebSocketInfo> observable = observableMap.get(url);
-        if (observable == null && observableMap.isEmpty()) {
+        Observable<WebSocketInfo> observable = observableMap;
+        if (observable == null && observableMap == null) {
             RetryObservable retryObservable = new RetryObservable(maxRetries, delay);
             observable = Observable.create(new WebSocketOnSubscribe(client, urlWithGCToken,
                     accessToken,
@@ -71,8 +69,8 @@ public class RxWebSocketUtil {
                     .doOnUnsubscribe(new Action0() {
                         @Override
                         public void call() {
-                            observableMap.clear();
-                            webSocketMap.clear();
+                            observableMap = null;
+                            webSocketMap = null;
                             if (showLog) {
                                 Log.d(logTag, "unsubscribe");
                             }
@@ -83,16 +81,16 @@ public class RxWebSocketUtil {
                         public void call(WebSocketInfo webSocketInfo) {
                             if (webSocketInfo.isOnOpen()) {
                                 retryObservable.resetMaxRetries();
-                                webSocketMap.put(url, webSocketInfo.getWebSocket());
+                                webSocketMap = webSocketInfo.getWebSocket();
                             }
                         }
                     })
                     .share()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
-            observableMap.put(url, observable);
+            observableMap = observable;
         } else {
-            WebSocket webSocket = webSocketMap.get(url);
+            WebSocket webSocket = webSocketMap;
             if (webSocket != null) {
                 observable = observable.startWith(new WebSocketInfo(webSocket, true));
             }
@@ -111,7 +109,7 @@ public class RxWebSocketUtil {
     }
 
     public void send(String url, String msg) {
-        WebSocket webSocket = webSocketMap.get(url);
+        WebSocket webSocket = webSocketMap;
         if (webSocket != null) {
             webSocket.send(msg);
         } else {

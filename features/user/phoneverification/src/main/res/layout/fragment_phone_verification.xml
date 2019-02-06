@@ -16,8 +16,8 @@
             android:id="@+id/view_otp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/dp_10"
             android:orientation="vertical"
@@ -154,16 +154,16 @@
         android:id="@+id/verify_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
-        android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_10"
         android:background="@drawable/grey_button_rounded"
         android:enabled="false"
         android:gravity="center"
         android:text="@string/title_confirm_otp"
         android:textColor="@color/grey_600"
-        android:visibility="gone"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 
     <TextView

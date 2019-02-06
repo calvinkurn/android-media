@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.tkpdpdp.customview.SquareCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_0"
+    android:layout_margin="@dimen/dp_4">
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/review_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.tokopedia.tkpdpdp.customview.SquareCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@android:color/black"
+        app:cardCornerRadius="@dimen/dp_4"
+        app:cardElevation="@dimen/dp_0"
+        android:alpha="0.7">
+
+    </com.tokopedia.tkpdpdp.customview.SquareCardView>
+
+    <TextView
+        android:text="@string/message_see_all_buyer_image"
+        android:textSize="@dimen/sp_12"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_width="@dimen/dp_40"
+        android:textColor="@android:color/white"
+        android:layout_height="wrap_content" />
+
+</com.tokopedia.tkpdpdp.customview.SquareCardView>

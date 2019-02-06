@@ -23,7 +23,6 @@ public class DigitalWrapContentViewPager extends ViewPager {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         if (currentView == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
@@ -33,7 +32,6 @@ public class DigitalWrapContentViewPager extends ViewPager {
         int h = currentView.getMeasuredHeight();
         if (h > height) height = h;
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

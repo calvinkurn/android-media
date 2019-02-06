@@ -1,5 +1,7 @@
 package com.tokopedia.tokopoints.view.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.library.baseadapter.BaseItem;
@@ -260,6 +262,11 @@ public class CouponValueEntity extends BaseItem {
 
     public void setMinimumUsageLabel(String minimumUsageLabel) {
         this.minimumUsageLabel = minimumUsageLabel;
+    }
+
+    public boolean isEmpty() {
+        return TextUtils.isEmpty(this.title)
+                || TextUtils.isEmpty(this.imageUrlMobile);
     }
 
     @Override

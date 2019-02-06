@@ -15,6 +15,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetH
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Subscriber;
 
@@ -162,9 +163,16 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
         };
     }
 
-    public void getProductReview(String productId, int page, String rating) {
-        productReviewGetListUseCase.execute(productReviewGetListUseCase.createRequestParams(productId,
-                String.valueOf(page), rating, userSession.getUserId()), getSubscriberGetProductReview());
+    public void getProductReview(String productId, int page, String rating, boolean isWithImage) {
+        RequestParams requestParams =
+                productReviewGetListUseCase.createRequestParams(productId,
+                        String.valueOf(page), rating, userSession.getUserId());
+
+        if (isWithImage) {
+            requestParams = productReviewGetListUseCase.withPhotoParams(requestParams);
+        }
+
+        productReviewGetListUseCase.execute(requestParams, getSubscriberGetProductReview());
     }
 
     private Subscriber<DataResponseReviewProduct> getSubscriberGetProductReview() {

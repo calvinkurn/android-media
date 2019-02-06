@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_3"
     android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_3">
 
     <View
         android:id="@+id/v_separator_multiple_product_same_store"
@@ -62,9 +62,9 @@
             android:id="@+id/iv_product_image"
             android:layout_width="52dp"
             android:layout_height="52dp"
+            android:layout_marginTop="3dp"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="3dp"
             android:src="@drawable/empty_photo"
             tools:ignore="ContentDescription" />
 
@@ -83,7 +83,7 @@
             android:id="@+id/layout_policy"
             layout="@layout/layout_cart_item_policy"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tv_product_name"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_image"
@@ -95,8 +95,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_policy"
-            android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_image"
             android:layout_toRightOf="@id/iv_product_image"
             tools:text="2 barang (3 kg)" />
@@ -133,10 +133,70 @@
             style="@style/TextSmallMediumBlack38"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
             tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlayout_purchase_protection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/checkbox_ppp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:theme="@style/TransactionCheckbox" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_9"
+            android:layout_marginLeft="@dimen/dp_9"
+            android:layout_toStartOf="@+id/text_ppp_more"
+            android:layout_toLeftOf="@+id/text_ppp_more"
+            android:layout_toEndOf="@+id/checkbox_ppp"
+            android:layout_toRightOf="@+id/checkbox_ppp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_link_text"
+                style="@style/TextMidMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/black_39"
+                tools:text="Proteksi Gadget" />
+
+            <TextView
+                android:id="@+id/text_price_per_product"
+                style="@style/TextVerySmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/grey_500"
+                tools:text="Rp 50.000 / barang" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_ppp_more"
+            style="@style/TextSmallMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:foreground="?selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_16"
+            android:text="@string/ppp_more"
+            android:textColor="@color/medium_green" />
+    </RelativeLayout>
 
 </LinearLayout>

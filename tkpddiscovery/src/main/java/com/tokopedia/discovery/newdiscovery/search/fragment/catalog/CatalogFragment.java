@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -18,7 +20,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -71,6 +72,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     private static final int REQUEST_ACTIVITY_SORT_CATALOG = 1234;
     private static final int REQUEST_ACTIVITY_FILTER_CATALOG = 4321;
+    private static final String SEARCH_CATALOG_TRACE = "search_catalog_trace";
 
     protected RecyclerView recyclerView;
     protected ProgressBar loadingView;
@@ -78,6 +80,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     protected CatalogAdapter catalogAdapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
 
+    private PerformanceMonitoring performanceMonitoring;
     private String departmentId;
     private String query;
     private Config topAdsConfig;
@@ -338,6 +341,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_CATALOG_TRACE);
         if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
             presenter.requestCatalogList(getDepartmentId());
         } else {
@@ -356,6 +360,9 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void renderListView(List<Visitable> catalogViewModels) {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
         topAdsRecyclerAdapter.hideLoading();
         catalogAdapter.incrementStart();
         topAdsRecyclerAdapter.reset();
@@ -513,11 +520,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     public void onAddFavorite(int position, Data data) {
 
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
     }
 
     @Override

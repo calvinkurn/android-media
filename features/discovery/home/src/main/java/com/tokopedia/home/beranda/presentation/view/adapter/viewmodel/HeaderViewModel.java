@@ -3,8 +3,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 
@@ -26,7 +26,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         }
     };
     private HomeHeaderWalletAction homeHeaderWalletActionData;
-    private TokoPointDrawerData tokoPointDrawerData;
+    private TokopointHomeDrawerData tokoPointDrawerData;
     private CashBackData cashBackData;
     private boolean pendingTokocashChecked;
     private boolean isWalletError;
@@ -37,7 +37,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
 
     protected HeaderViewModel(Parcel in) {
         homeHeaderWalletActionData = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
-        tokoPointDrawerData = in.readParcelable(TokoPointDrawerData.class.getClassLoader());
+        tokoPointDrawerData = in.readParcelable(TokopointHomeDrawerData.class.getClassLoader());
         cashBackData = in.readParcelable(CashBackData.class.getClassLoader());
         pendingTokocashChecked = in.readByte() != 0;
         isWalletError = in.readByte() != 0;
@@ -52,11 +52,11 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         this.homeHeaderWalletActionData = homeHeaderWalletActionData;
     }
 
-    public TokoPointDrawerData getTokoPointDrawerData() {
+    public TokopointHomeDrawerData getTokoPointDrawerData() {
         return tokoPointDrawerData;
     }
 
-    public void setTokoPointDrawerData(TokoPointDrawerData tokoPointDrawerData) {
+    public void setTokoPointDrawerData(TokopointHomeDrawerData tokoPointDrawerData) {
         this.tokoPointDrawerData = tokoPointDrawerData;
     }
 

@@ -1,34 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_apps"
+    android:background="@color/white"
     android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/upper_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_container"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/txt_cancellation_tnc"
-            style="@style/TextView.Small"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingBottom="@dimen/dp_25"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_25" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_next"
-            style="@style/Button.Submit.Green"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16"
-            android:text="@string/flight_cancellation_terms_and_condition_button_text" />
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/txt_cancellation_tnc"
+                style="@style/TextView.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:textColor="@color/font_black_secondary_54" />
+
+        </android.support.v4.widget.NestedScrollView>
 
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+    <LinearLayout
+        android:id="@+id/bottom_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/grey_500" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="top"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:theme="@style/checkBoxStyle" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_description"
+                style="@style/TextView.Micro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:textColor="@color/font_black_secondary_54"
+                tools:text="@string/flight_cancellation_review_description" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_next"
+            style="@style/Button.Submit.Orange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:enabled="false"
+            android:text="@string/flight_cancellation_review_button" />
+
+    </LinearLayout>
+
+</RelativeLayout>

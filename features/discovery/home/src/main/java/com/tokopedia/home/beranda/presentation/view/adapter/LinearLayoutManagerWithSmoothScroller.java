@@ -2,10 +2,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 
-import com.tkpd.library.ui.view.LinearLayoutManager;
 
 /**
  * Created by errysuprayogi on 12/4/17.

@@ -18,7 +18,7 @@
         android:layout_centerVertical="true"
         tools:src="@tools:sample/avatars" />
 
-    <ImageView
+    <com.tokopedia.gm.resource.GMImageView
         android:id="@+id/gold_merchant"
         android:layout_marginTop="@dimen/dp_3"
         android:layout_width="@dimen/feed_badge_size"
@@ -27,9 +27,8 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        app:srcCompat="@drawable/ic_gold"
         android:visibility="gone"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/official_store"
@@ -42,7 +41,7 @@
         android:layout_toRightOf="@+id/shop_avatar"
         app:srcCompat="@drawable/ic_official"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

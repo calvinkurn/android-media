@@ -77,11 +77,7 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
                     @Override
                     public Boolean call(List<ScheduleEntity> trainScheduleEntities) {
                         for (ScheduleEntity scheduleEntity : datas) {
-                            for (TrainScheduleEntity trainScheduleEntity : scheduleEntity.getTrains()) {
-                                for (FareEntity fareEntity : trainScheduleEntity.getFares()) {
-                                    insertSchedule(fareEntity, trainScheduleEntity, scheduleEntity, scheduleVariant);
-                                }
-                            }
+                            insertSchedule(scheduleEntity, scheduleVariant);
                         }
                         updateFilterCheapest();
                         updateFilterFastest();
@@ -90,40 +86,45 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
                 });
     }
 
-    private void insertSchedule(FareEntity fareEntity, TrainScheduleEntity trainScheduleEntity, ScheduleEntity scheduleEntity, int scheduleVariant) {
+    private void insertSchedule(ScheduleEntity scheduleEntity, int scheduleVariant) {
         ModelAdapter<TrainScheduleDbTable> adapter = FlowManager.getModelAdapter(TrainScheduleDbTable.class);
-        TrainScheduleDbTable trainScheduleDbTable = new TrainScheduleDbTable();
-        trainScheduleDbTable.setIdSchedule(fareEntity.getId());
-        trainScheduleDbTable.setAdultFare(fareEntity.getAdultFare());
-        trainScheduleDbTable.setDisplayAdultFare(fareEntity.getDisplayAdultFare());
-        trainScheduleDbTable.setInfantFare(fareEntity.getInfantFare());
-        trainScheduleDbTable.setDisplayInfantFare(fareEntity.getDisplayInfantFare());
-        trainScheduleDbTable.setArrivalTimestamp(trainScheduleEntity.getArrivalTimestamp());
-        trainScheduleDbTable.setDepartureTimestamp(trainScheduleEntity.getDepartureTimestamp());
-        trainScheduleDbTable.setClassTrain(fareEntity.getScheduleClass());
-        trainScheduleDbTable.setDisplayClass(fareEntity.getDisplayClass());
-        trainScheduleDbTable.setSubclass(fareEntity.getSubclass());
-        trainScheduleDbTable.setOrigin(scheduleEntity.getOrigin());
-        trainScheduleDbTable.setDestination(scheduleEntity.getDestination());
-        trainScheduleDbTable.setDisplayDuration(trainScheduleEntity.getDisplayDuration());
-        trainScheduleDbTable.setDuration(trainScheduleEntity.getDuration());
-        trainScheduleDbTable.setTrainKey(trainScheduleEntity.getTrainKey());
-        trainScheduleDbTable.setTrainName(trainScheduleEntity.getTrainName());
-        trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNo());
-        trainScheduleDbTable.setAvailableSeat(TrainAvailabilityTypeDef.DEFAULT_VALUE);
-        trainScheduleDbTable.setCheapestFlag(false);
-        trainScheduleDbTable.setFastestFlag(false);
-        trainScheduleDbTable.setReturnSchedule(scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE);
+        for (TrainScheduleEntity trainScheduleEntity : scheduleEntity.getTrains()) {
+            for (FareEntity fareEntity : trainScheduleEntity.getFares()) {
+                TrainScheduleDbTable trainScheduleDbTable = new TrainScheduleDbTable();
+                trainScheduleDbTable.setIdSchedule(fareEntity.getId());
+                trainScheduleDbTable.setAdultFare(fareEntity.getAdultFare());
+                trainScheduleDbTable.setDisplayAdultFare(fareEntity.getDisplayAdultFare());
+                trainScheduleDbTable.setInfantFare(fareEntity.getInfantFare());
+                trainScheduleDbTable.setDisplayInfantFare(fareEntity.getDisplayInfantFare());
+                trainScheduleDbTable.setArrivalTimestamp(trainScheduleEntity.getArrivalTimestamp());
+                trainScheduleDbTable.setDepartureTimestamp(trainScheduleEntity.getDepartureTimestamp());
+                trainScheduleDbTable.setClassTrain(fareEntity.getScheduleClass());
+                trainScheduleDbTable.setDisplayClass(fareEntity.getDisplayClass());
+                trainScheduleDbTable.setSubclass(fareEntity.getSubclass());
+                trainScheduleDbTable.setOrigin(scheduleEntity.getOrigin());
+                trainScheduleDbTable.setDestination(scheduleEntity.getDestination());
+                trainScheduleDbTable.setDisplayDuration(trainScheduleEntity.getDisplayDuration());
+                trainScheduleDbTable.setDuration(trainScheduleEntity.getDuration());
+                trainScheduleDbTable.setTrainKey(trainScheduleEntity.getTrainKey());
+                trainScheduleDbTable.setTrainName(trainScheduleEntity.getTrainName());
+                trainScheduleDbTable.setTrainNumber(trainScheduleEntity.getTrainNo());
+                trainScheduleDbTable.setAvailableSeat(TrainAvailabilityTypeDef.DEFAULT_VALUE);
+                trainScheduleDbTable.setCheapestFlag(false);
+                trainScheduleDbTable.setFastestFlag(false);
+                trainScheduleDbTable.setReturnSchedule(scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE);
 
-        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                TrainDateUtil.FORMAT_HOUR, trainScheduleEntity.getDepartureTimestamp());
-        trainScheduleDbTable.setDepartureHour(Integer.valueOf(departureHour));
+                String departureHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                        TrainDateUtil.FORMAT_HOUR, trainScheduleEntity.getDepartureTimestamp());
+                trainScheduleDbTable.setDepartureHour(Integer.valueOf(departureHour));
 
-        String departureTimestampCustom = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                TrainDateUtil.DEFAULT_TIMESTAMP_FORMAT, trainScheduleEntity.getDepartureTimestamp());
-        trainScheduleDbTable.setDepartureTime(convertTimestampToLong(departureTimestampCustom));
+                String departureTimestampCustom = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                        TrainDateUtil.DEFAULT_TIMESTAMP_FORMAT, trainScheduleEntity.getDepartureTimestamp());
+                trainScheduleDbTable.setDepartureTime(convertTimestampToLong(departureTimestampCustom));
 
-        adapter.insert(trainScheduleDbTable);
+                adapter.insert(trainScheduleDbTable);
+            }
+        }
+
     }
 
     private long convertTimestampToLong(String timeString) {

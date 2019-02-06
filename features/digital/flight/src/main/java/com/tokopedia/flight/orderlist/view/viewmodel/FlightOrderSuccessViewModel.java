@@ -17,7 +17,7 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     private String createTime;
     private String pdf;
     private int status;
-    private FlightOrderJourney orderJourney;
+    protected List<FlightOrderJourney> orderJourney;
     private List<CancellationEntity> cancellations;
 
     public FlightOrderSuccessViewModel() {
@@ -47,11 +47,11 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
         this.status = status;
     }
 
-    public FlightOrderJourney getOrderJourney() {
+    public List<FlightOrderJourney> getOrderJourney() {
         return orderJourney;
     }
 
-    public void setOrderJourney(FlightOrderJourney orderJourney) {
+    public void setOrderJourney(List<FlightOrderJourney> orderJourney) {
         this.orderJourney = orderJourney;
     }
 

@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;

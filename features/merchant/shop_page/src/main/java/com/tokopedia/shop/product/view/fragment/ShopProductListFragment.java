@@ -62,6 +62,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -87,6 +88,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     public static final String SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list";
     public static final String SAVED_SELECTED_ETALASE_ID = "saved_etalase_id";
     public static final String SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name";
+    public static final String SAVED_SHOP_ID = "saved_shop_id";
+    public static final String SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official";
+    public static final String SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant";
     public static final String SAVED_KEYWORD = "saved_keyword";
     public static final String SAVED_SORT_VALUE = "saved_sort_name";
 
@@ -119,6 +123,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     private boolean needReloadData;
     private View vgEtalaseList;
     private EtalaseChipAdapter etalaseChipAdapter;
+    private boolean isOfficialStore, isGoldMerchant;
 
     public interface OnShopProductListFragmentListener {
         void updateUIByShopName(String shopName);
@@ -183,7 +188,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID, "");
         attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
         setHasOptionsMenu(true);
 
@@ -193,15 +197,18 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             selectedEtalaseName = "";
             keyword = getArguments().getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "");
             sortValue = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, String.valueOf(Integer.MIN_VALUE));
+            shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID, "");
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST);
             selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID);
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME);
             keyword = savedInstanceState.getString(SAVED_KEYWORD);
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE);
+            shopId = savedInstanceState.getString(SAVED_SHOP_ID);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication());
+        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication(),
+                new TrackingQueue(getContext()));
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
         shopProductListPresenter.attachView(this, this);
     }
@@ -439,7 +446,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     private boolean isOwner(){
-        return shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId());
+        return shopProductListPresenter.isMyShop(shopId);
     }
 
     @Override
@@ -576,6 +583,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     public void onSuccessGetShopInfo(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
+        this.shopId = shopInfo.getInfo().getShopId();
+        this.isOfficialStore = shopInfo.getInfo().isShopOfficial();
+        this.isGoldMerchant = shopInfo.getInfo().isGoldMerchant();
         onShopProductListFragmentListener.updateUIByShopName(shopInfo.getInfo().getShopName());
         loadInitialData();
     }
@@ -749,7 +759,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce, etalaseBadge);
                     if (shopPageTracking != null) {
                         shopPageTracking.clickMenuFromMoreMenu(isOwner(),
-                                selectedEtalaseName, CustomDimensionShopPage.create(shopInfo));
+                                selectedEtalaseName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant));
                     }
                     needReloadData = true;
                 }
@@ -763,7 +773,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     loadInitialData();
                     if (shopPageTracking != null) {
                         shopPageTracking.clickSortBy(isOwner(),
-                                sortValue, CustomDimensionShopPage.create(shopInfo));
+                                sortValue, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant));
                     }
                 }
                 break;
@@ -780,6 +790,12 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             loadInitialData();
             needReloadData = false;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        shopPageTracking.sendAllTrackingQueue();
     }
 
     @Override
@@ -820,6 +836,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName);
         outState.putString(SAVED_SORT_VALUE, sortValue);
         outState.putString(SAVED_KEYWORD, keyword);
+        outState.putString(SAVED_SHOP_ID, shopId);
+        outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore);
+        outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant);
     }
 
 }

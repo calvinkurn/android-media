@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;

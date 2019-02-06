@@ -1,10 +1,11 @@
-query {
+query Notification($cursor: String) {
   status
   userShopInfo {
     info {
       shop_id
     }
   }
+
   notifications{
   	total_notif
   	total_cart
@@ -36,7 +37,18 @@ query {
       arriveAtDestination
     }
   }
+
   notifcenter_unread {
     notif_unread
+  }
+
+  feed_last_feeds(cursor:$cursor){
+      error
+      content
+      newFeeds
+    }
+
+  homeFlag {
+    isOSBottomNav
   }
 }

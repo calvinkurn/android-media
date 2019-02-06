@@ -18,7 +18,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
-import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
+import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;

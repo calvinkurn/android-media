@@ -1,10 +1,10 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
+import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -84,7 +84,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             holder.label.setVisibility(View.VISIBLE);
             holder.value.setVisibility(View.VISIBLE);
             holder.imgLabel.setVisibility(View.VISIBLE);
-            holder.value.setText(item.getUsage().getUsageStr());
+            holder.value.setText(item.getUsage().getUsageStr().trim());
             holder.label.setText(item.getUsage().getText());
         }
 
@@ -107,14 +107,9 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
-            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+            holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
 
-            //TODO need to add transectinal ga
-            AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
-                    AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
+            sendClickEvent(holder.imgBanner.getContext(),item ,position);
         });
 
 
@@ -216,7 +211,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         promotions.put("promotions", Arrays.asList(item));
 
         Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-        promoClick.put("promoClick", promotions);
+        promoClick.put("promoView", promotions);
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,

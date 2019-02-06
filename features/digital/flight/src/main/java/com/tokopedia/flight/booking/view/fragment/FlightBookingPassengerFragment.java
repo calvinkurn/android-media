@@ -259,14 +259,14 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.adult_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
         spTitle.setEntries(entries);
         spTitle.setValues(entries);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
-        String[] entries = getResources().getStringArray(R.array.child_infant_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
         spTitle.setEntries(entries);
         spTitle.setValues(entries);
     }
@@ -425,7 +425,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public String getPassengerTitle() {
-        return spTitle.getSpinnerValue().equalsIgnoreCase(String.valueOf(SpinnerTextView.DEFAULT_INDEX_NOT_SELECTED))
+        return spTitle.getSpinnerValue().equalsIgnoreCase(getString(R.string.flight_passenger_choose_salutation))
                 ? "" : spTitle.getSpinnerValue();
     }
 

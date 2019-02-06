@@ -2,6 +2,7 @@ package com.tokopedia.digital.analytics;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.app.MainApplication;
 
 /**
  * Created by sandeepgoyal on 03/01/18.
@@ -10,7 +11,7 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 public class NOTPTracking extends UnifyTracking {
 
     public static void eventSuccessNOTPVerification(String mobileNumber) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
                 NOTPAppEventTracking.Event.GenericNOTPEVENT,
                 NOTPAppEventTracking.Category.EventRechargePulsa,
                 String.format(NOTPAppEventTracking.Action.EventNOTPCategory),
@@ -19,7 +20,7 @@ public class NOTPTracking extends UnifyTracking {
     }
 
     public static void eventFailNOTPVerification(String mobileNumber) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
                 NOTPAppEventTracking.Event.GenericNOTPEVENT,
                 NOTPAppEventTracking.Category.EventRechargePulsa,
                 String.format(NOTPAppEventTracking.Action.EventNOTPCategory),
@@ -45,7 +46,7 @@ public class NOTPTracking extends UnifyTracking {
             }
 
         }
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
                 NOTPAppEventTracking.Event.GenericNOTPEVENT,
                 NOTPAppEventTracking.Category.EventRechargePulsa,
                 String.format(NOTPAppEventTracking.Action.EventNOTPConfiguration),

@@ -379,7 +379,7 @@ public class Utils {
     }
 
     public static class Constants {
-        public final static String ISSEATINGEVENT = "isseatingevent";
+        public final static String BOOK = "book";
         public final static String EXTRA_EVENT_CALENDAR = "EVENTCALENDAR";
         public final static String THEMEPARK = "hiburan";
         public final static String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
@@ -395,6 +395,8 @@ public class Utils {
         public static final int SELECT_TICKET_REQUEST = 1902;
         public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
         public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
+        public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
+        public static String EXTRA_VERIFY_RESPONSE = "verifyresponse";
         static String PROMOCODE = "promocode";
         static String PROMOCODE_DISCOUNT = "promocode_discount";
         static String PROMO_CASHBACK = "promocode_cashback";

@@ -2,4 +2,6 @@
     <string name="app_name">Wishlist Common</string>
 
     <string name="msg_error_add_wishlist">Gagal menambahkan wishlist</string>
+    <string name="msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_success_remove_wishlist">Sukses menghapus wishlist</string>
 </resources>

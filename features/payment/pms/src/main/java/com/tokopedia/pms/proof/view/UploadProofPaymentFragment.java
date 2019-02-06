@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -61,6 +62,8 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     private Button buttonChooseAnotherImage;
     private TextView titleUploadImage;
     private ProgressDialog progressDialog;
+    private View containerMainUpload;
+    private ProgressBar progressBar;
 
     private String imageUrl = "";
     private boolean isUploaded;
@@ -105,6 +108,8 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
         titleUploadImage = view.findViewById(R.id.text_confirmation);
         imageViewProof = view.findViewById(R.id.image_payment);
         buttonSave = view.findViewById(R.id.button_save);
+        containerMainUpload = view.findViewById(R.id.container_main_upload);
+        progressBar = view.findViewById(R.id.progress_bar);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,12 +134,19 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        uploadProofPaymentPresenter.getProofPayment(paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(), getResources());
+    }
+
     public void resetImageUrl() {
         imageUrl = "";
     }
 
     private void invalidateView() {
         if(!TextUtils.isEmpty(imageUrl)){
+            ImageHandler.LoadImage(imageViewProof, imageUrl);
             containerImageUpload.setVisibility(View.VISIBLE);
             containerHelpUploadProof.setVisibility(View.GONE);
             if(isUploaded) {
@@ -186,7 +198,6 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
             }
             isUploaded = false;
             invalidateView();
-            ImageHandler.LoadImage(imageViewProof, imageUrl);
         }
     }
 
@@ -206,6 +217,30 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     @Override
     public void hideLoadingDialog() {
         progressDialog.hide();
+    }
+
+    @Override
+    public void showLoadingMain() {
+        containerMainUpload.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingMain() {
+        containerMainUpload.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSuccessGetImageProof(String imageUrl) {
+        this.imageUrl = imageUrl;
+        this.isUploaded = true;
+        invalidateView();
+    }
+
+    @Override
+    public void onErrorGetImageProof(Throwable e) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override

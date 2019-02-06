@@ -36,7 +36,7 @@
     <string name="see_all_promo">Lihat Semua\nPromo</string>
     <string name="return_to_feed">Kembali ke Feed</string>
     <string name="recent_view">Terakhir Dilihat</string>
-    <string name="you_have_new_feed">Feed baru</string>
+    <string name="you_have_new_feed">Post Terbaru</string>
     <string name="share_gplus">Google+</string>
     <string name="share_fb">Facebook</string>
     <string name="share_twitter">Twitter</string>
@@ -71,5 +71,11 @@
 
     <string name="string_btn_whitelist">Buat Post</string>
 
-    <string name="feed_content_reported">Konten sudah dilaporkan</string>
+    <string name="feed_content_reported">Konten berhasil dilaporkan</string>
+    <string name="feed_see_shop">Lihat Toko</string>
+    <string name="feed_see_profile">Lihat Profil</string>
+    <string name="feed_report">Laporkan</string>
+    <string name="feed_delete">Hapus</string>
+    <string name="feed_cancel">Batal</string>
+    <string name="feed_non_login_title">Mau tahu update terbaru Toko dan Konten kesayanganmu?</string>
 </resources>

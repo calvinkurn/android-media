@@ -10,17 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.recentview.R;
+import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.analytics.RecentViewTracking;
 import com.tokopedia.recentview.di.DaggerRecentViewComponent;
-import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl;
@@ -48,7 +45,6 @@ public class RecentViewFragment extends BaseDaggerFragment
 
     private RecyclerView recyclerView;
     private RecentViewDetailAdapter adapter;
-    private TkpdProgressDialog progressDialog;
     private LinearLayoutManager layoutManager;
 
     @Inject
@@ -130,13 +126,18 @@ public class RecentViewFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productId) {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+    public void onGoToProductDetail(String productId,
+                                    String productName,
+                                    String  productPrice,
+                                    String productImage) {
+        if (getActivity() != null &&
+                getActivity().getApplication() instanceof RecentViewRouter) {
+            ((RecentViewRouter) getActivity().getApplication()).goToProductDetail(
                     getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .build()
+                    productId,
+                    productImage,
+                    productName,
+                    productPrice
             );
         }
     }
@@ -148,11 +149,7 @@ public class RecentViewFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
-        if (getActivity() != null)
-            progressDialog.showDialog();
     }
 
     @Override
@@ -232,7 +229,7 @@ public class RecentViewFragment extends BaseDaggerFragment
             }
         }
 
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_success_add_wishlist));
     }
 
     @Override
@@ -257,12 +254,11 @@ public class RecentViewFragment extends BaseDaggerFragment
             }
         }
 
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_success_remove_wishlist));
     }
 
     @Override
     public void dismissLoadingProgress() {
-        if (progressDialog != null && progressDialog.isProgress())
-            progressDialog.dismiss();
+
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.flight.cancellation.di;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationChooseReasonFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationListFragment;
@@ -34,4 +35,6 @@ public interface FlightCancellationComponent {
     void inject(FlightCancellationListFragment flightCancellationListFragment);
 
     void inject(FlightCancellationDetailFragment flightCancellationDetailFragment);
+
+    void inject(FlightCancellationChooseReasonFragment flightCancellationChooseReasonFragment);
 }

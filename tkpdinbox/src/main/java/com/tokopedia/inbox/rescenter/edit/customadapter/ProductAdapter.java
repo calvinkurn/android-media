@@ -13,7 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.PassProductTrouble;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.ProductData;

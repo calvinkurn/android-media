@@ -44,6 +44,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -52,6 +55,9 @@ dependencies {
     }
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -81,6 +87,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.viewDependencies.appIntro
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../publish_local.gradle'

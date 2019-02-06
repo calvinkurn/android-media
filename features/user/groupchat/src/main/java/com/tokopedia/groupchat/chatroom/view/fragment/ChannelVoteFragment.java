@@ -168,6 +168,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         KeyboardHandler.DropKeyboard(getContext(), getView());
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
+        if (getActivity() instanceof GroupChatContract.View) {
+            ((GroupChatContract.View) getActivity()).showInfoDialog();
+        }
     }
 
     @Override
@@ -254,7 +257,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
                     ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
                             (getActivity(), voteInfoViewModel.getVoteInfoUrl());
-                    analytics.eventActionClickVoteInfo();
+                    if(getActivity() instanceof GroupChatActivity) {
+                        analytics.eventActionClickVoteInfo
+                                (String.format("%s - %s"
+                                        , ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getChannelId()
+                                        , voteInfoViewModel.getVoteInfoUrl()));
+                    }
                 }
 
             }
@@ -334,7 +342,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
+                    && !voted) {
                 analytics.eventClickVote(
                         element.getType(),
                         ((GroupChatContract.View) getActivity()).

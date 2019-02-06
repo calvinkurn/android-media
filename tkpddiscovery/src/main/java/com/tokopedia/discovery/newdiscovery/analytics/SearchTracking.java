@@ -7,10 +7,16 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.*;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -19,7 +25,36 @@ import java.util.Map;
 public class SearchTracking {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+    public static final String EVENT = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String ECOMMERCE = "ecommerce";
+    public static final String EVENT_EMPTY = "";
+    public static final String EVENT_CATEGORY_SEARCH_RESULT_PROFILE = "search result profile";
+    public static final String EVENT_ACTION_CLICK_PROFILE_RESULT = "click - profile result";
+    public static final String PROMO_CLICK = "promoClick";
+    public static final String PROMOTIONS = "promotions";
+    public static final String VALUE_FOLLOW = "follow";
+    public static final String VALUE_UNFOLLOW = "unfollow";
+    public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
+    public static final String EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE = "click - %s profile";
+    public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
+    public static final String PROMO_VIEW = "promoView";
+    public static final String EVENT_ACTION_IMPORESSION_PROFILE = "imporession - profile";
     public static String imageClick = "/imagesearch - p%s";
+
+    private AnalyticTracker tracker;
+    private UserSessionInterface userSessionInterface;
+
+    @Inject
+    public SearchTracking(Context context, UserSessionInterface userSessionInterface) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        this.tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        this.userSessionInterface = userSessionInterface;
+    }
 
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
@@ -413,6 +448,102 @@ public class SearchTracking {
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.NO_SEARCH_RESULT,
                 "keyword: " + keyword + " - tab: " + screenName + " - param: " + generateFilterEventLabel(selectedFilter)
+        );
+    }
+
+    public void eventSearchShortcut() {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SearchConstant.EVENT, LONG_CLICK);
+        eventTracking.put(SearchConstant.EVENT_CATEGORY, LONG_PRESS);
+        eventTracking.put(SearchConstant.EVENT_ACTION, CLICK_CARI);
+        eventTracking.put(SearchConstant.EVENT_LABEL, PRODUCT_SEARCH);
+        eventTracking.put(USER_ID, userSessionInterface.isLoggedIn() ? userSessionInterface.getUserId() : "0");
+
+        tracker.sendEventTracking(eventTracking);
+    }
+
+    public static void eventUserClickProfileResultInTabProfile(Context context,
+                                                               List<Object> profileData,
+                                                               String keyword) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_SEARCH_RESULT,
+                        EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_PROFILE_RESULT,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                PROMO_CLICK, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(
+                                                profileData.toArray(new Object[profileData.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void eventClickFollowActionProfileResultProfileTab(Context context,
+                                                                     String keyword,
+                                                                     boolean isFollow,
+                                                                     String profileName,
+                                                                     String profileId,
+                                                                     int position) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        String foKey = "";
+        if (isFollow) {
+            foKey = VALUE_FOLLOW;
+        } else {
+            foKey = VALUE_UNFOLLOW;
+        }
+
+        tracker.sendEventTracking(
+                EVENT_CLICK_SEARCH_RESULT,
+                EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
+                String.format(
+                        EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE,
+                        foKey
+                ),
+                String.format(
+                        EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE,
+                        keyword,
+                        profileName.toLowerCase(),
+                        profileId,
+                        position
+                )
+        );
+    }
+
+    public static void eventUserImpressionProfileResultInTabProfile(Context context,
+                                                               List<Object> profileData,
+                                                               String keyword) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        EVENT, PROMO_VIEW,
+                        EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
+                        EVENT_ACTION, EVENT_ACTION_IMPORESSION_PROFILE,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                PROMO_VIEW, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(
+                                                profileData.toArray(new Object[profileData.size()])
+                                        )
+                                )
+                        )
+                )
         );
     }
 }

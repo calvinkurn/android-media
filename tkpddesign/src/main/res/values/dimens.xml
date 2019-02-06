@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-
     <dimen name="dp_minus8">-8dp</dimen>
     <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
     <dimen name="dp_minus4">-4dp</dimen>
@@ -39,8 +38,10 @@
     <dimen name="dp_45">45dp</dimen> <!-- not recommended -->
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
+    <dimen name="dp_52">52dp</dimen> <!-- not recommended -->
     <dimen name="dp_56">56dp</dimen> <!-- not recommended -->
     <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_72">72dp</dimen>
     <dimen name="dp_75">75dp</dimen>
     <dimen name="dp_78">78dp</dimen> <!-- not recommended -->
@@ -59,11 +60,14 @@
     <dimen name="dp_160">160dp</dimen> <!-- not recommended -->
     <dimen name="dp_180">180dp</dimen> <!-- not recommended -->
     <dimen name="dp_200">200dp</dimen> <!-- not recommended -->
+    <dimen name="dp_210">210dp</dimen> <!-- not recommended -->
+    <dimen name="dp_220">220dp</dimen> <!-- not recommended -->
     <dimen name="dp_230">230dp</dimen> <!-- not recommended -->
     <dimen name="dp_240">240dp</dimen> <!-- not recommended -->
     <dimen name="dp_121">121dp</dimen> <!-- not recommended -->
     <dimen name="dp_250">250dp</dimen> <!-- not recommended -->
     <dimen name="dp_280">280dp</dimen> <!-- not recommended -->
+    <dimen name="dp_290">290dp</dimen> <!-- not recommended -->
     <dimen name="dp_300">300dp</dimen> <!-- not recommended -->
     <dimen name="dp_340">340dp</dimen> <!-- not recommended -->
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
@@ -91,4 +95,10 @@
     <dimen name="sp_56">56sp</dimen>
     <dimen name="dep_64">64dp</dimen>
     <integer name="int_3">3</integer>
+    <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="ktp_view_width" >170dp</dimen>
+    <dimen name="ktp_view_height" >110dp</dimen>
+    <dimen name="hc_oval_width">33dp</dimen>
+    <dimen name="hc_oval_height">64dp</dimen>
+    <dimen name="hc_ktp_height">93dp</dimen>
 </resources>

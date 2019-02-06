@@ -39,7 +39,7 @@ public interface TrainRepository {
 
     Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam);
 
-    Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId);
+    Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId, int scheduleVariant);
 
     Observable<TrainScheduleViewModel> getDetailSchedule(String idSchedule);
 

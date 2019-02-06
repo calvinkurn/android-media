@@ -161,11 +161,11 @@ public class SolutionListFragment extends BaseDaggerFragment
         presenter.solutionClicked(solutionViewModel);
         if (isEditAppeal) {
             if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditPage(
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSolutionEditPage(
                         editAppealSolutionModel.resolutionId,
                         solutionViewModel.getSolutionName()));
             } else {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealPage(
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSolutionAppealPage(
                         editAppealSolutionModel.resolutionId,
                         solutionViewModel.getSolutionName()));
             }
@@ -258,11 +258,11 @@ public class SolutionListFragment extends BaseDaggerFragment
         if (isEditAppeal) {
             for (SolutionViewModel model : solutionResponseViewModel.getSolutionViewModelList()) {
                 if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditPage(
+                    UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatImpressionSolutionEditPage(
                             editAppealSolutionModel.resolutionId, model.getSolutionName()
                     ));
                 } else {
-                    UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionAppealPage(
+                    UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatImpressionSolutionAppealPage(
                             editAppealSolutionModel.resolutionId, model.getSolutionName()
                     ));
                 }

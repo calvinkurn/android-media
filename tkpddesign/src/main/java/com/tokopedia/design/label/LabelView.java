@@ -296,4 +296,20 @@ public class LabelView extends BaseCustomView {
         }
         return counter;
     }
+
+    public void setContentClick(View.OnClickListener onClickListener){
+        if (onClickListener == null){
+            this.contentTextView.setClickable(false);
+        } else {
+            this.contentTextView.setClickable(true);
+            this.contentTextView.setOnClickListener(onClickListener);
+        }
+    }
+
+    public void setSubTitle(SpannableString subtitle) {
+        subTitleTextView.setText(subtitle);
+        subTitleTextView.setVisibility(TextUtils.isEmpty(subtitle) ? View.GONE : View.VISIBLE);
+        invalidate();
+        requestLayout();
+    }
 }

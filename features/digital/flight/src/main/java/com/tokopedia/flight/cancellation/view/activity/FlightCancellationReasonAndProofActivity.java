@@ -15,16 +15,21 @@ import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonAndProofFragment;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
+import com.tokopedia.imageuploader.data.ProgressResponseBody;
+import com.tokopedia.imageuploader.di.ImageUploaderModule;
 
 /**
  * @author by alvarisi on 3/26/18.
  */
-public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener {
+public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
+        implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener,
+        ProgressResponseBody.ProgressListener{
+
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
-    public static final int REQUEST_REFUND_CANCELLATION = 1;
-    private static final int REFUND_STEPS_NUMBER = 3;
+    private static final int REQUEST_REVIEW_CODE = 1;
     private FlightCancellationWrapperViewModel cancellationWrapperViewModel;
     private FlightCancellationComponent cancellationComponent;
+    private FlightCancellationReasonAndProofFragment fragment;
 
     public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel viewModel) {
         Intent intent = new Intent(activity, FlightCancellationReasonAndProofActivity.class);
@@ -41,7 +46,11 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightCancellationReasonAndProofFragment.newInstance(cancellationWrapperViewModel);
+        if (fragment == null) {
+            fragment = FlightCancellationReasonAndProofFragment.newInstance(cancellationWrapperViewModel);
+        }
+
+        return fragment;
     }
 
     @Override
@@ -56,6 +65,7 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
         if (getApplication() instanceof FlightModuleRouter) {
             cancellationComponent = DaggerFlightCancellationComponent.builder()
                     .flightComponent(getFlightComponent())
+                    .imageUploaderModule(new ImageUploaderModule(this))
                     .build();
         } else {
             throw new RuntimeException("Application must implement FlightModuleRouter");
@@ -79,16 +89,18 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     }
 
     @Override
-    public void goToEstimateReview(FlightCancellationWrapperViewModel viewModel) {
-        startActivityForResult(FlightCancellationRefundDetailActivity
-                .getCallingIntent(this, viewModel, REFUND_STEPS_NUMBER), REQUEST_REFUND_CANCELLATION);
+    public void goToReview(FlightCancellationWrapperViewModel viewModel) {
+
+        startActivityForResult(FlightCancellationReviewActivity.createIntent(this,
+                viewModel.getInvoice(), viewModel),
+                REQUEST_REVIEW_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-            case REQUEST_REFUND_CANCELLATION:
+            case REQUEST_REVIEW_CODE:
                 if (resultCode == Activity.RESULT_OK){
                     closeReasonAndProofPage();
                 }else {
@@ -103,5 +115,12 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     private void closeReasonAndProofPage() {
         setResult(Activity.RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void update(long bytesRead, long contentLength, boolean done) {
+        if (contentLength > 0) {
+            fragment.updateUploadingProgress(bytesRead / contentLength);
+        }
     }
 }

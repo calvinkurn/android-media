@@ -9,13 +9,14 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.ticker.SelectableSpannedMovementMethod
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
+import com.tokopedia.talk.common.util.BranchLinkHandlerListener
+import com.tokopedia.talk.common.util.BranchLinkHandlerMovementMethod
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import kotlinx.android.synthetic.main.inbox_talk_item.view.*
@@ -36,14 +37,14 @@ open class InboxTalkItemViewHolder(val v: View,
                                    private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener) :
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
-    interface TalkItemListener {
+    interface TalkItemListener : BranchLinkHandlerListener {
         fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String)
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
-        fun onGoToPdp(productId: String)
         fun onGoToUserProfile(userId: String)
         fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String)
+        fun onGoToPdpFromProductItemHeader(productId: String)
     }
 
     protected val productName: TextView = itemView.productName
@@ -151,7 +152,7 @@ open class InboxTalkItemViewHolder(val v: View,
 
         talkContent.visibility = View.VISIBLE
         talkContent.text = MethodChecker.fromHtml(element.talkThread.headThread.comment)
-        talkContent.movementMethod = SelectableSpannedMovementMethod()
+        talkContent.movementMethod = BranchLinkHandlerMovementMethod(listener)
     }
 
     protected fun setProfileHeader(element: InboxTalkItemViewModel) {
@@ -176,10 +177,10 @@ open class InboxTalkItemViewHolder(val v: View,
                 element.productHeader.productAvatar)
 
         productName.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productId)
+            listener.onGoToPdpFromProductItemHeader(element.productHeader.productId)
         }
         productAvatar.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productId)
+            listener.onGoToPdpFromProductItemHeader(element.productHeader.productId)
         }
     }
 

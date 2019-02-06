@@ -1,13 +1,11 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,19 +15,18 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
 import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoShopActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -82,7 +79,8 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
                         public void onClick(View view) {
                             bottomSheetView.dismiss();
 
-                            Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+                            Intent intent = ((TopAdsManagementRouter)getActivity().getApplication())
+                                    .getTopAdsAddCreditIntent(getActivity());
                             TopAdsDetailShopFragment.this.startActivity(intent);
                         }
                     });

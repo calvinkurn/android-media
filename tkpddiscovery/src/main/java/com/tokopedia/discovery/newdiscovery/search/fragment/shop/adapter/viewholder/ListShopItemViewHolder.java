@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
@@ -17,5 +18,15 @@ public class ListShopItemViewHolder extends GridShopItemViewHolder {
 
     public ListShopItemViewHolder(View itemView, ShopListener itemClickListener) {
         super(itemView, itemClickListener);
+    }
+
+    @Override
+    protected int getPreviewImageSize(Context context) {
+        return (int)context.getResources().getDimension(R.dimen.shop_item_preview_size);
+    }
+
+    @Override
+    protected void hideShopPreviewItems(View viewPreviewItems) {
+        viewPreviewItems.setVisibility(View.GONE);
     }
 }

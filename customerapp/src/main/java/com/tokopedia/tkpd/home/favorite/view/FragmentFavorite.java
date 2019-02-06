@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -52,6 +53,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         SwipeRefreshLayout.OnRefreshListener {
 
     private static final long DURATION_ANIMATOR = 1000;
+    private static final String FAVORITE_TRACE = "mp_favourite_shop";
 
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -72,7 +74,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     private boolean isTopAdsShopNetworkFailed;
     private View favoriteShopViewSelected;
     private TopAdsShopItem shopItemSelected;
-    private Trace trace;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static Fragment newInstance() {
         return new FragmentFavorite();
@@ -80,7 +82,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        trace = TrackingUtils.startTrace("favorite_trace");
+        performanceMonitoring = PerformanceMonitoring.start(FAVORITE_TRACE);
         super.onCreate(savedInstanceState);
     }
 
@@ -162,7 +164,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 } else {
                     favoritePresenter.loadInitialData();
                 }
-                ScreenTracking.screen(getScreenName());
+                ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
             } else {
                 if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
@@ -234,7 +236,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
-        TrackingUtils.sendMoEngageOpenFavoriteEvent(dataFavorite.size());
+        TrackingUtils.sendMoEngageOpenFavoriteEvent(getActivity(), dataFavorite.size());
     }
 
     @Override
@@ -253,10 +255,12 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
         recylerviewScrollListener.resetState();
-        if (trace != null)
-            trace.stop();
     }
 
+    @Override
+    public void stopTracePerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
+    }
 
     @Override
     public void showErrorLoadMore() {

@@ -4,44 +4,88 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_8"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/padding_4"
     android:paddingTop="@dimen/padding_4">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/image_container"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/bg_flight_gray_rounded_dashed">
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:background="@drawable/bg_flight_gray_rounded_dashed"
+        android:padding="@dimen/dp_1">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_attachment"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:srcCompat="@drawable/ic_flight_camera" />
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerInParent="true"
+            app:srcCompat="@drawable/ic_upload_photo" />
 
-    </FrameLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_view_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/black_70"
+            android:gravity="center_horizontal"
+            android:text="@string/flight_cancellation_reason_view_image_label"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
-     <LinearLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_toEndOf="@+id/image_container"
-         android:layout_toRightOf="@+id/image_container"
-         android:orientation="horizontal"
-         android:padding="@dimen/padding_16">
+    </RelativeLayout>
 
-         <android.support.v7.widget.AppCompatTextView
-             android:id="@+id/tv_filename"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:drawablePadding="@dimen/padding_16"
-             android:drawableRight="@drawable/ic_flight_cross"
-             android:drawableEnd="@drawable/ic_flight_cross"
-             android:layout_gravity="center_vertical"
-             android:lines="1"
-             android:ellipsize="end"
-             tools:text="3341aaaa3asdfa12313143413.JPG" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/image_container"
+        android:layout_toRightOf="@+id/image_container"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_16"
+        android:paddingRight="@dimen/padding_16">
 
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_passenger_name"
+            style="@style/TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            tools:text="Nama Penumpang" />
 
-     </LinearLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_filename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:lines="1"
+            android:visibility="gone"
+            tools:text="3341aaaa3asdfa123asdf13143413.JPG"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tv_change_image"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Micro.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/flight_booking_passenger_change_label" />
+    </LinearLayout>
 </LinearLayout>

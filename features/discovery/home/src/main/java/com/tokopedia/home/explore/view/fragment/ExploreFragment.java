@@ -6,32 +6,31 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
+import com.tokopedia.home.explore.di.ExploreComponent;
+import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.user.session.UserSession;
+
+import javax.inject.Inject;
 
 /**
  * Created by errysuprayogi on 1/26/18.
@@ -46,6 +45,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public static final int TYPE_AJUKAN = 3;
     public static final int TYPE_JUAL = 4;
     private static final String NAME_PINJAMAN_ONLINE = "Pinjaman Online";
+
+    @Inject
+    UserSession userSession;
 
     private int TYPE_FRAGMENT;
 
@@ -69,7 +71,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     protected void initInjector() {
-
+        if(getActivity() != null) {
+            ExploreComponent component = DaggerExploreComponent.builder().baseAppComponent(
+                    ((BaseMainApplication) getActivity().getApplication()
+            ).getBaseAppComponent()).build();
+            component.inject(this);
+        }
     }
 
     @Override
@@ -115,7 +122,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void onMarketPlaceItemClicked(LayoutRows data) {
-        TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), data.getName());
         ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(
                 getActivity(),
                 String.valueOf(data.getCategoryId()),
@@ -125,20 +132,19 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void onDigitalItemClicked(LayoutRows data) {
-        if (((TkpdCoreRouter) getActivity().getApplication())
-                .isSupportedDelegateDeepLink(data.getApplinks())) {
-            DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                    .appLinks(data.getApplinks())
-                    .categoryId(String.valueOf(data.getCategoryId()))
-                    .categoryName(data.getName())
-                    .url(data.getUrl())
-                    .build();
-            ((IHomeRouter) getActivity().getApplication()).onDigitalItemClick(getActivity(),
-                    passData, data.getApplinks());
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof IHomeRouter
+                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(data.getApplinks())) {
+            ((IHomeRouter) getActivity().getApplication()).onDigitalItemClickFromExploreHome(
+                    getActivity(),
+                    data.getApplinks(),
+                    String.valueOf(data.getCategoryId()),
+                    data.getName(),
+                    data.getUrl());
         } else {
             onGimickItemClicked(data);
         }
-        TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), data.getName());
     }
 
     @Override
@@ -152,7 +158,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    Uri.encode(redirectUrl), MainApplication.getAppContext());
+                    Uri.encode(redirectUrl),
+                    userSession.getDeviceId(),
+                    userSession.getUserId());
             openWebViewGimicURL(resultGenerateUrl, data.getUrl(), data.getName());
         }
     }
@@ -162,30 +170,35 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         switch (TYPE_FRAGMENT) {
             case TYPE_BELI:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.BELI_INI_ITU_CLICK,
                         String.format("%s - %s", data.getCategoryId(), data.getName())
                 );
                 break;
             case TYPE_BAYAR:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.BAYAR_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_PESAN:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.PESAN_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_AJUKAN:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.AJUKAN_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_JUAL:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.JUAL_INI_ITU_CLICK,
                         data.getName()
                 );
@@ -202,68 +215,97 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void openShopSetting() {
-        String shopId = SessionHandler.getShopID(getContext());
+        String shopId = userSession.getShopId();
         if (!shopId.equals("0")) {
-            HomePageTracking.eventClickEditShop();
+            HomePageTracking.eventClickEditShop(getActivity());
             onGoToShopSetting();
         } else {
-            HomePageTracking.eventClickOpenShop();
+            HomePageTracking.eventClickOpenShop(getActivity());
             onGoToCreateShop();
         }
     }
 
     @Override
     public void onApplinkClicked(LayoutRows data) {
-        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
-        if (router.isSupportedDelegateDeepLink(data.getApplinks())) {
-            router.actionApplink(getActivity(), data.getApplinks());
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof IHomeRouter
+                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(data.getApplinks())){
+            openApplink(data.getApplinks());
         } else {
             openWebViewURL(data.getUrl(), getActivity());
         }
     }
 
+    private void openApplink(String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            ((IHomeRouter) getActivity().getApplicationContext())
+                    .goToApplinkActivity(getActivity(), applink);
+        }
+    }
+
     public void openWebViewURL(String url, Context context) {
         if (url != "" && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            context.startActivity(intent);
+            if (getActivity() != null
+                    && getActivity().getApplicationContext() instanceof IHomeRouter) {
+                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
+                        .getBannerWebViewIntent(
+                                getActivity(),
+                                url);
+                getActivity().startActivity(intent);
+                context.startActivity(intent);
+            }
         }
     }
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
-            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
-            startActivity(intent);
-            UnifyTracking.eventHomeGimmick(label);
+            if (getActivity() != null
+                    && getActivity().getApplicationContext() instanceof IHomeRouter) {
+                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
+                        .openWebViewGimicURLIntentFromExploreHome(
+                                getActivity(),
+                                url,
+                                title);
+                getActivity().startActivity(intent);
+                HomePageTracking.eventHomeGimmick(getActivity(), label);
+            }
         }
     }
 
     @Override
     public void openShop() {
-        if (SessionHandler.isV2Login(getContext())) {
-            String shopId = SessionHandler.getShopID(getContext());
+        if (userSession.isLoggedIn()) {
+            String shopId = userSession.getShopId();
             if (!shopId.equals("0")) {
                 onGoToShop(shopId);
             } else {
-                HomePageTracking.eventClickOpenShop();
+                HomePageTracking.eventClickOpenShop(getActivity());
                 onGoToCreateShop();
             }
         } else {
-            HomePageTracking.eventClickOpenShop();
+            HomePageTracking.eventClickOpenShop(getActivity());
             onGoToLogin();
         }
     }
 
     private void onGoToLogin() {
-        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        getActivity().startActivityForResult(intent, ExploreActivity.REQUEST_LOGIN);
+        if(getActivity() != null &&
+                getActivity().getApplication() instanceof IHomeRouter){
+            Intent intent = ((IHomeRouter) getActivity().getApplication()).getLoginIntent(getContext());
+            Intent intentHome = ((IHomeRouter) getActivity().getApplication()).getHomeIntent(getContext());
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            getActivity().startActivities(new Intent[]{intentHome, intent});
+            getActivity().finish();
+        }
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getActivityShopCreateEdit(getContext());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        getActivity().startActivity(intent);
+        if(getActivity() != null &&
+                getActivity().getApplication() instanceof IHomeRouter){
+            Intent intent = ((IHomeRouter) getActivity().getApplication())
+                    .getActivityShopCreateEdit(getContext());
+            getActivity().startActivity(intent);
+        }
     }
 
     private void onGoToShop(String shopId) {

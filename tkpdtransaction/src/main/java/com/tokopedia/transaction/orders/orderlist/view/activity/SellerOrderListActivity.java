@@ -14,7 +14,7 @@ public class SellerOrderListActivity extends BaseSimpleActivity{
     @Override
     protected Fragment getNewFragment() {
         Bundle arg = new Bundle();
-        arg.putString("orderCategory", OrderCategory.DIGITAL);
+        arg.putString(OrderCategory.KEY_LABEL, OrderCategory.DIGITAL);
         Fragment fragment = new OrderListFragment();
         fragment.setArguments(arg);
         return fragment;

@@ -26,6 +26,8 @@ import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
+import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 
 import javax.inject.Inject;
 
@@ -42,6 +44,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private final CacheApiClearAllUseCase cacheApiClearAllUseCase;
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
     private final GetProductListSellingUseCase getProductListSellingUseCase;
+    private final GetApprovalStatusUseCase getVerificationStatusUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
@@ -49,16 +52,18 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                                     NewNotificationUseCase newNotificationUseCase,
                                     CacheApiClearAllUseCase cacheApiClearAllUseCase,
                                     UpdateShopScheduleUseCase updateShopScheduleUseCase,
-                                    GetProductListSellingUseCase getProductListSellingUseCase) {
+                                    GetProductListSellingUseCase getProductListSellingUseCase,
+                                    GetApprovalStatusUseCase getVerificationStatusUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.newNotificationUseCase = newNotificationUseCase;
         this.cacheApiClearAllUseCase = cacheApiClearAllUseCase;
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
+        this.getVerificationStatusUseCase = getVerificationStatusUseCase;
     }
 
-    public void getShopInfoWithScore(){
+    public void getShopInfoWithScore() {
         getShopInfoWithScoreUseCase.execute(
                 RequestParams.EMPTY, getShopInfoAndScoreSubscriber());
     }
@@ -91,7 +96,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         };
     }
 
-    public void refreshShopInfo(){
+    public void refreshShopInfo() {
         cacheApiClearAllUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -111,12 +116,17 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         });
     }
 
-    public void getTicker(){
+    public void getTicker() {
         getTickerUseCase.execute(RequestParams.EMPTY, getTickerSubscriber());
     }
 
-    public void getNotification(){
-        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true),getNotificationSubscriber());
+    public void getVerificationStatus() {
+        getVerificationStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(),
+                new GetApprovalStatusSubscriber(getView().getApprovalStatusListener()));
+    }
+
+    public void getNotification() {
+        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true), getNotificationSubscriber());
     }
 
     private Subscriber<NotificationModel> getNotificationSubscriber() {
@@ -125,6 +135,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             public void onErrorGetNotificationDrawer(String errorMessage) {
                 getView().onErrorGetNotifiction(errorMessage);
             }
+
             @Override
             public void onGetNotificationDrawer(DrawerNotification drawerNotification) {
                 getView().onSuccessGetNotification(drawerNotification);
@@ -172,16 +183,16 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             @Override
             public void onNext(Boolean isSuccess) {
                 getView().hideLoading();
-                if(isSuccess){
+                if (isSuccess) {
                     getView().onSuccessOpenShop();
-                }else{
+                } else {
                     getView().onErrorOpenShop();
                 }
             }
         };
     }
 
-    public void getProductList(){
+    public void getProductList() {
         getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(0,
                 "", CatalogProductOption.WITH_AND_WITHOUT, ConditionProductOption.ALL_CONDITION, "", 0,
                 PictureStatusProductOption.WITH_AND_WITHOUT, SortProductOption.POSITION), getSubscriberGetListProduct());
@@ -204,6 +215,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             }
         };
     }
+
     @Override
     public void detachView() {
         super.detachView();
@@ -212,5 +224,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         updateShopScheduleUseCase.unsubscribe();
         cacheApiClearAllUseCase.unsubscribe();
         newNotificationUseCase.unsubscribe();
+        getVerificationStatusUseCase.unsubscribe();
     }
 }

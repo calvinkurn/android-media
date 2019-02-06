@@ -5,7 +5,7 @@ import com.tokopedia.discovery.catalog.model.CatalogInfo;
 import com.tokopedia.discovery.catalog.model.CatalogReview;
 import com.tokopedia.discovery.catalog.model.CatalogSpec;
 import com.tokopedia.core.product.listener.ViewListener;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 
 import java.util.List;
 

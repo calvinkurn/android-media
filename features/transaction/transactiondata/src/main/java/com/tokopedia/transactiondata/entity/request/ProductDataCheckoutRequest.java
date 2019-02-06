@@ -12,6 +12,9 @@ public class ProductDataCheckoutRequest {
     @SerializedName("product_id")
     @Expose
     public int productId;
+    @SerializedName("is_ppp")
+    @Expose
+    public boolean isPurchaseProtection;
 
     private String productName;
     private String productPrice;
@@ -25,9 +28,11 @@ public class ProductDataCheckoutRequest {
     private String productCategoryId;
     private String productListName;
     private String productAttribution;
+    private long cartId;
 
     private ProductDataCheckoutRequest(Builder builder) {
         productId = builder.productId;
+        isPurchaseProtection = builder.isPurchaseProtection;
         productName = builder.productName;
         productPrice = builder.productPrice;
         productBrand = builder.productBrand;
@@ -40,10 +45,15 @@ public class ProductDataCheckoutRequest {
         productCategoryId = builder.productCategoryId;
         productListName = builder.productListName;
         productAttribution = builder.productAttribution;
+        cartId = builder.cartId;
     }
 
     public int getProductId() {
         return productId;
+    }
+
+    public boolean isPurchaseProtection() {
+        return isPurchaseProtection;
     }
 
     public String getProductName() {
@@ -94,9 +104,13 @@ public class ProductDataCheckoutRequest {
         return productListName;
     }
 
+    public long getCartId() {
+        return cartId;
+    }
 
     public static final class Builder {
         private int productId;
+        private boolean isPurchaseProtection;
         private String productName;
         private String productPrice;
         private String productBrand;
@@ -109,12 +123,18 @@ public class ProductDataCheckoutRequest {
         private String productCategoryId;
         private String productListName;
         private String productAttribution;
+        private long cartId;
 
         public Builder() {
         }
 
         public Builder productId(int val) {
             productId = val;
+            return this;
+        }
+
+        public Builder purchaseProtection(boolean val) {
+            isPurchaseProtection = val;
             return this;
         }
 
@@ -175,6 +195,11 @@ public class ProductDataCheckoutRequest {
 
         public Builder productAttribution(String val) {
             productAttribution = val;
+            return this;
+        }
+
+        public Builder cartId(long val) {
+            cartId = val;
             return this;
         }
 

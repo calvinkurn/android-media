@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.manage.people.address.model.AddressModel;
-import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 
 import java.security.PublicKey;
 
@@ -22,10 +23,10 @@ import retrofit2.Converter;
 public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab);
+            boolean couponActive, String additionalStringData, int pageTracking);
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab, boolean isOneClickShipment);
+            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking);
 
     Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 
@@ -41,8 +42,6 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetWhislistIntent();
 
-    Intent checkoutModuleRouterGetInsuranceTncActivityIntent();
-
     Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor();
 
     Interceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor();
@@ -55,6 +54,8 @@ public interface ICheckoutModuleRouter {
 
     Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
 
+    Intent getGeolocationIntent(Context context, LocationPass locationPass);
+
     boolean checkoutModuleRouterGetEnableFingerprintPayment();
 
     PublicKey checkoutModuleRouterGeneratePublicKey();
@@ -64,4 +65,10 @@ public interface ICheckoutModuleRouter {
     void goToPurchasePage(Activity activity);
 
     Intent checkoutModuleRouterGetRecentViewIntent();
+
+    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
+
+    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
+
+    Intent getCodPageIntent(Context context, Data data);
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Object of this class will be dispatch over the network
  */
-final public class GraphqlRequest {
+public class GraphqlRequest {
     @Expose
     @SerializedName(GraphqlConstant.GqlApiKeys.QUERY)
     private String query; /*Mandatory parameter*/
@@ -49,6 +49,10 @@ final public class GraphqlRequest {
         return variables;
     }
 
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
+    }
+
     public String getOperationName() {
         return operationName;
     }
@@ -56,6 +60,7 @@ final public class GraphqlRequest {
     public Type getTypeOfT() {
         return typeOfT;
     }
+
 
     //Do not rewrite on remove it
     @Override

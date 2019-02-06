@@ -253,7 +253,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void trackEnhanceProduct(Map<String, Object> dataLayer) {
-        CategoryPageTracking.eventEnhance(dataLayer);
+        CategoryPageTracking.eventEnhance(getActivity(), dataLayer);
     }
 
     @Override
@@ -444,10 +444,10 @@ public class ProductFragment extends BrowseSectionFragment
                     case 3:
                         String currentCategoryId = productViewModel.getCategoryHeaderModel().getDepartementId();
                         String currentRootCategoryId = productViewModel.getCategoryHeaderModel().getRootCategoryId();
-                        UnifyTracking.eventBottomCategoryNavigation(currentRootCategoryId, currentCategoryId);
+                        UnifyTracking.eventBottomCategoryNavigation(getActivity(),currentRootCategoryId, currentCategoryId);
                         Intent intent = CategoryNavigationActivity.createInstance(getActivity(), productViewModel.getCategoryHeaderModel().getDepartementId());
                         startActivityForResult(intent, CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
-                        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
+                        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, android.R.anim.fade_out);
                         return true;
                     default:
                         return false;
@@ -724,16 +724,8 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        ProductItem productItem = new ProductItem();
-        productItem.setWishlisted(data.getProduct().isWishlist());
-        productItem.setProductID(data.getProduct().getId());
-        presenter.handleWishlistButtonClicked(productItem);
-    }
-
-    @Override
     public void onCategoryClick(ChildCategoryModel child) {
-        UnifyTracking.eventLevelCategory(productViewModel.getCategoryHeaderModel().getDepartementId()
+        UnifyTracking.eventLevelCategory(getActivity(),productViewModel.getCategoryHeaderModel().getDepartementId()
                 , child.getCategoryId());
         CategoryActivity.moveTo(
                 getActivity(),
@@ -746,7 +738,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
-        UnifyTracking.eventLevelCategory(productViewModel.getCategoryHeaderModel().getDepartementId(),
+        UnifyTracking.eventLevelCategory(getActivity(),productViewModel.getCategoryHeaderModel().getDepartementId(),
                 child.getCategoryId());
         CategoryActivity.moveTo(
                 getActivity(),
@@ -806,7 +798,7 @@ public class ProductFragment extends BrowseSectionFragment
     @Override
     protected void screenTrack() {
         if (getDepartmentId() != null && !getDepartmentId().equals("0")) {
-            ScreenTracking.eventDiscoveryScreenAuth(getDepartmentId());
+            ScreenTracking.eventDiscoveryScreenAuth(getActivity(), getDepartmentId());
         }
     }
 

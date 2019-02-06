@@ -10,7 +10,7 @@
     <string name="label_nominal_pinjaman">Nominal Pinjaman</string>
     <string name="label_search_loans">Cari Pinjaman</string>
     <string name="title_intro_slide_1">Keuntungan Menggunakan Dana Instan</string>
-    <string name="title_intro_slide_2">Pengajuan Pinjaman Hanya Membutuhkan Pofil Kredit Anda</string>
+    <string name="title_intro_slide_2">Pengajuan Pinjaman Hanya Membutuhkan Profil Kredit Anda</string>
     <string name="title_intro_slide_3">Mulai Dengan Menghubungkan Perangkat Anda Sekarang</string>
     <string name="description_intro_slide_1">Dapatkan pinjaman uang tunai tanpa jaminan dengan mudah dalam waktu kurang dari 24 jam.</string>
 
@@ -90,6 +90,7 @@
     <string name="submission_history_menu_item">Riwayat Pengajuan Dana Instan</string>
     <string name="payment_method_menu_item">Cara Pembayaran Dana Instan</string>
     <string name="help_menu_item">Bantuan</string>
+    <string name="instant_loan_clickable_link">syarat dan ketentuan</string>
 
 
 </resources>

@@ -23,8 +23,6 @@ public interface AccountHomeRouter {
 
     Intent getManageProfileIntent(Context context);
 
-    Intent getChangePasswordIntent(Context context);
-
     Intent getManageAddressIntent(Context context);
 
     void goToShopEditor(Context context);
@@ -43,7 +41,7 @@ public interface AccountHomeRouter {
 
     void goToManageCreditCard(Context context);
 
-    void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity);
+    void goToTokoCash(String applinkUrl, Activity activity);
 
     void goToSaldo(Context context);
 

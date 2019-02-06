@@ -39,14 +39,14 @@
     <string name="title_shop_score_detail_gold_badge_info">Gold Badge</string>
 
     <string name="button_go_to_seller_tokopedia_web"><![CDATA[Tips & Trick meningkatkan Performa Toko]]></string>
-    <string name="button_go_to_gm_subscribe">Berlangganan Gold Merchant</string>
+    <string name="button_go_to_gm_subscribe">Berlangganan Power Merchant</string>
     <string name="error_title_shop_score_failed">Data Gagal Ditampilkan</string>
     <string name="error_subtitle_shop_score_failed">Periksa koneksi internet Anda dan coba lagi</string>
     <string name="button_shop_score_go_to_complete_information">Info Selengkapnya</string>
     <string name="subtitle_shop_score_detail_summary_description">Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir</string>
     <string name="title_shop_score_indicator">Indikator Performa Toko</string>
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
-    <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
+    <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon %1$s hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
     <string name="title_shop_setting_location">Lokasi Pengiriman</string>
     <string name="description_shop_setting_location">Lengkapi informasi lokasi pengiriman untuk memilih layanan jasa pengiriman yang tersedia di lokasi Anda.</string>
     <string name="hint_shop_setting_location_city">Kota Asal Pengiriman</string>

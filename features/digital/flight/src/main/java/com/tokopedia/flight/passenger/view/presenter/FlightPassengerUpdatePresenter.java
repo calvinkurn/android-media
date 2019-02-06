@@ -317,15 +317,15 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
 
     private int getTitleId() {
         switch (getView().getPassengerTitlePosition()) {
-            case 0:
-                return TUAN;
             case 1:
+                return TUAN;
+            case 2:
                 if (isAdultPassenger()) {
                     return NYONYA;
                 } else if (isChildPassenger() || isInfantPassenger()) {
                     return NONA;
                 }
-            case 2:
+            case 3:
                 return NONA;
             default:
                 return TUAN;

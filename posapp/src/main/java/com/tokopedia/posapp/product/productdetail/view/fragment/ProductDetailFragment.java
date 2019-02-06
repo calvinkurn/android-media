@@ -256,9 +256,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
+    public void onByMeClicked(AffiliateInfoViewModel affiliate, boolean isRegularPdp) {
 
     }
+
 
     @Override
     public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
@@ -703,6 +704,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         headerInfoView.setListener(this);
         priceSimulationView.setListener(this);
         descriptionView.setListener(this);
+
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -728,6 +730,21 @@ public class ProductDetailFragment extends BaseDaggerFragment
             imageSources.add(productImage.getImageSrc());
         }
         return imageSources;
+    }
+
+    @Override
+    public void onProductBuySessionLogin(@NonNull ProductCartPass data, String source) {
+
+    }
+
+    @Override
+    public void renderAddToCartSuccessOpenCheckout(AddToCartResult addToCartResult) {
+
+    }
+
+    @Override
+    public boolean isFromExploreAffiliate() {
+        return false;
     }
 
     @Override

@@ -117,19 +117,16 @@ public class EventRepositoryData implements EventRepository {
     public Observable<CouponModel> postCouponInit(JsonObject requestBody) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .postCouponInit(requestBody).map(new Func1<VerifyCartResponse, CouponModel>() {
-                    @Override
-                    public CouponModel call(VerifyCartResponse verifyCartResponse) {
-                        CouponModel result = new CouponModel();
-                        result.setPromocode(verifyCartResponse.getCart().getPromocode());
-                        result.setPromocodeCashback(verifyCartResponse.getCart().getPromocodeCashback());
-                        result.setPromocodeDiscount(verifyCartResponse.getCart().getPromocodeDiscount());
-                        result.setPromocodeFailureMessage(verifyCartResponse.getCart().getPromocodeFailureMessage());
-                        result.setPromocodeSuccessMessage(verifyCartResponse.getCart().getPromocodeSuccessMessage());
-                        result.setPromocodeStatus(verifyCartResponse.getCart().getPromocodeStatus());
-                        result.setPromocodeIsCoupon(verifyCartResponse.getCart().isPromocodeIsCoupon());
-                        return result;
-                    }
+                .postCouponInit(requestBody).map(verifyCartResponse -> {
+                    CouponModel result = new CouponModel();
+                    result.setPromocode(verifyCartResponse.getCart().getPromocode());
+                    result.setPromocodeCashback(verifyCartResponse.getCart().getPromocodeCashback());
+                    result.setPromocodeDiscount(verifyCartResponse.getCart().getPromocodeDiscount());
+                    result.setPromocodeFailureMessage(verifyCartResponse.getCart().getPromocodeFailureMessage());
+                    result.setPromocodeSuccessMessage(verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                    result.setPromocodeStatus(verifyCartResponse.getCart().getPromocodeStatus());
+                    result.setPromocodeIsCoupon(verifyCartResponse.getCart().isPromocodeIsCoupon());
+                    return result;
                 });
     }
 

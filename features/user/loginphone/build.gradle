@@ -33,6 +33,9 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor   rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 

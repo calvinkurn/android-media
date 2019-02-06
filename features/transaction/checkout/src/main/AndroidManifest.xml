@@ -34,6 +34,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".view.feature.webview.CheckoutWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
         <service
             android:name=".view.feature.cartlist.UpdateCartIntentService"
             android:exported="false" />

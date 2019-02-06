@@ -34,13 +34,19 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
+
     implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
+    implementation rootProject.ext.playServicesDependencies.perfMon
 
     implementation rootProject.ext.miscDependencies.multiDex
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 
-    testImplementation rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
 }

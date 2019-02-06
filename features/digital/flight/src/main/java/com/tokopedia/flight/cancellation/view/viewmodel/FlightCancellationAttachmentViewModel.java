@@ -14,6 +14,8 @@ public class FlightCancellationAttachmentViewModel implements Visitable<FlightCa
     private String filename;
     private String filepath;
     private String imageurl;
+    private String passengerName;
+    private long percentageUpload;
 
     public FlightCancellationAttachmentViewModel() {
     }
@@ -22,6 +24,22 @@ public class FlightCancellationAttachmentViewModel implements Visitable<FlightCa
         filename = in.readString();
         filepath = in.readString();
         imageurl = in.readString();
+        passengerName = in.readString();
+        percentageUpload = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(filename);
+        dest.writeString(filepath);
+        dest.writeString(imageurl);
+        dest.writeString(passengerName);
+        dest.writeLong(percentageUpload);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightCancellationAttachmentViewModel> CREATOR = new Creator<FlightCancellationAttachmentViewModel>() {
@@ -65,6 +83,22 @@ public class FlightCancellationAttachmentViewModel implements Visitable<FlightCa
         this.imageurl = imageurl;
     }
 
+    public String getPassengerName() {
+        return passengerName;
+    }
+
+    public void setPassengerName(String passengerName) {
+        this.passengerName = passengerName;
+    }
+
+    public long getPercentageUpload() {
+        return percentageUpload;
+    }
+
+    public void setPercentageUpload(long percentageUpload) {
+        this.percentageUpload = percentageUpload;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof FlightCancellationAttachmentViewModel && (
@@ -75,15 +109,4 @@ public class FlightCancellationAttachmentViewModel implements Visitable<FlightCa
         );
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(filename);
-        parcel.writeString(filepath);
-        parcel.writeString(imageurl);
-    }
 }

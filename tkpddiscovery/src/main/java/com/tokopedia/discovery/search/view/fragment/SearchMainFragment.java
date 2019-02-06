@@ -84,7 +84,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         super.onCreate(savedInstanceState);
         initResources();
         AutoCompleteComponent component = DaggerAutoCompleteComponent.builder()
-                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
+                .baseAppComponent(((MainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
         component.inject(this);
         component.inject(presenter);

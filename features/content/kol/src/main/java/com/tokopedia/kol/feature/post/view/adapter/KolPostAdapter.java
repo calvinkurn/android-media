@@ -113,6 +113,13 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
+    public void removeItem(int position) {
+        if (this.list.size() > position) {
+            this.list.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
     public void clearData() {
         this.list.clear();
         notifyDataSetChanged();

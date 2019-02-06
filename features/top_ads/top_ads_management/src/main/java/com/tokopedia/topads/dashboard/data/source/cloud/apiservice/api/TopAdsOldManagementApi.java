@@ -8,14 +8,11 @@ import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
-import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
-import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.Product;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
-import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
@@ -38,20 +35,11 @@ import rx.Observable;
  */
 public interface TopAdsOldManagementApi {
 
-    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC)
-    Observable<Response<DataResponse<DataStatistic>>> getDashboardStatistic(@QueryMap Map<String, String> params);
-
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT)
     Observable<Response<DataResponse<DataDeposit>>> getDashboardDeposit(@QueryMap Map<String, String> params);
 
-    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_TOTAL_AD)
-    Observable<Response<DataResponse<TotalAd>>> getDashboardTotalAd(@QueryMap Map<String, String> params);
-
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_SHOP)
     Observable<Response<DataResponse<ShopAd>>> getShopAd(@QueryMap Map<String, String> params);
-
-    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
-    Observable<Response<DataResponse<List<DataCredit>>>> getDashboardCredit();
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
     Observable<Response<PageDataResponse<List<ProductAd>>>> getProductAd(@QueryMap Map<String, String> params);

@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
-import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
+import com.tokopedia.flight.search.data.api.single.response.Amenity;
 
 import java.util.ArrayList;
 import java.util.List;

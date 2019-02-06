@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">logisticinputreceiptshipment</string>
+    <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
+    <string name="title_choose_logistic_module">Pilih</string>
+    <string name="title_courier_logistic_module">Kurir</string>
+    <string name="label_awb_number_logistic_module">Nomor Resi</string>
+    <string name="label_insert_awb_logistic_module">Isi Nomor Resi</string>
+    <string name="button_order_detail_change_courier_logistic_module">Ganti Kurir</string>
+    <string name="error_no_courier_available_logistic_module">Produk in tidak dapat dikirim menggunakan kurir reguler</string>
+    <string name="title_confirm_shipment_logistic_module">Konfirmasi Pengiriman</string>
+    <string name="error_no_courier_chosen_logistic_module">Mohon Pilih Kurir</string>
+    <string name="label_select_courier_logistic_module">Kurir Pengiriman</string>
+    <string name="label_select_service_logistic_module">Tipe Pesanan</string>
+
+</resources>

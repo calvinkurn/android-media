@@ -40,6 +40,8 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
 
         boolean shouldCheckAll();
+
+        boolean isChecked(FlightCancellationPassengerViewModel passengerViewModel);
     }
 
     interface FlightPassengerAdapterListener {
@@ -198,13 +200,13 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
         public void checkAllData() {
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                passengerViewHolderList.get(index).updateCheckedButton(true);
+                passengerViewHolderList.get(index).onCheck(true);
             }
         }
 
         public void uncheckAllData() {
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                passengerViewHolderList.get(index).updateCheckedButton(false);
+                passengerViewHolderList.get(index).onCheck(false);
             }
         }
 
@@ -244,10 +246,11 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
             txtPassengerType = itemView.findViewById(R.id.tv_passenger_type);
             checkBoxPassenger = itemView.findViewById(R.id.checkbox);
-            checkBoxPassenger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            checkBoxPassenger.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    onCheck(isChecked);
+                public void onClick(View v) {
+                    onCheck(!listener.isChecked(passengerViewModel));
                 }
             });
 
@@ -279,6 +282,9 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
                 default:
                     txtPassengerType.setText(R.string.flightbooking_price_adult_label);
             }
+
+            updateCheckedButton(listener.isChecked(passengerViewModel));
+            passengerListener.checkIfAllPassengerIsChecked();
         }
 
         private void onCheck(boolean checkStatus) {

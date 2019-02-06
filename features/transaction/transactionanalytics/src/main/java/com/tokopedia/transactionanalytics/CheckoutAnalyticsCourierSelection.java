@@ -316,7 +316,16 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
                 ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
-                ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap
+                ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
+                ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void flushEnhancedECommerceGoToCheckoutStep2() {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.E_COMMERCE, null,
+                ConstantTransactionAnalytics.Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
     }
@@ -540,21 +549,25 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration) {
+    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration, boolean isCod) {
+        String label = (isCourierPromo ? "promo" : "non promo") +
+                " - " + duration + (isCod ? " - cod" : "");
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+                label
         );
     }
 
-    public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId) {
+    public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId, boolean isCod) {
+        String label = (isCourierPromo ? "promo" : "non promo") +
+                " - " + shippingProductId + (isCod ? " - cod" : "");
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHANGE_COURIER_OPTION,
-                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+                label
         );
     }
 }

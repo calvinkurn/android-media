@@ -40,7 +40,7 @@ public class InstallReceiver extends BroadcastReceiver {
                         appsflyerInstall.onReceive(receiverData.contextData, receiverData.intentData);
                         new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
 
-                        trackIfFromCampaignUrl(receiverData.intentData.getStringExtra(REFERRER));
+                        trackIfFromCampaignUrl(data.contextData, receiverData.intentData.getStringExtra(REFERRER));
                         return true;
                     }
                 })
@@ -54,11 +54,11 @@ public class InstallReceiver extends BroadcastReceiver {
                 .subscribe();
 	}
 
-    private void trackIfFromCampaignUrl(String referrer) {
+    private void trackIfFromCampaignUrl(Context context,String referrer) {
 	    Uri uri = Uri.parse(referrer);
 	    if(uri != null && DeeplinkUTMUtils.isValidCampaignUrl(uri)) {
             Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(uri);
-            UnifyTracking.eventCampaign(campaign);
+            UnifyTracking.eventCampaign(context, campaign);
         }
     }
 

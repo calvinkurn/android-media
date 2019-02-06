@@ -3,8 +3,8 @@ package com.tokopedia.topads.keyword.view.adapter.viewholder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 
 /**

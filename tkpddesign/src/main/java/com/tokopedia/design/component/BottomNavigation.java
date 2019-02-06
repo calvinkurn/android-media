@@ -881,10 +881,19 @@ public class BottomNavigation extends BottomNavigationView {
             badgeView = new BadgeView(getContext());
             mBadgeViews.put(positionItem, badgeView);
         }
-
-        badgeView.setGravityOffset(10, 3, true);
+        setBadgePosition(badgeView, badgeNumber);
         badgeView.bindTarget(getBottomNavigationItemView(positionItem));
         badgeView.setBadgeNumber(badgeNumber);
+    }
+
+    private void setBadgePosition(BadgeView badgeView, int badgeNumber) {
+        if (badgeNumber < 0) {
+            //for empty badge
+            badgeView.setGravityOffset(20, 5, true);
+        } else {
+            //for badge with number
+            badgeView.setGravityOffset(10, 3, true);
+        }
     }
 
     /**

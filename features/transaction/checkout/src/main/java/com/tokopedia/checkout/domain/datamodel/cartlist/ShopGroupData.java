@@ -26,6 +26,7 @@ public class ShopGroupData implements Parcelable {
     private String shopType;
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
+    private String shopBadge;
 
     // Total data which is calculated from cartItemDataList
     private long totalPrice;
@@ -48,6 +49,7 @@ public class ShopGroupData implements Parcelable {
         shopType = in.readString();
         isGoldMerchant = in.readByte() != 0;
         isOfficialStore = in.readByte() != 0;
+        shopBadge = in.readString();
     }
 
     @Override
@@ -64,6 +66,7 @@ public class ShopGroupData implements Parcelable {
         dest.writeString(shopType);
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
+        dest.writeString(shopBadge);
     }
 
     @Override
@@ -217,5 +220,13 @@ public class ShopGroupData implements Parcelable {
 
     public void setTotalItem(int totalItem) {
         this.totalItem = totalItem;
+    }
+
+    public String getShopBadge() {
+        return shopBadge;
+    }
+
+    public void setShopBadge(String shopBadge) {
+        this.shopBadge = shopBadge;
     }
 }

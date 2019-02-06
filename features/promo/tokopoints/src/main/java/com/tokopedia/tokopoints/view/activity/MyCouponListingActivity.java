@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.tokopedia.tokopoints.view.contract.CouponActivityContract;
 import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
 import com.tokopedia.tokopoints.view.model.CouponFilterItem;
 import com.tokopedia.tokopoints.view.presenter.CouponActivityPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.List;
@@ -54,7 +57,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         mContainerMain = findViewById(R.id.container);
         initViews();
         if (((TokopointRouter) getApplicationContext()).getSession().isLoggedIn()) {
-            mPresenter.getFilter("");
+            mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
             showLoading();
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
@@ -77,7 +80,16 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         return tokoPointComponent;
     }
 
-    @DeepLink({ApplinkConstant.COUPON_LISTING, ApplinkConstant.COUPON_LISTING2})
+    @DeepLink({ApplinkConstant.COUPON_LISTING,
+            ApplinkConstant.COUPON_LISTING2,
+            ApplinkConstant.COUPON_LISTING3,
+            ApplinkConstant.COUPON_LISTING4})
+    public static Intent getCallingIntent(Context context, @NonNull Bundle extras) {
+        Intent intent = new Intent(context, MyCouponListingActivity.class);
+        intent.putExtras(extras);
+        return intent;
+    }
+
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, MyCouponListingActivity.class);
     }
@@ -92,7 +104,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            mPresenter.getFilter("");
+            mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
             showLoading();
         } else {
             finish();
@@ -136,8 +148,15 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
                 if (fragment != null
                         && fragment.isAdded()) {
                     if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
-                        fragment.getPresenter().getCoupons(data.get(position).getId());
+                        fragment.getPresenter().setCategoryId(data.get(position).getId());
+                        fragment.getPresenter().getCoupons(fragment.getPresenter().getCategoryId());
                     }
+
+                    AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                            "click " + data.get(position),
+                            "");
                 }
             }
 
@@ -184,7 +203,8 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         if (fragment != null
                 && fragment.isAdded()) {
             if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
-                fragment.getPresenter().getCoupons(categoryId);
+                fragment.getPresenter().setCategoryId(categoryId);
+                fragment.getPresenter().getCoupons(fragment.getPresenter().getCategoryId());
             }
         }
     }

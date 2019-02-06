@@ -4,6 +4,7 @@ package com.tokopedia.gm.subscribe.view.widget.home;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -67,6 +68,31 @@ public class GmMainFeatureView extends FrameLayout {
         textViewTitleFeature = (TextView) view.findViewById(R.id.title_gm_subscribe_main_feature);
         textViewDescFeature = (TextView) view.findViewById(R.id.desc_gm_subscribe_main_feature);
         addView(view);
+    }
+
+    public void setImageViewFeature(Drawable imageDrawable){
+        this.imgFeature = imageDrawable;
+        this.imageViewFeature.setImageDrawable(imageDrawable);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setTitleFeature(@StringRes int stringRes){
+        setTitleFeature(getContext().getString(stringRes));
+    }
+
+    public void setTitleFeature(String title){
+        this.titleFeature = title;
+        this.textViewTitleFeature.setText(title);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setDescFeature(String descFeature){
+        this.descFeature = descFeature;
+        this.textViewDescFeature.setText(descFeature);
+        invalidate();
+        requestLayout();
     }
 
     @Override

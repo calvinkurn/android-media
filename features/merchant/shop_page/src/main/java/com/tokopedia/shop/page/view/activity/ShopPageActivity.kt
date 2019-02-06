@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
@@ -46,6 +47,7 @@ import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import javax.inject.Inject
@@ -59,6 +61,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopInfo: ShopInfo? = null
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
+    private var performanceMonitoring: PerformanceMonitoring? = null
 
     @Inject
     lateinit var presenter: ShopPagePresenter
@@ -92,6 +95,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        const val SHOP_TRACE = "mp_shop"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val VIEW_CONTENT = 1
@@ -147,7 +151,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(this)
         initInjector()
-        shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter)
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
+        shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter,
+                TrackingQueue(this))
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
         intent.run {
@@ -157,7 +163,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
         }
         super.onCreate(savedInstanceState)
-        shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking)
+        shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking, this)
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -294,6 +300,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
+    override fun stopPerformanceMonitor(){
+        performanceMonitoring?.stopTrace()
+    }
+
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
         setViewState(VIEW_CONTENT)
         shopInfo?.run {
@@ -334,12 +344,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopInfoFragment.updateShopInfo(this)
             }
 
-            shopPageTracking.sendScreenShopPage(this@ShopPageActivity, info.shopId)
+            shopPageTracking.sendScreenShopPage(this@ShopPageActivity, CustomDimensionShopPage.create(shopInfo))
 
             presenter.getFeedWhitelist(info.shopId)
         }
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         swipeToRefresh.isRefreshing = false
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shopPageTracking.sendAllTrackingQueue()
     }
 
     private fun addFeed() {

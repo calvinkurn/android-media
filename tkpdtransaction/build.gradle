@@ -10,7 +10,7 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+        classpath('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT') {
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
         classpath rootProject.ext.miscDependencies.hansel
@@ -21,32 +21,43 @@ project.ext {
     artifactId = 'transaction'
     groupId = 'com.tokopedia.transaction'
     versionName = "2.22"
-    artifactName ="tkpdtransaction-release"
+    artifactName = "tkpdtransaction-release"
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.logisticanalytics)
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.features.loyalty)
+    implementation rootProject.ext.playServicesDependencies.analytics
+
+    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
-    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticinputreceiptshipment)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
-
+    implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -58,24 +69,22 @@ dependencies {
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
-    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
-    implementation project(path: ':libraries:applink')
-    implementation project(path: ':libraries:user_session')
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
 }

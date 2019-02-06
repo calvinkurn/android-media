@@ -4,6 +4,7 @@
     <string name="inbox">Inbox</string>
     <string name="keranjang">Keranjang</string>
     <string name="akun">Akun</string>
+    <string name="os">Brands</string>
 
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
 
@@ -27,6 +28,9 @@
     <string name="penjualan">Penjualan</string>
     <string name="pembelian">Pembelian</string>
     <string name="komplain_saya">Komplain Saya</string>
+    <string name="update">Update</string>
+
+    <string name="info_terbaru">Info Terbaru</string>
 
     <string name="menunggu_pembayaran">Menunggu Pembayaran</string>
     <string name="menunggu_konfirmasi">Menunggu Konfirmasi</string>
@@ -48,8 +52,8 @@
     <string name="next">Selanjutnya</string>
     <string name="coupon_copy_text">Kode voucher tersalin</string>
 
-    <string name="navigation_home_label_longpress_beli">Beli</string>
-    <string name="navigation_home_label_longpress_bayar">Bayar</string>
+    <string name="navigation_home_label_longpress_beli">Cari</string>
+    <string name="navigation_home_label_longpress_share">Wishlist</string>
+    <string name="navigation_home_label_longpress_bayar">Tagihan</string>
     <string name="navigation_home_label_longpress_jual">Jual</string>
-    <string name="navigation_home_label_longpress_share">Share</string>
 </resources>

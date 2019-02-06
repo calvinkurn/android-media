@@ -14,6 +14,9 @@ public class EstimateRefundAttributeEntity {
     @SerializedName("total_value_numeric")
     @Expose
     private long valueNumeric;
+    @SerializedName("show_estimate")
+    @Expose
+    private boolean showEstimate;
 
     public EstimateRefundAttributeEntity() {
     }
@@ -24,5 +27,9 @@ public class EstimateRefundAttributeEntity {
 
     public long getValueNumeric() {
         return valueNumeric;
+    }
+
+    public boolean isShowEstimate() {
+        return showEstimate;
     }
 }

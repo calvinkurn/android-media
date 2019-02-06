@@ -44,6 +44,15 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.affiliateCommon)
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.productShare)
+    implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.gallery)
+    implementation project(rootProject.ext.features.transactioncommon)
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.applink)
@@ -52,12 +61,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
-    implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
     implementation rootProject.ext.playServicesDependencies.analytics
@@ -100,6 +111,8 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../publish_local.gradle'

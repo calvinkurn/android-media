@@ -116,20 +116,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
 
-            <com.tokopedia.tkpdpdp.customview.PriceSimulationView
-                android:id="@+id/view_price_simulation"
+            <com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView
+                android:id="@+id/view_product_info_attribute"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:layout_height="wrap_content" />
+
+            <com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView
+                android:id="@+id/view_varian_courier_simulation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <FrameLayout
                 android:id="@+id/promoContainer"
+                android:paddingLeft="@dimen/dp_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_shadow"
                 android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_2">
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -137,7 +140,6 @@
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
-                    android:paddingLeft="@dimen/dp_2"
                     android:paddingRight="@dimen/dp_2">
 
                     <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
@@ -148,56 +150,56 @@
                         android:textColor="@color/black_70"
                         android:textStyle="bold"
                         app:mvlwTitleString="@string/promo"
-                        app:mvlwTitleTextSize="@dimen/sp_14" />
+                        app:mvlwTitleTextSize="@dimen/pdp_title_text_size" />
                 </LinearLayout>
 
                 <com.tokopedia.tkpdpdp.customview.PromoWidgetView
                     android:id="@+id/view_promo_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
             </FrameLayout>
 
-            <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
-                android:id="@+id/view_shop_info"
+            <com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView
+                android:id="@+id/view_wholesale_installment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:layout_height="wrap_content">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
-                android:background="@drawable/bg_shadow_top" />
+            </com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView>
 
-            <com.tokopedia.tkpdpdp.customview.TransactionDetailView
-                android:id="@+id/view_transaction_detail"
+            <com.tokopedia.tkpdpdp.customview.ProductInfoShortView
+                android:id="@+id/view_product_info_short"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.tokopedia.tkpdpdp.customview.DetailInfoView
-                android:id="@+id/view_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout
                 android:id="@+id/video_layout"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
+                android:id="@+id/view_shop_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.tokopedia.tkpdpdp.customview.ImageFromBuyerView
+                android:id="@+id/view_image_from_buyer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:descendantFocusability="blocksDescendants"
+                android:visibility="gone"
+                />
 
             <com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView
                 android:id="@+id/view_most_helpful"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
                 android:visibility="gone" />
 
             <com.tokopedia.tkpdpdp.customview.LatestTalkView
                 android:id="@+id/view_latest_discussion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
                 android:visibility="gone" />
 
             <com.tokopedia.tkpdpdp.customview.OtherProductsView
@@ -207,6 +209,7 @@
                 android:visibility="gone" />
 
             <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
+                android:layout_margin="@dimen/dp_6"
                 android:id="@+id/topads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -261,6 +264,28 @@
         app:borderWidth="0dp"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end"
-        app:srcCompat="@drawable/ic_wishlist" />
+        app:srcCompat="@drawable/ic_wishlist_pdp" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_cod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_cod"
+        android:background="@drawable/bg_cod_label"
+        app:fontSize="small"
+        android:textColor="@color/white"
+        app:weight="medium"
+        app:drawableLeftCompat="@drawable/ic_cod"
+        android:visibility="gone"
+        android:drawablePadding="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|left|start"
+        app:layout_behavior="com.tokopedia.tkpdpdp.listener.CodBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

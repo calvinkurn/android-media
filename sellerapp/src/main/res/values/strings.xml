@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TopSeller</string>
-    <string name="extend_gold_merchant">Perpanjang Gold Merchant</string>
-    <string name="upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="extend_gold_merchant">Perpanjang %1$s</string>
+    <string name="upgrade_gold_merchant">Upgrade ke %1$s</string>
     <string name="payment_and_topup">Pembayaran dan Top Up</string>
     <string name="digital_product">Produk Digital</string>
     <string name="digital_transaction_list">Daftar Transaksi Digital</string>
@@ -27,6 +27,6 @@
     <string name="title_activity_deep_link_topseller">TopSeller</string>
 
     <string name="transaction_success">Transaksi Sukses</string>
-    <string name="featured_product_desc_should_gold_merchant">Pilih 5 produk terbaik Anda untuk ditampilkan di halaman toko. Dapatkan akses Produk Unggulan dengan berlangganan Gold Merchant.</string>
-
+    <string name="featured_product_desc_should_gold_merchant">Pilih 5 produk terbaik Anda untuk ditampilkan di halaman toko. Dapatkan akses Produk Unggulan dengan berlangganan %1$s.</string>
+    <string name="drawer_title_flash_sale">Flash Sale</string>
 </resources>

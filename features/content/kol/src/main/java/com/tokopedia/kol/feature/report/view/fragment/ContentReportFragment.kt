@@ -9,18 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
-import com.tokopedia.kol.common.util.afterTextChanged
-import com.tokopedia.kol.common.util.hideLoading
-import com.tokopedia.kol.common.util.showLoading
 import com.tokopedia.kol.feature.report.di.DaggerContentReportComponent
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.showErrorToaster
+import com.tokopedia.kotlin.extensions.view.showLoading
 import kotlinx.android.synthetic.main.fragment_content_report.*
 import javax.inject.Inject
 
@@ -103,7 +103,9 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     override fun onErrorSendReport(message: String) {
-        NetworkErrorHelper.showEmptyState(context!!, mainView, message) { sendReport() }
+        mainView.showErrorToaster(message) {
+            sendReport()
+        }
     }
 
     override fun onErrorSendReportDuplicate(message: String) {

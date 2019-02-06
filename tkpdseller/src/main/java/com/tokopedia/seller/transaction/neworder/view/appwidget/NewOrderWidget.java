@@ -81,12 +81,12 @@ public class NewOrderWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        UnifyTracking.eventWidgetInstalled();
+        UnifyTracking.eventWidgetInstalled(context);
     }
 
     @Override
     public void onDisabled(Context context) {
-        UnifyTracking.eventWidgetRemoved();
+        UnifyTracking.eventWidgetRemoved(context);
     }
 
     @Override

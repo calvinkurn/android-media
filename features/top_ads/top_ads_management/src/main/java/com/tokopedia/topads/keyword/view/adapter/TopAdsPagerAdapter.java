@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNegativeListFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordPositiveListFragment;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsOldKeywordListFragment;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsOldKeywordNegativeListFragment;
 
 /**
  * @author normansyahputa on 5/19/17.

@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class OrderLabelList {
 
-    @SerializedName("label")
+    @SerializedName("labelBhasa")
     @Expose
-    String label;
+    String labelBhasa;
 
 
     @SerializedName("orderCategory")
@@ -15,8 +15,8 @@ public class OrderLabelList {
 
     String orderCategory;
 
-    public String getLabel() {
-        return label;
+    public String getLabelBhasa() {
+        return labelBhasa;
     }
 
 

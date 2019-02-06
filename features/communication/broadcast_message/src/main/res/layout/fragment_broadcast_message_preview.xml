@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingStart="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingEnd="@dimen/dp_24">
+
+        <TextView style="@style/TextView.Micro.BlackDisabled"
+            android:text="@string/preview_desc"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="2sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/tv_preview_descr"/>
+
+        <View android:id="@+id/preview_device_outer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_device_grey"
+            app:layout_constraintTop_toBottomOf="@+id/tv_preview_descr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/dp_24"/>
+
+        <View android:id="@+id/preview_device_screen"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_72"
+            app:layout_constraintLeft_toLeftOf="@+id/preview_device_outer"
+            app:layout_constraintStart_toStartOf="@+id/preview_device_outer"
+            app:layout_constraintTop_toTopOf="@+id/preview_device_outer"
+            app:layout_constraintBottom_toBottomOf="@+id/preview_device_outer"
+            app:layout_constraintRight_toRightOf="@+id/preview_device_outer"
+            app:layout_constraintEnd_toEndOf="@+id/preview_device_outer"/>
+
+        <ImageView android:id="@+id/image_sender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            app:srcCompat="@drawable/ic_bm_sender_placeholder"
+            app:layout_constraintLeft_toLeftOf="@+id/preview_device_screen"
+            app:layout_constraintStart_toStartOf="@+id/preview_device_screen"
+            app:layout_constraintTop_toTopOf="@+id/preview_device_screen"/>
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/tv_loader_name"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:custom_color="@color/grey_200"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.6"
+            app:layout_constraintLeft_toRightOf="@+id/image_sender"
+            app:layout_constraintStart_toEndOf="@+id/image_sender"
+            app:layout_constraintRight_toRightOf="@+id/preview_device_screen"
+            app:layout_constraintEnd_toEndOf="@+id/preview_device_screen"
+            app:layout_constraintTop_toTopOf="@+id/image_sender"
+            app:layout_constraintBottom_toTopOf="@+id/tv_loader_desc"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/tv_loader_desc"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_6"
+            app:custom_color="@color/grey_200"
+            app:corners="@integer/corner_radius_shimmering"
+            app:width_weight="0.4"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_loader_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_loader_name"
+            app:layout_constraintRight_toRightOf="@+id/tv_loader_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_loader_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_loader_name"
+            app:layout_constraintBottom_toBottomOf="@+id/image_sender"/>
+
+        <View android:id="@+id/top_divider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/grey_200"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintLeft_toLeftOf="@+id/preview_device_screen"
+            app:layout_constraintStart_toStartOf="@+id/preview_device_screen"
+            app:layout_constraintRight_toRightOf="@+id/preview_device_screen"
+            app:layout_constraintEnd_toEndOf="@+id/preview_device_screen"
+            app:layout_constraintTop_toBottomOf="@+id/image_sender"/>
+
+        <ScrollView android:id="@+id/scroll_view"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintLeft_toLeftOf="@+id/preview_device_screen"
+            app:layout_constraintStart_toStartOf="@+id/preview_device_screen"
+            app:layout_constraintRight_toRightOf="@+id/preview_device_screen"
+            app:layout_constraintEnd_toEndOf="@+id/preview_device_screen"
+            app:layout_constraintTop_toBottomOf="@+id/top_divider"
+            app:layout_constraintBottom_toBottomOf="@+id/preview_device_screen">
+
+            <LinearLayout android:id="@+id/container_screen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_16">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_group_chat_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/cardview_light_background"
+                    app:cardCornerRadius="@dimen/dp_12"
+                    app:cardElevation="0dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/image"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_shop_default_empty"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            android:visibility="visible"
+                            tools:visibility="visible"/>
+
+                        <TextView android:id="@+id/see_now"
+                            android:layout_width="match_parent"
+                            style="@style/TextView.Micro.WhitePrimary"
+                            android:text="@string/see_now"
+                            android:background="@color/tkpd_main_green"
+                            android:padding="@dimen/dp_8"
+                            android:gravity="center_horizontal"/>
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout android:id="@+id/container_product_attach"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/preview_left_bubble"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:padding="@dimen/dp_10">
+
+                    <TextView style="@style/TextView.Title"
+                        android:id="@+id/message"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        tools:text="@string/temp_message"/>
+
+                </FrameLayout>
+
+                <TextView style="@style/TextView.Micro.BlackDisabled"
+                    android:id="@+id/time_message"
+                    android:layout_marginTop="@dimen/dp_6"
+                    tools:text="@string/temp_message_time"
+                    android:gravity="center"
+                    android:drawableRight="@drawable/ic_broadcast_message_grey"
+                    android:drawableEnd="@drawable/ic_broadcast_message_grey"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <FrameLayout android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/overlay_background"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</FrameLayout>

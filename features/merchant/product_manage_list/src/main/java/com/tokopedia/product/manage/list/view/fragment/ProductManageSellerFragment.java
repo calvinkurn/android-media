@@ -129,7 +129,7 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
             tvDraftProductInfo.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventManageProductClicked(AppEventTracking.EventLabel.DRAFT_PRODUCT);
+                    UnifyTracking.eventManageProductClicked(getActivity(), AppEventTracking.EventLabel.DRAFT_PRODUCT);
                     startActivity(new Intent(getActivity(), ProductDraftListActivity.class));
                 }
             });

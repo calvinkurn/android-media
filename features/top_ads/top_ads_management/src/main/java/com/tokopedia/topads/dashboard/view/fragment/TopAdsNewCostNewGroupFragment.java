@@ -84,9 +84,9 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
 
     private void trackingNewCostTopads() {
         if (detailAd != null && detailAd.isBudget()) {
-            UnifyTracking.eventTopAdsProductAddPromoStep2(AppEventTracking.EventLabel.BUDGET_PER_DAY);
+            UnifyTracking.eventTopAdsProductAddPromoStep2(getActivity(), AppEventTracking.EventLabel.BUDGET_PER_DAY);
         } else {
-            UnifyTracking.eventTopAdsProductAddPromoStep2(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
+            UnifyTracking.eventTopAdsProductAddPromoStep2(getActivity(), AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
 

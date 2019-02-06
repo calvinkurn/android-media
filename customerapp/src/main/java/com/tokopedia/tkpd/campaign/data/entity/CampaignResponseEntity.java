@@ -33,6 +33,8 @@ public class CampaignResponseEntity {
 
 	@SerializedName("message")
 	private String message;
+	@SerializedName("enable")
+	private boolean enable;
 
 	public String getMessage() {
 		return message;
@@ -114,6 +116,14 @@ public class CampaignResponseEntity {
         this.vibrate = vibrate;
     }
 
+	public boolean isEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+	}
+
 	@Override
  	public String toString(){
 		return 
@@ -127,6 +137,8 @@ public class CampaignResponseEntity {
 			",url = '" + url + '\'' +
                     ",status = '" + status + '\'' +
                     ",vibrate = '" + vibrate + '\'' +
+                    ",enable = '" + enable + '\'' +
+
                     "}";
 		}
 }

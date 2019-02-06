@@ -51,7 +51,7 @@ public class TrainDoSoftBookingSpecification implements GqlNetworkSpecification 
     @Override
     public Map<String, Object> mapVariable() {
         Map<String, Object> result = new HashMap<>();
-        Map<String, Object> parameters = (Map<String, Object>) mapParam.get(TrainUrl.INPUT_GQL);
+        Map<String, Object> parameters = (Map<String, Object>) mapParam;
         TrainScheduleRequest departure = (TrainScheduleRequest) parameters.get(TrainSoftBookingUseCase.DEPARTURE_TRIP);
         JsonObject departureTrip = new JsonObject();
         departureTrip.addProperty(TRIP_ORIGIN, departure.getOrigin());

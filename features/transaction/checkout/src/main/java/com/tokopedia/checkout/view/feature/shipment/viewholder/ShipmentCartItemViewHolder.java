@@ -3,27 +3,33 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.google.android.flexbox.FlexboxLayout;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 
 /**
  * @author Aghny A. Putra on 02/03/18
  */
 
-public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
+public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
 
     private static final int IMAGE_ALPHA_DISABLED = 128;
     private static final int IMAGE_ALPHA_ENABLED = 255;
+
+    private ShipmentItemListener shipmentItemListener;
 
     private ImageView mIvProductImage;
     private TextView mTvProductName;
@@ -31,12 +37,17 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
     private TextView mTvProductCountAndWeight;
     private LinearLayout mLlOptionalNoteToSellerLayout;
     private TextView mTvOptionalNoteToSeller;
-    private LinearLayout mllProductPoliciesLayout;
+    private FlexboxLayout mllProductPoliciesLayout;
     private ImageView mIvFreeReturnIcon;
     private TextView mTvFreeReturnLabel;
     private TextView mTvPreOrder;
     private TextView mTvCashback;
     private TextView mTvNoteToSellerLabel;
+    private RelativeLayout mRlPurchaseProtection;
+    private TextView mTvPPPLinkText;
+    private TextView mTvPPPPrice;
+    private TextView mTvPPPMore;
+    private CheckBox mCbPPP;
     private LinearLayout mLlShippingWarningContainer;
     private View mSeparatorMultipleProductSameStore;
     private TextView tvErrorShipmentItemTitle;
@@ -51,6 +62,11 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         mTvProductCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
+        mRlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
+        mTvPPPLinkText = itemView.findViewById(R.id.text_link_text);
+        mTvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
+        mTvPPPMore = itemView.findViewById(R.id.text_ppp_more);
+        mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
         mllProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
         mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
@@ -64,7 +80,8 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
 
     }
 
-    public void bindViewHolder(CartItemModel cartItem) {
+    public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
+        shipmentItemListener = listener;
         if (cartItem.isError()) {
             showShipmentWarning(cartItem);
         } else {
@@ -83,6 +100,26 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         boolean isEmptyNotes = TextUtils.isEmpty(cartItem.getNoteToSeller());
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
+
+        mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
+        if (cartItem.isProtectionAvailable()) {
+            mTvPPPMore.setText(cartItem.getProtectionLinkText());
+            mTvPPPMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl());
+                }
+            });
+            mTvPPPLinkText.setText(cartItem.getProtectionTitle());
+            mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
+            mCbPPP.setChecked(cartItem.isProtectionOptIn());
+            mCbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1);
+                }
+            });
+        }
 
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
         mTvFreeReturnLabel.setVisibility(View.GONE);
@@ -161,6 +198,12 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
     private void setImageFilterNormal() {
         mIvProductImage.setColorFilter(null);
         mIvProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
+    }
+
+    public interface ShipmentItemListener {
+        void notifyOnPurchaseProtectionChecked(boolean checked, int position);
+
+        void navigateToWebView(String protectionLinkUrl);
     }
 
 }

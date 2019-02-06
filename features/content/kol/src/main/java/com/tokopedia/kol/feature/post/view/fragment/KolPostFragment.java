@@ -17,9 +17,15 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
@@ -30,12 +36,15 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 
 /**
  * @author by milhamj on 19/02/18.
@@ -192,7 +201,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
     protected void initInjector() {
         if (getActivity() != null && getActivity().getApplication() != null) {
             DaggerKolProfileComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                    .kolComponent(KolComponentInstance.getKolComponent(getActivity()
+                            .getApplication()))
                     .kolProfileModule(new KolProfileModule())
                     .build()
                     .inject(this);
@@ -254,6 +264,26 @@ public class KolPostFragment extends BaseDaggerFragment implements
             KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(0);
             adapter.showExplore(kolPostViewModel.getName());
         }
+    }
+
+    @Override
+    public void onSuccessDeletePost(int rowNumber) {
+        adapter.removeItem(rowNumber);
+        if (isAdapterEmpty()) {
+            adapter.clearData();
+            fetchDataFirstTime();
+        }
+
+        ToasterNormal.make(getView(), getString(R.string.kol_post_deleted), BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_ok, v -> {
+
+                })
+                .show();
+    }
+
+    @Override
+    public void onErrorDeletePost(String message, int rowNumber, int id) {
+        showError(message, v -> presenter.deletePost(rowNumber, id));
     }
 
     @Override
@@ -336,7 +366,22 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
+        if (getContext() != null) {
+            Menus menus = createBottomMenu(getContext(), element,
+                    new PostMenuListener() {
+                        @Override
+                        public void onDeleteClicked() {
+                            createDeleteDialog(rowNumber, element.getContentId()).show();
+                        }
 
+                        @Override
+                        public void onReportClick() {
+
+                        }
+                    }
+            );
+            menus.show();
+        }
     }
 
     @Override
@@ -391,12 +436,29 @@ public class KolPostFragment extends BaseDaggerFragment implements
         showError(message);
     }
 
+    private boolean isAdapterEmpty() {
+        return adapter.getItemCount() == 0
+                || isFirstItemEntryPoint();
+    }
+
+    private boolean isFirstItemEntryPoint() {
+        return adapter.getItemCount() == 1
+                && adapter.getList().get(0) instanceof EntryPointViewModel;
+    }
+
     private void showError(String message) {
         if (message == null) {
             NetworkErrorHelper.showSnackbar(getActivity());
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), message);
         }
+    }
+
+    private void showError(String message, View.OnClickListener action) {
+        ToasterError
+                .make(getView(), message, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again, action)
+                .show();
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
@@ -425,5 +487,19 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     public void setResultIntent(Intent resultIntent) {
         this.resultIntent = resultIntent;
+    }
+
+    private Dialog createDeleteDialog(int rowNumber, int id) {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.kol_delete_post));
+        dialog.setDesc(getString(R.string.kol_delete_post_desc));
+        dialog.setBtnOk(getString(R.string.kol_title_delete));
+        dialog.setBtnCancel(getString(R.string.kol_title_cancel));
+        dialog.setOnOkClickListener(v -> {
+            presenter.deletePost(rowNumber, id);
+            dialog.dismiss();
+        });
+        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        return dialog;
     }
 }

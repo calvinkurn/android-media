@@ -3,17 +3,13 @@ package com.tokopedia.checkout.view.feature.addressoptions;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.R;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.common.base.CartMvpPresenter;
 import com.tokopedia.checkout.view.common.utils.PagingHandler;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,8 +34,7 @@ public class ShipmentAddressListPresenter
     private boolean resetPage;
 
     @Inject
-    public ShipmentAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase,
-                                        PagingHandler pagingHandler) {
+    public ShipmentAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase) {
         mGetPeopleAddressUseCase = getPeopleAddressUseCase;
     }
 
@@ -91,22 +86,9 @@ public class ShipmentAddressListPresenter
                             throwable.printStackTrace();
                             if (isViewAttached() && getMvpView().getActivityContext() != null) {
                                 getMvpView().hideLoading();
-                                String message;
-                                if (throwable instanceof UnknownHostException ||
-                                        throwable instanceof ConnectException ||
-                                        throwable instanceof SocketTimeoutException) {
-                                    message = getMvpView().getActivityContext().getResources().getString(
-                                            R.string.msg_no_connection);
-                                } else if (throwable instanceof UnProcessableHttpException) {
-                                    message = TextUtils.isEmpty(throwable.getMessage()) ?
-                                            getMvpView().getActivityContext().getResources().getString(
-                                                    R.string.msg_no_connection) :
-                                            throwable.getMessage();
-                                } else {
-                                    message = getMvpView().getActivityContext().getResources().getString(
-                                            R.string.default_request_error_unknown);
-                                }
+                                String message = ErrorHandler.getErrorMessage(getMvpView().getActivityContext(), throwable);
                                 getMvpView().showError(message);
+                                getMvpView().stopTrace();
                             }
                         }
 
@@ -125,6 +107,7 @@ public class ShipmentAddressListPresenter
                                                 !peopleAddressModel.getPaging().getUriNext().equals("0");
                                         if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
                                             getMvpView().showListEmpty();
+                                            getMvpView().stopTrace();
                                         } else {
                                             RecipientAddressModel newlyCreatedAddress = null;
                                             if (currentAddress != null) {
@@ -148,18 +131,23 @@ public class ShipmentAddressListPresenter
                                             if (ShipmentAddressListPresenter.this.resetPage) {
                                                 if (currentAddress != null && currentAddress.getId() == null && newlyCreatedAddress != null) {
                                                     getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
+                                                    getMvpView().stopTrace();
                                                 } else {
                                                     getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
+                                                    getMvpView().stopTrace();
                                                 }
                                             } else {
                                                 getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
+                                                getMvpView().stopTrace();
                                             }
                                         }
                                     } else {
                                         getMvpView().showListEmpty();
+                                        getMvpView().stopTrace();
                                     }
                                 } else {
                                     getMvpView().showListEmpty();
+                                    getMvpView().stopTrace();
                                 }
                             }
                         }

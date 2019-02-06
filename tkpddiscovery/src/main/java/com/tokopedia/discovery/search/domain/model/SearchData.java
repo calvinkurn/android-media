@@ -10,6 +10,7 @@ import java.util.List;
 
 public class SearchData {
 
+    public static final String AUTOCOMPLETE_RECENT_VIEW = "recent_view";
     public static final String AUTOCOMPLETE_RECENT_SEARCH = "recent_search";
     public static final String AUTOCOMPLETE_POPULAR_SEARCH = "popular_search";
     public static final String AUTOCOMPLETE_DIGITAL = "digital";

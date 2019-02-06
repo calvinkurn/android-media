@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.home.fragment.BrandsWebViewFragment;

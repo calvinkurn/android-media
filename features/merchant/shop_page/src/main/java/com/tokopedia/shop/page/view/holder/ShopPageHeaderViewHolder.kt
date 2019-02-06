@@ -1,5 +1,6 @@
 package com.tokopedia.shop.page.view.holder
 
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
@@ -11,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -21,7 +23,8 @@ import com.tokopedia.shop.extension.formatToSimpleNumber
 import kotlinx.android.synthetic.main.partial_shop_page_header.view.*
 
 class ShopPageHeaderViewHolder(private val view: View, private val listener: ShopPageHeaderListener,
-                               private val shopPageTracking: ShopPageTrackingBuyer){
+                               private val shopPageTracking: ShopPageTrackingBuyer,
+                               private val context: Context){
     private var isShopFavourited = false
 
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
@@ -217,7 +220,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
 
     private fun displayGoldenShop() {
         view.shopLabelIcon.visibility = View.VISIBLE
-        view.shopLabelIcon.setImageResource(R.drawable.ic_badge_shop_gm)
+        view.shopLabelIcon.setImageDrawable(GMConstant.getGMDrawable(context))
     }
 
     private fun displayOfficial() {

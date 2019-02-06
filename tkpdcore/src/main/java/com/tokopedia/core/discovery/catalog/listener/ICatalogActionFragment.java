@@ -7,7 +7,8 @@
 
 package com.tokopedia.core.discovery.catalog.listener;
 
-import com.tokopedia.core.product.model.share.ShareData;
+
+import com.tokopedia.core.model.share.ShareData;
 
 /**
  * @author anggaprasetiyo on 10/18/16.

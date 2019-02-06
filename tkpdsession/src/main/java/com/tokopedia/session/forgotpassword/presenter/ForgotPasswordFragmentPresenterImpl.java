@@ -64,7 +64,7 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
         viewListener.resetError();
         if (isValidForm()) {
             viewListener.showLoadingProgress();
-            UnifyTracking.eventForgotPassword();
+            UnifyTracking.eventForgotPassword(viewListener.getActivity());
 
             compositeSubscription.add(networkInteractor.resetPassword(getResetPasswordParam())
                     .subscribeOn(Schedulers.newThread())
@@ -149,11 +149,11 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
         Boolean isValid = true;
 
         if (viewListener.getEmail().getText().toString().length() == 0) {
-            viewListener.setEmailError(viewListener.getString(com.tokopedia.core.R.string.error_field_required));
+            viewListener.setEmailError(viewListener.getString(com.tokopedia.core2.R.string.error_field_required));
             isValid = false;
 
         } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
-            viewListener.setEmailError(viewListener.getString(com.tokopedia.core.R.string.error_invalid_email));
+            viewListener.setEmailError(viewListener.getString(com.tokopedia.core2.R.string.error_invalid_email));
             isValid = false;
         }
 

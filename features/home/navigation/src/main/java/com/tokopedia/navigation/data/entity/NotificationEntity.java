@@ -2,6 +2,8 @@ package com.tokopedia.navigation.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation_common.model.FeedModel;
+import com.tokopedia.navigation_common.model.HomeFlagModel;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
@@ -23,6 +25,14 @@ public class NotificationEntity {
     @Expose
     private NotifcenterUnread notifcenterUnread;
 
+    @SerializedName("feed_last_feeds")
+    @Expose
+    private FeedModel feed;
+
+    @SerializedName("homeFlag")
+    @Expose
+    private HomeFlagModel homeFlag;
+
     public NotificationsModel getNotifications() {
         return notifications;
     }
@@ -33,5 +43,17 @@ public class NotificationEntity {
 
     public NotifcenterUnread getNotifcenterUnread() {
         return notifcenterUnread;
+    }
+
+    public FeedModel getFeed() {
+        return feed;
+    }
+
+    public void setFeed(FeedModel feed) {
+        this.feed = feed;
+    }
+
+    public HomeFlagModel getHomeFlag() {
+        return homeFlag;
     }
 }

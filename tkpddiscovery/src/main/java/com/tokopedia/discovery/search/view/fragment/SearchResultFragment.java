@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteCallback;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;

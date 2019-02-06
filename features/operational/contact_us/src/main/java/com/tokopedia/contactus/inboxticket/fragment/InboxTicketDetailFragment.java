@@ -26,8 +26,8 @@ import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.InboxTicketDe
 import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketDetailFragmentPresenterImpl;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customwidget.SwipeToRefresh;

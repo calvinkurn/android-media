@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -193,13 +194,14 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     private void setTrackerWidget() {
         boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
         if (fromWidget) {
-            UnifyTracking.eventAccessAppViewWidget();
+            UnifyTracking.eventAccessAppViewWidget(this);
         }
     }
 
     private void setView() {
         sellerTickerView = findViewById(com.tokopedia.design.R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
+        sellerTickerView.setVisibility(View.GONE);
         mViewPager = findViewById(com.tokopedia.design.R.id.pager);
         indicator = findViewById(com.tokopedia.design.R.id.indicator);
 
@@ -214,22 +216,9 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initSellerTicker() {
-        GTMContainer gtmContainer = GTMContainer.newInstance(this);
-
-        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales_rich");
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
-        }
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        initSellerTicker();
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -296,12 +285,12 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     private void initVariable() {
         CONTENT = new String[]{
-                getString(com.tokopedia.core.R.string.title_opportunity_list),
-                getString(com.tokopedia.core.R.string.title_tab_new_order),
+                getString(com.tokopedia.core2.R.string.title_opportunity_list),
+                getString(com.tokopedia.core2.R.string.title_tab_new_order),
                 getString(R.string.title_seller_tx_ready_to_ship),
                 getString(R.string.title_seller_tx_shipped),
                 getString(R.string.title_seller_tx_delivered),
-                getString(com.tokopedia.core.R.string.title_transaction_list)
+                getString(com.tokopedia.core2.R.string.title_transaction_list)
         };
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         fragmentList = new ArrayList<>();
@@ -330,9 +319,9 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
             @Override
             public void onPageSelected(int position) {
                 if (indicator.getTabAt(position) != null) {
-                    UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
+                    UnifyTracking.eventShopTabSelected(CustomerAppSellerTransactionActivity.this,
+                            indicator.getTabAt(position).getText().toString());
                 }
-                initSellerTicker();
             }
 
             @Override
@@ -495,13 +484,10 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Bundle bundle = new Bundle();
-        super.onSaveInstanceState(bundle);
-        if (!TooLargeTool.isPotentialCrash(bundle)) {
-            outState.putAll(bundle);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

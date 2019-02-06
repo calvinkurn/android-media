@@ -19,6 +19,8 @@ public interface ChannelInfoFragmentListener {
 
         interface ChannelPartnerViewHolderListener {
             void channelPartnerClicked(ChannelPartnerChildViewModel channelPartnerChildViewModel, int position);
+
+            void onPartnerViewed(String partnerName);
         }
     }
 }

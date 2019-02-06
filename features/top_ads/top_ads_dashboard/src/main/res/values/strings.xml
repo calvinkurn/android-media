@@ -1,0 +1,98 @@
+<resources>
+    <string name="app_name">top_ads_dashboard</string>
+    <string name="top_ads_title_dashboard">TopAds</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
+
+    <string name="top_ads_title_product">Produk</string>
+    <string name="title_date_picker">Atur Tanggal</string>
+
+    <string name="label_top_ads_impression">Tampil</string>
+    <string name="label_top_ads_click">Klik</string>
+    <string name="label_top_ads_ctr">Persentase Klik</string>
+    <string name="label_top_ads_conversion">Konversi</string>
+    <string name="label_top_ads_conversion_product">Terjual</string>
+    <string name="label_top_ads_conversion_store">Favorit</string>
+    <string name="label_top_ads_average">Rata - Rata</string>
+    <string name="label_top_ads_cost">Terpakai</string>
+
+    <string name="topads_dashboard_all_promo_menu">Semua Iklan</string>
+
+    <string name="label_top_ads_groups">Grup</string>
+    <string name="label_top_ads_items">Produk</string>
+    <string name="label_top_ads_keyword">Kata Kunci</string>
+    <string name="title_top_ads_store">Toko</string>
+
+    <string name="label_add_promo">Tambah Iklan</string>
+    <string name="label_auto_add_promo">Tambah Iklan Otomatis</string>
+    <string name="label_top_ads_income">Total Pendapatan</string>
+    <string name="label_top_ads_sold">Total Terjual</string>
+
+    <string name="top_ads_desc_credit_label">Kredit TopAds</string>
+    <string name="label_add_credit">Tambah Kredit</string>
+
+    <!-- statistic -->
+    <string name="top_ads_tooltip_statistic_use">Rp %1s</string>
+    <string name="top_ads_tooltip_statistic_avg">Rp %1s</string>
+    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang Anda bayarkan untuk setiap klik.</string>
+    <string name="title_top_ads_statistic_graph_convertion_all_ads">Jumlah terjual / favorit dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_convertion_store">Jumlah favorit dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_convertion_product">Jumlah produk terjual dari iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat iklan Anda dengan jumlah klik pada iklan tersebut.</string>
+    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk iklan ini.</string>
+    <string name="title_top_ads_statistic_graph_total_income">Total pendapatan dari produk terjual melalui iklan dan produk lainnya setelah klik iklan Anda.</string>
+    <string name="title_top_ads_statistic_graph_sold">Total produk terjual dari iklan dan produk lainnya setelah klik iklan Anda.</string>
+    <string name="title_activity_statistic">Statistik</string>
+    <string name="top_ads_statistic_info_default_value">-</string>
+
+    <string name="topads_dashboard_empty_usage_title">Jangkau jutaan pengunjung Tokopedia ke toko Anda dengan TopAds</string>
+    <string name="topads_dashboard_empty_usage_desc">TopAds membuat produk Anda muncul di tempat-tempat strategis dan mudah ditemukan calon pembeli.</string>
+
+    <string name="top_ads_template_credit_bonus">Bonus kredit TopAds %1$s berlaku hingga %2$s hari lagi</string>
+
+    <string name="topads_menu_help">Step Bantuan</string>
+    <string name="topads_menu_seller_centre">Seller Center</string>
+
+    <!-- TOP ADS HOME -->
+    <string name="topads_showcase_home_title_1">Iklan TopAds</string>
+    <string name="topads_showcase_home_desc_1">Anda dapat melihat detail iklan dan melakukan pengaturan di sini.</string>
+    <string name="topads_showcase_home_title_2">TopAds Toko</string>
+    <string name="topads_showcase_home_desc_2">Iklankan toko Anda agar semakin banyak yang memfavoritkan toko Anda.</string>
+    <string name="topads_showcase_home_title_3">Tambah Kredit</string>
+    <string name="topads_showcase_home_desc_3">Tambah Kredit TopAds Anda untuk dapat melakukan iklan.</string>
+    <string name="topads_showcase_home_title_4">Tanggal Statistik</string>
+    <string name="topads_showcase_home_desc_4">Pilih tanggal untuk atur tampilan statistik iklan Anda.</string>
+    <string name="topads_showcase_home_title_5">Statistik Iklan</string>
+    <string name="topads_showcase_home_desc_5">Pantau performa iklan Anda pada tampilan statistik ini. Filter data iklan yang ingin ditampilkan
+        dan pilih periode untuk melihat data pada waktu tertentu.</string>
+    <string name="topads_showcase_home_title_6">Tambah Iklan</string>
+    <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan iklan Anda.</string>
+    <string name="topads_showcase_home_title_7">Rangkuman Data</string>
+    <string name="topads_showcase_home_desc_7">Filter data iklan yang ingin ditampilkan.</string>
+    <string name="topads_showcase_home_title_8">Grup Iklan</string>
+    <string name="topads_showcase_home_desc_8">Kelompokan iklan Anda dalam grup dan nikmati kemudahan mengatur iklan dalam sekali pengaturan.</string>
+    <string name="topads_showcase_home_title_9">TopAds Kata Kunci</string>
+    <string name="topads_showcase_home_desc_9">Gunakan kata kunci agar iklan Anda dapat tampil pada pencarian yang sesuai.</string>
+
+    <!-- TOP ADS STATISTIK -->
+    <string name="topads_showcase_statistics_title_1">Atur Periode</string>
+    <string name="topads_showcase_statistics_desc_1">Atur tampilan statistik berdasarkan periode yang dipilih.</string>
+    <string name="topads_showcase_statistics_title_2">Statistik</string>
+    <string name="topads_showcase_statistics_desc_2">Lihat performa toko Anda, geser layar untuk melihat data statistik lain.</string>
+
+    <string name="topads_showcase_help">Bantuan</string>
+    <string name="topads_showcase_detail_help">Anda dapat menampilkan kembali step panduan ini di sini.</string>
+
+    <string name="topads_dashboard_default_statistics_value">Semua Promo</string>
+    <string name="topads_dashboard_label_statistics">Statistik</string>
+
+    <string name="action_more">Atur Bersamaan</string>
+    <string name="label_credit_history">Riwayat Kredit</string>
+    <string name="label_topads_automatic_topup">Tambah Kredit Otomatis</string>
+    <string name="topads_active">Aktif</string>
+    <string name="label_credit_addition">Total Penambahan</string>
+    <string name="label_credit_used">Total Terpakai</string>
+    <string name="title_top_ads_credit_history">Riwayat Kredit</string>
+    <string name="top_ads_no_credit_history">Belum Ada Transaksi</string>
+</resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.home.explore.view.presentation;
 
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -28,6 +29,8 @@ public interface ExploreContract {
         String getString(@StringRes int res);
 
         void renderData(List<ExploreSectionViewModel> list);
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -2,6 +2,7 @@
   payment(payment_id:%s){
     payment_id
     payment_ref_num
+    fee_amount
     orders{
     	order_id
     	phone
@@ -12,6 +13,9 @@
                 category{
                     category_id
                     category_name
+                    category_name_level1
+                    category_name_level2
+                    category_name_level3
                 }
                 product_id
                 product_name
@@ -40,6 +44,12 @@
           gateway_img_url
           gateway_id
       	}
+    }
+    payment_gateway {
+        gateway_name
+        gateway_img_url
+        gateway_id
+        gateway_fee
     }
     payment_method{
       method
@@ -70,5 +80,9 @@
       }
     }
     payment_amount
+    voucher{
+      voucher_code
+      voucher_id
+    }
   }
 }

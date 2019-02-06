@@ -1,7 +1,9 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context="com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonAndProofFragment">
@@ -20,66 +22,68 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/padding_16">
 
-            <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Micro.BlackDisabled"
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16"
-                android:text="@string/flight_cancellation_step_2_header_title" />
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                android:hint="@string/flight_cancellation_reason_label">
+
+                <com.tokopedia.design.component.EditTextCompat
+                    android:id="@+id/et_saved_passenger"
+                    style="@style/TextView.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:singleLine="true"
+                    android:text="@string/flight_cancellation_reason_hint_label"
+                    android:textColor="@color/font_black_primary_70"
+                    app:editTextDrawableRightCompat="@drawable/ic_arrow_down_grey" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
 
             <LinearLayout
+                android:id="@+id/attachment_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_16">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/padding_16"
-                    android:text="@string/flight_cancellation_reason_label" />
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/et_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_16"
-                    android:hint="@string/flight_cancellation_reason_hint_label" />
-
+                    android:text="@string/flight_cancellation_support_docs_label"
+                    android:textColor="@color/font_black_secondary_54" />
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/attachment_description"
+                    style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/flight_cancellation_support_docs_label" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    style="@style/TextView.Micro.OrangeRed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/padding_16"
-                    android:text="@string/flight_cancellation_support_docs_description" />
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:text="@string/flight_cancellation_support_docs_description"
+                    android:textColor="@color/font_black_disabled_38"
+                    android:textSize="@dimen/sp_10" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_attachments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/padding_16"
-                    android:paddingTop="@dimen/padding_16"
-                    android:text="@string/flight_cancellation_attachment_description_label" />
             </LinearLayout>
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_next"
-                style="@style/Button.Submit.Green"
-                android:text="@string/flight_cancellation_proof_reaseon_submit_button" />
         </LinearLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_next"
+            style="@style/Button.Submit.Green"
+            android:layout_alignParentBottom="true"
+            android:text="@string/flight_cancellation_proof_reason_submit_button" />
     </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>

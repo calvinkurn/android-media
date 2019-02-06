@@ -19,8 +19,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.container.ForeignKeyContainer;
 import com.tkpd.library.utils.data.model.ListCity;
-import com.tokopedia.core.database.DatabaseConstant;
 import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.core.database.DatabaseConstant;
 
 import java.util.ArrayList;
 import java.util.List;

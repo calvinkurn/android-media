@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -15,6 +16,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -24,6 +26,8 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +44,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -70,7 +75,7 @@ public class ImageHandler {
      * @return
      * @throws IOException
      */
-    public static Bitmap RotatedBitmap(Bitmap bitmap, String file) throws IOException {
+    public static Bitmap rotatedBitmap(Bitmap bitmap, String file) throws IOException {
         ExifInterface exif = new ExifInterface(file);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
@@ -83,6 +88,12 @@ public class ImageHandler {
         }
         Matrix matrix = new Matrix();
         matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
@@ -285,6 +296,16 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageWithoutPlaceholderAndError(ImageView imageview, String url) {
+
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .into(imageview);
+        }
+    }
+
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
         Glide.with(context)
                 .load(url)
@@ -459,6 +480,32 @@ public class ImageHandler {
         loadImageRounded2(context, imageview, url, 5.0f);
     }
 
+    public static void loadImageRoundedWithBorder(ImageView imageView,
+                                                  Context context,
+                                                  String url,
+                                                  int cornerRadius,
+                                                  int strokeWidth,
+                                                  int strokeColor,
+                                                  int width,
+                                                  int height
+                                                  ) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(getRoundedCornerWithBorderViewTarget(
+                        imageView,
+                        context,
+                        cornerRadius,
+                        strokeWidth,
+                        strokeColor,
+                        width,
+                        height
+                ));
+    }
+
     public static void loadImageRounded2(Context context, final ImageView imageview, final int resourceDrawable, float radius) {
         Glide.with(context)
                 .load(resourceDrawable)
@@ -475,6 +522,19 @@ public class ImageHandler {
                     .load(url)
                     .asBitmap()
                     .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(getRoundedImageViewTarget(imageview, radius));
+        }
+    }
+
+    public static void loadImageRounded(Context context, final ImageView imageview, final String url, float radius) {
+        if (url != null && !url.isEmpty()) {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .centerCrop()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .into(getRoundedImageViewTarget(imageview, radius));
@@ -579,6 +639,50 @@ public class ImageHandler {
         };
     }
 
+    public static BitmapImageViewTarget getRoundedCornerWithBorderViewTarget(ImageView imageView,
+                                                                             Context context,
+                                                                             int cornerRadius,
+                                                                             int strokeWidth,
+                                                                             int strokeColor,
+                                                                             int width,
+                                                                             int height) {
+        return new BitmapImageViewTarget(imageView) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                Bitmap output = Bitmap.createBitmap(width, height,
+                        Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(output);
+
+                final int borderSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) strokeWidth,
+                        context.getResources().getDisplayMetrics());
+                final int cornerSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) cornerRadius,
+                        context.getResources().getDisplayMetrics());
+                final Paint paint = new Paint();
+                final Rect rect = new Rect(0, 0, width, height);
+                final RectF rectF = new RectF(rect);
+
+                // prepare canvas for transfer
+                paint.setAntiAlias(true);
+                paint.setColor(0xFFFFFFFF);
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawARGB(0, 0, 0, 0);
+                canvas.drawRoundRect(rectF, cornerSizePx, cornerSizePx, paint);
+
+                // draw bitmap
+                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                canvas.drawBitmap(resource, rect, rect, paint);
+
+                // draw border
+                paint.setColor(strokeColor);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth((float) borderSizePx);
+                canvas.drawRoundRect(rectF, cornerSizePx, cornerSizePx, paint);
+
+                imageView.setImageBitmap(output);
+            }
+        };
+    }
+
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
         return new BitmapImageViewTarget(imageView) {
             @Override
@@ -618,6 +722,13 @@ public class ImageHandler {
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
         Glide.with(imageView.getContext()).load(gifDrawable)
+                .asGif()
+                .placeholder(placeholder)
+                .into(imageView);
+    }
+
+    public static void loadGifFromUrl(ImageView imageView, String url, int placeholder) {
+        Glide.with(imageView.getContext()).load(url)
                 .asGif()
                 .placeholder(placeholder)
                 .into(imageView);
@@ -689,9 +800,53 @@ public class ImageHandler {
                 .into(getCircleImageViewTarget(imageView));
     }
 
+    public static void loadImageWithListener(ImageView imageview, String url,
+                                             RequestListener<String,
+                                                     GlideDrawable> requestListener) {
+        if (url != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .listener(requestListener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageview);
+        }
+    }
+
     public static void clearImage(ImageView imageView) {
         if (imageView != null) {
             Glide.clear(imageView);
+        }
+    }
+
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(compressFormat, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public static void loadImageBlurredWithListener(ImageView imageView, String url, int
+            blurWidth, int blurHeight, RequestListener<String, GlideDrawable> listener) {
+        if (url != null) {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .override(blurWidth, blurHeight)
+                    .listener(listener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageView);
         }
     }
 }

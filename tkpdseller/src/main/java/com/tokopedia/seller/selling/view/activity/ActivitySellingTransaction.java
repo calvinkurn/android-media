@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -25,7 +26,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -222,7 +223,7 @@ public class ActivitySellingTransaction extends TkpdActivity
     private void setTrackerWidget() {
         boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
         if (fromWidget) {
-            UnifyTracking.eventAccessAppViewWidget();
+            UnifyTracking.eventAccessAppViewWidget(this);
         }
     }
 
@@ -234,26 +235,14 @@ public class ActivitySellingTransaction extends TkpdActivity
     private void setView() {
         sellerTickerView = findViewById(R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
+        sellerTickerView.setVisibility(View.GONE);
         mViewPager = findViewById(R.id.pager);
         indicator = findViewById(R.id.indicator);
-    }
-
-    private void initSellerTicker() {
-        GTMContainer gtmContainer = GTMContainer.newInstance(this);
-
-        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales_rich");
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
-        }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initSellerTicker();
         setDrawerPosition(mViewPager.getCurrentItem());
     }
 
@@ -355,9 +344,8 @@ public class ActivitySellingTransaction extends TkpdActivity
             public void onPageSelected(int position) {
                 setDrawerPosition(position);
                 if (indicator.getTabAt(position) != null) {
-                    UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
+                    UnifyTracking.eventShopTabSelected(ActivitySellingTransaction.this, indicator.getTabAt(position).getText().toString());
                 }
-                initSellerTicker();
             }
 
             @Override
@@ -589,8 +577,9 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        // Do not put super, avoid crash transactionTooLarge
     }
 }

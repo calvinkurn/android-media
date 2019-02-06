@@ -2,6 +2,7 @@ package com.tokopedia.flight.cancellation.domain;
 
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationDetailRequestBody;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestAttachment;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestAttribute;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
@@ -27,6 +28,8 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
     private static final String DEFAULT_FLIGHT_CANCEL_REQUEST_TYPE = "order_cancel_request";
     private static final String FLIGHT_CANCELLATION_REQUEST_KEY = "FLIGHT_CANCELLATION_REQUEST_KEY";
 
+    private static final long DEFAULT_DOCS_ID = 1;
+
     private FlightRepository flightRepository;
 
     @Inject
@@ -39,14 +42,15 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
         return flightRepository.cancellationRequest((FlightCancellationRequestBody) requestParams.getObject(FLIGHT_CANCELLATION_REQUEST_KEY));
     }
 
-    public RequestParams createRequest(String invoiceId, String reason, List<FlightCancellationAttachmentViewModel> attachments,
-                                       Long estimatedRefund, List<FlightCancellationViewModel> journeyCancellations) {
+    public RequestParams createRequest(String invoiceId, String reason, String reasonId,
+                                       List<FlightCancellationAttachmentViewModel> attachments,
+                                       List<FlightCancellationViewModel> journeyCancellations) {
         RequestParams requestParams = RequestParams.create();
 
         FlightCancellationRequestAttribute flightCancellationRequestAttribute = new FlightCancellationRequestAttribute();
         flightCancellationRequestAttribute.setInvoiceId(invoiceId);
         flightCancellationRequestAttribute.setReason(reason);
-        flightCancellationRequestAttribute.setEstimatedRefund(estimatedRefund);
+        flightCancellationRequestAttribute.setReasonId(Integer.parseInt(reasonId));
         flightCancellationRequestAttribute.setAttachments(transformIntoRequestAttachments(attachments));
         flightCancellationRequestAttribute.setDetails(transformIntoDetails(journeyCancellations));
 
@@ -59,17 +63,23 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
         return requestParams;
     }
 
-    private List<String> transformIntoRequestAttachments(List<FlightCancellationAttachmentViewModel> attachments) {
-        if (attachments != null) {
-            List<String> requestAttachments = new ArrayList<>();
+    private List<FlightCancellationRequestAttachment> transformIntoRequestAttachments(List<FlightCancellationAttachmentViewModel> attachments) {
+        if (attachments != null && attachments.size() > 0) {
+            List<FlightCancellationRequestAttachment> requestAttachments = new ArrayList<>();
+
+            FlightCancellationRequestAttachment attachment = new FlightCancellationRequestAttachment();
+            attachment.setDocsId(DEFAULT_DOCS_ID);
+            attachment.setDocsLinks(new ArrayList<>());
 
             for (FlightCancellationAttachmentViewModel item : attachments) {
-                requestAttachments.add(item.getImageurl());
+                attachment.getDocsLinks().add(item.getImageurl());
             }
+
+            requestAttachments.add(attachment);
 
             return requestAttachments;
         } else {
-            return null;
+            return new ArrayList<>();
         }
     }
 

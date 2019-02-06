@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Developer Options</string>
+    <string name="react_native_logger_title">RN Logger</string>
+</resources>

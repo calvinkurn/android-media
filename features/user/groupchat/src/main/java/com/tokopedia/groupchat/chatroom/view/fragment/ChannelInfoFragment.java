@@ -31,6 +31,7 @@ import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
 import com.tokopedia.groupchat.common.util.TextFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -56,6 +57,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     private TextView name;
     private TextView totalView;
     private RecyclerView channelPartners;
+    private HashMap<String, Boolean> hasAnalyze;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new ChannelInfoFragment();
@@ -136,12 +138,22 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                 .COMPONENT_PARTNER, channelPartnerChildViewModel.getPartnerName(), GroupChatAnalytics
                 .ATTRIBUTE_PARTNER_LOGO, list);
 
-        analytics.eventActionClickOfficialPartner(channelPartnerChildViewModel.getPartnerName());
+        analytics.eventActionClickOfficialPartner(
+                String.format("%s - %s", channelInfoViewModel.getChannelId(), channelPartnerChildViewModel.getPartnerUrl()));
 
         GroupChatModuleRouter router = ((GroupChatModuleRouter) getActivity().getApplicationContext());
         router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity())
                 .generateAttributeApplink(channelPartnerChildViewModel.getPartnerUrl(),
                         GroupChatAnalytics.ATTRIBUTE_PARTNER_LOGO));
+    }
+
+    @Override
+    public void onPartnerViewed(String partnerName) {
+        if(!hasAnalyze.containsKey(partnerName)) {
+            analytics.eventActionViewOfficialPartner(
+                    String.format("%s - %s", channelInfoViewModel.getChannelId(), partnerName));
+            hasAnalyze.put(partnerName, true);
+        }
     }
 
     private void initView(View view) {
@@ -152,12 +164,19 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         name = view.findViewById(R.id.name);
         totalView = view.findViewById(R.id.participant);
         channelPartners = view.findViewById(R.id.channel_partners);
+
+        if (getActivity() instanceof GroupChatContract.View) {
+            ((GroupChatContract.View) getActivity()).showInfoDialog();
+        }
     }
 
     private void setViewListener() {
     }
 
     private void populateData() {
+
+        hasAnalyze = new HashMap<>();
+
         if (rootView == null || channelInfoViewModel == null) {
             return;
         }

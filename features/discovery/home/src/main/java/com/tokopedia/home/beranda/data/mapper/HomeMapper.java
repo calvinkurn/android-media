@@ -1,14 +1,12 @@
 package com.tokopedia.home.beranda.data.mapper;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.home.Ticker;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -20,7 +18,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +30,20 @@ import java.util.List;
 import retrofit2.Response;
 import rx.functions.Func1;
 
+import static com.tokopedia.home.util.ErrorMessageUtils.getErrorMessage;
+
 
 /**
  * Created by henrypriyono on 26/01/18.
  */
 
 public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<Visitable>> {
+    private final Context context;
+
+    public HomeMapper(Context context) {
+        this.context = context;
+    }
+
     @Override
     public List<Visitable> call(Response<GraphqlResponse<HomeData>> response) {
         if (response.isSuccessful()) {
@@ -69,6 +79,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
+                List<Object> legoAndCuratedAndSprintSaleBannerList = new ArrayList<>();
+
                 for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout() != null) {
                         if(!homeData.isCache()) {
@@ -76,47 +88,83 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        context,
                                         channel.getEnhanceImpressionSprintSaleHomePage(position)
-
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                        channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination()
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        channel.getEnhanceImpressionLegoBannerHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
+                                channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
+                                channel.setHomeAttribution(String.format("%s - sprintSaleProduct - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
+                                        channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
                                 );
                             } else {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        channel.getEnhanceImpressionDynamicChannelHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
                                 );
                             }
                         }
+
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
-                            list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
+                            list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
+                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
+                            list.add(mappingDynamicTopAds(channel));
                         } else {
                             list.add(mappingDynamicChannel(channel));
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(list.size(),channel);
+                            HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                    list.size(),channel);
                         }
                     }
+                }
+
+                if (!legoAndCuratedAndSprintSaleBannerList.isEmpty()){
+                    HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(context, legoAndCuratedAndSprintSaleBannerList);
                 }
             }
 
             return list;
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = getErrorMessage(response);
             if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
+                throw new RuntimeException(messageError);
             } else {
                 throw new RuntimeException(String.valueOf(response.code()));
             }
         }
+    }
+
+    private Visitable mappingDynamicTopAds(DynamicHomeChannel.Channels channel) {
+        TopAdsDynamicChannelModel visitable = new TopAdsDynamicChannelModel();
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < channel.getGrids().length; i++) {
+            DynamicHomeChannel.Grid grid = channel.getGrids()[i];
+            ProductDynamicChannelViewModel model = new ProductDynamicChannelViewModel();
+            model.setProductId(grid.getId());
+            model.setProductPrice(grid.getPrice());
+            model.setProductName(grid.getName());
+            model.setProductCashback(grid.getCashback());
+            ProductImage productImage = new ProductImage();
+            productImage.setM_url(grid.getImpression());
+            productImage.setM_ecs(grid.getImageUrl());
+            model.setProductImage(productImage);
+            model.setProductClickUrl(grid.getProductClickUrl());
+            items.add(model);
+        }
+        visitable.setTitle(channel.getHeader().getName());
+        visitable.setItems(items);
+        return visitable;
     }
 
     private Visitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {

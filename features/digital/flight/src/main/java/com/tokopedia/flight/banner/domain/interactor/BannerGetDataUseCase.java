@@ -19,6 +19,8 @@ public class BannerGetDataUseCase extends UseCase<List<BannerDetail>> {
 
     public static final String DEVICE_ID = "device_id";
     public static final String CATEGORY_ID = "category_id";
+    private static final String INSTANCE_ID = "instance_id";
+    private static final int DEFAULT_INSTANCE_ID = 1;
 
     private final FlightRepository flightRepository;
 
@@ -36,6 +38,7 @@ public class BannerGetDataUseCase extends UseCase<List<BannerDetail>> {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(DEVICE_ID, deviceId);
         requestParams.putString(CATEGORY_ID, categoryId);
+        requestParams.putInt(INSTANCE_ID, DEFAULT_INSTANCE_ID);
         return requestParams;
     }
 }

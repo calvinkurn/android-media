@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/digital_bg_chooser_operator_product_item"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_10">
+
+    <TextView
+        android:id="@+id/product_promo_title"
+        style="@style/TextProductName"
+        tools:text="Promo title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"/>
+
+    <TextView
+        android:id="@+id/product_promo_tag"
+        style="@style/TextProductPromoTag"
+        tools:text="Promo tag"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_below="@+id/product_promo_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/product_promo_description"
+        style="@style/TextProductDescription"
+        tools:text="Promo description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/product_promo_tag"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_5"/>
+
+    <LinearLayout
+        android:id="@+id/price_promo_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/product_promo_description"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/product_promo_old_price"
+            style="@style/TextProductOldPrice"
+            tools:text="Rp. 22.500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/product_promo_price"
+            style="@style/TextProductPromoPrice"
+            tools:text="Rp. 20.000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/price_promo_layout"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/separator_voucher"/>
+
+    <TextView
+        android:id="@+id/empty_stock_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/separator"
+        android:layout_alignBaseline="@+id/product_promo_title"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@drawable/digital_bg_out_of_stock"
+        android:paddingEnd="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingStart="@dimen/dp_10"
+        android:text="@string/title_empty_stock"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:visibility="visible"/>
+
+</RelativeLayout>

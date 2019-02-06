@@ -22,7 +22,7 @@ import com.tokopedia.topads.sdk.R;
 public class TopAdsInfoBottomSheetDynamicChannel {
 
     public static final String IMAGE_URL = "https://ecs7.tokopedia.net/img/android/others/promo_image.jpeg";
-    public static String ADS_URL = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
+    public static String ADS_URL = "https://seller.tokopedia.com/edu/about-topads/iklan/?source=tooltip&medium=android";
 
     public static final String TAG = "TAIBS";
     private BottomSheetDialog dialog;

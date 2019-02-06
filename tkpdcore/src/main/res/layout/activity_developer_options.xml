@@ -76,6 +76,18 @@
             android:text="Force Crash"
             android:textColor="@color/white" />
 
+        <TextView
+            android:id="@+id/rn_dev_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="RN Dev Options"
+            android:textColor="@color/white" />
+
         <CheckBox
             android:id="@+id/toggle_chuck"
             android:layout_width="match_parent"
@@ -196,6 +208,7 @@
                     android:id="@+id/toggle_reactnative_mode"
                     android:background="@drawable/btn_share"
                     android:textColor="@color/white"
+                    android:layout_marginRight="0dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </TableRow>
@@ -230,6 +243,28 @@
                     android:gravity="center"
                     android:text="Save IP"/>
 
+            </TableRow>
+        </TableLayout>
+
+        <TableLayout
+            android:stretchColumns="1"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <TextView
+                    android:text="Enable RN Developer Option"
+                    android:paddingRight="25dip"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ToggleButton
+                    android:id="@+id/toggle_reactnative_dev_options"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </TableRow>
         </TableLayout>
 

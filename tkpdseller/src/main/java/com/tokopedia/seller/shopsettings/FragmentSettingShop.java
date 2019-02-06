@@ -10,7 +10,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -74,24 +75,24 @@ public class FragmentSettingShop extends TkpdFragment{
 					Intent intent;
 					switch(pos) {
 						case 0:
-							UnifyTracking.eventManageShopInfo();
+							UnifyTracking.eventManageShopInfo(getActivity());
 							startActivityForResult(router.getManageShopBasicDataIntent(getActivity()), 0);
 							break;
 						case 1:
 							intent = new Intent(getActivity(), EditShippingActivity.class);
-							UnifyTracking.eventManageShopShipping();
+							UnifyTracking.eventManageShopShipping(getActivity());
 							startActivity(intent);
 							break;
 						case 2:
-							UnifyTracking.eventManageShopEtalase();
+							UnifyTracking.eventManageShopEtalase(getActivity());
 							startActivity(router.getManageShopEtalaseIntent(getActivity()));
 							break;
 						case 3:
-							UnifyTracking.eventManageShopNotes();
+							UnifyTracking.eventManageShopNotes(getActivity());
 							startActivity(router.getManageShopNotesIntent(getActivity()));
 							break;
 						case 4:
-							UnifyTracking.eventManageShopLocation();
+							UnifyTracking.eventManageShopLocation(getActivity());
 							startActivity(router.getManageShopLocationIntent(getActivity()));
 							break;
 					}
@@ -104,7 +105,7 @@ public class FragmentSettingShop extends TkpdFragment{
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		if (isVisibleToUser && isAdded() && getActivity() !=null) {
-			ScreenTracking.screen(getScreenName());
+			ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
 		}
 		super.setUserVisibleHint(isVisibleToUser);
 	}

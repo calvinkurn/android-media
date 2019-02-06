@@ -2,12 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = "${artifactIdCheckout}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionCheckoutVersion}"
-    artifactName = "${artifactIdCheckout}-release"
-}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -22,29 +16,54 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = "${artifactIdCheckout}"
+    groupId = "${groupIdTransaction}"
+    versionName = "${transactionGroupVersion}"
+    artifactName = "${artifactIdCheckout}-release"
+}
+
 dependencies {
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.remoteConfig)
-
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.cacheManager)
+
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticinsurance)
+
+    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.shippingRecommendation)
+
     implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
@@ -53,10 +72,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
 }
+apply from: "$rootProject.projectDir/publish_local.gradle"

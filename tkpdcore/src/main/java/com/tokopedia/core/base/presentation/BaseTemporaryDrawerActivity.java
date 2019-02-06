@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.util.GlobalConfig;
 

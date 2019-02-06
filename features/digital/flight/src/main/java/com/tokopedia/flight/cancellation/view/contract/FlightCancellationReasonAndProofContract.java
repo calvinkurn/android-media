@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.List;
@@ -16,13 +17,9 @@ import java.util.List;
 public interface FlightCancellationReasonAndProofContract {
     interface View extends CustomerView{
 
-        void showUploadAttachmentView();
-
-        void hideUploadAttachmentView();
-
-        void addAttachment(FlightCancellationAttachmentViewModel viewModel);
-
         List<FlightCancellationAttachmentViewModel> getAttachments();
+
+        void setAttachment(FlightCancellationAttachmentViewModel attachment, int position);
 
         void showRequiredMinimalOneAttachmentErrorMessage(int resId);
 
@@ -32,7 +29,7 @@ public interface FlightCancellationReasonAndProofContract {
 
         void showAttachmentGreaterThanPassengersTotalAndRequiredAttachmentErrorMessage(String errorMessage);
 
-        String getReason();
+        FlightCancellationReasonViewModel getReason();
 
         Activity getActivity();
 
@@ -40,26 +37,44 @@ public interface FlightCancellationReasonAndProofContract {
 
         void navigateToNextStep(FlightCancellationWrapperViewModel viewModel);
 
-        void hideFullPageContainer();
+        void hideAttachmentContainer();
 
-        void showLoading();
+        void showAttachmentContainer();
 
-        void showFullPageContainer();
+        void showProgressBar();
 
-        void hideLoading();
+        void hideProgressBar();
 
         void showAttachmentMinDimensionErrorMessage(int resId);
 
         void showAttachmentMaxSizeErrorMessage(int resId);
 
         void addAttachments(List<FlightCancellationAttachmentViewModel> attachments);
+
+        void deleteAllAttachments();
+
+        void renderAttachment();
+
+        void setUploadingPosition(int position);
+
+        int getUploadingPosition();
+
+        void updateUploadingProgress(long percentage);
+
+        void disableNextButton();
+
+        void enableNextButton();
     }
 
     interface Presenter extends CustomerPresenter<View>{
 
         void initialize(List<FlightCancellationAttachmentViewModel> attachments);
 
-        void onSuccessGetImage(String filepath);
+        List<FlightCancellationAttachmentViewModel> buildAttachmentList();
+
+        void setNextButton();
+
+        void onSuccessGetImage(String filepath, int position);
 
         void onNextButtonClicked();
 

@@ -24,6 +24,7 @@
                 android:id="@+id/holder_photo_progress"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50">
+
                 <ImageView
                     android:id="@+id/image_profile_completed"
                     android:layout_width="match_parent"
@@ -59,23 +60,25 @@
 
             </RelativeLayout>
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/text_username"
-                style="@style/TextView.TitleMedium.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:maxLines="1"
+                app:fontSize="title"
+                app:weight="medium"
                 android:layout_toRightOf="@+id/holder_photo_progress"
                 android:layout_toEndOf="@+id/holder_photo_progress"
                 tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/text_profile_completion"
-                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:fontSize="micro"
+                app:textViewTheme="lightSecondary"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_below="@+id/text_username"
@@ -85,9 +88,27 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/by_me_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_button_white_border"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
+            android:text="@string/curate_product_by_me"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_11"
+            app:layout_constraintTop_toBottomOf="@+id/holder_title" />
+
         <android.support.constraint.ConstraintLayout
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/holder_title"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@+id/by_me_button"
             android:id="@+id/holder_tokopoint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

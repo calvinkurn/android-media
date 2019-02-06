@@ -9,9 +9,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.model.DataCreditCardList
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 
-class SettingListPaymentPresenter : BaseDaggerPresenter<SettingListPaymentContract.View>(), SettingListPaymentContract.Presenter {
+class SettingListPaymentPresenter(val userSession: UserSession) : BaseDaggerPresenter<SettingListPaymentContract.View>(), SettingListPaymentContract.Presenter {
 
     private val getCCListUseCase = GraphqlUseCase()
 
@@ -36,6 +37,17 @@ class SettingListPaymentPresenter : BaseDaggerPresenter<SettingListPaymentContra
                 view.renderList(paymentList?.creditCard?.cards?:ArrayList())
             }
         })
+    }
+
+    override fun checkVerificationPhone() {
+        view.showLoadingDialog()
+        if(userSession.isMsisdnVerified){
+            view.hideLoadingDialog()
+            view.onSuccessVerifPhone()
+        }else{
+            view.hideLoadingDialog()
+            view.onNeedVerifPhone()
+        }
     }
 
     override fun detachView() {

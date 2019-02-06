@@ -65,9 +65,9 @@ public class GetEmailNotifUseCase extends RestRequestSupportInterceptorUseCase {
     }
 
     private Map<String,Object> getQueryParams(){
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        Map<String, String> param = new HashMap<>();
         param.put(PARAM_SESSION_ID, userSession.getUserId());
-        HashMap<String, String> tmp = AuthUtil.generateParamsNetwork(userSession.getUserId(),
+        Map<String, String> tmp = AuthUtil.generateParamsNetwork(userSession.getUserId(),
                 userSession.getDeviceId(), param);
         tmp.remove(PARAM_DEVICE_TIME);
 

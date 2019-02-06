@@ -1,0 +1,43 @@
+query ImageReview(
+ $productID: Int
+ $page: Int
+ $total: Int
+) {
+ProductReviewImageListQuery(productID: $productID, page: $page, total: $total){
+   list {
+     imageID
+     reviewID
+     imageSibling
+   },
+   detail{
+     reviews {
+       reviewId
+       message
+       ratingDescription
+       rating
+       time_format{
+         date_time_fmt1
+       }
+       updateTime
+       isAnonymous
+       isReportable
+       isUpdated
+       reviewer{
+         userID
+         fullName
+         profilePicture
+         url
+       }
+     },
+     images {
+       imageAttachmentID
+       description
+       uriThumbnail
+       uriLarge
+       reviewID
+     }
+   },
+   hasNext,
+   hasPrev
+ }
+}

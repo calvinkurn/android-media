@@ -50,7 +50,5 @@ public interface FeedModuleRouter {
 
     Intent getAddToCartIntent(Context context, String productId, String price, String imageSource);
 
-    void startTrace(String traceName);
-
-    void stopTrace(String traceName);
+    void sendMoEngageOpenFeedEvent(boolean isEmptyFeed);
 }

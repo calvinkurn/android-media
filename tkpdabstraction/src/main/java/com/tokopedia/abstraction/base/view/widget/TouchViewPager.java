@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.R;
 public class TouchViewPager extends ViewPager {
 
     private boolean allowPageSwitching = true;
+    private boolean isSmoothScroll = true;
 
     public TouchViewPager(Context context) {
         super(context);
@@ -55,5 +56,19 @@ public class TouchViewPager extends ViewPager {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public void setSmoothScroll(boolean smoothScroll) {
+        isSmoothScroll = smoothScroll;
+    }
+
+    @Override
+    public void setCurrentItem(int item) {
+        super.setCurrentItem(item, isSmoothScroll);
+    }
+
+    @Override
+    public void setCurrentItem(int item, boolean smoothScroll) {
+        super.setCurrentItem(item, isSmoothScroll);
     }
 }

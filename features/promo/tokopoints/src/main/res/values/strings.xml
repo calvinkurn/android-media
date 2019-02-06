@@ -20,7 +20,7 @@
     <string name="tp_label_my_membership">Membership Saya</string>
     <string name="tp_label_see_membership">Lihat Status Membership</string>
     <string name="tp_label_see_loyalty">Loyalty</string>
-    <string name="tp_label_membership">Status membership</string>
+    <string name="tp_label_membership">Status Membership</string>
     <string name="tp_label_see_point">Points</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
@@ -63,5 +63,9 @@
     <string name="tp_label_barcode">Barcode</string>
     <string name="tp_label_qrcode">QR Code</string>
     <string name="tp_label_see_point_saya">Points Saya</string>
+    <string name="filters_save">Simpan</string>
+    <string name="title_bottomsheet_filters">Filter Kupon</string>
+    <string name="bottomsheet_filter_subtitle">Kisaran Points</string>
+    <string name="tp_history">Riwayat</string>
 
 </resources>

@@ -1,0 +1,91 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.fabric'
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.google.gms:google-services:3.0.0'
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'CoreLegacy']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'core'
+    groupId = 'com.tokopedia.core'
+    versionName = "2.23"
+    artifactName ="tkpdcore-release"
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.libraries.trackinterface)
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.playServicesDependencies.plus
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.appIndexing
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.auth
+    implementation rootProject.ext.playServicesDependencies.places
+    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation rootProject.ext.analyticsDependencies.installRef
+    implementation (rootProject.ext.analyticsDependencies.moengage) {
+        exclude group: 'com.moengage', module: 'moe-push-gcm'
+    }
+    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
+        exclude group: 'com.android.support'
+    }
+    implementation (rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
+    implementation rootProject.ext.analyticsDependencies.logentries
+
+    implementation project(rootProject.ext.libraries.analytics)
+
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.playServicesDependencies.remoteConfig
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+}
+
+apply plugin: 'com.google.gms.google-services'
+apply from: '../../publish_local.gradle'

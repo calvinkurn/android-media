@@ -84,30 +84,28 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void actionCancelOrderButtonClicked() {
 
-        List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
-                .getFlightOrder().getJourneys());
+        if (isViewAttached() && getView().getFlightOrder() != null) {
+            List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
+                    .getFlightOrder().getJourneys());
 
-        boolean isRefundable = false;
-        for (FlightCancellationJourney item : items) {
-            if (item.isRefundable()) {
-                isRefundable = true;
+            boolean isRefundable = false;
+            for (FlightCancellationJourney item : items) {
+                if (item.isRefundable()) {
+                    isRefundable = true;
+                }
             }
-        }
 
-        if (isRefundable) {
-            getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
-        } else {
-            getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            if (isRefundable) {
+                getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            } else {
+                getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            }
         }
     }
 
     @Override
-    public void onHelpButtonClicked(String invoiceId, int status) {
-        StringBuilder result = new StringBuilder(FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL);
-        result.append("&iv=" + invoiceId);
-        result.append("&ostat=" + status);
-        String url = result.toString();
-        getView().navigateToWebview(url);
+    public void onHelpButtonClicked(String contactUsUrl) {
+        getView().navigateToWebview(contactUsUrl);
     }
 
     @Override

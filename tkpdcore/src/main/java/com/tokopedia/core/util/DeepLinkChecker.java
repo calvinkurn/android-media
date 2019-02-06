@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -20,6 +18,8 @@ import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +62,9 @@ public class DeepLinkChecker {
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
     private static final String MYBILLS = "mybills";
+
+    private static final String APP_EXCLUDED_URL = "app_excluded_url";
+    private static final String APP_EXCLUDED_HOST = "app_excluded_host";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -228,7 +231,8 @@ public class DeepLinkChecker {
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
-                && !isWalletOvo(linkSegment);
+                && !isWalletOvo(linkSegment)
+                && !isKycTerms(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -263,6 +267,10 @@ public class DeepLinkChecker {
 
     private static boolean isWalletOvo(List<String> linkSegment) {
         return (linkSegment.get(0).equals("ovo"));
+    }
+
+    private static boolean isKycTerms(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("terms")) && (linkSegment.get(1).equals("merchantkyc"));
     }
 
     public static String getQuery(String url, String q) {
@@ -389,8 +397,10 @@ public class DeepLinkChecker {
     }
 
     private static boolean isExcludedUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        String excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL);
+        if (!TextUtils.isEmpty(excludedUrl)) {
+            List<String> listExcludedString = Arrays.asList(excludedUrl.split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().endsWith(excludedString)) {
                     return true;
@@ -401,8 +411,10 @@ public class DeepLinkChecker {
     }
 
     private static boolean isExcludedHostUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST).split(","));
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        String excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST);
+        if (!TextUtils.isEmpty(excludedHost)) {
+            List<String> listExcludedString = Arrays.asList(excludedHost.split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().startsWith(excludedString)) {
                     return true;

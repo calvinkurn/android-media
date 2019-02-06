@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -17,6 +17,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double totalWeight;
     private double shippingFee;
     private double insuranceFee;
+    private int totalPurchaseProtectionItem;
+    private double purchaseProtectionFee;
     private double additionalFee;
     private double promoPrice;
     private double donation;
@@ -100,6 +102,22 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
 
     public void setDonation(double donation) {
         this.donation = donation;
+    }
+
+    public int getTotalPurchaseProtectionItem() {
+        return totalPurchaseProtectionItem;
+    }
+
+    public void setTotalPurchaseProtectionItem(int totalPurchaseProtectionItem) {
+        this.totalPurchaseProtectionItem = totalPurchaseProtectionItem;
+    }
+
+    public double getPurchaseProtectionFee() {
+        return purchaseProtectionFee;
+    }
+
+    public void setPurchaseProtectionFee(double purchaseProtectionFee) {
+        this.purchaseProtectionFee = purchaseProtectionFee;
     }
 
     @Override

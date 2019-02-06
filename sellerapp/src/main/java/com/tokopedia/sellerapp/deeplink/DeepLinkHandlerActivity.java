@@ -10,6 +10,10 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -51,6 +55,8 @@ import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
+import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
+import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
@@ -59,7 +65,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
-
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
 /**
  * @author rizkyfadillah on 26/07/17.
@@ -67,6 +74,7 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 @DeepLinkHandler({
         DigitalApplinkModule.class,
         SellerApplinkModule.class,
+        TopAdsDashboardApplinkModule.class,
         TopAdsApplinkModule.class,
         TransactionApplinkModule.class,
         GMApplinkModule.class,
@@ -86,7 +94,10 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
         InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
-        PhoneVerificationApplinkModule.class
+        PhoneVerificationApplinkModule.class,
+        ChangePasswordDeeplinkModule.class,
+        UserIdentificationApplinkModule.class,
+        ChatbotApplinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -96,6 +107,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return new DeepLinkDelegate(
                 new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
+                new TopAdsDashboardApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
                 new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
@@ -115,7 +127,10 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
-                new PhoneVerificationApplinkModuleLoader()
+                new PhoneVerificationApplinkModuleLoader(),
+                new ChangePasswordDeeplinkModuleLoader(),
+                new UserIdentificationApplinkModuleLoader(),
+                new ChatbotApplinkModuleLoader()
         );
     }
 
@@ -143,12 +158,12 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri applink = intent.getData();
-        presenter.processUTM(applink);
+        presenter.processUTM(this, applink);
         if (deepLinkDelegate.supportsUri(applink.toString())) {
             deepLinkDelegate.dispatchFrom(this, intent);
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
-                UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                UnifyTracking.eventPersonalizedClicked(this, bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }
     }

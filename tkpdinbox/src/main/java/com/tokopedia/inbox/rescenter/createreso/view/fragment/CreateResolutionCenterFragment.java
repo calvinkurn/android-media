@@ -206,7 +206,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         btnCreateResolution.setOnClickListener(view -> {
             presenter.createResoClicked();
-            UnifyTracking.eventCreateResoPre();
+            UnifyTracking.eventCreateResoPre(getActivity());
         });
     }
 
@@ -483,16 +483,16 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         btnBack.setOnClickListener(view -> {
             dialog.dismiss();
-            UnifyTracking.eventCreateResoUnconfirm();
+            UnifyTracking.eventCreateResoUnconfirm(getActivity());
         });
         ivClose.setOnClickListener(view -> {
             dialog.dismiss();
-            UnifyTracking.eventCreateResoUnconfirm();
+            UnifyTracking.eventCreateResoUnconfirm(getActivity());
         });
 
         btnCreateComplain.setOnClickListener(view -> {
             presenter.callCreateResolutionAPIWithAttachment();
-            UnifyTracking.eventCreateResoConfirm();
+            UnifyTracking.eventCreateResoConfirm(getActivity());
             dialog.dismiss();
         });
 

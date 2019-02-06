@@ -8,7 +8,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
@@ -149,7 +150,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

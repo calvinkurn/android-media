@@ -1,6 +1,5 @@
 package com.tokopedia.events.view.presenter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.widget.EditText;
 
@@ -11,14 +10,13 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
-import com.tokopedia.events.data.entity.response.verifyresponse.EntityPackagesItem;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
-import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.CouponModel;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
@@ -40,7 +38,6 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
@@ -56,6 +53,8 @@ import java.util.regex.Pattern;
 import rx.Subscriber;
 
 import static com.tokopedia.events.view.activity.ReviewTicketActivity.PAYMENT_REQUEST_CODE;
+import static com.tokopedia.events.view.utils.Utils.Constants.CHECKOUTDATA;
+import static com.tokopedia.events.view.utils.Utils.Constants.EXTRA_VERIFY_RESPONSE;
 
 /**
  * Created by pranaymohapatra on 29/11/17.
@@ -73,21 +72,21 @@ public class EventReviewTicketPresenter
     private CheckoutPaymentUseCase checkoutPaymentUseCase;
     private PostPaymentUseCase postPaymentUseCase;
     private PostInitCouponUseCase postInitCouponUseCase;
-    private String promocode;
+    private String promoCode = "";
     private String email;
     private String number;
-    private boolean isSeatingEvent;
+    private boolean isBook;
+    private JsonObject verifiedSeatResponse;
     private SelectedSeatViewModel selectedSeatViewModel;
     private ArrayList<String> hints = new ArrayList<>();
     private ArrayList<String> errors = new ArrayList<>();
-    private RequestParams paymentparams;
+    private RequestParams paymentParams;
     private String INVALID_EMAIL = "Invalid Email";
-    private JsonObject cartData;
     private EventReviewTicketsContractor.EventReviewTicketsView mView;
     private EventsAnalytics eventsAnalytics;
 
     public EventReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
-                               PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase, EventsAnalytics eventsAnalytics) {
+                                      PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase, EventsAnalytics eventsAnalytics) {
         this.verifyCartUseCase = usecase;
         this.checkoutPaymentUseCase = payment;
         this.postInitCouponUseCase = couponUseCase;
@@ -119,18 +118,28 @@ public class EventReviewTicketPresenter
 
     @Override
     public void proceedToPayment() {
-        isSeatingEvent = false;
         if (mView.validateAllFields()) {
-            verifyCart();
+            //Check if Seating Event :: By pass Verify Call for Seating Events
+            if (selectedSeatViewModel != null && verifiedSeatResponse != null) {
+                isBook = false;
+                JsonObject checkoutBody;
+                checkoutBody = convertCartItemToJson(verifiedSeatResponse);
+                paymentParams = RequestParams.create();
+                paymentParams.putObject(CHECKOUTDATA, checkoutBody);
+                getPaymentLink();
+                //Non Seating Event :: Call Verify Book = True
+            } else {
+                isBook = true;
+                verifyCart();
+            }
         } else {
-            mView.showSnackBar("Silahkan Isi Data Pelanggan Tambahan", false);
+            mView.showSnackBar(mView.getViewResources().getString(R.string.enter_additional_data), false);
         }
-
     }
 
     @Override
     public void updatePromoCode(String code) {
-        this.promocode = code;
+        this.promoCode = code;
         if (code.length() == 0) {
             mView.hideSuccessMessage();
         }
@@ -189,7 +198,7 @@ public class EventReviewTicketPresenter
     public void clickGoToPromo() {
         mView.showProgressBar();
         goToLoyaltyActivity();
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECK_PROMO, promocode);
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECK_PROMO, promoCode);
     }
 
     private void goToLoyaltyActivity() {
@@ -315,7 +324,7 @@ public class EventReviewTicketPresenter
         cartItems.add(cartItem);
         CartItems cart = new CartItems();
         cart.setCartItems(cartItems);
-        cart.setPromocode(promocode);
+        cart.setPromocode(promoCode);
 
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
         return jsonElement.getAsJsonObject();
@@ -323,11 +332,9 @@ public class EventReviewTicketPresenter
 
     private void verifyCart() {
         mView.showProgressBar();
-        final RequestParams params = RequestParams.create();
+        RequestParams params = RequestParams.create();
         params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
-        if (selectedSeatViewModel != null)
-            isSeatingEvent = true;
-        params.putBoolean(Utils.Constants.ISSEATINGEVENT, !isSeatingEvent);
+        params.putBoolean(Utils.Constants.BOOK, isBook);
         if (isEventOmsEnabled()) {
             postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
                 @Override
@@ -347,21 +354,13 @@ public class EventReviewTicketPresenter
                 public void onNext(VerifyMyCartResponse verifyCartResponse) {
                     Gson gson = new Gson();
                     Cart cart = gson.fromJson(String.valueOf(verifyCartResponse.getCart()), Cart.class);
-                    cartData = verifyCartResponse.getCart();
 
                     if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
                         mView.hideProgressBar();
-                        mView.showSnackBar("Silahkan Isi Data Pelanggan Tambahan", false);
+                        mView.showSnackBar(cart.getError(), false);
                     } else {
-                        paymentparams = RequestParams.create();
-                        if (selectedSeatViewModel != null) {
-                            EntityPackagesItem entityPackagesItem = cart.getCartItems().get(0).getMetaData().getEntityPackages().get(0);
-                            entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
-                            entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
-                            entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
-                            entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
-                        }
-                        paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
+                        paymentParams = RequestParams.create();
+                        paymentParams.putObject(CHECKOUTDATA, convertCartItemToJson(verifyCartResponse.getCart()));
                         getPaymentLink();
                     }
 
@@ -386,17 +385,10 @@ public class EventReviewTicketPresenter
                 public void onNext(VerifyCartResponse verifyCartResponse) {
                     if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
                         mView.hideProgressBar();
-                        mView.showSnackBar("Silahkan Isi Data Pelanggan Tambahan", false);
+                        mView.showSnackBar(verifyCartResponse.getStatus().getResult(), false);
                     } else {
-                        paymentparams = RequestParams.create();
-                        if (selectedSeatViewModel != null) {
-                            EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
-                            entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
-                            entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
-                            entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
-                            entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
-                        }
-                        paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
+                        paymentParams = RequestParams.create();
+                        paymentParams.putObject(CHECKOUTDATA, verifyCartResponse.getCart());
                         getPaymentLink();
                     }
                 }
@@ -406,29 +398,27 @@ public class EventReviewTicketPresenter
 
     private JsonObject convertCartItemToJson(JsonObject cart) {
         for (JsonElement jsonElement : cart.get(com.tokopedia.oms.view.utils.Utils.Constants.CART_ITEMS).getAsJsonArray()) {
-            jsonElement.getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.META_DATA).getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.ENTITY_ADDRESS)
+            JsonObject metadata = jsonElement.getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.META_DATA).getAsJsonObject();
+            metadata.get(com.tokopedia.oms.view.utils.Utils.Constants.ENTITY_ADDRESS)
                     .getAsJsonObject().addProperty(com.tokopedia.oms.view.utils.Utils.Constants.EMAIL, this.email);
             if (eventsDetailsViewModel.getSchedulesViewModels().size() > 0)
                 jsonElement.getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.META_DATA).getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.ENTITY_ADDRESS)
                         .getAsJsonObject().addProperty("name", eventsDetailsViewModel.getAddress());
             jsonElement.getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.META_DATA).getAsJsonObject().addProperty(com.tokopedia.oms.view.utils.Utils.Constants.ENTITY_BRAND_NAME, "");
+            metadata.remove("entity_passengers");
+            List<EntityPassengerItem> passengerItemList = getEntityPassengers(checkoutData);
+            new JsonParser().parse(new Gson().toJson(passengerItemList));
+            metadata.add("entity_passengers", new JsonParser().parse(new Gson().toJson(passengerItemList)));
         }
-        cart.addProperty(com.tokopedia.oms.view.utils.Utils.Constants.PROMO, promocode);
+        cart.addProperty(com.tokopedia.oms.view.utils.Utils.Constants.PROMO, promoCode);
         cart.addProperty(com.tokopedia.oms.view.utils.Utils.Constants.ORDER_TITLE, checkoutData.getDisplayName());
         return cart;
     }
 
     private void getPaymentLink() {
         if (isEventOmsEnabled()) {
-            com.tokopedia.usecase.RequestParams checkoutParams = com.tokopedia.usecase.RequestParams.create();
-            try {
-                checkoutParams.putObject(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
-            } catch (Exception e) {
-                NetworkErrorHelper.showEmptyState(mView.getActivity(),
-                        mView.getRootView(), this::getPaymentLink);
-            }
             mView.showProgressBar();
-            postPaymentUseCase.execute(checkoutParams, new Subscriber<JsonObject>() {
+            postPaymentUseCase.execute(paymentParams, new Subscriber<JsonObject>() {
 
                 @Override
                 public void onStart() {
@@ -459,12 +449,12 @@ public class EventReviewTicketPresenter
                     ScroogePGUtil.openScroogePage(mView.getActivity(), paymentURL, true, paymentData, mView.getActivity().getResources().getString(R.string.pembayaran));
                     mView.hideProgressBar();
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle().toLowerCase() + " - "
-                            + checkoutData.getDisplayName().toLowerCase() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
+                            + checkoutData.getDisplayName().toLowerCase() + " - " + checkoutData.getSalesPrice() + " - " + promoCode);
 
                 }
             });
         } else {
-            checkoutPaymentUseCase.execute(paymentparams, new Subscriber<CheckoutResponse>() {
+            checkoutPaymentUseCase.execute(paymentParams, new Subscriber<CheckoutResponse>() {
                 @Override
                 public void onCompleted() {
 
@@ -492,7 +482,7 @@ public class EventReviewTicketPresenter
                     paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
                     paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle() + " - "
-                            + checkoutData.getDisplayName() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
+                            + checkoutData.getDisplayName() + " - " + checkoutData.getSalesPrice() + " - " + promoCode);
                     mView.navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
                                     createInstance(mView.getActivity().getApplicationContext(), paymentPassData),
                             PAYMENT_REQUEST_CODE);
@@ -558,14 +548,14 @@ public class EventReviewTicketPresenter
                     mView.hideSuccessMessage();
                     mView.showPromoSuccessMessage(errorMsg,
                             mView.getActivity().getResources().getColor(R.color.red_a700));
-                    promocode = "";
+                    promoCode = "";
                 } else {
                     String successMsg = couponModel.getPromocodeSuccessMessage();
                     if (successMsg != null && successMsg.length() > 0) {
                         mView.hideProgressBar();
                         mView.showPromoSuccessMessage(successMsg,
                                 mView.getActivity().getResources().getColor(R.color.green_nob));
-                        promocode = couponModel.getPromocode();
+                        promoCode = couponModel.getPromocode();
                     }
                 }
             }
@@ -573,7 +563,29 @@ public class EventReviewTicketPresenter
     }
 
     private boolean isEventOmsEnabled() {
-        return ((EventModuleRouter)mView.getActivity().getApplication()).getBooleanRemoteConfig(Utils.Constants.EVENT_OMS, false);
+        return ((EventModuleRouter) mView.getActivity().getApplication())
+                .getBooleanRemoteConfig(Utils.Constants.EVENT_OMS, false);
+    }
+
+    private List<EntityPassengerItem> getEntityPassengers(PackageViewModel packageViewModel) {
+        List<EntityPassengerItem> passengerItems = new ArrayList<>();
+
+        if (packageViewModel.getForms() != null) {
+            for (Form form : packageViewModel.getForms()) {
+                EntityPassengerItem passenger = new EntityPassengerItem();
+                passenger.setId(form.getId());
+                passenger.setProductId(form.getProductId());
+                passenger.setName(form.getName());
+                passenger.setTitle(form.getTitle());
+                passenger.setValue(form.getValue());
+                passenger.setElementType(form.getElementType());
+                passenger.setRequired(String.valueOf(form.getRequired()));
+                passenger.setValidatorRegex(form.getValidatorRegex());
+                passenger.setErrorMessage(form.getErrorMessage());
+                passengerItems.add(passenger);
+            }
+        }
+        return passengerItems;
     }
 
     @Override
@@ -584,7 +596,10 @@ public class EventReviewTicketPresenter
         Intent intent = view.getActivity().getIntent();
         this.eventsDetailsViewModel = intent.getParcelableExtra("event_detail");
         this.checkoutData = intent.getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
-        this.selectedSeatViewModel = intent.getParcelableExtra(SeatSelectionPresenter.EXTRA_SEATSELECTEDMODEL);
+        this.selectedSeatViewModel = intent.getParcelableExtra(Utils.Constants.EXTRA_SEATSELECTEDMODEL);
+        String jsonResponse = intent.getStringExtra(EXTRA_VERIFY_RESPONSE);
+        if (!StringUtils.isBlank(jsonResponse))
+            this.verifiedSeatResponse = (JsonObject) new JsonParser().parse(jsonResponse);
         mView.renderFromPackageVM(checkoutData, selectedSeatViewModel);
         getAndInitForms();
     }

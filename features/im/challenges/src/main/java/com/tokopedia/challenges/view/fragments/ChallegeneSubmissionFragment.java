@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -27,13 +26,13 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -41,6 +40,7 @@ import com.tokopedia.challenges.view.activity.AllSubmissionsActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.customview.CountDownView;
@@ -100,7 +100,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private View flHeader;
     private SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
     private View mainContent;
-    private ConstraintLayout baseMainContent;
+    private RelativeLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
     private Toolbar toolbar;
@@ -116,6 +116,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private boolean isWinnerList = false;
     private View bottomMarginView;
     private TextView submitPhoto;
+    private final static String SCREEN_NAME = "challenges/challenge_detail";
 
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
@@ -139,7 +140,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         setHasOptionsMenu(true);
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -155,12 +155,13 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             if (videoPlayer != null)
                 videoPlayer.startPlay(VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-         if (videoPlayer != null) {
+        if (videoPlayer != null) {
             VIDEO_POS = videoPlayer.getPosition();
             isVideoPlaying = false;
             videoPlayer.pause();
@@ -249,6 +250,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 }
             });
         }
+        if (challengeResult != null)
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                    challengeResult.getTitle());
         return view;
     }
 
@@ -363,7 +369,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
-        ChallengesMoengageAnalyticsTracker.challengeDetailsOpen(getActivity(),challengeResult.getTitle(),challengeResult.getId(),mPresenter.isParticipated(challengeResult));
+        ChallengesMoengageAnalyticsTracker.challengeDetailsOpen(getActivity(), challengeResult.getTitle(), challengeResult.getId(), mPresenter.isParticipated(challengeResult));
 
     }
 
@@ -509,7 +515,13 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);
         } else if (v.getId() == R.id.fab_share) {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult,false);
+            if (!isPastChallenge) {
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                        challengeResult.getTitle());
+            }
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
         }
     }
 
@@ -553,7 +565,14 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void setChallengeResult(Result challengeResult) {
+        if (this.challengeResult == null) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                    challengeResult.getTitle());
+        }
         this.challengeResult = challengeResult;
+
     }
 
     @Override

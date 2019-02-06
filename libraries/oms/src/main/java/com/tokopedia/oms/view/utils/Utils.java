@@ -26,7 +26,7 @@ public class Utils {
 
     public static class Constants {
         public final static String CHECKOUTDATA = "checkoutdata";
-        public final static String ISSEATINGEVENT = "isseatingevent";
+        public final static String BOOK = "book";
         public final static String CART_ITEMS = "cart_items";
         public final static String META_DATA = "meta_data";
         public final static String ENTITY_ADDRESS = "entity_address";

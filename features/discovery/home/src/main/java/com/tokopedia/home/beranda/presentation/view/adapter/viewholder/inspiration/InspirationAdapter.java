@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -27,9 +27,11 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
 
     private final HomeFeedListener viewListener;
     private InspirationViewModel inspirationViewModel;
+    private Context context;
 
     public InspirationAdapter(Context context, HomeFeedListener viewListener) {
         this.viewListener = viewListener;
+        this.context = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -48,6 +50,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                 @Override
                 public void onClick(View v) {
                     HomePageTracking.eventEnhancedClickProductHomePage(
+                            context,
                             inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
                     );
                     viewListener.onGoToProductDetailFromInspiration(
@@ -64,6 +67,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                 @Override
                 public void onClick(View v) {
                     HomePageTracking.eventEnhancedClickProductHomePage(
+                            context,
                             inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
                     );
                     viewListener.onGoToProductDetailFromInspiration(
@@ -71,7 +75,8 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getImageSource(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getName(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getPrice());
-                    HomeTrackingUtils.homepageRecommedationClicked(inspirationViewModel.getListProduct().get(getAdapterPosition()));
+                    HomeTrackingUtils.homepageRecommedationClicked(context,
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()));
 
                 }
             });

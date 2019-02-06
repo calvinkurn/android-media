@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airline.util.FlightAirlineParamUtil;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
-import com.tokopedia.flight.searchV2.data.db.mapper.FlightAirlineDataMapper;
+import com.tokopedia.flight.search.data.db.mapper.FlightAirlineDataMapper;
 import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight_dbflow.FlightAirlineDB_Table;
 
@@ -107,11 +107,10 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
                 .map(new Func1<String, FlightAirlineDB>() {
                     @Override
                     public FlightAirlineDB call(String airlineId) {
-                        FlightAirlineDB flightAirlineDb = new Select()
+                        return new Select()
                                 .from(FlightAirlineDB.class)
                                 .where(FlightAirlineDB_Table.id.eq(airlineId))
                                 .querySingle();
-                        return flightAirlineDb;
                     }
                 });
     }

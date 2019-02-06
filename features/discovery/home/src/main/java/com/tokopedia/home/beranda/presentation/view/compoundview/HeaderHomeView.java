@@ -18,10 +18,10 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
@@ -166,7 +166,7 @@ public class HeaderHomeView extends BaseCustomView {
                 @Override
                 public void onClick(View view) {
                     if (headerViewModel.getTokoPointDrawerData() != null) {
-                        UnifyTracking.eventUserProfileTokopoints();
+                        HomePageTracking.eventUserProfileTokopoints(getContext());
                         listener.actionTokoPointClicked(
                                 headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
                                 TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
@@ -366,11 +366,10 @@ public class HeaderHomeView extends BaseCustomView {
             public void onClick(View v) {
                 if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
                         !homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashActivateClick();
+                    HomePageTracking.eventTokoCashActivateClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton()
-                );
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton());
             }
         };
     }
@@ -404,11 +403,10 @@ public class HeaderHomeView extends BaseCustomView {
                 if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
                         !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
                         homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashCheckSaldoClick();
+                    HomePageTracking.eventTokoCashCheckSaldoClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance()
-                );
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance());
             }
         };
     }

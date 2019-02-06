@@ -2,7 +2,7 @@ package com.tokopedia.digital.product.data.entity.requestbody.pulsabalance;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 
 /**
  * Created by ashwanityagi on 18/07/17.

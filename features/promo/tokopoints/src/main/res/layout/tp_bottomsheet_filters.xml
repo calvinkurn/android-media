@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/tp_padding_medium"
+        android:paddingLeft="@dimen/tp_padding_medium"
+        android:paddingTop="@dimen/tp_padding_regular"
+        android:paddingEnd="@dimen/tp_padding_medium"
+        android:paddingRight="@dimen/tp_padding_medium"
+        android:paddingBottom="@dimen/tp_padding_xsmall"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/tp_margin_regular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/bottomsheet_filter_subtitle" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_filters"
+        android:layout_width="match_parent"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/btn_save"
+        android:text="@string/filters_save"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_button_green_enabled"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_12"
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

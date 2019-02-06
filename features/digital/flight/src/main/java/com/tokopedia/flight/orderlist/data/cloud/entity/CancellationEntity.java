@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class CancellationEntity {
-    @SerializedName("refund_id")
+    @SerializedName("cancel_id")
     @Expose
     private int refundId;
     @SerializedName("details")

@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCartItemViewHolder;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 
 import java.util.List;
 
@@ -19,9 +19,11 @@ import java.util.List;
 public class ShipmentInnerProductListAdapter extends RecyclerView.Adapter<ShipmentCartItemViewHolder> {
 
     private List<CartItemModel> mCartItemList;
+    private ShipmentCartItemViewHolder.ShipmentItemListener mListener;
 
-    public ShipmentInnerProductListAdapter(List<CartItemModel> cartItemList) {
+    public ShipmentInnerProductListAdapter(List<CartItemModel> cartItemList, ShipmentCartItemViewHolder.ShipmentItemListener listener) {
         mCartItemList = cartItemList;
+        mListener = listener;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class ShipmentInnerProductListAdapter extends RecyclerView.Adapter<Shipme
     @Override
     public void onBindViewHolder(ShipmentCartItemViewHolder holder, int position) {
         CartItemModel cartItemModel = mCartItemList.get(position);
-        holder.bindViewHolder(cartItemModel);
+        holder.bindViewHolder(cartItemModel, mListener);
     }
 
     @Override

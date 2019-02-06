@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
-import com.tokopedia.flight.searchV2.data.db.mapper.FlightPassengerMapper;
+import com.tokopedia.flight.search.data.db.mapper.FlightPassengerMapper;
 import com.tokopedia.flight_dbflow.FlightPassengerDB;
 import com.tokopedia.flight_dbflow.FlightPassengerDB_Table;
 

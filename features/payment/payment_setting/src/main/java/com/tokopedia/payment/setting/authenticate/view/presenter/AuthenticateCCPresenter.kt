@@ -11,12 +11,16 @@ import com.tokopedia.payment.setting.authenticate.model.Data
 import com.tokopedia.payment.setting.authenticate.model.Datum
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 
-class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase) : BaseDaggerPresenter<AuthenticateCCContract.View>(), AuthenticateCCContract.Presenter {
+class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase, val userSession: UserSession) : BaseDaggerPresenter<AuthenticateCCContract.View>(), AuthenticateCCContract.Presenter {
 
-
-    override fun updateWhiteList(authValue: Int, resources: Resources) {
+    override fun updateWhiteList(authValue: Int, resources: Resources, isNeedCheckOtp : Boolean) {
+        if(authValue == SINGLE_AUTH_VALUE && isNeedCheckOtp){
+            view?.goToOtpPage(userSession.phoneNumber)
+            return
+        }
         view.showProgressLoading()
         val variables = HashMap<String, Any?>()
         variables.put(UPDATE_STATUS, true)

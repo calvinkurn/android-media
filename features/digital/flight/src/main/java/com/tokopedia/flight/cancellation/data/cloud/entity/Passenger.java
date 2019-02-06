@@ -3,6 +3,8 @@ package com.tokopedia.flight.cancellation.data.cloud.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * @author by furqan on 22/03/18.
  */
@@ -26,6 +28,12 @@ public class Passenger {
     @SerializedName("last_name")
     @Expose
     private String lastName;
+    @SerializedName("relation_id")
+    @Expose
+    private String relationId;
+    @SerializedName("relations")
+    @Expose
+    private List<String> relations;
 
     public String getPassengerId() {
         return passengerId;
@@ -73,5 +81,21 @@ public class Passenger {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getRelationId() {
+        return relationId;
+    }
+
+    public void setRelationId(String relationId) {
+        this.relationId = relationId;
+    }
+
+    public List<String> getRelations() {
+        return relations;
+    }
+
+    public void setRelations(List<String> relations) {
+        this.relations = relations;
     }
 }

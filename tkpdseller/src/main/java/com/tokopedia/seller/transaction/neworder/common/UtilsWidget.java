@@ -1,6 +1,6 @@
 package com.tokopedia.seller.transaction.neworder.common;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import android.content.Context;
 import android.support.annotation.ColorInt;

@@ -16,17 +16,19 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapterTypeFactory implements FlightCancellationAttachmentTypeFactory {
 
     public interface OnAdapterInteractionListener{
-        void onUploadAttachmentButtonClicked();
+        void onUploadAttachmentButtonClicked(int positionIndex);
 
         void deleteAttachement(FlightCancellationAttachmentViewModel element);
+
+        void viewImage(String filePath);
     }
 
     private OnAdapterInteractionListener interactionListener;
-    private boolean showDeleteButton;
+    private boolean showChangeButton;
 
-    public FlightCancellationAttachementAdapterTypeFactory(OnAdapterInteractionListener interactionListener, boolean showDeleteButton) {
+    public FlightCancellationAttachementAdapterTypeFactory(OnAdapterInteractionListener interactionListener, boolean showChangeButton) {
         this.interactionListener = interactionListener;
-        this.showDeleteButton = showDeleteButton;
+        this.showChangeButton = showChangeButton;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapter
         if (type == FlightCancellationAttachmentButtonViewHolder.LAYOUT){
             return new FlightCancellationAttachmentButtonViewHolder(parent, interactionListener);
         }else if (type == FlightCancellationAttachmentViewHolder.LAYOUT){
-            return new FlightCancellationAttachmentViewHolder(parent, interactionListener, showDeleteButton);
+            return new FlightCancellationAttachmentViewHolder(parent, interactionListener, showChangeButton);
         }else {
             return super.createViewHolder(parent, type);
         }

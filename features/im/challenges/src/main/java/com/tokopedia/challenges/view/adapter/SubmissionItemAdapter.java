@@ -154,6 +154,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (item != null) {
                 categoryItems.remove(position);
                 notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
             }
         }
     }

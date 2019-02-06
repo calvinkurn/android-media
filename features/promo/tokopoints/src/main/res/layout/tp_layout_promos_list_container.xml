@@ -1,53 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
-    <ViewFlipper
-        android:id="@+id/container"
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white">
 
-        <LinearLayout
+        <ViewFlipper
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/white">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_promos"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                tools:listitem="@layout/tp_item_coupon" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_link_first"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginLeft="@dimen/tp_margin_medium"
-                android:layout_marginTop="@dimen/dp_14"
-                android:layout_marginRight="@dimen/tp_margin_medium"
-                android:background="@drawable/bg_tp_gray_outline"
-                android:gravity="center"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/tp_label_see_all"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/sp_13" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_promos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    tools:listitem="@layout/tp_item_coupon" />
 
-            <View
-                android:id="@+id/view_dummy"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/tp_margin_bottom_membership_and_egg"
-                android:visibility="invisible" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/text_link_first"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginLeft="@dimen/tp_margin_medium"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginRight="@dimen/tp_margin_medium"
+                    android:background="@drawable/bg_tp_gray_outline"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:text="@string/tp_label_see_all"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/sp_13" />
 
-        <include layout="@layout/layout_tp_empty_catalog" />
+                <View
+                    android:id="@+id/view_dummy"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/tp_margin_bottom_membership_and_egg"
+                    android:visibility="invisible" />
+            </LinearLayout>
 
-    </ViewFlipper>
+            <include layout="@layout/layout_tp_empty_catalog" />
 
-</android.support.v4.widget.NestedScrollView>
+        </ViewFlipper>
+
+    </android.support.v4.widget.NestedScrollView>
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

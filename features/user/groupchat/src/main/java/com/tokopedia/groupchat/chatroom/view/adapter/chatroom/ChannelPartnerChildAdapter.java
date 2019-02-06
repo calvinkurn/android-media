@@ -62,6 +62,8 @@ public class ChannelPartnerChildAdapter
         ImageHandler.loadImage2(holder.partnerAvatar,
                 list.get(position).getPartnerAvatar(),
                 R.drawable.loading_page);
+
+        listener.onPartnerViewed(list.get(holder.getAdapterPosition()).getPartnerName());
         holder.partnerChildLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

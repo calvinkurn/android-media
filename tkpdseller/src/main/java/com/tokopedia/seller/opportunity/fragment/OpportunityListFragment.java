@@ -327,6 +327,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 resetOpportunityList();
 
                 UnifyTracking.eventOpportunity(
+                        getActivity(),
                         OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
                         OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                         AppEventTracking.Action.SUBMIT,
@@ -375,6 +376,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         setPaging(viewModel.getPagingHandlerModel());
 
         UnifyTracking.eventOpportunity(
+                getActivity(),
                 OpportunityTrackingEventLabel.EventName.LOAD_OPPORTUNITY_PRODUCT,
                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                 AppEventTracking.Action.LOAD,
@@ -543,7 +545,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
 
         if (requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL
                 && resultCode == OpportunityDetailFragment.RESULT_DELETED
@@ -631,7 +633,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
 
             startShowCase();
         }

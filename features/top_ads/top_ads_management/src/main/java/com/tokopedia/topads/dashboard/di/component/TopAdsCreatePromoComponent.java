@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.di.component;
 
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
+import com.tokopedia.topads.dashboard.di.scope.TopAdsManagementScope;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditCostExistingGroupFragment;
@@ -12,7 +12,6 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditGroupNameFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditScheduleExistingGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditScheduleShopFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditScheduleWithoutGroupFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupAdListFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostWithoutGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
@@ -27,7 +26,7 @@ import dagger.Component;
  * Created by zulfikarrahman on 8/13/17.
  */
 
-@TopAdsDashboardScope
+@TopAdsManagementScope
 @Component(modules = TopAdsCreatePromoModule.class, dependencies = TopAdsComponent.class)
 public interface TopAdsCreatePromoComponent {
     void inject(TopAdsNewScheduleNewGroupFragment topAdsNewScheduleFragment);
@@ -57,8 +56,6 @@ public interface TopAdsCreatePromoComponent {
     void inject(TopAdsEditGroupNameFragment topAdsEditGroupNameFragment);
 
     void inject(TopAdsNewCostNewGroupFragment topAdsNewCostNewGroupFragment);
-
-    void inject(TopAdsGroupAdListFragment topAdsGroupAdListFragment);
 
     void inject(TopAdsDetailGroupFragment topAdsDetailGroupFragment);
 

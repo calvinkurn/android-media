@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static com.tokopedia.events.view.utils.Utils.Constants.CHECKOUTDATA;
 /**
  * Created by pranaymohapatra on 15/12/17.
  */
@@ -29,7 +30,7 @@ public class CheckoutPaymentUseCase extends UseCase<CheckoutResponse> {
 
     @Override
     public Observable<CheckoutResponse> createObservable(RequestParams requestParams) {
-        Cart verfiedCart = (Cart) requestParams.getObject("verfiedcart");
+        Cart verfiedCart = (Cart) requestParams.getObject(CHECKOUTDATA);
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(verfiedCart));
         JsonObject requestBody = jsonElement.getAsJsonObject();
         return eventRepository.checkoutCart(requestBody);

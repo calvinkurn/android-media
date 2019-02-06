@@ -4,9 +4,10 @@ package com.tokopedia.navigation;
  * Created by meta on 25/07/18.
  */
 public class GlobalNavConstant {
+
     public static final String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
+
     public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
-    public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
 
     public class Analytics {
 
@@ -59,6 +60,8 @@ public class GlobalNavConstant {
     public static final int PEMBELIAN = 0;
     public static final int PENJUALAN = 1;
     public static final int KOMPLAIN = 2;
+    public static final int UPDATE = 3;
+
 
     public static final int MENUNGGU_PEMBAYARAN = 4;
     public static final int MENUNGGU_KONFIRMASI = 5;
@@ -74,4 +77,7 @@ public class GlobalNavConstant {
     public static final int SELLER = 12;
 
     public static final int BUYER_INFO = 14;
+
+    public static final int NEWEST_INFO = 15;
+
 }

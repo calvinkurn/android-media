@@ -1,10 +1,10 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.ShopCardView;
@@ -30,15 +30,21 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
     public void bind(ShopCardViewModel element) {
         shopCardView.setShopName(element.getShopName());
         shopCardView.setShopImage(element.getShopImageUrl());
-        if(element.getGoldMerchant()) {
-            shopCardView.setBadgeImage(R.drawable.ic_badge_shop_gm);
+        if (element.getGoldMerchant()) {
+            shopCardView.setBadgeImage(GMConstant.getGMDrawableResource(itemView.getContext()));
         }
         shopCardView.setShopReputation(element.getReputationImageUrl());
         shopCardView.setBalance(element.getBalance());
 
         shopCardView.setOnClickShopAvatar(v -> listener.onShopAvatarClicked(element));
         shopCardView.setOnClickShopName(v -> listener.onShopNameClicked(element));
-
+        shopCardView.setOnClickShopStatusInfo(v -> listener.onShopStatusInfoButtonClicked());
         shopCardView.setOnClickDeposit(v -> listener.onDepositClicked(element));
+
+        shopCardView.setKyc(element.getVerificationStatus(), element.getVerificationStatusName(),
+                () -> listener.onKycLinkClicked(element.getVerificationStatus()));
+
+        shopCardView.setTopAdsDeposit(element.getDataDeposit());
+        shopCardView.setOnClickTopAdsView(v-> listener.onTopAdsMenuClicked());
     }
 }

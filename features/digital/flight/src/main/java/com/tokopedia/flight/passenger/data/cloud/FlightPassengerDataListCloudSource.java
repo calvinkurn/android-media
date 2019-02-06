@@ -8,7 +8,7 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
-import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
+import com.tokopedia.flight.search.data.api.single.response.FlightDataResponse;
 
 import java.util.HashMap;
 import java.util.List;

@@ -34,18 +34,25 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(path: ':libraries:oms')
-    implementation project(path: ':tkpdloyalty')
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation 'at.blogc:expandabletextview:1.0.5'
-    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.libraries.omsApi)
+    implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.payment)
+
+    implementation rootProject.ext.viewDependencies.expandableTextview
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -69,10 +76,6 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    implementation 'at.blogc:expandabletextview:1.0.5'
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(path: ':libraries:user_session')
 }
 
 apply from: '../../../publish_local.gradle'

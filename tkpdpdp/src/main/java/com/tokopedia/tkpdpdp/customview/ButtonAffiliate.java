@@ -48,7 +48,7 @@ public class ButtonAffiliate extends BaseCustomView {
         loadingAffiliate.setVisibility(affiliate != null ? GONE : VISIBLE);
         buttonAffiliate.setOnClickListener(view -> {
             if (affiliate != null) {
-                listener.onByMeClicked(affiliate);
+                listener.onByMeClicked(affiliate, false);
             }
         });
     }

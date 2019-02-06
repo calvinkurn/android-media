@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'developeroptions'
+    groupId = 'com.tokopedia.developeroptions'
+    versionName = "${tkpdDeveloperOptions}"
+    artifactName ="developer_options-release"
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.reactNative)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.core)
+
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}

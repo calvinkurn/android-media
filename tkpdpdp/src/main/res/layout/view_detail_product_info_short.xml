@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_shadow_top"
+    android:id="@+id/view_detail_product_info_short"
+    tools:visibility="visible"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingLeft="@dimen/pdp_content_padding"
+    android:paddingRight="@dimen/pdp_content_padding">
+
+    <TextView
+        android:id="@+id/label_seller_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/informasi_produk"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/pdp_title_text_size"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/view_preorder"
+        android:transitionName="@string/transition_preorder_view"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_label_preorder"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_16"
+            android:text="@string/label_preorder"
+            android:textColor="@color/pdp_text_sub_title_color"
+            android:textSize="@dimen/fonts" />
+
+        <TextView
+            android:id="@+id/tv_preorder"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="end"
+            android:paddingTop="@dimen/dp_16"
+            android:textColor="@color/pdp_text_color"
+            android:textSize="@dimen/fonts"
+            tools:layout_editor_absoluteX="316dp"
+            tools:text='4 Hari' />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_min_order"
+        android:transitionName="@string/transition_min_order_view"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_label_min_order"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_16"
+            android:text="@string/label_min_order"
+            android:textColor="@color/pdp_text_sub_title_color"
+            android:textSize="@dimen/fonts"
+            tools:layout_editor_absoluteY="34dp" />
+
+        <TextView
+            android:id="@+id/tv_minimum"
+            android:layout_weight="1"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingTop="@dimen/dp_16"
+            android:textColor="@color/pdp_text_color"
+            android:textSize="@dimen/fonts"
+            tools:layout_editor_absoluteX="310dp"
+            tools:layout_editor_absoluteY="34dp"
+            tools:text="1 Buah" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_condition"
+        android:transitionName="@string/transition_condition_view"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_label_condition"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_16"
+            android:text="@string/label_condition"
+            android:textColor="@color/pdp_text_sub_title_color"
+            android:textSize="@dimen/fonts"
+            tools:layout_editor_absoluteY="68dp" />
+
+        <TextView
+            android:id="@+id/tv_condition"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingTop="@dimen/dp_16"
+            android:textColor="@color/pdp_text_color"
+            android:textSize="@dimen/fonts"
+            tools:layout_editor_absoluteX="324dp"
+            tools:layout_editor_absoluteY="68dp"
+            tools:text="Baru" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:id="@+id/label_see_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_see_details"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/fonts" />
+</LinearLayout>

@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class TrainParamPassenger implements Parcelable {
 
-    private boolean checkedSameAsBuyer;
     private List<TrainPassengerViewModel> trainPassengerViewModelList;
 
     public TrainParamPassenger() {
@@ -18,7 +17,6 @@ public class TrainParamPassenger implements Parcelable {
 
 
     protected TrainParamPassenger(Parcel in) {
-        checkedSameAsBuyer = in.readByte() != 0;
         trainPassengerViewModelList = in.createTypedArrayList(TrainPassengerViewModel.CREATOR);
     }
 
@@ -33,14 +31,6 @@ public class TrainParamPassenger implements Parcelable {
             return new TrainParamPassenger[size];
         }
     };
-
-    public boolean isCheckedSameAsBuyer() {
-        return checkedSameAsBuyer;
-    }
-
-    public void setCheckedSameAsBuyer(boolean checkedSameAsBuyer) {
-        this.checkedSameAsBuyer = checkedSameAsBuyer;
-    }
 
     public List<TrainPassengerViewModel> getTrainPassengerViewModelList() {
         return trainPassengerViewModelList;
@@ -57,7 +47,6 @@ public class TrainParamPassenger implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeByte((byte) (checkedSameAsBuyer ? 1 : 0));
         parcel.writeTypedList(trainPassengerViewModelList);
     }
 }

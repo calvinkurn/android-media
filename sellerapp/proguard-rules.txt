@@ -344,3 +344,11 @@
 
 -dontwarn com.clevertap.android.sdk.**
 -dontwarn com.segment.analytics.**
+
+# -- Coroutines --
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+-keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}

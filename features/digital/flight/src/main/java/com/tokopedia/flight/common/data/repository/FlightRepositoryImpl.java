@@ -14,6 +14,7 @@ import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataS
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -35,26 +36,16 @@ import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
-import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
-import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
-import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
-import com.tokopedia.flight.search.util.FlightSearchMetaParamUtil;
-import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight_dbflow.FlightAirportDB;
-import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.flight_dbflow.FlightPassengerDB;
-import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
-import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by zulfikarrahman on 10/25/17.
@@ -65,10 +56,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightAirportDataListSource flightAirportDataListSource;
     private FlightAirlineDataListSource flightAirlineDataListSource;
     private FlightClassesDataSource flightClassesDataSource;
-    private FlightSearchSingleDataSource flightSearchSingleDataListSource;
-    private FlightSearchReturnDataSource flightSearchReturnDataListSource;
     private FlightCartDataSource flightCartDataSource;
-    private FlightMetaDataDBSource flightMetaDataDBSource;
     private FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource;
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
     private FlightBookingDataSource flightBookingDataSource;
@@ -82,11 +70,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightAirportDataListSource flightAirportDataListSource,
                                 FlightAirlineDataListSource flightAirlineDataListSource,
-                                FlightSearchSingleDataSource flightSearchSingleDataListSource,
-                                FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                 FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource,
-                                FlightMetaDataDBSource flightMetaDataDBSource,
                                 FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                 FlightBookingDataSource flightBookingDataSource,
@@ -99,11 +84,8 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
-        this.flightSearchSingleDataListSource = flightSearchSingleDataListSource;
-        this.flightSearchReturnDataListSource = flightSearchReturnDataListSource;
         this.flightClassesDataSource = flightClassesDataSource;
         this.flightCartDataSource = flightCartDataSource;
-        this.flightMetaDataDBSource = flightMetaDataDBSource;
         this.flightAirportDataListBackgroundSource = flightAirportDataListBackgroundSource;
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
         this.flightBookingDataSource = flightBookingDataSource;
@@ -156,110 +138,6 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Boolean> isSearchCacheExpired(boolean isReturn) {
-        if (isReturn) {
-            return flightSearchReturnDataListSource.isCacheExpired()
-                    .zipWith(flightSearchReturnDataListSource.isDataAvailable(),
-                            new Func2<Boolean, Boolean, Boolean>() {
-                                @Override
-                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
-                                    return isExpired && isLocalDataAvailable;
-                                }
-                            });
-        } else {
-            return flightSearchSingleDataListSource.isCacheExpired()
-                    .zipWith(flightSearchSingleDataListSource.isDataAvailable(),
-                            new Func2<Boolean, Boolean, Boolean>() {
-                                @Override
-                                public Boolean call(Boolean isExpired, Boolean isLocalDataAvailable) {
-                                    return isExpired && isLocalDataAvailable;
-                                }
-                            });
-        }
-    }
-
-    @Override
-    public Observable<List<FlightAirlineDB>> getAirlineList() {
-        return flightAirlineDataListSource.getAirlineList();
-    }
-
-    /**
-     * will compare between the list and the cache (if not expired)
-     * If the cache already has ALL the airline in the list, then it will return as is.
-     * Otherwise, it will hit the cloud.
-     * <p>
-     * Example:
-     * List: CA, JT. Cache: AB, AC, CB, JT
-     * it will hit the cloud, because it does not have CA in cache
-     * <p>
-     * List: AB, JT. Cache: AB, AC, CB, JT
-     * All in list is in the cache, so, it will not hit cloud
-     */
-    @Override
-    public Observable<List<FlightAirlineDB>> getAirlineList(final List<String> airlineIDFromResult) {
-        return flightAirlineDataListSource.isCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
-            @Override
-            public Observable<List<FlightAirlineDB>> call(Boolean expired) {
-                if (expired) {
-                    return flightAirlineDataListSource.getAirlineList();
-                } else {
-                    return flightAirlineDataListSource.getCacheDataList(null).flatMap(new Func1<List<FlightAirlineDB>, Observable<List<FlightAirlineDB>>>() {
-                        @Override
-                        public Observable<List<FlightAirlineDB>> call(final List<FlightAirlineDB> flightAirlineDBs) {
-                            boolean isAirlineInCache = true;
-
-                            HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
-                            for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
-                                dbAirlineMaps.put(flightAirlineDBs.get(i).getId(), flightAirlineDBs.get(i));
-                            }
-                            for (int i = 0, sizei = airlineIDFromResult.size(); i < sizei; i++) {
-                                if (!dbAirlineMaps.containsKey(airlineIDFromResult.get(i))) {
-                                    isAirlineInCache = false;
-                                    break;
-                                }
-                            }
-                            if (isAirlineInCache) {
-                                return Observable.just(flightAirlineDBs);
-                            } else {
-                                return flightAirlineDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
-                                    @Override
-                                    public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
-                                        return flightAirlineDataListSource.getAirlineList();
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-        }).onErrorReturn(new Func1<Throwable, List<FlightAirlineDB>>() {
-            @Override
-            public List<FlightAirlineDB> call(Throwable throwable) {
-                return new ArrayList<>();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> deleteFlightCacheSearch() {
-        return flightSearchSingleDataListSource.deleteCache().flatMap(new Func1<Boolean, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                return flightSearchReturnDataListSource.deleteCache();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> deleteFlightCacheSearch(boolean isReturning) {
-        if (isReturning) {
-            return flightSearchReturnDataListSource.deleteCache();
-        } else {
-            return flightSearchSingleDataListSource.deleteCache();
-        }
-    }
-
-    @Override
     public Observable<List<FlightAirlineDB>> getAirlineList(String airlineId) {
         return flightAirlineDataListSource.getAirlineList(airlineId);
     }
@@ -284,38 +162,6 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 });
                     }
                 });
-    }
-
-    @Override
-    public Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams) {
-        if (FlightSearchParamUtil.isReturning(requestParams)) {
-            return flightSearchReturnDataListSource.getDataList(requestParams);
-        } else {
-            return flightSearchSingleDataListSource.getDataList(requestParams);
-        }
-    }
-
-    @Override
-    public Observable<List<FlightMetaDataDB>> getFlightMetaData(RequestParams requestParams) {
-        return flightMetaDataDBSource.getData(FlightSearchMetaParamUtil.toHashMap(requestParams));
-    }
-
-    @Override
-    public Observable<Integer> getFlightSearchCount(RequestParams requestParams) {
-        if (FlightSearchParamUtil.isReturning(requestParams)) {
-            return flightSearchReturnDataListSource.getCacheDataListCount(FlightSearchParamUtil.toHashMap(requestParams));
-        } else {
-            return flightSearchSingleDataListSource.getCacheDataListCount(FlightSearchParamUtil.toHashMap(requestParams));
-        }
-    }
-
-    @Override
-    public Observable<FlightSearchSingleRouteDB> getFlightSearchById(boolean isReturning, String id) {
-        if (isReturning) {
-            return flightSearchReturnDataListSource.getSingleFlight(id);
-        } else {
-            return flightSearchSingleDataListSource.getSingleFlight(id);
-        }
     }
 
     @Override
@@ -416,18 +262,13 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirlineDB>> refreshAirlines() {
-        return flightAirlineDataListSource.getAirlineList();
-    }
-
-    @Override
-    public Observable<FlightAirlineDB> getAirlineCacheById(String airlineId) {
-        return flightAirlineDataListSource.getCacheAirline(airlineId);
-    }
-
-    @Override
     public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
         return flightCancellationCloudDataSource.getCancelablePassenger(invoiceId);
+    }
+
+    @Override
+    public Observable<List<Reason>> getCancellationReasons() {
+        return flightCancellationCloudDataSource.getCancellationReasons();
     }
 
     @Override

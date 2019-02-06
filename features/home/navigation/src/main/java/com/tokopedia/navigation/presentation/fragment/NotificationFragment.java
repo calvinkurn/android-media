@@ -147,6 +147,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     private List<DrawerNotification> getData() {
         List<DrawerNotification> notifications = new ArrayList<>();
 
+        addUpdateNotification(notifications);
+
         DrawerNotification buyer = new DrawerNotification();
         buyer.setId(PEMBELIAN);
         buyer.setTitle(getString(R.string.pembelian));
@@ -163,15 +165,25 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
 
-        if (shouldAddUserInfo()) {
-            childBuyer.add(new DrawerNotification.ChildDrawerNotification(BUYER_INFO,
-                    getString(R.string.user_info), ApplinkConst.BUYER_INFO));
-        }
-
         buyer.setChilds(childBuyer);
         notifications.add(buyer);
 
         return notifications;
+    }
+
+    private void addUpdateNotification(List<DrawerNotification> notifications) {
+        if (shouldAddUserInfo()) {
+            DrawerNotification update = new DrawerNotification();
+            update.setId(UPDATE);
+            update.setTitle(getString(R.string.update));
+
+            List<DrawerNotification.ChildDrawerNotification> childUpdate = new ArrayList<>();
+            childUpdate.add(new DrawerNotification.ChildDrawerNotification(NEWEST_INFO,
+                    getString(R.string.info_terbaru), ApplinkConst.BUYER_INFO));
+
+            update.setChilds(childUpdate);
+            notifications.add(update);
+        }
     }
 
     private DrawerNotification complain(boolean isHasShop) {
@@ -205,8 +217,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                 getString(R.string.sedang_dikirim), ApplinkConst.SELLER_PURCHASE_SHIPPED));
         childSeller.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.SELLER_PURCHASE_DELIVERED));
-        childSeller.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual),
-                ApplinkConst.SELLER_INFO));
         seller.setChilds(childSeller);
         return seller;
     }
@@ -224,6 +234,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             if (childItem != null) {
                 globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
                         childItem.getTitle().toLowerCase());
+
+                if(childItem.getApplink().equals(ApplinkConst.BUYER_INFO)){
+                    globalNavAnalytics.eventClickNewestInfo();
+                }
             }
         }
 

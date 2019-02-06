@@ -9,6 +9,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.common.base.IBaseView;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.List;
 import java.util.Map;
@@ -106,4 +107,10 @@ public interface ICartListView extends IBaseView {
     void onDeleteCartDataSuccess();
 
     Activity getActivity();
+
+    void goToCouponList();
+
+    void goToDetail(PromoData promoData);
+
+    void stopTrace();
 }
