@@ -24,6 +24,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
+import com.tokopedia.tkpd.campaign.data.entity.CampaignGqlResponse;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
@@ -159,8 +160,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
-                        CampaignResponseEntity s =
-                                graphqlResponse.getData(CampaignResponseEntity.class);
+                        CampaignGqlResponse response =
+                                graphqlResponse.getData(CampaignGqlResponse.class);
+
+                        CampaignResponseEntity s = response.getCampaignResponseEntity();
 
                         if (!s.isEnable()) {
                             CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");

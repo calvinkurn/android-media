@@ -12,6 +12,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.campaign.data.entity.CampaignGqlResponse;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 
 import rx.Subscriber;
@@ -44,8 +45,8 @@ public class GetCampaignUseCase {
         HashMap<String, Object> requestParams = new HashMap<>();
         requestParams.put(IS_AUDIO, isAudio);
         requestParams.put(SCREEN_NAME, source);
-        requestParams.put(PARAM_LATITUDE, latitude);
-        requestParams.put(PARAM_LONGITUDE, longitude);
+        requestParams.put(PARAM_LATITUDE, String.valueOf(latitude));
+        requestParams.put(PARAM_LONGITUDE,  String.valueOf(longitude));
         return requestParams;
     }
 
@@ -53,7 +54,7 @@ public class GetCampaignUseCase {
         String query = GraphqlHelper.loadRawString(resources, R.raw.query_get_campaign_list);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                CampaignResponseEntity.class, requestParams);
+                CampaignGqlResponse.class, requestParams);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
