@@ -360,6 +360,7 @@ dependencies {
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)

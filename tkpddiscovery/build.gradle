@@ -34,6 +34,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.productCard)
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
