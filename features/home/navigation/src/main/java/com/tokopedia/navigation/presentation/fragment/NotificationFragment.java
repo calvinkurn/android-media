@@ -247,6 +247,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             if (childItem != null) {
                 globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
                         childItem.getTitle().toLowerCase());
+
+                if(childItem.getApplink().equals(ApplinkConst.BUYER_INFO)){
+                    globalNavAnalytics.eventClickNewestInfo();
+                }
             }
         }
 

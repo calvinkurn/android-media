@@ -12,17 +12,28 @@ import java.util.List;
 public class SortFilterModel implements Parcelable {
 
     private List<FilterViewModel> filterList;
+    private List <SortViewModel> sortList;
 
-    public SortFilterModel(List<FilterViewModel> filterList) {
+    public SortFilterModel(List<FilterViewModel> filterList, List<SortViewModel> sortList) {
         this.filterList = filterList;
+        this.sortList = sortList;
     }
 
     public SortFilterModel() {
         this.filterList = new ArrayList<>();
+        this.sortList = new ArrayList<>();
     }
 
     public List<FilterViewModel> getFilterList() {
         return filterList;
+    }
+
+    public List<SortViewModel> getSortList() {
+        return sortList;
+    }
+
+    public void setSortList(List<SortViewModel> sortList) {
+        this.sortList = sortList;
     }
 
     public void setFilterList(List<FilterViewModel> filterList) {
@@ -37,10 +48,12 @@ public class SortFilterModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.filterList);
+        dest.writeTypedList(this.sortList);
     }
 
     protected SortFilterModel(Parcel in) {
         this.filterList = in.createTypedArrayList(FilterViewModel.CREATOR);
+        this.sortList = in.createTypedArrayList(SortViewModel.CREATOR);
     }
 
     public static final Creator<SortFilterModel> CREATOR = new Creator<SortFilterModel>() {

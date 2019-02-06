@@ -42,6 +42,19 @@
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
 
+        <ImageView
+            android:id="@+id/authorBadge"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/authorImage"
+            app:layout_constraintTop_toTopOf="@+id/authorTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/authorTitle"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
         <TextView
             android:id="@+id/authorTitle"
             android:layout_width="0dp"
@@ -60,7 +73,7 @@
             app:layout_constraintBottom_toTopOf="@+id/authorSubtitile"
             app:layout_constraintEnd_toStartOf="@+id/headerAction"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/authorImage"
+            app:layout_constraintStart_toEndOf="@+id/authorBadge"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Febrian Putra Muhammad Ilham Jamaludin Andhika Kuma Djaffri Febby Mulia"

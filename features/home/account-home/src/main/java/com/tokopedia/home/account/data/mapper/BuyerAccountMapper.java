@@ -11,6 +11,7 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
@@ -30,6 +31,7 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_CHALLENGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 
@@ -276,11 +278,18 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_ACCOUNT_AFFILIATE, true)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();
-            infoCard.setIconRes(R.drawable.ic_byme_notif);
+
+            if (AccountByMeHelper.isFirstTimeByme(context)) {
+                infoCard.setIconRes(R.drawable.ic_byme_card_notif);
+            } else {
+                infoCard.setIconRes(R.drawable.ic_byme_card);
+            }
+
             infoCard.setMainText(context.getString(R.string.title_menu_affiliate));
             infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
             infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
             infoCard.setTitleTrack(PEMBELI);
+            infoCard.setSectionTrack(BY_ME);
             items.add(infoCard);
         }
 

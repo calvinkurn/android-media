@@ -173,7 +173,7 @@ public class AffiliateAnalytics {
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_ONBOARD,
+                        AffiliateEventTracking.Category.BYME_CLAIM,
                         AffiliateEventTracking.Action.CLICK_SIMPAN,
                         ""
                 )
@@ -185,7 +185,7 @@ public class AffiliateAnalytics {
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_ONBOARD,
+                        AffiliateEventTracking.Category.BYME_CLAIM,
                         AffiliateEventTracking.Action.CLICK_SYARAT_KETENTUAN,
                         ""
                 )
@@ -298,5 +298,18 @@ public class AffiliateAnalytics {
                         ""
                 )
         );
+    }
+
+    public void onClickProfileOnExplore() {
+        getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_DISCOVERY_PAGE,
+                        AffiliateEventTracking.Action.CLICK_PROFILE,
+                        userSession.getUserId()
+                )
+        );
+
     }
 }

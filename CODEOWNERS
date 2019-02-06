@@ -10,7 +10,7 @@
 /feature/discovery/recentview/          @tokopedia/minion-dave
 /feature/discovery/wishlist_common/     @tokopedia/minion-dave
 /tkpdpdp/           @tokopedia/minion-dave
-/tkpddesign/        @mzennis
+/tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
 /tkpdtokocash/      @tokopedia/minion-mark
@@ -47,8 +47,8 @@
 /features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
 /featires/digital/common_travel         @tokopedia/minion-mark
-/features/fintech/tokocash              @nabillasab
-/libraries/travel_calendar              @nabillasab
+/features/fintech/tokocash              @tokopedia/minion-mark
+/libraries/travel_calendar              @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
@@ -56,13 +56,19 @@
 /features/transaction/checkout/                 @tokopedia/minion-bob
 /features/transaction/transactionanalytics/     @tokopedia/minion-bob
 /features/transaction/transactiondata/          @tokopedia/minion-bob
+/features/logistic/cod/                         @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
 /features/logistic/logisticdata/                @tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          @tokopedia/minion-bob
 /features/logistic/logisticuploadawb/           @tokopedia/minion-bob
+/features/logistic/shipping_recommendation/     @tokopedia/minion-bob
 /features/logistic/tracking/                    @tokopedia/minion-bob
 
+/features/user/chatbot/                         @tokopedia/minion-kevin
+/features/user/chatbot_no_op/                   @tokopedia/minion-kevin
+/features/user/chat_common/                     @tokopedia/minion-kevin
 /features/user/topchat/                         @tokopedia/minion-kevin
+/features/user/topchat_no_op/                   @tokopedia/minion-kevin
 /features/user/groupchat/                       @tokopedia/minion-kevin
 /features/user/profile/                         @tokopedia/minion-kevin
 /features/user/vote/                            @tokopedia/minion-kevin
@@ -120,12 +126,16 @@
 
 /features/fintech/instant_loan          @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
+/features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
+/features/im/referral                   @tokopedia/minion-yoda
 
 /libraries/pagination                   @lavekush-t
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
+/kelontongapp                           @tokopedia/core-team
 
+/libraries/graph_view/                  @aarsy17

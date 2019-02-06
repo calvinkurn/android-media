@@ -13,20 +13,14 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".feature.onboarding.view.activity.OnboardingActivity"
-            android:label="@string/title_af_onboarding"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".feature.onboarding.view.activity.UsernameInputActivity"
-            android:label="@string/title_af_onboarding"
+            android:label="@string/title_af_username"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".feature.onboarding.view.activity.RecommendProductActivity"
-            android:label="@string/title_af_onboarding"
+            android:label="@string/title_af_tokopedia_byme"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -38,6 +32,18 @@
         <activity
             android:name=".feature.explore.view.activity.FilterActivity"
             android:label="@string/text_title_filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.education.view.activity.AffiliateEducationActivity"
+            android:label="@string/title_af_tokopedia_byme"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.explore.view.activity.SortActivity"
+            android:label="@string/text_button_sort"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />

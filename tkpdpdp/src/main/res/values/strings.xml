@@ -102,7 +102,7 @@
     <string name="label_info_detail">Info Selengkapnya</string>
     <string name="label_product_installment">Cicilan</string>
     <string name="value_wholesale_price">Mulai dari %s</string>
-    <string name="value_installment">Bunga %s mulai dari %s</string>
+    <string name="value_installment">Bunga %1$s mulai dari %2$s</string>
     <string name="value_success_rate">%1$s persen %2$s </string>
     <string name="value_shop_last_online">\u2022 %s</string>
     <string name="title_product_info_detail">Informasi Produk</string>
@@ -121,4 +121,5 @@
     <string name="value_cashback_pdp">Cashback %1$s</string>
     <string name="title_cod">Bayar di Tempat</string>
     <string name="cod_content">Bayar Ke kurir saat pesanan diterima. Tersedia dibeberapa kota tertentu</string>
+    <string name="no_support_application">Tidak ada aplikasi pendukung untuk membuka konten.</string>
 </resources>

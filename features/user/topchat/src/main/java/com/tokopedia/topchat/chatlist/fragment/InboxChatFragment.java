@@ -2,12 +2,11 @@ package com.tokopedia.topchat.chatlist.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -18,26 +17,22 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
+import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -52,18 +47,16 @@ import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
-import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
-import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
-import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
-import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
+import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant;
+import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatlist.presenter.WebSocketInterface;
+import com.tokopedia.topchat.chatlist.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
+import com.tokopedia.topchat.common.TopChatInternalRouter;
+import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,18 +75,18 @@ public class InboxChatFragment extends BaseDaggerFragment
     public boolean isMustRefresh = false;
     RecyclerView mainList;
 
-    //    FloatingActionButton fab;
     SwipeToRefresh swipeToRefresh;
     View searchLoading;
     @Inject
     InboxChatPresenter presenter;
+
+    @Inject
+    TopChatAnalytics analytics;
+
     InboxChatAdapter adapter;
     RefreshHandler refreshHandler;
     boolean isRetryShowing = false;
     LinearLayoutManager layoutManager;
-    TkpdProgressDialog progressDialog;
-    SnackbarRetry snackbarRetry;
-    Snackbar snackbarUndo;
     SearchInputView searchInputView;
     boolean isMultiActionEnabled = false;
     ActionMode.Callback callbackContext;
@@ -128,9 +121,38 @@ public class InboxChatFragment extends BaseDaggerFragment
         GraphqlClient.init(context);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.inbox_chat_organize, menu);
+        MenuItem organize = menu.findItem(R.id.action_organize);
+        if (organize != null) {
+            organize.setIcon(getDetailMenuItem());
+            organize.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+    }
+
+    private Drawable getDetailMenuItem() {
+        TextDrawable drawable = new TextDrawable(getContext());
+        drawable.setText(getResources().getString(R.string.option_organize));
+        drawable.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+        drawable.setTextSize(16.0f);
+        return drawable;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == R.id.action_organize) {
+            setOptionsMenu();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_inbox_message, container, false);
 
         initView(parentView);
@@ -140,36 +162,26 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     private void initView(View parentView) {
         searchLoading = parentView.findViewById(R.id.loading_search);
-        mainList = (RecyclerView) parentView.findViewById(R.id.chat_list);
+        mainList = parentView.findViewById(R.id.chat_list);
         mainList.requestFocus();
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        refreshHandler = new RefreshHandler(getActivity(), parentView, new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                finishContextMode();
-                presenter.refreshData();
-            }
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        refreshHandler = new RefreshHandler(getActivity(), parentView, view -> {
+            finishContextMode();
+            presenter.refreshData();
         });
-        searchInputView = (SearchInputView) parentView.findViewById(R.id.simpleSearchView);
+        searchInputView = parentView.findViewById(R.id.simpleSearchView);
         searchInputView.setListener(this);
         searchInputView.setResetListener(this);
         searchInputView.setSearchHint(getActivity().getString(R.string.search_chat_user));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setHasFixedSize(true);
         presenter.attachView(this);
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
-        if (GlobalConfig.isSellerApp()){
-            sendBroadcast.setOnClickListener(v -> {
-                if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null){
-                    startActivity(((BroadcastMessageRouter) getActivity().getApplication()).getBroadcastMessageListIntent(getContext()));
-                }
-            });
-        } else {
-            sendBroadcast.setVisibility(View.GONE);
-        }
+        View broadcastLayout = parentView.findViewById(R.id.base_action);
+        sendBroadcast.setVisibility(View.GONE);
+        broadcastLayout.setVisibility(View.GONE);
         parentView.findViewById(R.id.tv_organize_action).setOnClickListener(v -> setOptionsMenu());
 
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
@@ -228,19 +240,11 @@ public class InboxChatFragment extends BaseDaggerFragment
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.delete_chat)
                 .setMessage(R.string.forever_deleted_chat)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        presenter.deleteMessage(listMove);
-                        dialog.dismiss();
-                    }
-
+                .setPositiveButton(R.string.delete, (dialog, whichButton) -> {
+                    presenter.deleteMessage(listMove);
+                    dialog.dismiss();
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                 .create();
 
     }
@@ -252,12 +256,9 @@ public class InboxChatFragment extends BaseDaggerFragment
 
         adapter = new InboxChatAdapter(typeFactory, presenter);
 
-        searchInputView.getSearchTextView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                searchInputView.getSearchTextView().setCursorVisible(true);
-                return false;
-            }
+        searchInputView.getSearchTextView().setOnTouchListener((view1, motionEvent) -> {
+            searchInputView.getSearchTextView().setCursorVisible(true);
+            return false;
         });
 
         searchInputView.getSearchTextView().setOnClickListener(new View.OnClickListener() {
@@ -294,34 +295,15 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
 
-        DaggerInboxChatComponent daggerInboxChatComponent =
-                (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
-                        .appComponent(appComponent).build();
-        daggerInboxChatComponent.inject(this);
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        try {
-//            presenter.setUserVisibleHint(isVisibleToUser, isMustRefresh);
-//            if (snackbarRetry != null) {
-//                snackbarRetry.resumeRetrySnackbar();
-//                if (!isVisibleToUser)
-//                    snackbarRetry.pauseRetrySnackbar();
-//            }
-//            if (snackbarUndo != null) {
-//                snackbarUndo.dismiss();
-//            }
-//            finishContextMode();
-
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+            DaggerInboxChatComponent daggerInboxChatComponent =
+                    (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
+                            .baseAppComponent(appComponent).build();
+            daggerInboxChatComponent.inject(this);
         }
     }
-
 
     @Override
     public void setOptionsMenuFromSelect() {
@@ -345,17 +327,6 @@ public class InboxChatFragment extends BaseDaggerFragment
             contextMenu.invalidate();
             contextMenu.setTitle(R.string.delete_choose);
         }
-    }
-
-    @Override
-    public void addTimeMachine() {
-        adapter.showTimeMachine();
-    }
-
-    @Override
-    public void onGoToTimeMachine(String url) {
-        dropKeyboard();
-        startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
     }
 
     @Override
@@ -396,25 +367,12 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void enableActions() {
-        if (getActivity() instanceof DrawerPresenterActivity)
-            ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(true);
 
-//        if (adapter.getSelected() == 0) {
-//            fab.show();
-//            ((InboxChatActivity)getActivity()).showTabLayout(true);
-//        }
-//        if (presenter.hasActionListener()) {
-//            adapter.setEnabled(true);
-//        }
     }
 
     @Override
     public void disableActions() {
-        if (getActivity() instanceof DrawerPresenterActivity)
-            ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(false);
-//        if (fab.isShown())
-//            fab.hide();
-//        adapter.setEnabled(false);
+
     }
 
     @Override
@@ -442,11 +400,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public String getKeyword() {
         return searchInputView.getSearchText();
-    }
-
-    @Override
-    public void showEmptyState(String localizedMessage) {
-
     }
 
     @Override
@@ -499,7 +452,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public RefreshHandler getRefreshHandler() {
+    public com.tokopedia.abstraction.common.utils.view.RefreshHandler getRefreshHandler() {
         return refreshHandler;
     }
 
@@ -511,7 +464,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void finishLoading() {
         refreshHandler.finishRefresh();
-        progressDialog.dismiss();
         adapter.removeLoading();
         searchLoading.setVisibility(View.GONE);
     }
@@ -530,21 +482,34 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
+                && resultCode == Activity.RESULT_OK && data != null) {
             if (data.getExtras().getBoolean(InboxMessageConstant.MUST_REFRESH))
                 presenter.refreshData();
             else if (data.getExtras() != null &&
                     data.getExtras().getParcelable(PARCEL) != null) {
                 Bundle bundle = data.getExtras();
+                boolean isMoveToTop = bundle.getBoolean(TopChatInternalRouter.Companion
+                        .RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP, false);
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
-                adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
+                adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false, isMoveToTop);
                 adapter.updateListCache(model.getMessageId(), model.getMsg(), false,
                         presenter.getListCache());
             }
-        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
-                resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
-                data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID)) {
-            presenter.refreshData();
+        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
+                && resultCode == TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE
+                && data != null
+                && data.hasExtra(ApplinkConst.Chat.MESSAGE_ID)) {
+            String messageId = data.getExtras().getString(ApplinkConst.Chat.MESSAGE_ID);
+            adapter.removeWithMessageId(messageId);
+        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE
+                && data != null
+                && data.getExtras() != null
+                && data.hasExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH)) {
+            if (data.getExtras().getBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH,
+                    false)) {
+                presenter.refreshData();
+            }
         }
 
         presenter.createWebSocket();
@@ -562,9 +527,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         if (text.length() > 0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
-            UnifyTracking.eventTopChatSearch(getActivity(),TopChatAnalytics.Category.INBOX_CHAT,
-                    TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
-                    TopChatAnalytics.Name.INBOX_CHAT);
+            analytics.eventSearchSubmit();
             if (getActivity() instanceof InboxChatActivity) {
                 ((InboxChatActivity) getActivity()).hideIndicators();
             }
@@ -603,11 +566,14 @@ public class InboxChatFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
-                                response.getData().getMessage().getCensoredReply(), response,
-                                true);
-                        reloadNotifDrawer();
+                        if (!response.getData().isBot()) {
+                            adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
+                                    response.getData().getMessage().getCensoredReply(), response,
+                                    true, true);
+                            reloadNotifDrawer();
+                        }
                     });
+
                 }
                 break;
             default:
@@ -673,23 +639,20 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void reloadNotifDrawer() {
-        if (getActivity() instanceof InboxChatActivity) {
-            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
-        }
     }
 
     @Override
     public void handleBroadcastChatMetaData(TopChatBlastSellerMetaData topChatBlastSellerMetaData) {
         boolean isValidToCreateBroadcast = topChatBlastSellerMetaData.getStatus() == 1;
-        sendBroadcast.setVisibility(isValidToCreateBroadcast? View.VISIBLE : View.GONE);
+        sendBroadcast.setVisibility(isValidToCreateBroadcast ? View.VISIBLE : View.GONE);
 
         if (isValidToCreateBroadcast)
             checkNeedToShowCasing();
     }
 
     private void checkNeedToShowCasing() {
-        final String showcaseTag = getClass().getName()+".BroadcastMessage";
-        if (ShowCasePreference.hasShown(getActivity(), showcaseTag) || showCaseDialog != null){
+        final String showcaseTag = getClass().getName() + ".BroadcastMessage";
+        if (ShowCasePreference.hasShown(getActivity(), showcaseTag) || showCaseDialog != null) {
             return;
         }
 

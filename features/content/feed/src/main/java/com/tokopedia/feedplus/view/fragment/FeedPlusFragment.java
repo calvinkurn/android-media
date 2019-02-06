@@ -42,10 +42,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
@@ -154,7 +154,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     private static final String YOUTUBE_URL = "{youtube_url}";
-    private static final String FEED_TRACE = "feed_trace";
+    private static final String FEED_TRACE = "mp_feed";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -172,6 +172,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private PerformanceMonitoring performanceMonitoring;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private int loginIdInt;
+    private boolean isLoadedOnce;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -383,7 +384,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         triggerClearNewFeedNotification();
-        adapter.clearData();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
@@ -399,9 +399,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void setLastCursorOnFirstPage(String lastCursor) {
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_FEED);
-        cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
-        cache.applyEditor();
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            LocalCacheHandler cache = new LocalCacheHandler(
+                    getActivity().getApplicationContext(),
+                    KEY_FEED
+            );
+            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
+            cache.applyEditor();
+        }
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,
@@ -828,9 +833,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void triggerClearNewFeedNotification() {
-        Intent intent = new Intent(BROADCAST_FEED);
-        intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true);
-        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        if (getContext() != null && getContext().getApplicationContext() != null) {
+            Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        }
     }
 
     @Override
@@ -849,30 +856,40 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void registerNewFeedReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_FEED);
-        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).registerReceiver(newFeedReceiver, intentFilter);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(BROADCAST_FEED);
+
+            LocalBroadcastManager
+                    .getInstance(getActivity().getApplicationContext())
+                    .registerReceiver(newFeedReceiver, intentFilter);
+        }
     }
 
     private void unRegisterNewFeedReceiver() {
-        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            LocalBroadcastManager
+                    .getInstance(getActivity().getApplicationContext())
+                    .unregisterReceiver(newFeedReceiver);
+        }
     }
-
-
-    private boolean isLoadedOnce = false;
 
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
                 && getActivity() != null && presenter != null) {
             if (!isLoadedOnce) {
                 presenter.fetchFirstPage();
-                performanceMonitoring.stopTrace();
 
                 isLoadedOnce = !isLoadedOnce;
             }
 
             analytics.trackScreen(getActivity(), getScreenName());
         }
+    }
+
+    @Override
+    public void stopTracePerformanceMon() {
+        performanceMonitoring.stopTrace();
     }
 
     @Override
@@ -1332,14 +1349,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .make(getView(),
                         getString(R.string.feed_content_reported),
                         BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> { })
+                .setAction(R.string.label_close, v -> {
+                })
                 .show();
     }
 
     private void onErrorReportContent(String errorMsg) {
         ToasterError
                 .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> { })
+                .setAction(R.string.label_close, v -> {
+                })
                 .show();
     }
 
@@ -1391,10 +1410,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
                     pollContentViewModel.setVoted(true);
 
-                    int totalVoter = 0;
+                    int totalVoter;
                     try {
-                        Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
+                        totalVoter = Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
                     } catch (NumberFormatException ignored) {
+                        totalVoter = 0;
                     }
                     pollContentViewModel.setTotalVoterNumber(totalVoter);
 
@@ -1410,7 +1430,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             newPercentage = Integer.valueOf(
                                     voteStatisticDomainModel.getListOptions().get(i).getPercentage()
                             );
-                        } catch (NumberFormatException|IndexOutOfBoundsException ignored) {
+                        } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
                         }
                         optionViewModel.setPercentage(newPercentage);
                     }
@@ -1599,11 +1619,43 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onShopItemClicked(int positionInFeed, int adapterPosition, @NotNull Shop shop) {
         Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
+
+        if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
+            TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
+
+            for (TrackingRecommendationModel tracking : model.getTrackingList()) {
+                if (TextUtils.equals(tracking.getAuthorName(), shop.getName())) {
+                    trackRecommendationClick(
+                            positionInFeed,
+                            adapterPosition,
+                            tracking,
+                            FeedAnalytics.Element.FOLLOW
+                    );
+                    break;
+                }
+            }
+        }
     }
 
     @Override
     public void onAddFavorite(int positionInFeed, int adapterPosition, @NotNull Data data) {
         presenter.toggleFavoriteShop(positionInFeed, adapterPosition, data.getShop().getId());
+
+        if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
+            TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
+
+            for (TrackingRecommendationModel tracking : model.getTrackingList()) {
+                if (TextUtils.equals(tracking.getAuthorName(), data.getShop().getName())) {
+                    trackRecommendationClick(
+                            positionInFeed,
+                            adapterPosition,
+                            tracking,
+                            FeedAnalytics.Element.FOLLOW
+                    );
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -1688,9 +1740,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             menus.setItemMenuList(menusList);
             menus.setActionText(getString(R.string.feed_cancel));
 
-            menus.setOnActionClickListener(v -> {
-                menus.dismiss();
-            });
+            menus.setOnActionClickListener(v -> menus.dismiss());
             menus.setOnItemMenuClickListener((itemMenus, pos) -> {
                 if (itemMenus.title.equals(getString(R.string.feed_report))) {
                     goToContentReport(postId);
@@ -1924,6 +1974,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             userId
                     );
                 }
+            } else if (visitable instanceof TopadsShopViewModel) {
+                TopadsShopViewModel topadsShopViewModel = (TopadsShopViewModel) visitable;
+
+                for (TrackingRecommendationModel trackingRecommendationModel
+                        : topadsShopViewModel.getTrackingList()) {
+
+                    analytics.eventRecommendationImpression(
+                            trackingRecommendationModel.getTemplateType(),
+                            trackingRecommendationModel.getActivityName(),
+                            trackingRecommendationModel.getTrackingType(),
+                            trackingRecommendationModel.getMediaType(),
+                            trackingRecommendationModel.getAuthorName(),
+                            trackingRecommendationModel.getAuthorType(),
+                            trackingRecommendationModel.getAuthorId(),
+                            feedPosition,
+                            trackingRecommendationModel.getCardPosition(),
+                            userId
+                    );
+                }
             }
         }
     }
@@ -1948,7 +2017,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 trackingPostModel.getTrackingType(),
                 trackingPostModel.getMediaType(),
                 trackingPostModel.getTagsType(),
-                trackingPostModel.getRedirectUrl(),
+                redirectUrl,
                 element,
                 trackingPostModel.getTotalContent(),
                 trackingPostModel.getPostId(),

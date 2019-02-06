@@ -18,7 +18,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -32,6 +31,7 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.selling.view.listener.SellingTransaction;
+import com.tokopedia.transaction.common.TransactionRouter;
 
 import org.parceler.Parcel;
 import org.parceler.Parcels;

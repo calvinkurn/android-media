@@ -890,6 +890,8 @@ public interface AppEventTracking {
 
     interface GTM {
         String GA_ID = "GA_ID";
+        String GTM_ID = "GTM_ID";
+        String GTM_RESOURCE = "GTM_RESOURCE";
 
         String UTM_SOURCE = "utm_source";
         String UTM_MEDIUM = "utm_medium";
@@ -958,11 +960,14 @@ public interface AppEventTracking {
         String QUALITY_SCORE = "quality_score";
         String SCREEN_NAME = "screen_name";
         String CHANNEL = "channel";
+        String SOURCE = "source";
+        String PDP_SHARE = "pdp_share";
         String APP_VERSION = "app version";
         String PLATFORM = "platform";
         String HOTLIST_ID = "hotlist_id";
         String CITY = "city";
 
+        String PARTNER_SOURCE = "partner_source";
     }
 
     interface EventMoEngage {
@@ -989,6 +994,7 @@ public interface AppEventTracking {
         String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
         String REFERRAL_SHARE_EVENT = "Share_Event";
         String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";
+        String PARTNER_REFERRAL = "Partner_Referred";
     }
 
 

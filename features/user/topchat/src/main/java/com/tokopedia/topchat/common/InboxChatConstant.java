@@ -8,9 +8,6 @@ public interface InboxChatConstant {
 
     String PARCEL = "parcel";
 
-    int MODE_WEBSOCKET = 1;
-    int MODE_API = 2;
-
     String UPLOADING = "Uploaded Image";
 
     String USER_TAG = "Pengguna";

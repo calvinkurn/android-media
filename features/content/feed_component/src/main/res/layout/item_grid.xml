@@ -5,8 +5,6 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_2"
-    android:layout_marginRight="@dimen/dp_2"
     android:layout_marginBottom="@dimen/dp_10"
     android:background="@color/white"
     android:clickable="true"
@@ -18,10 +16,11 @@
         android:id="@+id/productLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginRight="@dimen/dp_2"
         app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true"
         app:contentPadding="0dp">
 
         <android.support.constraint.ConstraintLayout
@@ -67,6 +66,8 @@
         android:layout_below="@id/productLayout"
         android:fontFamily="sans-serif"
         android:gravity="bottom"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/orange_red"
         android:textSize="@dimen/sp_12"

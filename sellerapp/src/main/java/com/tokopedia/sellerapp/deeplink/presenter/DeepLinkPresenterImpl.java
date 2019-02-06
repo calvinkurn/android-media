@@ -14,11 +14,14 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkConst;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
@@ -47,6 +50,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String TOPADS_VIEW_TYPE = "view";
     public static final String TOPADS_CREATE_TYPE = "create";
+
+    private static final String APP_EXCLUDED_URL = "app_excluded_url";
+    private static final String APP_EXCLUDED_HOST = "app_excluded_host";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -191,9 +197,25 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     }
 
+    private boolean isExcludedHostUrl(Uri uriData) {
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        String excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST);
+        if (!TextUtils.isEmpty(excludedHost)) {
+            List<String> listExcludedString = Arrays.asList(excludedHost.split(","));
+            for (String excludedString : listExcludedString) {
+                if (uriData.getPath().startsWith(excludedString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean isExcludedUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_URL))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_URL).split(","));
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        String excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL);
+        if (!TextUtils.isEmpty(excludedUrl)) {
+            List<String> listExcludedString = Arrays.asList(excludedUrl.split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().endsWith(excludedString)) {
                     return true;
@@ -238,15 +260,5 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private boolean isExcludedHostUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_HOST))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(context, AppEventTracking.GTM.EXCLUDED_HOST).split(","));
-            for (String excludedString : listExcludedString) {
-                if (uriData.getPath().startsWith(excludedString)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 }

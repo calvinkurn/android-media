@@ -34,23 +34,20 @@
     <string name="text_back_to_top">Kembali ke atas</string>
     <string name="text_button_apply">Terapkan</string>
     <string name="text_title_filter">Filter</string>
+    <string name="text_button_sort">Urutkan</string>
+    <string name="title_showcase">Cek dan Bagikan Hasil Kurasimu</string>
+    <string name="desc_showcase">Semua kurasi akan disimpan di profilmu</string>
 
     <!--ONBOARDING-->
-    <string name="title_af_onboarding">Tokopedia By Me</string>
-    <string name="af_about_comission">Tentang Komisi</string>
-    <string name="af_try_now">Selanjutnya</string>
-    <string name="af_onboarding_make_profile_desc">Buat username By Me, kurasi produk, dan bagikan ke teman untuk meraih Komisi!</string>
-    <string name="af_onboarding_start_by_me">Bagikan Produk Kesukaanmu, Bisa Dapat Komisi!</string>
-    <string name="af_make_by_me_profile">Buat Username By Me, Yuk!</string>
-    <string name="af_type_username">Ketik Username:</string>
+    <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
+    <string name="title_af_username">Perbarui Link Profil</string>
+    <string name="af_make_by_me_profile">Sebelum Lanjut,\nPerbarui Link Profilmu Dulu, Yuk!</string>
+    <string name="af_type_username">Ketik Link Unikmu:</string>
     <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
     <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
     <string name="af_save">Simpan</string>
     <string name="af_by_me_domain">tokopedia.me/</string>
-    <string name="af_complete_profile">Mulai Kurasi Produk kesukaanmu!</string>
-    <string name="af_select_product_recommendation">Pilih produk yang kamu suka untuk dibagikan ke temanmu.</string>
-    <string name="af_see_product_selection">Lihat Pilihan Produk</string>
-    <string name="af_minimal_character">Username minimum %d karakter</string>
+    <string name="af_minimal_character">Minimum %d karakter</string>
     <string name="af_recommend_this_product">Lanjutkan Kurasi dengan Produk Ini?</string>
     <string name="af_recommend">Rekomendasikan</string>
     <string name="af_continue">Lanjutkan</string>
@@ -69,5 +66,13 @@
     <string name="af_use_image_to_show">Gunakan foto yang menampilkan produk pilihanmu.</string>
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
+
+    <!--EDUCATION-->
+    <string name="af_skip">Lewatkan</string>
+    <string name="af_start_curating">Mulai Kurasi Produk</string>
+    <string name="af_share_and_commission">Bagikan By Me dan Raih Komisinya!</string>
+    <string name="af_choose_favorite_product">Pilih produk favoritmu</string>
+    <string name="af_curate_product_profile">Kurasi produknya di profilmu</string>
+    <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
 
 </resources>
