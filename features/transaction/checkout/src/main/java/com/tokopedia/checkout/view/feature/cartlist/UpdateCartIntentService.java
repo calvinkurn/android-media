@@ -41,9 +41,9 @@ public class UpdateCartIntentService extends IntentService {
             if (updateCartUseCase == null) {
                 updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
             }
-            /*if (userSession == null) {
+            if (userSession == null) {
                 userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
-            }*/
+            }
         }
 
         if (userSession != null && updateCartUseCase != null && intent != null && intent.hasExtra(EXTRA_CART_ITEM_DATA_LIST)) {
