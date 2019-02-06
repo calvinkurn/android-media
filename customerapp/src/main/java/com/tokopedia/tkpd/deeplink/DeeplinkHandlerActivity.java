@@ -24,6 +24,8 @@ import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -94,6 +96,8 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
+import com.tokopedia.referral.deeplink.ReferralDeeplinkModule;
+import com.tokopedia.referral.deeplink.ReferralDeeplinkModuleLoader;
 import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModule;
 import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -138,6 +142,7 @@ import io.branch.referral.BranchError;
         ProductAddDeeplinkModule.class,
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
+        ReferralDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
@@ -184,6 +189,7 @@ import io.branch.referral.BranchError;
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
         SaldoDetailsAppLinkModule.class,
+        ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
 
@@ -198,6 +204,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new ProductAddDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
+                    new ReferralDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new DigitalApplinkModuleLoader(),
@@ -244,6 +251,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
                     new SaldoDetailsAppLinkModuleLoader(),
+                    new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader()
             );
         }

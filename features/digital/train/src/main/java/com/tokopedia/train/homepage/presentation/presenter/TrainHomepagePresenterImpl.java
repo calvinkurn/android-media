@@ -293,6 +293,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         } else {
             roundTrip();
         }
+        getView().stopTrace();
     }
 
     private void setupViewModel() {

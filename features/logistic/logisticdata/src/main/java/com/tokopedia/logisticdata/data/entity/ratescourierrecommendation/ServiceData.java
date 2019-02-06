@@ -38,6 +38,9 @@ public class ServiceData implements Parcelable {
     @SerializedName("products")
     @Expose
     private List<ProductData> products;
+    @SerializedName("cod")
+    @Expose
+    private CodData codData;
 
     public ServiceData() {
     }
@@ -144,5 +147,13 @@ public class ServiceData implements Parcelable {
 
     public void setIsPromo(int isPromo) {
         this.isPromo = isPromo;
+    }
+
+    public CodData getCodData() {
+        return codData;
+    }
+
+    public void setCodData(CodData codData) {
+        this.codData = codData;
     }
 }

@@ -20,6 +20,9 @@ public class TrackHistory {
     @SerializedName("date")
     @Expose
     private String date;
+    @SerializedName("time")
+    @Expose
+    private String time;
 
     public String getCity() {
         return city;
@@ -45,4 +48,7 @@ public class TrackHistory {
         this.date = date;
     }
 
+    public String getTime() { return time; }
+
+    public void setTime(String time) { this.time = time; }
 }

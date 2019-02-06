@@ -61,12 +61,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
     implementation rootProject.ext.playServicesDependencies.analytics

@@ -9,6 +9,8 @@ public final class CourierConstant {
     public static final int SERVICE_ID_INSTANT = 1000;
     public static final int SERVICE_ID_SAME_DAY = 1002;
 
+    public static final int[] INSTANT_SAMEDAY_COURIER = {10, 12, 13};
+
     private CourierConstant() {
     }
 
