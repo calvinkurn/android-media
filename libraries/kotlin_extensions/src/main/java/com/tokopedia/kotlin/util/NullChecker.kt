@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 /**
  * The pattern that's used to find null value in an object.
  * It starts with a newline, then some whitespaces, variable name inside quotation marks,
- * a colon `:`, some whitespaces, then the word `null`.
+ * a colon `:`, some whitespaces, and ended with the word `null`.
  */
 private const val NULL_PATTERN = """\n\s*"\S+":\s*null"""
 
@@ -22,7 +22,7 @@ private const val NULL_PATTERN = """\n\s*"\S+":\s*null"""
  * @see NULL_PATTERN
  *
  * @param `object` the object to find the null value in
- * @param `actionWhenNull` optional lambda that will invoked when null value is found in the `object`
+ * @param `actionWhenNull` optional lambda that will be invoked when null value is found in the `object`
  * @return Return true if null value is found, false otherwise
  */
 @JvmOverloads
