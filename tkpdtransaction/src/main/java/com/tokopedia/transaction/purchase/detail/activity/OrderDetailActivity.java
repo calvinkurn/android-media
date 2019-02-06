@@ -161,6 +161,7 @@ public class OrderDetailActivity extends TActivity
         setInvoiceView(data);
         setBookingCode(data);
         setDescriptionView(data);
+        setCodView(data);
         setProtectionView(data);
         setPriceView(data);
         setButtonView(data);
@@ -365,6 +366,14 @@ public class OrderDetailActivity extends TActivity
         insurancePrice.setText(data.getInsurancePrice());
         additionalFee.setText(data.getAdditionalFee());
         totalPayment.setText(data.getTotalPayment());
+    }
+
+    private void setCodView(OrderDetailData data) {
+        View codLayout = findViewById(R.id.layout_cod);
+        TextView codFee = findViewById(R.id.textview_cod_fee);
+
+        codLayout.setVisibility(data.isHavingCod() ? View.VISIBLE : View.GONE);
+        codFee.setText(data.getCodFee());
     }
 
     private void setProtectionView(OrderDetailData data) {

@@ -55,7 +55,6 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -76,6 +75,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -537,8 +538,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onTopAdsItemClicked(Product product) {
-        Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
-        context.startActivity(intent);
+        if (getActivity() != null) {
+            Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+            getActivity().startActivity(intent);
+        }
     }
 
     @Override
@@ -637,7 +640,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position) {
+    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
 
     }
 
