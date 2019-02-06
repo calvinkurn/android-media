@@ -8,6 +8,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="@dimen/tab_home_feed_width"
         android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         app:cardCornerRadius="@dimen/dp_10"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
@@ -17,6 +18,7 @@
             android:id="@+id/tabBackgroundImage"
             android:layout_width="@dimen/tab_home_feed_width"
             android:layout_height="@dimen/tab_home_feed_max_height"
+            android:layout_gravity="center_vertical"
             android:scaleType="centerCrop"
             android:src="@drawable/background_tab_feed_2"
             />
