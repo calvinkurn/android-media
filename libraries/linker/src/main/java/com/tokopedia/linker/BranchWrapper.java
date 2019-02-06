@@ -31,6 +31,7 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void init(Context context) {
         if(Branch.getInstance() == null) {
+            Branch.enableBypassCurrentActivityIntentState();
             Branch.getAutoInstance(context);
         }
     }

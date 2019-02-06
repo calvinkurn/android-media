@@ -260,7 +260,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initBranchSession();
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
 
         if (GlobalConfig.isCustomerApp()) {
@@ -372,17 +371,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         Intent destination = new Intent(Intent.ACTION_VIEW);
         destination.setData(Uri.parse(webUrl));
         return destination;
-    }
-
-    private void initBranchSession() {
-
-        LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
-        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
-        linkerDeeplinkData.setReferrable(this.getIntent().getData());
-
-        LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
-                linkerDeeplinkData, this, this));
-
     }
 
     @Override
