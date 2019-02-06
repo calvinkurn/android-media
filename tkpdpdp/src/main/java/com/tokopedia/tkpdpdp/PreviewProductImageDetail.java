@@ -107,7 +107,7 @@ public class PreviewProductImageDetail extends TActivity {
             fileLocations = new ArrayList<>();
         }
 
-        adapter = new TouchImageAdapter(PreviewProductImageDetail.this, fileLocations);
+        adapter = new TouchImageAdapter(PreviewProductImageDetail.this, fileLocations, 100);
         setViewListener();
     }
 
