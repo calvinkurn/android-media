@@ -19,9 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_16"
             android:visibility="gone"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <TextView
                 style="@style/TextSmallMediumBlack54"
@@ -29,7 +28,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:lineSpacingExtra="@dimen/sp_6"
-                android:text="@text/label_continue_without_template" />
+                android:paddingLeft="@dimen/dp_16"
+                android:text="@string/label_continue_without_template"
+                tools:text="Lanjutkan Tanpa Template" />
 
             <TextView
                 android:id="@+id/tv_change_no_profile"
@@ -38,6 +39,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:gravity="end"
                 android:lineSpacingExtra="@dimen/sp_4"
+                android:padding="@dimen/dp_16"
                 android:text="@string/label_change_template"
                 android:textColor="@color/text_green"
                 android:textSize="@dimen/sp_12"
@@ -50,14 +52,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
             android:visibility="visible"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_16">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -108,10 +112,13 @@
                 <TextView
                     android:id="@+id/tv_change_profile"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
                     android:lineSpacingExtra="4sp"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
                     android:text="@string/label_change_template"
                     android:textColor="@color/text_green"
                     android:textSize="12sp"
@@ -123,7 +130,9 @@
                 android:id="@+id/v_profile_separator_top"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:background="@drawable/bg_line_separator" />
 
@@ -132,7 +141,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
 
                 <TextView
                     android:id="@+id/tv_profile_shipping_duration_value"
@@ -156,6 +167,8 @@
                 android:id="@+id/tv_profile_shipping_duration_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/text_error_red_2"
                 android:textSize="@dimen/sp_12"
@@ -167,7 +180,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
 
                 <TextView
                     android:id="@+id/tv_profile_shipping_courier"
@@ -191,18 +206,21 @@
                 android:id="@+id/tv_profile_shipping_courier_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/text_error_red_2"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 tools:text="Toko tidak mendukung kurir pengiriman ini" />
 
-
             <View
                 android:id="@+id/v_profile_separator_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:background="@drawable/bg_line_separator" />
 
@@ -210,7 +228,9 @@
                 android:id="@+id/ll_profile_default_checkbox_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
 
                 <CheckBox
                     android:id="@+id/cb_profile_set_default"

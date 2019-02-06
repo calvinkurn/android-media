@@ -44,7 +44,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 ImageHandler.loadImageRounded2(itemView.context, itemView.img_profile_payment_method, element.paymentOptionImageUrl)
                 itemView.tv_profile_payment_detail.text = element.paymentDetail
                 itemView.tv_change_profile.setOnClickListener { listener.onClickEditProfile() }
-                itemView.img_bt_profile_show_more_shipping_duration.setOnClickListener { listener.onClickEditDuration() }
+                itemView.ll_profile_duration.setOnClickListener { listener.onClickEditDuration() }
                 if (element.isDurationError) {
                     itemView.ll_profile_courier.visibility = View.GONE
                     itemView.tv_profile_shipping_duration_error.text = element.durationErrorMessage
@@ -57,6 +57,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                     itemView.tv_profile_shipping_courier_error.text = element.courierErrorMessage
                     itemView.tv_profile_shipping_courier_error.visibility = View.VISIBLE
                     itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
+                    itemView.ll_profile_courier.setOnClickListener { listener.onClickEditCourier() }
                 } else {
                     itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
                     itemView.tv_profile_shipping_duration_error.visibility = View.GONE
@@ -64,6 +65,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                     if (element.shippingCourier.isNotEmpty()) {
                         itemView.ll_profile_courier.visibility = View.VISIBLE
                         itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
+                        itemView.ll_profile_courier.setOnClickListener { listener.onClickEditCourier() }
                         itemView.tv_profile_shipping_courier.text = getHtmlFormat("Kurir <b>${element.shippingCourier}</b>")
                     } else {
                         itemView.ll_profile_courier.visibility = View.GONE
