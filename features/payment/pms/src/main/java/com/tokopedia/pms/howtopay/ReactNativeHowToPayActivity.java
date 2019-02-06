@@ -9,6 +9,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 /**
  * Created by yogieputra on 10/07/18.
