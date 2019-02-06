@@ -514,17 +514,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        if (text.length() >= MINIMUM_CHARATERS_HIT_API) {
             searchedString = text;
-            orderListAnalytics.sendSearchFilterClickEvent();
-            filterDate.setVisibility(View.GONE);
-            refreshHandler.startRefresh();
-        }
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        if (text.length() == 0) {
+        if (text.length() >= MINIMUM_CHARATERS_HIT_API || text.length() == 0) {
             searchedString = text;
             orderListAnalytics.sendSearchFilterClickEvent();
             filterDate.setVisibility(View.GONE);
