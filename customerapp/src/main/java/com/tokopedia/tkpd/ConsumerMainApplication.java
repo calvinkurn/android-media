@@ -100,7 +100,6 @@ import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
@@ -360,7 +359,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
-        TrainDatabase.init(getApplicationContext());
         TkpdFlight.initDatabase(getApplicationContext());
         PushNotification.initDatabase(getApplicationContext());
         Analytics.initDB(getApplicationContext());

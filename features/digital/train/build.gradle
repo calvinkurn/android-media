@@ -6,16 +6,6 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdTrain']
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'train'
     groupId = 'com.tokopedia.train'
@@ -49,10 +39,6 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
-
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
