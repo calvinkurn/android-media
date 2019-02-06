@@ -55,16 +55,6 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
         )
     }
 
-    fun trackClickAttachProduct() {
-        //TODO CHECK PRODUCT_LABEL
-        tracker.sendEventTracking(
-                EVENT_CLICK_INBOX_CHAT,
-                CATEGORY_INBOX_TALK,
-                "attach product",
-                ""
-        )
-    }
-
     fun trackClickProduct() {
         tracker.sendEventTracking(
                 EVENT_CLICK_INBOX_CHAT,

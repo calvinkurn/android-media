@@ -101,7 +101,7 @@
     <string name="hi">Hai</string>
     <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
     <string name="title_activity_register_2">Daftar dengan Email</string>
-    <string name="phone_or_email_input">Nomor Ponsel atau Email</string>
+    <string name="phone_or_email_input">Email atau Nomor Ponsel</string>
     <string name="already_registered_yes">Ya, Masuk</string>
     <string name="proceed_with_phone_number">Ya, Benar</string>
     <string name="already_registered_no">Ubah</string>
@@ -263,9 +263,17 @@
     <string name="title_forgot_password">Lupa Kata Sandi?</string>
     <string name="login_progress_signing_in">Signing in…</string>
     <string name="error_field_required">Harus diisi</string>
+    <string name="error_field_password_required">Kata sandi harus diisi</string>
     <string name="error_incorrect_password">Kata sandi tidak benar</string>
     <string name="error_invalid_email">Email ini tidak valid.</string>
     <string name="code_error">Kode error :</string>
+    <string name="next">Selanjutnya</string>
+    <string name="span_not_have_tokopedia_account">Belum punya akun Tokopedia?
+        Daftar</string>
+    <string name="email_not_registered">Email Belum Terdaftar</string>
+    <string name="email_not_registered_info">Lanjut daftar dengan email ini %1$s?</string>
+    <string name="not_registered_yes">Ya, Daftar</string>
+
 
     <!-- ACTIVATION PAGE -->
     <string name="title_activity_activation">Aktivasi Akun</string>
@@ -295,5 +303,9 @@
     <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
     <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
         color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="or_login_with_space">atau masuk dengan</string>
+
+    <string name="must_insert_email_or_phone">Email atau nomor ponsel harus diisi</string>
+    <string name="change_2">Ubah</string>
 
 </resources>

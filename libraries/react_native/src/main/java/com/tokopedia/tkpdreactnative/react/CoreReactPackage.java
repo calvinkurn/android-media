@@ -25,6 +25,7 @@ public class CoreReactPackage implements ReactPackage {
         modules.add(new ReactNavigationModule(reactContext));
         modules.add(new ReactCommonModule(reactContext));
         modules.add(new YouTubeModule(reactContext));
+        modules.add(new DeeplinkManager(reactContext));
         return modules;
     }
 

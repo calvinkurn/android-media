@@ -14,7 +14,6 @@
         android:background="@drawable/interactive_label_quick_reply"
         android:ellipsize="end"
         android:gravity="center"
-        android:maxLength="8"
         android:maxLines="1"
         android:minHeight="@dimen/dp_32"
         android:minWidth="@dimen/dp_50"
