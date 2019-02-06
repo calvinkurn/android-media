@@ -134,7 +134,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             return;
         }
 
-        if (isShakeShakeEnable && isShakeShakeEnable() && false) {
+        if (isShakeShakeEnable && isShakeShakeEnable()) {
            /* mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);*/
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);

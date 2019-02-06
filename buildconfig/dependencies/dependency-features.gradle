@@ -58,7 +58,6 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     transactionCheckoutVersion = '2.22'
-    tkpdMybills = '2.22'
 
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
@@ -229,7 +228,6 @@ ext {
             seller                 : ":tkpdseller",
             session                : ":tkpdsession",
             transaction            : ":tkpdtransaction",
-            transactioncommon      : ":tkpdtransaction-common",
-            mybills                : ":features:digital:mybills"
+            transactioncommon      : ":tkpdtransaction-common"
     ]
 }

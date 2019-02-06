@@ -20,7 +20,6 @@ include "features:digital:flight"
 include "features:digital:flight_dbflow"
 //include "features:digital:flight_no_op"
 include "features:digital:train"
-include "features:digital:mybills"
 
 include "features:discovery:wishlist_common"
 include "features:discovery:home"
