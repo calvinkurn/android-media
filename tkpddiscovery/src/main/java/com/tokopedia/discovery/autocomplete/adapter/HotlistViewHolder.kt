@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener
+import com.tokopedia.discovery.util.AutoCompleteTracking
 import kotlinx.android.synthetic.main.layout_hotlist_item_autocomplete.view.*
 import java.util.*
 
@@ -25,6 +26,17 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
         ImageHandler.loadImageAndCache(
                 view.img_hotlist,
                 element.imageUrl)
+
+        view.setOnClickListener {
+            AutoCompleteTracking.eventClickInHotlist(
+                    view.context,
+                    element.keyword,
+                    element.eventName,
+                    element.eventId,
+                    adapterPosition,
+                    element.applink
+            )
+        }
 
         view.img_hotlist.setOnClickListener {
             clickListener.onItemClicked(element.applink, element.url)
