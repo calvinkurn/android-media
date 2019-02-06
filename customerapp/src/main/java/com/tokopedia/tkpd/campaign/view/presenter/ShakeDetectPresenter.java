@@ -26,6 +26,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignGqlResponse;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
+import com.tokopedia.tkpd.campaign.data.entity.ValidCampaignPojo;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
@@ -163,112 +164,48 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                         CampaignGqlResponse response =
                                 graphqlResponse.getData(CampaignGqlResponse.class);
 
-                        CampaignResponseEntity s = response.getCampaignResponseEntity();
+                        if(response.getCampaignResponseEntity()!= null) {
+                            CampaignResponseEntity s = response.getCampaignResponseEntity();
+                            if(s.getValidCampaignPojos().size() > 0) {
+                                ValidCampaignPojo campaign = s.getValidCampaignPojos().get(0);
 
-                        if (!s.isEnable()) {
-                            CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
-                            return;
+                                if(!campaign.isValid()){
+                                    CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
+                                    return;
+                                }
+
+                                if ((campaign.getErrorMessage()) != null
+                                        && !campaign.getErrorMessage().isEmpty()
+                                        && campaign.getUrl() != null && campaign.getUrl().isEmpty()) {
+                                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+                                    getView().showMessage(campaign.getErrorMessage());
+                                    return;
+                                }
+
+                                ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
+                                if (!deepLinkDelegate.supportsUri(campaign.getUrl())) {
+                                    getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+                                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+                                    return;
+                                }
+
+                                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                                intent.putExtra("isSuccess", true);
+                                intent.putExtra("data", campaign.getUrl());
+
+                                // Vibrate for 500 milliseconds
+                                if (campaign.getVibrate() == 1)
+                                    vibrate();
+                                getView().sendBroadcast(intent);
+                                CampaignTracking.eventShakeShake("success",
+                                        ShakeDetectManager.sTopActivity, "", campaign.getUrl());
+
+                                //Open next activity based upon the result from server
+
+                            }
                         }
-                        if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
-                                s.getUrl() != null && s.getUrl().isEmpty()) {
-                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                            getView().showMessage(s.getMessage());
-                            return;
-                        }
-                        ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-                        if (!deepLinkDelegate.supportsUri(s.getUrl())) {
-                            getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
-                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                            return;
-                        }
-                        Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-                        intent.putExtra("isSuccess", true);
-                        intent.putExtra("data", s.getUrl());
-
-                        // Vibrate for 500 milliseconds
-                        if (s.getVibrate() == 1)
-                            vibrate();
-                        getView().sendBroadcast(intent);
-                        CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
-
-                        //Open next activity based upon the result from server
-
                     }
                 });
-
-//        shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
-//            @Override
-//            public void onCompleted() {
-//                getView().finish();
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-//                CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-//
-//                intent.putExtra("isSuccess", false);
-//
-//                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-//                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-//                } else if (e instanceof SocketTimeoutException) {
-//                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-//                } else if (e instanceof CampaignException) {
-//                    if (((CampaignException) e).isMissingAuthorizationCredentials()) {
-//                        intent.putExtra("needLogin", true);
-//                    } else {
-//                        getView().showErrorGetInfo(e.getMessage());
-//                        return;
-//                    }
-//
-//                } else if (e instanceof ResponseDataNullException) {
-//                    getView().showErrorNetwork(e.getMessage());
-//                } else if (e instanceof HttpErrorException) {
-//                    getView().showErrorNetwork(e.getMessage());
-//                } else if (e instanceof ServerErrorException) {
-//                    getView().showErrorNetwork(ErrorHandler.getErrorMessage(context, e));
-//                } else {
-//                    getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
-//                    return;
-//                }
-//
-//
-//                getView().sendBroadcast(intent);
-//                getView().finish();
-//
-//            }
-//
-//            @Override
-//            public void onNext(final CampaignResponseEntity s) {
-//                if (!s.isEnable()) {
-//                    CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
-//                    return;
-//                }
-//                if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
-//                        s.getUrl() != null && s.getUrl().isEmpty()) {
-//                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-//                    getView().showMessage(s.getMessage());
-//                    return;
-//                }
-//                ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-//                if (!deepLinkDelegate.supportsUri(s.getUrl())) {
-//                        getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
-//                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-//                    return;
-//                }
-//                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-//                intent.putExtra("isSuccess", true);
-//                intent.putExtra("data", s.getUrl());
-//
-//                // Vibrate for 500 milliseconds
-//                if (s.getVibrate() == 1)
-//                    vibrate();
-//                getView().sendBroadcast(intent);
-//                CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
-//
-//                //Open next activity based upon the result from server
-//            }
-//        });
 
     }
 

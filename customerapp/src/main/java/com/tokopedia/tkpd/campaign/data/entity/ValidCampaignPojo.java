@@ -31,4 +31,35 @@ public class ValidCampaignPojo {
     @SerializedName("campaign_distance")
     private Double distance;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public int getVibrate() {
+        return vibrate;
+    }
+
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
 }
