@@ -157,7 +157,8 @@
                 app:cardCornerRadius="@dimen/dp_16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_unavailable_label"
                     android:layout_marginTop="@dimen/dp_2"
                     android:drawableLeft="@drawable/ic_minus"
                     android:drawablePadding="@dimen/dp_5"
