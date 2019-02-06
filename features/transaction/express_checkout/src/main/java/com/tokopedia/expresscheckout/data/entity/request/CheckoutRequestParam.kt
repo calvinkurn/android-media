@@ -11,5 +11,14 @@ data class CheckoutRequestParam(
         var carts: Cart? = null,
 
         @SerializedName("profile")
-        var profile: Profile? = null
+        var profile: Profile? = null,
+
+        @SerializedName("client_id")
+        var clientId: String? = null,
+
+        @SerializedName("fingerprint_support")
+        var fingerprintSupport: String? = null,
+
+        @SerializedName("fingerprint_publickey")
+        var fingerprintPublicKey: String? = null
 )

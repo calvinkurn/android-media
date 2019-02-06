@@ -34,7 +34,7 @@ open class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val 
         cart.isDonation = 0
         cart.data = arrayListOf(checkoutData)
 
-//        val checkoutParam = CheckoutParam()
+        val checkoutParam = CheckoutParam()
         //        checkoutParam.accountName =
         //        checkoutParam.accountNumber =
         //        checkoutParam.bankId =
@@ -45,11 +45,14 @@ open class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val 
         profile.gatewayCode = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
         profile.status = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
         profile.profileId = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
-//        profile.checkoutParam = checkoutParam
+        profile.checkoutParam = checkoutParam
 
         val checkoutRequestParam = CheckoutRequestParam()
         checkoutRequestParam.carts = cart
         checkoutRequestParam.profile = profile
+//        checkoutRequestParam.clientId = ""
+//        checkoutRequestParam.fingerprintSupport = ""
+//        checkoutRequestParam.fingerprintPublicKey = ""
 
         val jsonTreeCheckoutRequest = Gson().toJsonTree(checkoutRequestParam)
         val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
