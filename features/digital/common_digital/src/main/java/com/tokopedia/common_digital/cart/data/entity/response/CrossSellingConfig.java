@@ -7,6 +7,9 @@ public class CrossSellingConfig {
     @SerializedName("is_skipable")
     @Expose
     private boolean skipAble;
+    @SerializedName("is_checked")
+    @Expose
+    private boolean isChecked;
 
     @SerializedName("wording")
     @Expose
@@ -14,6 +17,10 @@ public class CrossSellingConfig {
 
     public boolean isSkipAble() {
         return skipAble;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
     }
 
     public CrossSellingWording getWording() {

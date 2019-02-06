@@ -281,6 +281,14 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_enable_profile_share_allow_all</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_customer_enable_profile_share_rules</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_enable_login_revamp_phone</key>
         <value>true</value>
     </entry>

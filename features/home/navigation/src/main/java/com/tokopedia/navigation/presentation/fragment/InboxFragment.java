@@ -169,7 +169,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onResume() {
         super.onResume();
-        if (isVisible()) presenter.onResume();
+        if (isResumed()) presenter.onResume();
     }
 
     @Override

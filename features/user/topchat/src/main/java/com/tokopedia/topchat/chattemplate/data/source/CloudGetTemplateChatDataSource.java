@@ -1,9 +1,10 @@
 package com.tokopedia.topchat.chattemplate.data.source;
 
-import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -14,14 +15,15 @@ import rx.Observable;
 public class CloudGetTemplateChatDataSource {
 
     private TemplateChatMapper templateChatMapper;
-    private ChatService chatService;
+    private ChatApi chatApi;
 
-    public CloudGetTemplateChatDataSource(TemplateChatMapper templateChatMapper, ChatService chatService) {
+    public CloudGetTemplateChatDataSource(TemplateChatMapper templateChatMapper, ChatApi
+            chatApi) {
         this.templateChatMapper = templateChatMapper;
-        this.chatService = chatService;
+        this.chatApi = chatApi;
     }
 
-    public Observable<GetTemplateViewModel> getTemplate(TKPDMapParam<String, Object> parameters) {
-        return chatService.getApi().getTemplate(parameters).map(templateChatMapper);
+    public Observable<GetTemplateViewModel> getTemplate(HashMap<String, Object> parameters) {
+        return chatApi.getTemplate(parameters).map(templateChatMapper);
     }
 }
