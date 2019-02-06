@@ -36,9 +36,8 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
                 CommonStatusCodes.SUCCESS -> {
                     // Get SMS message contents
                     val message = extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as String
-                    val otp = message.substringAfter("masuk:").substring(0..6)
+                    val otp = message.substringAfter("masuk:").substring(0,5)
                     if(::listener.isInitialized
-                            && otp.length == 6
                             && otp.toIntOrNull() != null)
                     listener.onReceiveOTP(otp)
                 }
