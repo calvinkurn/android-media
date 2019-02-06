@@ -19,9 +19,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:nestedScrollingEnabled="true"
+        android:isScrollContainer="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <fragment
@@ -35,7 +37,7 @@
             android:layout_marginRight="@dimen/dp_1"
             android:layout_marginBottom="@dimen/dp_4" />
 
-    </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 

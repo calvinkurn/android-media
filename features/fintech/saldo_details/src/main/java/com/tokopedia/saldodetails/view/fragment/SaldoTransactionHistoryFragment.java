@@ -169,6 +169,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         saldoHistoryPresenter.setSeller(isSeller);
         saldoHistoryPagerAdapter = new SaldoHistoryPagerAdapter(getChildFragmentManager());
         saldoHistoryPagerAdapter.setItems(saldoTabItems);
+        depositHistoryViewPager.setOffscreenPageLimit(2);
         depositHistoryViewPager.setAdapter(saldoHistoryPagerAdapter);
         depositHistoryTabLayout.setupWithViewPager(depositHistoryViewPager);
 

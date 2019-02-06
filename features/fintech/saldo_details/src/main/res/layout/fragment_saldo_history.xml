@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/dp_2">
 
 
     <TextView
@@ -14,7 +15,7 @@
         android:lineSpacingExtra="4sp"
         android:paddingStart="@dimen/dp_18"
         android:paddingLeft="@dimen/dp_18"
-        android:paddingTop="@dimen/dp_18"
+        android:paddingTop="@dimen/dp_6"
         android:paddingEnd="@dimen/dp_18"
         android:paddingRight="@dimen/dp_18"
         android:text="@string/sp_transaction_history_heading"
@@ -138,7 +139,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -165,7 +166,7 @@
         <com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
             android:id="@+id/transaction_history_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
 
     </LinearLayout>
