@@ -17,10 +17,10 @@ public class ChallengesMoengageAnalyticsTracker {
 
     public static String Challenge_Screen_Launched = "Challenge_Screen_Launched";
     public static String Challenge_Detail_Open = "Challenge_Detail_Opened";
-    public static String Challenge_Post_Opened = "Challenge_Post_Opened";
-    public static String Challenge_Post_Shared = "Challenge_Post_Shared";
-    public static String Challenge_Delete_Submission = "Challenge_Delete_Submission";
-    public static String Challenge_Submit_Start = "Challenge_Submit_Start";
+    public static String Challenge_Post_Opened = "Challenge_Opened_Post";
+    public static String Challenge_Post_Shared = "Challenge_Shared_Post";
+    public static String Challenge_Delete_Submission = "Challenge_Submission_Delete";
+    public static String Challenge_Submit_Start = "Challenge_Start_Submit";
     public static String Challenge_Submit_Finished = "Challenge_Submit_Finished";
 
     public static String screen_name = "screen_name";
