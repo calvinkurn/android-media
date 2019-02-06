@@ -8,11 +8,10 @@
         android:id="@+id/ll_rewards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         android:background="@android:color/transparent"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_40">
+        android:paddingBottom="@dimen/dp_30">
 
         <RelativeLayout
             android:id="@+id/rl_points"
@@ -46,8 +45,8 @@
             android:id="@+id/rl_loyalty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16">
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10">
 
 
             <TextView

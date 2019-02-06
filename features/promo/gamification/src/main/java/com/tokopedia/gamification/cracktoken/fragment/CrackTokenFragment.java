@@ -102,6 +102,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetRewardCrackResult widgetRewards;
     private Toolbar toolbar;
     private TextView toolbarTitle;
+    private View toolbarShadow;
 
 
     public static Fragment newInstance() {
@@ -133,6 +134,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         tvCounter = toolbar.findViewById(R.id.tv_floating_counter);
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
+        toolbarShadow = rootView.findViewById(R.id.view_drop_down_shadow);
         setUpToolBar();
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
@@ -190,6 +192,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void onCrackResultCleared() {
                 setToolbarColor(getResources().getColor(R.color.black));
+                toolbarShadow.setVisibility(View.VISIBLE);
 
             }
 
@@ -356,20 +359,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         textCountdownTimer.setVisibility(View.GONE);
     }
 
-    private void initInfoBound() {
-        int rootWidth = rootView.getWidth();
-        int rootHeight = rootView.getHeight();
-        int imageHeight = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
-        int marginTop = TokenMarginUtil.getEggMarginBottom(rootHeight) - imageHeight
-                - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_60);
-
-        FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) infoTitlePage.getLayoutParams();
-        ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
-        ivFullLp.topMargin = marginTop;
-        infoTitlePage.requestLayout();
-        infoTitlePage.setVisibility(View.VISIBLE);
-    }
-
     private void initTimerBound() {
         int rootHeight = rootView.getHeight();
         int marginTop = TokenMarginUtil.getTimerMarginBottom(rootHeight);
@@ -379,28 +368,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         textCountdownTimer.requestLayout();
     }
 
-    private void initRewardsBound() {
-        int rootWidth = rootView.getWidth();
-        int rootHeight = rootView.getHeight();
-        int imageHeight = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
-        int marginTop = TokenMarginUtil.getEggMarginBottom(rootHeight) - imageHeight
-                - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_60)
-                - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_90);
-
-        FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) widgetRewards.getLayoutParams();
-        ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
-        ivFullLp.topMargin = marginTop;
-        widgetRewards.requestLayout();
-        widgetRewards.setVisibility(View.VISIBLE);
-    }
-
     private void showTimer(@NonNull TokenDataEntity tokenData) {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                initInfoBound();
+                infoTitlePage.setVisibility(View.VISIBLE);
+                widgetRewards.setVisibility(View.VISIBLE);
                 initTimerBound();
-                initRewardsBound();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -510,6 +484,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onSuccessGetToken(TokenDataEntity tokenData) {
         setToolbarColor(getResources().getColor(R.color.black));
+        toolbarShadow.setVisibility(View.VISIBLE);
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
         } else {
@@ -528,6 +503,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onErrorGetToken(CrackResultEntity crackResult) {
         setToolbarColor(getResources().getColor(R.color.white));
+        toolbarShadow.setVisibility(View.GONE);
         widgetCrackResult.showCrackResult(crackResult);
     }
 
@@ -567,6 +543,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 if (getContext()!=null) {
                     widgetTokenView.split();
                     setToolbarColor(getResources().getColor(R.color.white));
+                    toolbarShadow.setVisibility(View.GONE);
                     widgetCrackResult.showCrackResult(crackResult);
 
                     trackingRewardLuckyEggView(crackResult.getBenefitType());
@@ -600,6 +577,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 // Do something after 1s = 1000ms
                 widgetTokenView.stopShaking();
                 setToolbarColor(getResources().getColor(R.color.white));
+                toolbarShadow.setVisibility(View.GONE);
                 widgetCrackResult.showCrackResult(crackResult);
             }
         }, 1000);

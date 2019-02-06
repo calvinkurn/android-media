@@ -67,8 +67,6 @@ public class WidgetTokenView extends FrameLayout {
     private ImageView imageViewLeft;
     private ImageView imageViewRight;
 
-    private ImageView imageViewLightLeft;
-    private ImageView imageViewLightRight;
 
     private volatile boolean isTokenClicked;
 
@@ -113,8 +111,6 @@ public class WidgetTokenView extends FrameLayout {
         imageViewCracked = rootView.findViewById(R.id.imagecracked);
         imageViewLeft = rootView.findViewById(R.id.imageleft);
         imageViewRight = rootView.findViewById(R.id.imageright);
-        imageViewLightLeft = rootView.findViewById(R.id.image_light_left);
-        imageViewLightRight = rootView.findViewById(R.id.image_light_top);
 
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
@@ -159,9 +155,6 @@ public class WidgetTokenView extends FrameLayout {
         int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
         int imageMarginTop = imageMarginBottom - imageHeight;
 
-        int lightImageWidth = (int) (RATIO_LIGHT_WIDTH * imageWidth);
-        int lightImageHeight = lightImageWidth;
-
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) imageViewFull.getLayoutParams();
         ivFullLp.width = imageWidth;
         ivFullLp.height = imageHeight;
@@ -189,26 +182,6 @@ public class WidgetTokenView extends FrameLayout {
         ivRightLp.gravity = CENTER_HORIZONTAL;
         ivRightLp.topMargin = imageMarginTop;
         imageViewRight.requestLayout();
-
-        // to show the light on the top left
-        int marginTopLightLeft = imageMarginBottom - (int) (0.75 * imageHeight) - lightImageHeight / 2;
-        int marginLeftLightLeft = (int) (0.5 * (rootWidth - (int) (0.65 * imageWidth) - lightImageWidth));
-        FrameLayout.LayoutParams ivLightLeftLp = (FrameLayout.LayoutParams) imageViewLightLeft.getLayoutParams();
-        ivLightLeftLp.width = lightImageWidth;
-        ivLightLeftLp.height = lightImageHeight;
-        ivLightLeftLp.topMargin = marginTopLightLeft;
-        ivLightLeftLp.leftMargin = marginLeftLightLeft;
-        imageViewLightLeft.requestLayout();
-
-        // to show the light on the top right
-        int marginTopLightRight = imageMarginBottom - (int) (0.95 * imageHeight) - lightImageHeight / 2;
-        int marginLeftLightRight = (int) (0.5 * (rootWidth + (int) (0.35 * imageWidth) - lightImageWidth));
-        FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) imageViewLightRight.getLayoutParams();
-        ivLightRightLp.width = lightImageWidth;
-        ivLightRightLp.height = lightImageHeight;
-        ivLightRightLp.topMargin = marginTopLightRight;
-        ivLightRightLp.leftMargin = marginLeftLightRight;
-        imageViewLightLeft.requestLayout();
 
         setVisibility(View.VISIBLE);
     }
@@ -249,23 +222,6 @@ public class WidgetTokenView extends FrameLayout {
     public void show() {
         this.setVisibility(View.VISIBLE);
         imageViewFull.setEnabled(true);
-    }
-
-    private void showLightAnimation() {
-        AlphaAnimation alphaAnimationLeft = new AlphaAnimation(0f, 1f);
-        alphaAnimationLeft.setDuration(100);
-        alphaAnimationLeft.setRepeatCount(Animation.INFINITE);
-        alphaAnimationLeft.setStartOffset(5000);
-        alphaAnimationLeft.setRepeatMode(Animation.REVERSE);
-
-        AlphaAnimation alphaAnimationRight = new AlphaAnimation(0f, 1f);
-        alphaAnimationRight.setDuration(100);
-        alphaAnimationRight.setRepeatCount(Animation.INFINITE);
-        alphaAnimationRight.setStartOffset(8000);
-        alphaAnimationRight.setRepeatMode(Animation.REVERSE);
-
-        imageViewLightLeft.setAnimation(alphaAnimationLeft);
-        imageViewLightRight.setAnimation(alphaAnimationRight);
     }
 
     private void shake() {
@@ -539,15 +495,10 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setVisibility(View.VISIBLE);
         imageViewCracked.reset();
 
-        showLightAnimation();
         shake();
     }
 
     public void clearTokenAnimationAndCrack() {
-        imageViewLightLeft.clearAnimation();
-        imageViewLightLeft.setVisibility(View.GONE);
-        imageViewLightRight.clearAnimation();
-        imageViewLightRight.setVisibility(View.GONE);
         if (initialBounceAnimatorSet != null) {
             initialBounceAnimatorSet.removeListener(bounceListener);
             initialBounceAnimatorSet.cancel();

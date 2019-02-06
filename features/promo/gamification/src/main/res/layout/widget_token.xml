@@ -19,18 +19,6 @@
         android:layout_gravity="center"/>
 
     <android.support.v7.widget.AppCompatImageView
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_100"
-        android:id="@+id/image_light_left"
-        android:src="@drawable/sinar_copy"/>
-
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_100"
-        android:id="@+id/image_light_top"
-        android:src="@drawable/sinar_copy"/>
-
-    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageleft"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"
