@@ -251,7 +251,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
-                    new PaymentSettingApplinkModuleLoader()
+                    new PaymentSettingApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
                     new SaldoDetailsAppLinkModuleLoader(),
