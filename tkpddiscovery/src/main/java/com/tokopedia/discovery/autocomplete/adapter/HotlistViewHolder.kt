@@ -36,9 +36,7 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
                     adapterPosition,
                     element.applink
             )
-        }
 
-        view.img_hotlist.setOnClickListener {
             clickListener.onItemClicked(element.applink, element.url)
         }
 
