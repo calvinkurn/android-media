@@ -284,6 +284,9 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                     override fun onError(e: Throwable?) {
                         e?.printStackTrace()
+                        if (isViewAttached) {
+                            view.stopTrace()
+                        }
                     }
 
                     override fun onNext(flightJourneyViewModelList: List<FlightJourneyViewModel>?) {
@@ -297,6 +300,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                             view.addBottomPaddingForSortAndFilterActionButton()
                             view.addToolbarElevation()
                             view.hideHorizontalProgress()
+                            view.stopTrace()
                         }
                     }
                 }

@@ -80,6 +80,7 @@ interface FlightSearchContract {
 
         fun onSuccessDeleteFlightCache()
 
+        fun stopTrace()
     }
 
     interface Presenter {

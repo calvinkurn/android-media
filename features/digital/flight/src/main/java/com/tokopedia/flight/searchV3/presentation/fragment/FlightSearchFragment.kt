@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -60,10 +61,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private var inFilterMode: Boolean = false
     private var progress = 0
     var selectedSortOption: Int = TravelSortOption.NO_PREFERENCE
+    private var isTraceStop = false
 
     protected var isCombineDone: Boolean = false
 
     private lateinit var flightFilterModel: FlightFilterModel
+
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +85,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0)
             isCombineDone = savedInstanceState.getBoolean(SAVED_IS_COMBINE_DONE, false)
         }
+
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_SEARCH_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -145,12 +151,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     }
                 }
                 REQUEST_CODE_CHANGE_DATE -> {
-//                    flightSearchPresenter.attachView(this)
-//                    val dateString: Date = data?.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED) as Date
-//                    val calendarSelected: Calendar = Calendar.getInstance()
-//                    calendarSelected.time = dateString
-//                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
-//                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE))
+/*                    flightSearchPresenter.attachView(this)
+                    val dateString: Date = data?.getSerializableExtra(TravelCalendarA.DATE_SELECTED) as Date
+                    val calendarSelected: Calendar = Calendar.getInstance()
+                    calendarSelected.time = dateString
+                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE))*/
                 }
             }
         }
@@ -444,6 +450,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         resetDateAndReload()
     }
 
+    override fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring.stopTrace()
+            isTraceStop = true
+        }
+    }
+
     override fun onRetryClicked() {
         adapter.clearAllElements()
         flightSearchPresenter.resetCounterCall()
@@ -686,6 +699,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val SAVED_IS_COMBINE_DONE = "svd_is_combine_done"
         private val DEFAULT_DIMENS_MULTIPLIER = 0.5f
         private val PADDING_SEARCH_LIST = 60
+        private val FLIGHT_SEARCH_TRACE = "tr_flight_search"
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {
             val bundle = Bundle()
