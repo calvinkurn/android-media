@@ -50,5 +50,8 @@
     <string name="title_total_price">Total Harge</string>
     <string name="product_detail">Detail Produk</string>
     <string name="quantity_total">Jumlah</string>
+    <string name="label_desc">Deskripsi</string>
+    <string name="label_report_type">Jenis Laporan</string>
+    <string name="label_report_product">Laporkan Produk</string>
 
 </resources>

@@ -30,6 +30,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.dialog.ReportDialogFragment
 import com.tokopedia.product.detail.view.fragment.productView.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -376,7 +377,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     /**
      * go to preview image activity to show larger image of Product
      */
-    private fun onPictureProductClicked(position:Int) {
+    private fun onPictureProductClicked(position: Int) {
         startActivity(ImagePreviewActivity.getCallingIntent(context!!,
                 getImageURIPaths(),
                 null,
@@ -506,13 +507,19 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun reportProduct() {
-        if (productInfoViewModel.isUserSessionActive()) {
-            productDetailTracking.eventReportLogin()
+        productInfo?.run {
+            if (productInfoViewModel.isUserSessionActive()) {
+                fragmentManager?.let {
+                    val fragment = ReportDialogFragment.newInstance(basic.id.toString())
+                    fragment.show(it, ReportDialogFragment.TAG)
+                }
 
-            //TODO: SHOW REPORT DIALOG
-        } else {
-            productDetailTracking.eventReportNoLogin()
+                productDetailTracking.eventReportLogin()
+            } else {
+                productDetailTracking.eventReportNoLogin()
+            }
         }
+
     }
 
     private fun gotoCart() {

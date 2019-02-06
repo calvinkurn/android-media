@@ -15,56 +15,17 @@ import java.util.List;
 
 public class RestCacheManager {
 
-    private String Key;
-    private String Value;
-    private long expiredTime = 0;
     private static String TAG = "RestCacheManager";
 
     public RestCacheManager() {
 
     }
 
-    public RestCacheManager setKey(String key) {
-        this.Key = key;
-        return this;
-    }
-
-    public RestCacheManager setValue(String value) {
-        this.Value = value;
-        return this;
-    }
-
-    /**
-     * @param duration value in second
-     * @return
-     */
-    public RestCacheManager setCacheDuration(long duration) {
-        Log.d(TAG, "Storing expired time: " + (System.currentTimeMillis()));
-        this.expiredTime = System.currentTimeMillis() + (duration * 1000);
-        return this;
-    }
-
-    public long getCacheDuration(int duration) {
-        return System.currentTimeMillis() / 1000L + (duration * 1000);
-    }
-
-    public void store() {
-        RestDatabaseModel simpleDB = new RestDatabaseModel();
-        simpleDB.key = Key;
-        simpleDB.value = Value;
-        simpleDB.expiredTime = expiredTime;
-        simpleDB.save();
-    }
-
-    public void store(RestDatabaseModel data) {
-
-    }
-
-    public void save(String key, String value, long durationInSeconds) {
+    public void save(String key, String value, long durationInMilliSeconds) {
         RestDatabaseModel simpleDB = new RestDatabaseModel();
         simpleDB.key = key;
         simpleDB.value = value;
-        simpleDB.expiredTime = System.currentTimeMillis() + durationInSeconds * 1000L;
+        simpleDB.expiredTime = System.currentTimeMillis() + durationInMilliSeconds;
         simpleDB.save();
     }
 
