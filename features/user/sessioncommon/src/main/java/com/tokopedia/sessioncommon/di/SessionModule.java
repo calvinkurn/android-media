@@ -47,7 +47,7 @@ public class SessionModule {
     @Named(SESSION_MODULE)
     @SessionCommonScope
     @Provides
-    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 

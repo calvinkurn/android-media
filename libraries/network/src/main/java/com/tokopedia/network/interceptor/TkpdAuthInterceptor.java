@@ -37,6 +37,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String REQUEST_METHOD_POST = "POST";
     private static final String REQUEST_METHOD_PATCH = "PATCH";
     private static final String REQUEST_METHOD_DELETE = "DELETE";
+    private static final String REQUEST_METHOD_PUT = "PUT";
 
     private static final String RESPONSE_STATUS_OK = "OK";
     private static final String RESPONSE_STATUS_FORBIDDEN = "FORBIDDEN";
@@ -124,8 +125,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
 
-        if (isOnBetaServer(response)) networkRouter.showForceHockeyAppDialog();
-
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
@@ -184,6 +183,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             case REQUEST_METHOD_PATCH:
             case REQUEST_METHOD_DELETE:
             case REQUEST_METHOD_POST:
+            case REQUEST_METHOD_PUT:
                 authHeaders = getHeaderMap(
                         originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest),
