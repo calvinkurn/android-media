@@ -45,7 +45,6 @@
             android:layout_marginTop="@dimen/dp_8"
             android:layout_toEndOf="@+id/img_product"
             android:layout_toRightOf="@+id/img_product"
-            android:lineSpacingExtra="2sp"
             android:textColor="@color/orange_red"
             tools:text="Rp 66.000" />
 

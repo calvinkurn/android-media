@@ -19,11 +19,12 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 03/02/19.
  */
 
-class DoAtcExpressUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
+open class DoAtcExpressUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
 
-    val variables = HashMap<String, Any?>()
+    lateinit var variables: HashMap<String, Any?>
 
-    fun setParams(atcRequestParam: AtcRequestParam) {
+    public fun setParams(atcRequestParam: AtcRequestParam) {
+        variables = HashMap()
         val jsonTreeAtcRequest = Gson().toJsonTree(atcRequestParam)
         val jsonObjectAtcRequest = jsonTreeAtcRequest.asJsonObject
         variables.put("params", jsonObjectAtcRequest)

@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.view.variant;
+package com.tokopedia.expresscheckout.view.variant.subscriber;
 
 import android.content.Context;
 

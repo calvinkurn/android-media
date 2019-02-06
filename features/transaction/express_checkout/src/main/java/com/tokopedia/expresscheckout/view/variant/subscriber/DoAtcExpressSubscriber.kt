@@ -23,8 +23,6 @@ class DoAtcExpressSubscriber(val view: CheckoutVariantContract.View?,
         val NO_PROFILE_AND_REDIRECT_TO_NORMAL_ATC = 4
     }
 
-    private lateinit var atcResponseModel: AtcResponseModel
-
     override fun onCompleted() {
 
     }
@@ -47,7 +45,7 @@ class DoAtcExpressSubscriber(val view: CheckoutVariantContract.View?,
                     }
                 }
             } else {
-                atcResponseModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse.atcExpress)
+                val atcResponseModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse.atcExpress)
                 presenter.setAtcResponseModel(atcResponseModel)
                 val productModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
                 val serviceId = atcResponseModel.atcDataModel?.userProfileModelDefaultModel?.shipmentModel?.serviceId

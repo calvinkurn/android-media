@@ -9,7 +9,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 17/12/18.
  */
 
-class CheckoutDomainModelMapper @Inject constructor() : CheckoutDataMapper {
+open class CheckoutDomainModelMapper @Inject constructor() : CheckoutDataMapper {
 
     override fun convertToDomainModel(checkoutResponse: CheckoutResponse): CheckoutResponseModel {
         val checkoutResponseModel = CheckoutResponseModel()

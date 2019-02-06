@@ -54,8 +54,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:gravity="center_vertical"
-                    android:text="Total Tagihan"
-                    android:textColor="#8a000000"
+                    android:text="@string/label_wording_payment_total"
+                    android:textColor="@color/font_black_secondary_54"
                     android:textSize="14sp"
                     android:textStyle="normal" />
 
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_1"
                 android:fontFamily="sans-serif"
-                android:textColor="#ff5722"
+                android:textColor="@color/orange_payment_summary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="Rp 66.000" />
@@ -94,9 +94,9 @@
             android:background="@drawable/bg_button_orange_enabled"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="Beli"
+            android:text="@string/label_button_buy"
             android:textAllCaps="false"
-            android:textColor="#ffffff"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
 

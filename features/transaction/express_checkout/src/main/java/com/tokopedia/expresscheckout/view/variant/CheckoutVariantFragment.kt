@@ -223,8 +223,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onClickEditProfile() {
-        checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
-        checkoutProfileBottomSheet.show(activity?.supportFragmentManager, "")
+        if (!checkoutProfileBottomSheet.isAdded) {
+            checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
+            checkoutProfileBottomSheet.show(activity?.supportFragmentManager, "")
+        }
     }
 
     override fun onClickEditDuration() {
@@ -717,7 +719,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 if (summaryViewModel != null) {
                     summaryViewModel.isUseInsurance = insuranceViewModel.isChecked
                     summaryViewModel.shippingPrice = productData.price.price
-                    summaryViewModel.insurancePrice = productData.insurance.insurancePrice
+                    summaryViewModel.insurancePrice = if (insuranceViewModel.isChecked) productData.insurance.insurancePrice else 0
                     summaryViewModel.insuranceInfo = productData.insurance.insuranceUsedInfo
                     onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
                 }

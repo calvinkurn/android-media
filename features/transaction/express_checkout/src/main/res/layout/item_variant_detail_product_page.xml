@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_toEndOf="@+id/tv_variant_name"
         android:layout_toRightOf="@+id/tv_variant_name"
-        android:lineSpacingExtra="5sp"
+        android:lineSpacingExtra="@dimen/sp_5"
         android:textStyle="bold"
         tools:text="Hitam" />
 
@@ -37,9 +37,9 @@
         android:layout_toEndOf="@+id/tv_variant_value"
         android:layout_toRightOf="@+id/tv_variant_value"
         android:fontFamily="sans-serif"
-        android:lineSpacingExtra="7sp"
-        android:textColor="#42b549"
-        android:textSize="13sp"
+        android:lineSpacingExtra="@dimen/sp_17"
+        android:textColor="@color/text_green"
+        android:textSize="@dimen/sp_13"
         android:textStyle="normal"
         tools:text="Panduan Ukuran" />
 

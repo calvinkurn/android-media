@@ -23,7 +23,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 03/02/19.
  */
 
-class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
+open class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
 
     val variables = HashMap<String, Any?>()
 
@@ -34,7 +34,7 @@ class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val conte
         cart.isDonation = 0
         cart.data = arrayListOf(checkoutData)
 
-        val checkoutParam = CheckoutParam()
+//        val checkoutParam = CheckoutParam()
         //        checkoutParam.accountName =
         //        checkoutParam.accountNumber =
         //        checkoutParam.bankId =
@@ -45,7 +45,7 @@ class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val conte
         profile.gatewayCode = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
         profile.status = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
         profile.profileId = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
-        profile.checkoutParam = checkoutParam
+//        profile.checkoutParam = checkoutParam
 
         val checkoutRequestParam = CheckoutRequestParam()
         checkoutRequestParam.carts = cart

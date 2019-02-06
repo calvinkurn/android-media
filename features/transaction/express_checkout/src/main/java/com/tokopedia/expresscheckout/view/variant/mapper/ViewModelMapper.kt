@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class ViewModelMapper @Inject constructor() : DataMapper {
+open class ViewModelMapper @Inject constructor() : DataMapper {
 
     override fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
@@ -204,9 +204,9 @@ class ViewModelMapper @Inject constructor() : DataMapper {
     }
 
     private fun checkChildAvailable(productChild: ProductChild,
-                            optionViewModelId: Int,
-                            currentChangedOptionId: Int,
-                            otherVariantSelectedOptionIds: ArrayList<Int>): Boolean {
+                                    optionViewModelId: Int,
+                                    currentChangedOptionId: Int,
+                                    otherVariantSelectedOptionIds: ArrayList<Int>): Boolean {
 
         // Check is child with newly selected option id, other variant selected option ids,
         // and current looping variant option id is available
@@ -378,7 +378,7 @@ class ViewModelMapper @Inject constructor() : DataMapper {
 
         summaryViewModel?.isUseInsurance = insuranceViewModel.isChecked
         summaryViewModel?.shippingPrice = productData.price.price
-        summaryViewModel?.insurancePrice = productData.insurance.insurancePrice
+        summaryViewModel?.insurancePrice = if (insuranceViewModel.isChecked) productData.insurance.insurancePrice else 0
         summaryViewModel?.insuranceInfo = productData.insurance.insuranceUsedInfo
 
         return insuranceViewModel

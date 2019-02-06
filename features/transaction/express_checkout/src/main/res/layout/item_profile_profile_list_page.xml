@@ -15,9 +15,9 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_marginBottom="@dimen/dp_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_4"
             android:orientation="horizontal">
 
             <TextView
@@ -27,7 +27,7 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="#b8000000"
+                android:textColor="@color/black_text_title"
                 android:textSize="14sp"
                 android:textStyle="normal"
                 tools:text="Template 1" />
@@ -43,7 +43,7 @@
                 android:paddingRight="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_2"
                 android:text="Utama"
-                android:textColor="@color/text_main_address"
+                android:textColor="@color/text_green"
                 android:textSize="10sp" />
 
         </LinearLayout>

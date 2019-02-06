@@ -17,5 +17,18 @@
     <string name="label_error_duration_not_supported">Toko tidak mendukung durasi pengiriman ini</string>
     <string name="label_error_stock_not_available">Stok produk ini sedang kosong. Silakan ganti dengan produk serupa.</string>
     <string name="label_error_shop_closed">Toko ini sedang tutup. Silakan gunakan toko lain.</string>
+    <string name="label_continue_without_template">Lanjutkan Tanpa Template</string>
+    <string name="label_button_buy">Beli</string>
+    <string name="label_wording_payment_total">Total Tagihan</string>
+    <string name="label_insurance">Asuransi Pengiriman</string>
+    <string name="label_note_for_seller">Catatan untuk Penjual (Opsional)</string>
+    <string name="label_change_template">Ubah</string>
+    <string name="label_set_as_default_template">Jadikan Template Utama</string>
+    <string name="label_quantity_total">Jumlah</string>
+    <string name="label_summary">Ringkasan Belanja</string>
+    <string name="label_total_item_price">Total Harga Barang</string>
+    <string name="label_total_shipping_price">Total Ongkos Kirim</string>
+    <string name="label_additional_fee">Biaya Layanan</string>
+    <string name="label_insurance_price">Asuransi</string>
 
 </resources>

@@ -24,15 +24,12 @@
             tools:visibility="gone">
 
             <TextView
+                style="@style/TextSmallMediumBlack54"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
-                android:lineSpacingExtra="6sp"
-                android:textColor="#8a000000"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                android:text="Lanjutkan Tanpa Template" />
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:text="@text/label_continue_without_template" />
 
             <TextView
                 android:id="@+id/tv_change_no_profile"
@@ -40,11 +37,12 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="end"
-                android:lineSpacingExtra="4sp"
-                android:textColor="#42b549"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                android:text="Ubah" />
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:text="@string/label_change_template"
+                android:textColor="@color/text_green"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -75,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_2"
                         android:ellipsize="end"
-                        android:lineSpacingExtra="6sp"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         android:maxLines="1"
                         tools:text="Rumah (Tokopedia Tower Lt. 45, Jl. Raya gdaf afghi dshf ksdf skdfbk ksdhbf)" />
 
@@ -99,7 +97,7 @@
                             android:layout_marginLeft="@dimen/dp_8"
                             android:ellipsize="end"
                             android:gravity="center_vertical"
-                            android:lineSpacingExtra="6sp"
+                            android:lineSpacingExtra="@dimen/sp_6"
                             android:maxLines="1"
                             tools:text="BCA a/n Raisa aaa aaaddd aaa aaa aaa aaa … ****2917" />
 
@@ -114,8 +112,8 @@
                     android:layout_gravity="center"
                     android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="4sp"
-                    android:text="Ubah"
-                    android:textColor="#42b549"
+                    android:text="@string/label_change_template"
+                    android:textColor="@color/text_green"
                     android:textSize="12sp"
                     android:textStyle="normal" />
 
@@ -142,7 +140,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:lineSpacingExtra="4sp"
+                    android:lineSpacingExtra="@dimen/sp_4"
                     tools:text="Durasi 1 hari" />
 
                 <ImageButton
@@ -159,8 +157,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:textColor="#d0021b"
-                android:textSize="12sp"
+                android:textColor="@color/text_error_red_2"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 tools:text="Toko tidak mendukung durasi pengiriman ini" />
 
@@ -194,8 +192,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:textColor="#d0021b"
-                android:textSize="12sp"
+                android:textColor="@color/text_error_red_2"
+                android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 tools:text="Toko tidak mendukung kurir pengiriman ini" />
 
@@ -221,13 +219,11 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
+                    style="@style/TextMidNormalBlack54"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
-                    android:text="Jadikan Template Utama"
-                    android:textColor="#8a000000"
-                    android:textSize="14sp"
+                    android:text="@string/label_set_as_default_template"
                     android:textStyle="normal" />
 
             </LinearLayout>
