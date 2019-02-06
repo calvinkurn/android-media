@@ -8,6 +8,49 @@
           "name": "Doki Store",
           "url": "https://www.tokopedia.com/dokistore"
         },
+        "shipmentInfo": [{
+          "shipmentID": "1",
+          "name": "JNE",
+          "code": "jne",
+          "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+          "product":[{
+            "productName": "Reguler"
+          },{
+            "productName": "YES"
+          }]
+        },{
+          "shipmentID": "10",
+          "name": "GO-JEK",
+          "code": "gojek",
+          "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+          "product":[{
+            "productName": "Same Day"
+          }]
+        },{
+          "shipmentID": "12",
+          "name": "Ninja Xpress",
+          "code": "ninja",
+          "image": "https://ecs7.tokopedia.net/img/kurir-ninja.png",
+          "product":[{
+            "productName": "Reguler"
+          }]
+        },{
+          "shipmentID": "13",
+          "name": "Grab",
+          "code": "grab",
+          "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+          "product":[{
+            "productName": "Same Day"
+          }]
+        },{
+          "shipmentID": "14",
+          "name": "J&T",
+          "code": "jnt",
+          "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+          "product":[{
+            "productName": "Reguler"
+          }]
+        }],
         "shopAssets": {
           "avatar": "https://ecs7.tokopedia.net/img/cache/215/shops-1/2016/1/14/289870/289870_3fbbd4b1-7649-4b5e-b2b9-5b00f025c598.png?user_id=7977933&product_id=392113927",
           "cover": "https://ecs7.tokopedia.net/img/shops-1/cover/3.jpg"

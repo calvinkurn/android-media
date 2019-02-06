@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.fragment.productView
 
+import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
@@ -10,18 +11,29 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.product.Campaign
 import com.tokopedia.product.detail.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.util.discountedPrice
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
-class PartialHeaderView private constructor(private val view: View){
+class PartialHeaderView private constructor(private val view: View,
+                                            private val activity: Activity? = null){
+
+    var onRefreshHandler: (() -> Unit)? = null
+    var backToHomeHandler: (() -> Unit)? = null
+
     companion object {
-        fun build(_view: View) = PartialHeaderView(_view)
+        const val ONE_SECOND = 1000L
+        fun build(_view: View, _activity: Activity?) = PartialHeaderView(_view, _activity)
     }
 
     init {
@@ -66,6 +78,7 @@ class PartialHeaderView private constructor(private val view: View){
                 text_original_price.visibility = View.VISIBLE
                 text_discount.visibility = View.VISIBLE
                 discount_timer_holder.visibility = View.VISIBLE
+                showCountDownTimer(data.campaign)
             } else {
                 tv_price_pdp.text = context.getString(R.string.template_price, data.basic.priceCurrency,
                         data.basic.price.toString())
@@ -73,6 +86,46 @@ class PartialHeaderView private constructor(private val view: View){
                 text_discount.visibility = View.GONE
                 discount_timer_holder.visibility = View.GONE
             }
+        }
+    }
+
+    private fun showCountDownTimer(campaign: Campaign) {
+        try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX'Z'", Locale.getDefault())
+            val serverTimeMs = campaign.endDateUnix * ONE_SECOND
+            val serverTimeOffset = serverTimeMs - Date().time
+            val endDate = dateFormat.parse(campaign.endDate)
+            val endDelta = endDate.time - serverTimeMs
+
+            if (TimeUnit.MICROSECONDS.toDays(endDelta) < 1){
+                view.count_down.setup(serverTimeOffset, endDate){
+                    hideProductCampaign(campaign)
+                    showAlertCampaignEnded()
+                }
+            }
+        } catch (ex: Exception){
+            view.discount_timer_holder.visibility = View.GONE
+        }
+    }
+
+    private fun showAlertCampaignEnded() {
+        Dialog(activity, Dialog.Type.LONG_PROMINANCE).apply {
+            setTitle(view.context.getString(R.string.campaign_expired_title))
+            setDesc(view.context.getString(R.string.campaign_expired_descr))
+            setBtnOk(view.context.getString(R.string.exp_dialog_ok))
+            setBtnCancel(view.context.getString(R.string.close))
+            setOnCancelClickListener { onRefreshHandler?.invoke(); dismiss() }
+            setOnOkClickListener { dismiss(); backToHomeHandler?.invoke() }
+        }.show()
+    }
+
+    private fun hideProductCampaign(campaign: Campaign) {
+        with(view){
+            discount_timer_holder.visibility = View.GONE
+            text_discount.visibility = View.GONE
+            text_original_price.visibility = View.GONE
+            tv_price_pdp.text = context.getString(R.string.template_price, "",
+                    campaign.originalPrice.getCurrencyFormatted())
         }
     }
 }

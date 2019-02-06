@@ -24,6 +24,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.imagePreview)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.goldMerchantResource)

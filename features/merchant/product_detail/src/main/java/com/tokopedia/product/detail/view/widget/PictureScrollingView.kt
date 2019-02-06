@@ -6,9 +6,12 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.product.Picture
-import com.tokopedia.product.detail.data.model.product.ProductParams
+import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.PicturePagerAdapter
 import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 
@@ -16,24 +19,15 @@ class PictureScrollingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var urlTemp = ""
-    var position: Int = 0
+    val position: Int
         get() = view_pager?.currentItem ?: 0
 
     init {
-        instatiateView()
+        instantiateView()
     }
 
-    private fun instatiateView() {
+    private fun instantiateView() {
         View.inflate(context, R.layout.widget_picture_scrolling, this)
-    }
-
-    fun renderDataTemp(productParams: ProductParams) {
-        val pagerAdapter = PicturePagerAdapter(context,
-                mutableListOf(Picture(urlOriginal = productParams.productImage!!)), null, null)
-        view_pager.adapter = pagerAdapter
-        indicator_picture.setViewPager(view_pager)
-        indicator_picture.notifyDataSetChanged()
-        urlTemp = productParams.productImage!!
     }
 
     fun renderData(pictures: List<Picture>, onPictureClickListener: ((Int) -> Unit)?) {
@@ -52,6 +46,26 @@ class PictureScrollingView @JvmOverloads constructor(
         view_pager.adapter = pagerAdapter
         indicator_picture.setViewPager(view_pager)
         indicator_picture.notifyDataSetChanged()
+    }
+
+    fun renderShopStatus(shopInfo: ShopInfo, productStatus: Int, productStatusTitle: String = "",
+                         productStatusMessage: String = ""){
+        if (shopInfo.statusInfo.shopStatus != SHOP_STATUS_ACTIVE){
+            error_product_container.visible()
+            error_product_title.text = shopInfo.statusInfo.statusTitle
+            error_product_descr.text = shopInfo.statusInfo.statusMessage
+        } else if (productStatus != ProductDetailConstant.PRD_STATE_ACTIVE){
+            // TODO ASK PRODUCT STATUS DETAIL
+            error_product_container.visible()
+            error_product_title.text = productStatusTitle
+            error_product_descr.text = productStatusMessage
+        } else {
+            error_product_container.gone()
+        }
+    }
+
+    companion object {
+        private const val SHOP_STATUS_ACTIVE = 1
     }
 
 }

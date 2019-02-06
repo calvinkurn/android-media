@@ -10,4 +10,5 @@ interface ProductDetailRouter{
     fun getProductReputationIntent(context: Context, productId: String, productName: String): Intent
     fun getShoProductListIntent(context: Context, shopId: String, keyword: String, etalaseId: String): Intent
     fun getShopPageIntent(context: Context, shopId: String): Intent
+    fun goToEditProduct(context: Context, isEdit: Boolean, productId: String): Intent
 }

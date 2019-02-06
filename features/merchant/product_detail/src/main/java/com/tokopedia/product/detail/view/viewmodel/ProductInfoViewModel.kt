@@ -12,8 +12,10 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.product.ProductParams
+import com.tokopedia.product.detail.data.model.product.Rating
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.variant.ProductDetailVariantResponse
@@ -35,7 +37,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val productInfoResp = MutableLiveData<Result<ProductInfo>>()
-    val shopResp = MutableLiveData<ShopInfo>()
+    val productInfoP2resp = MutableLiveData<ProductInfoP2>()
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
 
     fun getProductInfo(productInfoQuery: String, productVariantQuery: String, productParams: ProductParams, resources: Resources) {
@@ -54,7 +56,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
             val productInfo = data.getSuccessData<ProductInfo.Response>()
             productInfoResp.value = Success(productInfo.data)
-            getShopInfo(productInfo.data.basic.shopID, resources)
+            getProductInfoP2(productInfo.data.basic.shopID, productInfo.data.basic.id, resources)
 
             //if fail, will not interrupt the product info
             try {
@@ -76,7 +78,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val response = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_info_p1),
                     ProductInfo.Response::class.java)
             productInfoResp.value = Success(response.data)
-            getShopInfo(response.data.basic.shopID, resources)
+            getProductInfoP2(response.data.basic.shopID, response.data.basic.id, resources)
 
             //FOR Testing only, remove all below code after testing
             val responseVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
@@ -86,30 +88,58 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getShopInfo(shopId: Int, resources: Resources) = coroutineScope{
+    private suspend fun getProductInfoP2(shopId: Int, productId: Int, resources: Resources) = coroutineScope{
+
         val data = withContext(Dispatchers.IO){
+            val productInfoP2 = ProductInfoP2()
+
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                     PARAM_SHOP_FIELDS to listOf<String>())
             val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
+
+            val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
+            val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
+                    ProductInfo.WishlistStatus::class.java, isWishlistedParams)
+
+            val ratingParams = mapOf(PARAM_PRODUCT_ID to productId)
+            val ratingRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_RATING],
+                    Rating.Response::class.java, ratingParams)
+
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
             try {
-                val gqlResponse = graphqlRepository.getReseponse(listOf(shopRequest), cacheStrategy)
+                val gqlResponse = graphqlRepository.getReseponse(listOf(shopRequest, isWishlistedRequest, ratingRequest), cacheStrategy)
 
-                if (gqlResponse.getError(ShopInfo.Response::class.java).isNotEmpty()){
+                val result = if (gqlResponse.getError(ShopInfo.Response::class.java).isEmpty()){
                     (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
                 } else {
                     ShopInfo.Result()
                 }
+                if (result.data.isNotEmpty())
+                    productInfoP2.shopInfo = result.data.first()
+
+                if (gqlResponse.getError(ProductInfo.WishlistStatus::class.java).isEmpty())
+                    productInfoP2.isWishlisted = (gqlResponse.getData(ProductInfo.WishlistStatus::class.java)
+                            as ProductInfo.WishlistStatus).isWishlisted == true
+
+                if (gqlResponse.getError(Rating.Response::class.java).isEmpty())
+                    productInfoP2.rating = (gqlResponse.getData(Rating.Response::class.java)
+                            as Rating.Response).data
+
+                productInfoP2
             } catch (t: Throwable){
                 // for testing
                 val gson = Gson()
                 val response = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_shop_info_p2),
                         ShopInfo.Response::class.java)
-                response.result
+                val ratingResponse = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_rating_p2),
+                        Rating.Response::class.java)
+                productInfoP2.shopInfo = response.result.data.first()
+                productInfoP2.isWishlisted = true
+                productInfoP2.rating = ratingResponse.data
+                productInfoP2
             }
         }
-        if (data.data.isNotEmpty())
-            shopResp.value = data.data.first()
+        productInfoP2resp.value = data
     }
 
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId

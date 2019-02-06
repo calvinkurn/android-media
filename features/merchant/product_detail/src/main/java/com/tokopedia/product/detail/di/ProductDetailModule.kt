@@ -41,4 +41,18 @@ class ProductDetailModule {
     @StringKey(RawQueryKeyConstant.QUERY_SHOP)
     fun provideRawShopQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_info)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_WISHLIST_STATUS)
+    fun provideRawWishlistQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_is_wishlisted)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_RATING)
+    fun provideRawProductRatingQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_rating)
 }

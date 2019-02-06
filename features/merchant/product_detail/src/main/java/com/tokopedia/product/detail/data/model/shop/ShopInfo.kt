@@ -24,6 +24,10 @@ data class ShopInfo(
         @Expose
         val location: String = "",
 
+        @SerializedName("shipmentInfo")
+        @Expose
+        val shipments: List<ShopShipment> = listOf(),
+
         @SerializedName("shopAssets")
         @Expose
         val shopAssets: ShopAssets = ShopAssets(),

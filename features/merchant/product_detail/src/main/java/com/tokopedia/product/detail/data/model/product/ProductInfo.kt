@@ -65,4 +65,10 @@ data class ProductInfo(
                 @Expose
                 val data: ProductInfo = ProductInfo()
         )
+
+        data class WishlistStatus(
+                @SerializedName("ProductWishlistQuery")
+                @Expose
+                var isWishlisted: Boolean? = null
+        )
 }

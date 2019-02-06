@@ -14,6 +14,22 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
             avatar
             cover
         }
+        shipmentInfo{
+            isAvailable
+            code
+            shipmentID
+            image
+            name
+            product{
+                isAvailable
+                productName
+                shipProdID
+                uiHidden
+            }
+            isPickup
+            maxAddFee
+            awbStatus
+        }
         shopLastActive
         location
         shopTerms
