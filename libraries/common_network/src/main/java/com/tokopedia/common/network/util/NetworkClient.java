@@ -3,8 +3,7 @@ package com.tokopedia.common.network.util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.raizlabs.android.dbflow.config.CommonNetworkGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.FlowManager;
+import com.tokopedia.common.network.data.db.RestDatabase;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -22,6 +21,7 @@ public class NetworkClient {
     private static RestApi sRestApi = null;
     private static FingerprintManager sFingerprintManager = null;
     private static UserSession sUserSession;
+    private static RestDatabase sRestDatabase;
 
     private NetworkClient() {
 
@@ -31,7 +31,6 @@ public class NetworkClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
             sFingerprintManager = new FingerprintManager(userSession);
-            FlowManager.initModule(CommonNetworkGeneratedDatabaseHolder.class);
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession));
             tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
@@ -40,6 +39,8 @@ public class NetworkClient {
                     .addConverterFactory(new StringResponseConverter())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(tkpdOkHttpBuilder.build()).build();
+
+            sRestDatabase = RestDatabase.getInstance(context);
         }
     }
 
@@ -49,6 +50,14 @@ public class NetworkClient {
         }
 
         return sRetrofit;
+    }
+
+    public static RestDatabase getRestDatabase() {
+        if (sRestDatabase == null) {
+            throw new RuntimeException("Please call init() before using common network library");
+        }
+
+        return sRestDatabase;
     }
 
     public static RestApi getApiInterface() {
