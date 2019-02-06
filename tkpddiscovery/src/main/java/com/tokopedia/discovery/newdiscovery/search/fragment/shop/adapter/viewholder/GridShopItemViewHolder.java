@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
-import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.PreviewItemAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.decoration.ShopListItemDecoration;
@@ -45,7 +44,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     private View viewShopInactive;
     private RecyclerView rvItemPreview;
     private Context context;
-    private TextViewCompat tv_unavailable_label;
+    private TextView tv_unavailable_label;
     private final ShopListener itemClickListener;
 
     public GridShopItemViewHolder(View itemView, ShopListener itemClickListener) {
