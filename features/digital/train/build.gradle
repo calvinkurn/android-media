@@ -56,5 +56,4 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.debugToolsDependencies.stetho
-    implementation project(rootProject.ext.libraries.core_legacy)
 }
