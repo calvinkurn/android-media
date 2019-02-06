@@ -70,8 +70,4 @@ public class RemoteConfigKey {
     public static final String fireBaseShareMsgKey = "app_referral_product_share_format";
     public static final String fireBaseGuestShareMsgKey = "app_pdp_share_msg_guest";
     public static final String LOGIN_REVAMP_UI = "mainapp_enable_login_revamp_phone";
-
-    public static final String CAMPAIGN_TOKEN_CAPTURE_BACKGROUND_ENABLE = "app_cm_token_capture_background_enable";
-    public static final String CAMPAIGN_TOKEN_CAPTURE_FOREGROUND_ENABLE = "app_cm_token_capture_foreground_enable";
-    public static final String CAMPAIGN_TOKEN_CAPTURE_DELAY = "app_token_send_delay";
 }
