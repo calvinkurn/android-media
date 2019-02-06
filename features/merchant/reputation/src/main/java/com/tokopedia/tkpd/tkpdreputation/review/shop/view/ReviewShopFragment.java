@@ -21,6 +21,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -158,22 +159,18 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void goToPreviewImage(int position, ArrayList<ImageUpload> list, ReviewProductModelContent element) {
-        if (MainApplication.getAppContext() instanceof PdpRouter) {
-            ArrayList<String> listLocation = new ArrayList<>();
-            ArrayList<String> listDesc = new ArrayList<>();
+        ArrayList<String> listLocation = new ArrayList<>();
+        ArrayList<String> listDesc = new ArrayList<>();
 
-            for (ImageUpload image : list) {
-                listLocation.add(image.getPicSrcLarge());
-                listDesc.add(image.getDescription());
-            }
-
-            ((PdpRouter) MainApplication.getAppContext()).openImagePreview(
-                    getActivity(),
-                    listLocation,
-                    listDesc,
-                    position
-            );
+        for (ImageUpload image : list) {
+            listLocation.add(image.getPicSrcLarge());
+            listDesc.add(image.getDescription());
         }
+
+        startActivity(ImagePreviewActivity.getCallingIntent(getActivity(),
+                listLocation,
+                listDesc,
+                position));
     }
 
     @Override

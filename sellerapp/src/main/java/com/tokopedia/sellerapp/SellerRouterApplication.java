@@ -700,14 +700,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openImagePreview(Context context, ArrayList<String> images,
-                                 ArrayList<String> imageDesc, int position) {
-        Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
-                position);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void openImagePreview(Context context, ArrayList<String> images,
                                  int position) {
 
     }
