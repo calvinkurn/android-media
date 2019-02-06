@@ -33,15 +33,6 @@ public class ShipmentAddressListAdapter
         mAddressModelList = new ArrayList<>();
     }
 
-    public void setAddressList(List<RecipientAddressModel> addressModelList) {
-        mAddressModelList.clear();
-        mAddressModelList.addAll(addressModelList);
-    }
-
-    public void updateAddressList(List<RecipientAddressModel> addressModelList) {
-        mAddressModelList.addAll(addressModelList);
-    }
-
     @Override
     public RecipientAddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -51,12 +42,6 @@ public class ShipmentAddressListAdapter
 
     @Override
     public void onBindViewHolder(final RecipientAddressViewHolder holder, int position) {
-        if (position == getItemCount() - 1) {
-            holder.vSeparator.setVisibility(View.GONE);
-        } else {
-            holder.vSeparator.setVisibility(View.VISIBLE);
-        }
-
         RecipientAddressModel address = mAddressModelList.get(position);
 
         holder.mTvAddressName.setText(address.getAddressName());
@@ -68,12 +53,8 @@ public class ShipmentAddressListAdapter
 
         holder.mRbCheckAddress.setChecked(address.isSelected());
         holder.mTvChangeAddress.setVisibility(View.VISIBLE);
-        holder.mTvChangeAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mActionListener.onEditClick(mAddressModelList.get(holder.getAdapterPosition()));
-            }
-        });
+        holder.mTvChangeAddress.setOnClickListener(v ->
+                mActionListener.onEditClick(mAddressModelList.get(holder.getAdapterPosition())));
 
         holder.itemView.setOnClickListener(getItemClickListener(address, position));
     }
@@ -88,6 +69,15 @@ public class ShipmentAddressListAdapter
                 + recipientAddress.getDestinationDistrictName() + ", "
                 + recipientAddress.getCityName() + ", "
                 + recipientAddress.getProvinceName();
+    }
+
+    void setAddressList(List<RecipientAddressModel> addressModelList) {
+        mAddressModelList.clear();
+        mAddressModelList.addAll(addressModelList);
+    }
+
+    void updateAddressList(List<RecipientAddressModel> addressModelList) {
+        mAddressModelList.addAll(addressModelList);
     }
 
     private View.OnClickListener getItemClickListener(final RecipientAddressModel recipientAddressModel,
@@ -123,7 +113,7 @@ public class ShipmentAddressListAdapter
         TextView mTvRecipientAddress;
         TextView mTvRecipientPhone;
 
-        TextViewCompat mTvChangeAddress;
+        TextView mTvChangeAddress;
         RadioButton mRbCheckAddress;
 
         RelativeLayout mRlAddressContainer;
@@ -139,7 +129,7 @@ public class ShipmentAddressListAdapter
             mTvRecipientAddress = view.findViewById(R.id.tv_recipient_address);
             mTvRecipientPhone = view.findViewById(R.id.tv_recipient_phone);
 
-            mTvChangeAddress = view.findViewById(R.id.tv_change_address);
+            mTvChangeAddress = view.findViewById(R.id.button_change_address);
             mRbCheckAddress = view.findViewById(R.id.rb_check_address);
 
             mRlAddressContainer = view.findViewById(R.id.rl_address_container);

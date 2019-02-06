@@ -30,6 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
                 android:layout_weight="1"
                 android:clickable="false"
                 android:focusable="false"
@@ -48,8 +50,8 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
-            android:layout_toStartOf="@id/ll_radio_button_container"
-            android:layout_toLeftOf="@id/ll_radio_button_container"
+            android:layout_toStartOf="@+id/ll_radio_button_container"
+            android:layout_toLeftOf="@+id/ll_radio_button_container"
             android:background="@color/white">
 
             <include layout="@layout/item_recipient_address" />
@@ -59,20 +61,20 @@
         <View
             android:id="@+id/v_separator"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_above="@+id/button_edit_address"
+            android:layout_height="1dp"
+            android:layout_below="@+id/rl_address_container"
             android:background="@color/grey_300" />
 
         <TextView
-            android:id="@+id/button_edit_address"
+            android:id="@+id/button_change_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_address_container"
+            android:layout_below="@+id/v_separator"
             android:gravity="center"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_12"
             android:padding="@dimen/dp_8"
-            android:text="Ubah" />
+            android:text="@string/change_address" />
 
 
     </RelativeLayout>
