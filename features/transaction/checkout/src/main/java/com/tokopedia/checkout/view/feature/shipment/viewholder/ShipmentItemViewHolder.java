@@ -120,7 +120,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvRecipientName;
     private TextView tvRecipientAddress;
     private TextView tvRecipientPhone;
-    private TextViewCompat tvChangeAddress;
     private LinearLayout addressLayout;
     private PickupPointLayout pickupPointLayout;
     private RecyclerView rvCartItem;
@@ -246,7 +245,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
         tvProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
         tvProtectionFee = itemView.findViewById(R.id.tv_purchase_protection_fee);
-        tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
         addressLayout = itemView.findViewById(R.id.address_layout);
         pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
@@ -1114,7 +1112,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderAddress(RecipientAddressModel recipientAddressModel) {
         if (recipientAddressModel != null) {
             tvAddressName.setVisibility(View.GONE);
-            tvChangeAddress.setVisibility(View.GONE);
             tvAddressStatus.setVisibility(View.GONE);
             String addressName = recipientAddressModel.getAddressName();
             String recipientName = recipientAddressModel.getRecipientName();
