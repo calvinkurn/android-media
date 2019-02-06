@@ -9,9 +9,9 @@ import android.support.annotation.NonNull;
  */
 @Entity
 public class FlightComboTable {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
-    private int id;
+    private String comboId;
     private String onwardJourneyId;
     private String onwardAdultPrice;
     private String onwardChildPrice;
@@ -26,7 +26,6 @@ public class FlightComboTable {
     private int returnAdultPriceNumeric;
     private int returnChildPriceNumeric;
     private int returnInfantPriceNumeric;
-    private String comboId;
     private boolean isBestPairing;
 
     public FlightComboTable(String onwardJourneyId, String onwardAdultPrice, String onwardChildPrice,
@@ -35,7 +34,7 @@ public class FlightComboTable {
                             String returnJourneyId, String returnAdultPrice, String returnChildPrice,
                             String returnInfantPrice, int returnAdultPriceNumeric,
                             int returnChildPriceNumeric, int returnInfantPriceNumeric,
-                            String comboId, boolean isBestPairing) {
+                            @NonNull String comboId, boolean isBestPairing) {
         this.onwardJourneyId = onwardJourneyId;
         this.onwardAdultPrice = onwardAdultPrice;
         this.onwardChildPrice = onwardChildPrice;
@@ -52,15 +51,6 @@ public class FlightComboTable {
         this.returnInfantPriceNumeric = returnInfantPriceNumeric;
         this.comboId = comboId;
         this.isBestPairing = isBestPairing;
-    }
-
-    public void setId(@NonNull int id) {
-        this.id = id;
-    }
-
-    @NonNull
-    public int getId() {
-        return id;
     }
 
     public String getOnwardJourneyId() {
@@ -119,6 +109,7 @@ public class FlightComboTable {
         return returnInfantPriceNumeric;
     }
 
+    @NonNull
     public String getComboId() {
         return comboId;
     }

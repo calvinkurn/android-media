@@ -352,6 +352,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             getView().renderSingleTripView();
         }
+        getView().stopTrace();
     }
 
     @Override
