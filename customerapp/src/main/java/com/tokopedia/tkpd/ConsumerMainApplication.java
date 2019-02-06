@@ -55,6 +55,7 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.home.account.AccountHomeUrl;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
@@ -325,6 +326,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         CMNotificationUrls.CAMPAIGN_MANAGEMENT_DOMAIN = ConsumerAppBaseUrl.CAMPAIGN_MANAGEMENT_DOMAIN;
         Config.TOPADS_BASE_URL = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
+        ConstantKey.TkpdBaseUrl.HOME_DATA_BASE_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_GQL;
+        com.tokopedia.network.constant.TkpdBaseURL.ACCOUNTS_DOMAIN =
+                ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
+        CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
+
     }
 
 

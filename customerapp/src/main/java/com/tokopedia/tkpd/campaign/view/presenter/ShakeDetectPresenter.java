@@ -32,7 +32,6 @@ import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -161,15 +160,23 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
+
+                        if (graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
+                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+                            getView().showMessage(graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() != null ?
+                                    graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() : "");
+                            return;
+                        }
+
                         CampaignGqlResponse response =
                                 graphqlResponse.getData(CampaignGqlResponse.class);
 
-                        if(response.getCampaignResponseEntity()!= null) {
+                        if (response.getCampaignResponseEntity() != null) {
                             CampaignResponseEntity s = response.getCampaignResponseEntity();
-                            if(s.getValidCampaignPojos().size() > 0) {
+                            if (s.getValidCampaignPojos().size() > 0) {
                                 ValidCampaignPojo campaign = s.getValidCampaignPojos().get(0);
 
-                                if(!campaign.isValid()){
+                                if (!campaign.isValid()) {
                                     CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
                                     return;
                                 }
