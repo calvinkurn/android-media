@@ -43,6 +43,7 @@ include "features:fintech:instant_loan"
 include "features:fintech:saldo_details"
 //include "features:fintech:saldo_details_no_op"
 include "features:fintech:tokocash"
+//include "features:fintech:tokocash_no_op"
 
 include "features:home:navigation"
 include "features:home:navigation-common"
