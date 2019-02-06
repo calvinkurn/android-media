@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
@@ -56,6 +57,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         KolPostListener.View.ViewHolder, KolComment.View.ViewHolder, KolComment.View.SeeAll,
         SwipeRefreshLayout.OnRefreshListener {
 
+    private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
 
@@ -66,6 +68,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private EditText replyEditText;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
+    private PerformanceMonitoring performanceMonitoring;
+
+    private boolean isTraceStopped;
 
     @Inject
     KolPostDetailContract.Presenter presenter;
@@ -96,6 +101,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return KolEventTracking.Screen.SCREEN_KOL_POST_DETAIL;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_POST_DETAIL);
     }
 
     @Nullable
@@ -361,6 +372,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                                 followSuccessOnClickListener())
                         .show();
             }
+        }
+    }
+
+    @Override
+    public void stopTrace() {
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
         }
     }
 
