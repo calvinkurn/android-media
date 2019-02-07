@@ -10,6 +10,8 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -53,6 +55,11 @@ import com.tokopedia.transaction.common.data.cartcheckout.CheckoutData
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
+import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
+import com.tokopedia.transactionanalytics.data.expresscheckout.ActionField
+import com.tokopedia.transactionanalytics.data.expresscheckout.Checkout
+import com.tokopedia.transactionanalytics.data.expresscheckout.Product
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
@@ -89,6 +96,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     lateinit var shippingCourierBottomsheet: ShippingCourierBottomsheet
     @Inject
     lateinit var errorBottomsheets: ErrorBottomsheets
+    @Inject
+    lateinit var analyticsTracker: ExpressCheckoutAnalyticsTracker
 
     private lateinit var router: ExpressCheckoutRouter
     private lateinit var adapter: CheckoutVariantAdapter
@@ -534,6 +543,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateCheckoutToThankYouPage(appLink: String) {
+        var eventLabel = if (fragmentViewModel.getProfileViewModel()?.isStateHasChangedProfile == false) {
+            ConstantTransactionAnalytics.EventLabel.SUCCESS_DEFAULT
+        } else {
+            ConstantTransactionAnalytics.EventLabel.SUCCESS_NOT_DEFAULT
+        }
+        analyticsTracker.enhanceEcommerceImpressionExpressCheckoutForm(generateEnhanceEcommerceData(ActionField.STEP_2), eventLabel)
         if (activity != null) startActivity(RouteManager.getIntent(activity, appLink))
         activity?.finish()
     }
@@ -562,6 +577,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 showDurationOptions()
             }
         }
+        analyticsTracker.eventClickBuyAndError(message)
     }
 
     override fun showErrorNotAvailable(message: String) {
@@ -571,10 +587,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 errorBottomsheets.dismiss()
             }
         }
+        analyticsTracker.eventClickBuyAndError(message)
     }
 
     override fun showErrorAPI(retryAction: String) {
-        showBottomSheetError(getString(R.string.bottomsheet_title_global_error), getString(R.string.bottomsheet_message_global_error), getString(R.string.bottomsheet_action_global_error), true)
+        val message = getString(R.string.bottomsheet_message_global_error)
+        showBottomSheetError(getString(R.string.bottomsheet_title_global_error), message, getString(R.string.bottomsheet_action_global_error), true)
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListenerWithRetry {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
@@ -593,6 +611,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
         }
+        analyticsTracker.eventClickBuyAndError(message)
     }
 
     override fun showErrorPayment(message: String) {
@@ -603,6 +622,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 presenter.hitOldCheckout(fragmentViewModel)
             }
         }
+        analyticsTracker.eventClickBuyAndError(message)
     }
 
     private fun showErrorPinpoint(productData: ProductData?, profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
@@ -641,6 +661,57 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         img_total_payment_info.setOnClickListener {
             recyclerView.smoothScrollToPosition(adapter.data.size - 1)
         }
+
+        analyticsTracker.sendScreenName(activity, ConstantTransactionAnalytics.ScreenName.EXPRESS_CHECKOUT)
+        analyticsTracker.enhanceEcommerceImpressionExpressCheckoutForm(generateEnhanceEcommerceData(ActionField.STEP_1), "")
+    }
+
+    fun generateEnhanceEcommerceData(step: Int): HashMap<String, JsonObject> {
+        val enhanceEcommerceData = HashMap<String, JsonObject>()
+
+        val actionField = ActionField()
+        actionField.step = if (step == ActionField.STEP_1) ActionField.STEP_1 else ActionField.STEP_2
+        actionField.option = if (step == ActionField.STEP_1) ActionField.OPTION_CLICK_CHECKOUT else ActionField.OPTION_CLICK_BAYAR
+
+        val product = Product()
+        val shopModel = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel
+        val productChildren = fragmentViewModel.getProductViewModel()?.productChildrenList
+        if (productChildren != null && productChildren.isNotEmpty()) {
+            for (productChild: ProductChild in productChildren) {
+                if (productChild.isSelected) {
+                    product.name = productChild.productName
+                    product.id = productChild.productId
+                    product.price = productChild.productPrice
+                    break
+                }
+            }
+        } else {
+            product.name = fragmentViewModel.getProductViewModel()?.productName
+            product.id = fragmentViewModel.getProductViewModel()?.parentId
+            product.price = fragmentViewModel.getProductViewModel()?.productPrice
+        }
+
+        if (shopModel?.isOfficial == 1) {
+            product.shopType = Product.SHOP_TYPE_OFFICIAL_STORE
+        } else if (shopModel?.isGold == 1) {
+            product.shopType = Product.SHOP_TYPE_GOLD_MERCHANT
+        } else {
+            product.shopType = Product.SHOP_TYPE_REGULER
+        }
+
+        product.quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
+        product.shopId = shopModel?.shopId
+        product.shopName = shopModel?.shopName
+
+        val checkout = Checkout()
+        checkout.actionField = actionField
+        checkout.products = arrayListOf(product)
+
+        val jsonTreeEnhanceEcommerceData = Gson().toJsonTree(checkout)
+        val jsonObjectEnhanceEcommerceData = jsonTreeEnhanceEcommerceData.asJsonObject
+        enhanceEcommerceData.put("checkout", jsonObjectEnhanceEcommerceData)
+
+        return enhanceEcommerceData
     }
 
     override fun setShippingDurationError(message: String) {

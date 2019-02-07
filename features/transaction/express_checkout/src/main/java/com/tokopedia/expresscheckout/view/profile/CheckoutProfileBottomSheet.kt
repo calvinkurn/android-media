@@ -15,6 +15,7 @@ import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.profile.adapter.CheckoutProfileAdapter
 import com.tokopedia.expresscheckout.view.profile.di.DaggerCheckoutProfileComponent
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
+import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
 import javax.inject.Inject
 
 /**
@@ -25,6 +26,8 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
 
     @Inject
     lateinit var presenter: CheckoutProfileContract.Presenter
+    @Inject
+    lateinit var analytics: ExpressCheckoutAnalyticsTracker
     @Inject
     lateinit var adapter: CheckoutProfileAdapter
 
