@@ -13,6 +13,8 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
 
@@ -21,7 +23,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel
  */
 
 public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewModel> implements
-        View.OnClickListener {
+        View.OnClickListener, PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_product_feed;
@@ -34,12 +36,15 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
     public TextView productPrice;
     public ImpressedImageView productImage;
     private int adapterPosition = 0;
+    private TopAdsItemImpressionListener impressionListener;
+    private int clickPosition = RecyclerView.NO_POSITION;
 
-
-    public ProductFeedViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
+    public ProductFeedViewHolder(View itemView, LocalAdsClickListener itemClickListener,
+                                 TopAdsItemImpressionListener impressionListener) {
         super(itemView);
         itemView.setOnClickListener(this);
         this.itemClickListener = itemClickListener;
+        this.impressionListener = impressionListener;
         context = itemView.getContext();
         productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
@@ -57,6 +62,15 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
 
     private void bindProduct(final Product product) {
         productImage.setImage(product.getImage());
+        productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem((clickPosition < 0 ?
+                            getAdapterPosition() : clickPosition), product);
+                }
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -76,6 +90,13 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
 
     public void setAdapterPosition(int adapterPosition) {
         this.adapterPosition = adapterPosition;
+    }
+
+
+
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
     }
 
 }

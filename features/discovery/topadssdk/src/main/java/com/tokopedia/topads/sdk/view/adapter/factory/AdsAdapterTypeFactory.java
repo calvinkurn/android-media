@@ -133,7 +133,8 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
         } else if (viewType == DynamicChannelViewHolder.LAYOUT) {
             holder = new DynamicChannelViewHolder(view, itemClickListener, itemImpressionListener);
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
-            holder = new ProductFeedViewHolder(view, itemClickListener);
+            holder = new ProductFeedViewHolder(view, itemClickListener, itemImpressionListener);
+            this.positionChangeListener = (PositionChangeListener) holder;
         } else if (viewType == ProductCarouselListViewHolder.LAYOUT) {
             holder = new ProductCarouselListViewHolder(view, itemClickListener,
                     itemImpressionListener, enableWishlist, offset);
