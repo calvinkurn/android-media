@@ -180,7 +180,7 @@ public class TopChatAnalytics {
     public void eventClickTemplate() {
         analyticTracker.sendEventTracking(
                 Name.INBOX_CHAT,
-                Category.INBOX_CHAT
+                Category.INBOX_CHAT,
                 Action.TEMPLATE_CHAT_CLICK,
                 "");
     }
