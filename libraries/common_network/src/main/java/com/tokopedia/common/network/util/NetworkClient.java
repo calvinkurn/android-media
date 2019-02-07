@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.common.network.data.db.RestDatabase;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;
+import com.tokopedia.network.CoroutineCallAdapterFactory;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -38,6 +39,7 @@ public class NetworkClient {
                     .baseUrl(RestConstant.BASE_URL)
                     .addConverterFactory(new StringResponseConverter())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                     .client(tkpdOkHttpBuilder.build()).build();
 
             sRestDatabase = RestDatabase.getInstance(context);
@@ -48,13 +50,12 @@ public class NetworkClient {
         if (sRetrofit == null) {
             throw new RuntimeException("Please call NetworkClient.init() to start the network library.");
         }
-
         return sRetrofit;
     }
 
     public static RestDatabase getRestDatabase() {
         if (sRestDatabase == null) {
-            throw new RuntimeException("Please call init() before using common network library");
+            throw new RuntimeException("Please call NetworkClient.init() before using common network library");
         }
 
         return sRestDatabase;
