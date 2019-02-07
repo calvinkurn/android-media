@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public class Utils {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX";
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ";
     private static final String LANGUAGE_CODE = "in";
     private static final String COUNTRY_CODE = "ID";
 
@@ -15,7 +15,7 @@ public class Utils {
 
     public static String getDateTime(String isoTime) {
         SimpleDateFormat inputFormat = new SimpleDateFormat(DATE_FORMAT, getLocale());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM YYYY", getLocale());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", getLocale());
         try {
             Date date = inputFormat.parse(isoTime);
             return dateFormat.format(date);
