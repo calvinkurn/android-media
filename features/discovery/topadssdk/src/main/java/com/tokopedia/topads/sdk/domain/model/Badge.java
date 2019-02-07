@@ -19,11 +19,11 @@ public class Badge implements Parcelable {
     private static final String KEY_SHOW = "show";
 
     @SerializedName(KEY_TITLE)
-    private String title;
+    private String title = "";
     @SerializedName(KEY_IMAGE_URL)
-    private String imageUrl;
+    private String imageUrl = "";
     @SerializedName(KEY_SHOW)
-    private Boolean show;
+    private Boolean show = false;
 
     public Badge(String imageUrl) {
         this.imageUrl = imageUrl;
