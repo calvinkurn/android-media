@@ -123,8 +123,6 @@ public class AutoCompleteTracking {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
-        clearEventTracking(context);
-
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 CLICK_TOP_NAV,
@@ -139,6 +137,8 @@ public class AutoCompleteTracking {
                         applink
                 )
         );
+
+        clearEventTracking(context);
     }
 
     public static void eventClickCategory(Context context,
