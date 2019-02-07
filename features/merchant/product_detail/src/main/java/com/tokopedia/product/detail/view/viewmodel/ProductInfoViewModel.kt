@@ -88,9 +88,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2(shopId: Int, productId: Int, resources: Resources) = coroutineScope{
+    private suspend fun getProductInfoP2(shopId: Int, productId: Int, resources: Resources) = coroutineScope {
 
-        val data = withContext(Dispatchers.IO){
+        val data = withContext(Dispatchers.IO) {
             val productInfoP2 = ProductInfoP2()
 
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
@@ -109,7 +109,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             try {
                 val gqlResponse = graphqlRepository.getReseponse(listOf(shopRequest, isWishlistedRequest, ratingRequest), cacheStrategy)
 
-                val result = if (gqlResponse.getError(ShopInfo.Response::class.java).isEmpty()){
+                val result = if (gqlResponse.getError(ShopInfo.Response::class.java).isEmpty()) {
                     (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
                 } else {
                     ShopInfo.Result()
@@ -126,7 +126,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             as Rating.Response).data
 
                 productInfoP2
-            } catch (t: Throwable){
+            } catch (t: Throwable) {
                 // for testing
                 val gson = Gson()
                 val response = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_shop_info_p2),
