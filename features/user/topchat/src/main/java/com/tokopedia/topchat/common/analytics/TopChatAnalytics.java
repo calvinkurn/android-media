@@ -153,23 +153,31 @@ public class TopChatAnalytics {
     }
 
     public void eventPickImage() {
-        analyticTracker.sendEventTracking(Category.CHAT_DETAIL, Action.CHAT_DETAIL_ATTACH
-                , Name.CHAT_DETAIL, "");
+        analyticTracker.sendEventTracking(Category.CHAT_DETAIL,
+                Name.CHAT_DETAIL,
+                Action.CHAT_DETAIL_ATTACH,
+                "");
     }
 
     public void eventAttachProduct() {
-        analyticTracker.sendEventTracking(Category.CHAT_DETAIL, Action.CHAT_DETAIL_INSERT
-                , Name.CHAT_DETAIL, "");
+        analyticTracker.sendEventTracking(Category.CHAT_DETAIL,
+                Name.CHAT_DETAIL,
+                Action.CHAT_DETAIL_INSERT,
+                "");
     }
 
-    public void eventSendMessage() {
-        analyticTracker.sendEventTracking(Category.CHAT_DETAIL, Action.CHAT_DETAIL_SEND
-                , Name.CHAT_DETAIL, "");
+    public void eventSendMessage(String label) {
+        analyticTracker.sendEventTracking(Category.CHAT_DETAIL,
+                Name.CHAT_DETAIL,
+                Action.CHAT_DETAIL_SEND,
+                label);
     }
 
     public void eventClickTemplate() {
-        analyticTracker.sendEventTracking(Category.INBOX_CHAT, Action.TEMPLATE_CHAT_CLICK
-                , Name.INBOX_CHAT, "");
+        analyticTracker.sendEventTracking(Category.INBOX_CHAT,
+                Name.INBOX_CHAT,
+                Action.TEMPLATE_CHAT_CLICK,
+                "");
     }
 
     public void trackClickUnblockChat() {
@@ -180,31 +188,30 @@ public class TopChatAnalytics {
     }
 
     public void eventClickProductThumbnailEE(int blastId, String productId, String productName,
-                                             int productPrice, String category, String variant){
+                                             int productPrice, String category, String variant) {
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
                 EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
                 EVENT_LABEL, String.format("chat - %s - %s", productId, String.valueOf(blastId)),
                 ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
-                                                    "click", DataLayer.mapOf(
-                                                "actionField", DataLayer.mapOf("list", "/chat"),
-                                                        "products",DataLayer.listOf(
-                                                                DataLayer.mapOf(
-                                                                "name", productName,
-                                                                "id", productId,
-                                                                "price", productPrice,
-                                                                "brand", "none",
-                                                                "category", category,
-                                                                "variant", variant,
-                                                                "position", 0
-                                                                )
-                                                )
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "/chat"),
+                                "products", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", productName,
+                                                "id", productId,
+                                                "price", productPrice,
+                                                "brand", "none",
+                                                "category", category,
+                                                "variant", variant,
+                                                "position", 0
+                                        )
+                                )
                         )
                 )
         ));
     }
-
 
 
     public void trackProductAttachmentClicked() {
