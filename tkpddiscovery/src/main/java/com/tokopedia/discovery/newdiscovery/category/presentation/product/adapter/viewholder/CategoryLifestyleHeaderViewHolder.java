@@ -93,12 +93,12 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink, CpmData data) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 categoryListener.onBannerAdsClicked(applink);
                 if(applink.contains(SHOP)) {
-                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, getAdapterPosition());
+                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, position);
                 } else {
-                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, getAdapterPosition());
+                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, position);
                 }
             }
         });

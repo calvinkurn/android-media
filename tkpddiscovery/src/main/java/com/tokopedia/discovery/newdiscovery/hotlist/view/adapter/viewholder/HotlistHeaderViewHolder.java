@@ -90,12 +90,12 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink, CpmData data) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 mHotlistListener.onBannerAdsClicked(applink);
                 if(applink.contains(SHOP)) {
-                    TopAdsGtmTracker.eventHotlistShopPromoClick(context, searchQuery, hotlistAlias, data, getAdapterPosition());
+                    TopAdsGtmTracker.eventHotlistShopPromoClick(context, searchQuery, hotlistAlias, data, position);
                 } else {
-                    TopAdsGtmTracker.eventHotlistProductPromoClick(context, searchQuery, hotlistAlias, data, getAdapterPosition());
+                    TopAdsGtmTracker.eventHotlistProductPromoClick(context, searchQuery, hotlistAlias, data, position);
                 }
             }
         });
