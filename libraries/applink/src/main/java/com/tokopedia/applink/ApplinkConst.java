@@ -33,6 +33,7 @@ public interface ApplinkConst {
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
+    String ADD_CREDIT_CARD= "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";

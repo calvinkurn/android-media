@@ -28,6 +28,8 @@ public interface KolPostDetailContract {
         void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);
 
         void onSuccessFollowUnfollowKol(int rowNumber);
+
+        void stopTrace();
     }
 
     interface Presenter extends CustomerPresenter<View> {
