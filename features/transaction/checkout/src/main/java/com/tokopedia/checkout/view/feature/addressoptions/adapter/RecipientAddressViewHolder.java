@@ -1,0 +1,89 @@
+package com.tokopedia.checkout.view.feature.addressoptions.adapter;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.RadioButton;
+import android.widget.TextView;
+
+import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListAdapter;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+
+/**
+ * Created by fajarnuha on 07/02/19.
+ */
+public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
+
+    private static final int PRIME_ADDRESS = 2;
+
+    private TextView mTvAddressName;
+    private TextView mTvAddressStatus;
+    private TextView mTvRecipientName;
+    private TextView mTvRecipientAddress;
+    private TextView mTvRecipientPhone;
+
+    private TextView mTvChangeAddress;
+    private RadioButton mRbCheckAddress;
+
+    private ShipmentAddressListAdapter.ActionListener mListener;
+
+    public RecipientAddressViewHolder(View view) {
+        super(view);
+
+        mTvAddressName = view.findViewById(R.id.tv_address_name);
+        mTvAddressStatus = view.findViewById(R.id.tv_address_status);
+        mTvRecipientName = view.findViewById(R.id.tv_recipient_name);
+        mTvRecipientAddress = view.findViewById(R.id.tv_recipient_address);
+        mTvRecipientPhone = view.findViewById(R.id.tv_recipient_phone);
+
+        mTvChangeAddress = view.findViewById(R.id.button_change_address);
+        mRbCheckAddress = view.findViewById(R.id.rb_check_address);
+    }
+
+    public void bind(RecipientAddressModel address, ShipmentAddressListAdapter adapter, ShipmentAddressListAdapter.ActionListener listener, int position) {
+        mListener = listener;
+        mTvAddressName.setText(address.getAddressName());
+        mTvAddressStatus.setVisibility(address.getAddressStatus() == PRIME_ADDRESS ?
+                View.VISIBLE : View.GONE);
+        mTvRecipientName.setText(address.getRecipientName());
+        mTvRecipientAddress.setText(getFullAddress(address));
+        mTvRecipientPhone.setText(address.getRecipientPhoneNumber());
+
+        mRbCheckAddress.setChecked(address.isSelected());
+        mTvChangeAddress.setVisibility(View.VISIBLE);
+        mTvChangeAddress.setOnClickListener(v ->
+                mListener.onEditClick(address)
+        );
+        itemView.setOnClickListener(view -> adapter.setSelectedAddressData(position));
+    }
+
+    private String getFullAddress(RecipientAddressModel recipientAddress) {
+        return recipientAddress.getStreet() + ", "
+                + recipientAddress.getDestinationDistrictName() + ", "
+                + recipientAddress.getCityName() + ", "
+                + recipientAddress.getProvinceName();
+    }
+
+//    private View.OnClickListener getItemClickListener(RecipientAddressModel recipientAddressModel,
+//                                                      ShipmentAdapterActionListener listener) {
+//        return v -> {
+//            if (!recipientAddressModel.isSelected()) {
+//                for (RecipientAddressModel viewModel : mAddressModelList) {
+//                    if (viewModel.getId().equals(recipientAddressModel.getId())) {
+//                        if (mAddressModelList.size() > position && position >= 0) {
+//                            viewModel.setSelected(!viewModel.isSelected());
+//                            mListener.onAddressContainerClicked(mAddressModelList.get(position));
+//                        }
+//                    } else {
+//                        viewModel.setSelected(false);
+//                    }
+//                }
+//
+//                notifyDataSetChanged();
+//            } else {
+//                mListener.onAddressContainerClicked(mAddressModelList.get(position));
+//            }
+//        };
+//    }
+
+}
