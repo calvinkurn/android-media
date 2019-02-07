@@ -114,6 +114,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import io.hansel.hanselsdk.Hansel;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -171,6 +172,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
+        Hansel.init(this);
         PushManager.getInstance().setMessageListener(new CustomPushListener());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
