@@ -147,41 +147,47 @@ public class TopChatAnalytics {
     }
 
     public void trackOpenChatSetting() {
-        analyticTracker.sendEventTracking(ChatSettingsAnalytics.EVENT_NAME,
+        analyticTracker.sendEventTracking(
+                ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
                 ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
     }
 
     public void eventPickImage() {
-        analyticTracker.sendEventTracking(Category.CHAT_DETAIL,
+        analyticTracker.sendEventTracking(
                 Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
                 Action.CHAT_DETAIL_ATTACH,
                 "");
     }
 
     public void eventAttachProduct() {
-        analyticTracker.sendEventTracking(Category.CHAT_DETAIL,
+        analyticTracker.sendEventTracking(
                 Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
                 Action.CHAT_DETAIL_INSERT,
                 "");
     }
 
     public void eventSendMessage() {
-        analyticTracker.sendEventTracking(Category.CHAT_DETAIL,
+        analyticTracker.sendEventTracking(
                 Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
                 Action.CHAT_DETAIL_SEND,
                 "");
     }
 
     public void eventClickTemplate() {
-        analyticTracker.sendEventTracking(Category.INBOX_CHAT,
+        analyticTracker.sendEventTracking(
                 Name.INBOX_CHAT,
+                Category.INBOX_CHAT
                 Action.TEMPLATE_CHAT_CLICK,
                 "");
     }
 
     public void trackClickUnblockChat() {
-        analyticTracker.sendEventTracking(ChatSettingsAnalytics.EVENT_NAME,
+        analyticTracker.sendEventTracking(
+                ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
