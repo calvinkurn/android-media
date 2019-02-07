@@ -34,7 +34,6 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
             when (status.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
-                    // Get SMS message contents
                     val message = extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as String
                     val otp = message.substringAfter("masuk:").substring(0,6)
                     if(::listener.isInitialized
@@ -42,8 +41,7 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
                     listener.onReceiveOTP(otp)
                 }
                 CommonStatusCodes.TIMEOUT -> {
-                    // Waiting for SMS timed out (5 minutes)
-                    // Handle the error ...
+                   //Do nothing
                 }
             }
         }
