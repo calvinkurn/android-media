@@ -8,6 +8,7 @@ import android.view.View;
 
 /**
  * Created by Rizky on 07/08/18.
+ * Temporary for hotfix, will be removed in the next iteration
  */
 public class TouchViewPager2 extends ViewPager {
 
