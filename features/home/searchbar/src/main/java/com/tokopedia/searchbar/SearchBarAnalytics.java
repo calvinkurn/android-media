@@ -20,7 +20,7 @@ public class SearchBarAnalytics {
             return;
 
         if (context.getApplicationContext() instanceof AbstractionRouter) {
-            this.analyticTracker = ((SearchBarRouter)context.getApplicationContext())
+            this.analyticTracker = ((SearchBarRouter) context.getApplicationContext())
                     .getAnalyticTracker();
         }
     }
@@ -70,5 +70,17 @@ public class SearchBarAnalytics {
         eventTracking.put(SearchBarConstant.EVENT_ACTION, action);
         eventTracking.put(SearchBarConstant.EVENT_LABEL, "");
         return eventTracking;
+    }
+
+    public void eventTrackingSearchBar() {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(getDataEvent(
+                SearchBarConstant.CLICK_TOP_NAV,
+                SearchBarConstant.TOP_NAV,
+                SearchBarConstant.CLICK_SEARCH_BOX,
+                ""
+        ));
     }
 }
