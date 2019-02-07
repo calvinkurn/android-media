@@ -224,6 +224,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setSearchTerm(searchTerm);
             model.setImageUrl(item.getImageURI());
             model.setSearchTerm(searchTerm);
+            model.setCategoryId(item.getSc());
             list.add(model);
         }
         return list;

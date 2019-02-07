@@ -32,7 +32,7 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
                     view.context,
                     element.searchTerm,
                     element.keyword,
-                    element.eventId,
+                    element.categoryId,
                     adapterPosition,
                     element.applink
             )
