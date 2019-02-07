@@ -233,5 +233,7 @@
     <string name="lebel_understood">Mengerti</string>
     <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
     <string name="change_address">Ubah Alamat</string>
+    <string name="add_address">Tambah Alamat Baru</string>
+    <string name="shipping_address">Alamat Pengiriman</string>
 
 </resources>

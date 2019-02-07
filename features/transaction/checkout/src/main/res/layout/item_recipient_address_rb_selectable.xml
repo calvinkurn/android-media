@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="Alamat Pengiriman"
+        android:text="@string/shipping_address"
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -110,7 +110,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/button_border_green"
-        android:text="Tambah Alamat Baru"
+        android:text="@string/add_address"
         android:textAllCaps="false"
         android:visibility="gone"
         tools:visibility="visible"
