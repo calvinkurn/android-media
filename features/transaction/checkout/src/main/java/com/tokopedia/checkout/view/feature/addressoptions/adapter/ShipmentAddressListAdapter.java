@@ -16,7 +16,7 @@ import java.util.List;
  * @author Aghny A. Putra on 26/01/18
  */
 
-public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAddressViewHolder> {
+public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private boolean adaSampai;
     private List<RecipientAddressModel> mAddressModelList;
@@ -30,30 +30,35 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAd
 
     @NonNull
     @Override
-    public RecipientAddressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_recipient_address_rb_selectable, parent, false);
+                .inflate(viewType, parent, false);
+        if (viewType == R.layout.item_sampai) return new SampaiViewHolder(view);
         return new RecipientAddressViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipientAddressViewHolder holder, int position) {
-        RecipientAddressModel address = mAddressModelList.get(position);
-        holder.bind(address, this, mActionListener, position);
-        if (position == getItemCount() - 1)
-            holder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
-        if (position == 0) holder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == R.layout.item_sampai) {
+
+        } else {
+            int addressPosition = position - getExtraCount();
+            RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
+            RecipientAddressModel address = mAddressModelList.get(addressPosition);
+            addressHolder.bind(address, this, mActionListener, addressPosition);
+            if (position == getItemCount() - 1)
+                addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
+            if (position == 0) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
+        }
     }
 
     @Override
     public int getItemCount() {
-        int hasHeader = (adaSampai) ? 0 : 1;
-        return mAddressModelList.size() + hasHeader;
+        return mAddressModelList.size() + getExtraCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        int hasHeader = (adaSampai) ? 0 : 1;
         if (position == 0 && adaSampai) return R.layout.item_sampai;
         else return RecipientAddressViewHolder.TYPE;
     }
@@ -67,6 +72,10 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAd
         mAddressModelList.addAll(addressModelList);
     }
 
+    public void setSampai() {
+        adaSampai = true;
+    }
+
     void setSelectedAddressData(int position) {
         for (int i = 0; i < mAddressModelList.size(); i++) {
             if (position == i) {
@@ -77,6 +86,10 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAd
         }
         notifyDataSetChanged();
         mActionListener.onAddressContainerClicked(mAddressModelList.get(position));
+    }
+
+    private int getExtraCount() {
+        return adaSampai ? 1 : 0;
     }
 
     /**
@@ -92,6 +105,13 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAd
          * Executed when edit address button is clicked
          */
         void onEditClick(RecipientAddressModel model);
+    }
+
+    class SampaiViewHolder extends RecyclerView.ViewHolder {
+
+        public SampaiViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 
 }

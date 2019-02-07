@@ -280,6 +280,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             isMenuVisible = true;
             getActivity().invalidateOptionsMenu();
         }
+//        mShipmentAddressListAdapter.setSampai();
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
