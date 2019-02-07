@@ -291,6 +291,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 homeFeedPagerAdapter.getHomeFeedFragmentList().get(tab.getPosition()).scrollToTop();
+                homeFeedsTabLayout.resetCollapseState();
             }
         });
     }
@@ -945,7 +946,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onScrollToTop() {
-        if (recyclerView != null) recyclerView.scrollToPosition(0);
+        if (appBarLayout != null) appBarLayout.setExpanded(true);
     }
 
     /**

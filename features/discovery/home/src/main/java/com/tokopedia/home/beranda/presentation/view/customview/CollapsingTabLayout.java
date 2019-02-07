@@ -10,9 +10,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +28,7 @@ import java.util.List;
 public class CollapsingTabLayout extends TabLayout {
 
     private static final long DEFAULT_ANIMATION_DURATION = 300;
-    private static final long TAB_AUTO_SCROLL_DELAY_DURATION = 300;
+    private static final long TAB_AUTO_SCROLL_DELAY_DURATION = 100;
     private static final int NONE = -1;
     private static final int MAX_TAB_COLLAPSE_SCROLL_RANGE = 200;
 
@@ -300,6 +302,9 @@ public class CollapsingTabLayout extends TabLayout {
     }
 
     private void adjustTabCollapseFraction(float tabCollapseFraction) {
+        if (tabHeightCollapseAnimator.isRunning()) {
+            tabHeightCollapseAnimator.cancel();
+        }
         tabHeightCollapseAnimator.setCurrentFraction(tabCollapseFraction);
         lastTabCollapseFraction = tabCollapseFraction;
     }
@@ -308,6 +313,19 @@ public class CollapsingTabLayout extends TabLayout {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
         textView.setText(tabItemDataList.get(position).getTitle());
+        textView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                ViewTreeObserver obs = textView.getViewTreeObserver();
+                obs.removeOnGlobalLayoutListener(this);
+                if (textView.getLineCount() > 1) {
+                    textView.setGravity(Gravity.TOP);
+                } else {
+                    textView.setGravity(Gravity.BOTTOM);
+                }
+            }
+        });
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
         ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl());
         int dp16 = rootView.getResources().getDimensionPixelSize(R.dimen.dp_16);
@@ -330,6 +348,10 @@ public class CollapsingTabLayout extends TabLayout {
         if (scrollEnabled) {
             super.scrollTo(x, y);
         }
+    }
+
+    public void resetCollapseState() {
+        adjustTabCollapseFraction(0);
     }
 
     private static class TabIndicatorAnimator extends ValueAnimator {

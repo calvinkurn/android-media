@@ -29,7 +29,10 @@
         android:id="@+id/tabTitle"
         android:layout_width="@dimen/tab_home_feed_width"
         android:layout_height="match_parent"
-        android:padding="10dp"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_16"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="12sp"
@@ -44,7 +47,7 @@
         android:layout_height="2dp"
         android:layout_marginLeft="10dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="@dimen/dp_12"
         app:lineColor="@color/white"
         />
 
