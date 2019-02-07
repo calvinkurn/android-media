@@ -42,6 +42,7 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -50,6 +51,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
@@ -432,6 +434,12 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         topAdsView.setAdsItemClickListener(this);
         topAdsView.loadTopAds();
         topAdsView.setAdsListener(this);
+        topAdsView.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventCartEmptyProductView(getContext(), product, position);
+            }
+        });
     }
 
     @Override
@@ -555,6 +563,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
                 String.valueOf(position + 1), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
+        TopAdsGtmTracker.eventCartEmptyProductClick(getContext(), product, position);
     }
 
     @Override

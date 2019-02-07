@@ -36,6 +36,7 @@ public class EmptyViewHolder extends RecyclerView.ViewHolder implements
     Button actionBtn;
     private Context context;
     private final String WISHLISH_SRC = "wishlist";
+    private String query = "";
 
     public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
         super(itemView);
@@ -61,11 +62,12 @@ public class EmptyViewHolder extends RecyclerView.ViewHolder implements
     }
 
     public void loadTopAds(String query) {
+        this.query = query;
         topAdsView.loadTopAds();
         topAdsView.setAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.eventWishlistProductView(context, product, query, position);
+                TopAdsGtmTracker.eventWishlistEmptyProductView(context, product, query, position);
             }
         });
     }
@@ -82,6 +84,7 @@ public class EmptyViewHolder extends RecyclerView.ViewHolder implements
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         context.startActivity(intent);
+        TopAdsGtmTracker.eventWishlistEmptyProductClick(context, product, query, position);
     }
 
     @Override
