@@ -502,7 +502,7 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     protected void setupAdapter() {
-        String searchQuery = getArguments().getString(EXTRA_SEARCH_QUERY, "");
+        String searchQuery = getArguments().getString(EXTRA_SEARCH_QUERY, getHotlistAlias());
         HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this, searchQuery, getHotlistAlias());
         hotlistAdapter = new HotlistAdapter(this, typeFactory);
 
