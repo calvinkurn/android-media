@@ -42,6 +42,13 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     private var callCounter: Int = 0
 
     override fun initialize() {
+
+        if (view.isReturning()) {
+            deleteFlightReturnSearch(getNoActionSubscriber())
+        } else {
+            deleteAllSearchData(getNoActionSubscriber())
+        }
+
         if (!view.getSearchPassData().isOneWay &&
                 !view.isStatusCombineDone()) {
             fetchCombineData(view.getSearchPassData())
@@ -380,6 +387,21 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                 override fun onNext(t: Boolean?) {
                     view.onSuccessDeleteFlightCache()
+                }
+            }
+
+    private fun getNoActionSubscriber(): Subscriber<Boolean> =
+            object: Subscriber<Boolean>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable?) {
+                    e?.printStackTrace()
+                }
+
+                override fun onNext(t: Boolean?) {
+                    // No Action
                 }
             }
 
