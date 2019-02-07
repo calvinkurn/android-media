@@ -408,19 +408,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         totalBalanceInfo.setOnClickListener(v -> showBottomSheetInfoDialog(false));
 
-        buyerBalanceInfoIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBottomSheetInfoDialog(false);
-            }
-        });
+        buyerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(false));
 
-        sellerBalanceInfoIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBottomSheetInfoDialog(true);
-            }
-        });
+        sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
         datePicker = new SaldoDatePickerUtil(getActivity());
 //        adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));

@@ -42,16 +42,16 @@
     <string name="sp_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
     <string name="sp_alert_not_verified_yet_positive">Verifikasi</string>
     <string name="sp_alert_not_verified_yet_negative">Tidak</string>
-    <string name="saldo_intro_title">Baru! Saldo Tokopedia Kini Jadi Saldo Refund &amp; Saldo Penghasilan</string>
-    <string name="saldo_intro_description">Tenang, hasil penjualanmu tersimpan aman di <b>Saldo Penghasilan</b>. Cek juga <b>Saldo Refund</b> untuk melihat dana refund atau hasil penjualan produk investasi.</string>
+    <string name="saldo_intro_title_refund">Refund</string>
+    <string name="saldo_intro_description_refund">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
     <string name="saldo_intro_view_more">Lihat Selengkapnya</string>
     <string name="saldo_intro_goto_balance_page">Cek Halaman Saldo</string>
     <string name="title_saldo_detail">Detail Saldo</string>
     <string name="saldo_help">Pelajari</string>
     <string name="saldo_buyer_title">Refund</string>
     <string name="saldo_seller_title">Penghasilan</string>
-    <string name="saldo_total_balance_buyer">Nilai Saldo Refund</string>
-    <string name="saldo_total_balance_seller">Nilai Saldo Penghasilan</string>
+    <string name="saldo_total_balance_buyer">Saldo Refund</string>
+    <string name="saldo_total_balance_seller">Saldo Penghasilan</string>
     <string name="saldo_total_balance_text">Nilai Saldo</string>
     <string name="total_saldo_text">Total Saldo Aktif</string>
     <string name="saldo_balance_buyer_desc">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
@@ -63,5 +63,15 @@
     <string name="deposit_summary_title_buyer">Riwayat Saldo Refund</string>
     <string name="deposit_summary_title">Riwayat Saldo</string>
     <string name="saldo_detail_intro_desc4">Cek jumlah saldo yang dapat digunakan untuk transaksi.</string>
+    <string name="sumber_dana_refund">Sumber dana Refund</string>
+    <string name="dana_refund">Dana refund</string>
+    <string name="disbursement_fund">Pencairan dana investasi</string>
+    <string name="saldo_intro_title_seller">Penghasilan</string>
+    <string name="saldo_intro_description_seller">Berisi dana hasil penjualan dan tidak dapat digunakan untuk pembayaran. Juga berfungsi sebagai sumber dana untuk pemotongan  biaya kurir, komisi affiliate, dan transaksi lainnya.</string>
+    <string name="sumber_dana_seller">Sumber dana Penghasilan</string>
+    <string name="hasil_penjualan">Hasil Penjualan</string>
+    <string name="disbursement_priority_balance">Pencairan Saldo Prioritas</string>
+    <string name="saldo_intro_help">Untuk melihat informasi selengkapnya lihat di sini.</string>
+    <string name="saldo_help_text">di sini</string>
 
 </resources>
