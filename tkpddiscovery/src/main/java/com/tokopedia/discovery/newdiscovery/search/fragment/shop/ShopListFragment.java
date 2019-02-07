@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
@@ -27,6 +27,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.ShopListAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.decoration.ShopListItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
@@ -69,8 +70,8 @@ public class ShopListFragment extends SearchSectionFragment
     private boolean isLoadingData;
     private boolean isNextPageAvailable = true;
 
-    private EndlessRecyclerviewListener linearLayoutLoadMoreTriggerListener;
-    private EndlessRecyclerviewListener gridLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
     public static ShopListFragment newInstance(String query) {
@@ -114,7 +115,7 @@ public class ShopListFragment extends SearchSectionFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
-        return inflater.inflate(R.layout.fragment_base_discovery, null);
+        return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }
 
     @Override
@@ -130,6 +131,7 @@ public class ShopListFragment extends SearchSectionFragment
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.addItemDecoration(new ShopListItemDecoration());
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
 
@@ -137,23 +139,42 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void initListener() {
-        gridLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getGridLayoutManager()) {
+        gridLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getGridLayoutManager()) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     loadMoreShop(totalItemsCount - 1);
                 }
             }
         };
 
-        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getLinearLayoutManager()) {
+        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getLinearLayoutManager()) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     loadMoreShop(totalItemsCount - 1);
                 }
             }
         };
+    }
+
+    public void updateScrollListenerState(boolean hasNextPage){
+        switch (getAdapter().getCurrentLayoutType()) {
+            case GRID_1: // List
+                if (linearLayoutLoadMoreTriggerListener != null) {
+                    linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+                    linearLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
+                }
+                break;
+            case GRID_2: // Grid 2x2
+            case GRID_3: // Grid 1x1
+                if (gridLayoutLoadMoreTriggerListener != null) {
+                    gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+                    gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
+                }
+                break;
+        }
+
     }
 
     private boolean isAllowLoadMore() {
@@ -238,6 +259,9 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = isHasNextPage;
         adapter.removeLoading();
         adapter.appendItems(shopItemList);
+
+        updateScrollListenerState(isHasNextPage);
+
         if (isHasNextPage) {
             adapter.addLoading();
         }

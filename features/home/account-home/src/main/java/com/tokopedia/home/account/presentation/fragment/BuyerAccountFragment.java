@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
@@ -37,10 +38,12 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
 
     public static final String TAG = BuyerAccountFragment.class.getSimpleName();
     private static final String BUYER_DATA = "buyer_data";
+    private static final String FPM_BUYER = "mp_account_buyer";
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private BuyerAccountAdapter adapter;
+    private PerformanceMonitoring fpmBuyer;
 
     @Inject
     BuyerAccount.Presenter presenter;
@@ -55,6 +58,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fpmBuyer = PerformanceMonitoring.start(FPM_BUYER);
         initInjector();
     }
 
@@ -104,6 +108,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
             adapter.clearAllElements();
             adapter.setElement(model.getItems());
         }
+        fpmBuyer.stopTrace();
     }
 
     private void initInjector() {
@@ -136,6 +141,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmBuyer.stopTrace();
     }
 
     @Override
@@ -145,6 +151,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmBuyer.stopTrace();
     }
 
     @Override

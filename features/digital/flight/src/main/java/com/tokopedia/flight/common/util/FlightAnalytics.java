@@ -221,7 +221,7 @@ public class FlightAnalytics {
     @NonNull
     private StringBuilder transformSearchProductClickLabel(FlightJourneyViewModel viewModel) {
         StringBuilder result = new StringBuilder();
-        if (viewModel.getAirlineDataList() != null) {
+        if (viewModel != null && viewModel.getAirlineDataList() != null) {
             List<String> airlines = new ArrayList<>();
             for (FlightAirlineViewModel airlineDB : viewModel.getAirlineDataList()) {
                 airlines.add(airlineDB.getShortName().toLowerCase());
@@ -229,7 +229,7 @@ public class FlightAnalytics {
             result.append(TextUtils.join(",", airlines));
         }
 
-        if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
+        if (viewModel != null && viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
             String timeResult = String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(0).getDepartureTimestamp()));
             timeResult += " - " + String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp()));
             result.append(String.format(" - %s", timeResult));
