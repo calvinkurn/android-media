@@ -6,7 +6,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListAdapter;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 /**

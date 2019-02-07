@@ -31,6 +31,7 @@ import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListCompone
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.feature.addressoptions.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;

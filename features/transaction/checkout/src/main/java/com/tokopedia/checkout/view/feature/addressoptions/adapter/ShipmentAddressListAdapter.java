@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.addressoptions;
+package com.tokopedia.checkout.view.feature.addressoptions.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -47,16 +47,16 @@ public class ShipmentAddressListAdapter
         return mAddressModelList.size();
     }
 
-    void setAddressList(List<RecipientAddressModel> addressModelList) {
+    public void setAddressList(List<RecipientAddressModel> addressModelList) {
         mAddressModelList.clear();
         mAddressModelList.addAll(addressModelList);
     }
 
-    void updateAddressList(List<RecipientAddressModel> addressModelList) {
+    public void updateAddressList(List<RecipientAddressModel> addressModelList) {
         mAddressModelList.addAll(addressModelList);
     }
 
-    public void setSelectedAddressData(int position) {
+    void setSelectedAddressData(int position) {
         for(int i = 0; i<mAddressModelList.size(); i++) {
             if (position == i) {
                 mAddressModelList.get(i).setSelected(true);
