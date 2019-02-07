@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT;
-import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE;
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT;
 
 public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContract.View>
@@ -42,20 +41,10 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private static final String IS_SELLER = "is_seller";
-    /*private String paramStartDate;
-    private String paramEndDate;
-    private static final String BUNDLE_TOTAL_BALANCE = "total_balance";
-    private static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
-    private static final String DATE_FORMAT_WS = "yyyy/MM/dd";
-    private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
-    private static final long MAX_DAYS_DIFFERENCE = 31;
-    private static final long SEARCH_DELAY = 500;
-    private static final String DATE_FORMAT_VIEW = "dd MMM yyyy";*/
 
     private Bundle withdrawActivityBundle = new Bundle();
 
-    private long minSaldoLimit = 10000;
-    //    private PagingHandler paging;
+    private final long minSaldoLimit = 10000;
     private DepositCacheInteractor depositCacheInteractor;
 
     @Inject

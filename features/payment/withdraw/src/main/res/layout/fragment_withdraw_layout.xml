@@ -41,13 +41,18 @@
                 android:orientation="vertical">
 
                 <android.support.v7.widget.CardView
+                    android:id="@+id/saldo_type_card_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_3"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:elevation="@dimen/dp_3"
                     android:orientation="vertical"
                     app:cardBackgroundColor="@color/cardview_light_background"
-                    app:cardCornerRadius="@dimen/dp_1"
+                    app:cardCornerRadius="@dimen/dp_4"
                     app:cardElevation="@dimen/dp_3"
                     app:cardPreventCornerOverlap="false">
 
@@ -57,44 +62,56 @@
                         android:padding="@dimen/dp_16">
 
                         <TextView
-                            android:id="@+id/withdraw_all"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerInParent="true"
-                            android:background="@drawable/bg_rounded_corners_green"
-                            android:gravity="center"
-                            android:padding="@dimen/dp_8"
-                            android:text="Tarik Semua"
-                            android:textColor="@color/medium_green"
-                            android:textSize="@dimen/sp_11" />
-
-                        <TextView
-                            android:id="@+id/wrapper_total_balance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="@dimen/sp_10"
-                            android:text="@string/title_withdrawal_saldo"
-                            android:textColor="@color/black_54"
-                            android:textSize="@dimen/sp_12"
-                            android:textStyle="normal" />
+                            android:text="@string/saldo_retrieve_balance"
+                            android:textColor="#ae31353b"
+                            android:textSize="@dimen/sp_14" />
 
-                        <EditText
-                            android:id="@+id/total_balance"
+                        <ImageView
+                            android:id="@+id/saldo_withdraw_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:visibility="invisible"
+                            android:src="@drawable/ic_more_info" />
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/wrapper_total_balance"
-                            android:layout_marginBottom="@dimen/dp_10"
-                            android:layout_toLeftOf="@id/withdraw_all"
-                            android:background="@null"
-                            android:enabled="false"
-                            android:fontFamily="sans-serif-medium"
-                            android:textColor="@color/black_70"
-                            android:paddingTop="@dimen/dp_5" />
+                            android:layout_below="@+id/saldo_withdraw_info"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:weightSum="2">
+
+                            <TextView
+                                android:id="@+id/withdraw_refund_saldo"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/dp_8"
+                                android:layout_marginRight="@dimen/dp_8"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_green_filled_radius_16"
+                                android:gravity="center"
+                                android:paddingTop="@dimen/dp_8"
+                                android:paddingBottom="@dimen/dp_8"
+                                android:text="@string/refund"
+                                android:textColor="@color/white" />
+
+                            <TextView
+                                android:id="@+id/withdraw_seller_saldo"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/dp_8"
+                                android:layout_marginLeft="@dimen/dp_8"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_grey_border_radius_16"
+                                android:gravity="center"
+                                android:paddingTop="@dimen/dp_8"
+                                android:paddingBottom="@dimen/dp_8"
+                                android:text="@string/saldo_return" />
+
+                        </LinearLayout>
 
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>
@@ -103,85 +120,171 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="@dimen/dp_3"
-                    android:layout_margin="@dimen/dp_3"
-                    android:orientation="vertical"
-                    app:cardBackgroundColor="@color/cardview_light_background"
-                    app:cardCornerRadius="@dimen/dp_1"
-                    app:cardElevation="@dimen/dp_3"
-                    app:cardPreventCornerOverlap="false">
-                    <com.tokopedia.design.text.TkpdHintTextInputLayout
-                        style="@style/HintTextInputLayout"
-                        android:id="@+id/wrapper_total_withdrawal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_16"
-                        android:hint="@string/title_withdrawal_nominal"
-                        android:textColorHint="@color/grey">
-
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/total_withdrawal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberSigned"
-                            android:textSize="@dimen/sp_16" />
-                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_3"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:elevation="@dimen/dp_3"
                     android:orientation="vertical"
                     app:cardBackgroundColor="@color/cardview_light_background"
-                    app:cardCornerRadius="@dimen/dp_1"
+                    app:cardCornerRadius="@dimen/dp_4"
                     app:cardElevation="@dimen/dp_3"
                     app:cardPreventCornerOverlap="false">
 
                     <RelativeLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/dp_16"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_16"
-                        android:paddingTop="@dimen/dp_16">
+                        android:padding="@dimen/dp_12">
 
                         <TextView
-                            android:id="@+id/title_choose_bank"
+                            android:id="@+id/saldo_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="10sp"
-                            android:paddingTop="@dimen/dp_8"
-                            android:text="@string/choose_bank_account"
-                            android:textColor="@color/black_54"
-                            android:textSize="@dimen/sp_12"
-                            android:textStyle="normal" />
+                            android:text="@string/saldo_refund"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/sp_14"
+                            android:textStyle="bold" />
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recycler_view_bank"
+                        <TextView
+                            android:id="@+id/total_saldo_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_toEndOf="@+id/saldo_title"
+                            android:layout_toRightOf="@+id/saldo_title"
+                            android:gravity="end"
+                            android:lineSpacingExtra="@dimen/sp_4"
+                            android:textColor="@color/black_70"
+                            android:textSize="@dimen/sp_12"
+                            android:textStyle="bold"
+                            tools:text="Rp5.000.000" />
+
+                        <View
+                            android:id="@+id/view_divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:layout_below="@id/saldo_title"
+                            android:layout_marginStart="@dimen/dp_1"
+                            android:layout_marginLeft="@dimen/dp_1"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_marginEnd="@dimen/dp_1"
+                            android:layout_marginRight="@dimen/dp_1"
+                            android:background="@color/grey_300" />
+
+                        <TextView
+                            android:id="@+id/title_nominal_withdrawal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/view_divider"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:lineSpacingExtra="4sp"
+                            android:text="@string/nominal_withdrawal"
+                            android:textColor="@color/black_40"
+                            android:textSize="@dimen/sp_12" />
+
+
+                        <TextView
+                            android:id="@+id/withdrawal_all_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/view_divider"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:lineSpacingExtra="@dimen/sp_4"
+                            android:text="@string/saldo_withdrawal_all"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/sp_12" />
+
+                        <com.tokopedia.design.text.TkpdHintTextInputLayout
+                            android:id="@+id/wrapper_total_withdrawal"
+                            style="@style/HintTextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/title_choose_bank"
-                            android:paddingTop="@dimen/dp_3">
+                            android:layout_below="@+id/title_nominal_withdrawal"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:hint=""
+                            android:textColorHint="@color/grey">
 
-                        </android.support.v7.widget.RecyclerView>
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/total_withdrawal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberSigned"
+                                android:textSize="@dimen/sp_16" />
+                        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+                        <TextView
+                            android:id="@+id/saldo_withdraw_hint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/wrapper_total_withdrawal"
+                            android:layout_marginTop="@dimen/dp_5"
+                            android:lineSpacingExtra="@dimen/sp_4"
+                            android:text="@string/saldo_withdraw_hint"
+                            android:textColor="@color/grey_500"
+                            android:textSize="@dimen/sp_12" />
 
                     </RelativeLayout>
+
+
                 </android.support.v7.widget.CardView>
 
+                <!--<android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_3"
+                    android:elevation="@dimen/dp_3"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/cardview_light_background"
+                    app:cardCornerRadius="@dimen/dp_1"
+                    app:cardElevation="@dimen/dp_3"
+                    app:cardPreventCornerOverlap="false">
+
+
+                </android.support.v7.widget.CardView>-->
+
                 <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_3"
+                    android:paddingTop="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_3"
+                    android:paddingBottom="@dimen/dp_16">
+
+                    <TextView
+                        android:id="@+id/title_choose_bank"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="10sp"
+                        android:paddingTop="@dimen/dp_8"
+                        android:text="@string/choose_bank_account"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/sp_16"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_bank"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/title_choose_bank"
+                        android:paddingTop="@dimen/dp_3">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </RelativeLayout>
+
+                <!--<RelativeLayout
                     android:id="@+id/info_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="@dimen/dp_16"
                     android:background="@color/grey_transp"
-                    android:padding="@dimen/dp_16">
+                    android:padding="@dimen/dp_16"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/info"
@@ -203,7 +306,7 @@
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal" />
 
-                </RelativeLayout>
+                </RelativeLayout>-->
             </LinearLayout>
 
         </ScrollView>
