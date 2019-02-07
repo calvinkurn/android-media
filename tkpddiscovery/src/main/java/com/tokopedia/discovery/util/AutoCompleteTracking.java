@@ -137,8 +137,6 @@ public class AutoCompleteTracking {
                         applink
                 )
         );
-
-        clearEventTracking(context);
     }
 
     public static void eventClickCategory(Context context,
@@ -221,17 +219,5 @@ public class AutoCompleteTracking {
                 PRODUCT_VARIANT, NONE_OTHER,
                 PRODUCT_POSITION, position
         );
-    }
-
-    private static void clearEventTracking(Context context) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(DataLayer.mapOf("event", null,
-                "eventCategory", null,
-                "eventAction", null,
-                "eventLabel", null
-        ));
     }
 }

@@ -182,6 +182,7 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public GTMContainer sendScreen(String screenName) {
+        clearEventTracking();
         Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
         GTMDataLayer.pushEvent(context,
                 "openScreen", DataLayer.mapOf("screenName", screenName));
