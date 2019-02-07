@@ -162,6 +162,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation("Appsflyer", AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation("MoEngage", MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+
         super.onCreate();
         initReact();
 
