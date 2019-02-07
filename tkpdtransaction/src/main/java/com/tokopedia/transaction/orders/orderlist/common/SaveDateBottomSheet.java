@@ -1,19 +1,16 @@
 package com.tokopedia.transaction.orders.orderlist.common;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.transaction.R;
-
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
+import com.tokopedia.transaction.R;
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -21,8 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import static com.tokopedia.travelcalendar.view.TravelCalendarActivity.DATE_SELECTED;
 
 public class SaveDateBottomSheet extends BottomSheets {
 
@@ -81,14 +76,52 @@ public class SaveDateBottomSheet extends BottomSheets {
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                        .setShowHoliday(true)
+                        .setMinDate(getMinimumDate())
+                        .setMaxDate(now.getTime())
+                        .setTitle("Filter Tanggal")
+                        .setSelectedDate(getDate(startDate.getText().toString()))
+                        .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
+                        .build();
 
-                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getDate(startDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 1);
+                travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+                    @Override
+                    public void onClickDate(@NotNull Date dateSelected) {
+                        filterStartDate = formatDate(DATE_FORMAT, dateSelected);
+                        setDateText();
+                    }
+                });
+
+                travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "travel calendar");
+
+//                startActivityForResult(
+//                        TravelCalendarActivity.newInstance(getContext(), getDate(startDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 1);
             }
         });
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getDate(endDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 2);
+
+                TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                        .setShowHoliday(true)
+                        .setMinDate(getMinimumDate())
+                        .setMaxDate(now.getTime())
+                        .setTitle("Filter Tanggal")
+                        .setSelectedDate(getDate(startDate.getText().toString()))
+                        .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
+                        .build();
+
+                travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+                    @Override
+                    public void onClickDate(@NotNull Date dateSelected) {
+                        filterFinalDate = formatDate(DATE_FORMAT, dateSelected);
+                        setDateText();
+                    }
+                });
+
+                travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "travel calendar");
+//                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getDate(endDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 2);
             }
         });
         saveDate.setOnClickListener(new View.OnClickListener() {
@@ -139,20 +172,20 @@ public class SaveDateBottomSheet extends BottomSheets {
         return minDate;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            Date date = (Date) data.getSerializableExtra(DATE_SELECTED);
-            if (requestCode == 1) {
-                filterStartDate = formatDate(DATE_FORMAT,date);
-            } else if (requestCode == 2) {
-                filterFinalDate = formatDate(DATE_FORMAT,date);
-
-            }
-            setDateText();
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == Activity.RESULT_OK) {
+//            Date date = (Date) data.getSerializableExtra(DATE_SELECTED);
+//            if (requestCode == 1) {
+//                filterStartDate = formatDate(DATE_FORMAT,date);
+//            } else if (requestCode == 2) {
+//                filterFinalDate = formatDate(DATE_FORMAT,date);
+//
+//            }
+//            setDateText();
+//        }
+//    }
 
     public static String formatDate(String format, Date date){
             DateFormat dateFormat = new SimpleDateFormat(format, LOCALE);

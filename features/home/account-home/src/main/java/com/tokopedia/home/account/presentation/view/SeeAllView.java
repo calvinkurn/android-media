@@ -159,6 +159,16 @@ public class SeeAllView extends BottomSheets {
             list.add(gridItem);
         }
 
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_belanja,
+                getContext().getString(R.string.title_menu_market_place),
+                ApplinkConst.MARKETPLACE_ORDER,
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
+        );
+        list.add(gridItem);
+
         return list;
     }
 }

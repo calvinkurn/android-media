@@ -250,6 +250,7 @@ public interface ApplinkConst {
         String TO_SHOP_ID = "toShopId";
 
         String CUSTOM_MESSAGE = "customMessage";
+        String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
 
 

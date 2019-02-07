@@ -309,5 +309,5 @@ Anda di sini.</string>
     <string name="start_date">Tanggal Awal</string>
     <string name="end_date">Tanggal Akhir</string>
     <string name="save_date">Terapkan</string>
-    <string name="quantity">%d Barang (%s)</string>
+    <string name="quantity">%1$d Barang (%2$s)</string>
 </resources>

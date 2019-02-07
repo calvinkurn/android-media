@@ -11,6 +11,9 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.common.InboxChatConstant
+import com.tokopedia.topchat.common.InboxMessageConstant
+
 
 class TopChatRoomActivity : BaseChatToolbarActivity() {
 
@@ -118,6 +121,23 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             return Intent(context, TopChatRoomActivity::class.java)
                     .setData(uri.build())
                     .putExtras(extras)
+        }
+
+        @JvmStatic
+        @DeepLink(ApplinkConst.ASKSELLER)
+        fun getAskSellerIntent(context: Context, bundle: Bundle): Intent {
+            val intent = Intent(context, TopChatRoomActivity::class.java)
+            intent.putExtra(InboxMessageConstant.PARAM_SENDER_NAME, bundle.getString(InboxChatConstant.SHOP_NAME))
+            intent.putExtra(ChatRoomHeaderViewModel().role, LABEL_SELLER)
+            val toShopIdInt = if(bundle.getString(InboxChatConstant.SHOP_ID).isBlank()) 0 else bundle.getString(InboxChatConstant.SHOP_ID).toInt()
+            intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopIdInt)
+            intent.putExtra(InboxMessageConstant.PARAM_SENDER_ID, bundle.getString(InboxChatConstant.SHOP_ID))
+            bundle.putString(ApplinkConst.Chat.SOURCE, "tx_ask_seller")
+            bundle.putString(InboxMessageConstant.PARAM_SENDER_TAG, LABEL_SELLER)
+            intent.putExtra(InboxMessageConstant.PARAM_SENDER_IMAGE, bundle.getString(InboxChatConstant.SHOP_LOGO))
+            intent.putExtra(ApplinkConst.Chat.CUSTOM_SUBJECT, InboxChatConstant.INVOICE)
+            intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, bundle.getString(InboxChatConstant.INVOICEURL))
+            return intent
         }
 
     }
