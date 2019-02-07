@@ -70,7 +70,6 @@ public class MoEngageContainer implements IMoengageContainer {
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
                         .optOutTokenRegistration()
-                        .setNotificationColor(R.color.tkpd_main_green)
                         .build();
         MoEngage.initialise(moEngage);
 
