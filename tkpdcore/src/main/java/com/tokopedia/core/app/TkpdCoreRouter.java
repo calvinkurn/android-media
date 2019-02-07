@@ -189,8 +189,6 @@ public interface TkpdCoreRouter {
 
     String getDesktopLinkGroupChat();
 
-    Intent getWithdrawIntent(Context context);
-
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);

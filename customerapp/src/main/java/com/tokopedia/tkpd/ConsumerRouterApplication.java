@@ -2394,8 +2394,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getWithdrawIntent(Context context) {
-        return WithdrawActivity.getCallingIntent(context);
+    public Intent getWithdrawIntent(Context context, boolean isSeller) {
+        return WithdrawActivity.getCallingIntent(context, isSeller);
     }
 
     @Override

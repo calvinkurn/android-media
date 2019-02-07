@@ -33,7 +33,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_BUYER_TOTAL_BALANCE;
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT;
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE;
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT;
@@ -42,6 +41,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         implements SaldoDetailContract.Presenter, MerchantSaldoDetailsActionListener {
 
     public static final int REQUEST_WITHDRAW_CODE = 1;
+    private static final String IS_SELLER = "is_seller";
     /*private String paramStartDate;
     private String paramEndDate;
     private static final String BUNDLE_TOTAL_BALANCE = "total_balance";
@@ -54,6 +54,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     private Bundle withdrawActivityBundle = new Bundle();
 
+    private long minSaldoLimit = 10000;
     //    private PagingHandler paging;
     private DepositCacheInteractor depositCacheInteractor;
 
@@ -212,7 +213,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 if (!isViewAttached()) {
                     return;
                 }
-//                getView().finishLoading();
                 if (e instanceof UnknownHostException) {
                     getView().setRetry();
 
@@ -235,14 +235,14 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 if (isSeller()) {
                     depositCacheInteractor.setUsableSellerSaldoBalanceCache(
                             gqlSaldoBalanceResponse.getUsableSellerSaldo());
-                    getView().setSellerSaldoBalance(gqlSaldoBalanceResponse.
-                            getUsableSellerSaldo().getFormattedAmount());
+                    getView().setSellerSaldoBalance(gqlSaldoBalanceResponse.getUsableSellerSaldo().getDeposit(),
+                            gqlSaldoBalanceResponse.getUsableSellerSaldo().getFormattedAmount());
                     getView().showSellerSaldoRL();
 
                     depositCacheInteractor.setUsableBuyerSaldoBalanceCache(gqlSaldoBalanceResponse.
                             getUsableBuyerSaldo());
-                    getView().setBuyerSaldoBalance(gqlSaldoBalanceResponse.getUsableBuyerSaldo().
-                            getFormattedAmount());
+                    getView().setBuyerSaldoBalance(gqlSaldoBalanceResponse.getUsableBuyerSaldo().getDeposit(),
+                            gqlSaldoBalanceResponse.getUsableBuyerSaldo().getFormattedAmount());
                     getView().showBuyerSaldoRL();
 
                     getView().showSaldoBalanceSeparator();
@@ -255,8 +255,10 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 long totalBalance = gqlSaldoBalanceResponse.getUsableBuyerSaldo().getDeposit() +
                         gqlSaldoBalanceResponse.getUsableSellerSaldo().getDeposit();
 
-                getView().setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance,
-                        false));
+                getView().setBalance(totalBalance, CurrencyFormatUtil.
+                        convertPriceValueToIdrFormat(totalBalance, false));
+
+
                 getView().setWithdrawButtonState(totalBalance != 0);
 
                 long holdBalance = gqlSaldoBalanceResponse.getHoldSellerSaldo().getDeposit() +
@@ -483,7 +485,20 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         Context context = getView().getContext();
         UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
-            depositCacheInteractor.getUsableBuyerSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
+
+            long sellerBalance = getView().getSellerSaldoBalance();
+            long buyerBalance = getView().getBuyerSaldoBalance();
+
+            if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
+                getView().showErrorMessage(getView().getString(R.string.saldo_min_withdrawal_error));
+                return;
+            } else {
+                withdrawActivityBundle.putBoolean(IS_SELLER, isSeller());
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
+                launchWithdrawActivity(intent);
+            }
+            /*depositCacheInteractor.getUsableBuyerSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
                 @Override
                 public void onSuccess(GqlSaldoBalanceResponse.Saldo result) {
 
@@ -499,11 +514,11 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
                     } else {
                         getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
-                        /*if (getView().isSellerFragment()) {
+                        *//*if (getView().isSellerFragment()) {
                             getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
                         } else {
                             getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
-                        }*/
+                        }*//*
                     }
 
                 }
@@ -512,13 +527,13 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 public void onError(Throwable e) {
 
                 }
-            });
+            });*/
         } else {
             getView().showWithdrawalNoPassword();
         }
     }
 
-    private void fetchSellerSaldoAndLaunchActivity(Intent intent) {
+    /*private void fetchSellerSaldoAndLaunchActivity(Intent intent) {
         depositCacheInteractor.getUsableSellerSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
             @Override
             public void onSuccess(GqlSaldoBalanceResponse.Saldo result) {
@@ -530,11 +545,11 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                     launchWithdrawActivity(intent);
                 } else {
                     getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
-                    /*if (getView().isSellerFragment()) {
+                    *//*if (getView().isSellerFragment()) {
                         getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
                     } else {
                         getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
-                    }*/
+                    }*//*
                 }
             }
 
@@ -543,7 +558,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
             }
         });
-    }
+    }*/
 
     private void launchWithdrawActivity(Intent intent) {
         intent.putExtras(withdrawActivityBundle);

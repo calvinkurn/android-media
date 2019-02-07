@@ -25,6 +25,7 @@ import javax.inject.Inject;
 public class WithdrawActivity extends BaseSimpleActivity {
 
 
+    public static final String IS_SELLER = "is_seller";
     @Inject
     WithdrawAnalytics analytics;
 
@@ -80,9 +81,10 @@ public class WithdrawActivity extends BaseSimpleActivity {
         return WithdrawFragment.createInstance(bundle);
     }
 
-    public static Intent getCallingIntent(Context context) {
+    public static Intent getCallingIntent(Context context, boolean isSeller) {
         Intent intent = new Intent(context, WithdrawActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_SELLER, isSeller);
         intent.putExtras(bundle);
         return intent;
     }

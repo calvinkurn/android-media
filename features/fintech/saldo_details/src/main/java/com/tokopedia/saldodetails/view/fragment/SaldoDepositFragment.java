@@ -106,6 +106,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     ArrayList<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
 
     private SaldoHistoryPagerAdapter saldoHistoryPagerAdapter;
+    private long sellerSaldoBalance;
+    private long buyerSaldoBalance;
+    private long totalSaldoBalance;
 
     public static SaldoDepositFragment createInstance(/*boolean isSeller,*/ boolean isSellerEnabled) {
         SaldoDepositFragment saldoDepositFragment = new SaldoDepositFragment();
@@ -351,7 +354,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void goToWithdrawActivity() {
-        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context);
+        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
         saldoDetailsPresenter.onDrawClicked(intent);
     }
 
@@ -441,43 +444,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoBalanceSeparator.setVisibility(View.VISIBLE);
     }
 
-    /*private void loadOneTabItem() {
-        saldoTabItems.clear();
-        SaldoHistoryTabItem saldoTabItem = new SaldoHistoryTabItem();
-        saldoTabItem.setTitle("");
-        saldoTabItem.setFragment();
-        saldoTabItems.add(saldoTabItem);
-        depositHistoryTabLayout.setVisibility(View.GONE);
-        tabSeparator.setVisibility(View.GONE);
-    }
-
-    private void loadMultipleTabItem() {
-
-        saldoTabItems.clear();
-
-        SaldoHistoryTabItem allSaldoHistoryTabItem = new SaldoHistoryTabItem();
-        allSaldoHistoryTabItem.setTitle("Semua");
-        allSaldoHistoryTabItem.setFragment();
-
-        saldoTabItems.add(allSaldoHistoryTabItem);
-
-        SaldoHistoryTabItem buyerSaldoHistoryTabItem = new SaldoHistoryTabItem();
-        buyerSaldoHistoryTabItem.setTitle("Refund");
-        buyerSaldoHistoryTabItem.setFragment();
-
-        saldoTabItems.add(buyerSaldoHistoryTabItem);
-
-        SaldoHistoryTabItem sellerSaldoHistoryTabItem = new SaldoHistoryTabItem();
-        sellerSaldoHistoryTabItem.setTitle("Penghasilan");
-        sellerSaldoHistoryTabItem.setFragment();
-
-        saldoTabItems.add(sellerSaldoHistoryTabItem);
-
-        depositHistoryTabLayout.setVisibility(View.VISIBLE);
-        tabSeparator.setVisibility(View.VISIBLE);
-
-    }*/
-
     private void showBottomSheetInfoDialog(boolean isSellerClicked) {
         UserStatusInfoBottomSheet userStatusInfoBottomSheet =
                 new UserStatusInfoBottomSheet(context);
@@ -505,15 +471,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoDetailsComponent.inject(this);
         saldoDetailsPresenter.attachView(this);
     }
-
-    /*private View.OnClickListener onEndDateClicked() {
-        return v -> saldoDetailsPresenter.onEndDateClicked(datePicker);
-    }
-
-    private View.OnClickListener onStartDateClicked() {
-        return v -> saldoDetailsPresenter.onStartDateClicked(datePicker);
-    }*/
-
 
     @Override
     protected String getScreenName() {
@@ -543,40 +500,20 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         return savedState != null;
     }
 
-    /*@Override
-    public Visitable getDefaultEmptyViewModel() {
-        EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.sp_empty_state_icon);
-        emptyModel.setTitle(getString(R.string.no_saldo_transactions));
-        emptyModel.setButtonTitle(getString(R.string.sp_goto_home));
-        emptyModel.setCallback(this);
-        return emptyModel;
-    }*/
-
-    /*@Override
-    public void setStartDate(String date) {
-        startDateTV.setText(date);
+    @Override
+    public long getSellerSaldoBalance() {
+        return sellerSaldoBalance;
     }
 
     @Override
-    public void setEndDate(String date) {
-        endDateTV.setText(date);
+    public long getBuyerSaldoBalance() {
+        return buyerSaldoBalance;
     }
 
     @Override
-    public String getStartDate() {
-        return startDateTV.getText().toString();
+    public long getTotalSaldoBalance() {
+        return totalSaldoBalance;
     }
-
-    @Override
-    public String getEndDate() {
-        return endDateTV.getText().toString();
-    }*/
-
-    /*@Override
-    public void finishLoading() {
-        adapter.hideLoading();
-    }*/
 
     @Override
     public void showWithdrawalNoPassword() {
@@ -603,7 +540,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBalance(String summaryUsebleDepositIdr) {
+    public void setBalance(long totalBalance, String summaryUsebleDepositIdr) {
+        totalSaldoBalance = totalBalance;
         if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
             totalBalanceTV.setText(summaryUsebleDepositIdr);
             totalBalanceTV.setVisibility(View.VISIBLE);
@@ -685,12 +623,14 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBuyerSaldoBalance(String text) {
+    public void setBuyerSaldoBalance(long balance, String text) {
+        buyerSaldoBalance = balance;
         buyerBalanceTV.setText(text);
     }
 
     @Override
-    public void setSellerSaldoBalance(String formattedAmount) {
+    public void setSellerSaldoBalance(long amount, String formattedAmount) {
+        sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
     }
 
