@@ -21,4 +21,13 @@ class PartialAttributeInfoView private constructor(private val view: View){
             base_attribute_info.visible()
         }
     }
+
+    fun renderWishlistCount(count: Int){
+        with(view){
+            txt_wishlist.text = count.toString()
+            txt_wishlist.visible()
+            label_wishlist.visible()
+        }
+
+    }
 }

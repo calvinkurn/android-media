@@ -62,4 +62,7 @@
     <string name="exp_dialog_ok">Balik ke Beranda</string>
     <string name="wishlist_label">Wishlist</string>
     <string name="courier_title">Kurir</string>
+    <string name="promo">Promo</string>
+    <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
+    <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
 </resources>

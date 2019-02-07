@@ -29,6 +29,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
@@ -39,6 +40,7 @@ dependencies {
     }
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

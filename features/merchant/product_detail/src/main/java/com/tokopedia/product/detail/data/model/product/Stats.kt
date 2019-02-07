@@ -34,3 +34,8 @@ data class TxStats(
         @Expose
         val txSuccess: Int = 0
 )
+
+data class WishlistCount(@SerializedName("count") @Expose val count: Int = 0){
+        data class Response(@SerializedName("wishlistCount")
+        @Expose val wishlistCount: WishlistCount = WishlistCount())
+}

@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 
 class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
 
@@ -37,6 +39,66 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
                 ProductTrackingConstant.Category.PDP.toLowerCase(),
                 ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
                 variant)
+    }
+
+    fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
+        analyticTracker?.sendEventTracking(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
+                ProductTrackingConstant.Category.PDP.toLowerCase(),
+                listOf(ProductTrackingConstant.MerchantVoucher.ACTION,
+                        ProductTrackingConstant.Action.CLICK).joinToString(" "),
+                merchantVoucherViewModel, position))
+    }
+
+    private fun createEventMVCClick(event: String, category: String, action: String,
+                                    merchantVoucherViewModel: MerchantVoucherViewModel, position: Int): Map<String, Any?> {
+        return mapOf(KEY_EVENT to event, KEY_CATEGORY to category, KEY_ACTION to action,
+                KEY_LABEL to merchantVoucherViewModel.voucherName,
+                KEY_ECOMMERCE to DataLayer.mapOf(KEY_PRODUCT_PROMO,
+                        DataLayer.mapOf(KEY_PROMOTIONS, createMVCMap(listOf(merchantVoucherViewModel), position))))
+    }
+
+    private fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, position: Int): List<Any> {
+        val list = vouchers.withIndex().filter { it.value.isAvailable() }.map {
+            DataLayer.mapOf(ID, it.value.voucherId,
+                    PROMO_NAME, it.value.voucherName,
+                    PROMO_POSITION, (position + it.index + 1).toString(),
+                    PROMO_ID, it.value.voucherId,
+                    PROMO_CODE, it.value.voucherCode)
+        }
+        if (list.isEmpty()) return list
+        return DataLayer.listOf(list.toTypedArray())
+    }
+
+    fun eventClickMerchantVoucherSeeDetail(id: Int) {
+        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
+                ProductTrackingConstant.Category.PDP.toLowerCase(),
+                listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
+                        ProductTrackingConstant.MerchantVoucher.DETAIL).joinToString(" - "),
+                id.toString())
+    }
+
+    fun eventClickMerchantVoucherSeeAll(id: Int) {
+        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
+                ProductTrackingConstant.Category.PDP.toLowerCase(),
+                listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
+                        ProductTrackingConstant.MerchantVoucher.SEE_ALL).joinToString(" - "),
+                id.toString())
+    }
+
+    companion object {
+        private const val KEY_EVENT = "event"
+        private const val KEY_CATEGORY = "eventCategory"
+        private const val KEY_ACTION = "eventAction"
+        private const val KEY_LABEL = "eventLabel"
+        private const val KEY_ECOMMERCE = "ecommerce"
+        private const val KEY_PRODUCT_PROMO = "promoClick"
+        private const val KEY_PROMOTIONS = "promotions"
+
+        private const val ID = "id"
+        private const val PROMO_NAME = "name"
+        private const val PROMO_POSITION = "position"
+        private const val PROMO_ID = "promo_id"
+        private const val PROMO_CODE = "promo_id"
     }
 
 }

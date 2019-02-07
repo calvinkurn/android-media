@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.*
@@ -22,9 +23,15 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
+import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
@@ -81,12 +88,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     var productInfo: ProductInfo? = null
+    var shopInfo: ShopInfo? = null
     var productVariant: ProductVariant? = null
 
     companion object {
         const val REQUEST_CODE_TALK_PRODUCT = 1
         const val REQUEST_CODE_EDIT_PRODUCT = 2
         const val REQUEST_CODE_LOGIN = 561
+        const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563
+        const val REQUEST_CODE_MERCHANT_VOUCHER = 564
+
         private const val PDP_TRACE = "pdp_trace"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
         private const val ENABLE_MERCHANT_VOUCHER = "app_flag_merchant_voucher"
@@ -144,69 +155,18 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        productInfoViewModel.productInfoResp.observe(this, Observer { when(it){
+        productInfoViewModel.productInfoP1Resp.observe(this, Observer { when(it){
             is Success -> onSuccessGetProductInfo(it.data)
             is Fail -> onErrorGetProductInfo(it.throwable)
         } })
 
-        productInfoViewModel.productVariantResp.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessGetProductVariantInfo(it.data)
-                is Fail -> onErrorGetProductVariantInfo(it.throwable)
-            }
-        })
-
         productInfoViewModel.productInfoP2resp.observe(this, Observer {
             it?.run { renderProductInfo2(this) }
         })
-    }
 
-    private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
-        productInfoP2.shopInfo?.let { shopInfo ->
-            productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
-            val data = productInfo ?: return
-
-            actionButtonView.renderData(data.basic.status,
-                    (productInfoViewModel.isShopOwner(data.basic.shopID)
-                            || shopInfo.isAllowManage == 1) && GlobalConfig.isSellerApp(),
-                    data.preorder)
-            actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
-            headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
-            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: 1)
-
-            updateWishlist(shopInfo, productInfoP2.isWishlisted)
-            activity?.let { productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString() ?: "", shopInfo.shipments) }
-        }
-        productStatsView.renderRating(productInfoP2.rating)
-    }
-
-    private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
-        context?.let {
-            if (shopInfo.isAllowManage == 1){
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
-                fab_detail.setOnClickListener {
-                    if (productInfo?.basic?.status != ProductDetailConstant.PRD_STATE_PENDING){
-                        gotoEditProduct()
-                    } else {
-
-                    }
-                }
-            } else if (wishlisted){
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
-            } else {
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
-            }
-        }
-    }
-
-    private fun gotoEditProduct() {
-        val id = productVariant?.parentId?.toString() ?: productId ?: return
-        context?.let {
-            if (it.applicationContext is ProductDetailRouter){
-                val intent = (it.applicationContext as ProductDetailRouter).goToEditProduct(it, true, id)
-                startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
-            }
-        }
+        productInfoViewModel.productInfoP3resp.observe(this, Observer {
+            it?.run { renderProductInfo3(this) }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -215,7 +175,61 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializePartialView(view)
+        initView()
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.behavior = FlingBehavior(nested_scroll)
+        }
+
+        merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
+            override val isOwner: Boolean
+                get() = productInfo?.basic?.shopID?.let { productInfoViewModel.isShopOwner(it) } ?: false
+
+            override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
+                activity?.let {
+                    productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
+                    showSnackbarClose(getString(R.string.title_voucher_code_copied))
+                }
+            }
+
+            override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+                activity?.let {
+                    productInfo?.run {
+                        productDetailTracking.eventClickMerchantVoucherSeeDetail(basic.id)
+                        val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
+                                merchantVoucherViewModel, basic.shopID.toString())
+                        startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
+                    }
+                }
+            }
+
+            override fun onSeeAllClicked() {
+                activity?.let {
+                    productInfo?.run {
+                        productDetailTracking.eventClickMerchantVoucherSeeAll(basic.id)
+                        if (shopInfo == null) return@let
+
+                        val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID.toString(),
+                                shopInfo!!.shopCore.name)
+                        startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER)
+                    }
+                }
+            }
+
+        })
+        loadProductData()
+    }
+
+    private fun showSnackbarClose(string: String) {
+        Snackbar.make(coordinator, string, Snackbar.LENGTH_LONG).apply {
+            setAction(getString(R.string.close)){ dismiss() }
+            setActionTextColor(Color.WHITE)
+        }.show()
+    }
+
+    private fun initializePartialView(view: View) {
         if (!::headerView.isInitialized) {
             headerView = PartialHeaderView.build(view, activity)
         }
@@ -242,15 +256,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::attributeInfoView.isInitialized)
             attributeInfoView = PartialAttributeInfoView.build(view)
-
-        initView()
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.behavior = FlingBehavior(nested_scroll)
-        }
-
-        loadProductData()
     }
 
     private fun initView() {
@@ -382,18 +387,79 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onDestroy() {
-        productInfoViewModel.productInfoResp.removeObservers(this)
+        productInfoViewModel.productInfoP1Resp.removeObservers(this)
         productInfoViewModel.productInfoP2resp.removeObservers(this)
-        productInfoViewModel.productVariantResp.removeObservers(this)
+        productInfoViewModel.productInfoP3resp.removeObservers(this)
         productInfoViewModel.clear()
         super.onDestroy()
+    }
+
+    private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
+        productInfoP3.rateEstimation?.let { partialVariantAndRateEstView.renderRateEstimation(it.rates,
+                shopInfo?.location ?: "")}
+        shopInfo?.let {  updateWishlist(it, productInfoP3.isWishlisted) }
+    }
+
+    private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
+        productInfoP2.shopInfo?.let { shopInfo ->
+            this.shopInfo = shopInfo
+            productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
+            val data = productInfo ?: return
+
+            actionButtonView.renderData(data.basic.status,
+                    (productInfoViewModel.isShopOwner(data.basic.shopID)
+                            || shopInfo.isAllowManage == 1) && GlobalConfig.isSellerApp(),
+                    data.preorder)
+            actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
+            headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
+            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: 1)
+            activity?.let { productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString() ?: "", shopInfo.shipments) }
+            if (!productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt())){
+                merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
+                merchantVoucherListWidget.visible()
+            } else {
+                merchantVoucherListWidget.gone()
+            }
+        }
+        productStatsView.renderRating(productInfoP2.rating)
+        attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
+    }
+
+    private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
+        context?.let {
+            if (shopInfo.isAllowManage == 1){
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
+                fab_detail.setOnClickListener {
+                    if (productInfo?.basic?.status != ProductDetailConstant.PRD_STATE_PENDING){
+                        gotoEditProduct()
+                    } else {
+
+                    }
+                }
+            } else if (wishlisted){
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
+            } else {
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+            }
+        }
+    }
+
+    private fun gotoEditProduct() {
+        val id = productVariant?.parentId?.toString() ?: productId ?: return
+        context?.let {
+            if (it.applicationContext is ProductDetailRouter){
+                val intent = (it.applicationContext as ProductDetailRouter).goToEditProduct(it, true, id)
+                startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
+            }
+        }
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
 
     }
 
-    private fun onSuccessGetProductInfo(data: ProductInfo) {
+    private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
+        val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
         headerView.renderData(data)
@@ -401,6 +467,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
+        txt_last_update.text = getString(R.string.template_last_update_price, data.basic.lastUpdatePrice)
+        txt_last_update.visible()
 
         if (data.wholesale.isNotEmpty()) {
             val minPrice = data.wholesale.sortedBy { it.price }.get(0).price
@@ -413,7 +481,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             label_wholesale.visibility = View.GONE
             base_view_wholesale.visibility = View.GONE
         }
-
+        onSuccessGetProductVariantInfo(productInfoP1.productVariant)
         activity?.invalidateOptionsMenu()
     }
 

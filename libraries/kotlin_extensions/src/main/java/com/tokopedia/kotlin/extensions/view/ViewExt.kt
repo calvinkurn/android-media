@@ -11,6 +11,9 @@ fun View.gone() {
     visibility = View.GONE
 }
 
+val View.isVisible: Boolean
+        get() = visibility == View.VISIBLE
+
 fun TextView.setTextAndCheckShow(text:String?) {
     if (text.isNullOrEmpty()) {
         gone()
