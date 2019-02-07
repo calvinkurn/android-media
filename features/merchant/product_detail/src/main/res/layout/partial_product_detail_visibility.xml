@@ -12,6 +12,7 @@
     android:background="@drawable/bg_bottom_shadow">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/base_attribute_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_grey_250"
@@ -47,6 +48,8 @@
             android:layout_marginRight="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
+            app:layout_goneMarginRight="@dimen/dp_0"
+            app:layout_goneMarginEnd="@dimen/dp_0"
             app:fontSize="micro"
             app:textViewTheme="lightDisabled"
             android:text="@string/label_success_transaction"
@@ -60,10 +63,11 @@
             android:id="@+id/label_wishlist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/delivery_label"
+            android:text="@string/wishlist_label"
             android:gravity="center_horizontal"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
+            android:visibility="gone"
             app:fontSize="micro"
             app:textViewTheme="lightDisabled"
             app:layout_constraintTop_toTopOf="@+id/label_tx_success"
@@ -78,18 +82,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_4"
             app:fontSize="micro"
-            app:weight="medium"
-            app:textViewTheme="lightDisabled"
-            tools:text="2,3 rb"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_tx_success"
+            app:layout_constraintEnd_toEndOf="@+id/label_seen"
             app:layout_constraintLeft_toLeftOf="@+id/label_seen"
+            app:layout_constraintRight_toRightOf="@+id/label_seen"
             app:layout_constraintStart_toStartOf="@+id/label_seen"
             app:layout_constraintTop_toTopOf="@+id/txt_tx_success"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_tx_success"
-            app:layout_constraintRight_toRightOf="@+id/label_seen"
-            app:layout_constraintEnd_toEndOf="@+id/label_seen"/>
+            app:textViewTheme="lightDisabled"
+            app:weight="medium"
+            tools:text="2,3 rb" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_tx_success"
@@ -114,6 +116,7 @@
             android:layout_height="wrap_content"
             tools:text="4"
             android:gravity="center_horizontal"
+            android:visibility="gone"
             app:fontSize="micro"
             app:weight="medium"
             app:textViewTheme="lightDisabled"

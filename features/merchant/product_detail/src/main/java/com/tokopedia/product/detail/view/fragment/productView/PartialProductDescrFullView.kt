@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.fragment.productView
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
@@ -12,19 +13,21 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.ProductInfo
-import com.tokopedia.product.detail.data.model.Video
+import com.tokopedia.product.detail.data.model.product.ProductInfo
+import com.tokopedia.product.detail.data.model.product.Video
+import com.tokopedia.product.detail.data.util.successRate
 import com.tokopedia.product.detail.view.activity.ProductFullDescriptionActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration
 import kotlinx.android.synthetic.main.partial_product_full_descr.view.*
 
-class PartialProductDescrFullView private constructor(private val view: View){
+class PartialProductDescrFullView private constructor(private val view: View,
+                                                      private val activity: Activity? = null){
      companion object {
          private const val MAX_CHAR = 300
          private const val NO_DESCRIPTION = "TIDAK ADA DESKRIPSI"
-         fun build(_view: View) = PartialProductDescrFullView(_view)
+         fun build(_view: View, _activity: Activity?) = PartialProductDescrFullView(_view, _activity)
      }
 
     init {
@@ -47,6 +50,7 @@ class PartialProductDescrFullView private constructor(private val view: View){
 
             txt_weight.text = context.getString(R.string.template_weight, data.basic.weight,
                     data.basic.weightUnit.toString())
+            txt_success_rate.text = String.format("%.2f%%", data.txStats.successRate)
 
             label_asuransi.visible()
             txt_asuransi.visible()
@@ -102,6 +106,7 @@ class PartialProductDescrFullView private constructor(private val view: View){
                 view.context.startActivity(ProductFullDescriptionActivity.createIntent(view.context,
                         data.basic.name, data.basic.price, "", data.pictures[0].urlThumbnail,
                         data.basic.description, data.videos.map { it.url }))
+                activity?.overridePendingTransition(R.anim.pull_up, 0)
             }
         }
     }

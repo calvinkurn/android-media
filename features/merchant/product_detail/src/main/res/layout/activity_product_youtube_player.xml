@@ -11,16 +11,20 @@
         android:id="@+id/youtube_player_main"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"/>
+        android:layout_weight="1"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/youtube_list"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_30"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_weight="1"/>
+        tools:listitem="@layout/item_youtube_thumbnail"
+        tools:visibility="visible"/>
 
 </LinearLayout>

@@ -25,13 +25,15 @@
             android:layout_height="wrap_content"
             app:fontSize="titleBig"
             app:weight="medium"
-            android:text="0"/>
+            android:text="0.0"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:layout_gravity="center"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
-            android:src="@drawable/ic_rating_gold"/>
+            android:src="@drawable/ic_rating_gold"
+            tools:ignore="ContentDescription" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:layout_width="wrap_content"

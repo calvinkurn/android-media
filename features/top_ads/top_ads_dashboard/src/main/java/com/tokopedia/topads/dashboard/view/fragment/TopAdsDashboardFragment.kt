@@ -374,9 +374,9 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         text_view_credit_history.setOnClickListener { goToCreditHistory() }
     }
 
-    private fun goToCreditHistory() {
+    private fun goToCreditHistory(isFromSelection: Boolean = false) {
         context?.let {
-            startActivityForResult(TopAdsCreditHistoryActivity.createInstance(it), REQUEST_CODE_SET_AUTO_TOPUP)
+            startActivityForResult(TopAdsCreditHistoryActivity.createInstance(it, isFromSelection), REQUEST_CODE_SET_AUTO_TOPUP)
         }
     }
 
@@ -453,6 +453,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK){
             topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper
                     .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+            if (data?.getBooleanExtra("no_redirect", false) != true)
+                goToCreditHistory(true)
         }
     }
 

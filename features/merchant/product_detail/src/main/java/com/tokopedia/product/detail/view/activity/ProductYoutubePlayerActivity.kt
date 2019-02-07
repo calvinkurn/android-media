@@ -9,7 +9,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.Video
+import com.tokopedia.product.detail.data.model.product.Video
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import kotlinx.android.synthetic.main.activity_product_youtube_player.*
 

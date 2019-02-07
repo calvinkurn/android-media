@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.product.detail.data.model.Campaign
-import com.tokopedia.product.detail.data.model.Video
+import com.tokopedia.product.detail.data.model.product.*
 
 const val MAX_PERCENT = 100
 
@@ -10,3 +9,7 @@ val Campaign.discountedPrice: Int
 
 val Video.thumbnailUrl: String
     get() = "http://img.youtube.com/vi/$url/1.jpg"
+
+val TxStats.successRate: Float
+    get() = if (txSuccess == 0 && txReject == 0) 0f
+            else 100f * txSuccess.toFloat()/(txSuccess + txReject).toFloat()

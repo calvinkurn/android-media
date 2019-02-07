@@ -22,6 +22,7 @@
     <string name="template_weight">%1$d %2$s</string>
     <string name="template_campaign_off">%1$d%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
+    <string name="template_success_rate">%1$.2f%% (%2$s produk)</string>
     <string name="template_talk">%1$d Diskusi</string>
     <string name="template_preorder_time">%1$d Hari</string>
     <string name="template_min_order">%1$d Buah</string>
@@ -54,4 +55,14 @@
     <string name="label_report_type">Jenis Laporan</string>
     <string name="label_report_product">Laporkan Produk</string>
 
+    <string name="product_shop_label">Penjual</string>
+    <string name="label_chat_seller">Chat Penjual</string>
+    <string name="label_favorite">Favoritkan</string>
+    <string name="label_favorited">Followed</string>
+    <string name="template_shop_last_login">\u2022 %s</string>
+    <string name="campaign_expired_title">Waktu sudah berakhir</string>
+    <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
+    <string name="exp_dialog_ok">Balik ke Beranda</string>
+    <string name="wishlist_label">Wishlist</string>
+    <string name="courier_title">Kurir</string>
 </resources>

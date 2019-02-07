@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.data.model
+package com.tokopedia.product.detail.data.model.product
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -64,5 +64,11 @@ data class ProductInfo(
                 @SerializedName("getPDPInfo")
                 @Expose
                 val data: ProductInfo = ProductInfo()
+        )
+
+        data class WishlistStatus(
+                @SerializedName("ProductWishlistQuery")
+                @Expose
+                var isWishlisted: Boolean? = null
         )
 }

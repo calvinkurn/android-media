@@ -89,8 +89,11 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             campaignTypeName
             originalPrice
             percentageAmount
+            stock
             startDate
             endDate
+            endDateUnix
+            applinks
         }
         cashback {
             percentage

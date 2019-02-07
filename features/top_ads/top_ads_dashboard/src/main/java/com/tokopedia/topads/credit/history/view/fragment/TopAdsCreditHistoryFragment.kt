@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
@@ -43,7 +44,10 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     companion object {
         private const val MAX_RANGE_DATE = 30
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 1
-        fun createInstance() = TopAdsCreditHistoryFragment()
+        private const val PARAM_IS_FROM_SELECTION = "is_from_selection"
+        fun createInstance(isFromSelection: Boolean = false) = TopAdsCreditHistoryFragment().apply {
+            arguments = Bundle().also { it.putBoolean(PARAM_IS_FROM_SELECTION, isFromSelection) }
+        }
     }
 
     override fun onStart() {
@@ -91,6 +95,13 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         selected_date.setOnClickListener { onDateClicked() }
         app_bar_layout.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
         viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+
+        if (arguments?.getBoolean(PARAM_IS_FROM_SELECTION, false) == true)
+            showToastSuccess()
+    }
+
+    private fun showToastSuccess() {
+        ToasterNormal.make(view, getString(R.string.auto_topup_success_changed), ToasterNormal.LENGTH_SHORT).show()
     }
 
     private fun gotoAutoTopUp() {
@@ -101,7 +112,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
     private fun sendResultIntentOk() {
         activity?.run {
-            setResult(Activity.RESULT_OK, Intent())
+            setResult(Activity.RESULT_OK, Intent().putExtra("no_redirect", true))
         }
     }
 
@@ -201,6 +212,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK){
             sendResultIntentOk()
             viewModel.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+            showToastSuccess()
         }
     }
 

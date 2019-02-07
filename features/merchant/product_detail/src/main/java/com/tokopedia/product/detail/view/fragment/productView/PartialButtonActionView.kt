@@ -3,14 +3,24 @@ package com.tokopedia.product.detail.view.fragment.productView
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.PreOrder
+import com.tokopedia.product.detail.data.model.product.PreOrder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRD_STATE_WAREHOUSE
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 class PartialButtonActionView private constructor(private val view: View){
     var productManagePromoteClick: (() -> Unit)? = null
     var promoTopAdsClick: (() -> Unit)? = null
+    var visibility: Boolean = false
+    set(value) {
+        field = value
+        with(view){
+            if (value) base_btn_action.visible() else base_btn_action.gone()
+        }
+    }
 
     companion object {
         fun build(_view: View) = PartialButtonActionView(_view)
@@ -30,7 +40,7 @@ class PartialButtonActionView private constructor(private val view: View){
             showNoStockButton()
         } else if (hasShopAuthority){
             showShopManageButton()
-        } else {
+        } else if (GlobalConfig.isCustomerApp()){
             showNewCheckoutButton(preOrder)
         }
 

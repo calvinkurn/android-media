@@ -18,13 +18,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.ProductInfo
-import com.tokopedia.product.detail.data.model.ProductParams
+import com.tokopedia.product.detail.data.model.ProductInfoP2
+import com.tokopedia.product.detail.data.model.product.ProductInfo
+import com.tokopedia.product.detail.data.model.product.ProductParams
+import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
@@ -38,13 +41,15 @@ import com.tokopedia.product.detail.view.util.FlingBehavior
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
@@ -57,13 +62,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var partialVariantAndRateEstView: PartialVariantAndRateEstView
     lateinit var productDescrView: PartialProductDescrFullView
     lateinit var actionButtonView: PartialButtonActionView
+    lateinit var productShopView: PartialShopView
+    lateinit var attributeInfoView: PartialAttributeInfoView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var productInfoViewModel: ProductInfoViewModel
 
+    lateinit var performanceMonitoring: PerformanceMonitoring
+    lateinit var remoteConfig: RemoteConfig
+
     private var isAppBarCollapsed = false
     private var menu: Menu? = null
+    private var useVariant = true
+    private var useMerchantVoucher = true
 
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
@@ -74,7 +86,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_TALK_PRODUCT = 1
+        const val REQUEST_CODE_EDIT_PRODUCT = 2
         const val REQUEST_CODE_LOGIN = 561
+        private const val PDP_TRACE = "pdp_trace"
+        private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
+        private const val ENABLE_MERCHANT_VOUCHER = "app_flag_merchant_voucher"
 
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
         private const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
@@ -100,6 +116,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(PDP_TRACE)
         super.onCreate(savedInstanceState)
         arguments?.let {
             productId = it.getString(ARG_PRODUCT_ID)
@@ -110,6 +127,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
+            remoteConfig = FirebaseRemoteConfigImpl(this)
+            if (!remoteConfig.getBoolean(ENABLE_VARIANT))
+                useVariant = false
+            if (!remoteConfig.getBoolean(ENABLE_MERCHANT_VOUCHER))
+                useMerchantVoucher = false
         }
         setHasOptionsMenu(true)
     }
@@ -123,18 +145,69 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        productInfoViewModel.productInfoResp.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessGetProductInfo(it.data)
-                is Fail -> onErrorGetProductInfo(it.throwable)
-            }
-        })
+        productInfoViewModel.productInfoResp.observe(this, Observer { when(it){
+            is Success -> onSuccessGetProductInfo(it.data)
+            is Fail -> onErrorGetProductInfo(it.throwable)
+        } })
+
         productInfoViewModel.productVariantResp.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetProductVariantInfo(it.data)
                 is Fail -> onErrorGetProductVariantInfo(it.throwable)
             }
         })
+
+        productInfoViewModel.productInfoP2resp.observe(this, Observer {
+            it?.run { renderProductInfo2(this) }
+        })
+    }
+
+    private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
+        productInfoP2.shopInfo?.let { shopInfo ->
+            productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
+            val data = productInfo ?: return
+
+            actionButtonView.renderData(data.basic.status,
+                    (productInfoViewModel.isShopOwner(data.basic.shopID)
+                            || shopInfo.isAllowManage == 1) && GlobalConfig.isSellerApp(),
+                    data.preorder)
+            actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
+            headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
+            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: 1)
+
+            updateWishlist(shopInfo, productInfoP2.isWishlisted)
+            activity?.let { productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString() ?: "", shopInfo.shipments) }
+        }
+        productStatsView.renderRating(productInfoP2.rating)
+    }
+
+    private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
+        context?.let {
+            if (shopInfo.isAllowManage == 1){
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
+                fab_detail.setOnClickListener {
+                    if (productInfo?.basic?.status != ProductDetailConstant.PRD_STATE_PENDING){
+                        gotoEditProduct()
+                    } else {
+
+                    }
+                }
+            } else if (wishlisted){
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
+            } else {
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+            }
+        }
+    }
+
+    private fun gotoEditProduct() {
+        val id = productVariant?.parentId?.toString() ?: productId ?: return
+        context?.let {
+            if (it.applicationContext is ProductDetailRouter){
+                val intent = (it.applicationContext as ProductDetailRouter).goToEditProduct(it, true, id)
+                startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -145,7 +218,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (!::headerView.isInitialized) {
-            headerView = PartialHeaderView.build(view)
+            headerView = PartialHeaderView.build(view, activity)
         }
 
         if (!::partialVariantAndRateEstView.isInitialized) {
@@ -157,12 +230,19 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
 
         if (!::productDescrView.isInitialized) {
-            productDescrView = PartialProductDescrFullView.build(view)
+            productDescrView = PartialProductDescrFullView.build(view, activity)
         }
 
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(view)
         }
+
+        if (!::productShopView.isInitialized){
+            productShopView = PartialShopView.build(view)
+        }
+
+        if (!::attributeInfoView.isInitialized)
+            attributeInfoView = PartialAttributeInfoView.build(view)
 
         initView()
 
@@ -194,8 +274,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         isAppBarCollapsed = true
                         collapsedAppBar()
                     }
-                    AppBarState.IDLE -> {
-                    }
+                    AppBarState.IDLE -> {}
                 }
             }
         })
@@ -305,6 +384,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         productInfoViewModel.productInfoResp.removeObservers(this)
+        productInfoViewModel.productInfoP2resp.removeObservers(this)
         productInfoViewModel.productVariantResp.removeObservers(this)
         productInfoViewModel.clear()
         super.onDestroy()
@@ -315,14 +395,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetProductInfo(data: ProductInfo) {
+        productId = data.basic.id.toString()
         productInfo = data
         headerView.renderData(data)
         view_picture.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
-        actionButtonView.renderData(data.basic.status,
-                productInfoViewModel.isShopOwner(data.basic.shopID) || GlobalConfig.isSellerApp(),
-                data.preorder)
+        attributeInfoView.renderData(data)
 
         if (data.wholesale.isNotEmpty()) {
             val minPrice = data.wholesale.sortedBy { it.price }.get(0).price
@@ -385,12 +464,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     fun getImageURIPaths(): ArrayList<String> {
-        val arrayList = ArrayList<String>()
-        productInfo?.run {
-            for (productImage in pictures) {
-                arrayList.add(productImage.urlOriginal)
-            }
-        }
+        val arrayList = ArrayList(productInfo?.run{ pictures.map { it.urlOriginal }} ?: listOf())
 
         if (hasVariant()) {
             //TODO
@@ -475,25 +549,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            android.R.id.home -> {
-                activity?.onBackPressed(); true
-            }
-            R.id.action_share -> {
-                shareProduct(); true
-            }
-            R.id.action_cart -> {
-                gotoCart(); true
-            }
-            R.id.action_report -> {
-                reportProduct(); true
-            }
-            R.id.action_warehouse -> {
-                gotoWarehouse(); true
-            }
-            R.id.action_etalase -> {
-                gotoEtalase(); true
-            }
+        return when (item?.itemId){
+            android.R.id.home -> { activity?.onBackPressed(); true }
+            R.id.action_share -> { shareProduct(); true }
+            R.id.action_cart -> { gotoCart(); true}
+            R.id.action_report -> { reportProduct(); true }
+            R.id.action_warehouse -> { gotoWarehouse(); true }
+            R.id.action_etalase -> { gotoEtalase(); true }
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -20,6 +20,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
+        <activity android:name=".view.activity.CourierActivity"
+            android:label="@string/courier_title"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>
