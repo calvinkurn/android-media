@@ -23,6 +23,8 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
     private TextView mTvChangeAddress;
     private RadioButton mRbCheckAddress;
+    private TextView mButtonAddAddress;
+    private TextView mHeaderText;
 
     private ShipmentAddressListAdapter.ActionListener mListener;
 
@@ -37,6 +39,8 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
         mTvChangeAddress = view.findViewById(R.id.button_change_address);
         mRbCheckAddress = view.findViewById(R.id.rb_check_address);
+        mButtonAddAddress = view.findViewById(R.id.button_add_new_address);
+        mHeaderText = view.findViewById(R.id.text_view_address_header);
     }
 
     public void bind(RecipientAddressModel address, ShipmentAddressListAdapter adapter, ShipmentAddressListAdapter.ActionListener listener, int position) {
@@ -56,6 +60,18 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(view -> adapter.setSelectedAddressData(position));
     }
 
+    public void setState(VIEW_TYPE type) {
+        switch (type) {
+            case HEADER_ON:
+                mHeaderText.setVisibility(View.VISIBLE);
+                break;
+            case BUTTON_ON:
+                mButtonAddAddress.setVisibility(View.VISIBLE);
+                break;
+            default:
+        }
+    }
+
     private String getFullAddress(RecipientAddressModel recipientAddress) {
         return recipientAddress.getStreet() + ", "
                 + recipientAddress.getDestinationDistrictName() + ", "
@@ -63,26 +79,9 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
                 + recipientAddress.getProvinceName();
     }
 
-//    private View.OnClickListener getItemClickListener(RecipientAddressModel recipientAddressModel,
-//                                                      ShipmentAdapterActionListener listener) {
-//        return v -> {
-//            if (!recipientAddressModel.isSelected()) {
-//                for (RecipientAddressModel viewModel : mAddressModelList) {
-//                    if (viewModel.getId().equals(recipientAddressModel.getId())) {
-//                        if (mAddressModelList.size() > position && position >= 0) {
-//                            viewModel.setSelected(!viewModel.isSelected());
-//                            mListener.onAddressContainerClicked(mAddressModelList.get(position));
-//                        }
-//                    } else {
-//                        viewModel.setSelected(false);
-//                    }
-//                }
-//
-//                notifyDataSetChanged();
-//            } else {
-//                mListener.onAddressContainerClicked(mAddressModelList.get(position));
-//            }
-//        };
-//    }
+    public enum VIEW_TYPE {
+        HEADER_ON,
+        BUTTON_ON
+    }
 
 }
