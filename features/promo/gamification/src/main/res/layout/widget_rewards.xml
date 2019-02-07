@@ -11,7 +11,7 @@
         android:background="@android:color/transparent"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_30">
+        android:paddingBottom="@dimen/dp_22">
 
         <RelativeLayout
             android:id="@+id/rl_points"
@@ -21,7 +21,7 @@
             <TextView
                 android:id="@+id/tv_points"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_28"
+                android:layout_height="@dimen/dp_24"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:background="@drawable/points_container"
@@ -30,13 +30,14 @@
                 android:paddingLeft="@dimen/dp_32"
                 android:paddingRight="@dimen/dp_10"
                 android:text="0"
+                android:textStyle="bold"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/sp_12"
                 tools:text="123455" />
 
             <ImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/gf_points_icon" />
 
         </RelativeLayout>
@@ -52,13 +53,14 @@
             <TextView
                 android:id="@+id/tv_loyalty"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_28"
+                android:layout_height="@dimen/dp_24"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:background="@drawable/points_container"
                 android:gravity="right|center_vertical"
                 android:minWidth="@dimen/dp_76"
                 android:paddingLeft="@dimen/dp_30"
+                android:textStyle="bold"
                 android:paddingRight="@dimen/dp_10"
                 android:text="0"
                 android:textColor="#ffffff"
@@ -66,8 +68,8 @@
                 tools:text="12345575757" />
 
             <ImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/gf_loyalty_icon" />
 
         </RelativeLayout>
@@ -80,13 +82,14 @@
             <TextView
                 android:id="@+id/tv_coupons"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_28"
+                android:layout_height="@dimen/dp_24"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:background="@drawable/points_container"
                 android:gravity="right|center_vertical"
                 android:minWidth="@dimen/dp_76"
                 android:paddingLeft="@dimen/dp_30"
+                android:textStyle="bold"
                 android:paddingRight="@dimen/dp_10"
                 android:text="0"
                 android:textColor="#ffffff"
@@ -94,8 +97,8 @@
                 tools:text="0" />
 
             <ImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/gf_coupon_icon" />
 
         </RelativeLayout>

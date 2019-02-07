@@ -8,4 +8,5 @@
 
     <color name="default_text_reward_color">#FFFFFF</color>
     <color name="default_reward_color">#FFD65C</color>
+    <color name="toolbar_color">#33ffffff</color>
 </resources>

@@ -46,11 +46,6 @@ import rx.Subscriber;
 public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.View>
         implements CrackTokenContract.Presenter {
 
-    private static final int INDEX_TOKEN_FULL = 0;
-    private static final int INDEX_TOKEN_CRACKED = 4;
-    private static final int INDEX_TOKEN_RIGHT = 6;
-    private static final int INDEX_TOKEN_LEFT = 5;
-
     //    private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getCrackResultEggUseCase;
@@ -222,11 +217,11 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
         TokenAssetEntity tokenAsset = tokenUser.getTokenAsset();
 
-        List<String> tokenAssetImageUrls = tokenAsset.getImageUrls();
-        String full = tokenAssetImageUrls.get(INDEX_TOKEN_FULL);
-        String cracked = tokenAssetImageUrls.get(INDEX_TOKEN_CRACKED);
-        String imageRightUrl = tokenAssetImageUrls.get(INDEX_TOKEN_RIGHT);
-        String imageLeftUrl = tokenAssetImageUrls.get(INDEX_TOKEN_LEFT);
+        List<String> tokenAssetImageUrls = tokenAsset.getImagev2Urls();
+        String full = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_FULL);
+        String cracked = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_CRACKED);
+        String imageLeftUrl = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_LEFT);
+        String imageRightUrl = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_RIGHT);
 
         final List<Pair<String, String>> assetUrls = new ArrayList<>();
 
@@ -237,7 +232,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         assetUrls.add(new Pair<>(cracked, tokenAssetVersion));
         assetUrls.add(new Pair<>(imageLeftUrl, tokenAssetVersion));
         assetUrls.add(new Pair<>(imageRightUrl, tokenAssetVersion));
-        assetUrls.add(new Pair<>(tokenAsset.getSmallImgUrl(), tokenAssetVersion));
+        assetUrls.add(new Pair<>(tokenAsset.getSmallImgv2Url(), tokenAssetVersion));
 
         RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
         for (Pair<String, String> assetUrlPair : assetUrls) {

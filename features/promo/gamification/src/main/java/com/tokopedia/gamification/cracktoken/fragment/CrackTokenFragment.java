@@ -51,7 +51,6 @@ import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
-import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
@@ -102,8 +101,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetRewardCrackResult widgetRewards;
     private Toolbar toolbar;
     private TextView toolbarTitle;
-    private View toolbarShadow;
-
 
     public static Fragment newInstance() {
         return new CrackTokenFragment();
@@ -134,7 +131,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         tvCounter = toolbar.findViewById(R.id.tv_floating_counter);
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
-        toolbarShadow = rootView.findViewById(R.id.view_drop_down_shadow);
         setUpToolBar();
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
@@ -191,9 +187,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void onCrackResultCleared() {
-                setToolbarColor(getResources().getColor(R.color.black));
-                toolbarShadow.setVisibility(View.VISIBLE);
-
+                setToolbarColor(getResources().getColor(R.color.black), getResources().getColor(R.color.toolbar_color));
             }
 
             @Override
@@ -216,11 +210,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.black));
     }
 
-    private void setToolbarColor(int color) {
+    private void setToolbarColor(int titleColor, int toolbarBackgroundColor) {
         if (toolbar.getNavigationIcon() != null) {
-            toolbar.getNavigationIcon().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+            toolbar.getNavigationIcon().setColorFilter(titleColor, PorterDuff.Mode.SRC_ATOP);
         }
-        toolbarTitle.setTextColor(color);
+        toolbar.setBackgroundColor(toolbarBackgroundColor);
+        toolbarTitle.setTextColor(titleColor);
     }
 
     private void setDrawableColorFilter(Drawable drawable, int color) {
@@ -313,7 +308,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 trackingLuckyEggClick();
             }
         });
-        showRemainingToken(tokenUser.getTokenAsset().getSmallImgUrl(), tokenData.getSumTokenStr());
+        showRemainingToken(tokenUser.getTokenAsset().getSmallImgv2Url(), tokenData.getSumTokenStr());
         showTimer(tokenData);
         showInfoTitle();
     }
@@ -483,8 +478,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessGetToken(TokenDataEntity tokenData) {
-        setToolbarColor(getResources().getColor(R.color.black));
-        toolbarShadow.setVisibility(View.VISIBLE);
+        setToolbarColor(getResources().getColor(R.color.black), getResources().getColor(R.color.toolbar_color));
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
         } else {
@@ -502,8 +496,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onErrorGetToken(CrackResultEntity crackResult) {
-        setToolbarColor(getResources().getColor(R.color.white));
-        toolbarShadow.setVisibility(View.GONE);
+        setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
         widgetCrackResult.showCrackResult(crackResult);
     }
 
@@ -542,8 +535,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 // Do something after 1s = 1000ms
                 if (getContext()!=null) {
                     widgetTokenView.split();
-                    setToolbarColor(getResources().getColor(R.color.white));
-                    toolbarShadow.setVisibility(View.GONE);
+                    setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
                     widgetCrackResult.showCrackResult(crackResult);
 
                     trackingRewardLuckyEggView(crackResult.getBenefitType());
@@ -576,8 +568,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             public void run() {
                 // Do something after 1s = 1000ms
                 widgetTokenView.stopShaking();
-                setToolbarColor(getResources().getColor(R.color.white));
-                toolbarShadow.setVisibility(View.GONE);
+                setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
                 widgetCrackResult.showCrackResult(crackResult);
             }
         }, 1000);

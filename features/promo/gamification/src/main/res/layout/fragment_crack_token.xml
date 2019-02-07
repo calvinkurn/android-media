@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
         android:id="@+id/widget_reward"
@@ -90,18 +90,14 @@
     </LinearLayout>
 
 
-    <FrameLayout
-        android:id="@+id/cv_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#00000000">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
+            android:background="@color/toolbar_color"
             app:contentInsetStartWithNavigation="0dp"
             app:subtitleTextAppearance="?subtitleTextAppearance"
             app:titleTextAppearance="?titleTextAppearance">
@@ -150,13 +146,6 @@
 
 
         </android.support.v7.widget.Toolbar>
-        <View
-            android:id="@+id/view_drop_down_shadow"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/toolbar_drop_shadow"/>
-    </FrameLayout>
 
 
     <ProgressBar

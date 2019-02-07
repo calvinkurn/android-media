@@ -29,6 +29,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
@@ -187,11 +188,11 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     public void setToken(TokenAssetEntity tokenAsset) {
-        List<String> imageUrls = tokenAsset.getImageUrls();
-        String full = imageUrls.get(0);
-        String cracked = imageUrls.get(4);
-        String imageRightUrl = imageUrls.get(6);
-        String imageLeftUrl = imageUrls.get(5);
+        List<String> imageUrls = tokenAsset.getImagev2Urls();
+        String full = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_FULL);
+        String cracked = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_CRACKED);
+        String imageLeftUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_LEFT);
+        String imageRightUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_RIGHT);
 
         StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
 

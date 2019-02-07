@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -181,6 +182,7 @@ public class WidgetRewardCrackResult extends FrameLayout {
             textView.setText(String.valueOf(points.charAt(i)));
             textView.setTextColor(textColor);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.getTextSize() * REWARD_SCALE_FACTOR);
+            textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
             if (viewType == TYPE_POINTS)
                 tvPointsList.add(textView);
             else if (viewType == TYPE_LOYALTY)
