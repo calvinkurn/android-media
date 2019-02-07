@@ -69,7 +69,7 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
             public void onNext(List<ProductsItem> productsItems) {
                 if(productsItems != null && productsItems.size() > 0) {
                     getView().setProductList(productsItems);
-                }else {
+                } else {
                     getView().setEmptyLayoutVisible();
                     SimilarSearchTracking.eventUserSeeNoSimilarProduct((getView().getAppContext()), getView().getProductID(),getView().getScreenName());
                     getView().setContentLayoutGone();
