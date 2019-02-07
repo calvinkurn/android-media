@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.feature.addressoptions.adapter.RecipientAddressViewHolder;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
@@ -17,8 +16,7 @@ import java.util.List;
  * @author Aghny A. Putra on 26/01/18
  */
 
-public class ShipmentAddressListAdapter
-        extends RecyclerView.Adapter<RecipientAddressViewHolder> {
+public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAddressViewHolder> {
 
     private List<RecipientAddressModel> mAddressModelList;
     private ActionListener mActionListener;
@@ -40,6 +38,8 @@ public class ShipmentAddressListAdapter
     public void onBindViewHolder(@NonNull RecipientAddressViewHolder holder, int position) {
         RecipientAddressModel address = mAddressModelList.get(position);
         holder.bind(address, this, mActionListener, position);
+        if (position == getItemCount() -1) holder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
+        if (position == 0) holder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
     }
 
     @Override

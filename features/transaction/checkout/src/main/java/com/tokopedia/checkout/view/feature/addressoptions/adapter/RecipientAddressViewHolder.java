@@ -20,6 +20,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvRecipientName;
     private TextView mTvRecipientAddress;
     private TextView mTvRecipientPhone;
+    private View mViewAddress;
 
     private TextView mTvChangeAddress;
     private RadioButton mRbCheckAddress;
@@ -30,7 +31,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
     public RecipientAddressViewHolder(View view) {
         super(view);
-
+        mViewAddress = view.findViewById(R.id.rl_shipment_recipient_address_layout);
         mTvAddressName = view.findViewById(R.id.tv_address_name);
         mTvAddressStatus = view.findViewById(R.id.tv_address_status);
         mTvRecipientName = view.findViewById(R.id.tv_recipient_name);
@@ -57,7 +58,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mTvChangeAddress.setOnClickListener(v ->
                 mListener.onEditClick(address)
         );
-        itemView.setOnClickListener(view -> adapter.setSelectedAddressData(position));
+        mViewAddress.setOnClickListener(view -> adapter.setSelectedAddressData(position));
     }
 
     public void setState(VIEW_TYPE type) {
