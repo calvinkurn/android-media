@@ -9,7 +9,7 @@ import com.tokopedia.expresscheckout.data.entity.response.atc.AtcExpressGqlRespo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*

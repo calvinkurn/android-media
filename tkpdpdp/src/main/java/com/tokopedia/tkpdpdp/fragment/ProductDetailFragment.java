@@ -69,7 +69,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
@@ -242,13 +242,13 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
 import static com.tokopedia.tkpdpdp.constant.ConstantKey.ARGS_STATE_RESULT_PDP_MODAL;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
-import static com.tokopedia.transaction.common.data.expresscheckout.Constant.CHECKOUT_TYPE_EXPRESS;
-import static com.tokopedia.transaction.common.data.expresscheckout.Constant.CHECKOUT_TYPE_DEFAULT;
-import static com.tokopedia.transaction.common.data.expresscheckout.Constant.CHECKOUT_TYPE_OCS;
-import static com.tokopedia.transaction.common.data.expresscheckout.Constant.EXTRA_MESSAGES_ERROR;
-import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_ERROR;
-import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_NCF;
-import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_OCS;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_EXPRESS;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_DEFAULT;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_OCS;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.EXTRA_MESSAGES_ERROR;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_ERROR;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_NCF;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_OCS;
 
 
 /**

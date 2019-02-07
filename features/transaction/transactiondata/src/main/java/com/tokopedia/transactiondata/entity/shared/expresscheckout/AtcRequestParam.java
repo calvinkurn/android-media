@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.data.expresscheckout;
+package com.tokopedia.transactiondata.entity.shared.expresscheckout;
 
 import android.os.Parcel;
 import android.os.Parcelable;

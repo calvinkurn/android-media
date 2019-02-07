@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.EXTRA_ATC_REQUEST
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
-import com.tokopedia.transaction.common.data.expresscheckout.Constant.*
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

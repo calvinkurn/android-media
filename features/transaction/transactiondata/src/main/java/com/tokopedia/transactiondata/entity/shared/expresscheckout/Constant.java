@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.data.expresscheckout;
+package com.tokopedia.transactiondata.entity.shared.expresscheckout;
 
 /**
  * Created by Irfan Khoirul on 04/01/19.

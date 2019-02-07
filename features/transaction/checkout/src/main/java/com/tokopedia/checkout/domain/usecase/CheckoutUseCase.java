@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
-import com.tokopedia.transaction.common.data.cartcheckout.CheckoutData;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;

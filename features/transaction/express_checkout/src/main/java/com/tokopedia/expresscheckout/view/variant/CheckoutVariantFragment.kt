@@ -49,8 +49,8 @@ import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourie
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
-import com.tokopedia.transaction.common.data.cartcheckout.CheckoutData
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest

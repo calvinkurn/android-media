@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.gallery)
+    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.expressCheckoutCommon)
 
