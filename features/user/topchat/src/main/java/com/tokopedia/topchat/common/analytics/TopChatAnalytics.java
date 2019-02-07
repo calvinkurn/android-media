@@ -166,11 +166,11 @@ public class TopChatAnalytics {
                 "");
     }
 
-    public void eventSendMessage(String label) {
+    public void eventSendMessage() {
         analyticTracker.sendEventTracking(Category.CHAT_DETAIL,
                 Name.CHAT_DETAIL,
                 Action.CHAT_DETAIL_SEND,
-                label);
+                "");
     }
 
     public void eventClickTemplate() {
