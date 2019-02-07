@@ -15,7 +15,7 @@
     <uses-permission
         android:name="android.permission.WRITE_CALL_LOG"
         tools:node="remove"/>
-    <uses-permissionrele
+    <uses-permission
         android:name="android.permission.READ_CALL_LOG"
         tools:node="remove"/>
     <uses-permission
