@@ -59,6 +59,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initVar();
         initView();
     }
 
@@ -91,6 +92,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (mainToolbar != null || getActivity() != null) {
             mainToolbar.setNotificationNumber(number);
         }
+    }
+
+    private void initVar() {
+        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
     }
     
     private void initView() {

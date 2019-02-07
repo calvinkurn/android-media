@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.interactor;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.topads.sdk.base.Config;
@@ -71,7 +72,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                     List<Item> visitables = new ArrayList<>();
                     for (int i = 0; i < topAdsModel.getData().size(); i++) {
                         Data data = topAdsModel.getData().get(i);
-                        if (data.getProduct() != null) {
+                        if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
                             if (displayMode == DisplayMode.GRID) {
                                 visitables.add(ModelConverter.convertToProductGridViewModel(data));
                             } else if (displayMode == DisplayMode.LIST) {
@@ -83,7 +84,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                             } else if (displayMode == DisplayMode.CAROUSEL) {
                                 visitables.add(ModelConverter.convertToCarouselListViewModel(data));
                             }
-                        } else if (data.getShop() != null) {
+                        } else if (data.getShop() != null && !TextUtils.isEmpty(data.getShop().getId())) {
                             if (displayMode == DisplayMode.GRID) {
                                 visitables.add(ModelConverter.convertToShopGridViewModel(data));
                             } else if (displayMode == DisplayMode.LIST) {

@@ -1,10 +1,13 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -38,16 +41,18 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  */
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
-    private static final int LOGIN_REQUEST_CODE = 1005;
     private final Context appContext;
 
     private Context context;
     private ProgressDialog progressDialog;
+    private Promise mNativeModulePromise;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
         this.appContext = reactContext.getApplicationContext();
+
+        reactContext.addActivityEventListener(mActivityEventListener);
     }
 
     @Override
@@ -236,4 +241,28 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
             promise.resolve("release");
         }
     }
+
+    @ReactMethod
+    public void navigateWithResult(String applink, int requestCode, Promise promise) {
+        if(RouteManager.isSupportApplink(context, applink) && getCurrentActivity() != null) {
+            Intent intent = RouteManager.getIntent(getCurrentActivity(), applink);
+            getCurrentActivity().startActivityForResult(intent, requestCode);
+            mNativeModulePromise = promise;
+        }
+    }
+
+    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+        @Override
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(activity, requestCode, resultCode, data);
+
+            if (requestCode == ReactConst.REACT_ADD_CREDIT_CARD_REQUEST_CODE) {
+                if (resultCode == Activity.RESULT_OK) {
+                    mNativeModulePromise.resolve("OK");
+                } else {
+                    mNativeModulePromise.reject("FAILED");
+                }
+            }
+        }
+    };
 }

@@ -7,7 +7,7 @@ import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
-import com.tokopedia.home.constant.ConstantKey;
+import com.tokopedia.home.constant.BerandaUrl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,7 +44,7 @@ public class ApiModule {
                 .serializeNulls()
                 .create();
         return new Retrofit.Builder()
-                .baseUrl(ConstantKey.TkpdBaseUrl.HOME_DATA_BASE_URL)
+                .baseUrl(BerandaUrl.GRAPHQL_URL)
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())

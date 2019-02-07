@@ -49,6 +49,8 @@ public interface ContentExploreContract {
         void scrollToTop();
 
         void resetDataParam();
+
+        void stopTrace();
     }
 
     interface Presenter extends CustomerPresenter<View> {
