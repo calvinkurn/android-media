@@ -18,12 +18,14 @@ import java.util.List;
 
 public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAddressViewHolder> {
 
+    private boolean adaSampai;
     private List<RecipientAddressModel> mAddressModelList;
     private ActionListener mActionListener;
 
     public ShipmentAddressListAdapter(ActionListener actionListener) {
         mActionListener = actionListener;
         mAddressModelList = new ArrayList<>();
+        adaSampai = false;
     }
 
     @NonNull
@@ -38,13 +40,22 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAd
     public void onBindViewHolder(@NonNull RecipientAddressViewHolder holder, int position) {
         RecipientAddressModel address = mAddressModelList.get(position);
         holder.bind(address, this, mActionListener, position);
-        if (position == getItemCount() -1) holder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
+        if (position == getItemCount() - 1)
+            holder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
         if (position == 0) holder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
     }
 
     @Override
     public int getItemCount() {
-        return mAddressModelList.size();
+        int hasHeader = (adaSampai) ? 0 : 1;
+        return mAddressModelList.size() + hasHeader;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        int hasHeader = (adaSampai) ? 0 : 1;
+        if (position == 0 && adaSampai) return R.layout.item_sampai;
+        else return RecipientAddressViewHolder.TYPE;
     }
 
     public void setAddressList(List<RecipientAddressModel> addressModelList) {
@@ -57,7 +68,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecipientAd
     }
 
     void setSelectedAddressData(int position) {
-        for(int i = 0; i<mAddressModelList.size(); i++) {
+        for (int i = 0; i < mAddressModelList.size(); i++) {
             if (position == i) {
                 mAddressModelList.get(i).setSelected(true);
             } else {

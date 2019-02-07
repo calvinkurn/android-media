@@ -13,6 +13,8 @@ import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressMod
  */
 public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
+    public static final int TYPE = R.layout.item_recipient_address_rb_selectable;
+
     private static final int PRIME_ADDRESS = 2;
 
     private TextView mTvAddressName;
