@@ -76,11 +76,11 @@ public class SearchBarAnalytics {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(getDataEvent(
+        analyticTracker.sendEventTracking(
                 SearchBarConstant.CLICK_TOP_NAV,
                 SearchBarConstant.TOP_NAV,
                 SearchBarConstant.CLICK_SEARCH_BOX,
                 ""
-        ));
+        );
     }
 }
