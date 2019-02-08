@@ -36,7 +36,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 
-class RestCloudDataStore {
+class RestCloudDataStore : RestDataStore{
     private var mApi: RestApi
     private var mCacheManager: RestCacheManager
     private var mFingerprintManager: FingerprintManager
@@ -54,7 +54,7 @@ class RestCloudDataStore {
         this.mFingerprintManager = NetworkClient.getFingerPrintManager()
     }
 
-    fun getResponseJob(request: RestRequest): Deferred<Response<String>> {
+    private fun getResponseJob(request: RestRequest): Deferred<Response<String>> {
         return when (request.requestType) {
             RequestType.GET -> doGet(request)
             RequestType.POST -> doPost(request)
@@ -81,7 +81,7 @@ class RestCloudDataStore {
         }
     }
 
-    suspend fun getResponse(request: RestRequest): RestResponseIntermediate? {
+    override suspend fun getResponse(request: RestRequest): RestResponseIntermediate? {
         return withContext(Dispatchers.IO) {
             getResponseJob(request).await().process(request)
         }
@@ -156,7 +156,6 @@ class RestCloudDataStore {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             }
 
             if (body == null) {

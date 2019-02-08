@@ -9,7 +9,7 @@ import javax.inject.Inject
 /**
  * Retrieve the response from cache only
  */
-class RestCacheDataStore @Inject constructor() {
+class RestCacheDataStore @Inject constructor() : RestDataStore {
 
     private val mCacheManager: RestCacheManager
     private val mFingerprintManager: FingerprintManager
@@ -19,7 +19,7 @@ class RestCacheDataStore @Inject constructor() {
         this.mFingerprintManager = NetworkClient.getFingerPrintManager()
     }
 
-    fun getResponse(request: RestRequest): RestResponseIntermediate?{
+    override suspend fun getResponse(request: RestRequest): RestResponseIntermediate?{
         var returnResponse: RestResponseIntermediate
         try {
             val rawJson: String? = mCacheManager.get(mFingerprintManager.generateFingerPrint(request.toString(), request.cacheStrategy.isSessionIncluded))
