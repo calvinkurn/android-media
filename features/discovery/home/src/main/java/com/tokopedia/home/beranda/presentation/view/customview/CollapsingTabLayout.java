@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
 
@@ -103,14 +101,12 @@ public class CollapsingTabLayout extends TabLayout {
                     setCurrentFraction(tabIndicatorExpandAnimator, 0);
 
                     tabIndicatorCollapseAnimator.setTabIndicator(
-                            (ExpandingLineView) getTabAt(position)
-                                    .getCustomView().findViewById(R.id.tabIndicator)
+                            (ExpandingLineView) findViewByIdFromTab(getTabAt(position), R.id.tabIndicator)
                     );
 
                     if (position + 1 < getTabCount()) {
                         tabIndicatorExpandAnimator.setTabIndicator(
-                                (ExpandingLineView) getTabAt(position + 1)
-                                        .getCustomView().findViewById(R.id.tabIndicator)
+                                (ExpandingLineView) findViewByIdFromTab(getTabAt(position + 1), R.id.tabIndicator)
                         );
                     } else {
                         tabIndicatorExpandAnimator.setTabIndicator(null);
@@ -150,7 +146,6 @@ public class CollapsingTabLayout extends TabLayout {
         tabHeightCollapseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Log.d("tess", Float.toString(valueAnimator.getAnimatedFraction()));
                 if (isFullyCollapsed(valueAnimator.getAnimatedFraction())) {
                     updateAllTabTextToSingleLine();
                 } else {
@@ -234,13 +229,15 @@ public class CollapsingTabLayout extends TabLayout {
 
         hideAllTabIndicator();
 
-        if(lastTabSelectedPosition != NONE) {
-            getTabAt(lastTabSelectedPosition)
-                    .getCustomView().findViewById(R.id.tabIndicator).setVisibility(View.VISIBLE);
+        View lastSelectedTabIndicator = findViewByIdFromTab(getTabAt(lastTabSelectedPosition), R.id.tabIndicator);
+        if(lastTabSelectedPosition != NONE && lastSelectedTabIndicator != null) {
+            lastSelectedTabIndicator.setVisibility(View.VISIBLE);
         }
 
-        getTabAt(currentSelectedPosition)
-                .getCustomView().findViewById(R.id.tabIndicator).setVisibility(View.VISIBLE);
+        View currentSelectedTabIndicator = findViewByIdFromTab(getTabAt(currentSelectedPosition), R.id.tabIndicator);
+        if (currentSelectedTabIndicator != null) {
+            currentSelectedTabIndicator.setVisibility(View.VISIBLE);
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -254,29 +251,37 @@ public class CollapsingTabLayout extends TabLayout {
 
     private void hideAllTabIndicator() {
         for (int i = 0; i < getTabCount(); i++) {
-            getTabAt(i)
-                    .getCustomView().findViewById(R.id.tabIndicator).setVisibility(View.INVISIBLE);
+            View tabIndicator = findViewByIdFromTab(getTabAt(i), R.id.tabIndicator);
+            if (tabIndicator != null) {
+                tabIndicator.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
     private void showAllTabIndicator() {
         for (int i = 0; i < getTabCount(); i++) {
-            getTabAt(i)
-                    .getCustomView().findViewById(R.id.tabIndicator).setVisibility(View.VISIBLE);
+            View tabIndicator = findViewByIdFromTab(getTabAt(i), R.id.tabIndicator);
+            if (tabIndicator != null) {
+                tabIndicator.setVisibility(View.VISIBLE);
+            }
         }
     }
 
     private void updateAllTabTextToDoubleLines() {
         for (int i = 0; i < getTabCount(); i++) {
-            TabLayout.Tab tab = getTabAt(i);
-            ((TextView) tab.getCustomView().findViewById(R.id.tabTitle)).setMaxLines(2);
+            TextView tabTitle = (TextView) findViewByIdFromTab(getTabAt(i), R.id.tabTitle);
+            if (tabTitle != null) {
+                tabTitle.setMaxLines(2);
+            }
         }
     }
 
     private void updateAllTabTextToSingleLine() {
         for (int i = 0; i < getTabCount(); i++) {
-            TabLayout.Tab tab = getTabAt(i);
-            ((TextView) tab.getCustomView().findViewById(R.id.tabTitle)).setMaxLines(1);
+            TextView tabTitle = (TextView) findViewByIdFromTab(getTabAt(i), R.id.tabTitle);
+            if (tabTitle != null) {
+                tabTitle.setMaxLines(1);
+            }
         }
     }
 
@@ -351,11 +356,25 @@ public class CollapsingTabLayout extends TabLayout {
     }
 
     public void resetCollapseState() {
-        adjustTabCollapseFraction(0);
+        if (hasSetupWithData()) {
+            adjustTabCollapseFraction(0);
+        }
     }
 
-    public void setCurrentFraction(ValueAnimator animator, float fraction) {
+    private boolean hasSetupWithData() {
+        return !tabItemDataList.isEmpty();
+    }
+
+    private void setCurrentFraction(ValueAnimator animator, float fraction) {
         animator.setCurrentPlayTime((long) (fraction * animator.getDuration()));
+    }
+
+    private View findViewByIdFromTab(Tab tab, int id) {
+        if (tab != null && tab.getCustomView() != null) {
+            return tab.getCustomView().findViewById(id);
+        } else {
+            return null;
+        }
     }
 
     private static class TabIndicatorAnimator extends ValueAnimator {

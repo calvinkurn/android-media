@@ -311,6 +311,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void scrollToRecommendList() {
         appBarLayout.setExpanded(false, true);
+        homeFeedsTabLayout.resetCollapseState();
         scrollToRecommendList = false;
     }
 
@@ -951,7 +952,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onScrollToTop() {
-        if (appBarLayout != null) appBarLayout.setExpanded(true);
+        if (appBarLayout != null) {
+            appBarLayout.setExpanded(true);
+            homeFeedsTabLayout.resetCollapseState();
+        }
     }
 
     /**
