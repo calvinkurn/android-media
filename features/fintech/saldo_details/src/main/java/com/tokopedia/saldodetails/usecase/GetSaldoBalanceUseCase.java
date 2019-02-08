@@ -22,7 +22,6 @@ import static com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.
 
 public class GetSaldoBalanceUseCase {
 
-    private static final String GET_SALDO_BALANCE = "SaldoQuery";
     private GraphqlUseCase graphqlUseCase;
     private Context context;
     private boolean isRequesting;
@@ -47,7 +46,7 @@ public class GetSaldoBalanceUseCase {
         GraphqlRequest graphqlRequestForUsable = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
                 GqlSaldoBalanceResponse.class,
-                usableRequestMap, GET_SALDO_BALANCE);
+                usableRequestMap);
         GraphqlCacheStrategy cacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                         .setExpiryTime(cacheDuration).setSessionIncluded(true).build();

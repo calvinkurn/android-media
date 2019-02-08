@@ -106,9 +106,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     ArrayList<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
 
     private SaldoHistoryPagerAdapter saldoHistoryPagerAdapter;
-    private long sellerSaldoBalance;
-    private long buyerSaldoBalance;
-    private long totalSaldoBalance;
+    private float sellerSaldoBalance;
+    private float buyerSaldoBalance;
+    private float totalSaldoBalance;
 
     public static SaldoDepositFragment createInstance(/*boolean isSeller,*/ boolean isSellerEnabled) {
         SaldoDepositFragment saldoDepositFragment = new SaldoDepositFragment();
@@ -501,17 +501,17 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public long getSellerSaldoBalance() {
+    public float getSellerSaldoBalance() {
         return sellerSaldoBalance;
     }
 
     @Override
-    public long getBuyerSaldoBalance() {
+    public float getBuyerSaldoBalance() {
         return buyerSaldoBalance;
     }
 
     @Override
-    public long getTotalSaldoBalance() {
+    public float getTotalSaldoBalance() {
         return totalSaldoBalance;
     }
 
@@ -540,7 +540,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBalance(long totalBalance, String summaryUsebleDepositIdr) {
+    public void setBalance(float totalBalance, String summaryUsebleDepositIdr) {
         totalSaldoBalance = totalBalance;
         if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
             totalBalanceTV.setText(summaryUsebleDepositIdr);
@@ -623,13 +623,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBuyerSaldoBalance(long balance, String text) {
+    public void setBuyerSaldoBalance(float balance, String text) {
         buyerSaldoBalance = balance;
         buyerBalanceTV.setText(text);
     }
 
     @Override
-    public void setSellerSaldoBalance(long amount, String formattedAmount) {
+    public void setSellerSaldoBalance(float amount, String formattedAmount) {
         sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
     }

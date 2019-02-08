@@ -4,10 +4,18 @@ import com.google.gson.annotations.SerializedName;
 
 public class GqlSaldoBalanceResponse {
 
-    @SerializedName("usableBuyerSaldo")
-    private Saldo usableBuyerSaldo;
+    @SerializedName("balance")
+    private Saldo saldo;
 
-    @SerializedName("usableSellerSaldo")
+    public Saldo getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Saldo saldo) {
+        this.saldo = saldo;
+    }
+
+    /*@SerializedName("usableSellerSaldo")
     private Saldo usableSellerSaldo;
 
     @SerializedName("holdSellerSaldo")
@@ -54,30 +62,96 @@ public class GqlSaldoBalanceResponse {
 
     public void setHoldBuyerSaldo(Saldo holdBuyerSaldo) {
         this.holdBuyerSaldo = holdBuyerSaldo;
-    }
+    }*/
 
     public class Saldo {
 
-        @SerializedName("deposit_fmt")
-        private String formattedAmount;
+        @SerializedName("buyer_hold")
+        private float buyerHold;
 
-        @SerializedName("deposit")
-        private long deposit;
+        @SerializedName("buyer_hold_fmt")
+        private String buyerHoldFmt;
 
-        public String getFormattedAmount() {
-            return formattedAmount;
+        @SerializedName("buyer_usable")
+        private float buyerUsable;
+
+        @SerializedName("buyer_usable_fmt")
+        private String buyerUsableFmt;
+
+        @SerializedName("seller_hold")
+        private float sellerHold;
+
+        @SerializedName("seller_hold_fmt")
+        private String sellerHoldFmt;
+
+        @SerializedName("seller_usable")
+        private float sellerUsable;
+
+        @SerializedName("seller_usable_fmt")
+        private String sellerUsableFmt;
+
+        public float getBuyerHold() {
+            return buyerHold;
         }
 
-        public void setFormattedAmount(String formattedAmount) {
-            this.formattedAmount = formattedAmount;
+        public void setBuyerHold(float buyerHold) {
+            this.buyerHold = buyerHold;
         }
 
-        public long getDeposit() {
-            return deposit;
+        public String getBuyerHoldFmt() {
+            return buyerHoldFmt;
         }
 
-        public void setDeposit(long deposit) {
-            this.deposit = deposit;
+        public void setBuyerHoldFmt(String buyerHoldFmt) {
+            this.buyerHoldFmt = buyerHoldFmt;
+        }
+
+        public float getBuyerUsable() {
+            return buyerUsable;
+        }
+
+        public void setBuyerUsable(float buyerUsable) {
+            this.buyerUsable = buyerUsable;
+        }
+
+        public String getBuyerUsableFmt() {
+            return buyerUsableFmt;
+        }
+
+        public void setBuyerUsableFmt(String buyerUsableFmt) {
+            this.buyerUsableFmt = buyerUsableFmt;
+        }
+
+        public float getSellerHold() {
+            return sellerHold;
+        }
+
+        public void setSellerHold(float sellerHold) {
+            this.sellerHold = sellerHold;
+        }
+
+        public String getSellerHoldFmt() {
+            return sellerHoldFmt;
+        }
+
+        public void setSellerHoldFmt(String sellerHoldFmt) {
+            this.sellerHoldFmt = sellerHoldFmt;
+        }
+
+        public float getSellerUsable() {
+            return sellerUsable;
+        }
+
+        public void setSellerUsable(float sellerUsable) {
+            this.sellerUsable = sellerUsable;
+        }
+
+        public String getSellerUsableFmt() {
+            return sellerUsableFmt;
+        }
+
+        public void setSellerUsableFmt(String sellerUsableFmt) {
+            this.sellerUsableFmt = sellerUsableFmt;
         }
     }
 }

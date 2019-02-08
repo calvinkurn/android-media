@@ -1,22 +1,13 @@
-query SaldoQuery {
-
- usableBuyerSaldo: saldo(type: "usable", isSeller: false) {
-   deposit
-   deposit_fmt
- }
-
- usableSellerSaldo: saldo(type: "usable", isSeller: true) {
-    deposit
-    deposit_fmt
-  }
-
-  holdSellerSaldo: saldo(type: "hold", isSeller: true) {
-      deposit
-      deposit_fmt
-    }
-
-  holdBuyerSaldo: saldo(type: "hold", isSeller: false) {
-      deposit
-      deposit_fmt
+query {
+    balance {
+        buyer_hold
+        buyer_hold_fmt
+        buyer_usable
+        buyer_usable_fmt
+        seller_hold
+        seller_hold_fmt
+        seller_usable
+        seller_usable_fmt
+        have_error
     }
 }

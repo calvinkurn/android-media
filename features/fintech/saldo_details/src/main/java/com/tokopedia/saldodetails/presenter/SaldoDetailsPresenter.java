@@ -45,7 +45,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     private Bundle withdrawActivityBundle = new Bundle();
 
     private final long minSaldoLimit = 10000;
-    private DepositCacheInteractor depositCacheInteractor;
+//    private DepositCacheInteractor depositCacheInteractor;
 
     @Inject
     GetDepositSummaryUseCase getDepositSummaryUseCase;
@@ -59,7 +59,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Inject
     public SaldoDetailsPresenter(@ApplicationContext Context context) {
-        depositCacheInteractor = new DepositCacheInteractorImpl(context);
+//        depositCacheInteractor = new DepositCacheInteractorImpl(context);
 //        this.paging = new PagingHandler();
     }
 
@@ -76,39 +76,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         }
     }
 
-    /*@Override
-    public void setFirstDateParameter() {
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        Date date = new Date();
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH, -1);
-        String startDate = dateFormat.format(cal.getTime());
-        String endDate = dateFormat.format(date);
-        getView().setStartDate(startDate);
-        getView().setEndDate(endDate);
-        paramStartDate = startDate;
-        paramEndDate = endDate;
-
-    }*/
-
-   /* @Override
-    public void setCache() {
-        depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
-            @Override
-            public void onSuccess(GqlDepositSummaryResponse cache) {
-                setData(cache);
-                getSummaryDeposit();
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getSummaryDeposit();
-            }
-        });
-    }*/
-
     @Override
     public void getMerchantSaldoDetails() {
 //        getView().setLoading();
@@ -120,72 +87,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
         getMerchantSaldoDetails.execute(getMerchantSaldoDetailsSubscriber);
     }
-
-    /*@Override
-    public void onSearchClicked() {
-        paramStartDate = getView().getStartDate();
-        paramEndDate = getView().getEndDate();
-        getSummaryDeposit();
-    }*/
-
-    /*@Override
-    public void onEndDateClicked(SaldoDatePickerUtil datePicker) {
-        String date = dateFormatter(getView().getEndDate());
-        datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
-        datePicker.DatePickerCalendar((year, month, day) -> {
-            String selectedDate = getDate(year, month, day);
-            getView().setEndDate(selectedDate);
-            new android.os.Handler().postDelayed(this::onSearchClicked, SEARCH_DELAY);
-        });
-
-    }*/
-
-    /*private String getDate(int year, int month, int day) {
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        Date date = new Date();
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-        cal.set(Calendar.MONTH, month - 1);
-        return dateFormat.format(cal.getTime());
-    }*/
-
-    /*@Override
-    public void onStartDateClicked(SaldoDatePickerUtil datePicker) {
-        String date = dateFormatter(getView().getStartDate());
-        datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
-        datePicker.DatePickerCalendar((year, month, day) -> {
-            String selectedDate = getDate(year, month, day);
-            getView().setStartDate(selectedDate);
-            new android.os.Handler().postDelayed(this::onSearchClicked, SEARCH_DELAY);
-
-        });
-    }*/
-
-    /*private String dateFormatter(String date) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        SimpleDateFormat sdf_ws = new SimpleDateFormat("dd/MM/yyyy");
-        Date formattedStart = null;
-        try {
-            formattedStart = sdf.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return sdf_ws.format(formattedStart);
-
-    }*/
-
-    /*@Override
-    public void loadMore(int lastItemPosition, int visibleItem) {
-        if (paging.CheckNextPage()
-                && isOnLastPosition(lastItemPosition, visibleItem)
-                && canLoadMore()) {
-            paging.nextPage();
-            getSummaryDeposit();
-        }
-    }*/
 
 
     @Override
@@ -221,17 +122,19 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 GqlSaldoBalanceResponse gqlSaldoBalanceResponse =
                         graphqlResponse.getData(GqlSaldoBalanceResponse.class);
 
+                if (gqlSaldoBalanceResponse == null) {
+                    return;
+                }
                 if (isSeller()) {
-                    depositCacheInteractor.setUsableSellerSaldoBalanceCache(
-                            gqlSaldoBalanceResponse.getUsableSellerSaldo());
-                    getView().setSellerSaldoBalance(gqlSaldoBalanceResponse.getUsableSellerSaldo().getDeposit(),
-                            gqlSaldoBalanceResponse.getUsableSellerSaldo().getFormattedAmount());
+//                    depositCacheInteractor.setUsableSellerSaldoBalanceCache(gqlSaldoBalanceResponse);
+
+                    getView().setSellerSaldoBalance(gqlSaldoBalanceResponse.getSaldo().getSellerUsable(),
+                            gqlSaldoBalanceResponse.getSaldo().getSellerUsableFmt());
                     getView().showSellerSaldoRL();
 
-                    depositCacheInteractor.setUsableBuyerSaldoBalanceCache(gqlSaldoBalanceResponse.
-                            getUsableBuyerSaldo());
-                    getView().setBuyerSaldoBalance(gqlSaldoBalanceResponse.getUsableBuyerSaldo().getDeposit(),
-                            gqlSaldoBalanceResponse.getUsableBuyerSaldo().getFormattedAmount());
+//                    depositCacheInteractor.setUsableBuyerSaldoBalanceCache(gqlSaldoBalanceResponse);
+                    getView().setBuyerSaldoBalance(gqlSaldoBalanceResponse.getSaldo().getBuyerUsable(),
+                            gqlSaldoBalanceResponse.getSaldo().getBuyerUsableFmt());
                     getView().showBuyerSaldoRL();
 
                     getView().showSaldoBalanceSeparator();
@@ -241,8 +144,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                     getView().hideSaldoBalanceSeparator();
                 }
 
-                long totalBalance = gqlSaldoBalanceResponse.getUsableBuyerSaldo().getDeposit() +
-                        gqlSaldoBalanceResponse.getUsableSellerSaldo().getDeposit();
+                float totalBalance = gqlSaldoBalanceResponse.getSaldo().getBuyerUsable() +
+                        gqlSaldoBalanceResponse.getSaldo().getSellerUsable();
 
                 getView().setBalance(totalBalance, CurrencyFormatUtil.
                         convertPriceValueToIdrFormat(totalBalance, false));
@@ -250,12 +153,11 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
                 getView().setWithdrawButtonState(totalBalance != 0);
 
-                long holdBalance = gqlSaldoBalanceResponse.getHoldSellerSaldo().getDeposit() +
-                        gqlSaldoBalanceResponse.getHoldBuyerSaldo().getDeposit();
+                float holdBalance = gqlSaldoBalanceResponse.getSaldo().getBuyerHold() +
+                        gqlSaldoBalanceResponse.getSaldo().getSellerHold();
 
                 if (holdBalance > 0) {
-                    getView().showHoldWarning(gqlSaldoBalanceResponse.getHoldSellerSaldo().
-                            getFormattedAmount());
+                    getView().showHoldWarning(CurrencyFormatUtil.convertPriceValueToIdrFormat(holdBalance, false));
                 } else {
                     getView().hideWarning();
                 }
@@ -295,132 +197,12 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         });
     }
 
-
-    /*@Override
-    public void getSummaryDeposit() {
-        if (!isViewAttached()) {
-            return;
-        }
-        getView().removeError();
-        if (isValid()) {
-            showLoading();
-            getView().setActionsEnabled(false);
-
-            getDepositSummaryUseCase.setRequesting(true);
-            getDepositSummaryUseCase.setRequestVariables(getSummaryDepositParam());
-
-            getDepositSummaryUseCase.execute(new Subscriber<GraphqlResponse>() {
-                @Override
-                public void onCompleted() {
-                    getDepositSummaryUseCase.setRequesting(false);
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    Log.e(TAG, e.toString());
-                    hideLoading();
-                    ErrorHandler.getErrorMessage(getView().getContext(), e);
-                    if (e instanceof UnknownHostException ||
-                            e instanceof SocketTimeoutException) {
-                        if (getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState();
-                        } else {
-                            getView().setRetry();
-                        }
-
-                    } else {
-                        getView().setActionsEnabled(true);
-                        if (getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
-                        } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
-                        }
-                    }
-                }
-
-                @Override
-                public void onNext(GraphqlResponse graphqlResponse) {
-                    hideLoading();
-                    onDepositSummaryFetched(graphqlResponse);
-                }
-            });
-
-        } else {
-            getView().finishLoading();
-        }
-    }*/
-
-    /*private void onDepositSummaryFetched(GraphqlResponse graphqlResponse) {
-        if (!isViewAttached()) {
-            return;
-        }
-        getView().setActionsEnabled(true);
-        if (graphqlResponse != null &&
-                graphqlResponse.getData(GqlDepositSummaryResponse.class) != null) {
-
-            GqlDepositSummaryResponse gqlDepositSummaryResponse =
-                    graphqlResponse.getData(GqlDepositSummaryResponse.class);
-
-            if (gqlDepositSummaryResponse != null &&
-                    !gqlDepositSummaryResponse.getDepositActivityResponse().isHaveError()) {
-
-                if (paging.getPage() == 1) {
-                    getView().getAdapter().clearAllElements();
-                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
-                }
-                paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse()
-                        .isHaveNextPage());
-                setData(gqlDepositSummaryResponse);
-            } else {
-                if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
-                        getDepositActivityResponse() != null) {
-                    if (getView().getAdapter().getItemCount() == 0) {
-                        getView().showEmptyState(gqlDepositSummaryResponse.
-                                getDepositActivityResponse().getMessage());
-                    } else {
-                        getView().setRetry(gqlDepositSummaryResponse.
-                                getDepositActivityResponse().getMessage());
-                    }
-                }
-            }
-
-        } else {
-            if (getView().getAdapter().getItemCount() == 0) {
-                getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
-            } else {
-                getView().setRetry(getView().getString(R.string.sp_empty_state_error));
-            }
-
-        }
-        finishLoading();
-    }*/
-
     @Override
     public void onRefresh() {
 
 //        paging.resetPage();
 //        getSummaryDeposit();
     }
-
-
-    /*private Map<String, Object> getSummaryDepositParam() {
-        SummaryDepositParam param = new SummaryDepositParam();
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        SimpleDateFormat sdf_ws = new SimpleDateFormat(DATE_FORMAT_WS);
-        try {
-            Date formattedStart = sdf.parse(paramStartDate);
-            Date formattedEnd = sdf.parse(paramEndDate);
-            param.setStartDate(getDateParam(sdf_ws.format(formattedStart)));
-            param.setEndDate(getDateParam(sdf_ws.format(formattedEnd)));
-        } catch (ParseException e) {
-            getView().showErrorMessage(getView().getString(R.string.sp_error_invalid_date));
-        }
-
-        param.setPage(paging.getPage());
-        param.setSeller(isSeller());
-        return param.getParamSummaryDeposit();
-
-    }*/
 
     /*private String getDateParam(String date) {
         return date.replace("/", "-");
@@ -475,16 +257,15 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
 
-            long sellerBalance = getView().getSellerSaldoBalance();
-            long buyerBalance = getView().getBuyerSaldoBalance();
+            float sellerBalance = getView().getSellerSaldoBalance();
+            float buyerBalance = getView().getBuyerSaldoBalance();
 
             if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
                 getView().showErrorMessage(getView().getString(R.string.saldo_min_withdrawal_error));
-                return;
             } else {
                 withdrawActivityBundle.putBoolean(IS_SELLER, isSeller());
-                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
-                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
+                withdrawActivityBundle.putFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
+                withdrawActivityBundle.putFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
                 launchWithdrawActivity(intent);
             }
             /*depositCacheInteractor.getUsableBuyerSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
@@ -554,43 +335,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         getView().getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
     }
 
-    /*private void showLoading() {
-        if (isViewAttached()) {
-            getView().getAdapter().showLoading();
-        }
-    }
-
-    private void hideLoading() {
-        if (isViewAttached()) {
-            getView().getAdapter().hideLoading();
-            getView().finishLoading();
-        }
-    }*/
-
-
-   /* private boolean canLoadMore() {
-        return !getDepositSummaryUseCase.isRequesting();
-    }
-
-    private boolean isOnLastPosition(int lastItemPosition, int visibleItem) {
-        return lastItemPosition == visibleItem;
-    }
-
-    private int getStartYear(String date) {
-        String year = date.substring(6, 10);
-        return Integer.parseInt(year);
-    }
-
-    private int getStartMonth(String date) {
-        String month = date.substring(3, 5);
-        return Integer.parseInt(month);
-    }
-
-    private int getDay(String date) {
-        String day = date.substring(0, 2);
-        return Integer.parseInt(day);
-    }*/
-
     @Override
     public void hideSaldoPrioritasFragment() {
         if (!isViewAttached()) {
@@ -606,14 +350,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         }
         getView().showSaldoPrioritasFragment(sellerDetails);
     }
-
-    /*@Override
-    public void finishLoading() {
-        if (!isViewAttached()) {
-            return;
-        }
-        getView().finishLoading();
-    }*/
 
     public boolean isSeller() {
         return isSeller;

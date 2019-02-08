@@ -114,8 +114,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private TextView withdrawBuyerSaldoTV;
     private TextView withdrawSellerSaldoTV;
 
-    private long buyerSaldoBalance;
-    private long sellerSaldoBalance;
+    private float buyerSaldoBalance;
+    private float sellerSaldoBalance;
     private int currentState = 0;
     private boolean isSeller = false;
     private TextView saldoTitleTV;
@@ -230,8 +230,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         if (getArguments() != null) {
             isSeller = getArguments().getBoolean(IS_SELLER);
-            buyerSaldoBalance = getArguments().getLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
-            sellerSaldoBalance = getArguments().getLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
+            buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
+            sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
         }
 
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
@@ -323,30 +323,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             public Boolean call(String text) {
                 int withdrawal = (int) StringUtils.convertToNumeric(text, false);
                 int min = checkSelectedBankMinimumWithdrawal();
-                long deposit;
+                float deposit;
                 if (currentState == SELLER_STATE) {
                     deposit = sellerSaldoBalance;
                 } else {
                     deposit = buyerSaldoBalance;
                 }
-
-                if (withdrawal < min) {
-                    totalWithdrawal.getBackground().mutate().
-                            setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-                    saldoWithdrawHintTV.setText(getString(R.string.saldo_withdraw_hint));
-                    saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
-                } else if (withdrawal > deposit) {
-                    totalWithdrawal.getBackground().mutate().
-                            setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-                    saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value));
-                    saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
-                } else {
-                    totalWithdrawal.getBackground().mutate().
-                            setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
-                    saldoWithdrawHintTV.setText(getString(R.string.saldo_withdraw_hint));
-                    saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_500));
-                }
-
                 return (withdrawal > 0) && (withdrawal >= min) && (withdrawal <= deposit);
             }
         });
@@ -464,14 +446,25 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     private void checkDepositIsSufficient(int withdrawal) {
-        // TODO: 7/2/19 check deposit
-        long deposit;
+        float deposit;
         // (int) StringUtils.convertToNumeric(totalBalance.getText().toString(), false);
 
         if (currentState == SELLER_STATE) {
             deposit = sellerSaldoBalance;
         } else {
             deposit = buyerSaldoBalance;
+        }
+
+        if (withdrawal > deposit) {
+            totalWithdrawal.getBackground().mutate().
+                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
+            saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value));
+            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+        } else {
+            totalWithdrawal.getBackground().mutate().
+                    setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+            saldoWithdrawHintTV.setText(getString(R.string.saldo_withdraw_hint));
+            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_500));
         }
 
         /*if (withdrawal > deposit) {
@@ -485,13 +478,24 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             return false;
         }
         int min = checkSelectedBankMinimumWithdrawal();
+
         if (withdrawal < min) {
-            showErrorWithdrawal(getActivity().getString(R.string.minimal_withdrawal, String.valueOf(min)));
+            totalWithdrawal.getBackground().mutate().
+                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
+            saldoWithdrawHintTV.setText(getString(R.string.saldo_withdraw_hint));
+            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
             return false;
+        } else {
+            return true;
+        }
+
+        /*if (withdrawal < min) {
+            showErrorWithdrawal(getActivity().getString(R.string.minimal_withdrawal, String.valueOf(min)));
+
         } else {
             showErrorWithdrawal(null);
             return true;
-        }
+        }*/
     }
 
     private int checkSelectedBankMinimumWithdrawal() {
