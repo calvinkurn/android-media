@@ -301,7 +301,6 @@ public class DashboardFragment
 
     @Override
     public void goToDeposit() {
-        // TODO: 24/1/19 update app link for buyer/seller saldo tab
         RouteManager.route(getContext(), ApplinkConst.DEPOSIT);
         affiliateAnalytics.onAfterClickSaldo();
     }

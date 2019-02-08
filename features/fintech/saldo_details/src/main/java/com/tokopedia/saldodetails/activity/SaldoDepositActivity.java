@@ -34,16 +34,10 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     private static final int REQUEST_CODE_LOGIN = 1001;
     private static final String TAG = "DEPOSIT_FRAGMENT";
-//    private TabLayout saldoTabLayout;
-//    private ViewPager saldoViewPager;
-//    private SaldoHistoryPagerAdapter saldoDetailPagerAdapter;
-//    private View saldoTabViewSeparator;
-//    ArrayList<SaldoTabItem> saldoTabItems = new ArrayList<>();
 
     @Inject
     UserSession userSession;
     private boolean isSeller;
-//    private SaldoTabItem sellerSaldoTabItem;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -101,7 +95,6 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         initInjector();
         initializeView();
         setUpToolbar();
-//        loadSection();
     }
 
     private void setUpToolbar() {
@@ -118,80 +111,14 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     }
 
-    /*private void loadSection() {
-
-        if (isSeller) {
-            loadTwoTabItem();
-        } else {
-            loadOneTabItem();
-        }
-        saldoDetailPagerAdapter = new SaldoHistoryPagerAdapter(getSupportFragmentManager());
-        saldoDetailPagerAdapter.setItems(saldoTabItems);
-        saldoViewPager.setAdapter(saldoDetailPagerAdapter);
-        saldoTabLayout.setupWithViewPager(saldoViewPager);
-
-        saldoViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (sellerSaldoTabItem != null &&
-                        sellerSaldoTabItem.getFragment() != null &&
-                        sellerSaldoTabItem.getFragment().isVisible()) {
-                    sellerSaldoTabItem.getFragment().setUserVisibleHint(true);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }*/
-
-    /*private void loadTwoTabItem() {
-        saldoTabItems.clear();
-
-        SaldoTabItem buyerSaldoTabItem = new SaldoTabItem();
-        buyerSaldoTabItem.setTitle(getString(R.string.saldo_buyer_tab_title));
-        buyerSaldoTabItem.setFragment(SaldoDepositFragment.createInstance(false, isSeller));
-
-        saldoTabItems.add(buyerSaldoTabItem);
-
-        sellerSaldoTabItem = new SaldoTabItem();
-        sellerSaldoTabItem.setTitle(getString(R.string.saldo_seller_tab_title));
-        sellerSaldoTabItem.setFragment(SaldoDepositFragment.createInstance(true, isSeller));
-
-        saldoTabItems.add(sellerSaldoTabItem);
-
-        saldoTabLayout.setVisibility(View.VISIBLE);
-        saldoTabViewSeparator.setVisibility(View.VISIBLE);
-
-    }
-
-    private void loadOneTabItem() {
-        saldoTabItems.clear();
-        SaldoTabItem saldoTabItem = new SaldoTabItem();
-        saldoTabItem.setTitle("");
-        saldoTabItem.setFragment(SaldoDepositFragment.createInstance(false, isSeller));
-        saldoTabItems.add(saldoTabItem);
-        saldoTabLayout.setVisibility(View.GONE);
-        saldoTabViewSeparator.setVisibility(View.GONE);
-    }*/
-
     private void initializeView() {
-        /*saldoTabLayout = findViewById(R.id.saldo_tab_layout);
-        saldoViewPager = findViewById(R.id.saldo_view_pager);
-        saldoTabViewSeparator = findViewById(R.id.saldo_tab_view_separator);*/
         isSeller = !TextUtils.isEmpty(userSession.getShopId());
         TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
 
         if (isSeller) {
             saldoHelp.setVisibility(View.VISIBLE);
             saldoHelp.setOnClickListener(v -> {
+                // TODO: 8/2/19 goto help page
             /*RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     SaldoDetailsConstants.SALDO_HELP_URL));*/
                 Toast.makeText(SaldoDepositActivity.this, "Go to help page", Toast.LENGTH_LONG).show();
@@ -212,11 +139,4 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         }
     }
 
-    /*public TabLayout getSaldoTabLayout() {
-        return saldoTabLayout;
-    }
-
-    public View getBuyerTabView() {
-        return Objects.requireNonNull(saldoTabLayout.getTabAt(0)).getCustomView();
-    }*/
 }
