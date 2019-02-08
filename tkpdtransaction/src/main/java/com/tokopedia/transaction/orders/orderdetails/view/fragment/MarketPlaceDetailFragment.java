@@ -547,8 +547,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                         String shopName = this.shopInfo.getShopName();
                         String shopLogo = this.shopInfo.getShopLogo();
                         String shopUrl = this.shopInfo.getShopUrl();
-                        String applink = actionButton.getUri();
-                        applink = applink.concat("&shopId=" + shopId + "&shopName=" + shopName + "&shopLogo=" + shopLogo + "&shopUrl=" + shopUrl);
+                        String invoiceUrl;
+                        Uri uri = Uri.parse(actionButton.getUri());
+                        invoiceUrl = uri.getQueryParameter("invoiceUrl");
+                        String applink = "tokopedia://topchat/askseller/" + shopId ;
+                        applink = applink.concat("?customMessage=" + invoiceUrl + "&source=" + "tx_ask_seller" + "&opponent_name=" +"" + "&avatar=" + "");
                         RouteManager.route(getContext(), applink);
                     }
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {

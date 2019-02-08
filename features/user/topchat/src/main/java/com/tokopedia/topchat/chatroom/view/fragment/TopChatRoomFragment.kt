@@ -127,8 +127,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onSuccessGetExistingChatFirstTime())
             presenter.connectWebSocket(messageId)
         } else {
-            presenter.getMessageId(toUserId.toString(),
-                    toShopId.toString(),
+            presenter.getMessageId(toUserId,
+                    toShopId,
                     source,
                     onError(),
                     onSuccessGetMessageId())

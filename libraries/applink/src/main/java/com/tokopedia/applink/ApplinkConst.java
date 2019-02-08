@@ -200,6 +200,8 @@ public interface ApplinkConst {
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
     String ASKSELLER = "tokopedia://topchat/askseller/{custom_subject}";
+    String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
+            "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -251,6 +253,7 @@ public interface ApplinkConst {
 
         String CUSTOM_MESSAGE = "customMessage";
         String CUSTOM_SUBJECT = "customSubject";
+        String AVATAR = "avatar";
         String PARAM_HEADER = "header";
 
 

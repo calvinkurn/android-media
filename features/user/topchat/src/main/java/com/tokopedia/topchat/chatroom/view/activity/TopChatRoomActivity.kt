@@ -64,14 +64,12 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             val intent = getCallingIntent(context, "", shopName, LABEL_SELLER, toShopId, ROLE_SELLER,
                     MODE_DEFAULT_GET_CHAT, "", avatar)
             intent.putExtra(ApplinkConst.Chat.SOURCE, source)
-            val toShopIdInt = if(toShopId.isBlank()) 0 else toShopId.toInt()
-            intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopIdInt)
             return intent
         }
 
         @JvmStatic
         fun getAskSellerIntent(context: Context, toShopId: String, shopName: String,
-                               customSubject: String, customMessage: String, source: String,
+                               customMessage: String, source: String,
                                avatar: String): Intent {
             val intent = getAskSellerIntent(context, toShopId, shopName, source,
                     avatar)
@@ -88,14 +86,12 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             val intent = getCallingIntent(context, "", userName, LABEL_USER, userId, ROLE_USER,
                     MODE_DEFAULT_GET_CHAT, "", avatar)
             intent.putExtra(ApplinkConst.Chat.SOURCE, source)
-            val toUserIdInt = if(userId.isBlank()) 0 else userId.toInt()
-            intent.putExtra(ApplinkConst.Chat.TO_USER_ID, toUserIdInt)
             return intent
         }
 
         @JvmStatic
         fun getAskBuyerIntent(context: Context, toUserId: String, customerName: String,
-                              customSubject: String, customMessage: String, source: String,
+                              customMessage: String, source: String,
                               avatar: String): Intent {
             val intent = getAskUserIntent(context, toUserId, customerName, source, avatar)
             val bundle = intent.extras
@@ -124,19 +120,22 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         }
 
         @JvmStatic
-        @DeepLink(ApplinkConst.ASKSELLER)
-        fun getAskSellerIntent(context: Context, bundle: Bundle): Intent {
-            val intent = Intent(context, TopChatRoomActivity::class.java)
-            intent.putExtra(InboxMessageConstant.PARAM_SENDER_NAME, bundle.getString(InboxChatConstant.SHOP_NAME))
-            intent.putExtra(ChatRoomHeaderViewModel().role, LABEL_SELLER)
-            val toShopIdInt = if(bundle.getString(InboxChatConstant.SHOP_ID).isBlank()) 0 else bundle.getString(InboxChatConstant.SHOP_ID).toInt()
-            intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopIdInt)
-            intent.putExtra(InboxMessageConstant.PARAM_SENDER_ID, bundle.getString(InboxChatConstant.SHOP_ID))
-            bundle.putString(ApplinkConst.Chat.SOURCE, "tx_ask_seller")
-            bundle.putString(InboxMessageConstant.PARAM_SENDER_TAG, LABEL_SELLER)
-            intent.putExtra(InboxMessageConstant.PARAM_SENDER_IMAGE, bundle.getString(InboxChatConstant.SHOP_LOGO))
-            intent.putExtra(ApplinkConst.Chat.CUSTOM_SUBJECT, InboxChatConstant.INVOICE)
-            intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, bundle.getString(InboxChatConstant.INVOICEURL))
+        @DeepLink(ApplinkConst.TOPCHAT_ASKSELLER)
+        fun getAskSellerIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            val toShopId = extras.getString(ApplinkConst.Chat.TO_SHOP_ID,"0")
+            val shopName = extras.getString(ApplinkConst.Chat.OPPONENT_NAME,"")
+            val customMessage = extras.getString(ApplinkConst.Chat.CUSTOM_MESSAGE,"")
+            val avatar = extras.getString(ApplinkConst.Chat.AVATAR,"")
+            val source = extras.getString(ApplinkConst.Chat.SOURCE,"deeplink")
+
+            val intent = getAskSellerIntent(context,
+                    toShopId,
+                    shopName,
+                    customMessage,
+                    source,
+                    avatar
+            )
             return intent
         }
 
