@@ -18,6 +18,8 @@ public class HomeFeedTypeFactory extends BaseAdapterTypeFactory {
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == HomeFeedViewHolder.LAYOUT) {
             return new HomeFeedViewHolder(parent);
+        } else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
+            return new LoadingShimmeringGridViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
