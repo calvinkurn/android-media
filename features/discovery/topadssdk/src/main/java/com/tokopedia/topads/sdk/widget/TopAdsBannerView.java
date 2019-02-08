@@ -64,9 +64,20 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private TopAdsBannerClickListener topAdsBannerClickListener;
     private TopAdsItemImpressionListener impressionListener;
     private BannerAdsAdapter bannerAdsAdapter;
+    private int final int TEMPLATE_SHOP = 0;
+    private int final int TEMPLATE_DIGITAL = 1;
 
     @Inject
     BannerAdsPresenter bannerPresenter;
+    private RecyclerView recyclerView;
+    private TextView promotedTxt;
+    private TextView shopName;
+    private LinearLayout badgeContainer;
+    private ImageView iconImg;
+    private TextView nameTxt;
+    private TextView descriptionTxt;
+    private TextView ctaTxt;
+    private int headlineType;
 
     public TopAdsBannerView(Context context) {
         super(context);
@@ -99,12 +110,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         if (activityIsFinishing(context))
             return;
 
-        final ArrayList<ImageView> indicatorItems = new ArrayList<>();
         inflate(getContext(), R.layout.layout_ads_banner_shop_pager, this);
-        RecyclerView recyclerView = findViewById(R.id.list);
-        TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
-        TextView shopName = (TextView) findViewById(R.id.shop_name);
-        LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
+        recyclerView = findViewById(R.id.list);
+        promotedTxt = (TextView) findViewById(R.id.title_promote);
+        shopName = (TextView) findViewById(R.id.shop_name);
+        badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
 
         promotedTxt.setText(cpmData.getCpm().getPromotedText());
         shopName.setText(TopAdsBannerView.escapeHTML(cpmData.getCpm().getName()));
@@ -137,6 +147,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
                 outRect.right = mItemOffset;
             }
         });
+        setHeadlineShopData(cpmData, appLink, adsClickUrl);
+        headlineType = TEMPLATE_SHOP;
+    }
+
+    private void setHeadlineShopData(CpmData cpmData, String appLink, String adsClickUrl) {
         if (cpmData != null && cpmData.getCpm().getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpmData, appLink, adsClickUrl));
@@ -168,10 +183,15 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         if (activityIsFinishing(context))
             return;
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
-        final ImageView iconImg = (ImageView) findViewById(R.id.image);
-        TextView nameTxt = (TextView) findViewById(R.id.name);
-        TextView descriptionTxt = (TextView) findViewById(R.id.description);
-        TextView ctaTxt = (TextView) findViewById(R.id.cta_btn);
+        iconImg = (ImageView) findViewById(R.id.image);
+        nameTxt = (TextView) findViewById(R.id.name);
+        descriptionTxt = (TextView) findViewById(R.id.description);
+        ctaTxt = (TextView) findViewById(R.id.cta_btn);
+        setHeadlineDigitalData(context, cpm);
+        headlineType = TEMPLATE_DIGITAL;
+    }
+
+    private void setHeadlineDigitalData(Context context, Cpm cpm) {
         Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

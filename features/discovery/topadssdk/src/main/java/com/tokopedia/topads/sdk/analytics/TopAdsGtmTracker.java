@@ -35,7 +35,7 @@ public class TopAdsGtmTracker {
                                     "id", product.getId(),
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
-                                    "category", product.getCategory().getId(),
+                                    "category", "none/other",
                                     "varian", "none/other",
                                     "list", "/homepage - product topads - product upload",
                                     "position", position + 1)))
@@ -103,7 +103,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/search - headline",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -125,7 +125,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/search - headline shop",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -147,7 +147,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/search - headline product'",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -240,7 +240,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/product detail - topads headline",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -262,7 +262,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/hot topads headline/"+hotlistKey+" - hotlist lainnya",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -284,7 +284,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/product detail - topads headline shop",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -306,7 +306,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/product detail page - topads headline product",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -328,7 +328,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/hot topads headline shop/"+hotlistKey+" - hotlist lainnya",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -350,7 +350,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/hot topads headline product/"+hotlistKey+" - hotlist lainnya",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -372,7 +372,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "intermediary - topads headline shop",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -394,7 +394,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "intermediary - topads headline product",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -416,7 +416,7 @@ public class TopAdsGtmTracker {
                                                     "id", cpm.getId(),
                                                     "name", "/intermediary - headline",
                                                     "creative", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -585,7 +585,7 @@ public class TopAdsGtmTracker {
                                                     "name", categoryName+" - topads headline - subcategory",
                                                     "creative", cpm.getCpm().getName(),
                                                     "creative_url", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -608,7 +608,7 @@ public class TopAdsGtmTracker {
                                                     "name", categoryName+" - topads headline product - subcategory",
                                                     "creative", cpm.getCpm().getName(),
                                                     "creative_url", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -631,7 +631,7 @@ public class TopAdsGtmTracker {
                                                     "name", categoryName+" - topads headline shop - subcategory",
                                                     "creative", cpm.getCpm().getName(),
                                                     "creative_url", cpm.getRedirect(),
-                                                    "position", position))
+                                                    "position", position + 1))
                             ))
             );
             tracker.sendEnhancedEcommerce(map);

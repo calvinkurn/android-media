@@ -82,9 +82,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 productListener.onBannerAdsClicked(applink);
                 if(applink.contains(SHOP)) {
-                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, getAdapterPosition());
+                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
                 } else {
-                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, getAdapterPosition());
+                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
                 }
             }
         });
