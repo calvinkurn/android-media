@@ -64,6 +64,8 @@
     <string name="refund">Refund</string>
     <string name="saldo_return">Penghasilan</string>
     <string name="saldo_exceeding_total_value">Nilai melebihi total Saldo Penghasilan</string>
+    <string name="show_case_title">Penarikan Saldo</string>
+    <string name="show_case_desc">Pilih sumber dana yang ingin ditarik. Kamu dapat menarik dana dari refund atau dari penghasilan.</string>
 
 
 </resources>

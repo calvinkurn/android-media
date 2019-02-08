@@ -1,10 +1,13 @@
 package com.tokopedia.withdraw.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -43,6 +46,11 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -230,6 +238,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         if (isSeller) {
             saldoTypeCV.setVisibility(View.VISIBLE);
+
+            new Handler().postDelayed(() -> startShowCase(), 500);
         } else {
             saldoTypeCV.setVisibility(View.GONE);
         }
@@ -313,11 +323,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             public Boolean call(String text) {
                 int withdrawal = (int) StringUtils.convertToNumeric(text, false);
                 int min = checkSelectedBankMinimumWithdrawal();
-                int deposit;
+                long deposit;
                 if (currentState == SELLER_STATE) {
-                    deposit = (int) StringUtils.convertToNumeric(withdrawSellerSaldoTV.getText().toString(), false);
+                    deposit = sellerSaldoBalance;
                 } else {
-                    deposit = (int) StringUtils.convertToNumeric(withdrawBuyerSaldoTV.getText().toString(), false);
+                    deposit = buyerSaldoBalance;
                 }
 
                 if (withdrawal < min) {
@@ -332,7 +342,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
                 } else {
                     totalWithdrawal.getBackground().mutate().
-                            setColorFilter(getResources().getColor(R.color.grey_500), PorterDuff.Mode.SRC_ATOP);
+                            setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
                     saldoWithdrawHintTV.setText(getString(R.string.saldo_withdraw_hint));
                     saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_500));
                 }
@@ -388,6 +398,49 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     }
 
+    private void startShowCase() {
+        if (!ShowCasePreference.hasShown(getContext(), WithdrawFragment.class.getName())) {
+            ShowCasePreference.setShown(getContext(), WithdrawFragment.class.getName(), true);
+            createShowCaseDialog().show(getActivity(),
+                    WithdrawFragment.class.getName(),
+                    getShowCaseObjectListForBuyerSaldo()
+            );
+        }
+    }
+
+    private ArrayList<ShowCaseObject> getShowCaseObjectListForBuyerSaldo() {
+        ArrayList<ShowCaseObject> showCaseObjects = new ArrayList<>();
+
+        showCaseObjects.add(new ShowCaseObject(
+                saldoTypeCV,
+                getString(R.string.show_case_title),
+                getString(R.string.show_case_desc),
+                ShowCaseContentPosition.BOTTOM,
+                Color.WHITE));
+
+        return showCaseObjects;
+    }
+
+    @SuppressLint("PrivateResource")
+    public ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.show_case_saldo)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.dp_12)
+                .arrowWidth(R.dimen.dp_16)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .textSizeRes(R.dimen.sp_12)
+                .finishStringRes(R.string.label_next)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
+    }
+
     private void enableBuyerSaldoView() {
         withdrawBuyerSaldoTV.setTextColor(getResources().getColor(R.color.white));
         withdrawBuyerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
@@ -421,9 +474,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             deposit = buyerSaldoBalance;
         }
 
-        if (withdrawal > deposit) {
+        /*if (withdrawal > deposit) {
             showErrorWithdrawal(getStringResource(R.string.error_withdraw_exceed_balance));
-        }
+        }*/
     }
 
     private boolean checkMinimumWithdrawal(int withdrawal) {
