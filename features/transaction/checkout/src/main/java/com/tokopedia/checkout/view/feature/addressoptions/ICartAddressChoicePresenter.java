@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view.feature.addressoptions;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 /**
  * Created by Irfan Khoirul on 05/02/18.

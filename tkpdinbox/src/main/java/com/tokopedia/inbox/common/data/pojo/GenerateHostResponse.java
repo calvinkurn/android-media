@@ -16,7 +16,9 @@ public class GenerateHostResponse {
     @SerializedName("upload_host")
     @Expose
     private String uploadHost;
-
+    @SerializedName("user_id")
+    @Expose
+    private int userId;
     @SerializedName("token")
     @Expose
     private String token;
@@ -35,6 +37,14 @@ public class GenerateHostResponse {
 
     public void setUploadHost(String uploadHost) {
         this.uploadHost = uploadHost;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getToken() {

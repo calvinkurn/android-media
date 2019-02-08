@@ -79,6 +79,10 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         return visitables.get(position).type(adapterTypeFactory);
     }
 
+    public List<Visitable> getList() {
+        return visitables;
+    }
+
     public boolean isLoading() {
         int lastIndex = getLastIndex();
         if (lastIndex > -1) {

@@ -2,22 +2,20 @@ package com.tokopedia.checkout.view.feature.multipleaddressform.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.google.android.flexbox.FlexboxLayout;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressAdapter;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;
-import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceFragment;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -45,7 +43,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPreOrder;
     private TextView tvCashback;
     private Button btAddNewShipment;
-    private LinearLayout rlProductPoliciesLayout;
+    private FlexboxLayout productPoliciesLayout;
     private ImageView imgShopBadge;
 
     public MultipleAddressViewHolder(Context context, View itemView) {
@@ -62,7 +60,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
         tvCashback = itemView.findViewById(R.id.tv_cashback);
         btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
-        rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        productPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
 
     }
@@ -76,10 +74,10 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             boolean firstItemPosition
     ) {
         if (data.isOfficialStore()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            ImageHandler.LoadImage(imgShopBadge, data.getOfficialStoreLogoUrl());
             imgShopBadge.setVisibility(View.VISIBLE);
         } else if (data.isGoldMerchant()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            ImageHandler.LoadImage(imgShopBadge, data.getGoldMerchantLogoUrl());
             imgShopBadge.setVisibility(View.VISIBLE);
         } else {
             imgShopBadge.setVisibility(View.GONE);
@@ -114,15 +112,16 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (data.isPreOrder()) {
+            tvPreOrder.setText(data.getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);
         }
 
         if (data.isCashBack() || data.isFreeReturn() || data.isPreOrder()) {
-            rlProductPoliciesLayout.setVisibility(View.VISIBLE);
+            productPoliciesLayout.setVisibility(View.VISIBLE);
         } else {
-            rlProductPoliciesLayout.setVisibility(View.GONE);
+            productPoliciesLayout.setVisibility(View.GONE);
         }
     }
 
@@ -138,10 +137,10 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
         ShowCaseDialog showCaseDialog = createShowCaseDialog();
 
-        if (!ShowCasePreference.hasShown(context, CartAddressChoiceFragment.class.getName()))
+        if (!ShowCasePreference.hasShown(context, MultipleAddressViewHolder.class.getName()))
             showCaseDialog.show(
                     (Activity) context,
-                    CartAddressChoiceFragment.class.getName(),
+                    MultipleAddressViewHolder.class.getName(),
                     showCaseObjectList
             );
     }
@@ -150,13 +149,13 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         return new ShowCaseBuilder()
                 .customView(R.layout.show_case_checkout)
                 .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
+                .spacingRes(R.dimen.dp_12)
+                .arrowWidth(R.dimen.dp_16)
                 .textColorRes(R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(R.color.black)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.fontvs)
+                .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)

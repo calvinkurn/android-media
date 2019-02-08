@@ -27,7 +27,7 @@ public class RemoteConfigKey {
     public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
     public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
     public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
-    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message";
+    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
 
@@ -41,6 +41,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
+    public static final String MAINAPP_FLIGHT_NEW_SEARCH_FLOW = "mainapp_flight_new_search_flow";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
 
@@ -63,4 +64,11 @@ public class RemoteConfigKey {
     public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
+    public static final String AFFILIATE_EXPLORE_ENABLE_FILTER = "affiliate_explore_enable_filter";
+    public static final String AFFILIATE_PROFILE_SHARE_ALL = "android_customer_enable_profile_share_allow_all";
+    public static final String AFFILIATE_PROFILE_SHARE_RULES = "android_customer_enable_profile_share_rules";
+
+    public static final String fireBaseShareMsgKey = "app_referral_product_share_format";
+    public static final String fireBaseGuestShareMsgKey = "app_pdp_share_msg_guest";
+    public static final String LOGIN_REVAMP_UI = "mainapp_enable_login_revamp_phone";
 }

@@ -108,6 +108,8 @@ public class OrderDetailMapper {
         viewData.setTotalItemWeight(responseData.getSummary().getTotalWeight());
         viewData.setAdditionalFee(responseData.getSummary().getAdditionalPrice());
         viewData.setDeliveryPrice(responseData.getSummary().getShippingPrice());
+        viewData.setHavingCod(responseData.getSummary().getOrderCod());
+        viewData.setCodFee(responseData.getSummary().getCodFee());
         viewData.setInsurancePrice(responseData.getSummary().getInsurancePrice());
         viewData.setProductPrice(responseData.getSummary().getItemsPrice());
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());

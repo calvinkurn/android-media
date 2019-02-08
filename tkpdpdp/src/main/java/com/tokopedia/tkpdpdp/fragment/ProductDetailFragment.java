@@ -40,13 +40,18 @@ import android.widget.TextView;
 import android.net.Uri;
 
 import com.appsflyer.AFInAppEventType;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
@@ -55,6 +60,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
@@ -64,11 +70,14 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -103,9 +112,8 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -128,6 +136,8 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView;
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -146,8 +156,8 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.constant.ConstantKey;
-import com.tokopedia.tkpdpdp.customview.ButtonAffiliate;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
+import com.tokopedia.tkpdpdp.customview.ButtonAffiliate;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
 import com.tokopedia.tkpdpdp.customview.FlingBehavior;
@@ -170,9 +180,9 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
 import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
-import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 import com.tokopedia.topads.sdk.base.Config;
@@ -187,10 +197,13 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.transaction.common.TransactionRouter;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsProductDetailPage;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -218,10 +231,9 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .WIHSLIST_STATUS_IS_WISHLIST;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .WISHLIST_STATUS_UPDATED_POSITION;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
+import static com.tokopedia.core.share.DefaultShare.KEY_OTHER;
 import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
 import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
@@ -246,7 +258,8 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener, ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener,
+        ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -649,7 +662,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(View.INVISIBLE);
+        labelCod.setVisibility(isCodShown? View.INVISIBLE : View.GONE);
     }
 
     private void expandedAppBar() {
@@ -959,17 +972,68 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductShareClicked(@NonNull ProductDetailData data) {
-        ProductShare productShare = new ProductShare(getActivity());
 
         ProductData productData = new ProductData();
         productData.setPriceText(data.getInfo().getProductPrice());
         productData.setCashbacktext(data.getCashBack().getProductCashback());
         productData.setProductId(data.getInfo().getProductId().toString());
         productData.setProductName(com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(data.getInfo().getProductName()).toString());
+        productData.setProductShareDescription(productData.getProductName());
         productData.setProductUrl(data.getInfo().getProductUrl());
         productData.setProductImageUrl(data.getProductImages().get(0).getImageSrc());
         productData.setShopUrl(data.getShopInfo().getShopUrl());
+        productData.setShopName(data.getShopInfo().getShopName());
 
+        checkAndExecuteReferralAction(productData);
+
+    }
+
+    private void checkAndExecuteReferralAction(ProductData productData){
+        UserSession userSession = new UserSession(getActivity());
+        String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
+        if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
+
+        if(userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
+            String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
+            if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
+                    doReferralShareAction(productData, fireBaseRemoteMsg);
+            }
+            else {
+                executeProductShare(productData);
+            }
+        }
+        else {
+            executeProductShare(productData);
+        }
+    }
+
+    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
+        ActionCreator actionCreator = new ActionCreator<String, Integer>(){
+            @Override
+            public void actionSuccess(int actionId, String dataObj) {
+                if(!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
+                            ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
+                    TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
+
+                }
+                executeProductShare(productData);
+            }
+
+            @Override
+            public void actionError(int actionId, Integer dataObj) {
+                executeProductShare(productData);
+            }
+        };
+
+        ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
+                (ActionUIDelegate<String, String>) getActivity());
+
+    }
+
+
+    private void executeProductShare(ProductData productData){
+        ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
         productShare.share(productData, ()->{
             showProgressLoading();
             return Unit.INSTANCE;
@@ -977,6 +1041,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             hideProgressLoading();
             return Unit.INSTANCE;
         });
+
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -1423,6 +1488,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onNullData() {
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.logException(new ProductNotFoundException());
+            }
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
             if (webViewHandleListener != null) {
                 webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");

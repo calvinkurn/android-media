@@ -44,7 +44,7 @@ public class TopAdsManagementService extends BearerService<TopAdsOldManagementAp
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTopAdsAuth(null))
+                        .buildClientTopAdsAuth())
                 .build();
     }
 }

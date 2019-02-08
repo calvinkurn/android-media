@@ -14,7 +14,7 @@ import com.tokopedia.checkout.view.feature.removecartitem.viewmodel.CartProductI
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_CART_REMOVE_PRODUCT =
@@ -84,6 +84,7 @@ public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (cartProductItemViewModel.getCartItemData().getOriginData().isPreOrder()) {
+            tvPreOrder.setText(cartProductItemViewModel.getCartItemData().getOriginData().getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);

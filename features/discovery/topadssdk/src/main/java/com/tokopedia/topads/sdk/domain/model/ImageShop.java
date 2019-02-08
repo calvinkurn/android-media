@@ -21,17 +21,20 @@ public class ImageShop implements Parcelable {
     private static final String KEY_XS_ECS = "xs_ecs";
 
     @SerializedName(KEY_COVER)
-    private String cover;
+    private String cover = "";
     @SerializedName(KEY_S_URL)
-    private String sUrl;
+    private String sUrl = "";
     @SerializedName(KEY_XS_URL)
-    private String xsUrl;
+    private String xsUrl = "";
     @SerializedName(KEY_COVER_ECS)
-    private String coverEcs;
+    private String coverEcs = "";
     @SerializedName(KEY_S_ECS)
-    private String sEcs;
+    private String sEcs = "";
     @SerializedName(KEY_XS_ECS)
-    private String xsEcs;
+    private String xsEcs = "";
+
+    public ImageShop() {
+    }
 
     public ImageShop(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_COVER)) {

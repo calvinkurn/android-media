@@ -29,16 +29,15 @@
         android:paddingRight="@dimen/dp_10"
         android:singleLine="true"
         android:ellipsize="marquee"
-        android:textSize="@dimen/text_size_small"
+        android:textSize="@dimen/sp_12"
         android:textColor="@color/tkpd_main_green"
         tools:text="Maafm" />
 
-    <com.tokopedia.core.customwidget.SquareHImageView
+    <com.tokopedia.design.image.SquareImageView
         android:id="@+id/setting"
         android:layout_width="@dimen/min_height_template"
         android:layout_height="@dimen/min_height_template"
         android:background="@drawable/interactive_label_template_chat"
         app:srcCompat="@drawable/ic_setting_chat" />
-
 
 </LinearLayout>

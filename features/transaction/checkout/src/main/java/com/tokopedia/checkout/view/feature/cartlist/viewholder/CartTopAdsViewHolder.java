@@ -1,14 +1,10 @@
 package com.tokopedia.checkout.view.feature.cartlist.viewholder;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -21,11 +17,11 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     public static final int TYPE_VIEW_CART_TOPADS = R.layout.layout_cart_topads;
 
     private TopAdsCarouselView topAdsCarouselView;
-    private Context context;
+    private CartAdapter.ActionListener listener;
 
-    public CartTopAdsViewHolder(View itemView) {
+    public CartTopAdsViewHolder(View itemView, CartAdapter.ActionListener listener) {
         super(itemView);
-        this.context = itemView.getContext();
+        this.listener = listener;
         topAdsCarouselView = itemView.findViewById(R.id.topads);
     }
 
@@ -36,16 +32,7 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+        listener.onTopAdsItemClicked(product);
     }
 
     @Override

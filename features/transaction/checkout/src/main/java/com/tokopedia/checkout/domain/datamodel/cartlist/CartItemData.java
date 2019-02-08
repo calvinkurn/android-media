@@ -135,6 +135,7 @@ public class CartItemData implements Parcelable {
         private int weightUnit;
         private String weightFormatted;
         private boolean isPreOrder;
+        private boolean isCod;
         private boolean isFreeReturn;
         private boolean isCashBack;
         private boolean isFavorite;
@@ -155,6 +156,9 @@ public class CartItemData implements Parcelable {
         private boolean goldMerchant;
         private boolean wishlisted;
         private int originalQty;
+        private String goldMerchantLogoUrl;
+        private String officialStoreLogoUrl;
+        private String preOrderInfo;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -356,6 +360,14 @@ public class CartItemData implements Parcelable {
             this.weightFormatted = weightFormatted;
         }
 
+        public String getPreOrderInfo() {
+            return preOrderInfo;
+        }
+
+        public void setPreOrderInfo(String preOrderInfo) {
+            this.preOrderInfo = preOrderInfo;
+        }
+
         public int getInvenageValue() {
             return invenageValue;
         }
@@ -420,6 +432,22 @@ public class CartItemData implements Parcelable {
             this.goldMerchant = goldMerchant;
         }
 
+        public String getGoldMerchantLogoUrl() {
+            return goldMerchantLogoUrl;
+        }
+
+        public void setGoldMerchantLogoUrl(String goldMerchantLogoUrl) {
+            this.goldMerchantLogoUrl = goldMerchantLogoUrl;
+        }
+
+        public String getOfficialStoreLogoUrl() {
+            return officialStoreLogoUrl;
+        }
+
+        public void setOfficialStoreLogoUrl(String officialStoreLogoUrl) {
+            this.officialStoreLogoUrl = officialStoreLogoUrl;
+        }
+
         public boolean isWishlisted() {
             return wishlisted;
         }
@@ -450,6 +478,14 @@ public class CartItemData implements Parcelable {
 
         public void setOriginalQty(int originalQty) {
             this.originalQty = originalQty;
+        }
+
+        public boolean isCod() {
+            return isCod;
+        }
+
+        public void setCod(boolean cod) {
+            isCod = cod;
         }
 
         public OriginData() {
@@ -499,6 +535,9 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.shopId);
             dest.writeString(this.shopType);
             dest.writeInt(this.originalQty);
+            dest.writeString(this.goldMerchantLogoUrl);
+            dest.writeString(this.officialStoreLogoUrl);
+            dest.writeString(this.preOrderInfo);
         }
 
         protected OriginData(Parcel in) {
@@ -539,6 +578,9 @@ public class CartItemData implements Parcelable {
             this.shopId = in.readString();
             this.shopType = in.readString();
             this.originalQty = in.readInt();
+            this.goldMerchantLogoUrl = in.readString();
+            this.officialStoreLogoUrl = in.readString();
+            this.preOrderInfo = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
