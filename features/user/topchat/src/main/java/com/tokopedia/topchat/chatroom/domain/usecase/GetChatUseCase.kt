@@ -32,11 +32,11 @@ class GetChatUseCase @Inject constructor(
         val graphqlRequest = GraphqlRequest(query,
                 GetExistingChatPojo::class.java, requestParams)
 
-        val cacheStrategy = GraphqlCacheStrategy.Builder(requestParams[PARAM_CACHE_STRATEGY] as CacheType?)
-                .setSessionIncluded(true).build()
+//        val cacheStrategy = GraphqlCacheStrategy.Builder(requestParams[PARAM_CACHE_STRATEGY] as CacheType?)
+//                .setSessionIncluded(true).build()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.setCacheStrategy(cacheStrategy)
+//        graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.execute(subscriber)
     }
 

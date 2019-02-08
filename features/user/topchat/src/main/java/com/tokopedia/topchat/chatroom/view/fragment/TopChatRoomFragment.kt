@@ -245,7 +245,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             hideLoading()
             showSnackbarError(it.localizedMessage)
 //            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
-            presenter.getChatCache(messageId, onError(), onSuccessGetExistingChatFirstTime());
+//            presenter.getChatCache(messageId, onError(), onSuccessGetExistingChatFirstTime());
         }
     }
 
