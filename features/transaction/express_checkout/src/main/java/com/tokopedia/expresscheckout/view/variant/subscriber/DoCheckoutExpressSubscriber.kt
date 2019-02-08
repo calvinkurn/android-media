@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.subscriber
 
+import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.data.entity.response.checkout.CheckoutExpressGqlResponse
@@ -47,8 +48,15 @@ class DoCheckoutExpressSubscriber(val view: CheckoutVariantContract.View?,
         val checkoutResponseModel = domainModelMapper.convertToDomainModel(checkoutResponse.checkoutResponse)
         val headerErrorCode = if (checkoutResponseModel.headerModel?.errorCode?.isEmpty() == true) 0 else checkoutResponseModel.headerModel?.errorCode?.toInt()
                 ?: 0
-        val dataErrorCode = if (checkoutResponseModel.checkoutDataModel?.error?.isEmpty() == true) 0 else checkoutResponseModel.checkoutDataModel?.error?.toInt()
-                ?: 0
+        var dataErrorCode = 0
+        if (checkoutResponseModel.checkoutDataModel?.error?.isNotEmpty() == true) {
+            try {
+                dataErrorCode = checkoutResponseModel.checkoutDataModel?.error?.toInt() ?: 0
+            } catch (exception: NumberFormatException) {
+                CommonUtils.dumper(exception)
+            }
+        }
+
         val headerMessage = if (checkoutResponseModel.headerModel?.messages?.isNotEmpty() == true) checkoutResponseModel.headerModel?.messages?.get(0)
                 ?: "" else ""
         val dataMessage = checkoutResponseModel.checkoutDataModel?.message ?: ""
@@ -61,15 +69,17 @@ class DoCheckoutExpressSubscriber(val view: CheckoutVariantContract.View?,
             headerMessage.equals(STATE_HEADER_ERROR_CHANGE_COURIER) -> {
                 view?.showErrorCourier(checkoutResponseModel.checkoutDataModel?.error ?: "")
             }
-            headerErrorCode == STATE_SUCCESS && dataErrorCode >= STATE_ERROR ||
-                    (headerErrorCode >= STATE_ERROR && headerMessage.equals(STATE_HEADER_ERROR_CHANGE_PAYMENT)) -> {
+            (headerErrorCode >= STATE_ERROR && headerMessage.equals(STATE_HEADER_ERROR_CHANGE_PAYMENT)) ||
+                    headerErrorCode == STATE_SUCCESS && dataErrorCode >= STATE_ERROR -> {
                 view?.showErrorPayment(dataMessage)
             }
             headerMessage == STATE_HEADER_ERROR_PRODUCT_NOT_ACTIVE -> {
-                view?.showErrorNotAvailable(view.getActivityContext()?.getString(R.string.label_error_stock_not_available) ?: "")
+                view?.showErrorNotAvailable(view.getActivityContext()?.getString(R.string.label_error_stock_not_available)
+                        ?: "")
             }
             headerMessage == STATE_HEADER_ERROR_SHOP_NOT_ACTIVE -> {
-                view?.showErrorNotAvailable(view.getActivityContext()?.getString(R.string.label_error_shop_closed) ?: "")
+                view?.showErrorNotAvailable(view.getActivityContext()?.getString(R.string.label_error_shop_closed)
+                        ?: "")
             }
             else -> view?.showErrorAPI(RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT)
         }
