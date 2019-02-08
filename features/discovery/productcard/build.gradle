@@ -10,13 +10,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'payment-setting'
-    groupId = 'com.tokopedia.payment'
-    versionName = "${tkpdPaymentVersion}"
-    artifactName ="payment_setting-release"
-}
-
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
