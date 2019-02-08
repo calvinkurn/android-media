@@ -61,6 +61,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
                 mListener.onEditClick(address)
         );
         mViewAddress.setOnClickListener(view -> adapter.setSelectedAddressData(position));
+        mButtonAddAddress.setOnClickListener(view -> mListener.onAddAddressButtonClicked());
     }
 
     public void setState(VIEW_TYPE type) {

@@ -500,4 +500,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         super.onStart();
         checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
     }
+
+    @Override
+    public void onAddAddressButtonClicked() {
+        if (getActivity() != null)
+        startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
+                getActivity(), null, token, false, false),
+                LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+    }
 }

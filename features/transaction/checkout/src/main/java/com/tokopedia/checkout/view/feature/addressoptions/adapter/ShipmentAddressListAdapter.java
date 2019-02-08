@@ -46,8 +46,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
             RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
             RecipientAddressModel address = mAddressModelList.get(addressPosition);
             addressHolder.bind(address, this, mActionListener, addressPosition);
-            if (position == getItemCount() - 1)
-                addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
+            if (position == getItemCount() - 1) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
             if (position == 0) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
         }
     }
@@ -105,6 +104,8 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
          * Executed when edit address button is clicked
          */
         void onEditClick(RecipientAddressModel model);
+
+        void onAddAddressButtonClicked();
     }
 
     class SampaiViewHolder extends RecyclerView.ViewHolder {

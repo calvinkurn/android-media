@@ -23,8 +23,6 @@ import rx.Subscriber;
 public class ShipmentAddressListPresenter
         extends CartMvpPresenter<ISearchAddressListView<List<RecipientAddressModel>>> {
 
-    private static final String TAG = ShipmentAddressListPresenter.class.getSimpleName();
-
     private static final String DEFAULT_KEYWORD = "";
 
     private final GetPeopleAddressUseCase mGetPeopleAddressUseCase;
