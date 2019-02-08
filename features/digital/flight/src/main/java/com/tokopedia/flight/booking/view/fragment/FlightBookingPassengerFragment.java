@@ -475,6 +475,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public String getMissTitle() {
+        return getString(R.string.miss);
+    }
+
+    @Override
     public void showPassportExpiredDateMax20Years(int resId, String dateAfterTwentyYears) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
                 String.format(getString(resId), dateAfterTwentyYears));

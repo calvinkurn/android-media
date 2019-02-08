@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.analytics.ContentExloreEventTracking;
@@ -52,6 +53,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     public static String PARAM_CATEGORY_ID = "category_id";
     public static String DEFAULT_CATEGORY = "0";
+    public static String PEFORMANCE_EXPLORE = "mp_explore";
     public static int CATEGORY_POSITION_NONE = -1;
 
     private static final int IMAGE_SPAN_COUNT = 3;
@@ -63,6 +65,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     ExploreCategoryAdapter categoryAdapter;
     @Inject
     ExploreImageAdapter imageAdapter;
+
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
@@ -70,9 +73,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private View appBarLayout;
     private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
+    private PerformanceMonitoring performanceMonitoring;
+
     private int categoryId;
     private boolean canLoadMore;
     private boolean hasLoadedOnce;
+    private boolean isTraceStopped;
 
     public static ContentExploreFragment newInstance(Bundle bundle) {
         ContentExploreFragment fragment = new ContentExploreFragment();
@@ -93,6 +99,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 .baseAppComponent(baseAppComponent)
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE);
     }
 
     @Nullable
@@ -404,6 +416,14 @@ public class ContentExploreFragment extends BaseDaggerFragment
         updateSearch("");
         updateCursor("");
         updateCategoryId(0);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {

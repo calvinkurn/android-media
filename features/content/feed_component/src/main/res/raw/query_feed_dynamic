@@ -182,39 +182,8 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
           id
           ad_ref_key
           redirect
-          sticker_id
-          sticker_image
           product_click_url
           shop_click_url
-          product {
-            id
-            name
-            image {
-              m_url
-              s_url
-              xs_url
-              m_ecs
-              s_ecs
-              xs_ecs
-              __typename
-            }
-            uri
-            relative_uri
-            price_format
-            count_talk_format
-            count_review_format
-            category {
-              id
-              __typename
-            }
-            product_preorder
-            product_wholesale
-            free_return
-            product_cashback
-            product_cashback_rate
-            product_rating
-            __typename
-          }
           shop {
             id
             name
@@ -239,13 +208,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             gold_shop
             lucky_shop
             shop_is_official
-            owner_id
             is_owner
-            badges {
-              title
-              image_url
-              __typename
-            }
             uri
             gold_shop_badge
             __typename

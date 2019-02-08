@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,7 +22,6 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
 import java.util.List;
 
@@ -86,10 +86,10 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     @Override
     public void bind(ProductBigViewModel element) {
         data = element.getData();
-        if (data.getProduct() != null) {
+        if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
             bindProduct(data.getProduct());
         }
-        if (data.getShop() != null) {
+        if (data.getShop() != null && !TextUtils.isEmpty(data.getShop().getId())) {
             bindShop(data.getShop());
         }
     }
