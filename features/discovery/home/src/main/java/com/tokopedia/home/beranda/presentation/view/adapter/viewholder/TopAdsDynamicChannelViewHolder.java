@@ -57,6 +57,7 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<TopAdsDyn
                 product.getName(),
                 product.getPriceFormat()
         );
+        TopAdsGtmTracker.eventHomeProductClick(context, product, position);
     }
 
     @Override
