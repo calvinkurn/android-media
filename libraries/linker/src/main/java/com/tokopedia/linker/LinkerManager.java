@@ -28,8 +28,10 @@ public class LinkerManager {
     public static void initLinkerManager(Context context){
         if(linkerManager == null){
             synchronized (LinkerManager.class){
-                linkerManager = new LinkerManager(context);
-                linkerManager.initWrapper();
+                if(linkerManager == null) {
+                    linkerManager = new LinkerManager(context);
+                    linkerManager.initWrapper();
+                }
             }
         }
     }

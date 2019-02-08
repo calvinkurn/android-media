@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -25,6 +27,7 @@ import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParamet
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
@@ -40,6 +43,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
+import com.tokopedia.promoautoapplyusecase.PromoCodeAutoApplyUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -66,6 +70,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
+    private String PROMO_CODE = "promoCode";
+
 
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
@@ -294,8 +300,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     private void branchAutoApplyCouponIfAvailable() {
-        //TODO check how it is to behave
-        String savedCoupon = digitalModuleRouter.getBranchAutoApply(getView().getActivity());
+        PersistentCacheManager persistentCacheManager =
+                new PersistentCacheManager(getView().getActivity(), TkpdCache.CACHE_PROMO_CODE);
+        String savedCoupon = persistentCacheManager.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
+        applyPromoCode(savedCoupon);
         if (savedCoupon != null && savedCoupon.length() > 0) {
             getView().hideCartView();
             getView().showFullPageLoading();
@@ -310,6 +318,15 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                     getSubscriberCheckVoucher()
             );
         }
+    }
+
+    private void applyPromoCode(String promoCode){
+        PromoCodeAutoApplyUseCase promoCodeAutoApplyUseCase = new PromoCodeAutoApplyUseCase(getView().getActivity());
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString(PROMO_CODE, promoCode);
+
+        promoCodeAutoApplyUseCase.createObservable(requestParams);
+        promoCodeAutoApplyUseCase.execute(null);
     }
 
 

@@ -46,6 +46,7 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
@@ -122,7 +123,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
-import com.tokopedia.core.util.CacheUtil;
 import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.linker.LinkerConstants;
@@ -137,7 +137,6 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.nps.NpsRouter;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
-import com.tokopedia.promoautoapplyusecase.PromoCodeAutoApplyUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -446,6 +445,7 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
@@ -1313,16 +1313,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getBranchAutoApply(Activity activity) {
-        //TODO check if its needed
-        String promoCode = CacheUtil.getValueFromCache(activity, TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-        PromoCodeAutoApplyUseCase promoCodeAutoApplyUseCase = new PromoCodeAutoApplyUseCase(activity);
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString(CommonConstant.GraphqlVariableKeys.PROMO_CODE, promoCode);
-
-        promoCodeAutoApplyUseCase.createObservable(requestParams);
-        promoCodeAutoApplyUseCase.execute(null);
-
-        return promoCode;
+        return null;
     }
 
     @Override
@@ -2227,8 +2218,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
-        return CacheUtil.getValueFromCache(getAppContext(), TkpdCache.CACHE_PROMO_CODE,
-                TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(context, TkpdCache.CACHE_PROMO_CODE);
+        return persistentCacheManager.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
     }
 
     @Override
@@ -3475,8 +3466,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingUtils.eventPushUserID(getAppContext(), getTkpdCoreRouter().legacySessionHandler().getGTMLoginID());
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
-
-        com.tokopedia.user.session.UserSession userSession = new com.tokopedia.user.session.UserSession(this);
+        UserSessionInterface userSession = new com.tokopedia.user.session.UserSession(this);
 
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
@@ -3689,9 +3679,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setBranchReferralCode(String referralCode){
-        //BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
-        //TODO check if its correct way to go
-        CacheUtil.addValueToCache(context, TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE, referralCode);
+        PersistentCacheManager persistentCacheManager =
+                new PersistentCacheManager(context, TkpdCache.CACHE_PROMO_CODE);
+        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, referralCode);
     }
 
     @Override

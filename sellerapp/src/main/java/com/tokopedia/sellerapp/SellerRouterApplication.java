@@ -1806,11 +1806,10 @@ public abstract class SellerRouterApplication extends MainApplication
         TrackingUtils.eventPushUserID(applicationContext, userId);
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
-//        TODO Check whether to send event or not
-//        UserData userData = new UserData();
-//        userData.setUserId(userId);
-//        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
-//                userId));
+        UserData userData = new UserData();
+        userData.setUserId(userId);
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userId));
 
     }
 
