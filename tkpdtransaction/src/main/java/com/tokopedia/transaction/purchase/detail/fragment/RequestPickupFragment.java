@@ -76,7 +76,7 @@ public class RequestPickupFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentGeneralWebView webViewFragment = FragmentGeneralWebView
-                        .createInstance(INSTANT_COURIER_INFO_URL, false);
+                        .createInstance(INSTANT_COURIER_INFO_URL, false, true);
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                         .add(R.id.main_view, webViewFragment, INFO_FRAGMENT_TAG)

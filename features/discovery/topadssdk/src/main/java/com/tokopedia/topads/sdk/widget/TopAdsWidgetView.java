@@ -23,12 +23,11 @@ import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
@@ -57,6 +56,7 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode mode = DisplayMode.GRID;
     private TypedArray styledAttributes;
+    private TopAdsItemImpressionListener impressionListener;
 
     @Inject
     TopAdsPresenter presenter;
@@ -98,6 +98,14 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(position, product);
+                }
+            }
+        });
         try {
             adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
         } finally {
@@ -140,6 +148,13 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         openTopAdsUseCase.unsubscribe();
+        presenter.detachView();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        presenter.attachView(this);
     }
 
     @Override
@@ -176,6 +191,10 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setImpressionListener(TopAdsItemImpressionListener impressionListener) {
+        this.impressionListener = impressionListener;
     }
 
     public void notifyDataChange() {

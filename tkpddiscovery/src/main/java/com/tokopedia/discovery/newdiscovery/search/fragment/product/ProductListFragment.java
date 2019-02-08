@@ -196,7 +196,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void setupAdapter() {
-        productListTypeFactory = new ProductListTypeFactoryImpl(this, topAdsConfig);
+        productListTypeFactory = new ProductListTypeFactoryImpl(this, topAdsConfig, getQueryKey());
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
@@ -233,7 +233,7 @@ public class ProductListFragment extends SearchSectionFragment
         }
         list.add(headerViewModel);
         if (!productViewModel.getAdsModel().getData().isEmpty()) {
-            list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
+            list.add(new TopAdsViewModel(productViewModel.getAdsModel(), productViewModel.getQuery()));
         }
         list.addAll(productViewModel.getProductList());
         if (productViewModel.getRelatedSearchModel() != null) {
