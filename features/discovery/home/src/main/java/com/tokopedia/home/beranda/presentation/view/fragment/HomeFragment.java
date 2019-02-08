@@ -131,6 +131,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private ViewPager homeFeedsViewPager;
     private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
+    private HomeFeedPagerAdapter homeFeedPagerAdapter;
     private int lastOffset;
 
     private MainToolbar mainToolbar;
@@ -272,8 +273,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
         homeFeedsTabLayout.setVisibility(View.VISIBLE);
         homeFeedsViewPager.setVisibility(View.VISIBLE);
-        HomeFeedPagerAdapter homeFeedPagerAdapter = new HomeFeedPagerAdapter(this,
-                this, getFragmentManager(), feedTabModelList);
+        if (homeFeedPagerAdapter == null) {
+            homeFeedPagerAdapter = new HomeFeedPagerAdapter(this,
+                    this, getFragmentManager(), feedTabModelList);
+        } else {
+            homeFeedPagerAdapter.updateData(feedTabModelList);
+        }
         homeFeedsViewPager.setOffscreenPageLimit(DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT);
         homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
         homeFeedsTabLayout.setup(homeFeedsViewPager, convertToTabItemDataList(feedTabModelList));

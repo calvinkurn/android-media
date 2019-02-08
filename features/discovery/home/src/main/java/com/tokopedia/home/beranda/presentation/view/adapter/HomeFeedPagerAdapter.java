@@ -14,15 +14,26 @@ import java.util.List;
 
 public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
 
+    private final HomeEggListener homeEggListener;
+    private final HomeTabFeedListener homeTabFeedListener;
     private List<FeedTabModel> feedTabModelList = new ArrayList<>();
     private List<HomeFeedFragment> homeFeedFragmentList;
+    private int baseId;
 
     public HomeFeedPagerAdapter(HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fm,
                                 List<FeedTabModel> feedTabModelList) {
         super(fm);
-        this.feedTabModelList = feedTabModelList;
+        this.homeEggListener = homeEggListener;
+        this.homeTabFeedListener = homeTabFeedListener;
+        updateData(feedTabModelList);
+    }
+
+    public void updateData(List<FeedTabModel> feedTabModelList) {
+        baseId += this.feedTabModelList.size();
+        this.feedTabModelList.clear();
+        this.feedTabModelList.addAll(feedTabModelList);
         homeFeedFragmentList = new ArrayList<>();
         for (int i = 0; i < feedTabModelList.size(); i++) {
             HomeFeedFragment homeFeedFragment = HomeFeedFragment.newInstance(
@@ -32,6 +43,7 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
             homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
             homeFeedFragmentList.add(homeFeedFragment);
         }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -51,5 +63,15 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
 
     public List<HomeFeedFragment> getHomeFeedFragmentList() {
         return homeFeedFragmentList;
+    }
+
+    @Override
+    public int getItemPosition(Object object){
+        return POSITION_NONE;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return baseId + position;
     }
 }
