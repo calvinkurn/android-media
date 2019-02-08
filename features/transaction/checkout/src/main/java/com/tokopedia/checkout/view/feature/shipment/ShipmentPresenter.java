@@ -1245,14 +1245,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 boolean isInitialLoad) {
 
         // load network
-        /*String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
+        String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query_new);
         getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
-                        shipmentCartItemModel, shopShipmentList, isInitialLoad));*/
+                        shipmentCartItemModel, shopShipmentList, isInitialLoad));
 
         // load local response_pilih_durasi
-        String raw = new FileUtils().readRawTextFile(getView().getActivityContext(), com.tokopedia.shipping_recommendation.R.raw.response_pilih_durasi);
+        /*String raw = new FileUtils().readRawTextFile(getView().getActivityContext(), com.tokopedia.shipping_recommendation.R.raw.response_pilih_durasi);
         Gson gson = new Gson();
         GetRatesCourierRecommendationData getRatesCourierRecommendationData = gson.fromJson(raw, GetRatesCourierRecommendationData.class);
         ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
@@ -1264,7 +1264,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         getCourierRecommendationUseCase.executeDummy(new GetCourierRecommendationSubscriber(
                 getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
-                shipmentCartItemModel, shopShipmentList, isInitialLoad), shippingRecommendationData);
+                shipmentCartItemModel, shopShipmentList, isInitialLoad), shippingRecommendationData);*/
     }
 
     @Override

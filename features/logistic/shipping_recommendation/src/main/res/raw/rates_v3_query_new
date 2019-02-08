@@ -44,6 +44,7 @@
             text_range_price
             text_etd
             text_notes
+            text_service_desc
         }
         error {
             error_id
@@ -88,6 +89,15 @@
                 error_message
             }
         }
+    }
+    info {
+      blackbox_info {
+         text_info
+       }
+    }
+    error {
+      error_id
+      error_message
     }
   }
 }

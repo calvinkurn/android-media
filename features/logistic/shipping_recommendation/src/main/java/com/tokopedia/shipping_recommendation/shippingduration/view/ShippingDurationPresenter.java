@@ -76,7 +76,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         if (getView() != null) {
 
             // load local response_pilih_durasi
-            getView().showLoading();
+            /*getView().showLoading();
             String raw = new FileUtils().readRawTextFile(getView().getActivity(), R.raw.response_pilih_durasi);
             Gson gson = new Gson();
             GetRatesCourierRecommendationData getRatesCourierRecommendationData = gson.fromJson(raw, GetRatesCourierRecommendationData.class);
@@ -89,11 +89,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
             shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
             getView().hideLoading();
             getView().showData(shippingDurationViewModelList);
-            getView().stopTrace();
+            getView().stopTrace();*/
 
             // load network
-            /*getView().showLoading();
-            String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
+            getView().showLoading();
+            String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query_new);
             getCourierRecommendationUseCase.execute(query, shipmentDetailData, selectedServiceId, shopShipmentList,
                     new Subscriber<ShippingRecommendationData>() {
                         @Override
@@ -129,7 +129,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                 }
                             }
                         }
-                    });*/
+                    });
         }
     }
 
