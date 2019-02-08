@@ -243,7 +243,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             hideLoading()
             showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
-            presenter.getChatCache(messageId, onError(), onSuccessGetExistingChatFirstTime());
+//            presenter.getChatCache(messageId, onError(), onSuccessGetExistingChatFirstTime());
         }
     }
 
