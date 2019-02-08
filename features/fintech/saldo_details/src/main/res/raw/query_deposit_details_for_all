@@ -1,5 +1,5 @@
 query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dateTo: String!) {
-    allDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo) {
+    allDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, saldoType: 2) {
         message
         have_error
         have_next_page
@@ -12,7 +12,7 @@ query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dat
         }
     }
 
-    buyerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, isSeller: false) {
+    buyerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, saldoType: 0) {
         message
         have_error
         have_next_page
@@ -25,7 +25,7 @@ query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dat
         }
     }
 
-    sellerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, isSeller: true) {
+    sellerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, saldoType: 1) {
         message
         have_error
         have_next_page

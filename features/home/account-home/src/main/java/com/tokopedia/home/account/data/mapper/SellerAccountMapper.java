@@ -114,7 +114,6 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if (accountModel.getDeposit().getDeposit() != null) {
             items.add(getSaldoInfo(accountModel.getDeposit()));
         }
-        sellerViewModel.setHasSaldoBalance(accountModel.getDeposit().getDeposit() != null);
 
         if (showPinjamanModalOnTop) {
             if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0") && !mitraTopperUrl.isEmpty()) {
