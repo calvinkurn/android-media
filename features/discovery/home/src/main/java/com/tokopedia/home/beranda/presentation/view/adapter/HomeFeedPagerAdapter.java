@@ -3,6 +3,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.view.ViewGroup;
 
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
@@ -16,17 +18,20 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
 
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
+    private final FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
     private List<FeedTabModel> feedTabModelList = new ArrayList<>();
     private List<HomeFeedFragment> homeFeedFragmentList;
     private int baseId;
 
     public HomeFeedPagerAdapter(HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
-                                FragmentManager fm,
+                                FragmentManager fragmentManager,
                                 List<FeedTabModel> feedTabModelList) {
-        super(fm);
+        super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
+        this.fragmentManager = fragmentManager;
         updateData(feedTabModelList);
     }
 
@@ -73,5 +78,23 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
     @Override
     public long getItemId(int position) {
         return baseId + position;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        super.destroyItem(container, position, object);
+        if (fragmentTransaction == null) {
+            fragmentTransaction = fragmentManager.beginTransaction();
+        }
+        fragmentTransaction.remove((Fragment)object);
+    }
+
+    @Override
+    public void finishUpdate(ViewGroup container) {
+        super.finishUpdate(container);
+        if (fragmentTransaction != null) {
+            fragmentTransaction.commitNowAllowingStateLoss();
+            fragmentTransaction = null;
+        }
     }
 }
