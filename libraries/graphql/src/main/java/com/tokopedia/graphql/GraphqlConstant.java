@@ -11,8 +11,7 @@ public interface GraphqlConstant {
         String QUERY = "query";
         String VARIABLES = "variables";
         String OPERATION_NAME = "operationName";
-        String TYPE = "type";
-        String DATA = "data";
+        String DATA = "data";Gr
         String ERROR = "errors";
     }
 

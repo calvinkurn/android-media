@@ -235,16 +235,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onError(): (Throwable) -> Unit {
         return {
             hideLoading()
-            showSnackbarError(it.localizedMessage)
-//            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
         }
     }
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
         return {
             hideLoading()
-            showSnackbarError(it.localizedMessage)
-//            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
 //            presenter.getChatCache(messageId, onError(), onSuccessGetExistingChatFirstTime());
         }
     }

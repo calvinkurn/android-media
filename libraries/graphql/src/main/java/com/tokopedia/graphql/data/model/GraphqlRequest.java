@@ -23,8 +23,6 @@ public class GraphqlRequest {
     @SerializedName(GraphqlConstant.GqlApiKeys.OPERATION_NAME)
     private String operationName;
 
-    @Expose
-    @SerializedName(GraphqlConstant.GqlApiKeys.TYPE)
     /*transient by nature hence it will not be part of request body*/
     private transient Type typeOfT; /*Mandatory parameter*/
 
