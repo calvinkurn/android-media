@@ -289,6 +289,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 && productViewModel.getQuickFilterModel().getFilter() != null) {
                             headerViewModel.setQuickFilterList(getView().getQuickFilterOptions(productViewModel.getQuickFilterModel()));
                         }
+                        if (productViewModel.getCpmModel() != null) {
+                            headerViewModel.setCpmModel(productViewModel.getCpmModel());
+                        }
                         list.add(headerViewModel);
                         if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
                             list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel(), productViewModel.getQuery()));
