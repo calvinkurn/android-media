@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
@@ -234,7 +235,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onError(): (Throwable) -> Unit {
         return {
             hideLoading()
-            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+            showSnackbarError(it.localizedMessage)
+//            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
         }
     }
 
@@ -286,10 +288,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onProductClicked(element)
 
         analytics.eventClickProductThumbnailEE(element.blastId,
-                element.productId.toString(),
-                element.productName,
-                element.priceInt,
-                element.category, element.variant)
+                    element.productId.toString(),
+                    element.productName,
+                    element.priceInt,
+                    element.category, element.variant)
 
         analytics.trackProductAttachmentClicked()
     }
@@ -603,9 +605,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun showSnackbarAddToCart(it: AddToCartResult) {
-        if (it.isSuccess) {
+        if(it.isSuccess) {
             ToasterNormal.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
-        } else {
+        }else {
             ToasterError.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
         }
     }
