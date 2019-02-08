@@ -158,6 +158,7 @@ public class CartItemData implements Parcelable {
         private int originalQty;
         private String goldMerchantLogoUrl;
         private String officialStoreLogoUrl;
+        private String preOrderInfo;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -359,6 +360,14 @@ public class CartItemData implements Parcelable {
             this.weightFormatted = weightFormatted;
         }
 
+        public String getPreOrderInfo() {
+            return preOrderInfo;
+        }
+
+        public void setPreOrderInfo(String preOrderInfo) {
+            this.preOrderInfo = preOrderInfo;
+        }
+
         public int getInvenageValue() {
             return invenageValue;
         }
@@ -526,6 +535,9 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.shopId);
             dest.writeString(this.shopType);
             dest.writeInt(this.originalQty);
+            dest.writeString(this.goldMerchantLogoUrl);
+            dest.writeString(this.officialStoreLogoUrl);
+            dest.writeString(this.preOrderInfo);
         }
 
         protected OriginData(Parcel in) {
@@ -566,6 +578,9 @@ public class CartItemData implements Parcelable {
             this.shopId = in.readString();
             this.shopType = in.readString();
             this.originalQty = in.readInt();
+            this.goldMerchantLogoUrl = in.readString();
+            this.officialStoreLogoUrl = in.readString();
+            this.preOrderInfo = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
