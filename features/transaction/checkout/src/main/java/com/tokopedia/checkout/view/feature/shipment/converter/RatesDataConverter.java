@@ -53,7 +53,7 @@ public class RatesDataConverter {
         shipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
         shipmentDetailData.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         shipmentDetailData.setAddressId(shipmentCartItemModel.getAddressId());
-        shipmentDetailData.setPreorder(shipmentCartItemModel.getPreorder());
+        shipmentDetailData.setPreorder(shipmentCartItemModel.isProductIsPreorder());
         return shipmentDetailData;
     }
 

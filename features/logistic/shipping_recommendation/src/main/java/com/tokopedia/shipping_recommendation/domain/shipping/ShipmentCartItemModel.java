@@ -72,10 +72,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     // Flag for courier recommendation
     private boolean useCourierRecommendation;
 
-    // Flag for is_blacbox (robinhood III)
+    // for robinhood III
     private boolean isBlackbox;
     private int addressId;
-    private boolean preorder;
 
     public ShipmentCartItemModel() {
     }
@@ -122,7 +121,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         shopBadge = in.readString();
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
-        preorder = in.readByte() != 0;
     }
 
     @Override
@@ -168,7 +166,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(shopBadge);
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
-        dest.writeByte((byte) (preorder ? 1 : 0));
     }
 
     @Override
@@ -230,7 +227,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
-        newShipmentCartItemModel.setPreorder(shipmentCartItemModel.getPreorder());
 
         return newShipmentCartItemModel;
     }
@@ -563,14 +559,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.addressId = addressId;
     }
 
-    public boolean getPreorder() {
-        return preorder;
-    }
-
-    public void setPreorder(boolean preorder) {
-        this.preorder = preorder;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -606,7 +594,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
-                .append(getPreorder(), that.getPreorder())
                 .isEquals();
     }
 
@@ -639,7 +626,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())
                 .append(getAddressId())
-                .append(getPreorder())
                 .toHashCode();
     }
 }
