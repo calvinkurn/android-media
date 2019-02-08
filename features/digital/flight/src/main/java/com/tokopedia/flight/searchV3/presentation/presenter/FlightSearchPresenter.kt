@@ -41,12 +41,14 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     private var maxCall: Int = 0
     private var callCounter: Int = 0
 
-    override fun initialize() {
+    override fun initialize(needDeleteData: Boolean) {
 
-        if (view.isReturning()) {
-            deleteFlightReturnSearch(getNoActionSubscriber())
-        } else {
-            deleteAllSearchData(getNoActionSubscriber())
+        if (needDeleteData) {
+            if (view.isReturning()) {
+                deleteFlightReturnSearch(getNoActionSubscriber())
+            } else {
+                deleteAllSearchData(getNoActionSubscriber())
+            }
         }
 
         if (!view.getSearchPassData().isOneWay &&
@@ -391,7 +393,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
             }
 
     private fun getNoActionSubscriber(): Subscriber<Boolean> =
-            object: Subscriber<Boolean>() {
+            object : Subscriber<Boolean>() {
                 override fun onCompleted() {
 
                 }
