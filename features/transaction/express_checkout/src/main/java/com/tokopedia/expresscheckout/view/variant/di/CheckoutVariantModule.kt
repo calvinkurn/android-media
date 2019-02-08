@@ -1,19 +1,20 @@
 package com.tokopedia.expresscheckout.view.variant.di
 
 import android.content.Context
+import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
-import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDataMapper
-import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDataMapper
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
+import com.tokopedia.expresscheckout.view.profile.di.CheckoutProfileScope
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantPresenter
-import com.tokopedia.expresscheckout.view.variant.subscriber.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
 import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
@@ -76,4 +77,13 @@ class CheckoutVariantModule {
     fun provideCheckoutProfileBottomsheet(): CheckoutProfileBottomSheet {
         return CheckoutProfileBottomSheet.newInstance()
     }
+
+    @CheckoutVariantScope
+    @Provides
+    fun provideAnalyticsTracker(router: AbstractionRouter): AnalyticTracker = router.analyticTracker
+
+    @CheckoutVariantScope
+    @Provides
+    fun provideAnalytics(tracker: AnalyticTracker): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker(tracker)
+
 }

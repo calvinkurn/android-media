@@ -207,11 +207,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
-
-    }
-
-    @Override
     public boolean isCartDetailViewVisible() {
         return containerDetail.getVisibility() == View.VISIBLE;
     }

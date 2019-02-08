@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.net.Uri;
 
 import com.appsflyer.AFInAppEventType;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
@@ -69,6 +70,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -1033,31 +1035,31 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     }
 
-    private void checkAndExecuteReferralAction(ProductData productData) {
+    private void checkAndExecuteReferralAction(ProductData productData){
         UserSession userSession = new UserSession(getActivity());
         String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
-        if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest))
-            productData.setProductShareDescription(fireBaseRemoteMsgGuest);
+        if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
 
-        if (userSession.isLoggedIn()) {
+        if(userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
             String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                doReferralShareAction(productData, fireBaseRemoteMsg);
-            } else {
+                    doReferralShareAction(productData, fireBaseRemoteMsg);
+            }
+            else {
                 executeProductShare(productData);
             }
-        } else {
+        }
+        else {
             executeProductShare(productData);
         }
     }
 
-    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg) {
-        productData.setProductShareDescription(fireBaseRemoteMsg);
-        ActionCreator actionCreator = new ActionCreator<String, Integer>() {
+    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
+        ActionCreator actionCreator = new ActionCreator<String, Integer>(){
             @Override
             public void actionSuccess(int actionId, String dataObj) {
-                if (!TextUtils.isEmpty(dataObj)) {
-                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(productData.getProductShareDescription(),
+                if(!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
                     TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
 
@@ -1071,15 +1073,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
         };
 
-        ((PdpRouter) (getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
+        ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
                 (ActionUIDelegate<String, String>) getActivity());
 
     }
 
 
-    private void executeProductShare(ProductData productData) {
+    private void executeProductShare(ProductData productData){
         ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
-        productShare.share(productData, () -> {
+        productShare.share(productData, ()->{
             showProgressLoading();
             return Unit.INSTANCE;
         }, () -> {
@@ -1171,7 +1173,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductInfoShortClicked(Intent intent) {
+    public void onProductInfoShortClicked(Intent intent){
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
         startActivity(intent);
         getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
@@ -1534,8 +1536,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
+            String uri = pass != null ? pass.getProductUri() : "";
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.logException(new ProductNotFoundException(uri));
+            }
             if (webViewHandleListener != null) {
-                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+                webViewHandleListener.catchToWebView(uri);
             }
         } else {
             showToastMessage("Produk tidak ditemukan!");
@@ -2225,7 +2231,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
-                    labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
+                    labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
                     stateCollapsing = FROM_EXPANDED;
                 }
             }
@@ -2823,13 +2829,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onImageFromBuyerClick(int viewType, String reviewId) {
-        if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE) {
+        if(viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE){
             ProductPageTracking.eventClickReviewOnBuyersImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId()),
                     reviewId
             );
-        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
+        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER){
             ProductPageTracking.eventClickReviewOnSeeAllImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId())
@@ -2848,7 +2854,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ImageReviewGalleryActivity.Companion.moveTo(getActivity(), imageUrlList, position);
     }
 
-    public void routeToReviewGallery() {
+    public void routeToReviewGallery(){
         if (getActivity() != null) {
             ImageReviewGalleryActivity.Companion.moveTo(getActivity(),
                     productData.getInfo().getProductId());
@@ -2870,7 +2876,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private String getUserId() {
+    private String getUserId(){
         return userSession.getUserId();
     }
 }

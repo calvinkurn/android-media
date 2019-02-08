@@ -38,6 +38,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
+        String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
     }
 
     interface EventCategory {
@@ -49,6 +50,7 @@ public interface ConstantTransactionAnalytics {
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
         String PURCHASE_PROTECTION = "fin - mp checkout";
+        String EXPRESS_CHECKOUT = "express checkout";
     }
 
     interface EventAction {
@@ -212,6 +214,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PELAJARI = "pp - pelajari click";
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
         String IMPRESSION_PELAJARI = "pp - pelajari impression";
+
+        //EXPRESS CHECKOUT
+        String VIEW_EXPRESS_CHECKOUT = "view express checkout";
     }
 
     interface EventLabel {
@@ -240,6 +245,9 @@ public interface ConstantTransactionAnalytics {
         String SUCCESS_TICKED_PPP = "success - yes";
         String SUCCESS_UNTICKED_PPP = "success - no";
         String APPEAR = "appear";
+
+        String SUCCESS_DEFAULT = "success - default";
+        String SUCCESS_NOT_DEFAULT = "success - not default";
     }
 
     interface ScreenName {
@@ -257,6 +265,7 @@ public interface ConstantTransactionAnalytics {
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
         String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
+        String EXPRESS_CHECKOUT = "/express-checkout";
     }
 
     interface CustomDimension {

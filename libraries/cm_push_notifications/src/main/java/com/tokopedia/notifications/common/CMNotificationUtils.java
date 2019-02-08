@@ -82,14 +82,16 @@ public class CMNotificationUtils {
         return true;
     }
 
-    public static boolean mapTokenWithAppVersionRequired(Context context, int appVersion) {
+    public static boolean mapTokenWithAppVersionRequired(Context context, String appVersionName) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
-        int oldAppVersion = cacheHandler.getIntValue(CMConstant.APP_VERSION_CACHE_KEY);
-
-        CommonUtils.dumper("CMUser-APP_VERSION" + oldAppVersion + "#new-" + appVersion);
-        if (oldAppVersion == appVersion)
+        String oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY);
+        CommonUtils.dumper("CMUser-APP_VERSION" + oldAppVersionName + "#new-" + appVersionName);
+        if (TextUtils.isEmpty(oldAppVersionName))
+            return true;
+        else if (oldAppVersionName.equalsIgnoreCase(appVersionName)) {
             return false;
-        return true;
+        } else
+            return false;
     }
 
     public static String getUniqueAppId(Context context) {
@@ -117,9 +119,9 @@ public class CMNotificationUtils {
         cacheHandler.saveStringValue(CMConstant.GADSID_CACHE_KEY, gAdsId);
     }
 
-    public static void saveAppVersion(Context context, int version) {
+    public static void saveAppVersion(Context context, String versionName) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
-        cacheHandler.saveIntValue(CMConstant.APP_VERSION_CACHE_KEY, version);
+        cacheHandler.saveStringValue(CMConstant.APP_VERSION_CACHE_KEY, versionName);
     }
 
     public static long getCurrentLocalTimeStamp() {
@@ -130,15 +132,15 @@ public class CMNotificationUtils {
         return Build.VERSION.SDK_INT;
     }
 
-    public static int getCurrentAppVersion(Context context) {
+    public static String getCurrentAppVersionName(Context context) {
         PackageInfo pInfo = null;
         try {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
+            return pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        return 0;
+        return "NA";
     }
 
     public static Bitmap loadBitmapFromUrl(String imageUrl) {
