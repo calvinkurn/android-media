@@ -431,8 +431,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showSucessMessage(String message) {
         Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorMessage (String message) {
+
     }
 
     @Override

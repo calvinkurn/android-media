@@ -11,16 +11,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Items> itemsList;
     private Context context;
     OrderListDetailPresenter presenter;
+    public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
 
     public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter) {
         this.context = context;
@@ -92,7 +97,22 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             if (items.getActionButtons().size() > 0) {
                 buyBtn.setVisibility(View.VISIBLE);
+                buyBtn.setText(items.getActionButtons().get(0).getName());
+                buyBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        presenter.onBuyAgain(context.getResources());
+                    }
+                });
             }
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String applink = "tokopedia://product/" + items.getId();
+                    RouteManager.route(context, applink);
+                }
+            });
 
         }
 

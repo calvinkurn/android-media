@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -243,7 +244,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             public void onError(Throwable e) {
                 if(getView() != null) {
                     getView().hideProgressBar();
-                    getView().showMessage(e.getMessage());
+                    getView().showErrorMessage(e.getMessage());
                 }
             }
 
@@ -253,9 +254,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
                     if(responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1){
-                        getView().showMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }else{
-                        getView().showMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
+                        getView().showSucessMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
                     }
                 }
 
@@ -371,7 +372,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                             @Override
                                             public void onError(Throwable e) {
                                                 CommonUtils.dumper(e.getStackTrace());
-                                                getView().showMessage(e.getMessage());
+                                                getView().showErrorMessage(e.getMessage());
                                                 getView().hideProgressBar();
                                             }
 
@@ -383,11 +384,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                                 DataResponseCommon dataResponse = restResponse.getData();
                                                 CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                                                 if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                                                    getView().showMessage(cancelReplacementPojo.getMessageStatus());
+                                                    getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
                                                 else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                                                    getView().showMessage((String) dataResponse.getErrorMessage().get(0));
+                                                    getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
                                                 else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                                                    getView().showMessage((String) dataResponse.getMessageStatus().get(0));
+                                                    getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
                                                 getView().hideProgressBar();
                                                 getView().finishOrderDetail();
                                             }
@@ -421,7 +422,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     return;
                 CommonUtils.dumper(e.getStackTrace());
                 getView().hideProgressBar();
-                getView().showMessage(e.getMessage());
+                getView().showErrorMessage(e.getMessage());
             }
 
             @Override
@@ -431,9 +432,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 Type token = new TypeToken<DataResponse<JsonObject>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
-                DataResponse dataResponse = restResponse.getData();
+                DataResponseCommon dataResponse = restResponse.getData();
                 getView().hideProgressBar();
                 getView().finishOrderDetail();
+                getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
             }
         });
     }

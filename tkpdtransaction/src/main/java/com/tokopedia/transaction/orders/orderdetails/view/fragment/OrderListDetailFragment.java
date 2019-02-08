@@ -285,8 +285,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showSucessMessage(String message) {
         Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorMessage (String message) {
+
     }
 
     @Override

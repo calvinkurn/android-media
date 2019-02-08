@@ -41,6 +41,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -262,7 +263,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         if (!detail.label().equalsIgnoreCase("No. Resi")) {
             doubleTextView.setTopText(detail.label());
+            doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
             doubleTextView.setBottomText(detail.value());
+            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         } else {
             doubleTextView.setTopText(detail.label());
             String text = detail.value() + "\n\nSalin No. Resi";
@@ -316,7 +319,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     public void setPricing(Pricing pricing) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
+        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setBottomText(pricing.value());
+        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         infoValue.addView(doubleTextView);
@@ -326,8 +331,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
+        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(16);
+        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         paymentMethod.addView(doubleTextView);
     }
@@ -398,8 +405,13 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     }
 
     @Override
-    public void showMessage(String message) {
-        Toast.makeText(getAppContext(), message, Toast.LENGTH_LONG).show();
+    public void showSucessMessage(String message) {
+        ToasterNormal.show(getActivity(), message);
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        ToasterError.showClose(getActivity(), message);
     }
 
     @Override
@@ -616,10 +628,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
+        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setBottomText(paymentData.value());
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(16);
+        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         totalPrice.addView(doubleTextView);
     }

@@ -86,7 +86,9 @@ public interface OrderListDetailContract {
 
         void finishOrderDetail();
 
-        void showMessage(String message);
+        void showSucessMessage(String message);
+
+        void showErrorMessage(String message);
 
     }
 
