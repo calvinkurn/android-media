@@ -99,8 +99,8 @@ public class CollapsingTabLayout extends TabLayout {
 
                 if (position != lastPageScrolledPosition) {
 
-                    tabIndicatorCollapseAnimator.setCurrentFraction(1);
-                    tabIndicatorExpandAnimator.setCurrentFraction(0);
+                    setCurrentFraction(tabIndicatorCollapseAnimator, 1);
+                    setCurrentFraction(tabIndicatorExpandAnimator, 0);
 
                     tabIndicatorCollapseAnimator.setTabIndicator(
                             (ExpandingLineView) getTabAt(position)
@@ -117,8 +117,8 @@ public class CollapsingTabLayout extends TabLayout {
                     }
                 }
 
-                tabIndicatorCollapseAnimator.setCurrentFraction(positionOffset);
-                tabIndicatorExpandAnimator.setCurrentFraction(positionOffset);
+                setCurrentFraction(tabIndicatorCollapseAnimator, positionOffset);
+                setCurrentFraction(tabIndicatorExpandAnimator, positionOffset);
 
                 lastPageScrolledPosition = position;
             }
@@ -305,7 +305,7 @@ public class CollapsingTabLayout extends TabLayout {
         if (tabHeightCollapseAnimator.isRunning()) {
             tabHeightCollapseAnimator.cancel();
         }
-        tabHeightCollapseAnimator.setCurrentFraction(tabCollapseFraction);
+        setCurrentFraction(tabHeightCollapseAnimator, tabCollapseFraction);
         lastTabCollapseFraction = tabCollapseFraction;
     }
 
@@ -352,6 +352,10 @@ public class CollapsingTabLayout extends TabLayout {
 
     public void resetCollapseState() {
         adjustTabCollapseFraction(0);
+    }
+
+    public void setCurrentFraction(ValueAnimator animator, float fraction) {
+        animator.setCurrentPlayTime((long) (fraction * animator.getDuration()));
     }
 
     private static class TabIndicatorAnimator extends ValueAnimator {
