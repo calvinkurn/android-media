@@ -92,10 +92,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             public void onImpressionHeadlineAdsItem(int position, CpmData data) {
                 TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
             }
-
-            @Override
-            public void onImpressionProductAdsItem(int position, Product product) {
-            }
         });
     }
 

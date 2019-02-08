@@ -10,11 +10,13 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 /**
@@ -31,6 +33,7 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
     public static final String KEYWORD = "keyword";
     public static final String ETALASE_NAME = "etalase_name";
     private CatalogListener catalogListener;
+    public static final String SHOP = "shop";
 
     public CatalogHeaderViewHolder(View itemView, CatalogListener catalogListener, Config topAdsConfig) {
         super(itemView);
@@ -57,6 +60,17 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
             @Override
             public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 catalogListener.onBannerAdsClicked(applink);
+                if (applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
+                } else {
+                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
+                }
+            }
+        });
+        adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
             }
         });
     }
