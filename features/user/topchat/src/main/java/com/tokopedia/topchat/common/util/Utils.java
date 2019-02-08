@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public class Utils {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:SSSSSSSZ";
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSZ";
     private static final String LANGUAGE_CODE = "in";
     private static final String COUNTRY_CODE = "ID";
 
