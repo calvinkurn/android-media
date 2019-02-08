@@ -59,7 +59,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "varian", "none/other",
-                                            "category", product.getCategory().getId(),
+                                            "category", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);

@@ -57,7 +57,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
-    private boolean isAdsBannerLoaded = false;
     private final String searchQuery;
 
     public HeaderViewHolder(View itemView, ProductListener productListener, String searchQuery) {
@@ -81,7 +80,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             @Override
             public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 productListener.onBannerAdsClicked(applink);
-                if(applink.contains(SHOP)) {
+                if (applink.contains(SHOP)) {
                     TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
                 } else {
                     TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
@@ -112,10 +111,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @Override
     public void bind(final HeaderViewModel element) {
-        if (!isAdsBannerLoaded) {
-            adsBannerView.displayAds(element.getCpmModel());
-            isAdsBannerLoaded = true;
-        }
+        adsBannerView.displayAds(element.getCpmModel());
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);
