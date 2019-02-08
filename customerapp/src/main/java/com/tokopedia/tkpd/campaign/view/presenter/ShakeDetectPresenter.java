@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkDelegate;
+import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
@@ -161,7 +162,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
 
-                        if (graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
+                        if (graphqlResponse.getError(CampaignGqlResponse.class)!= null
+                                && graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
                             CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                             getView().showMessage(graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() != null ?
                                     graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() : "");
