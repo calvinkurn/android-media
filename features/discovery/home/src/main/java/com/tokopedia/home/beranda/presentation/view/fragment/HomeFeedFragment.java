@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.home.constant.ConstantKey;
@@ -70,8 +71,15 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         tabIndex = getArguments().getInt(ARG_TAB_INDEX);
         recomId = getArguments().getInt(ARG_RECOM_ID);
         super.onViewCreated(view, savedInstanceState);
+        addRecyclerViewItemDecoration();
         loadFirstPageData();
         initListeners();
+    }
+
+    private void addRecyclerViewItemDecoration() {
+        getRecyclerView(getView()).addItemDecoration(
+                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8))
+        );
     }
 
     @Override

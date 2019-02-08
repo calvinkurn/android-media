@@ -1,4 +1,4 @@
-package com.example.productcard;
+package com.tokopedia.productcard;
 
 import org.junit.Test;
 

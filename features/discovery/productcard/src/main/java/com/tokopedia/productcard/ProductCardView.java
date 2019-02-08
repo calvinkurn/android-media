@@ -1,4 +1,4 @@
-package com.example.productcard;
+package com.tokopedia.productcard;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.productcard.R;
 
 import com.tokopedia.design.base.BaseCustomView;
 
@@ -53,7 +56,7 @@ public class ProductCardView extends BaseCustomView {
     }
 
     public void setImageUrl(String imageUrl) {
-        imageView.setImageURI(Uri.parse(imageUrl));
+        ImageHandler.loadImageFitCenter(getContext(), imageView, imageUrl);
     }
 
     public void setTopAdsVisible(boolean isVisible) {

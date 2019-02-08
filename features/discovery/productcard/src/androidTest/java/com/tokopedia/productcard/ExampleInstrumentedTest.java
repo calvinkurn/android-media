@@ -1,4 +1,4 @@
-package com.example.productcard;
+package com.tokopedia.productcard;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
