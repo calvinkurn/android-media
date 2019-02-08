@@ -370,4 +370,4 @@
 -keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
 
 # -- App indexing
--dontwarn class com.google.firebase.appindexing.**
+-dontwarn com.google.firebase.appindexing.**
