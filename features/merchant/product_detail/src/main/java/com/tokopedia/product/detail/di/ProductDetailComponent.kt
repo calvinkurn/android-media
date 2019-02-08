@@ -6,9 +6,9 @@ import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import dagger.Component
 
 @ProductDetailScope
-@Component(modules = [ProductDetailModule::class, ViewModelModule::class],
+@Component(modules = [ProductDetailModule::class, ProductReportModule::class, ViewModelModule::class],
         dependencies = [BaseAppComponent::class])
-interface ProductDetailComponent{
+interface ProductDetailComponent {
     fun inject(fragment: ProductDetailFragment)
     fun inject(fragment: ReportDialogFragment)
 }

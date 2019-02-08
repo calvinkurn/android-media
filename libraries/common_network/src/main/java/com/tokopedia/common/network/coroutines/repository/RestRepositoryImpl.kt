@@ -19,7 +19,6 @@ class RestRepositoryImpl : RestRepository {
     private var mCloud: RestCloudDataStore
     private var mCache: RestCacheDataStore
 
-    @Inject
     constructor() {
         this.mCloud = RestCloudDataStore()
         this.mCache = RestCacheDataStore()

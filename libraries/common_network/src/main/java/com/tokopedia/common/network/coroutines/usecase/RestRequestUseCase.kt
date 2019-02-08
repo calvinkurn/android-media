@@ -16,7 +16,8 @@ import java.lang.reflect.Type
  *
  * @See [RestRequestSupportInterceptorUseCase] class for add custom interceptor
  */
-open class RestRequestUseCase(private val restRepository: RestRepository): UseCase<Map<Type, RestResponse?>>() {
+open class RestRequestUseCase(private val restRepository: RestRepository):
+        UseCase<Map<Type, RestResponse?>>() {
     var restRequestList = mutableListOf<RestRequest>()
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse?> {

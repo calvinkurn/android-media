@@ -49,7 +49,7 @@ public class ErrorHandler {
             } catch (NumberFormatException e1) {
                 return context.getString(R.string.default_request_error_unknown);
             }
-        } else if (e instanceof MessageErrorException && !TextUtils.isEmpty(e.getMessage())) {
+        } else if (e instanceof IOException && e.getClass() != IOException.class && !TextUtils.isEmpty(e.getMessage())) {
             return e.getMessage();
         } else if (e instanceof IOException) {
             return context.getString(R.string.default_request_error_internal_server);

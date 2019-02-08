@@ -578,6 +578,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
                 productDetailTracking.eventReportLogin()
             } else {
+                //TODO show login
                 productDetailTracking.eventReportNoLogin()
             }
         }

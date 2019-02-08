@@ -108,7 +108,7 @@ public class RestCloudDataStore implements RestDataStore {
     private Observable<RestResponseIntermediate> doPost(RestRequest request) {
         if (request.getBody() != null && request.getBody() instanceof Map) {
             return mApi.post(request.getUrl(),
-                    (Map<String, Object>) request.getBody(),
+                    (Map<String, String>) request.getBody(),
                     request.getQueryParams(),
                     request.getHeaders()).map(response -> processData(request, response));
         } else {
@@ -143,7 +143,7 @@ public class RestCloudDataStore implements RestDataStore {
     private Observable<RestResponseIntermediate> doPut(RestRequest request) {
         if (request.getBody() != null && request.getBody() instanceof Map) {
             return mApi.put(request.getUrl(),
-                    (Map<String, Object>) request.getBody(),
+                    (Map<String, String>) request.getBody(),
                     request.getQueryParams(),
                     request.getHeaders()).map(response -> processData(request, response));
         } else {

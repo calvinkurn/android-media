@@ -1,17 +1,13 @@
 package com.tokopedia.common.network.coroutines.datasource
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.common.network.data.model.CacheType
 import com.tokopedia.common.network.data.model.RequestType
-
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponseIntermediate
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
-import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.common.network.util.FingerprintManager
-import com.tokopedia.common.network.util.NetworkClient
-import com.tokopedia.common.network.util.RestCacheManager
-import com.tokopedia.common.network.util.RestConstant
+import com.tokopedia.common.network.util.*
 import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
@@ -22,26 +18,17 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.withContext
-
-import java.io.File
-
-import javax.inject.Inject
-
-import okhttp3.Interceptor
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
+import okhttp3.*
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import java.io.File
 
 class RestCloudDataStore : RestDataStore{
     private var mApi: RestApi
     private var mCacheManager: RestCacheManager
     private var mFingerprintManager: FingerprintManager
 
-    @Inject
     constructor() {
         this.mApi = NetworkClient.getApiInterface()
         this.mCacheManager = RestCacheManager()
@@ -107,13 +94,13 @@ class RestCloudDataStore : RestDataStore{
     private fun doPost(request: RestRequest): Deferred<Response<String>> {
         if (request.body != null && request.body is Map<*, *>) {
             return mApi.postDeferred(request.url,
-                    request.body as Map<String, Any>,
+                    request.body as Map<String, String>,
                     request.queryParams,
                     request.headers)
         } else {
             var body: String? = null
             if (request.body is String) {
-                body = request.body as String
+                body = request.body
             } else {
                 try {
                     body = CommonUtil.toJson(request.body)
@@ -128,7 +115,7 @@ class RestCloudDataStore : RestDataStore{
             }
 
             return mApi.postDeferred(request.url,
-                    request.body as Map<String, Any>,
+                    body,
                     request.queryParams,
                     request.headers)
         }
@@ -143,7 +130,7 @@ class RestCloudDataStore : RestDataStore{
     private fun doPut(request: RestRequest): Deferred<Response<String>> {
         if (request.body != null && request.body is Map<*, *>) {
             return mApi.putDeferred(request.url,
-                    request.body as Map<String, Any>,
+                    request.body as Map<String, String>,
                     request.queryParams,
                     request.headers)
         } else {
@@ -186,7 +173,9 @@ class RestCloudDataStore : RestDataStore{
         val reqFile = RequestBody.create(MediaType.parse("image/*"), file)
         val multipartBody = MultipartBody.Part.createFormData("upload", file.name, reqFile)
 
-        return mApi.postMultipartDeferred(request.url, multipartBody, request.queryParams, request.headers)
+        return mApi.postMultipartDeferred(request.url, multipartBody,
+                request.queryParams,
+                request.headers)
     }
 
     private fun postPartMap(request: RestRequest): Deferred<Response<String>> {
@@ -245,7 +234,7 @@ class RestCloudDataStore : RestDataStore{
         var returnResponse: RestResponseIntermediate
         try {
             if (response.code() == RestConstant.HTTP_SUCCESS) {
-                returnResponse = RestResponseIntermediate(CommonUtil.fromJson(response.body(), request.typeOfT), request.typeOfT, false)
+                returnResponse = RestResponseIntermediate(Gson().fromJson(response.body(), request.typeOfT), request.typeOfT, false)
                 returnResponse.code = response.code()
                 returnResponse.isError = false
 

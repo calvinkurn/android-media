@@ -32,7 +32,7 @@
             android:id="@+id/reportSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_12" />
+            android:layout_marginBottom="@dimen/dp_12"/>
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/til_phone_number"
@@ -66,9 +66,7 @@
         android:layout_height="wrap_content"
         android:gravity="end"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/cancel_but"
