@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
+import com.tokopedia.product.detail.view.viewmodel.ProductReportViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,4 +22,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProductInfoViewModel::class)
     internal abstract fun productInfoViewModel(viewModel: ProductInfoViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductReportViewModel::class)
+    internal abstract fun productReportViewModel(viewModel: ProductReportViewModel): ViewModel
+
+
 }

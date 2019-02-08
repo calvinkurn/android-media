@@ -14,7 +14,6 @@ import javax.inject.Inject
 
 class ReportDialogFragment : DialogFragment() {
 
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var productReportViewModel: ProductReportViewModel
