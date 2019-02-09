@@ -17,6 +17,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/text_view_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -26,10 +27,12 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/bg_warning"
         android:padding="@dimen/dp_16"
+        android:text="Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular."
         android:textSize="@dimen/sp_12"
         tools:text="Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular." />
 
     <android.support.v7.widget.CardView
+        android:id="@+id/view_tkpd_corner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -50,10 +53,11 @@
                 android:layout_marginBottom="@dimen/dp_4"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12"
+                android:text="Tokopedia Corner"
                 tools:text="Tokopedia Corner" />
 
             <TextView
-                android:id="@+id/text_view_corner"
+                android:id="@+id/text_view_branch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_view_tkpd_corner"
@@ -63,14 +67,15 @@
                 tools:text="Anggrek Kampus" />
 
             <TextView
-                android:id="@+id/text_view_univ"
+                android:id="@+id/text_view_corner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_view_corner"
+                android:layout_below="@+id/text_view_branch"
                 android:textSize="@dimen/sp_12"
                 tools:text="Bina Nusantara" />
 
             <RadioButton
+                android:id="@+id/radio_button_corner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -81,15 +86,16 @@
     </android.support.v7.widget.CardView>
 
     <Button
+        android:id="@+id/button_tkpd_corner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/button_border_green"
-        android:text="Ubah Lokasi Tokopedia Corner"
         android:textAllCaps="false"
-        android:textColor="@color/green_250" />
+        android:textColor="@color/green_250"
+        tools:text="Ubah Lokasi Tokopedia Corner" />
 
 
 </LinearLayout>
