@@ -139,6 +139,7 @@ public class ShipmentAddressListPresenter
 //                                                }
 //                                                if (!hasCornerSelected) getMvpView().showSampai();
                                                     getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
+                                                    getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
                                                 }
                                                 getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
                                                 getMvpView().stopTrace();
