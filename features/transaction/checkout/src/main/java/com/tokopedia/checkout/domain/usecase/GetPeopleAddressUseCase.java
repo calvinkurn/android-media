@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.checkout.data.mapper.AddressCornerMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.network.utils.AuthUtil;
@@ -36,7 +37,7 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
 
     @Override
     public Observable<PeopleAddressModel> createObservable(RequestParams requestParams) {
-        return peopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
+        return peopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString()).map(new AddressCornerMapper());
     }
 
     /**
