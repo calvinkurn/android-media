@@ -530,4 +530,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     getActivity(), null, token, false, false),
                     LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
     }
+
+    @Override
+    public void onCornerButtonClicked() {
+        showCornerBottomSheet();
+    }
 }

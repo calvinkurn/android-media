@@ -46,7 +46,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == R.layout.item_sampai) {
             SampaiViewHolder sampaiViewHolder = (SampaiViewHolder) holder;
-            sampaiViewHolder.bind(mSampaiModel);
+            sampaiViewHolder.bind(mSampaiModel, mActionListener);
         } else {
             int addressPosition = position - getExtraCount();
             RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
@@ -119,6 +119,8 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         void onEditClick(RecipientAddressModel model);
 
         void onAddAddressButtonClicked();
+
+        void onCornerButtonClicked();
     }
 
     class SampaiViewHolder extends RecyclerView.ViewHolder {
@@ -137,7 +139,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
             mRadio = itemView.findViewById(R.id.radio_button_corner);
         }
 
-        public void bind(CornerAddressModel model) {
+        public void bind(CornerAddressModel model, ActionListener listener) {
             if (!TextUtils.isEmpty(model.getCornerName())) {
                 mCornerView.setVisibility(View.VISIBLE);
                 mCornerName.setText(model.getCornerName());
@@ -148,6 +150,8 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
                 mCornerView.setVisibility(View.GONE);
                 mButton.setText("Pilih Lokasi Tokopedia Corner");
             }
+
+            mButton.setOnClickListener(view -> listener.onCornerButtonClicked());
         }
     }
 
