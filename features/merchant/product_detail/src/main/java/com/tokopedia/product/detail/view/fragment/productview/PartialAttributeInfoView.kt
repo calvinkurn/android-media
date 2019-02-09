@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.productView
+package com.tokopedia.product.detail.view.fragment.productview
 
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.visible

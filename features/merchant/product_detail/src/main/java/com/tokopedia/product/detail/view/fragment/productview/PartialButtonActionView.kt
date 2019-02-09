@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.productView
+package com.tokopedia.product.detail.view.fragment.productview
 
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat

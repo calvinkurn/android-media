@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    tools:ignore="RtlSymmetry">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_other_product"
+        app:fontSize="title"
+        app:weight="medium"
+        app:textViewTheme="lightPrimary"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/other_products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:descendantFocusability="blocksDescendants"
+        android:scrollbars="none"/>
+
+</LinearLayout>

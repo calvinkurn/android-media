@@ -40,7 +40,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.view.fragment.productView.*
+import com.tokopedia.product.detail.view.fragment.productview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
@@ -53,6 +53,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
+import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -70,6 +71,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var actionButtonView: PartialButtonActionView
     lateinit var productShopView: PartialShopView
     lateinit var attributeInfoView: PartialAttributeInfoView
+    lateinit var imageReviewViewView: PartialImageReviewView
+    lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
+    lateinit var latestTalkView: PartialLatestTalkView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -256,6 +260,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::attributeInfoView.isInitialized)
             attributeInfoView = PartialAttributeInfoView.build(view)
+
+        if (!::imageReviewViewView.isInitialized)
+            imageReviewViewView = PartialImageReviewView.build(view)
+
+        if (!::mostHelpfulReviewView.isInitialized)
+            mostHelpfulReviewView = PartialMostHelpfulReviewView.build(view)
+
+        if (!::latestTalkView.isInitialized)
+           latestTalkView = PartialLatestTalkView.build(base_latest_talk)
     }
 
     private fun initView() {
@@ -398,6 +411,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoP3.rateEstimation?.let { partialVariantAndRateEstView.renderRateEstimation(it.rates,
                 shopInfo?.location ?: "")}
         shopInfo?.let {  updateWishlist(it, productInfoP3.isWishlisted) }
+        imageReviewViewView.renderData(productInfoP3.imageReviews)
+        mostHelpfulReviewView.renderData(productInfoP3.helpfulReviews, productInfo?.stats?.countReview ?: 0)
+        latestTalkView.renderData(productInfoP3.latestTalk, productInfo?.stats?.countTalk ?: 0,
+                productInfo?.basic?.shopID ?: 0)
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
@@ -414,7 +431,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: 1)
             activity?.let { productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString() ?: "", shopInfo.shipments) }
-            if (!productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt())){
+            if (productInfoP2.vouchers.isNotEmpty()){
                 merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
                 merchantVoucherListWidget.visible()
             } else {

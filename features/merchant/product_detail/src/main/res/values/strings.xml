@@ -65,4 +65,11 @@
     <string name="promo">Promo</string>
     <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
+    <string name="title_image_review">Foto dari Pembeli</string>
+    <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
+    <string name="label_see_all_review">Lihat Semua Ulasan (%1$s)</string>
+    <string name="title_latest_talk">Diskusi Terakhir</string>
+    <string name="label_see_all_talk">Lihat Semua Diskusi (%1$s)</string>
+    <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
+    <string name="title_topads_product">Produk Terkait dengan Barang Ini</string>
 </resources>

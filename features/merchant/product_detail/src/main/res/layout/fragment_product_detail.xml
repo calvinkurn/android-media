@@ -85,6 +85,11 @@
             <include layout="@layout/partial_product_detail_wholesale"/>
             <include layout="@layout/partial_product_full_descr"/>
             <include layout="@layout/partial_product_shop_info"/>
+            <include layout="@layout/partial_product_image_review"/>
+            <include layout="@layout/partial_most_helpful_review_view"/>
+            <include layout="@layout/partial_product_latest_talk"/>
+            <include layout="@layout/partial_other_product"/>
+            <include layout="@layout/partial_topads_product"/>
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_last_update"

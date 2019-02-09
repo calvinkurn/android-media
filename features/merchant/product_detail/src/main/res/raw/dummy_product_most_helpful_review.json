@@ -1,0 +1,40 @@
+{
+  "ProductMostHelpfulReviewQuery": {
+    "list": [
+      {
+        "reviewId": 7406698,
+        "reputationId": 0,
+        "title": "",
+        "message": "hfrt furuhfu rhfyuh rf hryu trh rht",
+        "productRating": 5,
+        "productRatingDescription": "Sangat Baik",
+        "reviewCreateTime": "17 Sep 2018, 12:19 WIB",
+        "reviewCreateTimestamp": "1537186789",
+        "reviewUpdateTime": "",
+        "reviewUpdateTimestamp": "",
+        "imageAttachments": [],
+        "isAnonymous": true,
+        "reviewResponse": {
+          "message": "Terima kasih telah berbelanja di yohanestri toko. Bagikan link toko kami https://staging.tokopedia.com/tokoxx kepada teman-teman Anda dan favoritkan Toko kami untuk terus update mengenai stok dan produk terbaru",
+          "createTime": "17 Sep 2018, 12:21 WIB",
+          "createTimestamp": "1537186868",
+          "by": 8941073
+        },
+        "user": {
+          "userId": 8941073,
+          "fullName": "Andhika Pratama",
+          "image": "https://accounts-staging.tokopedia.com/image/v1/u/8941073/user_thumbnail/desktop",
+          "label": "Pembeli",
+          "url": "https://staging.tokopedia.com/people/8941073"
+        },
+        "isReportable": false,
+        "isUpdated": false,
+        "likeDislike": {
+          "totalLike": 0,
+          "totalDislike": 0,
+          "likeStatus": 0
+        }
+      }
+    ]
+  }
+}
