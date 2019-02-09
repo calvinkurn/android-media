@@ -62,6 +62,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private static final int ORDER_ASC = 1;
     private static final String PARAMS = "params";
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
+    public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -70,6 +71,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private LinearLayout llNoResult;
     private RelativeLayout rlContent;
     private Button btChangeSearch;
+    private CornerBottomSheet mCornerBottomSheet;
 
     private InputMethodManager mInputMethodManager;
     private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
@@ -115,7 +117,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
-                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(),this))
+                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
@@ -294,6 +296,17 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void setSampai(CornerAddressModel cornerAddressModel) {
         mShipmentAddressListAdapter.setSampai(cornerAddressModel);
+    }
+
+    @Override
+    public void populateCorner(List<CornerAddressModel> cornerAddressModelList) {
+        mCornerBottomSheet = CornerBottomSheet.newInstance(cornerAddressModelList);
+    }
+
+    @Override
+    public void showCornerBottomSheet() {
+        if (mCornerBottomSheet != null && getFragmentManager() != null)
+            mCornerBottomSheet.show(getFragmentManager(), TAG_CORNER_BS);
     }
 
     @Override
@@ -513,8 +526,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddAddressButtonClicked() {
         if (getActivity() != null)
-        startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
-                getActivity(), null, token, false, false),
-                LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+            startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
+                    getActivity(), null, token, false, false),
+                    LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
     }
 }
