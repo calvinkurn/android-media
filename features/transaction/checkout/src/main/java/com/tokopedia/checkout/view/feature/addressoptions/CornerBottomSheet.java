@@ -31,10 +31,10 @@ public class CornerBottomSheet extends BottomSheetDialogFragment {
     private TextView mTvCornerName;
     private List<CornerAddressModel> mBranchList;
 
-    public static CornerBottomSheet newInstance(ArrayList<CornerAddressModel> modelList) {
+    public static CornerBottomSheet newInstance(List<CornerAddressModel> modelList) {
 
         Bundle args = new Bundle();
-        args.putParcelableArrayList(ARGUMENTS_BRANCH_LIST, modelList);
+        args.putParcelableArrayList(ARGUMENTS_BRANCH_LIST, new ArrayList<>(modelList));
         CornerBottomSheet fragment = new CornerBottomSheet();
         fragment.setArguments(args);
         return fragment;
