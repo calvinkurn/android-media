@@ -14,7 +14,7 @@ public class CornerBranch {
     private Integer partnerId;
     @SerializedName("corner_branch_name")
     @Expose
-    private Integer cornerBranchName;
+    private String cornerBranchName;
     @SerializedName("address")
     @Expose
     private String address;
@@ -65,11 +65,11 @@ public class CornerBranch {
         this.partnerId = partnerId;
     }
 
-    public Integer getCornerBranchName() {
+    public String getCornerBranchName() {
         return cornerBranchName;
     }
 
-    public void setCornerBranchName(Integer cornerBranchName) {
+    public void setCornerBranchName(String cornerBranchName) {
         this.cornerBranchName = cornerBranchName;
     }
 
