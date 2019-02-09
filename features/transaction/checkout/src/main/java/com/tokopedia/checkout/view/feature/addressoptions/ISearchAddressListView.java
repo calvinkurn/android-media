@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.addressoptions;
 
 import android.app.Activity;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
@@ -11,6 +12,10 @@ import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressMod
 public interface ISearchAddressListView<T> {
 
     void showList(T t);
+
+    void showSampai();
+
+    void setSampai(CornerAddressModel cornerAddressModel);
 
     void updateList(T t);
 

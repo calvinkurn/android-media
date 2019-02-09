@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -280,10 +281,19 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             isMenuVisible = true;
             getActivity().invalidateOptionsMenu();
         }
-//        mShipmentAddressListAdapter.setSampai();
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showSampai() {
+        mShipmentAddressListAdapter.showSampaiWithoutSelected();
+    }
+
+    @Override
+    public void setSampai(CornerAddressModel cornerAddressModel) {
+        mShipmentAddressListAdapter.setSampai(cornerAddressModel);
     }
 
     @Override
@@ -302,7 +312,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void updateList(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.updateAddressList(recipientAddressModels);
-        mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
 
