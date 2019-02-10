@@ -301,6 +301,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void populateCorner(List<CornerAddressModel> cornerAddressModelList) {
         mCornerBottomSheet = CornerBottomSheet.newInstance(cornerAddressModelList);
+        mCornerBottomSheet.setOnBranchChosenListener(
+                corner -> mShipmentAddressListAdapter.setSampai(corner));
     }
 
     @Override

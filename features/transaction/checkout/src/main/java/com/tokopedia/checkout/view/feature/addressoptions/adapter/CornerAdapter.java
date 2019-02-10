@@ -45,21 +45,23 @@ public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerView
     class CornerViewHolder extends RecyclerView.ViewHolder {
 
         TextView mCornerName, mCornerDesc;
+        View mView;
 
         CornerViewHolder(View itemView) {
             super(itemView);
             mCornerName = itemView.findViewById(R.id.text_view_branch_name);
             mCornerDesc = itemView.findViewById(R.id.text_view_branch_desc);
+            mView = itemView;
         }
 
         public void bind(CornerAddressModel model, OnItemCliciListener listener) {
             mCornerName.setText(model.getCornerBranchName());
             mCornerDesc.setText(model.getCornerBranchDesc());
-            itemView.setOnClickListener(view -> listener.onItemClick(model.getCornerId()));
+            mView.setOnClickListener(view -> listener.onItemClick(model));
         }
     }
 
     public interface OnItemCliciListener {
-        void onItemClick(int cornerId);
+        void onItemClick(CornerAddressModel corner);
     }
 }

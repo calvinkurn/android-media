@@ -75,16 +75,19 @@ public class CornerBottomSheet extends BottomSheetDialogFragment implements Corn
     }
 
     @Override
-    public void onItemClick(int cornerId) {
-        if (mListener != null) mListener.onChosen(cornerId);
+    public void onItemClick(CornerAddressModel corner) {
+        if (mListener != null) {
+            mListener.onChosen(corner);
+            dismiss();
+        }
     }
 
     public void setOnBranchChosenListener(BranchChosenListener listener) {
         mListener = listener;
     }
 
-    interface BranchChosenListener {
-        void onChosen(int cornerId);
+    public interface BranchChosenListener {
+        void onChosen(CornerAddressModel corner);
     }
 
 }
