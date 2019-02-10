@@ -53,7 +53,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
             RecipientAddressModel address = mAddressModelList.get(addressPosition);
             addressHolder.bind(address, this, mActionListener, addressPosition);
             if (position == getItemCount() - 1) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
-            if (position == 0) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
+            if (position == getExtraCount()) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
         }
     }
 
@@ -104,19 +104,13 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         return mSampaiModel != null ? 1 : 0;
     }
 
-    /**
-     * Implemented by adapter host fragment
-     */
     public interface ActionListener {
-        /**
-         * Executed when address container is clicked
-         */
+
         void onAddressContainerClicked(RecipientAddressModel model);
 
-        /**
-         * Executed when edit address button is clicked
-         */
         void onEditClick(RecipientAddressModel model);
+
+        void onCornerAddressClicked(CornerAddressModel cornerAddressModel);
 
         void onAddAddressButtonClicked();
 
@@ -142,6 +136,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         public void bind(CornerAddressModel model, ActionListener listener) {
             if (!TextUtils.isEmpty(model.getCornerName())) {
                 mCornerView.setVisibility(View.VISIBLE);
+                mCornerView.setOnClickListener(view -> listener.onCornerAddressClicked(model));
                 mCornerName.setText(model.getCornerName());
                 mBranchName.setText(model.getCornerBranchName());
                 mRadio.setSelected(model.isSelected());
@@ -150,7 +145,6 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
                 mCornerView.setVisibility(View.GONE);
                 mButton.setText("Pilih Lokasi Tokopedia Corner");
             }
-
             mButton.setOnClickListener(view -> listener.onCornerButtonClicked());
         }
     }

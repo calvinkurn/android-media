@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.data.mapper.AddressCornerMapper;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -461,6 +462,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             KeyboardHandler.hideSoftKeyboard(getActivity());
             sendAnalyticsOnAddressSelectionClicked();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
+        }
+    }
+
+    @Override
+    public void onCornerAddressClicked(CornerAddressModel cornerAddressModel) {
+        if (mCartAddressChoiceActivityListener != null && getActivity() != null){
+            RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel);
+            mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
         }
     }
 

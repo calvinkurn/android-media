@@ -36,6 +36,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     // Flag for one click shipment
     private boolean isDisableMultipleAddress;
 
+    private boolean isCornerAddress;
+
     public RecipientAddressModel() {
     }
 
@@ -205,6 +207,27 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
 
     public void setDisableMultipleAddress(boolean disableMultipleAddress) {
         isDisableMultipleAddress = disableMultipleAddress;
+    }
+
+    public boolean isCornerAddress() {
+        return isCornerAddress;
+    }
+
+    public void setCornerAddress(boolean cornerAddress) {
+        isCornerAddress = cornerAddress;
+    }
+
+    public RecipientAddressModel(String id, String addressName, String cityName, String street, String recipientName, String destinationDistrictName,
+                                 boolean isCornerAddress, String recipientPhoneNumber, String provinceName) {
+        this.id = id;
+        this.addressName = addressName;
+        this.cityName = cityName;
+        this.street = street;
+        this.recipientName = recipientName;
+        this.destinationDistrictName = destinationDistrictName;
+        this.isCornerAddress = isCornerAddress;
+        this.recipientPhoneNumber = recipientPhoneNumber;
+        this.provinceName = provinceName;
     }
 
     @Override

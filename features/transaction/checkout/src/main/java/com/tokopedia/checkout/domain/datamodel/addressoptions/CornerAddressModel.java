@@ -12,6 +12,9 @@ public class CornerAddressModel implements Parcelable {
     private String cornerName;
     private String cornerBranchName;
     private String cornerBranchDesc;
+    private String districtName;
+    private String cityName;
+    private String recipientFullName;
     private boolean isSelected;
 
     public CornerAddressModel() {
@@ -55,6 +58,30 @@ public class CornerAddressModel implements Parcelable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public String getRecipientFullName() {
+        return recipientFullName;
+    }
+
+    public void setRecipientFullName(String recipientFullName) {
+        this.recipientFullName = recipientFullName;
     }
 
     @Override

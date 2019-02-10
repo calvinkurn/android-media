@@ -56,6 +56,9 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
                 cornerAddressModel.setCornerName(cornerDatum.getCornerName());
                 cornerAddressModel.setCornerBranchName(cornerBranch.getCornerBranchName());
                 cornerAddressModel.setCornerBranchDesc(cornerBranch.getDistrictName() + ", " + cornerBranch.getCityName());
+                cornerAddressModel.setDistrictName(cornerBranch.getDistrictName());
+                cornerAddressModel.setCityName(cornerBranch.getCityName());
+                cornerAddressModel.setRecipientFullName(cornerDatum.getUserFullname());
                 cornerAddressModels.add(cornerAddressModel);
             }
             result.setCornerAddressModelsList(cornerAddressModels);
@@ -63,5 +66,14 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
 
         result.setRecipientAddressModelList(recipientAddressModelList);
         return result;
+    }
+
+    public static RecipientAddressModel converToCartModel(CornerAddressModel cornerModel) {
+        return new RecipientAddressModel(
+                String.valueOf(cornerModel.getCornerId()),
+                "Tokopedia Corner",
+                cornerModel.getDistrictName(), cornerModel.getCornerBranchName(), cornerModel.getRecipientFullName(),
+                cornerModel.getCornerName(), true, "", cornerModel.getCityName()
+        );
     }
 }
