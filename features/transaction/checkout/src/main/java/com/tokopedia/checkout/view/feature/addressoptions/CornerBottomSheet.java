@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by fajarnuha on 09/02/19.
  */
-public class CornerBottomSheet extends BottomSheetDialogFragment {
+public class CornerBottomSheet extends BottomSheetDialogFragment implements CornerAdapter.OnItemCliciListener {
 
     private static final String ARGUMENTS_BRANCH_LIST = "ARGUMENTS_BRANCH_LIST";
 
@@ -66,11 +66,25 @@ public class CornerBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mTvCornerName = view.findViewById(R.id.text_view_corner_name);
         mRvCorner = view.findViewById(R.id.rv_corner_list);
-        mAdapter = new CornerAdapter(mBranchList);
+        mAdapter = new CornerAdapter(mBranchList, this);
 
         mRvCorner.setHasFixedSize(true);
         mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvCorner.setAdapter(mAdapter);
         mTvCornerName.setText(mBranchList.get(0).getCornerName());
     }
+
+    @Override
+    public void onItemClick(int cornerId) {
+        if (mListener != null) mListener.onChosen(cornerId);
+    }
+
+    public void setOnBranchChosenListener(BranchChosenListener listener) {
+        mListener = listener;
+    }
+
+    interface BranchChosenListener {
+        void onChosen(int cornerId);
+    }
+
 }

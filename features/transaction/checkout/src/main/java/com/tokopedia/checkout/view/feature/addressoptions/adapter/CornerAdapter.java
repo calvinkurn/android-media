@@ -18,9 +18,11 @@ import java.util.List;
 public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerViewHolder> {
 
     private List<CornerAddressModel> mData;
+    private OnItemCliciListener mListener;
 
-    public CornerAdapter(List<CornerAddressModel> mData) {
+    public CornerAdapter(List<CornerAddressModel> mData, OnItemCliciListener listener) {
         this.mData = mData;
+        this.mListener = listener;
     }
 
     @NonNull
@@ -32,7 +34,7 @@ public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerView
 
     @Override
     public void onBindViewHolder(@NonNull CornerViewHolder holder, int position) {
-        holder.bind(mData.get(position));
+        holder.bind(mData.get(position), mListener);
     }
 
     @Override
@@ -50,9 +52,14 @@ public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerView
             mCornerDesc = itemView.findViewById(R.id.text_view_branch_desc);
         }
 
-        public void bind(CornerAddressModel model) {
+        public void bind(CornerAddressModel model, OnItemCliciListener listener) {
             mCornerName.setText(model.getCornerBranchName());
             mCornerDesc.setText(model.getCornerBranchDesc());
+            itemView.setOnClickListener(view -> listener.onItemClick(model.getCornerId()));
         }
+    }
+
+    public interface OnItemCliciListener {
+        void onItemClick(int cornerId);
     }
 }
