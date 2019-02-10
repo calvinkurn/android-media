@@ -54,7 +54,6 @@ ext {
             imageuploader     : ":libraries:imageuploader",
             kotlinExtensions  : ":libraries:kotlin_extensions",
             linker            : ":libraries:linker",
-            promoautoapplyusecase : ":libraries:promoautoapplyusecase",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",

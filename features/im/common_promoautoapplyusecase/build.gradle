@@ -3,10 +3,10 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
-    artifactId = 'tokopoints'
-    groupId = 'com.tokopedia.tokopoints'
-    versionName = "${tkpdTokopointVersion}"
-    artifactName = "tokopoints-release"
+    artifactId = 'common_promoautoapplyusecase'
+    groupId = 'com.tokopedia.common_promoautoapplyusecase'
+    versionName = "${tkpdPromoApplyVersion}"
+    artifactName = "common_promoautoapplyusecase-release"
 }
 
 repositories {
@@ -31,4 +31,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
+
+apply from: '../../../publish_local.gradle'
+
 

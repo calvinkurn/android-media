@@ -1,4 +1,4 @@
-package com.tokopedia.promoautoapplyusecase;
+package com.tokopedia.common_promoautoapplyusecase;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.promoautoapplyusecase;
+package com.tokopedia.common_promoautoapplyusecase;
 
 import android.content.Context;
 
@@ -8,7 +8,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
 import java.util.Arrays;
+
 import rx.Observable;
 
 public class PromoCodeAutoApplyUseCase extends UseCase<GraphqlResponse> {
