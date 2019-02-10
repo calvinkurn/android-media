@@ -235,5 +235,6 @@
     <string name="change_address">Ubah Alamat</string>
     <string name="add_address">Tambah Alamat Baru</string>
     <string name="shipping_address">Alamat Pengiriman</string>
+    <string name="bottom_sheet_empty_branch_text">Tidak bisa menemukan daftar cabang Tokopedia Corner</string>
 
 </resources>

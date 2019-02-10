@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
@@ -30,9 +31,9 @@ public class CornerBottomSheet extends BottomSheetDialogFragment {
     private CornerAdapter mAdapter;
     private TextView mTvCornerName;
     private List<CornerAddressModel> mBranchList;
+    private BranchChosenListener mListener;
 
     public static CornerBottomSheet newInstance(List<CornerAddressModel> modelList) {
-
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARGUMENTS_BRANCH_LIST, new ArrayList<>(modelList));
         CornerBottomSheet fragment = new CornerBottomSheet();
@@ -48,6 +49,10 @@ public class CornerBottomSheet extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mBranchList = getArguments().getParcelableArrayList(ARGUMENTS_BRANCH_LIST);
+        } else {
+            dismiss();
+            Toast.makeText(getContext(), getString(R.string.bottom_sheet_empty_branch_text),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
