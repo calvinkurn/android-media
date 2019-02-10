@@ -75,6 +75,7 @@ import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.TokopediaCornerData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.SaveShipmentStateRequest;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateDropshipData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductData;
@@ -857,11 +858,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return null;
         }
 
-        return new CheckoutRequest.Builder()
+        CheckoutRequest.Builder checkoutBuilder = new CheckoutRequest.Builder()
                 .promoCode(promoCode)
                 .isDonation(isDonation)
-                .data(dataCheckoutRequestList)
-                .build();
+                .data(dataCheckoutRequestList);
+
+        if (getRecipientAddressModel().isCornerAddress()) {
+            TokopediaCornerData tokopediaCornerData = new TokopediaCornerData();
+            tokopediaCornerData.setTokopediaCorner(true);
+            tokopediaCornerData.setUserCornerId(Integer.parseInt(getRecipientAddressModel().getUserCornerId()));
+            tokopediaCornerData.setCornerId(Integer.parseInt(getRecipientAddressModel().getId()));
+            checkoutBuilder.cornerData(tokopediaCornerData);
+        }
+
+        return checkoutBuilder.build();
     }
 
     @Override
