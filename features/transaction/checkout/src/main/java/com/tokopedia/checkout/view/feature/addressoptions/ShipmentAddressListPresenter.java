@@ -101,98 +101,102 @@ public class ShipmentAddressListPresenter
                                         getMvpView().setToken(peopleAddressModel.getToken());
                                     }
 
-                                    if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
+                                    if (peopleAddressModel.getPaging() != null) {
+                                        hasNext = peopleAddressModel.getPaging().getUriNext() != null &&
+                                                !peopleAddressModel.getPaging().getUriNext().equals("0");
+                                        if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
+                                            getMvpView().showListEmpty();
+                                            getMvpView().stopTrace();
+                                        } else {
+                                            RecipientAddressModel newlyCreatedAddress = null;
+                                            if (currentAddress != null) {
+                                                for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
+                                                    if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId()) ||
+                                                            (recipientAddressModel.getDestinationDistrictId().equals(currentAddress.getDestinationDistrictId()) &&
+                                                                    recipientAddressModel.getCityId().equals(currentAddress.getCityId()) &&
+                                                                    recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
+                                                                    recipientAddressModel.getStreet().equals(currentAddress.getStreet()) &&
+                                                                    recipientAddressModel.getAddressName().equals(currentAddress.getAddressName()) &&
+                                                                    recipientAddressModel.getPostalCode().equals(currentAddress.getPostalCode()) &&
+                                                                    recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
+                                                                    recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
+                                                    ) {
+                                                        newlyCreatedAddress = recipientAddressModel;
+                                                        recipientAddressModel.setSelected(true);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if (ShipmentAddressListPresenter.this.resetPage) {
+                                                if (currentAddress != null && currentAddress.getId() == null && newlyCreatedAddress != null) {
+                                                    getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
+                                                    getMvpView().stopTrace();
+                                                } else {
+                                                    if (peopleAddressModel.getCornerAddressModelsList() != null) {
+                                                        getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
+                                                        getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
+                                                    }
+                                                    getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
+                                                    getMvpView().stopTrace();
+                                                }
+                                            } else {
+                                                getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
+                                                getMvpView().stopTrace();
+                                            }
+                                        }
+                                    } else {
                                         getMvpView().showListEmpty();
                                         getMvpView().stopTrace();
-                                    } else {
-                                        RecipientAddressModel newlyCreatedAddress = null;
-                                        if (currentAddress != null) {
-                                            for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
-                                                if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId()) ||
-                                                        (recipientAddressModel.getDestinationDistrictId().equals(currentAddress.getDestinationDistrictId()) &&
-                                                                recipientAddressModel.getCityId().equals(currentAddress.getCityId()) &&
-                                                                recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
-                                                                recipientAddressModel.getStreet().equals(currentAddress.getStreet()) &&
-                                                                recipientAddressModel.getAddressName().equals(currentAddress.getAddressName()) &&
-                                                                recipientAddressModel.getPostalCode().equals(currentAddress.getPostalCode()) &&
-                                                                recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
-                                                                recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
-                                                ) {
-                                                    newlyCreatedAddress = recipientAddressModel;
-                                                    recipientAddressModel.setSelected(true);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        if (ShipmentAddressListPresenter.this.resetPage) {
-                                            if (currentAddress != null && currentAddress.getId() == null && newlyCreatedAddress != null) {
-                                                getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
-                                                getMvpView().stopTrace();
-                                            } else {
-                                                if (peopleAddressModel.getCornerAddressModelsList() != null) {
-//                                                boolean hasCornerSelected = false;
-//                                                for (CornerAddressModel cornerAddressModel : peopleAddressModel.getCornerAddressModelsList()) {
-//                                                    if (cornerAddressModel.isSelected()) {
-//                                                        getMvpView().setSampai(cornerAddressModel);
-//                                                        hasCornerSelected = true;
-//                                                    }
-//                                                }
-//                                                if (!hasCornerSelected) getMvpView().showSampai();
-                                                    getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
-                                                    getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
-                                                }
-                                                getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
-                                                getMvpView().stopTrace();
-                                            }
-                                        } else {
-                                            getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
-                                            getMvpView().stopTrace();
-                                        }
                                     }
-
-//                                    if (peopleAddressModel.getPaging() != null) {
-//                                        hasNext = peopleAddressModel.getPaging().getUriNext() != null &&
-//                                                !peopleAddressModel.getPaging().getUriNext().equals("0");
-//                                        if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
-//                                            getMvpView().showListEmpty();
-//                                            getMvpView().stopTrace();
-//                                        } else {
-//                                            RecipientAddressModel newlyCreatedAddress = null;
-//                                            if (currentAddress != null) {
-//                                                for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
-//                                                    if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId()) ||
-//                                                            (recipientAddressModel.getDestinationDistrictId().equals(currentAddress.getDestinationDistrictId()) &&
-//                                                                    recipientAddressModel.getCityId().equals(currentAddress.getCityId()) &&
-//                                                                    recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
-//                                                                    recipientAddressModel.getStreet().equals(currentAddress.getStreet()) &&
-//                                                                    recipientAddressModel.getAddressName().equals(currentAddress.getAddressName()) &&
-//                                                                    recipientAddressModel.getPostalCode().equals(currentAddress.getPostalCode()) &&
-//                                                                    recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
-//                                                                    recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
-//                                                            ) {
-//                                                        newlyCreatedAddress = recipientAddressModel;
-//                                                        recipientAddressModel.setSelected(true);
-//                                                        break;
-//                                                    }
-//                                                }
-//                                            }
-//                                            if (ShipmentAddressListPresenter.this.resetPage) {
-//                                                if (currentAddress != null && currentAddress.getId() == null && newlyCreatedAddress != null) {
-//                                                    getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
-//                                                    getMvpView().stopTrace();
-//                                                } else {
-//                                                    getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
-//                                                    getMvpView().stopTrace();
-//                                                }
-//                                            } else {
-//                                                getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
-//                                                getMvpView().stopTrace();
-//                                            }
-//                                        }
-//                                    } else {
+//                                    if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
 //                                        getMvpView().showListEmpty();
 //                                        getMvpView().stopTrace();
+//                                    } else {
+//                                        RecipientAddressModel newlyCreatedAddress = null;
+//                                        if (currentAddress != null) {
+//                                            for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
+//                                                if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId()) ||
+//                                                        (recipientAddressModel.getDestinationDistrictId().equals(currentAddress.getDestinationDistrictId()) &&
+//                                                                recipientAddressModel.getCityId().equals(currentAddress.getCityId()) &&
+//                                                                recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
+//                                                                recipientAddressModel.getStreet().equals(currentAddress.getStreet()) &&
+//                                                                recipientAddressModel.getAddressName().equals(currentAddress.getAddressName()) &&
+//                                                                recipientAddressModel.getPostalCode().equals(currentAddress.getPostalCode()) &&
+//                                                                recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
+//                                                                recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
+//                                                ) {
+//                                                    newlyCreatedAddress = recipientAddressModel;
+//                                                    recipientAddressModel.setSelected(true);
+//                                                    break;
+//                                                }
+//                                            }
+//                                        }
+//                                        if (ShipmentAddressListPresenter.this.resetPage) {
+//                                            if (currentAddress != null && currentAddress.getId() == null && newlyCreatedAddress != null) {
+//                                                getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
+//                                                getMvpView().stopTrace();
+//                                            } else {
+//                                                if (peopleAddressModel.getCornerAddressModelsList() != null) {
+////                                                boolean hasCornerSelected = false;
+////                                                for (CornerAddressModel cornerAddressModel : peopleAddressModel.getCornerAddressModelsList()) {
+////                                                    if (cornerAddressModel.isSelected()) {
+////                                                        getMvpView().setSampai(cornerAddressModel);
+////                                                        hasCornerSelected = true;
+////                                                    }
+////                                                }
+////                                                if (!hasCornerSelected) getMvpView().showSampai();
+//                                                    getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
+//                                                    getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
+//                                                }
+//                                                getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
+//                                                getMvpView().stopTrace();
+//                                            }
+//                                        } else {
+//                                            getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
+//                                            getMvpView().stopTrace();
+//                                        }
 //                                    }
+
                                 } else {
                                     getMvpView().showListEmpty();
                                     getMvpView().stopTrace();
