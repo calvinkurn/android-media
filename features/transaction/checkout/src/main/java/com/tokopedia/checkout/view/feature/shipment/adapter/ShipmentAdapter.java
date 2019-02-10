@@ -692,47 +692,49 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromo(PromoCodeCartShipmentData.DataVoucher dataVoucher) {
-        if (dataVoucher != null) {
-            if (TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState()) == TickerCheckoutView.State.ACTIVE) {
-                shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
-                shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+        if (shipmentCostModel != null) {
+            if (dataVoucher != null) {
+                if (TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState()) == TickerCheckoutView.State.ACTIVE) {
+                    shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
+                    shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+                } else {
+                    shipmentCostModel.setPromoPrice(0);
+                    shipmentCostModel.setPromoMessage(null);
+                }
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    Object itemAdapter = shipmentDataList.get(i);
+                    if (itemAdapter instanceof CartPromoSuggestion) {
+                        ((CartPromoSuggestion) itemAdapter).setVisible(false);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof RecipientAddressModel) {
+                        ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                        updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true);
+                    }
+                }
             } else {
                 shipmentCostModel.setPromoPrice(0);
                 shipmentCostModel.setPromoMessage(null);
-            }
-            for (int i = 0; i < shipmentDataList.size(); i++) {
-                Object itemAdapter = shipmentDataList.get(i);
-                if (itemAdapter instanceof CartPromoSuggestion) {
-                    ((CartPromoSuggestion) itemAdapter).setVisible(false);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof RecipientAddressModel) {
-                    ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof ShipmentCartItemModel) {
-                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true);
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    Object itemAdapter = shipmentDataList.get(i);
+                    if (itemAdapter instanceof PromoData) {
+                        ((PromoData) itemAdapter).setState(TickerCheckoutView.State.EMPTY);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof CartPromoSuggestion) {
+                        ((CartPromoSuggestion) itemAdapter).setVisible(true);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof RecipientAddressModel) {
+                        ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                        updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
+                    }
                 }
             }
-        } else {
-            shipmentCostModel.setPromoPrice(0);
-            shipmentCostModel.setPromoMessage(null);
-            for (int i = 0; i < shipmentDataList.size(); i++) {
-                Object itemAdapter = shipmentDataList.get(i);
-                if (itemAdapter instanceof PromoData) {
-                    ((PromoData) itemAdapter).setState(TickerCheckoutView.State.EMPTY);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof CartPromoSuggestion) {
-                    ((CartPromoSuggestion) itemAdapter).setVisible(true);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof RecipientAddressModel) {
-                    ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof ShipmentCartItemModel) {
-                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
-                }
-            }
+            updateShipmentCostModel();
+            notifyItemChanged(getShipmentCostPosition());
         }
-        updateShipmentCostModel();
-        notifyItemChanged(getShipmentCostPosition());
     }
 
     public void resetCourierPromoState() {
