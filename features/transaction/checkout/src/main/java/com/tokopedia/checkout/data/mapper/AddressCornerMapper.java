@@ -57,8 +57,16 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
                 cornerAddressModel.setCornerBranchName(cornerBranch.getCornerBranchName());
                 cornerAddressModel.setCornerBranchDesc(cornerBranch.getDistrictName() + ", " + cornerBranch.getCityName());
                 cornerAddressModel.setDistrictName(cornerBranch.getDistrictName());
+                cornerAddressModel.setDistrictId(String.valueOf(cornerBranch.getDistrictId()));
+                cornerAddressModel.setPostalCode(cornerBranch.getPostcode());
                 cornerAddressModel.setCityName(cornerBranch.getCityName());
                 cornerAddressModel.setRecipientFullName(cornerDatum.getUserFullname());
+                cornerAddressModel.setUserCornerId(cornerDatum.getUserCornerId());
+
+                String[] latlong = cornerBranch.getGeoloc().split(",");
+                cornerAddressModel.setLatitude(latlong[0]);
+                cornerAddressModel.setLongitude(latlong[1]);
+
                 cornerAddressModels.add(cornerAddressModel);
             }
             result.setCornerAddressModelsList(cornerAddressModels);
@@ -72,8 +80,10 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
         return new RecipientAddressModel(
                 String.valueOf(cornerModel.getCornerId()),
                 "Tokopedia Corner",
-                cornerModel.getDistrictName(), cornerModel.getCornerBranchName(), cornerModel.getRecipientFullName(),
-                cornerModel.getCornerName(), true, "", cornerModel.getCityName()
+                cornerModel.getDistrictName(), cornerModel.getCornerBranchName(),
+                cornerModel.getRecipientFullName(), cornerModel.getCornerName(), true, "",
+                cornerModel.getCityName(), cornerModel.getDistrictId(), cornerModel.getPostalCode(),
+                cornerModel.getLatitude(), cornerModel.getLongitude(), cornerModel.getUserCornerId()
         );
     }
 }

@@ -15,6 +15,11 @@ public class CornerAddressModel implements Parcelable {
     private String districtName;
     private String cityName;
     private String recipientFullName;
+    private String districtId;
+    private String postalCode;
+    private String latitude;
+    private String longitude;
+    private String userCornerId;
     private boolean isSelected;
 
     public CornerAddressModel() {
@@ -84,6 +89,46 @@ public class CornerAddressModel implements Parcelable {
         this.recipientFullName = recipientFullName;
     }
 
+    public String getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(String districtId) {
+        this.districtId = districtId;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getUserCornerId() {
+        return userCornerId;
+    }
+
+    public void setUserCornerId(String userCornerId) {
+        this.userCornerId = userCornerId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -95,6 +140,14 @@ public class CornerAddressModel implements Parcelable {
         dest.writeString(this.cornerName);
         dest.writeString(this.cornerBranchName);
         dest.writeString(this.cornerBranchDesc);
+        dest.writeString(this.districtName);
+        dest.writeString(this.cityName);
+        dest.writeString(this.recipientFullName);
+        dest.writeString(this.districtId);
+        dest.writeString(this.postalCode);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+        dest.writeString(this.userCornerId);
         dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
     }
 
@@ -103,10 +156,18 @@ public class CornerAddressModel implements Parcelable {
         this.cornerName = in.readString();
         this.cornerBranchName = in.readString();
         this.cornerBranchDesc = in.readString();
+        this.districtName = in.readString();
+        this.cityName = in.readString();
+        this.recipientFullName = in.readString();
+        this.districtId = in.readString();
+        this.postalCode = in.readString();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
+        this.userCornerId = in.readString();
         this.isSelected = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<CornerAddressModel> CREATOR = new Parcelable.Creator<CornerAddressModel>() {
+    public static final Creator<CornerAddressModel> CREATOR = new Creator<CornerAddressModel>() {
         @Override
         public CornerAddressModel createFromParcel(Parcel source) {
             return new CornerAddressModel(source);

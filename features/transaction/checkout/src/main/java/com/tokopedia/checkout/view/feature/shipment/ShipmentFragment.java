@@ -1710,6 +1710,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
             codHistory = shipmentPresenter.getCodData().getCounterCod();
         }
+
         if (shipmentDetailData != null) {
             shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                     shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,

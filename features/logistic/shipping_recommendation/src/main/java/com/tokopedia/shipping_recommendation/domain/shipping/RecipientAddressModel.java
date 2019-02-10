@@ -37,6 +37,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private boolean isDisableMultipleAddress;
 
     private boolean isCornerAddress;
+    private String userCornerId;
 
     public RecipientAddressModel() {
     }
@@ -217,8 +218,19 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         isCornerAddress = cornerAddress;
     }
 
-    public RecipientAddressModel(String id, String addressName, String cityName, String street, String recipientName, String destinationDistrictName,
-                                 boolean isCornerAddress, String recipientPhoneNumber, String provinceName) {
+    public String getUserCornerId() {
+        return userCornerId;
+    }
+
+    public void setUserCornerId(String userCornerId) {
+        this.userCornerId = userCornerId;
+    }
+
+    public RecipientAddressModel(String id, String addressName, String cityName, String street,
+                                 String recipientName, String destinationDistrictName,
+                                 boolean isCornerAddress, String recipientPhoneNumber,
+                                 String provinceName, String districtId, String postalCode,
+                                 String latitude, String longitude, String userCornerId) {
         this.id = id;
         this.addressName = addressName;
         this.cityName = cityName;
@@ -228,6 +240,11 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.isCornerAddress = isCornerAddress;
         this.recipientPhoneNumber = recipientPhoneNumber;
         this.provinceName = provinceName;
+        this.destinationDistrictId = districtId;
+        this.postalCode = postalCode;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.userCornerId = userCornerId;
     }
 
     @Override
@@ -311,6 +328,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
         dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isDisableMultipleAddress ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
+        dest.writeString(this.userCornerId);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -335,6 +354,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.selected = in.readByte() != 0;
         this.stateExtraPaddingTop = in.readByte() != 0;
         this.isDisableMultipleAddress = in.readByte() != 0;
+        this.isCornerAddress = in.readByte() != 0;
+        this.userCornerId = in.readString();
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
