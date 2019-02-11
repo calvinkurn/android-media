@@ -84,14 +84,20 @@ class LocationDetectorHelper @Inject constructor(private val permissionCheckerHe
                 val deviceLocation = DeviceLocation(wayLatitude, wayLongitude, Date().time)
                 saveToCache(deviceLocation)
                 onGetLocation(deviceLocation)
+            } else {
+                onErrorGetLocation(onGetLocation)
             }
         }
         fusedLocationProvider.lastLocation.addOnFailureListener(activity) { exception ->
-            {
-                val deviceLocation = DeviceLocation(0.0, 0.0, Date().time)
-                onGetLocation(deviceLocation)
+            run {
+                onErrorGetLocation(onGetLocation)
             }
         }
+    }
+
+    private fun onErrorGetLocation(onGetLocation: (DeviceLocation) -> Unit) {
+        val deviceLocation = DeviceLocation(0.0, 0.0, Date().time)
+        onGetLocation(deviceLocation)
     }
 
     private fun saveToCache(deviceLocation: DeviceLocation) {
