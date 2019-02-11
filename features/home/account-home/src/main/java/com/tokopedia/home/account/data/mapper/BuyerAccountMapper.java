@@ -112,17 +112,14 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
 
             // TODO: 24/1/19 check if buyer is also seller
-            model.setOnBoardingForBuyerSaldo(true);
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
             tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
 
-            // TODO: 24/1/19 update app link for buyer saldo tab
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);
         } else {
-            model.setOnBoardingForBuyerSaldo(false);
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
             tokopediaPayViewModel.setRightSaldo(false);

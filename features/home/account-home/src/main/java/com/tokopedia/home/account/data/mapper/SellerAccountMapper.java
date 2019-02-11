@@ -271,10 +271,6 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
         shopCard.setDataDeposit(dataDeposit);
 
-        /*if (accountModel.getDeposit() != null) {
-            shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
-        }*/
-
         if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
             shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
         }
@@ -289,7 +285,6 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if (depositModel.getDeposit() != null) {
             sellerSaldoCard.setBalance(depositModel.getDepositFmt());
         }
-
         return sellerSaldoCard;
     }
 

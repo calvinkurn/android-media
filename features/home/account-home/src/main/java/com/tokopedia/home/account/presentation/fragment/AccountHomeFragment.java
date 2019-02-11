@@ -56,7 +56,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private int counterNumber = 0;
 
     private AccountAnalytics accountAnalytics;
-    private SellerAccountFragment sellerAccountFragment;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -104,9 +103,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             item.setTitle(getContext().getString(R.string.label_account_buyer));
             fragmentItems.add(item);
 
-            sellerAccountFragment = SellerAccountFragment.newInstance();
             item = new AccountFragmentItem();
-            item.setFragment(sellerAccountFragment);
+            item.setFragment(SellerAccountFragment.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_seller));
             fragmentItems.add(item);
 
@@ -167,27 +165,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (sellerAccountFragment != null && sellerAccountFragment.isVisible()) {
-                    sellerAccountFragment.setUserVisibleHint(true);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
         onNotifyBadgeNotification(counterNumber);
     }
 

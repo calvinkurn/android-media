@@ -25,17 +25,10 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
     private TokopediaPayCardView tokopediaPayCardView;
     private AccountItemListener listener;
 
-    public TokopediaPayViewHolder(View itemView, @NonNull AccountItemListener listener, ArrayList<ShowCaseObject> showCaseObjects) {
+    public TokopediaPayViewHolder(View itemView, @NonNull AccountItemListener listener) {
         super(itemView);
         tokopediaPayCardView = itemView.findViewById(R.id.view_tokopedia_pay);
         this.listener = listener;
-
-        showCaseObjects.add(new ShowCaseObject(
-                tokopediaPayCardView.getLayoutRight(),
-                getString(R.string.buyer_saldo_on_boarding_title),
-                getString(R.string.buyer_saldo_on_boarding_desc),
-                ShowCaseContentPosition.BOTTOM,
-                Color.WHITE));
     }
 
     @Override
@@ -65,8 +58,5 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
                 element.getVccUserStatus(),
                 element.getApplinkRight(),
                 element.getBsDataRight()));
-
-        tokopediaPayCardView.setSaldoInfoIconVisibility(element.isRightSaldo());
-        tokopediaPayCardView.setInfoIconClickListener(v -> listener.onSaldoInfoIconClicked(false));
     }
 }

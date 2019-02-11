@@ -37,7 +37,6 @@ public class TokopediaPayCardView extends BaseCustomView {
     private TextView textDesctRight;
     private LinearLayout layoutLeft;
     private LinearLayout layoutRight;
-    private ImageView saldoInfoIV;
     private View container;
     private ImageView iconLeft, iconRight;
 
@@ -69,7 +68,6 @@ public class TokopediaPayCardView extends BaseCustomView {
         layoutRight = view.findViewById(R.id.layout_right);
         iconLeft = view.findViewById(R.id.card_icon_left);
         iconRight = view.findViewById(R.id.card_icon_right);
-        saldoInfoIV = view.findViewById(R.id.ss_info_image_view);
 
         ImageHandler.loadImageBitmap2(getContext(),
                 getBackgroundImageUri(),
@@ -155,19 +153,4 @@ public class TokopediaPayCardView extends BaseCustomView {
         layoutRight.setOnClickListener(listener);
     }
 
-    public LinearLayout getLayoutRight() {
-        return layoutRight;
-    }
-
-    public void setSaldoInfoIconVisibility(boolean isRightSaldo) {
-        if (isRightSaldo) {
-            saldoInfoIV.setVisibility(VISIBLE);
-        } else {
-            saldoInfoIV.setVisibility(GONE);
-        }
-    }
-
-    public void setInfoIconClickListener(View.OnClickListener listener) {
-        saldoInfoIV.setOnClickListener(listener);
-    }
 }

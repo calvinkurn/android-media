@@ -36,8 +36,6 @@
     <string name="screentitle_store_setting">Atur Toko</string>
     <string name="title_tokocard_setting">TokoSwipe</string>
     <string name="title_saldo_setting">Saldo</string>
-    <string name="seller_saldo_on_boarding_title">Saldo Penghasilan</string>
-    <string name="seller_saldo_on_boarding_desc"><![CDATA[Berisi dana hasil penjualan. Dana tidak dapat dibelanjakan, namun dapat digunakan untuk berlangganan Power Merchant dan Kredit TopAds. Untuk melihat <b>Saldo Refund</b> dan hasil penjualan investasi cek Saldo di tab ‘<b>Beli</b>’.]]></string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
     <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
@@ -191,8 +189,5 @@
     <string name="curate_product_by_me">Kurasi Produk di By Me</string>
     <string name="selesai">Selesai</string>
     <string name="title_seller_saldo">Saldo Seller</string>
-    <string name="buyer_saldo_on_boarding_title">Saldo Refund</string>
-    <string name="buyer_saldo_on_boarding_desc"><![CDATA[Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia. Untuk melihat <b>Saldo Penghasilan</b> cek Saldo di tab ‘<b>Jual</b>’.]]></string>
-    <string name="saldo_info_bottom_sheet_btn">Mengerti</string>
 
 </resources>

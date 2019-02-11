@@ -1,6 +1,5 @@
 package com.tokopedia.home.account.presentation.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,7 +23,6 @@ import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
-import com.tokopedia.home.account.presentation.view.SaldoInfoBottomSheet;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -34,8 +32,6 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
@@ -60,9 +56,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final String OVO = "OVO";
-    public static final long SHOWCASE_DIALOG_INTRO_DELAY = 400;
 
-    public AccountTypeFactory accountTypeFactory;
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
@@ -412,43 +406,4 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
     }
 
-    @SuppressLint("PrivateResource")
-    public ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .customView(R.layout.show_case_saldo)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.dp_12)
-                .arrowWidth(R.dimen.dp_16)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.sp_12)
-                .finishStringRes(R.string.intro_seller_saldo_finish_string)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .useSkipWord(false)
-                .build();
-    }
-
-    @Override
-    public void onSaldoInfoIconClicked(boolean isSeller) {
-        if (getContext() == null) {
-            return;
-        }
-        SaldoInfoBottomSheet saldoInfoBottomSheet =
-                new SaldoInfoBottomSheet(getContext());
-
-        if (isSeller) {
-            saldoInfoBottomSheet.setBody(getResources().getString(R.string.seller_saldo_on_boarding_desc));
-            saldoInfoBottomSheet.setTitle(getResources().getString(R.string.seller_saldo_on_boarding_title));
-        } else {
-            saldoInfoBottomSheet.setBody(getResources().getString(R.string.buyer_saldo_on_boarding_desc));
-            saldoInfoBottomSheet.setTitle(getResources().getString(R.string.buyer_saldo_on_boarding_title));
-        }
-
-        saldoInfoBottomSheet.setButtonText(getResources().getString(R.string.saldo_info_bottom_sheet_btn));
-        saldoInfoBottomSheet.show();
-    }
 }

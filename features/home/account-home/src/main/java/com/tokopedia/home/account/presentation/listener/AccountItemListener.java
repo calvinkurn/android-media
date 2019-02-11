@@ -67,5 +67,4 @@ public interface AccountItemListener {
 
     void onShopStatusInfoButtonClicked();
 
-    void onSaldoInfoIconClicked(boolean isSeller);
 }

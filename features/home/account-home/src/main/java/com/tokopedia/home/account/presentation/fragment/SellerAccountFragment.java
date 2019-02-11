@@ -53,7 +53,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
-    private boolean hasShownShowCase;
 
     public static SellerAccountFragment newInstance() {
         SellerAccountFragment fragment = new SellerAccountFragment();
@@ -85,8 +84,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        accountTypeFactory = new AccountTypeFactory(this);
-        adapter = new SellerAccountAdapter(accountTypeFactory, new ArrayList<>());
+        adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
         if (getContext() != null) {
@@ -102,21 +100,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         if (isVisibleToUser && !isLoaded) {
             getData();
             isLoaded = !isLoaded;
-        } else if (isVisibleToUser) {
-            new Handler().postDelayed(() -> setShowCase(getContext()), SHOWCASE_DIALOG_INTRO_DELAY);
         }
     }
 
-    private void setShowCase(Context context) {
-        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, SellerAccountFragment.class.getName())) {
-
-            hasShownShowCase = true;
-            createShowCaseDialog().show((Activity) context,
-                    SellerAccountFragment.class.getName(),
-                    accountTypeFactory.getShowCaseObjectListForSellerSaldo()
-            );
-        }
-    }
 
     private void getData() {
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),

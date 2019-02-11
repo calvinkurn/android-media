@@ -154,18 +154,6 @@
                         app:layout_constraintStart_toStartOf="@+id/text_amount_right"
                         app:layout_constraintTop_toBottomOf="@+id/text_amount_right" />
 
-                    <ImageView
-                        android:id="@+id/ss_info_image_view"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:padding="@dimen/dp_6"
-                        android:src="@drawable/info_icon"
-                        android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/text_desc_right"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:visibility="visible" />
-
                 </LinearLayout>
 
 

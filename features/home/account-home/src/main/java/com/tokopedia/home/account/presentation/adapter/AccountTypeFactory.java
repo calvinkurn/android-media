@@ -38,9 +38,6 @@ import java.util.ArrayList;
 public class AccountTypeFactory extends BaseAdapterTypeFactory {
     private AccountItemListener listener;
 
-    public ArrayList<ShowCaseObject> showCaseObjectListForSellerSaldo = new ArrayList<>();
-    public ArrayList<ShowCaseObject> showCaseObjectListForBuyerSaldo = new ArrayList<>();
-
     public AccountTypeFactory(@NonNull AccountItemListener listener) {
         this.listener = listener;
     }
@@ -52,7 +49,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == BuyerCardViewHolder.LAYOUT) {
             return new BuyerCardViewHolder(parent, listener);
         } else if (type == TokopediaPayViewHolder.LAYOUT) {
-            return new TokopediaPayViewHolder(parent, listener, showCaseObjectListForBuyerSaldo);
+            return new TokopediaPayViewHolder(parent, listener);
         } else if (type == MenuTitleViewHolder.LAYOUT) {
             return new MenuTitleViewHolder(parent);
         } else if (type == MenuGridViewHolder.LAYOUT) {
@@ -64,7 +61,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == ShopCardViewHolder.LAYOUT) {
             return new ShopCardViewHolder(parent, listener);
         } else if (type == SellerSaldoViewHolder.LAYOUT) {
-            return new SellerSaldoViewHolder(parent, listener, showCaseObjectListForSellerSaldo);
+            return new SellerSaldoViewHolder(parent, listener);
         } else if (type == AddProductViewHolder.LAYOUT) {
             return new AddProductViewHolder(parent, listener);
         } else if (type == SellerEmptyViewHolder.LAYOUT) {
@@ -117,11 +114,4 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return SellerEmptyViewHolder.LAYOUT;
     }
 
-    public ArrayList<ShowCaseObject> getShowCaseObjectListForSellerSaldo() {
-        return showCaseObjectListForSellerSaldo;
-    }
-
-    public ArrayList<ShowCaseObject> getShowCaseObjectListForBuyerSaldo() {
-        return showCaseObjectListForBuyerSaldo;
-    }
 }
