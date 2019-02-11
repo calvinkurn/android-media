@@ -229,8 +229,9 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     public RecipientAddressModel(String id, String addressName, String cityName, String street,
                                  String recipientName, String destinationDistrictName,
                                  boolean isCornerAddress, String recipientPhoneNumber,
-                                 String provinceName, String districtId, String postalCode,
-                                 String latitude, String longitude, String userCornerId) {
+                                 String provinceName, String cityId, String districtId,
+                                 String provinceId, String postalCode, String latitude,
+                                 String longitude, String userCornerId) {
         this.id = id;
         this.addressName = addressName;
         this.cityName = cityName;
@@ -245,6 +246,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.latitude = latitude;
         this.longitude = longitude;
         this.userCornerId = userCornerId;
+        this.cityId = cityId;
+        this.provinceId = provinceId;
     }
 
     @Override

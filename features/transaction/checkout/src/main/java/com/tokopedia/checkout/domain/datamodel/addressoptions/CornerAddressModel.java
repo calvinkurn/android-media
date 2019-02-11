@@ -15,6 +15,8 @@ public class CornerAddressModel implements Parcelable {
     private String districtName;
     private String cityName;
     private String recipientFullName;
+    private String provinceId;
+    private String cityId;
     private String districtId;
     private String postalCode;
     private String latitude;
@@ -129,6 +131,22 @@ public class CornerAddressModel implements Parcelable {
         this.userCornerId = userCornerId;
     }
 
+    public String getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(String provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -143,6 +161,8 @@ public class CornerAddressModel implements Parcelable {
         dest.writeString(this.districtName);
         dest.writeString(this.cityName);
         dest.writeString(this.recipientFullName);
+        dest.writeString(this.provinceId);
+        dest.writeString(this.cityId);
         dest.writeString(this.districtId);
         dest.writeString(this.postalCode);
         dest.writeString(this.latitude);
@@ -159,6 +179,8 @@ public class CornerAddressModel implements Parcelable {
         this.districtName = in.readString();
         this.cityName = in.readString();
         this.recipientFullName = in.readString();
+        this.provinceId = in.readString();
+        this.cityId = in.readString();
         this.districtId = in.readString();
         this.postalCode = in.readString();
         this.latitude = in.readString();

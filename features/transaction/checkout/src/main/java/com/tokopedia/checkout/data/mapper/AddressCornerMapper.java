@@ -62,6 +62,8 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
                 cornerAddressModel.setCityName(cornerBranch.getCityName());
                 cornerAddressModel.setRecipientFullName(cornerDatum.getUserFullname());
                 cornerAddressModel.setUserCornerId(cornerDatum.getUserCornerId());
+                cornerAddressModel.setCityId(String.valueOf(cornerBranch.getCityId()));
+                cornerAddressModel.setProvinceId(String.valueOf(cornerBranch.getProvinceId()));
 
                 String[] latlong = cornerBranch.getGeoloc().split(",");
                 cornerAddressModel.setLatitude(latlong[0]);
@@ -82,7 +84,7 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
                 "Tokopedia Corner",
                 cornerModel.getDistrictName(), cornerModel.getCornerBranchName(),
                 cornerModel.getRecipientFullName(), cornerModel.getCornerName(), true, "",
-                cornerModel.getCityName(), cornerModel.getDistrictId(), cornerModel.getPostalCode(),
+                cornerModel.getCityName(), cornerModel.getCityId(),cornerModel.getDistrictId(), cornerModel.getProvinceId(),cornerModel.getPostalCode(),
                 cornerModel.getLatitude(), cornerModel.getLongitude(), cornerModel.getUserCornerId()
         );
     }
