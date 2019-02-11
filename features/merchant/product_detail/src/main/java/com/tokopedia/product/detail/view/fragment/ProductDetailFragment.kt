@@ -40,8 +40,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.fragment.productView.PartialVariantAndRateEstView
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
-import com.tokopedia.product.detail.view.fragment.productView.*
 import com.tokopedia.product.detail.view.fragment.productview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
