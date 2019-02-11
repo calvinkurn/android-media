@@ -344,7 +344,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         BerandaUrl.GRAPHQL_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         BerandaUrl.DOMAIN_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
         ChatUrl.Companion.setTOPCHAT(ConsumerAppBaseUrl.CHAT_DOMAIN);
-        ConstantKey.TkpdBaseUrl.HOME_DATA_BASE_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_GQL;
         com.tokopedia.network.constant.TkpdBaseURL.ACCOUNTS_DOMAIN =
                 ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
