@@ -2078,10 +2078,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @NotNull
     @Override
-    public Observable<CheckoutData> getCheckoutObservable(@NotNull CheckoutRequest checkoutRequest) {
+    public Observable<CheckoutData> getCheckoutObservable(@NotNull CheckoutRequest checkoutRequest, boolean isOneClickShipment, boolean isExpressCheckout) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
-        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, true);
+        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
+        requestParams.putBoolean(CheckoutUseCase.PARAM_IS_EXPRESS, isExpressCheckout);
         return CartComponentInjector.newInstance(this).getCheckoutUseCase()
                 .createObservable(requestParams);
     }

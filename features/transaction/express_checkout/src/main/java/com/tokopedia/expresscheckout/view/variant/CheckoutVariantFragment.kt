@@ -558,7 +558,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData> {
-        return router.getCheckoutObservable(checkoutRequest)
+        return router.getCheckoutObservable(checkoutRequest, true, true)
     }
 
     override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {

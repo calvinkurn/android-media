@@ -31,6 +31,7 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     private static final String PARAM_FINGERPRINT_PUBLICKEY = "fingerprint_publickey";
     private static final String PARAM_FINGERPRINT_SUPPORT = "fingerprint_support";
     public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
+    public static final String PARAM_IS_EXPRESS = "is_express";
 
     private final ICartRepository cartRepository;
     private final ICheckoutMapper checkoutMapper;
@@ -58,6 +59,7 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
         param.put(PARAM_IS_THANKYOU_NATIVE_NEW, "1");
         param.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(requestParams.getBoolean(
                 PARAM_ONE_CLICK_SHIPMENT, false)));
+        param.put(PARAM_IS_EXPRESS, String.valueOf(requestParams.getBoolean(PARAM_IS_EXPRESS, false)));
         param = createParamFingerprint(param);
         return cartRepository.checkout(param)
                 .map(checkoutMapper::convertCheckoutData);
