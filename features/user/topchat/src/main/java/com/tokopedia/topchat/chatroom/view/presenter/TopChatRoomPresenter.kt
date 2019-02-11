@@ -194,18 +194,6 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-
-    override fun getChatCache(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
-        if (messageId.isNotEmpty()) {
-            var temp = true
-            getChatUseCase.getCache(GetChatUseCase.generateParamFirstTime(messageId),
-                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
-        }
-    }
-
     override fun getMessageId(toUserId: String,
                               toShopId: String,
                               source: String,
