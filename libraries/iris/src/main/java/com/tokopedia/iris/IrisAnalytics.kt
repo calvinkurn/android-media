@@ -22,7 +22,7 @@ import android.content.Intent
 /**
  * @author okasurya on 10/2/18.
  */
-class IrisAnalytics(private val context: Context) : Iris {
+class IrisAnalytics(context: Context) : Iris {
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
 

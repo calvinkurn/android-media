@@ -23,7 +23,6 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
 
         val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
 
-
         if (trackings.isNotEmpty()) {
 
             val request: String = TrackingMapper().transformListEvent(trackings)
@@ -40,6 +39,7 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                 return Result.SUCCESS
             }
         }
+
         return Result.FAILURE
     }
 }

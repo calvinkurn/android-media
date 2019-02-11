@@ -412,6 +412,8 @@ public class MainParentActivity extends BaseActivity implements
         if(!((BaseMainApplication)getApplication()).checkAppSignature()){
             finish();
         }
+
+        stressTestIris();
     }
 
     @Override
@@ -801,6 +803,15 @@ public class MainParentActivity extends BaseActivity implements
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+
+    private void stressTestIris() {
+        int i = 0;
+        while (i < 1000000) {
+            globalNavAnalytics.eventBottomNavigation("TEST IRIS ANDROID");
+            i++;
         }
     }
 }
