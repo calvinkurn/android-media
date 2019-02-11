@@ -26,7 +26,7 @@ import java.util.List;
 public class CollapsingTabLayout extends TabLayout {
 
     private static final long DEFAULT_ANIMATION_DURATION = 300;
-    private static final long TAB_AUTO_SCROLL_DELAY_DURATION = 200;
+    private static final long TAB_AUTO_SCROLL_DELAY_DURATION = 300;
     private static final int NONE = -1;
     private static final int MAX_TAB_COLLAPSE_SCROLL_RANGE = 200;
 

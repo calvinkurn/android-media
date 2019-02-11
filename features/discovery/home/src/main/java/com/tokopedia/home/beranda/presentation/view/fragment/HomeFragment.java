@@ -275,7 +275,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsViewPager.setVisibility(View.VISIBLE);
         if (homeFeedPagerAdapter == null) {
             homeFeedPagerAdapter = new HomeFeedPagerAdapter(this,
-                    this, getFragmentManager(), feedTabModelList);
+                    this, getChildFragmentManager(), feedTabModelList);
         } else {
             homeFeedPagerAdapter.updateData(feedTabModelList);
         }
