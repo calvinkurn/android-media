@@ -91,7 +91,7 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                     shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                             .get(addressIndex).getUserAddress().getAddressId());
-                    getShipmentItem(shipmentCartItemModel, userAddress, groupShop, 
+                    getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
                             cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
                     setCartItemModelError(shipmentCartItemModel);

@@ -39,7 +39,7 @@ public class ProductData implements Parcelable {
     @SerializedName("recommend")
     @Expose
     private boolean recommend;
-    @SerializedName("check_sum")
+    @SerializedName("checksum")
     @Expose
     private String checkSum;
     @SerializedName("ut")

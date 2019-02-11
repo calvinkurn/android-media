@@ -14,9 +14,9 @@
       order_value:"$order_value"
       cat_id:"$cat_id"
       lang:"$lang"
-      is_blackbox:"$is_blackbox"
+      is_blackbox:$is_blackbox
       address_id:"$address_id"
-      preorder:"$preorder"
+      preorder:$preorder
   }) {
   ratesv3 {
     id
