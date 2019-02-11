@@ -6,6 +6,7 @@ import com.tokopedia.checkout.data.mapper.AddressCornerMapper;
 import com.tokopedia.checkout.data.mapper.PeopleAddressWithCornerMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
+import com.tokopedia.checkout.domain.datamodel.addresscorner.GqlKeroWithAddressResponse;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.network.utils.AuthUtil;
@@ -30,18 +31,24 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
 
     private final PeopleAddressRepository peopleAddressRepository;
     private final UserSessionInterface userSessionInterface;
+    private GetAddressWithCornerUseCase cornerUseCase;
 
-    public GetPeopleAddressUseCase(PeopleAddressRepository peopleAddressRepository,
+    public GetPeopleAddressUseCase(GetAddressWithCornerUseCase cornerUseCase, PeopleAddressRepository peopleAddressRepository,
                                    UserSessionInterface userSessionInterface) {
         this.peopleAddressRepository = peopleAddressRepository;
         this.userSessionInterface = userSessionInterface;
-
+        this.cornerUseCase = cornerUseCase;
     }
 
     @Override
     public Observable<PeopleAddressModel> createObservable(RequestParams requestParams) {
         Observable<GetPeopleAddress> oldAddressRx = peopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
-        Observable<AddressCornerResponse> addressWithCornerRx = peopleAddressRepository.getCornerData(new HashMap<>());
+        Observable<AddressCornerResponse> addressWithCornerRx = cornerUseCase
+                .getExecuteObservable(RequestParams.EMPTY)
+                .map(graphqlResponse -> {
+                    GqlKeroWithAddressResponse response = graphqlResponse.getData(GqlKeroWithAddressResponse.class);
+                    return response.getKeroAddressWithCorner();
+                });
         return Observable.zip(oldAddressRx, addressWithCornerRx, new PeopleAddressWithCornerMapper());
     }
 

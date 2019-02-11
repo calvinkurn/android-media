@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
+import com.tokopedia.checkout.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
 import com.tokopedia.checkout.view.feature.addressoptions.adapter.ShipmentAddressListAdapter;
@@ -49,9 +50,15 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    GetPeopleAddressUseCase provideGetAddressListUseCase(PeopleAddressRepository peopleAddressRepository,
+    GetPeopleAddressUseCase provideGetAddressListUseCase(GetAddressWithCornerUseCase usecase, PeopleAddressRepository peopleAddressRepository,
                                                          UserSessionInterface userSessionInterface) {
-        return new GetPeopleAddressUseCase(peopleAddressRepository, userSessionInterface);
+        return new GetPeopleAddressUseCase(usecase, peopleAddressRepository, userSessionInterface);
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    GetAddressWithCornerUseCase provideGetAddressWithCornerUsecase() {
+        return new GetAddressWithCornerUseCase(context);
     }
 
 }

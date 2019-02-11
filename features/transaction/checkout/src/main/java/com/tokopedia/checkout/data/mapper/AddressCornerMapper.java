@@ -47,7 +47,8 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
             recipientAddressModelList.add(recipientAddress);
         }
 
-        if (addressCornerResponse.getTokopediaCornerData() != null) {
+        if (addressCornerResponse.getTokopediaCornerData() != null &&
+                !addressCornerResponse.getTokopediaCornerData().isEmpty()) {
             TokopediaCornerDatum cornerDatum = addressCornerResponse.getTokopediaCornerData().get(0);
             List<CornerAddressModel> cornerAddressModels = new ArrayList<>();
             for (CornerBranch cornerBranch : cornerDatum.getCornerBranch()) {
@@ -84,7 +85,7 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
                 "Tokopedia Corner",
                 cornerModel.getDistrictName(), cornerModel.getCornerBranchName(),
                 cornerModel.getRecipientFullName(), cornerModel.getCornerName(), true, "",
-                cornerModel.getCityName(), cornerModel.getCityId(),cornerModel.getDistrictId(), cornerModel.getProvinceId(),cornerModel.getPostalCode(),
+                cornerModel.getCityName(), cornerModel.getCityId(), cornerModel.getDistrictId(), cornerModel.getProvinceId(), cornerModel.getPostalCode(),
                 cornerModel.getLatitude(), cornerModel.getLongitude(), cornerModel.getUserCornerId()
         );
     }
