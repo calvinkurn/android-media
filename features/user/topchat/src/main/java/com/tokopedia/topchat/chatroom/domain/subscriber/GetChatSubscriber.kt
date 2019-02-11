@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.domain.subscriber
 
+import android.util.Log
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
@@ -14,6 +15,7 @@ class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, GetExistingChatPojo::class.java,
                 routingOnNext(graphqlResponse), onErrorGetChat)
+        Log.d("tevx", graphqlResponse.toString())
     }
 
 
@@ -30,6 +32,7 @@ class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
 
     override fun onError(e: Throwable) {
         onErrorGetChat(e)
+        Log.d("tevx", e.toString())
     }
 
 }
