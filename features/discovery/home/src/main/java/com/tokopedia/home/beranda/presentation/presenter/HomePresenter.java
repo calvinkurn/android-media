@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
@@ -25,6 +24,7 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +50,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private static final String TAG = HomePresenter.class.getSimpleName();
     private static final String CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED";
-    private UserSession userSession;
+
+    private UserSessionInterface userSession;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
@@ -68,7 +69,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private long REQUEST_DELAY = 180000;// 3 minutes
     private static long lastRequestTime;
 
-    public HomePresenter(UserSession userSession,
+    public HomePresenter(UserSessionInterface userSession,
                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         this.userSession = userSession;
         this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;

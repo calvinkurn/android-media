@@ -36,13 +36,19 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
 
     private List<HomeFeedViewModel> convertToHomeFeedViewModels(List<Product> products) {
         List<HomeFeedViewModel> homeFeedViewModels = new ArrayList<>();
-        for (Product product : products) {
+        for (int position = 0 ; position < products.size() ; position++) {
+            Product product = products.get(position);
+
             homeFeedViewModels.add(new HomeFeedViewModel(
                     product.getId(),
                     product.getName(),
+                    product.getCategoryBreadcrumbs(),
+                    product.getRecommendationType(),
                     product.getImageUrl(),
-                    product.getPrice()
-            ));
+                    product.getPrice(),
+                    product.getPriceInt(),
+                    (position+1)
+                    ));
         }
         return homeFeedViewModels;
     }

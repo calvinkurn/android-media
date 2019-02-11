@@ -3,20 +3,39 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
     recommendation_product(recomID:$recomID, count:$count, page:$page){
       product{
         id
-        name
-        url
-        applink
-        image_url
-        is_topads
-        price
-        badges{
-          title
+          name
+          category_breadcrumbs
+          url
+          click_url
           image_url
-        }
-        labels{
-          title
-          color
-        }
+          is_wishlist
+          wishlist_url
+          applink
+          is_topads
+          tracker_image_url
+          price
+          price_int
+          slashed_price
+          slashed_price_int
+          rating
+          count_review
+          recommendation_type
+          shop{
+            id
+            name
+            url
+            applink
+            city
+            reputation
+          }
+          labels{
+            title
+            color
+          }
+          badges{
+            title
+            image_url
+          }
       }
       has_next_page
     }
