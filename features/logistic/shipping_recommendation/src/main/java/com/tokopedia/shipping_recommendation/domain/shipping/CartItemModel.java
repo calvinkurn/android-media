@@ -51,6 +51,15 @@ public class CartItemModel implements Parcelable {
     private String protectionLinkText;
     private String protectionLinkUrl;
     private boolean protectionOptIn;
+    private String preOrderInfo;
+
+    public String getPreOrderInfo() {
+        return preOrderInfo;
+    }
+
+    public void setPreOrderInfo(String preOrderInfo) {
+        this.preOrderInfo = preOrderInfo;
+    }
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -354,6 +363,7 @@ public class CartItemModel implements Parcelable {
                 .append(getErrorMessage(), that.getErrorMessage())
                 .append(getErrorMessageDescription(), that.getErrorMessageDescription())
                 .append(getPreOrderDurationDay(), that.getPreOrderDurationDay())
+                .append(getPreOrderInfo(), that.getPreOrderInfo())
                 .isEquals();
     }
 
@@ -384,6 +394,7 @@ public class CartItemModel implements Parcelable {
                 .append(getErrorMessage())
                 .append(getErrorMessageDescription())
                 .append(getPreOrderDurationDay())
+                .append(getPreOrderInfo())
                 .toHashCode();
     }
 
@@ -419,6 +430,7 @@ public class CartItemModel implements Parcelable {
         dest.writeString(this.errorMessageDescription);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
         dest.writeInt(this.preOrderDurationDay);
+        dest.writeString(this.preOrderInfo);
     }
 
     protected CartItemModel(Parcel in) {
@@ -447,6 +459,7 @@ public class CartItemModel implements Parcelable {
         this.errorMessageDescription = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
         this.preOrderDurationDay = in.readInt();
+        this.preOrderInfo = in.readString();
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

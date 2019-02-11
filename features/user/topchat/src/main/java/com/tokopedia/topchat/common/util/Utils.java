@@ -14,12 +14,15 @@ public class Utils {
     private static Locale mLocale;
 
     public static String getDateTime(String isoTime) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat(DATE_FORMAT, getLocale());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", getLocale());
         try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat(DATE_FORMAT, getLocale());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", getLocale());
             Date date = inputFormat.parse(isoTime);
             return dateFormat.format(date);
         } catch (ParseException e) {
+            e.printStackTrace();
+            return e.getLocalizedMessage();
+        } catch (Exception e) {
             e.printStackTrace();
             return e.getLocalizedMessage();
         }

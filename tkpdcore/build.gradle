@@ -72,8 +72,6 @@ dependencies {
 
     testImplementation  rootProject.ext.testDependencies.assertJ
 
-    implementation rootProject.ext.serviceDependencies.hockeyApp
-
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.appIndexing
