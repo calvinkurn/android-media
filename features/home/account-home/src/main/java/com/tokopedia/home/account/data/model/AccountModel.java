@@ -25,7 +25,7 @@ public class AccountModel {
     @SerializedName("isAuthenticated")
     @Expose
     private Integer isAuthenticated;
-    @SerializedName("saldo")
+    @SerializedName("balance")
     @Expose
     private DepositModel deposit;
     @SerializedName("wallet")

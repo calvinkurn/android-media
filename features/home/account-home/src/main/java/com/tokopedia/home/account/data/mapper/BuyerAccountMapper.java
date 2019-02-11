@@ -115,7 +115,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
-            tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                    (accountModel.getDeposit().getDepositLong(), false));
 
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);

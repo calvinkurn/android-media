@@ -292,7 +292,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onDepositClicked(SellerSaldoViewModel element) {
-        // TODO: 24/1/19 update deeplink for seller saldo tab
         openSladoPage(ApplinkConst.DEPOSIT);
     }
 

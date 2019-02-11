@@ -55,9 +55,9 @@ query BuyerUserAttribute($userID: Int!) {
       visibility
     }
   }
-  saldo {
-    deposit_fmt
-    deposit
+  balance {
+    buyer_usable
+    seller_usable
   }
   paymentAdminProfile {
     is_purchased_marketplace

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -97,7 +98,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         // TODO: 24/1/19 check if buyer is also seller
         tokopediaPayViewModel.setRightSaldo(true);
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
-        tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+        tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                (accountModel.getDeposit().getDepositLong(), false));
 
         tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
         items.add(tokopediaPayViewModel);
@@ -302,7 +304,8 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         items.add(shopCard);
 
         SellerSaldoViewModel sellerSaldoViewModel = new SellerSaldoViewModel();
-        sellerSaldoViewModel.setBalance(accountModel.getDeposit().getDepositFmt());
+        sellerSaldoViewModel.setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                (accountModel.getDeposit().getDepositLong(), false));
         items.add(sellerSaldoViewModel);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();

@@ -15,7 +15,7 @@ public class UserAttributeData {
     @SerializedName("wallet")
     @Expose
     private Wallet wallet;
-    @SerializedName("saldo")
+    @SerializedName("balance")
     @Expose
     private Saldo saldo;
     @SerializedName("paymentAdminProfile")

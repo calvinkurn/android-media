@@ -111,7 +111,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
-        if (accountModel.getDeposit().getDeposit() != null) {
+        if (accountModel.getDeposit().getDepositLong() != 0) {
             items.add(getSaldoInfo(accountModel.getDeposit()));
         }
 
@@ -282,8 +282,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
     private SellerSaldoViewModel getSaldoInfo(DepositModel depositModel) {
         SellerSaldoViewModel sellerSaldoCard = new SellerSaldoViewModel();
-        if (depositModel.getDeposit() != null) {
-            sellerSaldoCard.setBalance(depositModel.getDepositFmt());
+        if (depositModel.getDepositLong() != 0) {
+            sellerSaldoCard.setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                    (depositModel.getDepositLong(), false));
         }
         return sellerSaldoCard;
     }

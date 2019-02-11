@@ -1,9 +1,9 @@
 query {
   status
   isAuthenticated
-  saldo {
-    deposit
-    deposit_fmt
+  balance {
+    buyer_usable
+    seller_usable
   }
   profile {
     name
