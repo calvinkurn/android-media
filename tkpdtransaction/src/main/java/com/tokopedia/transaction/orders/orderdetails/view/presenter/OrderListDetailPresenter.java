@@ -426,16 +426,23 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
 
             @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
                 if (getView().getAppContext() == null)
                     return;
-                Type token = new TypeToken<DataResponse<JsonObject>>() {
+                Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
                 }.getType();
-                RestResponse restResponse = typeRestResponseMap.get(token);
+                RestResponse restResponse = typeDataResponseMap.get(token);
                 DataResponseCommon dataResponse = restResponse.getData();
+                CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
+                if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
+                    getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
+                    getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
+                else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
+                    getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
                 getView().hideProgressBar();
                 getView().finishOrderDetail();
-                getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+//                getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
             }
         });
     }

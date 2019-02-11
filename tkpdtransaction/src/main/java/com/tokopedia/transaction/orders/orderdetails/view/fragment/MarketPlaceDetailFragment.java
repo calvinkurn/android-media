@@ -147,7 +147,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order_list_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_marketplace_order_list_detail, container, false);
         parentLayout = view.findViewById(R.id.parentLayout);
         mainView = view.findViewById(R.id.main_view);
         statusLabel = view.findViewById(R.id.status_label);
@@ -224,6 +224,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         doubleTextView.setTopText(title.label());
         doubleTextView.setBottomText(title.value());
         doubleTextView.setBottomGravity(Gravity.RIGHT);
+        if (!TextUtils.isEmpty(title.textColor())) {
+            doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
+        }
         if(title.backgroundColor() !=null && !title.backgroundColor().isEmpty()){
             Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
             doubleTextView.setBottomTextBackground(drawable);
@@ -291,6 +294,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 }
             }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             doubleTextView.setBottomText(spannableString);
+        }
+
+        if (detail.label().equalsIgnoreCase("Nama Toko")) {
+            doubleTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String applink = "tokopedia://shop/" + shopInfo.getShopId()  +"/info";
+                    RouteManager.route(getContext(), applink);
+                }
+            });
         }
         detailContent.addView(doubleTextView);
     }

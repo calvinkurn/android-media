@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
+import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -41,7 +43,7 @@ public class FinishOrderUseCase extends RestRequestSupportInterceptorUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
         Map<String, Object> params = this.params.getParameters();
 
-        Type token = new TypeToken<DataResponse<JsonObject>>() {
+        Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(this.endpoint, token)
