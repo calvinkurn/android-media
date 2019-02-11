@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="@dimen/dp_16">
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_32">
 
     <ImageView
         android:id="@+id/img_banner"
@@ -47,13 +50,15 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
-        android:maxLines="1"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
+        android:gravity="center_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_banner"
         tool:text="Hore! Kamu Dapat Hadiah Ulang Tahun dari Tokopedia" />

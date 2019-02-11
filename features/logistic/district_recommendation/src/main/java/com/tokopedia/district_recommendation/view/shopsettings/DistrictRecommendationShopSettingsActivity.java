@@ -130,7 +130,7 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         DistrictRecommendationShopSettingsFragment fragment = DistrictRecommendationShopSettingsFragment.newInstance(token);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.parent_view, fragment,
+        fragmentTransaction.replace(R.id.parent_view, fragment,
                 DistrictRecommendationFragment.class.getSimpleName());
         fragmentTransaction.commit();
     }

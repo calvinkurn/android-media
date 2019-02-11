@@ -75,6 +75,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private String imagePath;
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
+    private View root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         searchView = (DiscoverySearchView) findViewById(R.id.search);
         loadingView = findViewById(R.id.progressBar);
+        root = findViewById(R.id.root);
     }
 
     protected void prepareView() {

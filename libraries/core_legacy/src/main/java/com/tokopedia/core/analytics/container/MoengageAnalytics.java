@@ -1,6 +1,5 @@
 package com.tokopedia.core.analytics.container;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.v4.util.Preconditions;
 import android.text.TextUtils;
@@ -15,6 +14,8 @@ import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.json.JSONObject;
+
+import java.util.Map;
 
 public class MoengageAnalytics extends ContextAnalytics {
     public MoengageAnalytics(Context context) {
@@ -33,17 +34,24 @@ public class MoengageAnalytics extends ContextAnalytics {
                         getContext().getResources().getString(R.string.key_moengage))
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
+                        .optOutTokenRegistration()
                         .build();
         MoEngage.initialise(moEngage);
     }
 
+    @Override
+    public void sendGeneralEvent(Map<String, Object> value) {
+
+    }
+
     public void isExistingUser(final boolean bol) {
-            CommonUtils.dumper("MoEngage check is existing user " + bol);
-            MoEHelper.getInstance(getContext()).setExistingUser(bol);
+        CommonUtils.dumper("MoEngage check is existing user " + bol);
+        MoEHelper.getInstance(getContext()).setExistingUser(bol);
     }
 
     /**
      * will be eliminate soon
+     *
      * @param customerWrapper
      */
     @Deprecated
@@ -90,53 +98,53 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     public void setUserData(CustomerWrapper value, final String source) {
-            MoEHelper helper = MoEHelper.getInstance(getContext());
+        MoEHelper helper = MoEHelper.getInstance(getContext());
 
-            if (checkNull(value.getFullName()))
-                helper.setFullName(value.getFullName());
+        if (checkNull(value.getFullName()))
+            helper.setFullName(value.getFullName());
 
-            if (checkNull(value.getFirstName()))
-                helper.setFirstName(value.getFirstName());
+        if (checkNull(value.getFirstName()))
+            helper.setFirstName(value.getFirstName());
 
-            if (checkNull(value.getCustomerId()))
-                helper.setUniqueId(value.getCustomerId());
+        if (checkNull(value.getCustomerId()))
+            helper.setUniqueId(value.getCustomerId());
 
-            if (checkNull(value.getEmailAddress()))
-                helper.setEmail(value.getEmailAddress());
+        if (checkNull(value.getEmailAddress()))
+            helper.setEmail(value.getEmailAddress());
 
-            if (checkNull(value.getPhoneNumber()))
-                helper.setNumber(value.getPhoneNumber());
+        if (checkNull(value.getPhoneNumber()))
+            helper.setNumber(value.getPhoneNumber());
 
-            if (!TextUtils.isEmpty(value.getDateOfBirth())) {
-                helper.setBirthDate(value.getDateOfBirth());
-            }
+        if (!TextUtils.isEmpty(value.getDateOfBirth())) {
+            helper.setBirthDate(value.getDateOfBirth());
+        }
 
-            if (checkNull(value.isGoldMerchant()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
+        if (checkNull(value.isGoldMerchant()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
 
-            if (checkNull(value.getShopId()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
+        if (checkNull(value.getShopId()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
 
-            if (checkNull(value.getShopName()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName());
+        if (checkNull(value.getShopName()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName());
 
-            if (checkNull(value.getTotalItemSold()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, value.getTotalItemSold());
+        if (checkNull(value.getTotalItemSold()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, value.getTotalItemSold());
 
-            if (checkNull(value.getTopAdsAmt()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
+        if (checkNull(value.getTopAdsAmt()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
 
-            if (checkNull(value.isHasPurchasedMarketplace()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
+        if (checkNull(value.isHasPurchasedMarketplace()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
 
-            if (checkNull(value.getLastTransactionDate()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, value.getLastTransactionDate());
+        if (checkNull(value.getLastTransactionDate()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, value.getLastTransactionDate());
 
-            if (checkNull(value.getShopScore()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
+        if (checkNull(value.getShopScore()))
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
 
-            if (checkNull(value.getGender()))
-                helper.setGender(value.getGender().equals("1") ? "male" : "female");
+        if (checkNull(value.getGender()))
+            helper.setGender(value.getGender().equals("1") ? "male" : "female");
 
     }
 
@@ -148,9 +156,9 @@ public class MoengageAnalytics extends ContextAnalytics {
         MoEHelper.getInstance(getContext()).trackEvent(eventName, data);
     }
 
-    private boolean checkNull(Object o){
-        if( o instanceof String)
-            return !TextUtils.isEmpty((String)o);
+    private boolean checkNull(Object o) {
+        if (o instanceof String)
+            return !TextUtils.isEmpty((String) o);
         else if (o instanceof Boolean)
             return o != null;
         else

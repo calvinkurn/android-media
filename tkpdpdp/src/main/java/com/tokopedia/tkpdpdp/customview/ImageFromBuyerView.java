@@ -19,9 +19,6 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Angga.Prasetiyo on 26/10/2015.
- */
 public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductDetailView> {
 
     private Context context;
@@ -29,6 +26,9 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
 
     public static final int VIEW_TYPE_IMAGE = 77;
     public static final int VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88;
+
+    public static final int DEFAULT_START_ROW = 0;
+    public static final int DEFAULT_END_ROW = 4;
 
     public ImageFromBuyerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,17 +62,14 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
 
     @Override
     protected void setViewListener() {
-//        ivToggle.setImageResource(R.drawable.chevron_down);
-//        tvDesc.setMaxLines(5);
-//        isExpand = false;
-//        ivToggle.setOnClickListener(new ClickToggle());
-//        setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull List<ImageReviewItem> imageReviewItems) {
         ItemAdapter adapter = new ItemAdapter();
-        adapter.setData(imageReviewItems);
+        int endRow = imageReviewItems.size() > 4 ? DEFAULT_END_ROW :
+                (imageReviewItems.size() - 1);
+        adapter.setData(imageReviewItems.subList(DEFAULT_START_ROW, endRow));
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4);
         rv_image.setLayoutManager(gridLayoutManager);
         rv_image.setAdapter(adapter);

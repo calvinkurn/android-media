@@ -39,6 +39,8 @@ public interface FlightPassengerListContract {
 
         void onSuccessDeletePassengerData();
 
+        void stopTrace();
+
     }
 
     interface Presenter {

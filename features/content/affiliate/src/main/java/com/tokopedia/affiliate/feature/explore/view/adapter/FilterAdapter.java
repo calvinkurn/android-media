@@ -72,8 +72,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private void initViewListener(Holder holder, FilterViewModel filter) {
         holder.cardView.setOnClickListener(v -> {
             enableCurrentItem(filter);
-            if (layout ==  R.layout.item_explore_filter && filter.isSelected()) {
-                moveSelectedSingleItemToFront(filter);
+            if (layout ==  R.layout.item_explore_filter){
+                if (filter.isSelected()) {
+                    moveSelectedSingleItemToFront(filter);
+                } else {
+                    moveAllSelectedToFront();
+                }
             }
             filterClickedListener.onItemClicked(getOnlySelectedFilter());
         });
@@ -199,5 +203,22 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         }
         addItem(items);
         notifyDataSetChanged();
+    }
+
+    private void moveAllSelectedToFront() {
+        List<FilterViewModel> items = new ArrayList<>();
+        items.addAll(getOnlySelectedFilter());
+        items.addAll(getNotSelectedItems());
+        addItem(items);
+    }
+
+    private List<FilterViewModel> getNotSelectedItems() {
+        List<FilterViewModel> items = new ArrayList<>();
+        for (FilterViewModel item: getAllFilterList()) {
+            if (!item.isSelected()) {
+                items.add(item);
+            }
+        }
+        return items;
     }
 }

@@ -149,12 +149,12 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             return true
         }
         var dateText = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate)
-        var dateTextCache = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate)
+        var dateTextCache = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(this.startDate)
         if (!dateText.equals(dateTextCache, ignoreCase = true)) {
             return true
         }
         dateText = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate)
-        dateTextCache = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate)
+        dateTextCache = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(this.endDate)
         return (!dateText.equals(dateTextCache, ignoreCase = true))
     }
 

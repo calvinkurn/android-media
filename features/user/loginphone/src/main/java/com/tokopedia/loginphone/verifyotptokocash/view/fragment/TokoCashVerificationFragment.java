@@ -13,8 +13,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.loginphone.R;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
-import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
@@ -131,7 +130,7 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
 
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
+            bundle.putParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA,
                     new ChooseTokoCashAccountViewModel(verifyOtpTokoCashPojo.getUserDetails(),
                             viewModel.getPhoneNumber(),
                             verifyOtpTokoCashPojo.getKey()));
