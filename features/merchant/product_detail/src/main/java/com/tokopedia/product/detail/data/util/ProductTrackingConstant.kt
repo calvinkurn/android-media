@@ -27,4 +27,12 @@ object ProductTrackingConstant {
     object ProductReview {
         const val EVENT_LABEL = "review"
     }
+
+    object MerchantVoucher {
+        const val EVENT = "promoClick"
+        const val ACTION = "promo banner"
+        const val MERCHANT_VOUCHER = "merchant voucher"
+        const val DETAIL = "mvc detail"
+        const val SEE_ALL = "see all"
+    }
 }

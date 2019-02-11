@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.productView
+package com.tokopedia.product.detail.view.fragment.productview
 
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.visible
@@ -20,5 +20,14 @@ class PartialAttributeInfoView private constructor(private val view: View){
                     productInfo.txStats.successRate, productInfo.txStats.sold.thousandFormatted())
             base_attribute_info.visible()
         }
+    }
+
+    fun renderWishlistCount(count: Int){
+        with(view){
+            txt_wishlist.text = count.toString()
+            txt_wishlist.visible()
+            label_wishlist.visible()
+        }
+
     }
 }

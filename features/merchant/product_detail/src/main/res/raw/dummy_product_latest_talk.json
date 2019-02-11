@@ -1,0 +1,83 @@
+{
+  "ProductTalkQuery": {
+    "talk": {
+      "count": 1,
+      "talks": [
+        {
+          "id": "222817353",
+          "user": {
+            "id": 35211597,
+            "full_name": "Kang Alif",
+            "admin_status": "Ordinary",
+            "reputation": {
+              "percentage": "0.00"
+            },
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/35211597/user_thumbnail/desktop",
+            "shop": {
+              "id": 0,
+              "name": "",
+              "domain": "",
+              "thumbnail": ""
+            }
+          },
+          "message": "ready gan? ",
+          "total_comment": "2",
+          "create_time": {
+            "format_app_3": "08 Feb 2019, 06:00 WIB"
+          }
+        }
+      ]
+    },
+    "talk_response": {
+      "talk_id": "222817353",
+      "talk_comment": [
+        {
+          "id": "457522876",
+          "user": {
+            "id": 35211597,
+            "full_name": "Kang Alif",
+            "admin_status": "Ordinary",
+            "reputation": {
+              "percentage": "0.00"
+            },
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/35211597/user_thumbnail/desktop",
+            "shop": {
+              "id": 0,
+              "name": "",
+              "domain": "",
+              "thumbnail": ""
+            }
+          },
+          "message": "black? ",
+          "total_comment": "0",
+          "create_time": {
+            "format_app_3": "08 Feb 2019, 06:02 WIB"
+          }
+        },
+        {
+          "id": "457636358",
+          "user": {
+            "id": 3584687,
+            "full_name": "Wighy Carresza",
+            "admin_status": "Ordinary",
+            "reputation": {
+              "percentage": "0.00"
+            },
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/3584687/user_thumbnail/desktop",
+            "shop": {
+              "id": 456539,
+              "name": "DiamondCell",
+              "domain": "DiamondCell",
+              "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/456539/shop_xs_thumbnail/desktop"
+            }
+          },
+          "message": "Ready gan",
+          "total_comment": "0",
+          "create_time": {
+            "format_app_3": "08 Feb 2019, 11:46 WIB"
+          }
+        }
+      ]
+    }
+  }
+}

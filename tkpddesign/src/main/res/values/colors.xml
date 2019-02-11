@@ -105,5 +105,9 @@
     <color name="blue_nob">#00bcd4</color>
     <color name="grey_hint">#e0e0e0</color>
     <color name="grey_warm">#9e9e9e</color>
+    <color name="tkpd_dark_orange">#F89406</color>
+    <color name="tkpd_status_red">#b94a48</color>
+    <color name="label_buyer">#2AB4C2</color>
+    <color name="label_user">#5eba46</color>
 
 </resources>
