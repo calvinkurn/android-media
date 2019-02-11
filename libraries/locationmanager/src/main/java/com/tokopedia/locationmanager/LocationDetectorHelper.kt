@@ -29,7 +29,7 @@ class LocationDetectorHelper @Inject constructor(private val permissionCheckerHe
     fun getLocation(onGetLocation: ((DeviceLocation) -> Unit),
                     activity: Activity,
                     type: Int = TYPE_DEFAULT_FROM_CLOUD,
-                    rationaleText : String = "") {
+                    rationaleText: String = "") {
 
         when (type) {
             TYPE_DEFAULT_FROM_CLOUD -> getDataFromCloud(onGetLocation, activity, rationaleText)
@@ -49,7 +49,8 @@ class LocationDetectorHelper @Inject constructor(private val permissionCheckerHe
     }
 
     private fun getDataFromCloud(onGetLocation: (DeviceLocation) -> Unit, activity: Activity,
-                                 rationaleText : String = "") {
+                                 rationaleText: String = "") {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             permissionCheckerHelper.checkPermissions(activity, getPermissions(),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
@@ -68,6 +69,9 @@ class LocationDetectorHelper @Inject constructor(private val permissionCheckerHe
 
                     },
                     rationaleText)
+        } else {
+            getLatitudeLongitude(onGetLocation, activity)
+        }
     }
 
     @SuppressWarnings("MissingPermission")

@@ -156,17 +156,13 @@ class PermissionCheckerHelper {
     private fun requestPermissions(context: Context, permissions: Array<String>,
                                    REQUEST_PERMISSION_CODE: Int) {
 
-        return try {
+        try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 when (context) {
                     is AppCompatActivity -> context.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
                     is Activity -> context.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
                     is Fragment -> context.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
-                    else -> {
-                    }
                 }
-            } else {
-
             }
         } catch (e: IllegalStateException) {
             e.printStackTrace()
@@ -177,9 +173,9 @@ class PermissionCheckerHelper {
             Boolean {
         return try {
             when (context) {
-                is AppCompatActivity -> ActivityCompat.shouldShowRequestPermissionRationale(context,
+                is AppCompatActivity, is Activity -> ActivityCompat
+                        .shouldShowRequestPermissionRationale(context as Activity,
                         permission)
-                is Activity -> ActivityCompat.shouldShowRequestPermissionRationale(context, permission)
                 is Fragment -> {
                     val activity: Activity = context.requireActivity().parent
                     ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
