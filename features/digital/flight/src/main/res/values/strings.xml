@@ -482,4 +482,5 @@
     <string name="flight_bottom_sheet_tag">Flight Sort</string>
     <string name="flight_search_choose_departure_flight">Pilih Penerbangan Pergi</string>
     <string name="flight_search_choose_return_flight">Pilih Penerbangan Pulang</string>
+    <string name="flight_terminal_info">Terminal %s*</string>
 </resources>
