@@ -106,7 +106,7 @@ ext {
             challenges              : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
             changePhoneNumber       : "com.tokopedia.changephonenumber:changephonenumber:${tkpdChangePhoneNumberVersion}",
             core                    : "com.tokopedia.core:core:${tkpdCoreVersion}",
-            common_promoautoapplyusecase   : "com.tokopedia.common_promoautoapplyusecase:common_promoautoapplyusecase:${tkpdPromoApplyVersion}",
+            common_promo   : "com.tokopedia.common_promo:common_promo:${tkpdPromoApplyVersion}",
             digital                 : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             digitalDeals            : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             discovery               : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
@@ -256,7 +256,7 @@ ext {
             productManageItem             : ":features:merchant:product_manage_item",
             productManageList             : ":features:merchant:product_manage_list",
             productShare                  : ":features:merchant:product_share",
-            common_promoautoapplyusecase         : ":features:im:common_promoautoapplyusecase",
+            common_promo         : ":features:im:common_promo",
             referral                      : ":features:im:referral",
 
             reputation                    : ":features:merchant:reputation",

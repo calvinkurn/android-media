@@ -1,4 +1,4 @@
-package com.tokopedia.common_promoautoapplyusecase;
+package com.tokopedia.common_promo;
 
 import android.content.Context;
 

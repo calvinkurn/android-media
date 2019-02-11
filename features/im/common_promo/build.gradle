@@ -3,10 +3,10 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
-    artifactId = 'common_promoautoapplyusecase'
-    groupId = 'com.tokopedia.common_promoautoapplyusecase'
+    artifactId = 'common_promo'
+    groupId = 'com.tokopedia.common_promo'
     versionName = "${tkpdPromoApplyVersion}"
-    artifactName = "common_promoautoapplyusecase-release"
+    artifactName = "common_promo-release"
 }
 
 repositories {

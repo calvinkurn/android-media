@@ -538,7 +538,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.features.common_promoautoapplyusecase)
+    implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.features.challenges)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
