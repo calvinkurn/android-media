@@ -526,7 +526,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.startActivity(intent);
                 } else {
                     if (!GlobalConfig.DEBUG) {
-                        Crashlytics.logException(new ShopNotFoundException());
+                        Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                     }
                     prepareOpenWebView(uriData);
                 }

@@ -27,6 +27,7 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
+            android:visibility="visible"
             app:tabMode="scrollable"
             app:tabGravity="fill"
             app:tabIndicatorHeight="@dimen/dp_1"

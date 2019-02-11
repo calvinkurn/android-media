@@ -384,7 +384,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         triggerClearNewFeedNotification();
-        adapter.clearData();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }

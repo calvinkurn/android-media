@@ -41,11 +41,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
-import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
-import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
+import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
+import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -279,8 +276,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
             registerPhoneNumberButton.setOnClickListener(v -> {
                 showProgressBar();
-                Intent intent = CheckRegisterPhoneNumberActivity.getCallingIntent(getActivity());
-                startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
+
+                if (getActivity() != null && getActivity().getApplicationContext() != null) {
+                    Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                            .getCheckRegisterPhoneNumberIntent(getActivity());
+                    startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
+                }
             });
             String sourceString = getActivity().getResources().getString(R.string
                     .span_already_have_tokopedia_account);
@@ -459,7 +460,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onRegisterClick(String id) {
+    public void onActionPartialClick(String id) {
         presenter.validateRegister(id);
     }
 
@@ -744,31 +745,41 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(TokoCashOtpActivity.getCallingIntent(
-                getActivity(),
-                phoneNumber,
-                true,
-                RequestOtpUseCase.MODE_SMS),
-                REQUEST_VERIFY_PHONE_TOKOCASH);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+
+            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                    .getTokoCashOtpIntent(getActivity(),
+                            phoneNumber,
+                            true,
+                            RequestOtpUseCase.MODE_SMS);
+
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH);
+        }
     }
 
 
     private void goToNoTokocashAccountPage(String phoneNumber) {
-        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
-                getActivity(),
-                phoneNumber),
-                REQUEST_NO_TOKOCASH_ACCOUNT);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                    .getNoTokocashAccountIntent(
+                            getActivity(),
+                            phoneNumber);
+            startActivityForResult(intent, REQUEST_NO_TOKOCASH_ACCOUNT);
+        }
     }
 
     private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
-        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
-                getActivity(),
-                data),
-                REQUEST_CHOOSE_ACCOUNT);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+
+            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                    .getChooseTokocashAccountIntent(getActivity(), data);
+
+            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT);
+        }
     }
 
     private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
-        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
+        return data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA);
     }
 
 

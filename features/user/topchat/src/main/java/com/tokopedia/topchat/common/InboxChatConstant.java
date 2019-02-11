@@ -8,9 +8,6 @@ public interface InboxChatConstant {
 
     String PARCEL = "parcel";
 
-    int MODE_WEBSOCKET = 1;
-    int MODE_API = 2;
-
     String UPLOADING = "Uploaded Image";
 
     String USER_TAG = "Pengguna";
@@ -25,8 +22,5 @@ public interface InboxChatConstant {
     String MSG_ID = "messageID";
     String BLOCK_TYPE = "blockType";
     String BLOKCED = "isBlocked";
-    String CHAT_PROMOTION = "chat promosi";
-    String CHAT_PERSONAL = "chat personal";
-    String CHAT_BOTH = "semua chat";
 
 }

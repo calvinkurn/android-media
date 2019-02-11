@@ -207,7 +207,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     private void moveAllSelectedToFront() {
         List<FilterViewModel> items = new ArrayList<>();
-        items.addAll(getFilterListCurrentSelectedSorted());
+        items.addAll(getOnlySelectedFilter());
         items.addAll(getNotSelectedItems());
         addItem(items);
     }

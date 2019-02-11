@@ -10,11 +10,18 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
+import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -56,11 +63,18 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
 
     @Override
     protected Fragment getNewFragment() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
-        return LoginFragment.createInstance(bundle);
+
+        if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.LOGIN_REVAMP_UI, true)) {
+            return LoginFragment.createInstance(bundle);
+        } else {
+            return LoginEmailPhoneFragment.Companion.createInstance(bundle);
+        }
     }
 
     public static Intent getCallingIntent(Context context) {
@@ -122,5 +136,16 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
     public LoginRegisterComponent getComponent() {
         return DaggerLoginRegisterComponent.builder().baseAppComponent(((BaseMainApplication)
                 getApplication()).getBaseAppComponent()).build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                LoginEmailPhoneContract.View) {
+            ((LoginEmailPhoneContract.View) getSupportFragmentManager().findFragmentById(R.id
+                    .parent_view)).onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

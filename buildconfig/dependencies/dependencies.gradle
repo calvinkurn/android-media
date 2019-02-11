@@ -6,7 +6,9 @@ ext {
     buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.2.71"
+    kotlinVersion = "1.3.0"
+
+    lifeCycleVersion = "1.1.1"
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
@@ -107,6 +109,7 @@ ext {
 
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.2.2@aar",
+            crashlyticsAnswers : "com.crashlytics.sdk.android:answers:1.4.6@aar",
             hockeyApp   : "net.hockeyapp.android:HockeySDK:4.1.3",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
@@ -155,7 +158,12 @@ ext {
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
-            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
+            guava                 : "com.google.guava:guava:21.0",
+            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
+            viewModel             : "android.arch.lifecycle:viewmodel:$lifeCycleVersion",
+            lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
+            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"
     ]
 
     testDependencies = [
@@ -186,7 +194,8 @@ ext {
             kotlinMockito      : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
             spekApi            : "org.jetbrains.spek:spek-api:${SpekVersion}",
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
-            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0"
+            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
+            archCoreTesting    : "android.arch.core:core-testing:$lifeCycleVersion"
     ]
 
     debugToolsDependencies = [
@@ -198,7 +207,7 @@ ext {
     ]
 
     tkpdLibDependencies = [
-            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
+            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.0",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]

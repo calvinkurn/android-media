@@ -56,8 +56,8 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     private static final String PACKAGENAME_LINE = "jp.naver.line.android";
     private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus";
     private static final String PACKAGENAME_INSTAGRAM = "com.instagram.android";
-    private static final String BRANCH_LINK_FORMAT_HTTPS="https://tokopedia.link";
-    private static final String BRANCH_LINK_FORMAT_HTTP="http://tokopedia.link";
+    private static final String BRANCH_LINK_FORMAT_HTTPS = "https://tokopedia.link";
+    private static final String BRANCH_LINK_FORMAT_HTTP = "http://tokopedia.link";
 
     private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP, PACKAGENAME_INSTAGRAM,
             PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
@@ -108,7 +108,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             shareLink(true, url, challengeItem.getTitle(), packageName);
         } else {
             getView().showProgress(getView().getActivity().getString(R.string.ch_please_wait));
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), name, challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(),challengeItem.getSharing().getMetaTags().getOgDescription(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
+            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), name, challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(), challengeItem.getSharing().getMetaTags().getOgDescription(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
@@ -132,7 +132,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             shareLink(false, url, submissionItem.getTitle(), packageName);
         } else {
             getView().showProgress(getView().getActivity().getString(R.string.ch_please_wait));
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), name, submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(),submissionItem.getSharing().getMetaTags().getOgDescription(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
+            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), name, submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(), submissionItem.getSharing().getMetaTags().getOgDescription(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
@@ -301,7 +301,9 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                     return;
                 }
             } else if (getView().getSubmissionItem().getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
-                mediaUrl = getView().getSubmissionItem().getMedia().get(0).getImageUrl();
+                if (getView().getSubmissionItem().getSharing() != null && getView().getSubmissionItem().getSharing().getMetaTags() != null) {
+                    mediaUrl = getView().getSubmissionItem().getSharing().getMetaTags().getOgImage();
+                }
             } else if (getView().getSubmissionItem().getMedia() != null && getView().getSubmissionItem().getMedia().get(0).getVideo() != null && getView().getSubmissionItem().getMedia().get(0).getVideo().getSources() != null) {
                 mediaUrl = getView().getSubmissionItem().getMedia().get(0).getVideo().getSources().get(1).getSource();
                 isVideo = true;

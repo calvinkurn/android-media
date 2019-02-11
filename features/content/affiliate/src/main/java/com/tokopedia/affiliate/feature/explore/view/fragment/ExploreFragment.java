@@ -263,6 +263,7 @@ public class ExploreFragment
                 AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
                 goToProfile();
                 initProfileSection();
+                affiliateAnalytics.onClickProfileOnExplore();
             }
         });
 
@@ -528,7 +529,7 @@ public class ExploreFragment
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
             getFilteredFirstData(filters);
-            rvFilter.scrollTo(0,0);
+            rvFilter.smoothScrollToPosition(0);
         };
     }
 
