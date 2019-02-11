@@ -424,7 +424,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void showErrorMessage(String message) {
-        ToasterError.showClose(getActivity(), message);
+        ToasterError.make(getView(), message).show();
     }
 
     @Override
@@ -480,7 +480,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void finishOrderDetail() {
-        getActivity().finish();
+//        getActivity().finish();
     }
 
 
