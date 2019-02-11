@@ -15,6 +15,7 @@ import rx.Observable;
  * Created by kris on 8/21/17. Tokopedia
  */
 
+@Deprecated
 public interface CreditCardVaultApi {
 
     @POST(TkpdBaseURL.Payment.PATH_CC_DISPLAY)

@@ -11,6 +11,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
  * Created by brilliant.oka on 12/05/17.
  */
 
+@Deprecated
 public class BannerOfficialStoreModel {
     @SerializedName("banner_url")
     @Expose

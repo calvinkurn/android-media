@@ -18,7 +18,6 @@ import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private UserSession userSession;
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
     private AbTestingOfficialStore abTestingOfficialStore;
@@ -97,10 +95,9 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        userSession = new UserSession(getContext());
         abTestingOfficialStore = new AbTestingOfficialStore(getContext());
     }
-
+    
     private void initView() {
         setAdapter();
         if (hasCategoryIdParam()) {
@@ -112,15 +109,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private void setAdapter() {
         List<FeedPlusTabItem> tabItemList = new ArrayList<>();
 
-        if (userSession.isLoggedIn()) {
-            tabItemList.add(new FeedPlusTabItem(
-                    getString(R.string.tab_my_feed),
-                    getFeedPlusFragment())
-            );
-            tabLayout.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.setVisibility(View.GONE);
-        }
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_my_feed),
+                getFeedPlusFragment())
+        );
 
         tabItemList.add(new FeedPlusTabItem(
                 getString(R.string.tab_explore),

@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@Deprecated
 public class DistrictModel {
 
     @SerializedName(value = "province_id", alternate = {"city_id", "district_id"})

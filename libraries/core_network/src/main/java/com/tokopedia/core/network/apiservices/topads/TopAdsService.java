@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author noiz354 on 3/23/16.
  */
+
+@Deprecated
 public class TopAdsService extends BaseService<TopAdsApi> {
 
     public static final String TAG = TopAdsService.class.getSimpleName();

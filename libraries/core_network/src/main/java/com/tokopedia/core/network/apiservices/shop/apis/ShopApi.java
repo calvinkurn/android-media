@@ -19,6 +19,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface ShopApi {
 
     @GET(TkpdBaseURL.Shop.PATH_GET_LIKE_DISLIKE_REVIEW)

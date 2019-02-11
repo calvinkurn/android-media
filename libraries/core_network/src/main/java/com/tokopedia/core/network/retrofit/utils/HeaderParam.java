@@ -6,6 +6,8 @@ import java.util.Map;
 /**
  * Created by Angga.Prasetiyo on 25/11/2015.
  */
+
+@Deprecated
 public class HeaderParam {
     private static final String TAG = HeaderParam.class.getSimpleName();
 

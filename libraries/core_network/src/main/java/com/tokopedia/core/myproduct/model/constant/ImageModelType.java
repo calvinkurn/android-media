@@ -3,6 +3,8 @@ package com.tokopedia.core.myproduct.model.constant;
 /**
  * Created by noiz354 on 4/8/16.
  */
+
+@Deprecated
 public enum ImageModelType {
     /**
      * such as when not current fragment at foreground viewpager

@@ -26,6 +26,8 @@ import rx.Observable;
  * Created by noiz354 on 3/17/16.
  * description could be found at https://wiki.tokopedia.net/Search_api
  */
+
+@Deprecated
 public interface BrowseApi {
 
     String DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android";

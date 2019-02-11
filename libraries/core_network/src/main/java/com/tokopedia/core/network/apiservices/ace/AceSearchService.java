@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 19/01/2016.
  */
+
+@Deprecated
 public class AceSearchService extends BaseService<SearchApi> {
     private static final String TAG = AceSearchService.class.getSimpleName();
 

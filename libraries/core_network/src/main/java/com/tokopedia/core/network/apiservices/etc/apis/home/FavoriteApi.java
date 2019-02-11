@@ -13,6 +13,8 @@ import rx.Observable;
  * Created by m.normansyah on 27/11/2015.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public interface FavoriteApi {
 
     @GET(TkpdBaseURL.TopAds.PATH_DISPLAY_SHOP)

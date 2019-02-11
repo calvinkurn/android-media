@@ -4,6 +4,7 @@ package com.tokopedia.core.network.entity.replacement.opportunitycategorydata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class SortData {
 
     @SerializedName("name")

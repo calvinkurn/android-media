@@ -1,4 +1,5 @@
 package com.tokopedia.tkpd.campaign.di;
+
 import android.content.Context;
 import android.content.res.Resources;
 
@@ -6,7 +7,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
@@ -18,8 +18,6 @@ import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
 import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
-import com.tokopedia.tokocash.common.di.TokoCashModule;
-import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,8 +29,10 @@ import retrofit2.Retrofit;
  * Created by sandeepgoyal on 15/12/17.
  */
 
-@Module(includes = TokoCashModule.class)
+@Module
 public class CampaignModule {
+
+    public static final String IDENTIFIER = "identifier";
 
     @Provides
     Resources provideResources(@ApplicationContext Context context) {
@@ -48,10 +48,12 @@ public class CampaignModule {
     PostAudioDataUseCase providePostAudioCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
         return new PostAudioDataUseCase(bookingRideRepository);
     }
+
     @Provides
     ShakeUseCase provideShakeUseCase(CampaignDataRepository bookingRideRepository) {
         return new ShakeUseCase(bookingRideRepository);
     }
+
     @Provides
     CampaignDataRepository provideCampaignRideRepository(CampaignDataFactory campaignDataFactory) {
         return new CampaignData(campaignDataFactory);
@@ -86,7 +88,7 @@ public class CampaignModule {
     @IdentifierWalletQualifier
     @Provides
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, GetInfoQrTokoCashUseCase.IDENTIFIER);
+        return new LocalCacheHandler(context, IDENTIFIER);
     }
 
     @Provides

@@ -27,6 +27,8 @@ import rx.schedulers.Schedulers;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+
+@Deprecated
 public class ActionShopInfoRetrofit {
 
     public interface OnActionToggleFavListener {

@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by nisie on 3/7/17.
  */
+
+@Deprecated
 public class ValidateOtpData {
     @SerializedName("is_success")
     @Expose

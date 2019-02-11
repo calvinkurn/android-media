@@ -20,6 +20,7 @@ import rx.Observable;
  * Created by noiz354 on 7/12/16.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public interface HadesApi {
     @Headers({
             "Content-Type: application/json;charset=utf-8",

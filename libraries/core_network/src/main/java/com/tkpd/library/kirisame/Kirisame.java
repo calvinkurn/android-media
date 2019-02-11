@@ -5,6 +5,7 @@ import android.util.Log;
 /**
  * Created by Tkpd_Eka on 7/23/2015.
  */
+@Deprecated
 public class Kirisame {
 
     public static void print(String string) {

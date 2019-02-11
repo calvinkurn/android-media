@@ -18,6 +18,8 @@ import rx.Observable;
  * ContactUsApi
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface ContactUsApi {
 
     @GET(TkpdBaseURL.ContactUs.PATH_GET_SOLUTION)

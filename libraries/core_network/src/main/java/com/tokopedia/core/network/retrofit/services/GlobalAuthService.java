@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
+
+@Deprecated
 public abstract class GlobalAuthService<T> extends BaseService<T> {
 
     protected abstract String getKeyAuth();

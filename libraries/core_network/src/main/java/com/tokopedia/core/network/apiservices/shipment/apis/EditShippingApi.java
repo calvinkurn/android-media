@@ -13,6 +13,8 @@ import rx.Observable;
 /**
  * @author Kris on 2/22/2016.
  */
+
+@Deprecated
 public interface EditShippingApi {
 
     @GET(TkpdBaseURL.Shop.PATH_GET_SHIPPING_INFO)

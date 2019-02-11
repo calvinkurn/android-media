@@ -13,6 +13,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+
+@Deprecated
 public interface InboxResCenterApi {
 
     @GET(TkpdBaseURL.User.PATH_GET_CREATE_RESOLUTION_FORM)

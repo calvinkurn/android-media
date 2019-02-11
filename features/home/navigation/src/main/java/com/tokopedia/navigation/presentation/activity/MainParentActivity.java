@@ -240,7 +240,6 @@ public class MainParentActivity extends BaseActivity implements
         checkAppUpdate();
         checkApplinkCouponCode(getIntent());
 
-        initHockeyBroadcastReceiver();
         initNewFeedClickReceiver();
     }
 
@@ -272,7 +271,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterBroadcastHockeyApp();
         unRegisterNewFeedClickedReceiver();
     }
 
@@ -322,9 +320,12 @@ public class MainParentActivity extends BaseActivity implements
             RouteManager.route(this, ApplinkConst.OFFICIAL_STORES);
             return false;
         }
-        if (position == CART_MENU || position == ACCOUNT_MENU)
-            if (!presenter.isUserLogin())
-                return false;
+
+        if ((position == CART_MENU || position == ACCOUNT_MENU || position == INBOX_MENU) && !presenter.isUserLogin()) {
+            RouteManager.route(this, ApplinkConst.LOGIN);
+            return false;
+        }
+
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
@@ -368,12 +369,6 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    public boolean isUserLogin() {
-        if (!userSession.isLoggedIn())
-            RouteManager.route(this, ApplinkConst.LOGIN);
-        return userSession.isLoggedIn();
-    }
-
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setUserSession(UserSessionInterface userSession) {
         this.userSession = userSession;
@@ -412,7 +407,6 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
         abTestBottomNavforOs();
 
-        registerBroadcastHockeyApp();
         registerNewFeedClickedReceiver();
 
         if(!((BaseMainApplication)getApplication()).checkAppSignature()){
@@ -662,34 +656,6 @@ public class MainParentActivity extends BaseActivity implements
 
             presenter.setIsRecurringApplink(true);
         }
-    }
-
-    private void initHockeyBroadcastReceiver() {
-        hockeyBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent != null && intent.getAction() != null) {
-                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
-                        showHockeyAppDialog();
-                    }
-                }
-            }
-        };
-    }
-
-    private void registerBroadcastHockeyApp() {
-        if (!GlobalConfig.isAllowDebuggingTools()) {
-            IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
-            LocalBroadcastManager.getInstance(this).registerReceiver(hockeyBroadcastReceiver, new IntentFilter(intentFilter));
-        }
-    }
-
-    private void unregisterBroadcastHockeyApp() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
-    }
-
-    private void showHockeyAppDialog() {
-        ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
     private void initNewFeedClickReceiver() {

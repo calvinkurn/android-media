@@ -9,6 +9,7 @@ import retrofit2.Retrofit;
  * @author by alvarisi on 12/9/16.
  */
 
+@Deprecated
 public abstract class BearerService<T> extends BaseService<T>{
     protected T mApi;
     protected String mToken;

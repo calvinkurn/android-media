@@ -3,6 +3,7 @@ package com.tokopedia.core.var;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ContainerAds {
 
 	public ContainerAds () {

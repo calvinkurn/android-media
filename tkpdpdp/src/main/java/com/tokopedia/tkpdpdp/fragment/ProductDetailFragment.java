@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.net.Uri;
 
 import com.appsflyer.AFInAppEventType;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
@@ -69,6 +70,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
@@ -660,7 +662,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(View.INVISIBLE);
+        labelCod.setVisibility(isCodShown? View.INVISIBLE : View.GONE);
     }
 
     private void expandedAppBar() {
@@ -991,7 +993,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
         if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
 
-        if(userSession.isLoggedIn()) {
+        if(userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
             String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                     doReferralShareAction(productData, fireBaseRemoteMsg);
@@ -1006,12 +1008,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
-        productData.setProductShareDescription(fireBaseRemoteMsg);
         ActionCreator actionCreator = new ActionCreator<String, Integer>(){
             @Override
             public void actionSuccess(int actionId, String dataObj) {
-                if(!TextUtils.isEmpty(dataObj)) {
-                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(productData.getProductShareDescription(),
+                if(!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                    productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
                     TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
 
@@ -1487,6 +1488,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onNullData() {
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.logException(new ProductNotFoundException());
+            }
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
             if (webViewHandleListener != null) {
                 webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");

@@ -12,6 +12,7 @@ import okhttp3.Response;
  * Created by ricoharisin on 3/20/17.
  */
 
+@Deprecated
 public class DebugInterceptor implements Interceptor {
 
     @Inject

@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by brilliant.oka on 29/03/17.
  */
 
+@Deprecated
 public class ShopProductCampaign implements Parcelable {
 
     @SerializedName("product_id")

@@ -18,6 +18,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
+            android:text="@string/train_calender_label_day_name_sunday"
+            android:textColor="@color/red_a700"
+            android:textSize="@dimen/sp_12" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="@string/train_calender_label_day_name_monday"
             android:textColor="@color/font_black_primary_70"
             android:textSize="@dimen/sp_12"/>
@@ -66,15 +75,6 @@
             android:text="@string/train_calender_label_day_name_saturday"
             android:textColor="@color/font_black_primary_70"
             android:textSize="@dimen/sp_12"/>
-
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="@string/train_calender_label_day_name_sunday"
-            android:textColor="@color/red_a700"
-            android:textSize="@dimen/sp_12" />
 
     </LinearLayout>
 

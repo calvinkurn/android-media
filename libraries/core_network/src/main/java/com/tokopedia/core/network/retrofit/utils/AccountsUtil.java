@@ -23,6 +23,8 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Created by stevenfredian on 5/25/16.
  */
+
+@Deprecated
 public class AccountsUtil extends AuthUtil{
     private static final String TAG = AuthUtil.class.getSimpleName();
 

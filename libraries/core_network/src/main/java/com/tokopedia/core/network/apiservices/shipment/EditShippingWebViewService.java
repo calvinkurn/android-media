@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author Kris on 5/13/2016.
  */
+
+@Deprecated
 public class EditShippingWebViewService extends AuthService<EditShippingApi> {
 
     public EditShippingWebViewService() {

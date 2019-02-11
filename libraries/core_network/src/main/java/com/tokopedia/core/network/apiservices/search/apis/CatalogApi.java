@@ -15,6 +15,8 @@ import rx.Observable;
 /**
  * @author Angga.Prasetiyo on 08/12/2015.
  */
+
+@Deprecated
 public interface CatalogApi {
 
     @GET(TkpdBaseURL.Search.PATH_GET_CATALOG_DETAIL)

@@ -2,15 +2,14 @@ package com.tokopedia.checkout.view.feature.multipleaddressform.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.google.android.flexbox.FlexboxLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
@@ -44,7 +43,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPreOrder;
     private TextView tvCashback;
     private Button btAddNewShipment;
-    private LinearLayout rlProductPoliciesLayout;
+    private FlexboxLayout productPoliciesLayout;
     private ImageView imgShopBadge;
 
     public MultipleAddressViewHolder(Context context, View itemView) {
@@ -61,7 +60,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
         tvCashback = itemView.findViewById(R.id.tv_cashback);
         btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
-        rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        productPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
 
     }
@@ -113,15 +112,16 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (data.isPreOrder()) {
+            tvPreOrder.setText(data.getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);
         }
 
         if (data.isCashBack() || data.isFreeReturn() || data.isPreOrder()) {
-            rlProductPoliciesLayout.setVisibility(View.VISIBLE);
+            productPoliciesLayout.setVisibility(View.VISIBLE);
         } else {
-            rlProductPoliciesLayout.setVisibility(View.GONE);
+            productPoliciesLayout.setVisibility(View.GONE);
         }
     }
 

@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author ricoharisin on 4/15/16.
  */
+
+@Deprecated
 public class MojitoService extends BaseService<MojitoApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

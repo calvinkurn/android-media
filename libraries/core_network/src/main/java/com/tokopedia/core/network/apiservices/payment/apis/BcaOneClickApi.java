@@ -14,6 +14,7 @@ import rx.Observable;
  * Created by kris on 7/24/17. Tokopedia
  */
 
+@Deprecated
 public interface BcaOneClickApi {
 
     @FormUrlEncoded

@@ -8,6 +8,7 @@ import com.tokopedia.core.util.PagingHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ShopProduct {
 
     @SerializedName("search_url")

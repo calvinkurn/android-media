@@ -6,6 +6,8 @@ import android.os.Parcelable;
 /**
  * Created by Tkpd_Eka on 10/15/2015.
  */
+
+@Deprecated
 public class NoteModel implements Parcelable{
     public String title;
     public String content;

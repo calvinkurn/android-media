@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class ProductModel implements Parcelable {
     @SerializedName("list")
     @Expose

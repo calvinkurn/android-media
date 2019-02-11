@@ -14,6 +14,7 @@ import java.util.List;
  * Created by henrypriyono on 8/7/17.
  */
 
+@Deprecated
 public class LevelTwoCategory implements Parcelable {
 
     @SerializedName("name")

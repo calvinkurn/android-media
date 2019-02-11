@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by naveengoyal on 5/8/18.
  */
 
+@Deprecated
 public class FavoritShopResponseData {
     @SerializedName("favorite_shop")
     @Expose

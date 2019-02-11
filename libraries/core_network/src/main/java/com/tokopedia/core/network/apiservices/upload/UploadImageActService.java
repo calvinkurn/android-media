@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 /**
  * @author hangnadi on 2/22/16.
  */
+
+@Deprecated
 public class UploadImageActService extends AuthService<UploadImageActApi> {
 
     private static final String TAG = UploadImageActService.class.getSimpleName();

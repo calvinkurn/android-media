@@ -13,6 +13,7 @@ import java.util.List;
  * @author sebastianuskh on 5/2/17.
  */
 
+@Deprecated
 public class TkpdV4ResponseError extends BaseResponseError {
 
     private static final String STATUS_OK = "OK";

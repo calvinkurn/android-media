@@ -12,6 +12,8 @@ import java.util.ArrayList;
 /**
  * @author by mady on 9/23/16.
  */
+
+@Deprecated
 public class CategoryMenuModel {
     private String headerTitle;
     private ArrayList<com.tokopedia.core.network.entity.homeMenu.CategoryItemModel> allItemsInSection;

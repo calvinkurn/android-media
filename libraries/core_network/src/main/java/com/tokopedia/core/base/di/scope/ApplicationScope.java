@@ -9,6 +9,7 @@ import javax.inject.Scope;
 /**
  * @author kulomady on 12/26/16.
  */
+@Deprecated
 @Scope
 @Retention(RetentionPolicy.CLASS)
 public @interface ApplicationScope {

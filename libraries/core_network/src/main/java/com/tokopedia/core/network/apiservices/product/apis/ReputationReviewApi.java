@@ -17,6 +17,7 @@ import rx.Observable;
  * Created by alifa on 8/11/17.
  */
 
+@Deprecated
 public interface ReputationReviewApi {
 
     String ID = "product_id";
