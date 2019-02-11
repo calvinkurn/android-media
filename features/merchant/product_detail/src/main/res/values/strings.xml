@@ -65,4 +65,9 @@
     <string name="exp_dialog_ok">Balik ke Beranda</string>
     <string name="wishlist_label">Wishlist</string>
     <string name="courier_title">Kurir</string>
+    <string name="redirect_report_product">Anda dapat melaporkan kasus dari produk ini melalui link ini.</string>
+    <string name="label_case">Kasus</string>
+    <string name="this_link">link ini</string>
+    <string name="description_must_be_filled">Deskripsi harus diisi</string>
+    <string name="thanks_for_product_report">Terimakasih untuk laporan Anda. Laporan tersebut akan diteruskan ke moderator kami.</string>
 </resources>

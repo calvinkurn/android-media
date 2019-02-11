@@ -31,8 +31,7 @@ class RestRepositoryImpl : RestRepository {
 
     override suspend fun getResponse(request: RestRequest): RestResponse? {
         val cacheStrategy = request.cacheStrategy
-        return if (cacheStrategy == null
-                || cacheStrategy.type == CacheType.NONE
+        return if (cacheStrategy.type == CacheType.NONE
                 || cacheStrategy.type == CacheType.ALWAYS_CLOUD) {
             getCloudResponse(request)
         } else if (cacheStrategy.type == CacheType.CACHE_ONLY) {

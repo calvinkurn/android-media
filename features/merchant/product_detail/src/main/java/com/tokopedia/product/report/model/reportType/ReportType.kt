@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.data.model.reporttype
+package com.tokopedia.product.report.model.reportType
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -67,11 +67,15 @@ class ReportType {
      * @param reportTitle
      * The report_title
      */
+
     @SerializedName("report_title")
     @Expose
     var reportTitle: String? = null
     @SerializedName("report_url")
     @Expose
     var reportUrl: String? = null
+
+    var useRedirectButton: Boolean = false
+        get() = reportResponse == 0 && (reportUrl?.isNotEmpty() ?: false)
 
 }

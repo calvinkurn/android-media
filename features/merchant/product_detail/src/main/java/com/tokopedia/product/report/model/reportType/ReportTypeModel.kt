@@ -1,9 +1,7 @@
-package com.tokopedia.product.detail.data.model.reporttype
+package com.tokopedia.product.report.model.reportType
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-
-import java.util.ArrayList
 
 class ReportTypeModel {
     /**

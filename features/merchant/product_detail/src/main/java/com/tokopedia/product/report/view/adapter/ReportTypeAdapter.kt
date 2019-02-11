@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.adapter
+package com.tokopedia.product.report.view.adapter
 
 import android.content.Context
 import android.view.View

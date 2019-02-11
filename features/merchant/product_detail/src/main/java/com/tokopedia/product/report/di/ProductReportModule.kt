@@ -1,15 +1,17 @@
-package com.tokopedia.product.detail.di
+package com.tokopedia.product.report.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.repository.RestRepositoryImpl
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.product.detail.constant.Constant
-import com.tokopedia.product.detail.constant.Constant.PATH_REPORT_TYPE
+import com.tokopedia.product.detail.di.ProductDetailScope
+import com.tokopedia.product.detail.di.ProductDetailUserModule
+import com.tokopedia.product.report.constant.ProductReportConstant
+import com.tokopedia.product.report.constant.ProductReportConstant.PATH_REPORT
+import com.tokopedia.product.report.constant.ProductReportConstant.PATH_REPORT_TYPE
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -26,7 +28,15 @@ class ProductReportModule {
     @IntoMap
     @StringKey(PATH_REPORT_TYPE)
     fun provideReportTypeURL(): String =
-            Constant.BASE_URL + Constant.PATH_PRODUCT_TYPE + Constant.PATH_REPORT_TYPE
+            ProductReportConstant.BASE_URL + ProductReportConstant.PATH_PRODUCT_TYPE + ProductReportConstant.PATH_REPORT_TYPE
+
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(PATH_REPORT)
+    fun provideReportActionURL(): String =
+            ProductReportConstant.BASE_URL + ProductReportConstant.PATH_PRODUCT_ACTION + ProductReportConstant.PATH_REPORT
 
     @ProductDetailScope
     @Provides
@@ -50,7 +60,7 @@ class ProductReportModule {
 
     @ProductDetailScope
     @Provides
-    fun provideErrorInterceptors(@ApplicationContext context: Context): CommonErrorResponseInterceptor {
+    fun provideErrorInterceptors(): CommonErrorResponseInterceptor {
         return CommonErrorResponseInterceptor()
     }
 
