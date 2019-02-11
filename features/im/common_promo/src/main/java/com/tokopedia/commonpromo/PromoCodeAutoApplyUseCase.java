@@ -1,4 +1,4 @@
-package com.tokopedia.common_promo;
+package com.tokopedia.commonpromo;
 
 import android.content.Context;
 

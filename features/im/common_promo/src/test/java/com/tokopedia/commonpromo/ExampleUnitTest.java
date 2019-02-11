@@ -1,4 +1,4 @@
-package com.tokopedia.common_promo;
+package com.tokopedia.commonpromo;
 
 import org.junit.Test;
 

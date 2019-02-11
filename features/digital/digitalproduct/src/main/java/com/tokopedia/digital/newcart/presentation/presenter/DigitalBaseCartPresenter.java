@@ -42,7 +42,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.common_promo.PromoCodeAutoApplyUseCase;
+import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
