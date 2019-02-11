@@ -142,6 +142,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean scrollToRecommendList = false;
     private boolean isTraceStopped = false;
+    private boolean isFeedLoaded = false;
 
     @Inject
     DigitalWidgetRepository digitalWidgetRepository;
@@ -271,6 +272,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
+        homeFeedsTabLayout.setVisibility(View.VISIBLE);
+        homeFeedsViewPager.setVisibility(View.VISIBLE);
         if (homeFeedPagerAdapter == null) {
             homeFeedPagerAdapter = new HomeFeedPagerAdapter(this,
                     this, getChildFragmentManager(), feedTabModelList);
@@ -357,7 +360,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (presenter != null) {
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
-                    presenter.getFeedTabData();
                 }
             }
         });
@@ -672,13 +674,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (presenter != null) {
             presenter.getHomeData();
             presenter.getHeaderData(false);
-            presenter.getFeedTabData();
         }
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
 
     private void resetFeedState() {
+        isFeedLoaded = false;
         homeFeedsTabLayout.setVisibility(View.GONE);
         homeFeedsViewPager.setVisibility(View.GONE);
         homeFeedsViewPager.setAdapter(null);
@@ -709,8 +711,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             performanceMonitoring.stopTrace();
             isTraceStopped = true;
         }
-        homeFeedsTabLayout.setVisibility(View.VISIBLE);
-        homeFeedsViewPager.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -1064,6 +1064,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList) {
         initHomeFeedsViewPager(feedTabModelList);
+    }
+
+    @Override
+    public void onHomeDataLoadSuccess() {
+        if (!isFeedLoaded) {
+            presenter.getFeedTabData();
+            isFeedLoaded = true;
+        }
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {
