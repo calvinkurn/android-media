@@ -32,11 +32,11 @@ class GetChatUseCase @Inject constructor(
         val graphqlRequest = GraphqlRequest(query,
                 GetExistingChatPojo::class.java, requestParams)
 
-        val cacheStrategy = GraphqlCacheStrategy.Builder(requestParams[PARAM_CACHE_STRATEGY] as CacheType?)
-                .setSessionIncluded(true).build()
+//        val cacheStrategy = GraphqlCacheStrategy.Builder(requestParams[PARAM_CACHE_STRATEGY] as CacheType?)
+//                .setSessionIncluded(true).build()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.setCacheStrategy(cacheStrategy)
+//        graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.execute(subscriber)
     }
 
@@ -97,7 +97,7 @@ class GetChatUseCase @Inject constructor(
             val requestParams = HashMap<String, Any>()
             requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
             requestParams[PARAM_PAGE] = 1
-            requestParams[PARAM_CACHE_STRATEGY] = CacheType.CLOUD_THEN_CACHE
+//            requestParams[PARAM_CACHE_STRATEGY] = CacheType.CLOUD_THEN_CACHE
             return requestParams
         }
 
@@ -105,7 +105,7 @@ class GetChatUseCase @Inject constructor(
             val requestParams = HashMap<String, Any>()
             requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
             requestParams[PARAM_PAGE] = page
-            requestParams[PARAM_CACHE_STRATEGY] = CacheType.CLOUD_THEN_CACHE
+//            requestParams[PARAM_CACHE_STRATEGY] = CacheType.CLOUD_THEN_CACHE
             return requestParams
         }
     }

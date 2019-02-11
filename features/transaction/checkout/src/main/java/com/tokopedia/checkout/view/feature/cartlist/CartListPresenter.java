@@ -936,14 +936,16 @@ public class CartListPresenter implements ICartListPresenter {
                 view.renderLoadGetCartDataFinish();
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
+                    view.stopTrace();
                 } else {
                     if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
+                        view.stopTrace();
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
+                        view.stopTrace();
                     }
                 }
-                view.stopTrace();
             }
         };
     }
