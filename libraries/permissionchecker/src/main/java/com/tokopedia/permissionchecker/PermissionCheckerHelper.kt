@@ -159,8 +159,9 @@ class PermissionCheckerHelper {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 when (context) {
-                    is AppCompatActivity -> context.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
-                    is Activity -> context.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
+                    is AppCompatActivity , is Activity->
+                        (context as Activity).requestPermissions(permissions,
+                            REQUEST_PERMISSION_CODE)
                     is Fragment -> context.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
                 }
             }
