@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.response.model.DepositHistoryList;
+import com.tokopedia.saldodetails.viewholder.SaldoListEmptyViewHolder;
 import com.tokopedia.saldodetails.viewholder.SaldoTransactionViewHolder;
 
 public class SaldoDetailTransactionFactory extends BaseAdapterTypeFactory {
@@ -26,6 +27,8 @@ public class SaldoDetailTransactionFactory extends BaseAdapterTypeFactory {
         AbstractViewHolder viewHolder;
         if (type == SaldoTransactionViewHolder.LAYOUT) {
             return new SaldoTransactionViewHolder(parent, listener);
+        } else if (type == SaldoListEmptyViewHolder.LAYOUT) {
+            return new SaldoListEmptyViewHolder(parent);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }
@@ -34,5 +37,9 @@ public class SaldoDetailTransactionFactory extends BaseAdapterTypeFactory {
 
     public int type(DepositHistoryList vm) {
         return SaldoTransactionViewHolder.LAYOUT;
+    }
+
+    public int type(EmptyModel vm) {
+        return SaldoListEmptyViewHolder.LAYOUT;
     }
 }

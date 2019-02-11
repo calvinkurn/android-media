@@ -221,7 +221,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (activePosition != position) {
-                    onRefresh();
+//                    onRefresh();
                     activePosition = position;
                 }
             }
@@ -229,7 +229,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             @Override
             public void onPageSelected(int position) {
                 if (activePosition != position) {
-                    onRefresh();
+//                    onRefresh();
                     activePosition = position;
                 }
             }
@@ -350,12 +350,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     @Override
     public Visitable getDefaultEmptyViewModel() {
-        EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.sp_empty_state_icon);
-        emptyModel.setTitle(getString(R.string.no_saldo_transactions));
-        emptyModel.setButtonTitle(getString(R.string.sp_goto_home));
-        emptyModel.setCallback(this);
-        return emptyModel;
+        return new EmptyModel();
     }
 
     @Override

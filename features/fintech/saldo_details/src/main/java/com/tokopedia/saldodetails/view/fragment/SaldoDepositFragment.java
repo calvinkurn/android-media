@@ -147,17 +147,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saldo_deposit, container, false);
         initViews(view);
-//        inflateSaldoHistoryLayout();
         return view;
     }
-
-    /*private void inflateSaldoHistoryLayout() {
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(R.id.saldo_history_layout, SaldoTransactionHistoryFragment.
-                        createInstance(SaldoTransactionHistoryFragment.FOR_ALL, isSellerEnabled()))
-                .commit();
-    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -371,39 +362,15 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     protected void initialVar() {
-
-
         isSeller = !TextUtils.isEmpty(userSession.getShopId());
-        /*if (isSeller) {
-            loadMultipleTabItem();
-        } else {
-            loadOneTabItem();
-        }
-
-        saldoHistoryPagerAdapter = new SaldoHistoryPagerAdapter(getChildFragmentManager());
-        saldoHistoryPagerAdapter.setItems(saldoTabItems);
-        depositHistoryViewPager.setAdapter(saldoHistoryPagerAdapter);
-        depositHistoryTabLayout.setupWithViewPager(depositHistoryViewPager);*/
-
         saldoDetailsPresenter.setSeller(isSellerEnabled);
-
-       /* if (isSeller) {
-            totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_seller));
-            depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title_seller));
-        } else */
         if (isSellerEnabled) {
             totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
-//            depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title_buyer));
-
             totalBalanceInfo.setVisibility(View.GONE);
-
             buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
             sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
         } else {
             totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_text));
-//            depositSummaryTitleTV.setText(getString(R.string.deposit_summary_title));
-
-
             buyerSaldoBalanceRL.setVisibility(View.GONE);
             sellerSaldoBalanceRL.setVisibility(View.GONE);
             totalBalanceInfo.setVisibility(View.VISIBLE);
@@ -416,10 +383,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
         datePicker = new SaldoDatePickerUtil(getActivity());
-//        adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
-//        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        recyclerView.setAdapter(adapter);
         if (isSellerEnabled && getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
@@ -486,9 +449,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void onFirstTimeLaunched() {
-//        setActionsEnabled(false);
-//        saldoDetailsPresenter.setFirstDateParameter();
-//        saldoDetailsPresenter.setCache();
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
     }
@@ -563,26 +523,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         drawButton.setClickable(state);
     }
 
-    /*@Override
-    public SaldoDepositAdapter getAdapter() {
-        return adapter;
-    }
-
-    @Override
-    public void setLoading() {
-        adapter.showLoading();
-    }*/
-
     @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
     }
-
-    /*@Override
-    public void showInvalidDateError(String errorMessage) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMessage);
-    }*/
 
     @Override
     public void showHoldWarning(String text) {
@@ -660,24 +605,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         }
     }
 
-   /* @Override
-    public void removeError() {
-        adapter.removeErrorNetwork();
-    }*/
-
     @Override
     public void hideWarning() {
         holdBalanceLayout.setVisibility(View.GONE);
     }
-
-    /*@Override
-    public void setActionsEnabled(Boolean isEnabled) {
-        *//*if (!isAdded() || startDateTV == null || endDateTV == null) {
-            return;
-        }
-        startDateLayout.setEnabled(isEnabled);
-        endDateLayout.setEnabled(isEnabled);*//*
-    }*/
 
     @Override
     public void refresh() {
@@ -701,40 +632,16 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
 
-    /*@Override
-    public void showEmptyState(String error) {
-        setActionsEnabled(false);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
-                () -> saldoDetailsPresenter.getSummaryDeposit());
-        try {
-            View retryLoad = getView().findViewById(R.id.main_retry);
-            retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     @Override
     public void setRetry(String error) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error,
                 () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
 
-   /* @Override
-    public void setTextColor(View view, int colorId) {
-        ((TextView) view).setTextColor(colorId);
-    }*/
-
-
     @Override
     public void onRefresh(View view) {
         saldoDetailsPresenter.onRefresh();
     }
-
-  /*  @Override
-    public void onItemClicked(DepositHistoryList depositHistoryList) {
-
-    }*/
 
     @Override
     public void onDestroy() {
