@@ -30,4 +30,8 @@ public class RequestBodyCheckout {
     public void setRelationships(Relationships relationships) {
         this.relationships = relationships;
     }
+
+    public Attributes getAttributes() {
+        return attributes;
+    }
 }

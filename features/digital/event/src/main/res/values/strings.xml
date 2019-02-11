@@ -126,6 +126,7 @@
     <string name="digital_event_all_time_label">Semua Waktu</string>
 
 
+    <string name="reset">Reset</string>
     <!-- need to changed -->
 
 </resources>

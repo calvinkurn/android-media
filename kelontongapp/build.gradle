@@ -100,6 +100,9 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    api(rootProject.ext.serviceDependencies.crashlyticsAnswers) {
+        transitive = true
+    }
 
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.firebaseAnalytics

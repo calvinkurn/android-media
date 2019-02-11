@@ -33,7 +33,6 @@ import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -61,7 +60,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
-    public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     protected Boolean isAllowFetchDepartmentView = false;
@@ -90,7 +88,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
 
-        HockeyAppHelper.handleLogin(this);
         initShake();
     }
 
@@ -205,7 +202,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         filter.addAction(FORCE_LOGOUT);
         filter.addAction(SERVER_ERROR);
         filter.addAction(TIMEZONE_ERROR);
-        if (!GlobalConfig.isAllowDebuggingTools()) filter.addAction(FORCE_HOCKEYAPP);
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 

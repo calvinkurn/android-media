@@ -721,11 +721,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void showForceHockeyAppDialog() {
-//        ServerErrorHandler.showForceHockeyAppDialog();
-    }
-
-    @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
     }

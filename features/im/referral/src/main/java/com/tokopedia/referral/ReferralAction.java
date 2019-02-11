@@ -45,6 +45,8 @@ public class ReferralAction<ACTION_DATA,RESULT_DATA,ERROR_DATA,WAIT_DATA,STOPWAI
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
+                            if (actionUIDelegate != null)
+                                actionUIDelegate.stopWaiting(actionId, (STOPWAIT_DATA) "");
                             if (actionCreator != null)
                                 actionCreator.actionError(actionId, (ERROR_DATA) new Integer(Constants.ErrorCode.REFERRAL_API_ERROR));
                         }
