@@ -75,6 +75,7 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
         return POSITION_NONE;
     }
 
+    /*
     @Override
     public long getItemId(int position) {
         return baseId + position;
@@ -96,5 +97,5 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
             fragmentTransaction.commitNowAllowingStateLoss();
             fragmentTransaction = null;
         }
-    }
+    }*/
 }
