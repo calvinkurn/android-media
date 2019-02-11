@@ -157,7 +157,10 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         setUIValue(productContainer, R.id.attach_product_chat_price_old, element.getPriceBefore());
         setUIValue(productContainer, R.id.drop_price, element.getDropPercentage());
         setUIVisibility(productContainer, R.id.drop_price, element.getDropPercentage());
+        setUIVisibility(productContainer, R.id.attach_product_chat_price_old, "");
         setStrikeThrough(productContainer, R.id.attach_product_chat_price_old);
+        ImageHandler.loadImage2(productContainer.findViewById(R.id.drop_price),
+                "", R.drawable.ic_arrow_drop_price);
     }
 
     private void setUIVisibility(View productContainer, int resourceId, String content) {
