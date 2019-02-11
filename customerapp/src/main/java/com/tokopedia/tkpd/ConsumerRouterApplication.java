@@ -449,6 +449,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import permissions.dispatcher.PermissionRequest;
@@ -580,6 +581,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onCreate() {
         super.onCreate();
+        Hansel.init(this);
         initializeDagger();
         initDaggerInjector();
         initRemoteConfig();
@@ -3189,8 +3191,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
         new IndiSession(activity).doLogout();
-
-        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+        refreshFCMTokenFromForegroundToCM();
     }
 
     @Override
@@ -3596,20 +3597,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void onLoginSuccess() {
-        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+        refreshFCMTokenFromForegroundToCM();
         onAppsFlyerInit();
-
-    }
-
-    @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-        CMPushNotificationManager.getInstance().setFcmTokenCMNotif(token);
 
     }
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
-        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+    }
+
+
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+        CMPushNotificationManager.getInstance().refreshTokenFromBackground(token, force);
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
+    }
+
+    @Override
+    public void refreshFCMTokenFromForegroundToCM() {
+        CMPushNotificationManager.getInstance()
+                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
     }
 
     @Override

@@ -174,7 +174,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
-        Hansel.init(this);
         PushManager.getInstance().setMessageListener(new CustomPushListener());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
