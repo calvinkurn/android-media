@@ -225,7 +225,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     private void addLocationParameterBeforeRequest(Activity activity) {
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                     permissionCheckerHelper,
                     LocationServices.getFusedLocationProviderClient(activity
@@ -234,9 +233,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             locationDetectorHelper.getLocation(onGetLocation(), activity,
                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                     activity.getString(R.string.rationale_need_location_for_promotion));
-        } else {
-            getCampaign(0.0, 0.0);
-        }
 
     }
 
