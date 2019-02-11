@@ -31,6 +31,9 @@ public class TopChatAnalytics {
     public static final String SCREEN_CHAT_LIST = "inbox-chat";
     public static final String SCREEN_CHAT_ROOM = "chatroom";
 
+    public static final String FPM_DETAIL_CHAT = "mp_detail_chat";
+    public static final String FPM_CHAT_LIST = "mp_chat_list";
+
     public interface Category {
         public static final String PRODUCT_PAGE = "product page";
         public static final String SEND_MESSAGE_PAGE = "send message page";

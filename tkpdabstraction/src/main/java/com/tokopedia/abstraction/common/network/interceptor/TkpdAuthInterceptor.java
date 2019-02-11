@@ -109,8 +109,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
 
-        if (isOnBetaServer(response)) abstractionRouter.showForceHockeyAppDialog();
-
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {

@@ -240,7 +240,6 @@ public class MainParentActivity extends BaseActivity implements
         checkAppUpdate();
         checkApplinkCouponCode(getIntent());
 
-        initHockeyBroadcastReceiver();
         initNewFeedClickReceiver();
     }
 
@@ -272,7 +271,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterBroadcastHockeyApp();
         unRegisterNewFeedClickedReceiver();
     }
 
@@ -409,7 +407,6 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
         abTestBottomNavforOs();
 
-        registerBroadcastHockeyApp();
         registerNewFeedClickedReceiver();
 
         if(!((BaseMainApplication)getApplication()).checkAppSignature()){
@@ -659,34 +656,6 @@ public class MainParentActivity extends BaseActivity implements
 
             presenter.setIsRecurringApplink(true);
         }
-    }
-
-    private void initHockeyBroadcastReceiver() {
-        hockeyBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent != null && intent.getAction() != null) {
-                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
-                        showHockeyAppDialog();
-                    }
-                }
-            }
-        };
-    }
-
-    private void registerBroadcastHockeyApp() {
-        if (!GlobalConfig.isAllowDebuggingTools()) {
-            IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
-            LocalBroadcastManager.getInstance(this).registerReceiver(hockeyBroadcastReceiver, new IntentFilter(intentFilter));
-        }
-    }
-
-    private void unregisterBroadcastHockeyApp() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
-    }
-
-    private void showHockeyAppDialog() {
-        ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
     private void initNewFeedClickReceiver() {
