@@ -271,8 +271,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
-        homeFeedsTabLayout.setVisibility(View.VISIBLE);
-        homeFeedsViewPager.setVisibility(View.VISIBLE);
         if (homeFeedPagerAdapter == null) {
             homeFeedPagerAdapter = new HomeFeedPagerAdapter(this,
                     this, getChildFragmentManager(), feedTabModelList);
@@ -711,6 +709,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             performanceMonitoring.stopTrace();
             isTraceStopped = true;
         }
+        homeFeedsTabLayout.setVisibility(View.VISIBLE);
+        homeFeedsViewPager.setVisibility(View.VISIBLE);
     }
 
     @Override
