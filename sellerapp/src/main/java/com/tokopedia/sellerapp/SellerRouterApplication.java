@@ -34,6 +34,8 @@ import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
@@ -80,8 +82,8 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
+import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -233,6 +235,9 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
+import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -271,7 +276,8 @@ public abstract class SellerRouterApplication extends MainApplication
         UnifiedOrderListRouter,
         CoreNetworkRouter,
         ChatbotRouter,
-        TrackingOptimizerRouter{
+        TrackingOptimizerRouter ,
+        FlashSaleRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -287,8 +293,49 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onCreate() {
         super.onCreate();
+        analyticTracker = initializeAnalyticTracker();
         initializeDagger();
         initializeRemoteConfig();
+    }
+
+    private AnalyticTracker initializeAnalyticTracker() {
+        return new AnalyticTracker() {
+            @Override
+            public void sendEventTracking(Map<String, Object> events) {
+                UnifyTracking.eventClearEnhanceEcommerce(SellerRouterApplication.this);
+                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, events);
+            }
+
+            @Override
+            public void sendEventTracking(String event, String category, String action, String label) {
+                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, new EventTracking(
+                        event,
+                        category,
+                        action,
+                        label
+                ).getEvent());
+            }
+
+            @Override
+            public void sendScreen(Activity activity, final String screenName) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
+            }
+
+            @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
+                }
+            }
+
+            @Override
+            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                TrackingUtils.eventTrackingEnhancedEcommerce(SellerRouterApplication.this, trackingData);
+            }
+        };
     }
 
     private void initializeRemoteConfig() {
@@ -554,6 +601,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendEventTracking(Map<String, Object> eventTracking) {
+        UnifyTracking.eventClearEnhanceEcommerce(this);
         UnifyTracking.sendGTMEvent(getAppContext(), eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
@@ -1055,8 +1103,8 @@ public abstract class SellerRouterApplication extends MainApplication
                 requestCode);
     }
 
-    @Override
     @Deprecated
+    @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(getAppContext(), new EventTracking(event, category, action, label).getEvent());
     }
@@ -1190,12 +1238,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTracking(Map<String, Object> eventTracking) {
-        UnifyTracking.eventClearEnhanceEcommerce(this);
-        UnifyTracking.sendGTMEvent(this, eventTracking);
-    }
-
-    @Override
     public void sendEnhanceECommerceTracking(@NotNull Map<String, Object> events) {
         TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
     }
@@ -1313,11 +1355,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         intent.putExtra(ContactUsActivity.EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
-    }
-
-    @Override
-    public void showForceHockeyAppDialog() {
-        ServerErrorHandler.showForceHockeyAppDialog();
     }
 
     @Override
@@ -1626,6 +1663,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public @NonNull
+    Intent getFlashSaleDashboardIntent(@NonNull Context context) {
+        return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
+    }
+
+    @Override
+    public @NonNull
     Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
@@ -1671,10 +1714,12 @@ public abstract class SellerRouterApplication extends MainApplication
                                            @NonNull ArrayList<HashMap<String, String>> hashProducts) {
         return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
+
     @Override
     public Fragment getFlightOrderListFragment() {
         return null;
     }
+
     @Override
     public Intent getHelpUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
@@ -1796,11 +1841,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
-        return null;
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Activity activity) {
         return null;
     }
 
@@ -2008,5 +2048,27 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
+    }
+
+    @Override
+    public boolean isSaldoNativeEnabled() {
+        return false;
+    }
+
+    @Override
+    public String getContactUsBaseURL() {
+        return TkpdBaseURL.ContactUs.URL_HELP;
+    }
+
+    public void onLoginSuccess() {
+    }
+
+    @Override
+    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Activity activity) {
+        return null;
     }
 }

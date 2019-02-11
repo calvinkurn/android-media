@@ -28,8 +28,6 @@ public interface GlobalNavRouter {
 
     ApplicationUpdate getAppUpdate(Context context);
 
-    void showHockeyAppDialog(Activity activity);
-
     Intent getOnBoardingIntent(Activity activity);
 
     int getCartCount(Context context);

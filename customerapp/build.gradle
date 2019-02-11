@@ -544,6 +544,8 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
 }
 

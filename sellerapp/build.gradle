@@ -123,9 +123,11 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
+            ext.enableHansel=false
         }
         release {
             signingConfig signingConfigs.debug
+            ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
@@ -196,7 +198,7 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
@@ -302,6 +304,8 @@ dependencies {
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.flashsaleManagement)
+    implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation project(rootProject.ext.features.shopCommon)
@@ -311,6 +315,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
+
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.updateinactivephone)
@@ -353,6 +358,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
@@ -373,6 +379,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

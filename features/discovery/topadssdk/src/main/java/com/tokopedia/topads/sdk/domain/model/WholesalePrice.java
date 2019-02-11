@@ -18,11 +18,11 @@ public class WholesalePrice implements Parcelable {
     private static final String KEY_PRICE = "price_format";
 
     @SerializedName(KEY_QUANTITY_MIN)
-    private String quantityMinFormat;
+    private String quantityMinFormat = "";
     @SerializedName(KEY_QUANTITY_MAX)
-    private String quantityMaxFormat;
+    private String quantityMaxFormat = "";
     @SerializedName(KEY_PRICE)
-    private String priceFormat;
+    private String priceFormat = "";
 
     public WholesalePrice(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_QUANTITY_MIN)){

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -80,6 +81,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     @Inject
     lateinit var session: UserSessionInterface
 
+    private lateinit var fpm: PerformanceMonitoring
+
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     var indexFromInbox = -1
@@ -113,6 +116,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             chatComponent.inject(this)
             presenter.attachView(this)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -184,6 +192,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
                 }
             }
+
+            fpm.stopTrace()
         }
     }
 
@@ -247,6 +257,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             hideLoading()
             showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+            fpm.stopTrace()
         }
     }
 

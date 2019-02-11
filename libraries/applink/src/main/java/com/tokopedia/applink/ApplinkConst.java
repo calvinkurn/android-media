@@ -33,6 +33,7 @@ public interface ApplinkConst {
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
+    String ADD_CREDIT_CARD= "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -174,6 +175,7 @@ public interface ApplinkConst {
     String AFFILIATE_EDIT_POST = "tokopedia://affiliate/edit/{post_id}";
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
+    String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 

@@ -147,6 +147,9 @@ public interface FlightBookingPassengerContract {
         void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
 
         void showPassengerPassportNumberShouldAlphaNumericError(@StringRes int resId);
+
+        String getMissTitle();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

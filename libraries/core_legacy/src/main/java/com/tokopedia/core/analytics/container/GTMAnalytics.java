@@ -44,6 +44,11 @@ public class GTMAnalytics extends ContextAnalytics {
         super(context);
     }
 
+    @Override
+    public void sendGeneralEvent(Map<String, Object> value) {
+        pushGeneral(value);
+    }
+
 
     public TagManager getTagManager() {
         return TagManager.getInstance(getContext());
@@ -196,7 +201,8 @@ public class GTMAnalytics extends ContextAnalytics {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
 
         } else {
@@ -209,7 +215,8 @@ public class GTMAnalytics extends ContextAnalytics {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
         }
 

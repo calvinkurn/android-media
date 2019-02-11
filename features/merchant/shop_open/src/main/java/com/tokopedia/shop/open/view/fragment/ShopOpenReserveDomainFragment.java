@@ -235,7 +235,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
-        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         String message = ShopErrorHandler.getErrorMessage(getActivity(), t);
         sendErrorTracking(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
