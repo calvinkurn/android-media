@@ -113,6 +113,7 @@ public class DynamicFeedShopAdapter
         private void initView(Data data) {
             Shop shop = data.getShop();
             if (data.getShop() != null) {
+                List<ImageProduct> imageProductList = shop.getImageProduct();
                 if (imageProductList.size() > 0) {
                     loadImageOrDefault(ivImageLeft, imageProductList.get(0).getImageUrl());
                 }
