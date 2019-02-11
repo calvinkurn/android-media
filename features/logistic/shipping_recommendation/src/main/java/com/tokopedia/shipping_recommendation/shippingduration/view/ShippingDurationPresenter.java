@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
@@ -123,6 +124,14 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                 getView().stopTrace();
                             } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
                                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
+                                if (getView().isDisableCourierPromo()) {
+                                    for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                                        shippingDurationViewModel.getServiceData().setIsPromo(0);
+                                        for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
+                                            productData.setPromoCode("");
+                                        }
+                                    }
+                                }
                                 shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
                                 getView().showData(shippingDurationViewModelList);
                                 getView().stopTrace();

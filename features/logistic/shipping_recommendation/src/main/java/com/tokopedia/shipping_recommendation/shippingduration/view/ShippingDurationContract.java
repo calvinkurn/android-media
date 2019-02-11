@@ -33,6 +33,8 @@ public interface ShippingDurationContract {
 
         void stopTrace();
 
+        boolean isDisableCourierPromo();
+
         Activity getActivity();
     }
 
