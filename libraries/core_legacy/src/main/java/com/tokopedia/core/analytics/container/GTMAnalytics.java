@@ -201,7 +201,8 @@ public class GTMAnalytics extends ContextAnalytics {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
 
         } else {
@@ -214,7 +215,8 @@ public class GTMAnalytics extends ContextAnalytics {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
         }
 

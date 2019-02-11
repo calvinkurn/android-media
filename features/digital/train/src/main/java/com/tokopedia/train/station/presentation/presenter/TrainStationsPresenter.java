@@ -63,7 +63,8 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
     public void actionOnInitialLoad() {
         getView().hideSearchView();
         trainGetPopularStationsUseCase.createObservable(trainGetPopularStationsUseCase.createRequest())
-                .onErrorReturn(throwable -> new ArrayList<>()).zipWith(trainGetAllStationsUseCase.createObservable(RequestParams.create()), (trainStations, allStations) -> {
+                .onErrorReturn(throwable -> new ArrayList<>())
+                .zipWith(trainGetAllStationsUseCase.createObservable(RequestParams.create()), (trainStations, allStations) -> {
             List<Visitable> visitables = new ArrayList<>();
             TrainPopularStationViewModel viewModel = new TrainPopularStationViewModel();
             viewModel.setStations(trainStationViewModelMapper.transform(trainStations));

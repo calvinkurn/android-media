@@ -17,6 +17,7 @@ include "features:digital:flight_no_op"
 include "features:digital:flight_dbflow"
 include "features:digital:train"
 
+include "features:discovery:flashsale_management"
 include "features:discovery:wishlist_common"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"

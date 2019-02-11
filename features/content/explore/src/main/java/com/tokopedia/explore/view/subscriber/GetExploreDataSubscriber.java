@@ -80,6 +80,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 clearData
         );
         view.dismissLoading();
+        view.stopTrace();
     }
 
     private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {

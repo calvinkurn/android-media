@@ -37,6 +37,7 @@ import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.data.GraphqlClient;
 
 /**
  * Created on 3/23/16.
@@ -63,6 +64,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         super.onCreate(savedInstanceState);
         sessionHandler = new SessionHandler(MainApplication.getAppContext());
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        GraphqlClient.init(this);
         initialize();
     }
 
@@ -306,7 +308,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     }
 
-    private void setDataDrawer() {
+    protected void setDataDrawer() {
         if (drawerHelper != null) {
             drawerHelper.getAdapter().getData().clear();
             drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());

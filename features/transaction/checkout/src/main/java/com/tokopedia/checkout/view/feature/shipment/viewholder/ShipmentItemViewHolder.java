@@ -522,7 +522,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
+        if (cartItemModel.isPreOrder()){
+            tvPreOrder.setText(cartItemModel.getPreOrderInfo());
+            tvPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            tvPreOrder.setVisibility(View.GONE);
+        }
         tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
         String cashback = "    " + tvCashback.getContext().getString(R.string.label_cashback) + " " +
                 cartItemModel.getCashback() + "    ";
@@ -686,9 +691,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            ShipmentItemData shipmentItemData = shipmentDetailData.getSelectedShipment();
-            if (shipmentItemData != null && (shipmentItemData.getServiceId() == CourierConstant.SERVICE_ID_INSTANT
-                    || shipmentItemData.getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY)) {
+            if (isCourierInstantOrSameday(shipmentDetailData.getSelectedCourier().getShipperId())) {
                 String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
                 String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
                 tvTickerInfo.setText(tickerInfo);
@@ -1315,6 +1318,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
         for (CartItemModel item : data.getCartItemModels()) {
             if (item.isProtectionOptIn()) return true;
+        }
+        return false;
+    }
+
+    private boolean isCourierInstantOrSameday(int shipperId) {
+        int[] ids = CourierConstant.INSTANT_SAMEDAY_COURIER;
+        for (int id : ids) {
+            if (shipperId == id) return true;
         }
         return false;
     }
