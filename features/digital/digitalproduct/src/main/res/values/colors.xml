@@ -10,4 +10,9 @@
     <color name="price_new_promo">#ff5722</color>
     <color name="digital_voucher_copied_color">#42b549</color>
     <color name="digital_operator_search_bar_color">#f9f9f9</color>
+    <color name="digital_dark_selectable_recycler">#CCCCCC</color>
+    <color name="digital_drop_shadow_light">#e7e7e7</color>
+    <color name="digital_ussd_light_yellow">#fff5dd</color>
+    <color name="digital_body_text_5_inverse">#848484</color>
+    <color name="digital_green_btn">#239229</color>
 </resources>

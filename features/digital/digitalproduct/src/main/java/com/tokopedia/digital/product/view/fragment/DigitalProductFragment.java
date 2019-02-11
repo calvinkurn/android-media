@@ -266,6 +266,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             digitalHelpUrl = savedInstanceState.getString(EXTRA_STATE_HELP_URL);
             presenter.processStateDataToReRender();
         }
+
     }
 
     @Override
@@ -285,6 +286,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         renderViewShadow();
         setupArguments(getArguments());
         if (!isFromWidget) {
+            setHasOptionsMenu(true);
             presenter.processGetHelpUrlData(categoryId);
             presenter.processGetCategoryAndBannerData(
                     categoryId, operatorId, productId, clientNumber);
@@ -682,7 +684,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
+                        REQUEST_CODE_CART_DIGITAL
                 );
             }
         } else {
@@ -711,7 +713,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
+                        REQUEST_CODE_CART_DIGITAL
                 );
                 getActivity().overridePendingTransition(0, 0);
             }

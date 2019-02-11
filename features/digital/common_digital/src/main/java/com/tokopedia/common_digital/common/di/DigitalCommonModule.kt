@@ -62,7 +62,7 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    internal fun provideDigitalInterceptor(@ApplicationContext context: Context,
+     fun provideDigitalInterceptor(@ApplicationContext context: Context,
                                            networkRouter: AbstractionRouter, userSession: com.tokopedia.abstraction.common.data.model.session.UserSession): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter, userSession)
     }
@@ -139,7 +139,7 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    internal fun provideCartMapperData(): ICartMapperData {
+     fun provideCartMapperData(): ICartMapperData {
         return CartMapperData()
     }
 
@@ -152,7 +152,7 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    internal fun provideDigitalInstantCheckoutDataSource(digitalRestApi: DigitalRestApi,
+    fun provideDigitalInstantCheckoutDataSource(digitalRestApi: DigitalRestApi,
                                                          cartMapperData: ICartMapperData): DigitalInstantCheckoutDataSource {
         return DigitalInstantCheckoutDataSource(digitalRestApi, cartMapperData)
     }

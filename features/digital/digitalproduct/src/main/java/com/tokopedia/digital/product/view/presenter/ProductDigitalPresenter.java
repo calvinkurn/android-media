@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -19,10 +20,10 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -40,8 +41,15 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.exception.ResponseDataNullException;
+import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.user.session.UserSession;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +110,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
     private CategoryData categoryData;
-    private DigitalAnalytics digitalAnalytics;
     private UserSession userSession;
 
     @Inject

@@ -7,7 +7,9 @@ class CrossSellingConfig {
     @SerializedName("is_skipable")
     @Expose
     var isSkipAble: Boolean = false
-
+    @SerializedName("is_checked")
+    @Expose
+    var isChecked: Boolean = false
     @SerializedName("wording")
     @Expose
     var wording: CrossSellingWording? = null

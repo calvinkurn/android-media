@@ -168,4 +168,10 @@
     <string name="digital_navigate_back_showcase">Kembali</string>
     <string name="digital_navigate_done_showcase">Selesai</string>
     <string name="digital_action_search_with_suffix">Cari %1$s</string>
+    <string name="digital_ussd_phone_number_label">Nomor Handphone</string>
+    <string name="digital_action_search">Cari</string>
+    <string name="digital_check_remain_balance">Cek Sisa Pulsa</string>
+    <string name="digital_check_balance">Cek Pulsa</string>
+    <string name="digital_title_buy">Beli</string>
+    <string name="digital_title_nominal">Nominal</string>
 </resources>

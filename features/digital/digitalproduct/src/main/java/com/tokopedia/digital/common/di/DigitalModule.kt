@@ -15,12 +15,12 @@ import dagger.Provides
 class DigitalModule {
 
     @Provides
-    internal fun provideDigitalAnalytics(router: AbstractionRouter, @ApplicationContext context: Context): DigitalAnalytics {
+    fun provideDigitalAnalytics(router: AbstractionRouter, @ApplicationContext context: Context): DigitalAnalytics {
         return DigitalAnalytics(router.analyticTracker, context)
     }
 
     @Provides
-    internal fun provideDigitalModuleRouter(@ApplicationContext context: Context): DigitalModuleRouter {
+    fun provideDigitalModuleRouter(@ApplicationContext context: Context): DigitalModuleRouter {
         val router : DigitalModuleRouter = context as DigitalModuleRouter
         return router
     }

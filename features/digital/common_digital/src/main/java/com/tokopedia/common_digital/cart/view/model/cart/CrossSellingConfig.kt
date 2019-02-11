@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 
 class CrossSellingConfig : Parcelable {
     var isSkipAble: Boolean = false
+    var isChecked: Boolean = false
     var headerTitle: String? = null
     var bodyTitle: String? = null
     var bodyContentBefore: String? = null
@@ -16,6 +17,7 @@ class CrossSellingConfig : Parcelable {
 
     protected constructor(`in`: Parcel) {
         isSkipAble = `in`.readByte().toInt() != 0
+        isChecked = `in`.readByte().toInt() != 0
         headerTitle = `in`.readString()
         bodyTitle = `in`.readString()
         bodyContentBefore = `in`.readString()
@@ -31,6 +33,7 @@ class CrossSellingConfig : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeByte((if (isSkipAble) 1 else 0).toByte())
+        dest.writeByte((if (isChecked) 1 else 0).toByte())
         dest.writeString(headerTitle)
         dest.writeString(bodyTitle)
         dest.writeString(bodyContentBefore)

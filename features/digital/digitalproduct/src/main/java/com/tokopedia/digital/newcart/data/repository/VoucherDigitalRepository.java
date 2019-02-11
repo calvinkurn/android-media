@@ -3,11 +3,11 @@ package com.tokopedia.digital.newcart.data.repository;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.newcart.data.entity.response.voucher.ResponseVoucherData;
 import com.tokopedia.digital.newcart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.newcart.domain.IVoucherDigitalRepository;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
-import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 
 import java.util.Map;
 

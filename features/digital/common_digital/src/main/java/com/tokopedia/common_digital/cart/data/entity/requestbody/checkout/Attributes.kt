@@ -32,6 +32,9 @@ class Attributes {
     @SerializedName("client_id")
     @Expose
     var clientId: String? = null
+    @SerializedName("subscribe")
+    @Expose
+    var subscribe: Boolean? = false
     @SerializedName("deals_ids")
     @Expose
     var dealsIds: List<Int>? = null

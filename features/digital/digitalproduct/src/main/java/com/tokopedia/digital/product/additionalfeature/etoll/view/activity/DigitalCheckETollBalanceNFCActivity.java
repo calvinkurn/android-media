@@ -20,32 +20,20 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
-import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.di.DigitalComponentInstance;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.di.DaggerDigitalETollComponent;
 import com.tokopedia.digital.product.additionalfeature.etoll.di.DigitalETollComponent;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardCommandUseCase;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.ETollUpdateBalanceResultView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.NFCDisabledView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.TapETollCardView;
@@ -55,30 +43,17 @@ import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.listener.IETollView;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.utils.NFCUtils;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Rizky on 15/05/18.
