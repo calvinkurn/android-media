@@ -70,7 +70,6 @@ import rx.Subscriber;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
- * modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 

@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.BottomSheets;
@@ -80,6 +81,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
     private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
     private static final String SAVED_PROGRESS = "svd_progress";
+    private static final String FLIGHT_SEARCH_TRACE = "tr_flight_search";
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
 
@@ -101,6 +103,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     private FlightFilterModel flightFilterModel;
     private HorizontalProgressBar progressBar;
     private SwipeToRefresh swipeToRefresh;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean traceStop = false;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle bundle = new Bundle();
@@ -130,6 +134,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
             setNeedRefreshFromCache(true);
         }
+
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_SEARCH_TRACE);
     }
 
     @Nullable
@@ -546,6 +552,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public FlightFilterModel getFilterModel() {
         return flightFilterModel;
+    }
+
+    @Override
+    public void traceStop() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override

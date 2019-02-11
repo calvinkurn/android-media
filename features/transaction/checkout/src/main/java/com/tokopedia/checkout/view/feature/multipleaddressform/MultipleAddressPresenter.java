@@ -176,6 +176,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                     cartItemDataList.get(i).getOriginData().getPriceFormatted()
             );
             addressAdapterData.setPreOrder(cartItemDataList.get(i).getOriginData().isPreOrder());
+            addressAdapterData.setPreOrderInfo(cartItemDataList.get(i).getOriginData().getPreOrderInfo());
             addressAdapterData.setFreeReturn(cartItemDataList.get(i).getOriginData().isFreeReturn());
             addressAdapterData.setCashBack(cartItemDataList.get(i).getOriginData().isCashBack());
             addressAdapterData.setCashBackInfo(cartItemDataList.get(i).getOriginData().getCashBackInfo());

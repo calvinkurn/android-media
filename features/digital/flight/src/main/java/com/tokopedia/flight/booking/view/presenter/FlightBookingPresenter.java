@@ -188,13 +188,17 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                         int newAdultPrice = newFarePrice.getFare().getAdultNumeric() / 2;
                         int newChildPrice = newFarePrice.getFare().getChildNumeric() / 2;
                         int newInfantPrice = newFarePrice.getFare().getInfantNumeric() / 2;
+
                         flightBookingCartData.getDepartureTrip().setAdultNumericPrice(newAdultPrice);
                         flightBookingCartData.getDepartureTrip().setChildNumericPrice(newChildPrice);
                         flightBookingCartData.getDepartureTrip().setInfantNumericPrice(newInfantPrice);
 
-                        flightBookingCartData.getReturnTrip().setAdultNumericPrice(newAdultPrice);
-                        flightBookingCartData.getReturnTrip().setChildNumericPrice(newChildPrice);
-                        flightBookingCartData.getReturnTrip().setInfantNumericPrice(newInfantPrice);
+                        flightBookingCartData.getReturnTrip().setAdultNumericPrice(
+                                newFarePrice.getFare().getAdultNumeric() - newAdultPrice);
+                        flightBookingCartData.getReturnTrip().setChildNumericPrice(
+                                newFarePrice.getFare().getChildNumeric() - newChildPrice);
+                        flightBookingCartData.getReturnTrip().setInfantNumericPrice(
+                                newFarePrice.getFare().getInfantNumeric() - newInfantPrice);
                     }
                 }
                 int newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
