@@ -39,6 +39,7 @@ class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener
                     itemView.tv_note_char_counter.text = String.format(
                             itemView.context.getString(R.string.format_note_counter),
                             element.note.length, element.noteCharMax)
+                    listener.onChangeNote(element)
                 }
             })
         }

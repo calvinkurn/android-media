@@ -39,6 +39,7 @@ public interface ConstantTransactionAnalytics {
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
+        String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
     }
 
     interface EventCategory {
@@ -217,6 +218,9 @@ public interface ConstantTransactionAnalytics {
 
         //EXPRESS CHECKOUT
         String VIEW_EXPRESS_CHECKOUT = "view express checkout";
+        String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
+        String CLICK_X = "click x";
+        String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
     }
 
     interface EventLabel {

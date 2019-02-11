@@ -33,6 +33,8 @@ interface CheckoutVariantActionListener {
 
     fun onChangeQuantity(quantityViewModel: QuantityViewModel)
 
+    fun onChangeNote(noteViewModel: NoteViewModel)
+
     fun onSummaryChanged(summaryViewModel: SummaryViewModel?)
 
     fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel)

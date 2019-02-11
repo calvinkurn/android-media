@@ -128,6 +128,11 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         updateHeight()
     }
 
+    override fun onCloseButtonClick() {
+        super.onCloseButtonClick()
+        listener.onChangeTemplateBottomshictButtonCloseClicked()
+    }
+
     override fun onItemSelected(profileViewModel: ProfileViewModel) {
         listener.onProfileChanged(profileViewModel)
     }

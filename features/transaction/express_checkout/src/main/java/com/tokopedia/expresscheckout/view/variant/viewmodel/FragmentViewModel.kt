@@ -13,6 +13,7 @@ data class FragmentViewModel(
         var totalPayment: Long? = 0,
         var lastQuantity: Int? = 0,
         var lastPrice: Int? = 0,
+        var isStateChanged: Boolean? = false, // True if there are error or user activity (change qty / change courier / change note / change variant / check insurance)
         var shippingCourierViewModels: MutableList<ShippingCourierViewModel>? = null,
         var viewModels: ArrayList<Visitable<*>> = ArrayList()
 ) {

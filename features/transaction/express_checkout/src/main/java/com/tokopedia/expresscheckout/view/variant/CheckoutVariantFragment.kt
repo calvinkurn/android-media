@@ -366,6 +366,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
 
             reloadRatesDebounceListener.onNeedToRecalculateRates(false)
+            fragmentViewModel.isStateChanged = true
         }
     }
 
@@ -426,6 +427,13 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
         onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
         reloadRatesDebounceListener.onNeedToRecalculateRates(false)
+        fragmentViewModel.isStateChanged = true
+    }
+
+    override fun onChangeNote(noteViewModel: NoteViewModel) {
+        if (fragmentViewModel.isStateChanged == false && noteViewModel.note.isNotEmpty()) {
+            fragmentViewModel.isStateChanged = true
+        }
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
@@ -450,6 +458,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
         }
         onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun onNeedToValidateButtonBuyVisibility() {
@@ -567,6 +576,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             errorBottomsheets.dismiss()
         }
         errorBottomsheets.show(fragmentManager, title)
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun showErrorCourier(message: String) {
@@ -578,6 +588,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun showErrorNotAvailable(message: String) {
@@ -588,6 +599,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun showErrorAPI(retryAction: String) {
@@ -612,6 +624,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun showErrorPayment(message: String) {
@@ -620,9 +633,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
                 presenter.hitOldCheckout(fragmentViewModel)
+                analyticsTracker.clickPilihMetodePembayaran(fragmentViewModel.getProfileViewModel()?.paymentDetail ?: "")
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
+        analyticsTracker.viewErrorMetodePembayaran()
+        fragmentViewModel.isStateChanged = true
     }
 
     private fun showErrorPinpoint(productData: ProductData?, profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
@@ -637,6 +653,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 if (activity != null) startActivityForResult(router.getGeolocationIntent(activity as Context, locationPass), REQUEST_CODE_GEOLOCATION)
             }
         }
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
@@ -723,6 +740,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             profileViewModel.shippingDurationId = 0
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun setShippingCourierError(message: String) {
@@ -733,6 +751,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             profileViewModel.shippingCourierId = 0
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
+        fragmentViewModel.isStateChanged = true
     }
 
     override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
@@ -867,6 +886,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
         checkoutProfileBottomSheet.dismiss()
+        analyticsTracker.eventClickContinueWithoutTemplate(fragmentViewModel.isStateChanged == false)
     }
 
     override fun onProfileChanged(selectedProfileViewModel: ProfileViewModel) {
@@ -895,6 +915,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         checkoutProfileBottomSheet.dismiss()
+    }
+
+    override fun onChangeTemplateBottomshictButtonCloseClicked() {
+        analyticsTracker.eventClickButtonX()
     }
 
     private fun initUpdateShippingRatesDebouncer() {

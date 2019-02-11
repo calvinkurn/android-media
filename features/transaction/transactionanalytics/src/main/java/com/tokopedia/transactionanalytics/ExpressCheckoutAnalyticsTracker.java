@@ -35,4 +35,41 @@ public class ExpressCheckoutAnalyticsTracker extends TransactionAnalytics {
                 "not success - " + errorMessage
         );
     }
+
+    public void eventClickContinueWithoutTemplate(boolean isDefault) {
+        sendEventCategoryActionLabel(
+                ConstantTransactionAnalytics.EventName.CLICK_CHECKOUT_EXPRESS,
+                ConstantTransactionAnalytics.EventCategory.EXPRESS_CHECKOUT,
+                ConstantTransactionAnalytics.EventAction.CLICK_LANJUTKAN_TANPA_TEMPLATE,
+                isDefault ? ConstantTransactionAnalytics.EventLabel.SUCCESS_DEFAULT : ConstantTransactionAnalytics.EventLabel.SUCCESS_NOT_DEFAULT
+        );
+    }
+
+    public void eventClickButtonX() {
+        sendEventCategoryActionLabel(
+                ConstantTransactionAnalytics.EventName.CLICK_CHECKOUT_EXPRESS,
+                ConstantTransactionAnalytics.EventCategory.EXPRESS_CHECKOUT,
+                ConstantTransactionAnalytics.EventAction.CLICK_X,
+                ""
+        );
+    }
+
+    public void viewErrorMetodePembayaran() {
+        sendEventCategoryActionLabel(
+                ConstantTransactionAnalytics.EventName.VIEW_CHECKOUT_EXPRESS,
+                ConstantTransactionAnalytics.EventCategory.EXPRESS_CHECKOUT,
+                ConstantTransactionAnalytics.EventAction.VIEW_ERROR_METODE_PEMBAYARAN,
+                ""
+        );
+    }
+
+    public void clickPilihMetodePembayaran(String gateway) {
+        sendEventCategoryActionLabel(
+                ConstantTransactionAnalytics.EventName.CLICK_CHECKOUT_EXPRESS,
+                ConstantTransactionAnalytics.EventCategory.EXPRESS_CHECKOUT,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                gateway
+        );
+    }
+
 }

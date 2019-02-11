@@ -12,4 +12,6 @@ interface CheckoutProfileFragmentListener {
 
     fun onProfileChanged(selectedProfileViewModel: ProfileViewModel)
 
+    fun onChangeTemplateBottomshictButtonCloseClicked()
+
 }
