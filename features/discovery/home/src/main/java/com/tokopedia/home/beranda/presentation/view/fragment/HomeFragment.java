@@ -36,6 +36,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
@@ -60,6 +61,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.constant.ConstantKey;
+import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
@@ -578,7 +580,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 Intent intent = ((IHomeRouter) (getActivity()).getApplication())
                         .getBannerWebViewOnAllPromoClickFromHomeIntent(
                                 getActivity(),
-                                ConstantKey.TkpdBaseUrl.URL_PROMO + ConstantKey.TkpdBaseUrl.FLAG_APP,
+                                BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
                                 getString(R.string.title_activity_promo));
                 getActivity().startActivity(intent);
             }

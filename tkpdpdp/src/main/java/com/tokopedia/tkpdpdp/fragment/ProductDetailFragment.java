@@ -1488,12 +1488,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onNullData() {
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.logException(new ProductNotFoundException());
-            }
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
+            String uri = pass != null ? pass.getProductUri() : "";
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.logException(new ProductNotFoundException(uri));
+            }
             if (webViewHandleListener != null) {
-                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+                webViewHandleListener.catchToWebView(uri);
             }
         } else {
             showToastMessage("Produk tidak ditemukan!");

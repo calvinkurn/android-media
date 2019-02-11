@@ -43,8 +43,8 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
     @Override
     public void getAddress(int page, int sortId, String query) {
         getAddressUseCase
-            .execute(getAddressUseCase.getAddressParam(page, sortId, query),
-                    getPeopleAddressSubscriber());
+                .execute(getAddressUseCase.getAddressParam(page, sortId, query),
+                        getPeopleAddressSubscriber(page, query));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
         return mToken;
     }
 
-    private Subscriber<GetPeopleAddress> getPeopleAddressSubscriber() {
+    private Subscriber<GetPeopleAddress> getPeopleAddressSubscriber(final int page, final String query) {
         return new Subscriber<GetPeopleAddress>() {
             @Override
             public void onCompleted() {
@@ -88,6 +88,9 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
                 if (getPeopleAddress.getPaging() != null)
                     hasNext = PagingHandler.CheckHasNext(getPeopleAddress.getPaging().getUriNext());
                 mView.showData(addressViewModelList, hasNext);
+                if (page == 1 && query.isEmpty()) {
+                    mView.onFirstPageSuccessRendered();
+                }
             }
         };
     }
