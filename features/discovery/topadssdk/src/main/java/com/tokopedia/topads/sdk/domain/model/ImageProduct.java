@@ -27,7 +27,6 @@ public class ImageProduct extends ImageHolder implements Parcelable {
     private String imageUrl = "";
     @SerializedName(KEY_IMAGE_CLICK_URL)
     private String imageClickUrl = "";
-    private boolean loaded = false;
 
     public ImageProduct() {
     }
