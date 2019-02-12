@@ -6,7 +6,7 @@ package com.tokopedia.sessioncommon.data
 open class Token {
 
     companion object {
-        const val GOOGLE_API_KEY = "AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo"
+        const val GOOGLE_API_KEY = "692092518182-rjgh0bja6q41dllpq2dptn134cmhiv9h.apps.googleusercontent.com"
     }
 
 }

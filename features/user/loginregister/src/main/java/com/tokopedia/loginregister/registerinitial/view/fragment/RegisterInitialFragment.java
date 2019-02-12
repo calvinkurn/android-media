@@ -78,6 +78,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import static com.tokopedia.sessioncommon.data.Token.GOOGLE_API_KEY;
+
 /**
  * @author by nisie on 10/24/18.
  */
@@ -100,7 +102,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 110;
     private static final int REQUEST_ADD_NAME = 111;
     private static final int REQUEST_LOGIN_GOOGLE = 112;
-    private static final String GOOGLE_API_KEY = "AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo";
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";

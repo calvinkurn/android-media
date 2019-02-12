@@ -80,6 +80,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import static com.tokopedia.sessioncommon.data.Token.GOOGLE_API_KEY;
+
 /**
  * @author by nisie on 12/18/17.
  */
@@ -101,7 +103,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     private static final int REQUEST_VERIFY_PHONE = 108;
     private static final int REQUEST_ADD_NAME = 109;
     private static final int REQUEST_LOGIN_GOOGLE = 110;
-    private static final String GOOGLE_API_KEY = "AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo";
 
     public static final String IS_AUTO_LOGIN = "auto_login";
     public static final String AUTO_LOGIN_METHOD = "method";

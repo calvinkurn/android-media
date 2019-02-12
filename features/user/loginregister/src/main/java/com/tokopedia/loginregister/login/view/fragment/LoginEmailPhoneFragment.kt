@@ -60,6 +60,7 @@ import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData
 import com.tokopedia.sessioncommon.data.model.SecurityPojo
@@ -95,12 +96,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_ADD_NAME_REGISTER_PHONE = 114
     private val REQUEST_WELCOME_PAGE = 115
     private val REQUEST_LOGIN_GOOGLE = 116
-
-    //Dari Android
-//    private val GOOGLE_API_KEY = "692092518182-mnfsbr75hvhs9lrdbl0nrt5j6h9ehu32.apps.googleusercontent.com"
-
-    //IMA PUNYA
-    private val GOOGLE_API_KEY = "692092518182-rjgh0bja6q41dllpq2dptn134cmhiv9h.apps.googleusercontent.com"
 
     val IS_AUTO_LOGIN = "auto_login"
     val AUTO_LOGIN_METHOD = "method"
