@@ -4,7 +4,7 @@
     <application>
 
         <activity
-            android:name="com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity"
+            android:name="com.tokopedia.shopetalasepicker.view.activity.ShopEtalaseActivity"
             android:label="@string/choose_etalase_label"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
