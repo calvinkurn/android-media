@@ -76,7 +76,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         }
 
         tvChangeAddress.setVisibility(View.GONE);
-        tvAddressStatus.setVisibility(View.GONE);
+        tvAddressStatus.setVisibility(View.VISIBLE);
         tvAddressName.setVisibility(View.GONE);
         formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));

@@ -38,7 +38,7 @@
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_4"
             android:text="@string/label_main_address"
-            android:textColor="@color/black_70"
+            android:textColor="@color/bottom_label_color"
             android:textSize="@dimen/sp_10"
             android:textStyle="normal"
             android:visibility="gone"
