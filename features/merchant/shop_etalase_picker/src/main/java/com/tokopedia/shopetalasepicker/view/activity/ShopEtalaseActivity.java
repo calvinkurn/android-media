@@ -1,4 +1,4 @@
-package com.tokopedia.shop.etalase.view.activity;
+package com.tokopedia.shopetalasepicker.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.etalase.view.fragment.ShopEtalaseFragment;
+import com.tokopedia.shopetalasepicker.constant.ShopParamConstant;
 
 /**
  * Created by normansyahputa on 2/28/18.

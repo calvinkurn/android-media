@@ -1,7 +1,8 @@
-package com.tokopedia.shop.etalase.view.listener;
+package com.tokopedia.shopetalasepicker.view.listener;
+
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shopetalasepicker.view.model.ShopEtalaseViewModel;
 
 public interface ShopEtalaseView extends BaseListViewListener<ShopEtalaseViewModel> {
 

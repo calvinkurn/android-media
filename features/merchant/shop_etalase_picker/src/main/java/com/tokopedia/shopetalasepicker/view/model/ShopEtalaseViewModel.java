@@ -1,4 +1,4 @@
-package com.tokopedia.shop.etalase.view.model;
+package com.tokopedia.shopetalasepicker.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
-import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
+import com.tokopedia.shopetalasepicker.view.adapter.ShopEtalaseAdapterTypeFactory;
 
 /**
  * Created by normansyahputa on 2/28/18.

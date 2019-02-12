@@ -1,4 +1,4 @@
-package com.tokopedia.shop.etalase.view.fragment;
+package com.tokopedia.shopetalasepicker.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,14 +13,14 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.DaggerShopEtalaseComponent;
-import com.tokopedia.shop.common.di.component.ShopEtalaseComponent;
-import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
-import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
-import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
-import com.tokopedia.shop.etalase.view.presenter.ShopEtalasePresenter;
 import com.tokopedia.shopetalasepicker.R;
+import com.tokopedia.shopetalasepicker.constant.ShopParamConstant;
+import com.tokopedia.shopetalasepicker.di.component.ShopEtalaseComponent;
+import com.tokopedia.shopetalasepicker.view.adapter.ShopEtalaseAdapterTypeFactory;
+import com.tokopedia.shopetalasepicker.view.listener.ShopEtalaseView;
+import com.tokopedia.shopetalasepicker.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shopetalasepicker.view.presenter.ShopEtalasePresenter;
 
 import java.util.List;
 

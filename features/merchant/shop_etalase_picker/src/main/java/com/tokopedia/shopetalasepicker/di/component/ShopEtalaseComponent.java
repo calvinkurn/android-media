@@ -1,8 +1,8 @@
-package com.tokopedia.shop.common.di.component;
+package com.tokopedia.shopetalasepicker.di.component;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.shop.common.di.scope.ShopEtalaseScope;
-import com.tokopedia.shop.etalase.view.fragment.ShopEtalaseFragment;
+import com.tokopedia.shopetalasepicker.di.scope.ShopEtalaseScope;
+import com.tokopedia.shopetalasepicker.view.fragment.ShopEtalaseFragment;
 
 import dagger.Component;
 

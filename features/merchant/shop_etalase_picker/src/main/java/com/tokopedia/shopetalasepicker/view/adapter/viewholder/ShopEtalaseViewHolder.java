@@ -1,4 +1,4 @@
-package com.tokopedia.shop.etalase.view.adapter.viewholder;
+package com.tokopedia.shopetalasepicker.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;

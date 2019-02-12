@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.constant;
+package com.tokopedia.shopetalasepicker.constant;
 
 /**
  * Created by nathan on 2/6/18.

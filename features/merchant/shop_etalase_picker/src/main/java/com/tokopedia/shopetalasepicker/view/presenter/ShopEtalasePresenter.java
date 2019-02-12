@@ -1,4 +1,4 @@
-package com.tokopedia.shop.etalase.view.presenter;
+package com.tokopedia.shopetalasepicker.view.presenter;
 
 import android.text.TextUtils;
 
@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
-import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
-import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shopetalasepicker.view.listener.ShopEtalaseView;
+import com.tokopedia.shopetalasepicker.view.model.ShopEtalaseViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,7 +58,7 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
                 }
             }
 
-            private ArrayList<ShopEtalaseViewModel> map(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
+            private List<ShopEtalaseViewModel> map(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
                 if (shopEtalaseModels.size() == 0) {
                     return new ArrayList<>();
                 }

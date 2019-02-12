@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.di.scope;
+package com.tokopedia.shopetalasepicker.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
