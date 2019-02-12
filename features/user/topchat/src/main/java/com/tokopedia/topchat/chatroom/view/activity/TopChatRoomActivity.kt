@@ -94,7 +94,6 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         fun getAskBuyerIntent(context: Context, toUserId: String, customerName: String,
                               customSubject: String, customMessage: String, source: String,
                               avatar: String): Intent {
-
             val intent = getAskUserIntent(context, toUserId, customerName, source, avatar)
             val bundle = intent.extras
             bundle.putString(ApplinkConst.Chat.CUSTOM_MESSAGE, customMessage)
