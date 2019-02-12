@@ -197,19 +197,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             it?.run { renderProductInfo3(this) }
         })
 
-        productWarehouseViewModel.productWarehouseSubmitResp.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessWarehouseProduct()
-                is Fail -> onErrorWarehouseProduct(it.throwable)
-            }
-        })
-
-        productWarehouseViewModel.productMoveToEtalaseResp.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessMoveToEtalase()
-                is Fail -> onErrorMoveToEtalase(it.throwable)
-            }
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -478,8 +465,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP1Resp.removeObservers(this)
         productInfoViewModel.productInfoP2resp.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
-        productWarehouseViewModel.productWarehouseSubmitResp.removeObservers(this)
         productInfoViewModel.clear()
+        productWarehouseViewModel.clear()
         super.onDestroy()
     }
 
@@ -811,14 +798,18 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val etalaseName = productInfo?.menu?.name
         if (productId != null && !etalaseName.isNullOrEmpty()) {
             showProgressDialog(onCancelClicked = { productWarehouseViewModel.clear() })
-            productWarehouseViewModel.moveToEtalase(productId!!, etalaseId.toString(), etalaseName!!)
+            productWarehouseViewModel.moveToEtalase(productId!!, etalaseId.toString(), etalaseName!!,
+                    onSuccessMoveToEtalase = this::onSuccessMoveToEtalase,
+                    onErrorMoveToEtalase = this::onErrorMoveToEtalase)
         }
     }
 
     private fun warehouseProduct() {
         productId?.let {
             showProgressDialog(onCancelClicked = { productWarehouseViewModel.clear() })
-            productWarehouseViewModel.moveToWarehouse(it)
+            productWarehouseViewModel.moveToWarehouse(it,
+                    onSuccessMoveToWarehouse = this::onSuccessWarehouseProduct,
+                    onErrorMoveToWarehouse = this::onErrorWarehouseProduct)
         }
     }
 

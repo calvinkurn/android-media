@@ -36,10 +36,8 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                                                  @Named("Main")
                                                  val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val productReportTypeResp = MutableLiveData<Result<List<ReportType>>>()
-    val productReportSubmitResp = MutableLiveData<Result<ReportSubmit>>()
-
-    fun getProductReportType(productId: String) {
+    fun getProductReportType(productId: String, onSuccessGetReportType : ((List<ReportType>)->Unit),
+                             onErrorGetReportType: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
                     val result = withContext(Dispatchers.IO) {
@@ -56,15 +54,17 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    productReportTypeResp.value = Success((result?.getData() as DataResponse<ReportTypeModel>).data.reportType)
+                    onSuccessGetReportType((result?.getData() as DataResponse<ReportTypeModel>).data.reportType)
                 },
                 onError = {
-                    productReportTypeResp.value = Fail(it)
+                    onErrorGetReportType(it)
                 }
         )
     }
 
-    fun reportProduct(productId: String, reportType: String, reportDesc: String) {
+    fun reportProduct(productId: String, reportType: String, reportDesc: String,
+                      onSuccessReportProduct : (()->Unit),
+                      onErrorReportProduct: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
                     val result = withContext(Dispatchers.IO) {
@@ -84,13 +84,13 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                     }
                     val reportSubmit = (result?.getData() as DataResponse<ReportSubmit>).data
                     if (reportSubmit.getIsSuccess()) {
-                        productReportSubmitResp.value = Success(reportSubmit)
+                        onSuccessReportProduct()
                     } else {
-                        productReportSubmitResp.value = Fail(IOException())
+                        onErrorReportProduct(IOException())
                     }
                 },
                 onError = {
-                    productReportSubmitResp.value = Fail(it)
+                    onErrorReportProduct(it)
                 }
         )
     }
