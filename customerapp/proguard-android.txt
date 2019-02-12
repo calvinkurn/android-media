@@ -201,6 +201,10 @@ public protected *;
 
 -dontwarn com.tokopedia.topchat.R$id
 
+# Every class that extends exception
+-keep class * extends java.lang.Exception
+-keep class * extends java.lang.RuntimeException
+
 # -- Coroutines --
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
