@@ -269,7 +269,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     floatingTextButton.setVisibility(View.GONE);
                 }
 
-                stressTestIris();
+               // stressTestIris();
             }
         });
 
