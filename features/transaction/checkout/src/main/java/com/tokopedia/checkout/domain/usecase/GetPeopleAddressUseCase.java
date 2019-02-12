@@ -31,24 +31,17 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
 
     private final PeopleAddressRepository peopleAddressRepository;
     private final UserSessionInterface userSessionInterface;
-    private GetAddressWithCornerUseCase cornerUseCase;
 
-    public GetPeopleAddressUseCase(GetAddressWithCornerUseCase cornerUseCase, PeopleAddressRepository peopleAddressRepository,
+    public GetPeopleAddressUseCase(PeopleAddressRepository peopleAddressRepository,
                                    UserSessionInterface userSessionInterface) {
         this.peopleAddressRepository = peopleAddressRepository;
         this.userSessionInterface = userSessionInterface;
-        this.cornerUseCase = cornerUseCase;
     }
 
     @Override
     public Observable<PeopleAddressModel> createObservable(RequestParams requestParams) {
         Observable<GetPeopleAddress> oldAddressRx = peopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
-        Observable<AddressCornerResponse> addressWithCornerRx = cornerUseCase
-                .getExecuteObservable(RequestParams.EMPTY)
-                .map(graphqlResponse -> {
-                    GqlKeroWithAddressResponse response = graphqlResponse.getData(GqlKeroWithAddressResponse.class);
-                    return response.getKeroAddressWithCorner();
-                });
+        Observable<AddressCornerResponse> addressWithCornerRx = peopleAddressRepository.getCornerData();
         return Observable.zip(oldAddressRx, addressWithCornerRx, new PeopleAddressWithCornerMapper());
     }
 

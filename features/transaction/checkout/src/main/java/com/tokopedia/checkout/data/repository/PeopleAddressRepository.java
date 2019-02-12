@@ -24,6 +24,6 @@ public interface PeopleAddressRepository {
      */
     Observable<GetPeopleAddress> getAllAddress(final Map<String, String> params);
 
-    Observable<AddressCornerResponse> getCornerData(final Map<String, String> params);
+    Observable<AddressCornerResponse> getCornerData();
 
 }

@@ -50,15 +50,9 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    GetPeopleAddressUseCase provideGetAddressListUseCase(GetAddressWithCornerUseCase usecase, PeopleAddressRepository peopleAddressRepository,
+    GetPeopleAddressUseCase provideGetAddressListUseCase(PeopleAddressRepository peopleAddressRepository,
                                                          UserSessionInterface userSessionInterface) {
-        return new GetPeopleAddressUseCase(usecase, peopleAddressRepository, userSessionInterface);
-    }
-
-    @Provides
-    @ShipmentAddressListScope
-    GetAddressWithCornerUseCase provideGetAddressWithCornerUsecase() {
-        return new GetAddressWithCornerUseCase(context);
+        return new GetPeopleAddressUseCase(peopleAddressRepository, userSessionInterface);
     }
 
 }

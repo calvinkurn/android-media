@@ -1,10 +1,13 @@
 package com.tokopedia.checkout.data.repository;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.checkout.data.mapper.AddressModelMapper;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
+import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
+import com.tokopedia.checkout.domain.datamodel.addresscorner.GqlKeroWithAddressResponse;
+import com.tokopedia.checkout.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 import java.util.Map;
@@ -24,12 +27,12 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
     private static final int FIRST_ELEMENT = 0;
 
     private final PeopleActApi peopleActApi;
-    private final AddressModelMapper mAddressModelMapper;
+    private GetAddressWithCornerUseCase addressWithCornerUseCase;
 
     @Inject
-    public PeopleAddressRepositoryImpl(PeopleActApi peopleActApi, AddressModelMapper addressModelMapper) {
+    public PeopleAddressRepositoryImpl(PeopleActApi peopleActApi, GetAddressWithCornerUseCase addressWithCornerUseCase) {
         this.peopleActApi = peopleActApi;
-        this.mAddressModelMapper = addressModelMapper;
+        this.addressWithCornerUseCase = addressWithCornerUseCase;
     }
 
     /**
@@ -72,7 +75,7 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
     }
 
     @Override
-    public Observable<AddressCornerResponse> getCornerData(Map<String, String> params) {
+    public Observable<AddressCornerResponse> getCornerData() {
         return Observable.just(new Gson().fromJson("{\n" +
                 "  \"status\": \"OK\",\n" +
                 "  \"config\": null,\n" +
@@ -177,6 +180,11 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
                 "    }\n" +
                 "  ]\n" +
                 "}", AddressCornerResponse.class));
+//        return addressWithCornerUseCase.getExecuteObservable(RequestParams.EMPTY)
+//                .map(graphqlResponse -> {
+//                    GqlKeroWithAddressResponse response = graphqlResponse.getData(GqlKeroWithAddressResponse.class);
+//                    return response.getKeroAddressWithCorner();
+//                });
     }
 
 }
