@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.data.mapper;
 
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
@@ -16,13 +15,12 @@ public class PeopleAddressWithCornerMapper implements Func2<GetPeopleAddress, Ad
 
     @Override
     public PeopleAddressModel call(GetPeopleAddress getPeopleAddress, AddressCornerResponse cornerAddressModel) {
-        PeopleAddressModel result = new PeopleAddressModel();
         AddressModelMapper oldMapper = new AddressModelMapper();
         AddressCornerMapper withCornerMapper = new AddressCornerMapper();
 
         PeopleAddressModel withMapper = withCornerMapper.call(cornerAddressModel);
 
-        result = oldMapper.transform(getPeopleAddress);
+        PeopleAddressModel result = oldMapper.transform(getPeopleAddress);
         result.setCornerAddressModelsList(withMapper.getCornerAddressModelsList());
         return result;
     }

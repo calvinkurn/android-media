@@ -132,7 +132,8 @@ public class ShipmentAddressListPresenter
                                                     getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
                                                     getMvpView().stopTrace();
                                                 } else {
-                                                    if (peopleAddressModel.getCornerAddressModelsList() != null) {
+                                                    if (peopleAddressModel.getCornerAddressModelsList() != null &&
+                                                            !peopleAddressModel.getCornerAddressModelsList().isEmpty()) {
                                                         getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
                                                         getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
                                                     }
