@@ -577,7 +577,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
         return ImageUploadViewModel(
                 messageId,
-                arguments!!.getString(ApplinkConst.Chat.OPPONENT_ID),
+                opponentId,
                 (System.currentTimeMillis() / 1000).toString(),
                 imageUrl,
                 SendableViewModel.generateStartTime()
