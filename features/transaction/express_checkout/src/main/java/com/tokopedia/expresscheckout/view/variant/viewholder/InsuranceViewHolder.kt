@@ -23,33 +23,38 @@ class InsuranceViewHolder(val view: View, val listener: CheckoutVariantActionLis
 
     override fun bind(element: InsuranceViewModel?) {
         if (element != null) {
-            if (element.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
-                itemView.cb_insurance.visibility = View.GONE
-                itemView.cb_insurance_disabled.isChecked = true
-                itemView.cb_insurance_disabled.visibility = View.VISIBLE
-                itemView.cb_insurance_disabled.isClickable = false
-                element.isChecked = true
-                listener.onInsuranceCheckChanged(element)
-            } else {
-                itemView.cb_insurance.setOnCheckedChangeListener { compoundButton: CompoundButton, isChecked: Boolean ->
-                    run {
-                        element.isChecked = isChecked
-                        if (adapterPosition != RecyclerView.NO_POSITION) {
-                            listener.onInsuranceCheckChanged(element)
+            if (element.isVisible && element.insuranceLongInfo.isNotEmpty()) {
+                if (element.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
+                    itemView.cb_insurance.visibility = View.GONE
+                    itemView.cb_insurance_disabled.isChecked = true
+                    itemView.cb_insurance_disabled.visibility = View.VISIBLE
+                    itemView.cb_insurance_disabled.isClickable = false
+                    element.isChecked = true
+                    listener.onInsuranceCheckChanged(element)
+                } else {
+                    itemView.cb_insurance.setOnCheckedChangeListener { compoundButton: CompoundButton, isChecked: Boolean ->
+                        run {
+                            element.isChecked = isChecked
+                            if (adapterPosition != RecyclerView.NO_POSITION) {
+                                listener.onInsuranceCheckChanged(element)
+                            }
                         }
                     }
+                    itemView.cb_insurance_disabled.visibility = View.GONE
+                    itemView.cb_insurance.visibility = View.VISIBLE
+                    itemView.cb_insurance.isChecked = element.isChecked
                 }
-                itemView.cb_insurance_disabled.visibility = View.GONE
-                itemView.cb_insurance.visibility = View.VISIBLE
-                itemView.cb_insurance.isChecked = element.isChecked
-            }
-            itemView.img_bt_insurance_info.setOnClickListener { listener.onClickInsuranceInfo(element.insuranceLongInfo) }
-            itemView.tv_insurance_long_info.text = element.insuranceLongInfo
-            itemView.tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.insurancePrice, false)
-            if (element.isChecked) {
-                itemView.tv_insurance_short_info.text = itemView.context.getString(R.string.label_insurance_info_short_yes)
+                itemView.img_bt_insurance_info.setOnClickListener { listener.onClickInsuranceInfo(element.insuranceLongInfo) }
+                itemView.tv_insurance_long_info.text = element.insuranceLongInfo
+                itemView.tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.insurancePrice, false)
+                if (element.isChecked) {
+                    itemView.tv_insurance_short_info.text = itemView.context.getString(R.string.label_insurance_info_short_yes)
+                } else {
+                    itemView.tv_insurance_short_info.text = itemView.context.getString(R.string.label_insurance_info_short_no)
+                }
+                itemView.card_insurance.visibility = View.VISIBLE
             } else {
-                itemView.tv_insurance_short_info.text = itemView.context.getString(R.string.label_insurance_info_short_no)
+                itemView.card_insurance.visibility = View.GONE
             }
         }
     }

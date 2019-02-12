@@ -758,6 +758,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
         fragmentViewModel.isStateChanged = true
+        val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
+        if (insuranceViewModel != null) {
+            insuranceViewModel.isVisible = false
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+        }
     }
 
     override fun setShippingCourierError(message: String) {
@@ -769,6 +774,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
         }
         fragmentViewModel.isStateChanged = true
+        val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
+        if (insuranceViewModel != null) {
+            insuranceViewModel.isVisible = false
+            onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+        }
     }
 
     override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
