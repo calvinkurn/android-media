@@ -13,7 +13,7 @@ import com.tokopedia.shopetalasepicker.view.fragment.ShopEtalaseFragment
  * Created by normansyahputa on 2/28/18.
  */
 
-class ShopEtalaseActivity : BaseSimpleActivity() {
+class ShopEtalasePickerActivity : BaseSimpleActivity() {
 
     private var shopId: String? = null
     private var selectedEtalaseId: String? = null
@@ -32,7 +32,7 @@ class ShopEtalaseActivity : BaseSimpleActivity() {
 
         @JvmStatic @JvmOverloads
         fun createIntent(context: Context, shopId: String, selectedEtalaseId: String? = ""): Intent {
-            val intent = Intent(context, ShopEtalaseActivity::class.java)
+            val intent = Intent(context, ShopEtalasePickerActivity::class.java)
             intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId)
             intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, selectedEtalaseId)
             return intent

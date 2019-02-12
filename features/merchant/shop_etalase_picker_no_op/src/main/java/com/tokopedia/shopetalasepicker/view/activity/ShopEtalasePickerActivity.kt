@@ -8,7 +8,7 @@ import android.content.Intent
  * Created by normansyahputa on 2/28/18.
  */
 
-class ShopEtalaseActivity() {
+class ShopEtalasePickerActivity() {
 
     companion object {
 
