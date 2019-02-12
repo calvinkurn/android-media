@@ -72,6 +72,8 @@ public interface HomeContract {
         void onTabFeedLoadError(Throwable e);
 
         void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList);
+
+        void onHomeDataLoadSuccess();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -8,12 +8,19 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
     private String productName;
     private String imageUrl;
     private String price;
+    private boolean isTopAds;
 
-    public HomeFeedViewModel(String productId, String productName, String imageUrl, String price) {
+    public HomeFeedViewModel(String productId,
+                             String productName,
+                             String imageUrl,
+                             String price,
+                             boolean isTopAds) {
+
         this.productId = productId;
         this.productName = productName;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.isTopAds = isTopAds;
     }
 
     public String getProductId() {
@@ -30,6 +37,10 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
 
     public String getPrice() {
         return price;
+    }
+
+    public boolean isTopAds() {
+        return isTopAds;
     }
 
     @Override
