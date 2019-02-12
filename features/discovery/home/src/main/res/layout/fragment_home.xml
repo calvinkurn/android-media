@@ -67,9 +67,10 @@
                 android:layout_height="@dimen/tab_home_feed_max_height"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_8"
-                app:tabPaddingStart="@dimen/dp_2"
-                app:tabPaddingEnd="@dimen/dp_2"
+                app:tabPaddingStart="0dp"
+                app:tabPaddingEnd="0dp"
                 app:tabMode="scrollable"
+                app:tabRippleColor="@null"
                 android:background="@color/white"
                 android:visibility="gone"
                 app:tabIndicatorHeight="0dp"/>
