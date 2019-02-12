@@ -272,7 +272,9 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
 
     override fun convertToSummaryViewModel(atcResponseModel: AtcResponseModel): SummaryViewModel {
         val summaryViewModel = SummaryViewModel(null)
-        summaryViewModel.itemPrice = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice?.toLong() ?: 0
+        val productModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
+        summaryViewModel.itemPrice = productModel?.productQuantity?.times(productModel?.productPrice?.toLong()
+                ?: 0)?.toLong() ?: 0
 
         return summaryViewModel
     }
