@@ -14,8 +14,8 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
     private static final String DATA_CATEGORY = "category";
     private static final String DATA_LIST = "list";
     private static final String DATA_POSITION = "position";
-    private static final String DATA_LIST_VALUE = "/ - p%s - %s - rekomendasi untuk anda - %s";
-    private static final String DATA_LIST_VALUE_NON_LOGIN = "/ - p%s - non login - %s - rekomendasi untuk anda - %s";
+    private static final String DATA_LIST_VALUE = "/ - p2 - %s - rekomendasi untuk anda - %s";
+    private static final String DATA_LIST_VALUE_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s";
 
     private final int position;
     private String productId;

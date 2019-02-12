@@ -82,8 +82,8 @@ public class HomePageTracking {
     public static final String CLICK = "click";
     public static final String ACTION_FIELD = "actionField";
     public static final String LIST = "list";
-    public static final String LIST_CLICK_FEED_HOME = "/ - p%s - %s - rekomendasi untuk anda - %s";
-    public static final String LIST_CLICK_FEED_HOME_NON_LOGIN = "/ - p%s - non login - %s - rekomendasi untuk anda - %s";
+    public static final String LIST_CLICK_FEED_HOME = "/ - p2 - %s - rekomendasi untuk anda - %s";
+    public static final String LIST_CLICK_FEED_HOME_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s";
     public static final String PRODUCTS = "products";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "add wishlist on product recommendation";
