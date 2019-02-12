@@ -26,12 +26,11 @@ public class GetAddressWithCornerUseCase {
     }
 
     public Observable<GqlKeroWithAddressResponse> getObservable() {
-        usecase.clearCache();
+        usecase.clearRequest();
         usecase.addRequest(getRequest());
         return usecase.getExecuteObservable(null)
                 .map(graphqlResponse -> graphqlResponse.<GqlKeroWithAddressResponse>getData(GqlKeroWithAddressResponse.class))
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
