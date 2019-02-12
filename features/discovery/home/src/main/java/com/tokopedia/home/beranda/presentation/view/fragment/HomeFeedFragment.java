@@ -119,18 +119,24 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Override
     public void renderList(@NonNull List<HomeFeedViewModel> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
-        if (userSession.isLoggedIn()){
-            HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
-                    trackingQueue,
-                    list,
-                    tabName.toLowerCase()
-            );
-        } else {
-            HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
-                    trackingQueue,
-                    list,
-                    tabName.toLowerCase()
-            );
+        hitHomeFeedImpressionTracker(list);
+    }
+
+    private void hitHomeFeedImpressionTracker(List<HomeFeedViewModel> list) {
+        if (list.size() > 0) {
+            if (userSession.isLoggedIn()){
+                HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
+                        trackingQueue,
+                        list,
+                        tabName.toLowerCase()
+                );
+            } else {
+                HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
+                        trackingQueue,
+                        list,
+                        tabName.toLowerCase()
+                );
+            }
         }
     }
 
