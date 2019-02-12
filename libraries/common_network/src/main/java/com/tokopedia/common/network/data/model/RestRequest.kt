@@ -51,7 +51,7 @@ class RestRequest private constructor(builder: Builder) {
      *
      * @return Map -> Key-Value pair of query parameter (No need to encode, library will take care of this)
      */
-    val queryParams: Map<String, Any>?
+    val queryParams: Map<String, String>?
 
     /**
      * Optional
@@ -116,7 +116,7 @@ class RestRequest private constructor(builder: Builder) {
     class Builder(val url: String /* Mandatory parameter */, val typeOfT: Type /* Mandatory parameter */) {
 
         var _headers: Map<String, String>? = null
-        var _queryParams: Map<String, Any>? = null
+        var _queryParams: Map<String, String>? = null
         var _requestType: RequestType? = null
         var _body: Any? = null  /* Mandatory parameter of RequestType is GET or POST */
         var _cacheStrategy: RestCacheStrategy = RestCacheStrategy.Builder(CacheType.NONE).build()
