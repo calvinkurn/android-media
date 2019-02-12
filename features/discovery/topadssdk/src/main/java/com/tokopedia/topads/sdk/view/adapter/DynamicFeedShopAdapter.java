@@ -140,9 +140,9 @@ public class DynamicFeedShopAdapter
                 @Override
                 public void onClick(View view) {
                     if(data.isFavorit()){
-                        itemClickListener.onAddFavorite(getAdapterPosition(), data);
-                    } else {
                         itemClickListener.onShopItemClicked(getAdapterPosition(), data);
+                    } else {
+                        itemClickListener.onAddFavorite(getAdapterPosition(), data);
                     }
                 }
             });
