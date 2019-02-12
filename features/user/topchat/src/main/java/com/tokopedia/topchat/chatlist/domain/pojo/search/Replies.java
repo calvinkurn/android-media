@@ -1,10 +1,10 @@
 
 package com.tokopedia.topchat.chatlist.domain.pojo.search;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.topchat.chatlist.domain.pojo.search.RepliesContent;
+
+import java.util.List;
 
 public class Replies {
 

@@ -2,6 +2,8 @@ package com.tokopedia.travelcalendar.view.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travelcalendar.R
@@ -151,5 +153,14 @@ class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
                     minDate, maxDate, selectedDate)
         }
 
+    }
+
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+        if (bottomSheetsState == BottomSheetsState.FULL) {
+            val frameParent = parentView!!.findViewById(R.id.bottomsheet_container) as FrameLayout
+            val layoutParam = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+            frameParent.layoutParams = layoutParam
+        }
     }
 }

@@ -110,6 +110,11 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         }
     }
 
+    @Override
+    public void sendGeneralEvent(Map<String, Object> value) {
+
+    }
+
     public void initAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {
         AppsFlyerLib.getInstance().init(key, conversionListener, getContext());
         initAppsFlyer(key, userID);

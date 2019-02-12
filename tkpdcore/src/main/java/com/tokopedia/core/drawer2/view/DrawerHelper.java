@@ -22,11 +22,11 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.referral.view.activity.ReferralActivity;
 
 import java.util.ArrayList;
 
@@ -170,6 +170,10 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public DrawerAdapter getAdapter() {
         return adapter;
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
     public void setAdapter(DrawerAdapter adapter) {

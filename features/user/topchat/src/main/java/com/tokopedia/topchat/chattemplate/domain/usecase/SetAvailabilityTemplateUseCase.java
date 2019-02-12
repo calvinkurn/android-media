@@ -2,12 +2,12 @@ package com.tokopedia.topchat.chattemplate.domain.usecase;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -19,8 +19,9 @@ public class SetAvailabilityTemplateUseCase extends UseCase<GetTemplateViewModel
 
     private final TemplateRepository templateRepository;
 
-    public SetAvailabilityTemplateUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TemplateRepository templateRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public SetAvailabilityTemplateUseCase(TemplateRepository templateRepository) {
+        super();
         this.templateRepository = templateRepository;
     }
 

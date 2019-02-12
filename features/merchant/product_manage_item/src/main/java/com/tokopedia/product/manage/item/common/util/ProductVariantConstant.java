@@ -20,4 +20,8 @@ public class ProductVariantConstant {
 
     public static final long MAX_LIMIT_VARIANT = 10;
 
+    public static final String TRACKING_EVENT = "clickAddProduct";
+    public static final String TRACKING_EVENT_CATEGORY = "akun saya penjual";
+    public static final String TRACKING_EVENT_ACTION = "click add variant";
+
 }

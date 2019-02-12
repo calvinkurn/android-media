@@ -1,14 +1,17 @@
 package com.tokopedia.tkpd;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -17,9 +20,13 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -30,14 +37,24 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class ConsumerSplashScreen extends SplashScreen {
 
-    public static final String WARM_TRACE = "warm_start";
-    public static final String SPLASH_TRACE = "splash_start";
+    public static final String WARM_TRACE = "gl_warm_start";
+    public static final String SPLASH_TRACE = "gl_splash_screen";
 
     private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
+
+    @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        Intent destination;
+        destination = new Intent(context, ConsumerSplashScreen.class)
+                .setData(uri.build())
+                .putExtras(extras);
+        return destination;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +66,11 @@ public class ConsumerSplashScreen extends SplashScreen {
         renderDynamicImage();
 
         finishWarmStart();
+
+        CMPushNotificationManager.getInstance()
+                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
+
+
     }
 
     @Override

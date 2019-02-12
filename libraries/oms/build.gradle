@@ -30,6 +30,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

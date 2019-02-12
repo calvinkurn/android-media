@@ -299,4 +299,17 @@ public class AffiliateAnalytics {
                 )
         );
     }
+
+    public void onClickProfileOnExplore() {
+        getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_DISCOVERY_PAGE,
+                        AffiliateEventTracking.Action.CLICK_PROFILE,
+                        userSession.getUserId()
+                )
+        );
+
+    }
 }

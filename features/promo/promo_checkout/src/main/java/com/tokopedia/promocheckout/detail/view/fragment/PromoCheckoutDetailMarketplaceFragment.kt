@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
@@ -93,7 +94,11 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun showProgressLoading() {
-        progressDialog?.show()
+        try {
+            progressDialog?.show()
+        } catch (exception: UnsupportedOperationException) {
+            CommonUtils.dumper(exception)
+        }
     }
 
     override fun onDestroy() {

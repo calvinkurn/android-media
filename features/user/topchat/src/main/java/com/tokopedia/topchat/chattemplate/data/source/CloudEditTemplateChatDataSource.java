@@ -1,10 +1,11 @@
 package com.tokopedia.topchat.chattemplate.data.source;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -15,22 +16,23 @@ import rx.Observable;
 public class CloudEditTemplateChatDataSource {
 
     private EditTemplateChatMapper templateChatMapper;
-    private ChatService chatService;
+    private ChatApi chatApi;
 
-    public CloudEditTemplateChatDataSource(EditTemplateChatMapper templateChatMapper, ChatService chatService) {
+    public CloudEditTemplateChatDataSource(EditTemplateChatMapper templateChatMapper, ChatApi
+            chatApi) {
         this.templateChatMapper = templateChatMapper;
-        this.chatService = chatService;
+        this.chatApi = chatApi;
     }
 
-    public Observable<EditTemplateViewModel> editTemplate(int index, TKPDMapParam<String, Object> parameters) {
-        return chatService.getApi().editTemplate(index, parameters).map(templateChatMapper);
+    public Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> parameters) {
+        return chatApi.editTemplate(index, parameters).map(templateChatMapper);
     }
 
-    public Observable<EditTemplateViewModel> createTemplate(TKPDMapParam<String, Object> parameters) {
-        return chatService.getApi().createTemplate(parameters).map(templateChatMapper);
+    public Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> parameters) {
+        return chatApi.createTemplate(parameters).map(templateChatMapper);
     }
 
     public Observable<EditTemplateViewModel> deleteTemplate(int index) {
-        return chatService.getApi().deleteTemplate(index, new JsonObject()).map(templateChatMapper);
+        return chatApi.deleteTemplate(index, new JsonObject()).map(templateChatMapper);
     }
 }
