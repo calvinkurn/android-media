@@ -26,7 +26,10 @@ public class ImageProduct extends ImageHolder implements Parcelable {
     @SerializedName(KEY_IMAGE_URL)
     private String imageUrl;
     @SerializedName(KEY_IMAGE_CLICK_URL)
-    private String imageClickUrl;
+    private String imageClickUrl = "";
+
+    public ImageProduct() {
+    }
 
     public ImageProduct(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_PRODUCT_ID)) {

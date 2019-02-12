@@ -10,7 +10,7 @@ import com.google.gson.annotations.Expose;
  */
 public class ImageHolder implements Parcelable {
 
-    @Expose(deserialize = false)
+    @Expose(serialize = false)
     private boolean loaded;
 
     protected ImageHolder(Parcel in) {
