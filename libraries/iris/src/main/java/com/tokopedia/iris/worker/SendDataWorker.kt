@@ -23,6 +23,8 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
 
         val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
 
+        Log.d("Iris Service Batch", "Size: ${trackings.size}")
+
         if (trackings.isNotEmpty()) {
 
             val request: String = TrackingMapper().transformListEvent(trackings)
@@ -34,6 +36,8 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                 val response = service.sendMultiEvent(requestBody)
                 response.await()
             }
+
+            Log.d("Iris Service Batch", "Response Code: ${response.code()}")
 
             if (response.isSuccessful && response.code() == 200) {
                 Log.d("Iris Service Batch", response.body().toString())

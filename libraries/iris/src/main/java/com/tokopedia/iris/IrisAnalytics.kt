@@ -1,6 +1,7 @@
 package com.tokopedia.iris
 
 import android.content.Context
+import android.util.Log
 import androidx.work.*
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -73,6 +74,8 @@ class IrisAnalytics(context: Context) : Iris {
                 .build()
 
         WorkManager.getInstance().enqueue(oneTimeWorkRequest)
+        Log.d("Iris Service Batch", "oneTimeWorkRequest")
         WorkManager.getInstance().enqueueUniquePeriodicWork(WORKER_SEND_DATA, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest)
+        Log.d("Iris Service Batch", "periodicWorkRequest")
     }
 }
