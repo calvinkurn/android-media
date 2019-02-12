@@ -12,6 +12,13 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'shop-etalase-picker'
+    groupId = 'com.tokopedia.shopetalasepicker'
+    versionName = "${tkpdShopVersion}"
+    artifactName ="shop_etalase_picker"
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
