@@ -844,6 +844,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
         }
+
+        if (summaryViewModel != null) {
+            onSummaryChanged(summaryViewModel)
+        }
     }
 
     override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>?,
@@ -855,6 +859,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            flagNeedToSetPinpoint: Boolean,
                                            hasCourierPromo: Boolean) {
         if (shippingCourierViewModels != null) {
+            val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+            if (summaryViewModel != null) {
+                onSummaryChanged(summaryViewModel)
+            }
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
             for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
                 if (shippingCourierViewModel.productData.isRecommend) {
