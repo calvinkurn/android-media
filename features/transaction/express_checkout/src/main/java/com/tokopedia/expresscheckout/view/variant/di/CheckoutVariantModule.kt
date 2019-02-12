@@ -15,6 +15,8 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
@@ -86,4 +88,9 @@ class CheckoutVariantModule {
     @Provides
     fun provideAnalytics(tracker: AnalyticTracker): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker(tracker)
 
+    @CheckoutVariantScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 }

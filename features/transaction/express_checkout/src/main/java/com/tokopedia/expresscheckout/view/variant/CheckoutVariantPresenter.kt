@@ -13,12 +13,16 @@ import com.tokopedia.expresscheckout.view.variant.subscriber.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.shipping_recommendation.domain.ShippingParam
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
+import com.tokopedia.transaction.common.sharedata.EditAddressParam
 import com.tokopedia.transactiondata.entity.request.*
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -32,7 +36,8 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                                                    private val getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
                                                    private val atcDomainModelMapper: AtcDomainModelMapper,
                                                    private val checkoutDomainModelMapper: CheckoutDomainModelMapper,
-                                                   private var viewModelMapper: ViewModelMapper) :
+                                                   private var viewModelMapper: ViewModelMapper,
+                                                   private val userSessionInterface: UserSessionInterface) :
         BaseDaggerPresenter<CheckoutVariantContract.View>(), CheckoutVariantContract.Presenter {
 
     private lateinit var atcResponseModel: AtcResponseModel
@@ -113,6 +118,30 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                 ?.unsubscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(DoOneClickShipmentAtcSubscriber(view, this))
+    }
+
+    override fun updateAddress(fragmentViewModel: FragmentViewModel, latitude: String, longitude: String) {
+        val addressModel = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel
+        val requestParamsMap = AuthUtil.generateParamsNetwork(
+                userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam<String, String>())
+        requestParamsMap.put(EditAddressParam.ADDRESS_ID, addressModel?.addressId?.toString())
+        requestParamsMap.put(EditAddressParam.ADDRESS_NAME, addressModel?.addressName)
+        requestParamsMap.put(EditAddressParam.ADDRESS_STREET, addressModel?.addressStreet)
+        requestParamsMap.put(EditAddressParam.POSTAL_CODE, addressModel?.postalCode)
+        requestParamsMap.put(EditAddressParam.DISTRICT_ID, addressModel?.districtId?.toString())
+        requestParamsMap.put(EditAddressParam.CITY_ID, addressModel?.cityId?.toString())
+        requestParamsMap.put(EditAddressParam.PROVINCE_ID, addressModel?.provinceId?.toString())
+        requestParamsMap.put(EditAddressParam.RECEIVER_NAME, addressModel?.receiverName)
+        requestParamsMap.put(EditAddressParam.RECEIVER_PHONE, addressModel?.phone)
+        requestParamsMap.put(EditAddressParam.LATITUDE, latitude)
+        requestParamsMap.put(EditAddressParam.LONGITUDE, longitude)
+        val requestParams = RequestParams.create()
+        requestParams.putAllString(requestParamsMap)
+        view?.getEditAddressObservable(requestParams)
+                ?.subscribeOn(Schedulers.io())
+                ?.unsubscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(DoEditAddressSubscriber(view, this, latitude, longitude))
     }
 
     private fun getCheckoutOcsParams(fragmentViewModel: FragmentViewModel): AddToCartRequest {

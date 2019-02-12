@@ -60,6 +60,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemMod
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.transaction.common.sharedata.EditAddressParam;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -1112,17 +1113,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         latitude = addressLatitude;
         longitude = addressLongitude;
 
-        params.put(EditAddressUseCase.Params.ADDRESS_ID, addressId);
-        params.put(EditAddressUseCase.Params.ADDRESS_NAME, addressName);
-        params.put(EditAddressUseCase.Params.ADDRESS_STREET, addressStreet);
-        params.put(EditAddressUseCase.Params.POSTAL_CODE, postalCode);
-        params.put(EditAddressUseCase.Params.DISTRICT_ID, districtId);
-        params.put(EditAddressUseCase.Params.CITY_ID, cityId);
-        params.put(EditAddressUseCase.Params.PROVINCE_ID, provinceId);
-        params.put(EditAddressUseCase.Params.LATITUDE, latitude);
-        params.put(EditAddressUseCase.Params.LONGITUDE, longitude);
-        params.put(EditAddressUseCase.Params.RECEIVER_NAME, receiverName);
-        params.put(EditAddressUseCase.Params.RECEIVER_PHONE, receiverPhone);
+        params.put(EditAddressParam.ADDRESS_ID, addressId);
+        params.put(EditAddressParam.ADDRESS_NAME, addressName);
+        params.put(EditAddressParam.ADDRESS_STREET, addressStreet);
+        params.put(EditAddressParam.POSTAL_CODE, postalCode);
+        params.put(EditAddressParam.DISTRICT_ID, districtId);
+        params.put(EditAddressParam.CITY_ID, cityId);
+        params.put(EditAddressParam.PROVINCE_ID, provinceId);
+        params.put(EditAddressParam.LATITUDE, latitude);
+        params.put(EditAddressParam.LONGITUDE, longitude);
+        params.put(EditAddressParam.RECEIVER_NAME, receiverName);
+        params.put(EditAddressParam.RECEIVER_PHONE, receiverPhone);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putAllString(params);

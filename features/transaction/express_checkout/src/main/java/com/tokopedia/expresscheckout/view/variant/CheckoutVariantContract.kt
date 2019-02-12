@@ -16,6 +16,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
+import com.tokopedia.usecase.RequestParams
 import rx.Observable
 
 /**
@@ -49,7 +50,13 @@ interface CheckoutVariantContract {
 
         fun showErrorAPI(retryAction: String)
 
+        fun showErrorPinpoint()
+
         fun showToasterError(message: String?)
+
+        fun showDurationOptions()
+
+        fun showDurationOptions(latitude: String, longitude: String)
 
         fun finishWithError(messages: String)
 
@@ -73,6 +80,8 @@ interface CheckoutVariantContract {
 
         fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData>
 
+        fun getEditAddressObservable(requestParams: RequestParams): Observable<String>
+
         fun getActivityContext(): Context?
     }
 
@@ -85,6 +94,8 @@ interface CheckoutVariantContract {
         fun checkoutExpress(fragmentViewModel: FragmentViewModel)
 
         fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel)
+
+        fun updateAddress(fragmentViewModel: FragmentViewModel, latitude: String, longitude: String)
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 

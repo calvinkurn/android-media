@@ -9,6 +9,7 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestPar
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
+import com.tokopedia.usecase.RequestParams
 import rx.Observable
 
 /**
@@ -25,6 +26,7 @@ interface ExpressCheckoutRouter {
 
     fun addToCartProduct(addToCartRequest: AddToCartRequest, isOneClickShipment: Boolean): Observable<AddToCartResult>
 
-    fun getCheckoutObservable(checkoutRequest: CheckoutRequest, isOneClickShipment: Boolean, isExpressCheckout: Boolean): Observable<CheckoutData>
+    fun checkoutProduct(checkoutRequest: CheckoutRequest, isOneClickShipment: Boolean, isExpressCheckout: Boolean): Observable<CheckoutData>
 
+    fun updateAddress(requestParams: RequestParams): Observable<String>
 }

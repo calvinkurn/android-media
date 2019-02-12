@@ -6,6 +6,7 @@
     <string name="label_insurance_info_short_no">Transaksi ini tidak terlindungi asuransi</string>
     <string name="title_choose_other_template">Pilih Template Lain</string>
     <string name="bottomsheet_title_no_pinpoint">Tandai Lokasi Pengiriman</string>
+    <string name="bottomsheet_message_no_pinpoint">Anda belum menandai lokasi pengiriman untuk jenis kurir ini. Silakan tandai lokasi pengiriman.</string>
     <string name="bottomsheet_action_pin_location">Tandai Lokasi</string>
     <string name="bottomsheet_title_change_payment_method">Pilih Metode Pembayaran Lain</string>
     <string name="bottomsheet_action_choose_payment_method">Pilih Metode Pembayaran</string>

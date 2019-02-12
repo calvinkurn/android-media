@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantCompon
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.logisticcommon.LogisticCommonConstant
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
@@ -61,6 +63,7 @@ import com.tokopedia.transactionanalytics.data.expresscheckout.ActionField
 import com.tokopedia.transactionanalytics.data.expresscheckout.Checkout
 import com.tokopedia.transactionanalytics.data.expresscheckout.Product
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
+import com.tokopedia.usecase.RequestParams
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber
@@ -242,7 +245,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         showDurationOptions()
     }
 
-    private fun showDurationOptions() {
+    override fun showDurationOptions() {
         val shippingParam = presenter.getShippingParam(fragmentViewModel.getQuantityViewModel()?.orderQuantity
                 ?: 0, fragmentViewModel.getProductViewModel()?.productPrice?.toLong() ?: 0)
         val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
@@ -252,6 +255,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         if (!shippingDurationBottomsheet.isAdded) {
             shippingDurationBottomsheet.show(activity?.supportFragmentManager, "")
         }
+    }
+
+    override fun showDurationOptions(latitude: String, longitude: String) {
+        fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel?.latitude = latitude
+        fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel?.longitude = longitude
+        showDurationOptions()
     }
 
     override fun onClickEditCourier() {
@@ -567,7 +576,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData> {
-        return router.getCheckoutObservable(checkoutRequest, true, true)
+        return router.checkoutProduct(checkoutRequest, true, true)
+    }
+
+    override fun getEditAddressObservable(requestParams: RequestParams): Observable<String> {
+        return router.updateAddress(requestParams)
     }
 
     override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {
@@ -633,7 +646,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
                 presenter.hitOldCheckout(fragmentViewModel)
-                analyticsTracker.clickPilihMetodePembayaran(fragmentViewModel.getProfileViewModel()?.paymentDetail ?: "")
+                analyticsTracker.clickPilihMetodePembayaran(fragmentViewModel.getProfileViewModel()?.paymentDetail
+                        ?: "")
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
@@ -641,19 +655,22 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         fragmentViewModel.isStateChanged = true
     }
 
-    private fun showErrorPinpoint(productData: ProductData?, profileViewModel: com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
-        showBottomSheetError(getString(R.string.bottomsheet_title_no_pinpoint), productData?.error?.errorMessage
-                ?: "", getString(R.string.bottomsheet_action_pin_location), false)
+    override fun showErrorPinpoint() {
+        showBottomSheetError(getString(R.string.bottomsheet_title_no_pinpoint), getString(R.string.bottomsheet_message_no_pinpoint), getString(R.string.bottomsheet_action_pin_location), false)
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
-                val locationPass = LocationPass()
-                locationPass.districtName = profileViewModel.districtName
-                locationPass.cityName = profileViewModel.cityName
-                if (activity != null) startActivityForResult(router.getGeolocationIntent(activity as Context, locationPass), REQUEST_CODE_GEOLOCATION)
+                goToGeolocationActivity()
             }
         }
         fragmentViewModel.isStateChanged = true
+    }
+
+    private fun goToGeolocationActivity() {
+        val locationPass = LocationPass()
+        locationPass.districtName = fragmentViewModel.getProfileViewModel()?.districtName
+        locationPass.cityName = fragmentViewModel.getProfileViewModel()?.cityName
+        if (activity != null) startActivityForResult(router.getGeolocationIntent(activity as Context, locationPass), REQUEST_CODE_GEOLOCATION)
     }
 
     override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
@@ -780,7 +797,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
         if (profileViewModel != null) {
             if (productData.error != null && productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                showErrorPinpoint(productData, profileViewModel)
+                showErrorPinpoint()
             } else {
                 profileViewModel.isCourierError = productData.error.errorMessage.isNotEmpty()
                 profileViewModel.isDurationError = false
@@ -841,7 +858,13 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
             for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
                 if (shippingCourierViewModel.productData.isRecommend) {
-                    updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, shippingCourierViewModels)
+                    if (shippingCourierViewModel.serviceData.error != null &&
+                            !TextUtils.isEmpty(shippingCourierViewModel.serviceData.error.errorMessage) &&
+                            shippingCourierViewModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                        goToGeolocationActivity()
+                    } else {
+                        updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, shippingCourierViewModels)
+                    }
                     break
                 }
             }
@@ -958,7 +981,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_GEOLOCATION) {
-            showDurationOptions()
+            val locationPass = data?.extras?.getParcelable<LocationPass>(LogisticCommonConstant.EXTRA_EXISTING_LOCATION)
+            presenter.updateAddress(fragmentViewModel, locationPass?.latitude
+                    ?: "", locationPass?.longitude ?: "")
         }
     }
 
