@@ -51,7 +51,7 @@ class RestRequest private constructor(builder: Builder) {
      *
      * @return Map -> Key-Value pair of query parameter (No need to encode, library will take care of this)
      */
-    val queryParams: Map<String, String>?
+    val queryParams: Map<String, Any>?
 
     /**
      * Optional
@@ -97,17 +97,17 @@ class RestRequest private constructor(builder: Builder) {
     init {
         this.typeOfT = builder.typeOfT
         this.url = builder.url
-        this.headers = if (builder.headers == null) HashMap() else builder.headers
-        this.queryParams = if (builder.queryParams == null) HashMap() else builder.queryParams
-        this.requestType = if (builder.requestType == null) RequestType.GET else builder.requestType
-        this.body = builder.body
-        this.cacheStrategy = builder.cacheStrategy
+        this.headers = if (builder._headers == null) HashMap() else builder._headers
+        this.queryParams = if (builder._queryParams == null) HashMap() else builder._queryParams
+        this.requestType = if (builder._requestType == null) RequestType.GET else builder._requestType
+        this.body = builder._body
+        this.cacheStrategy = builder._cacheStrategy
 
         if (!URLUtil.isValidUrl(builder.url)) {
             throw RuntimeException("Invalid url.")
         }
 
-        if ((builder.requestType == RequestType.POST || builder.requestType == RequestType.PUT) && builder.body == null) {
+        if ((builder._requestType == RequestType.POST || builder._requestType == RequestType.PUT) && builder._body == null) {
             throw IllegalArgumentException("BODY cannot be null, for method type POST or PUT.")
         }
     }
@@ -115,34 +115,34 @@ class RestRequest private constructor(builder: Builder) {
     //Builder class
     class Builder(val url: String /* Mandatory parameter */, val typeOfT: Type /* Mandatory parameter */) {
 
-        var headers: Map<String, String>? = null
-        var queryParams: Map<String, String>? = null
-        var requestType: RequestType? = null
-        var body: Any? = null  /* Mandatory parameter of RequestType is GET or POST */
-        var cacheStrategy: RestCacheStrategy = RestCacheStrategy.Builder(CacheType.NONE).build()
+        var _headers: Map<String, String>? = null
+        var _queryParams: Map<String, Any>? = null
+        var _requestType: RequestType? = null
+        var _body: Any? = null  /* Mandatory parameter of RequestType is GET or POST */
+        var _cacheStrategy: RestCacheStrategy = RestCacheStrategy.Builder(CacheType.NONE).build()
 
         fun setHeaders(headers: Map<String, String>): Builder {
-            this.headers = headers
+            this._headers = headers
             return this
         }
 
         fun setQueryParams(queryParams: Map<String, String>): Builder {
-            this.queryParams = queryParams
+            this._queryParams = queryParams
             return this
         }
 
         fun setRequestType(requestType: RequestType): Builder {
-            this.requestType = requestType
+            this._requestType = requestType
             return this
         }
 
         fun setBody(body: Any): Builder {
-            this.body = body
+            this._body = body
             return this
         }
 
         fun setCacheStrategy(cacheStrategy: RestCacheStrategy): Builder {
-            this.cacheStrategy = cacheStrategy
+            this._cacheStrategy = cacheStrategy
             return this
         }
 
@@ -154,7 +154,7 @@ class RestRequest private constructor(builder: Builder) {
     /**
      * In WS api, query key device_id, hash, and device_time will change over time
      */
-    private fun Map<String, String>.trim() {
+    private fun Map<String, Any>.trim() {
         var string: String = ""
         for ((key, value) in this) {
             if (key !in unCacheableKeyList) {
