@@ -52,7 +52,6 @@ class RestRequest private constructor(builder: Builder) {
      * @return Map -> Key-Value pair of query parameter (No need to encode, library will take care of this)
      */
     val queryParams: Map<String, String>?
-
     /**
      * Optional
      * For providing form parameter to the apis.
@@ -98,7 +97,19 @@ class RestRequest private constructor(builder: Builder) {
         this.typeOfT = builder.typeOfT
         this.url = builder.url
         this.headers = if (builder._headers == null) HashMap() else builder._headers
-        this.queryParams = if (builder._queryParams == null) HashMap() else builder._queryParams
+        this.queryParams = if (builder._queryParams == null) HashMap() else {
+            val newMap = mutableMapOf<String, String>()
+            builder._queryParams?.run {
+                for ((key, value) in this) {
+                    if (value is String) {
+                        newMap.put(key, value)
+                    } else {
+                        newMap.put(key, value.toString())
+                    }
+                }
+            }
+            newMap
+        }
         this.requestType = if (builder._requestType == null) RequestType.GET else builder._requestType
         this.body = builder._body
         this.cacheStrategy = builder._cacheStrategy
@@ -116,7 +127,7 @@ class RestRequest private constructor(builder: Builder) {
     class Builder(val url: String /* Mandatory parameter */, val typeOfT: Type /* Mandatory parameter */) {
 
         var _headers: Map<String, String>? = null
-        var _queryParams: Map<String, String>? = null
+        var _queryParams: Map<String, Any>? = null
         var _requestType: RequestType? = null
         var _body: Any? = null  /* Mandatory parameter of RequestType is GET or POST */
         var _cacheStrategy: RestCacheStrategy = RestCacheStrategy.Builder(CacheType.NONE).build()
@@ -126,7 +137,7 @@ class RestRequest private constructor(builder: Builder) {
             return this
         }
 
-        fun setQueryParams(queryParams: Map<String, String>): Builder {
+        fun setQueryParams(queryParams: Map<String, Any>): Builder {
             this._queryParams = queryParams
             return this
         }
