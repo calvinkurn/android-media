@@ -3,6 +3,8 @@ package com.tokopedia.saldodetails.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -99,7 +101,14 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     private void setUpToolbar() {
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_icon_back_black);
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
+        if (upArrow != null) {
+            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(upArrow);
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_icon_back_black);
+        }
+        toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), 30, toolbar.getPaddingBottom());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -9,6 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -44,7 +47,7 @@ public class WithdrawActivity extends BaseSimpleActivity {
 
     private void initInjector() {
         WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
 
         DaggerDepositWithdrawComponent.builder().withdrawComponent(withdrawComponent)
@@ -73,6 +76,17 @@ public class WithdrawActivity extends BaseSimpleActivity {
     }
 
     @Override
+    protected void setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
@@ -94,5 +108,5 @@ public class WithdrawActivity extends BaseSimpleActivity {
         super.onBackPressed();
         analytics.eventClickBackArrow();
     }
-    
+
 }

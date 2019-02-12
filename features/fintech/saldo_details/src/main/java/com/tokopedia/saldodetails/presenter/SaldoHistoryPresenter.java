@@ -80,24 +80,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
         getSummaryDeposit();
     }
 
-    /*@Override
-    public void setCache() {
-        depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
-            @Override
-            public void onSuccess(GqlDepositSummaryResponse cache) {
-                if (cache != null) {
-                    setData(cache);
-                }
-                getSummaryDeposit();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getSummaryDeposit();
-            }
-        });
-    }*/
-
     private void setData(GqlAllDepositSummaryResponse data) {
         if (!isViewAttached() || getView().getAdapter() == null || data == null) {
             return;
@@ -130,7 +112,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
         if (!isViewAttached() || getView().getBuyerHistoryAdapter() == null || data == null) {
             return;
         }
-
 
         getView().getAllHistoryAdapter().addElement(data.getBuyerDepositHistory().getDepositHistoryList());
         if (getView().getAllHistoryAdapter().getItemCount() == 0) {
