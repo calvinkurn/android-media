@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.List;
 

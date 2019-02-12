@@ -1,0 +1,34 @@
+<resources>
+
+    <string name="activity_title_checkout_variant">Detail Produk</string>
+    <string name="format_note_counter" formatted="false">%s / %s</string>
+    <string name="label_insurance_info_short_yes">Transaksi ini terlindungi asuransi</string>
+    <string name="label_insurance_info_short_no">Transaksi ini tidak terlindungi asuransi</string>
+    <string name="title_choose_other_template">Pilih Template Lain</string>
+    <string name="bottomsheet_title_no_pinpoint">Tandai Lokasi Pengiriman</string>
+    <string name="bottomsheet_action_pin_location">Tandai Lokasi</string>
+    <string name="bottomsheet_title_change_payment_method">Pilih Metode Pembayaran Lain</string>
+    <string name="bottomsheet_action_choose_payment_method">Pilih Metode Pembayaran</string>
+    <string name="bottomsheet_title_product_not_available">Produk tidak tersedia</string>
+    <string name="bottomsheet_action_close">Tutup</string>
+    <string name="bottomsheet_title_choose_other_method">Pilih Kurir Lain</string>
+    <string name="bottomsheet_action_choose_other_courier">Pilih Kurir Lain</string>
+    <string name="label_stock_available">Stok Tersedia</string>
+    <string name="label_error_duration_not_supported">Toko tidak mendukung durasi pengiriman ini</string>
+    <string name="label_error_stock_not_available">Stok produk ini sedang kosong. Silakan ganti dengan produk serupa.</string>
+    <string name="label_error_shop_closed">Toko ini sedang tutup. Silakan gunakan toko lain.</string>
+    <string name="label_continue_without_template">Lanjutkan Tanpa Template</string>
+    <string name="label_button_buy">Beli</string>
+    <string name="label_wording_payment_total">Total Tagihan</string>
+    <string name="label_insurance">Asuransi Pengiriman</string>
+    <string name="label_note_for_seller">Catatan untuk Penjual (Opsional)</string>
+    <string name="label_change_template">Ubah</string>
+    <string name="label_set_as_default_template">Jadikan Template Utama</string>
+    <string name="label_quantity_total">Jumlah</string>
+    <string name="label_summary">Ringkasan Belanja</string>
+    <string name="label_total_item_price">Total Harga Barang</string>
+    <string name="label_total_shipping_price">Total Ongkos Kirim</string>
+    <string name="label_additional_fee">Biaya Layanan</string>
+    <string name="label_insurance_price">Asuransi</string>
+
+</resources>

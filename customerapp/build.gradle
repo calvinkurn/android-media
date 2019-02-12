@@ -344,6 +344,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.expressCheckout)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticaddaddress)

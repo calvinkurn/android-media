@@ -81,7 +81,7 @@ public class OrderDetailAnalytics {
                     ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     : categoryLevelStr);
             enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setQty(orderDetailItemData.getItemQuantity());
+            enhancedECommerceProductCartMapData.setQty(Integer.parseInt(orderDetailItemData.getItemQuantity()));
             enhancedECommerceProductCartMapData.setShopId(data.getShopId());
             enhancedECommerceProductCartMapData.setShopType(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
             enhancedECommerceProductCartMapData.setShopName(data.getShopName());

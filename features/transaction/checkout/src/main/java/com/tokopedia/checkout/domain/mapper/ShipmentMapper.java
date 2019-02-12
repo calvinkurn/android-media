@@ -239,7 +239,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductShopType(generateShopType(groupShop.getShop()));
                                 analyticsProductCheckoutData.setProductVariant("");
                                 analyticsProductCheckoutData.setProductBrand("");
-                                analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
+                                analyticsProductCheckoutData.setProductQuantity(product.getProductQuantity());
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 if (product.getErrors() != null) {

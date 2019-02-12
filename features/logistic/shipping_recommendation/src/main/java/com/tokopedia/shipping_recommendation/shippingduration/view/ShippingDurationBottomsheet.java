@@ -17,6 +17,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
+import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
@@ -38,12 +39,14 @@ import javax.inject.Inject;
 public class ShippingDurationBottomsheet extends BottomSheets
         implements ShippingDurationContract.View, ShippingDurationAdapterListener {
 
+    public static final String ARGUMENT_SHIPPING_PARAM = "ARGUMENT_SHIPPING_PARAM";
     public static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
     public static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
     public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
     public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
     public static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
+    public static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -57,6 +60,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private PerformanceMonitoring chooseCourierTracePerformance;
     private boolean isChooseCourierTraceStopped;
 
+    private boolean isDisableCourierPromo;
+
     @Inject
     ShippingDurationContract.Presenter presenter;
     @Inject
@@ -67,8 +72,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           List<ShopShipment> shopShipmentList,
                                                           RecipientAddressModel recipientAddressModel,
                                                           int cartPosition, int codHistory) {
-        ShippingDurationBottomsheet shippingDurationBottomsheet =
-                new ShippingDurationBottomsheet();
+        ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
         bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
@@ -81,8 +85,22 @@ public class ShippingDurationBottomsheet extends BottomSheets
         return shippingDurationBottomsheet;
     }
 
+    public static ShippingDurationBottomsheet newInstance() {
+        return new ShippingDurationBottomsheet();
+    }
+
     public void setShippingDurationBottomsheetListener(ShippingDurationBottomsheetListener shippingDurationBottomsheetListener) {
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
+    }
+
+    public void updateArguments(ShippingParam shippingParam, int selectedServiceId, int codHistory, boolean disableCourierPromo, List<ShopShipment> shopShipmentList) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGUMENT_SHIPPING_PARAM, shippingParam);
+        bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
+        bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
+        bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
+        bundle.putBoolean(ARGUMENT_DISABLE_PROMO_COURIER, disableCourierPromo);
+        setArguments(bundle);
     }
 
     private void initializeInjector() {
@@ -124,11 +142,15 @@ public class ShippingDurationBottomsheet extends BottomSheets
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
+            isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
             setupRecyclerView(cartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
+            ShippingParam shippingParam = getArguments().getParcelable(ARGUMENT_SHIPPING_PARAM);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             if (shipmentDetailData != null) {
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory);
+            } else if (shippingParam != null) {
+                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory);
             }
         }
     }
@@ -232,6 +254,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
             chooseCourierTracePerformance.stopTrace();
             isChooseCourierTraceStopped = true;
         }
+    }
+
+    @Override
+    public boolean isDisableCourierPromo() {
+        return isDisableCourierPromo;
     }
 
     @Override

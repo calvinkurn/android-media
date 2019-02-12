@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -32,11 +33,15 @@ public interface ShippingDurationContract {
 
         void stopTrace();
 
+        boolean isDisableCourierPromo();
+
         Activity getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory);
+
+        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory);
 
         List<ShippingDurationViewModel> getShippingDurationViewModels();
 

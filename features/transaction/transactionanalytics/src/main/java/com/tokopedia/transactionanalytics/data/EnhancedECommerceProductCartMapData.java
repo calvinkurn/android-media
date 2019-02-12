@@ -49,8 +49,9 @@ public class EnhancedECommerceProductCartMapData {
         Product.put(KEY_PRICE, !TextUtils.isEmpty(price) ? price : DEFAULT_VALUE_NONE_OTHER);
     }
 
-    public void setQty(String qty) {
-        Product.put(KEY_QTY, !TextUtils.isEmpty(qty) ? qty : DEFAULT_VALUE_NONE_OTHER);
+    public void setQty(int qty) {
+        String qtyString = String.valueOf(qty);
+        Product.put(KEY_QTY, !TextUtils.isEmpty(qtyString) ? qtyString : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setCategory(String category) {
