@@ -108,13 +108,13 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
                     getActivity(),
                     list,
-                    tabName
+                    tabName.toLowerCase()
             );
         } else {
             HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
                     getActivity(),
                     list,
-                    tabName
+                    tabName.toLowerCase()
             );
         }
     }
@@ -173,13 +173,13 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
                     getActivity(),
                     homeFeedViewModel,
-                    tabName
+                    tabName.toLowerCase()
             );
         } else {
             HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
                     getActivity(),
                     homeFeedViewModel,
-                    tabName
+                    tabName.toLowerCase()
             );
         }
 

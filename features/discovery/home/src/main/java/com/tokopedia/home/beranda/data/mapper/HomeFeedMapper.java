@@ -50,7 +50,6 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
                     product.getIsTopads(),
                     (position+1)
                     ));
-            ));
         }
         return homeFeedViewModels;
     }
