@@ -5,17 +5,17 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 
 public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
-    public static final String DATA_NONE_OTHER = "none / other";
-    public static final String DATA_NAME = "name";
-    public static final String DATA_ID = "id";
-    public static final String DATA_PRICE = "price";
-    public static final String DATA_BRAND = "brand";
-    public static final String DATA_VARIANT = "variant";
-    public static final String DATA_CATEGORY = "category";
-    public static final String DATA_LIST = "list";
-    public static final String DATA_POSITION = "position";
-    public static final String DATA_LIST_VALUE = "/ - p%s - %s - rekomendasi untuk anda - %s";
-    public static final String DATA_LIST_VALUE_NON_LOGIN = "/ - p%s - non login - %s - rekomendasi untuk anda - %s";
+    private static final String DATA_NONE_OTHER = "none / other";
+    private static final String DATA_NAME = "name";
+    private static final String DATA_ID = "id";
+    private static final String DATA_PRICE = "price";
+    private static final String DATA_BRAND = "brand";
+    private static final String DATA_VARIANT = "variant";
+    private static final String DATA_CATEGORY = "category";
+    private static final String DATA_LIST = "list";
+    private static final String DATA_POSITION = "position";
+    private static final String DATA_LIST_VALUE = "/ - p%s - %s - rekomendasi untuk anda - %s";
+    private static final String DATA_LIST_VALUE_NON_LOGIN = "/ - p%s - non login - %s - rekomendasi untuk anda - %s";
 
     private final int position;
     private String productId;
@@ -25,6 +25,7 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
     private String imageUrl;
     private String price;
     private int priceNumber;
+    private boolean isTopAds;
 
     public HomeFeedViewModel(String productId,
                              String productName,
@@ -33,6 +34,7 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
                              String imageUrl,
                              String price,
                              int priceNumber,
+                             boolean isTopAds,
                              int position) {
         this.productId = productId;
         this.productName = productName;
@@ -41,6 +43,7 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
         this.imageUrl = imageUrl;
         this.price = price;
         this.priceNumber = priceNumber;
+        this.isTopAds = isTopAds;
         this.position = position;
     }
 
@@ -86,6 +89,10 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
 
     public void setPriceNumber(int priceNumber) {
         this.priceNumber = priceNumber;
+    }
+
+    public boolean isTopAds() {
+        return isTopAds;
     }
 
     @Override

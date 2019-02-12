@@ -382,6 +382,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 }
                 if (homePresenter.isDataValid(visitables)) {
                     homePresenter.getView().removeNetworkError();
+                    homePresenter.getView().onHomeDataLoadSuccess();
                 } else {
                     homePresenter.showNetworkError();
                 }

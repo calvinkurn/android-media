@@ -26,7 +26,7 @@ import java.util.List;
 public class CollapsingTabLayout extends TabLayout {
 
     private static final long DEFAULT_ANIMATION_DURATION = 300;
-    private static final long TAB_AUTO_SCROLL_DELAY_DURATION = 100;
+    private static final long TAB_AUTO_SCROLL_DELAY_DURATION = 300;
     private static final int NONE = -1;
     private static final int MAX_TAB_COLLAPSE_SCROLL_RANGE = 200;
 
@@ -62,6 +62,7 @@ public class CollapsingTabLayout extends TabLayout {
     public void setup(ViewPager viewPager, List<TabItemData> tabItemDataList) {
         this.tabItemDataList.clear();
         this.tabItemDataList.addAll(tabItemDataList);
+        resetAllState();
         initResources();
         initAnimator();
         setSmoothScrollingEnabled(true);
@@ -131,6 +132,13 @@ public class CollapsingTabLayout extends TabLayout {
                 }
             }
         });
+    }
+
+    private void resetAllState() {
+        lastTabSelectedPosition = NONE;
+        lastPageScrolledPosition = NONE;
+        lastTabCollapseFraction = 0f;
+        scrollEnabled = false;
     }
 
     private void initResources() {
@@ -206,6 +214,9 @@ public class CollapsingTabLayout extends TabLayout {
     }
 
     public void scrollActiveTabToLeftScreen() {
+        if (getSelectedTabPosition() < 0) {
+            return;
+        }
         setScrollEnabled(true);
         int scrollTargetX = ((ViewGroup) getChildAt(0)).getChildAt(getSelectedTabPosition()).getLeft();
         Animator animator = ObjectAnimator.ofInt(this, "scrollX",  scrollTargetX).setDuration(DEFAULT_ANIMATION_DURATION);
@@ -244,7 +255,7 @@ public class CollapsingTabLayout extends TabLayout {
             public void run() {
                 showAllTabIndicator();
             }
-        }, TAB_AUTO_SCROLL_DELAY_DURATION);
+        }, DEFAULT_ANIMATION_DURATION);
 
         lastTabSelectedPosition = currentSelectedPosition;
     }

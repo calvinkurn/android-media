@@ -29,5 +29,6 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
         productCardView.setImageUrl(element.getImageUrl());
         productCardView.setTitle(element.getProductName());
         productCardView.setPrice(element.getPrice());
+        productCardView.setTopAdsVisible(element.isTopAds());
     }
 }
