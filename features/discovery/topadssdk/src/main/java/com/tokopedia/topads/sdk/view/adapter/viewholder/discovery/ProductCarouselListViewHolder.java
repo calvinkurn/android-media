@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -43,7 +44,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     private RelativeLayout wishlistBtnContainer;
     private ImageView btnWishList;
     public ImpressedImageView productImage;
-    private int clickPosition;
+    private int clickPosition = RecyclerView.NO_POSITION;
     private int offset;
 
 
@@ -53,7 +54,6 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
-        this.clickPosition = clickPosition;
         this.impressionListener = impressionListener;
         this.offset = offset;
         btnWishList = itemView.findViewById(R.id.wishlist_button);
