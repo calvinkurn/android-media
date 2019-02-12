@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">KYC</string>
+    <string name="upgrade_ovo_title">Yuk, Tingkatkan ke OVO Premier!</string>
+    <string name="upgrade_description">Anda akan diarahkan ke halaman OVO untuk pengajuan OVO Premier</string>
+    <string name="upgrade_ovo_btn">Tingkatkan Level OVO</string>
+    <string name="label_later">Nanti Saja</string>
+    <string name="branding">Powered By</string>
+</resources>
