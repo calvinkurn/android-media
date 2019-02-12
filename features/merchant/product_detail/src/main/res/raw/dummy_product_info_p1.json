@@ -1,8 +1,8 @@
 {
   "getPDPInfo":{
     "basic":{
-      "id":271198783,
-      "shopID":137266,
+      "id":399893190,
+      "shopID":2163625,
       "name":"Xiaomi Mi 300Mbps WiFi Amplifier 2 Wireless Network Repeater",
       "alias":"xiaomi-mi-300mbps-wifi-amplifier-2-wireless-network-repeater",
       "price":72000,
@@ -11,7 +11,7 @@
       "description":"This Xiaomi Mi Wi-Fi Amplifier 2 is proud of its connectivity to any device that has USB port, which means a possibility to hitch up the amplifier to different devices of different-brand routers, TV-sets, laptops or even power strips with a necessary USB port.\n\nApp Control\n\nOnly need two steps, you can add the Xiaomi Mi Wi-Fi Amplifier 2 into the smartphone APP to achieve easy control of the Amplifier, such as it can achieve signal detection.\n\nSpecifications\n\nName\tXiaomi Mi Wi-Fi Amplifier 2\nBrand\tXiaomi\nType\tWi-Fi Amplifier\nMaterial\tABS\nColor\tWhite\nAntenna\tBuilt-in\nOperating Frequency\t2.5 GHz\nConnectivity\tUSB\nTransmission Rate\t300Mbps\nPower Supply\t5 V/0.5 A ~ 5 V/2 A\nBrand Compatibility\tXiaomi and Other\nProduct Size\t120 x 30 x 9 mm\nPackage Size\t13.5 x 5 x 5 cm\nProduct Weight\t30g\nPackage Contents\t1 x Xiaomi Mi Wi-Fi Amplifier 2, 1 x Manual",
       "minOrder":1,
       "maxOrder":0,
-      "status":1,
+      "status":3,
       "stock":3155,
       "weight":1000,
       "weightUnit":1,
@@ -43,8 +43,8 @@
       "url":"https://staging.tokopedia.com/catalog/39619/mobilephone-samsung-136"
     },
     "menu":{
-      "menuID":91,
-      "name":"new etalase",
+      "menuID":7599048,
+      "name":"dining apa ya",
       "url":""
     },
     "category":{

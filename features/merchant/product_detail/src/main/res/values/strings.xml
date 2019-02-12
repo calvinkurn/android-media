@@ -80,4 +80,6 @@
     <string name="label_see_all_talk">Lihat Semua Diskusi (%1$s)</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
     <string name="title_topads_product">Produk Terkait dengan Barang Ini</string>
+    <string name="success_warehousing_product">Produk berhasil digudangkan</string>
+    <string name="success_move_etalase">Produk berhasil dipindahkan ke etalase</string>
 </resources>

@@ -11,10 +11,11 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.utils.AuthUtil
-import com.tokopedia.product.report.constant.ProductReportConstant
-import com.tokopedia.product.report.constant.ProductReportConstant.PARAM_PRODUCT_ID
-import com.tokopedia.product.report.constant.ProductReportConstant.PARAM_REPORT_TYPE
-import com.tokopedia.product.report.constant.ProductReportConstant.PARAM_TEXT_MESSAGE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ID
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_REPORT_TYPE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_TEXT_MESSAGE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PATH_REPORT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PATH_REPORT_TYPE
 import com.tokopedia.product.report.model.reportSubmit.ReportSubmit
 import com.tokopedia.product.report.model.reportType.ReportType
 import com.tokopedia.product.report.model.reportType.ReportTypeModel
@@ -48,7 +49,7 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                         AuthUtil.generateParamsNetwork(
                                 userSession.userId, userSession.deviceId, queryMap)
                         val restRequest = RestRequest.Builder(
-                                urlMap[ProductReportConstant.PATH_REPORT_TYPE] ?: "",
+                                urlMap[PATH_REPORT_TYPE] ?: "",
                                 object : TypeToken<DataResponse<ReportTypeModel>>() {}.type)
                                 .setQueryParams(queryMap)
                                 .setCacheStrategy(RestCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
@@ -74,7 +75,7 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                                 PARAM_TEXT_MESSAGE to reportDesc
                         ))
                         val restRequest = RestRequest.Builder(
-                                urlMap[ProductReportConstant.PATH_REPORT] ?: "",
+                                urlMap[PATH_REPORT] ?: "",
                                 object : TypeToken<DataResponse<ReportSubmit>>() {}.type)
                                 .setRequestType(RequestType.POST)
                                 .setBody(bodyMap)
