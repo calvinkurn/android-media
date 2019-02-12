@@ -4,6 +4,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -25,12 +26,19 @@ public class TopAdsModel implements Parcelable {
     private static final String KEY_ERROR = "errors";
 
     @SerializedName(KEY_ERROR)
+    @Expose
     private Error error;
+
     @SerializedName(KEY_STATUS)
+    @Expose
     private Status status;
+
     @SerializedName(KEY_HEADER)
+    @Expose
     private Header header;
+
     @SerializedName(KEY_DATA)
+    @Expose
     private List<Data> data = new ArrayList<>();
     private int adsPosition = 0;
 

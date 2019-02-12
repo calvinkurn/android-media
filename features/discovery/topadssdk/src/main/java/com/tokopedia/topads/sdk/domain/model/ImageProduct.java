@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -20,12 +21,19 @@ public class ImageProduct implements Parcelable {
     private static final String KEY_IMAGE_CLICK_URL = "image_click_url";
 
     @SerializedName(KEY_PRODUCT_ID)
+    @Expose
     private String productId;
+
     @SerializedName(KEY_PRODUCT_NAME)
+    @Expose
     private String productName;
+
     @SerializedName(KEY_IMAGE_URL)
+    @Expose
     private String imageUrl;
+
     @SerializedName(KEY_IMAGE_CLICK_URL)
+    @Expose
     private String imageClickUrl;
     private boolean loaded;
 

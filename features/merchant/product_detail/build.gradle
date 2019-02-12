@@ -31,6 +31,8 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.gallery)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsSdk)
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex

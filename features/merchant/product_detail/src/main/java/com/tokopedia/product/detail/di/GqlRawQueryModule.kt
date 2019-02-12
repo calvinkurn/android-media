@@ -74,4 +74,18 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_GET_LATEST_TALK)
     fun provideRawGetLatestTalk(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_talk)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_DISPLAY_ADS)
+    fun provideRawDisplayAds(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.get_topads_query)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_OTHER_PRODUCT)
+    fun provideRawOtherProduct(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_other_product)
 }

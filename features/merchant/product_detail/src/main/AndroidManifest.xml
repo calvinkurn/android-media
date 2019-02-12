@@ -24,6 +24,11 @@
             android:label="@string/courier_title"
             android:theme="@style/Theme.White"/>
 
+        <activity android:name=".estimasiongkir.view.activity.RatesEstimationDetailActivity"
+            android:label="@string/label_rates_estimation_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -35,39 +36,70 @@ public class Shop implements Parcelable {
     private static final String KEY_BADGES = "badges";
 
     @SerializedName(KEY_ID)
+    @Expose
     private String id;
+
     private String adRefKey;
     private String adId;
+
     @SerializedName(KEY_NAME)
+    @Expose
     private String name;
+
     @SerializedName(KEY_DOMAIN)
+    @Expose
     private String domain;
+
     @SerializedName(KEY_TAGLINE)
+    @Expose
     private String tagline;
+
     @SerializedName(KEY_LOCATION)
+    @Expose
     private String location;
+
     @SerializedName(KEY_CITY)
+    @Expose
     private String city;
+
     @SerializedName(KEY_IMAGE_SHOP)
+    @Expose
     private ImageShop imageShop;
+
     @SerializedName(KEY_GOLD_SHOP)
+    @Expose
     private boolean goldShop;
+
     @SerializedName(KEY_GOLD_SHOP_BADGE)
+    @Expose
     private boolean goldShopBadge;
+
     @SerializedName(KEY_LUCKY_SHOP)
+    @Expose
     private String luckyShop;
+
     @SerializedName(KEY_SHOP_IS_OFFICIAL)
+    @Expose
     private boolean shopIsOfficial;
+
     @SerializedName(KEY_URI)
+    @Expose
     private String uri;
+
     @SerializedName(KEY_IMAGE_PRODUCT)
+    @Expose
     private List<ImageProduct> imageProduct = new ArrayList<>();
+
     @SerializedName(KEY_OWNER_ID)
+    @Expose
     private String ownerId;
+
     @SerializedName(KEY_IS_OWNER)
+    @Expose
     private boolean isOwner;
     private boolean loaded;
     @SerializedName(KEY_BADGES)
+    @Expose
     private List<Badge> badges = new ArrayList<>();
 
     public Shop() {

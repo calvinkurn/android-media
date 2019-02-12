@@ -89,7 +89,14 @@
             <include layout="@layout/partial_most_helpful_review_view"/>
             <include layout="@layout/partial_product_latest_talk"/>
             <include layout="@layout/partial_other_product"/>
-            <include layout="@layout/partial_topads_product"/>
+
+            <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
+                android:layout_margin="@dimen/dp_6"
+                android:id="@+id/topads_carousel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants"
+                android:visibility="gone" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_last_update"

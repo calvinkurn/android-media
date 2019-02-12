@@ -40,6 +40,11 @@ class ProductDetailActivity: BaseSimpleActivity(), HasComponent<ProductDetailCom
             putExtras(bundle)
             data = uri
         }
+
+        @JvmStatic
+        fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
+            putExtra(PARAM_PRODUCT_ID, productId.toString())
+        }
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment

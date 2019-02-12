@@ -72,4 +72,13 @@
     <string name="label_see_all_talk">Lihat Semua Diskusi (%1$s)</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
     <string name="title_topads_product">Produk Terkait dengan Barang Ini</string>
+    <string name="service_title_format">%1$s (%2$s)</string>
+    <string name="see_message">Lihat Pesan</string>
+    <string name="shipping_etd_text">(%1$s)</string>
+    <string name="rate_est_detail_dest_fmt">Dikirim dari :</string>
+    <string name="rate_est_detail_weight_fmt">Berat :</string>
+    <string name="shipping_cost_descr_1">Ongkos kirim akhir akan dihitung di halaman checkout</string>
+    <string name="shipping_cost_descr_2">Durasi dihitung sejak barang diserahkan ke kurir</string>
+    <string name="service_title_format_empty">%1$s</string>
+    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
 </resources>

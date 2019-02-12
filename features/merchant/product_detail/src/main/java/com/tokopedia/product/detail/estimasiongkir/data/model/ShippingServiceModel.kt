@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.data.model.estimasiongkir
+package com.tokopedia.product.detail.estimasiongkir.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

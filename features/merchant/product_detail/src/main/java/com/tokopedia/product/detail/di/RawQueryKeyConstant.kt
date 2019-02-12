@@ -10,4 +10,6 @@ object RawQueryKeyConstant {
     const val QUERY_GET_IMAGE_REVIEW = "image_review"
     const val QUERY_GET_MOST_HELPFUL_REVIEW = "helpful_review"
     const val QUERY_GET_LATEST_TALK = "latest_talk"
+    const val QUERY_DISPLAY_ADS = "display_ads"
+    const val QUERY_OTHER_PRODUCT = "other_product"
 }

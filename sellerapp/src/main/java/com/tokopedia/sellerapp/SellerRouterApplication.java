@@ -1956,4 +1956,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getCartIntent(@NotNull Context context) {
         return TransactionCartRouter.createInstanceCartActivity(context);
     }
+
+    @NotNull
+    @Override
+    public Intent getIntermediaryIntent(Context context, int categoryId) {
+        return new Intent();
+    }
 }

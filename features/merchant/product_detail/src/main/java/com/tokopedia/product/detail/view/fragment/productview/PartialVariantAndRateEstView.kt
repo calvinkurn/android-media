@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.product.detail.data.model.estimasiongkir.RatesModel
+import com.tokopedia.product.detail.estimasiongkir.data.model.RatesModel
 import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
@@ -33,7 +33,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     }
 
-    fun renderRateEstimation(ratesModel: RatesModel, shopLocation: String) {
+    fun renderRateEstimation(ratesModel: RatesModel, shopLocation: String, onRateEstimationClicked: (()-> Unit)? = null) {
         if (ratesModel.id.isBlank()) return
 
         with(view){
@@ -55,6 +55,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
 
             if (hasData) visible() else gone()
+            setOnClickListener { onRateEstimationClicked?.invoke() }
         }
     }
 

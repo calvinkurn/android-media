@@ -27,6 +27,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+import com.tokopedia.product.detail.ProductDetailInternalRouter
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -40,6 +41,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.fragment.productview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -49,9 +51,17 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.base.adapter.Item
+import com.tokopedia.topads.sdk.domain.Xparams
+import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.topads.sdk.domain.model.Shop
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
+import kotlinx.android.synthetic.main.partial_other_product.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
@@ -74,6 +84,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var imageReviewViewView: PartialImageReviewView
     lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
     lateinit var latestTalkView: PartialLatestTalkView
+    lateinit var otherProductView: PartialOtherProductView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -115,9 +126,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         shopDomain: String? = null, isFromDeeplink: Boolean = false) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
-                        productId?.let { putString(ARG_PRODUCT_ID, it) }
-                        productKey?.let { putString(ARG_PRODUCT_KEY, it) }
-                        shopDomain?.let { putString(ARG_SHOP_DOMAIN, it) }
+                        productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
+                        productKey?.let { pkey -> putString(ARG_PRODUCT_KEY, pkey) }
+                        shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                     }
                 }
@@ -269,6 +280,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::latestTalkView.isInitialized)
            latestTalkView = PartialLatestTalkView.build(base_latest_talk)
+
+        if (!::otherProductView.isInitialized)
+            otherProductView = PartialOtherProductView.build(base_other_product)
     }
 
     private fun initView() {
@@ -295,6 +309,36 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         })
+        topads_carousel.setAdsItemClickListener(adsItemsClickListener)
+        topads_carousel.setAdsListener(adsListener)
+        topads_carousel.setAdsItemImpressionListener { position, product -> product?.let {
+            productDetailTracking.eventTopAdsImpression(position, it) }}
+    }
+
+    private val adsItemsClickListener = object : TopAdsItemClickListener {
+        override fun onShopItemClicked(position: Int, shop: Shop?) {}
+
+        override fun onAddFavorite(position: Int, data: Data?) {}
+
+        override fun onAddWishList(position: Int, data: Data?) {}
+
+        override fun onProductItemClicked(position: Int, product: Product?) {
+            if (product == null) return
+            activity?.let {
+                productDetailTracking.eventTopAdsClicked(product, position)
+                startActivity(ProductDetailInternalRouter.getProductDetailIntentById(it, product.id.toInt()))
+            }
+        }
+    }
+
+    private val adsListener = object : TopAdsListener{
+        override fun onTopAdsLoaded(list: MutableList<Item<Any>>?) {
+            topads_carousel.visible()
+        }
+
+        override fun onTopAdsFailToLoad(errorCode: Int, message: String?) {
+            topads_carousel.gone()
+        }
 
     }
 
@@ -409,17 +453,26 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         productInfoP3.rateEstimation?.let { partialVariantAndRateEstView.renderRateEstimation(it.rates,
-                shopInfo?.location ?: "")}
+                shopInfo?.location ?: "", ::gotoRateEstimation)}
         shopInfo?.let {  updateWishlist(it, productInfoP3.isWishlisted) }
         imageReviewViewView.renderData(productInfoP3.imageReviews)
         mostHelpfulReviewView.renderData(productInfoP3.helpfulReviews, productInfo?.stats?.countReview ?: 0)
         latestTalkView.renderData(productInfoP3.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0)
+        productInfoP3.displayAds?.let { topads_carousel.setData(it) }
+        otherProductView.renderData(productInfoP3.productOthers)
+    }
+
+    private fun gotoRateEstimation() {
+        if (productInfo == null && shopInfo == null) return
+        activity?.let { startActivity(RatesEstimationDetailActivity.createIntent(it,
+                shopInfo!!.shopCore.domain, productInfo!!.basic.weight, productInfo!!.basic.weightUnit)) }
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
         productInfoP2.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
+            productDescrView.shopInfo = shopInfo
             productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
             val data = productInfo ?: return
 

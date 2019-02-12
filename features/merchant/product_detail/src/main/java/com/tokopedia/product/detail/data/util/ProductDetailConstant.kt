@@ -7,6 +7,8 @@ object ProductDetailConstant {
     const val PRD_STATE_PENDING = -1
     const val PRD_STATE_WAREHOUSE = 3
 
+    const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
+
     @IntDef(BUY, ADD_TO_CART, BUY_NOW)
     @Retention(AnnotationRetention.SOURCE)
     annotation class ProductAction {}

@@ -8,6 +8,9 @@ object ProductTrackingConstant {
     object Action {
         const val CLICK = "click"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
+        const val PRODUCT_CLICK = "productClick"
+        const val TOPADS_CLICK = "click - top ads"
+        const val TOPADS_IMPRESSION = "impression - top ads"
     }
 
     object Report {
@@ -34,5 +37,9 @@ object ProductTrackingConstant {
         const val MERCHANT_VOUCHER = "merchant voucher"
         const val DETAIL = "mvc detail"
         const val SEE_ALL = "see all"
+    }
+
+    object TopAds {
+        const val PDP_TOPADS = "/productdetail - top ads'"
     }
 }

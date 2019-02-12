@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_other_product"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,6 +10,8 @@
     android:paddingBottom="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
     android:paddingStart="@dimen/dp_16"
+    android:visibility="gone"
+    tools:visibility="visible"
     tools:ignore="RtlSymmetry">
 
     <com.tokopedia.design.component.TextViewCompat
