@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shopetalasepicker.R;
+import com.tokopedia.shopetalasepicker.view.model.ShopEtalaseViewModel;
 
 /**
  * Created by normansyahputa on 2/28/18.
