@@ -314,7 +314,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel) {
-        onAddressContainerClicked(recipientAddressModel);
+        onAddressContainerClicked(recipientAddressModel, -1);
     }
 
     @Override
@@ -457,7 +457,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void onAddressContainerClicked(RecipientAddressModel model) {
+    public void onAddressContainerClicked(RecipientAddressModel model, int position) {
+        mShipmentAddressListAdapter.updateSelected(position);
         if (mCartAddressChoiceActivityListener != null && getActivity() != null) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
             sendAnalyticsOnAddressSelectionClicked();
@@ -466,7 +467,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void onCornerAddressClicked(CornerAddressModel cornerAddressModel) {
+    public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
+        mShipmentAddressListAdapter.updateSelected(position);
         if (mCartAddressChoiceActivityListener != null && getActivity() != null){
             RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel);
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);

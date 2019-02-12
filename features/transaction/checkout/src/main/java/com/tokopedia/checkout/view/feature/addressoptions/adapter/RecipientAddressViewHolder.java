@@ -46,7 +46,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mHeaderText = view.findViewById(R.id.text_view_address_header);
     }
 
-    public void bind(RecipientAddressModel address, ShipmentAddressListAdapter adapter, ShipmentAddressListAdapter.ActionListener listener, int position) {
+    public void bind(RecipientAddressModel address, ShipmentAddressListAdapter.ActionListener listener, int position) {
         mListener = listener;
         mTvAddressName.setText(address.getAddressName());
         mTvAddressStatus.setVisibility(address.getAddressStatus() == PRIME_ADDRESS ?
@@ -60,7 +60,7 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mTvChangeAddress.setOnClickListener(v ->
                 mListener.onEditClick(address)
         );
-        mViewAddress.setOnClickListener(view -> adapter.setSelectedAddressData(position));
+        mViewAddress.setOnClickListener(view -> mListener.onAddressContainerClicked(address, position));
         mButtonAddAddress.setOnClickListener(view -> mListener.onAddAddressButtonClicked());
     }
 
