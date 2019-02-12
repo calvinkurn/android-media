@@ -102,6 +102,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         getView().showFullPageLoading();
         RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                 getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
+        getView().startPerfomanceMonitoringTrace();
         digitalAddToCartUseCase.execute(requestParams, getSubscriberAddToCart());
     }
 
@@ -165,6 +166,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                     } else {
                         getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
+
+                    getView().stopPerfomanceMonitoringTrace();
                 }
             }
 
@@ -196,6 +199,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             renderCrossSellingCart(cartDigitalInfoData);
         }
+        getView().stopPerfomanceMonitoringTrace();
     }
 
     protected void renderCrossSellingCart(CartDigitalInfoData cartDigitalInfoData) {

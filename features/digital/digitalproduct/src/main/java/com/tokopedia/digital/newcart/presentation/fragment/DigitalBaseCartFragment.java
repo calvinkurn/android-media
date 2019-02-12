@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -63,6 +64,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected InputPriceHolderView inputPriceHolderView;
     protected LinearLayout inputPriceContainer;
     private boolean isAlreadyShowPostPaidPopUp;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
+    private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
 
     protected P presenter;
 
@@ -437,6 +441,20 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void startPerfomanceMonitoringTrace() {
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_CHECKOUT_TRACE);
+        performanceMonitoring.startTrace(DIGITAL_CHECKOUT_TRACE);
+    }
+
+    @Override
+    public void stopPerfomanceMonitoringTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override

@@ -112,6 +112,9 @@ public interface DigitalBaseContract {
                                 String confirmButtonTitle,
                                 String userId);
 
+        void startPerfomanceMonitoringTrace();
+
+        void stopPerfomanceMonitoringTrace();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{
