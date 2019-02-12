@@ -40,6 +40,6 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                 trackingRepository.delete(trackings)
             }
         }
-        return Result.success()
+        return Result.SUCCESS
     }
 }
