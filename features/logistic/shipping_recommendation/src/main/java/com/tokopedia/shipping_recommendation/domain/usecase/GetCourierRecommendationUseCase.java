@@ -143,7 +143,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         double weightInKilograms = shipmentDetailData.getShipmentCartData().getWeight() / KILOGRAM_DIVIDER;
         queryStringBuilder = setParam(queryStringBuilder, Param.WEIGHT, String.valueOf(weightInKilograms));
 
-        int cornerIdInt = TextUtils.isEmpty(cornerId) ? -1 : Integer.parseInt(cornerId);
+        int cornerIdInt = TextUtils.isEmpty(cornerId) ? 0 : Integer.parseInt(cornerId);
         queryStringBuilder = setParam(queryStringBuilder, Param.CORNER_ID, String.valueOf(cornerIdInt));
 
         queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shipmentDetailData.getShopId());
