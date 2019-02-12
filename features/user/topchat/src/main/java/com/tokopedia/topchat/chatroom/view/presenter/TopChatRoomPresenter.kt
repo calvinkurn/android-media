@@ -80,6 +80,7 @@ class TopChatRoomPresenter @Inject constructor(
     private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
+    private lateinit var addToCardSubscriber : Subscriber<AddToCartResult>
 
     init {
         mSubscription = CompositeSubscription()
@@ -414,6 +415,8 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccess: (addToCartResult: AddToCartResult) -> Unit,
             shopId: Int
     ) {
+        addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
+
         router.addToCartProduct(
                 AddToCartRequest.Builder()
                         .productId(Integer.parseInt(element.productId.toString()))
@@ -424,7 +427,7 @@ class TopChatRoomPresenter @Inject constructor(
                 false).subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(addToCartSubscriber(onError, onSuccess))
+                .subscribe(addToCardSubscriber)
     }
 
     private fun addToCartSubscriber(
@@ -481,11 +484,13 @@ class TopChatRoomPresenter @Inject constructor(
         destroyWebSocket()
         getChatUseCase.unsubscribe()
         uploadImageUseCase.unsubscribe()
-        getExistingMessageIdUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
+        replyChatUseCase.unsubscribe()
+        getExistingMessageIdUseCase.unsubscribe()
         deleteMessageListUseCase.unsubscribe()
         changeChatBlockSettingUseCase.unsubscribe()
         getShopFollowingUseCase.unsubscribe()
+        addToCardSubscriber.unsubscribe()
         super.detachView()
     }
 
