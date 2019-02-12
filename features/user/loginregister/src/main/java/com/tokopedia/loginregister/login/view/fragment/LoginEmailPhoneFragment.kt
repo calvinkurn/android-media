@@ -37,11 +37,13 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.R.id.register_button
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
