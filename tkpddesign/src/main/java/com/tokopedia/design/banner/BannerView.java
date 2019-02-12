@@ -189,6 +189,9 @@ public class BannerView extends BaseCustomView {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING && recyclerView.isInTouchMode()) {
                     stopAutoScrollBanner();
+                    requestDisallowInterceptTouchEvent(true);
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    requestDisallowInterceptTouchEvent(false);
                 }
             }
 

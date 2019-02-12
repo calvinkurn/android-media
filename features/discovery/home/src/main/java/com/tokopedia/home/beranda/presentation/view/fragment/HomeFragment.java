@@ -238,9 +238,30 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
 
+        initEggDragListener();
+
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         return view;
+    }
+
+    private void initEggDragListener() {
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            floatingEggButtonFragment.setOnDragListener(new FloatingEggButtonFragment.OnDragListener() {
+                @Override
+                public void onDragStart() {
+                    refreshLayout.setCanChildScrollUp(true);
+                }
+
+                @Override
+                public void onDragEnd() {
+                    if (isAppBarFullyExpanded(lastOffset)) {
+                        refreshLayout.setCanChildScrollUp(false);
+                    }
+                }
+            });
+        }
     }
 
     @Override
