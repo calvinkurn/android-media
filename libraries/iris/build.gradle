@@ -33,8 +33,8 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2-eap13"
-    implementation "android.arch.work:work-runtime-ktx:1.0.0-beta05"
+    api rootProject.ext.miscDependencies.coroutineCore
+    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha10"
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 

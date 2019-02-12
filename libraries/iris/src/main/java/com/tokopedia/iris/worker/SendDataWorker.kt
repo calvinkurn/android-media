@@ -9,7 +9,7 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.experimental.runBlocking
 
 /**
  * @author okasurya on 10/18/18.

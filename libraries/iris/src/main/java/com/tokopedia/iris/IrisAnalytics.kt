@@ -8,9 +8,9 @@ import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.SendDataWorker
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
 
 
 /**
