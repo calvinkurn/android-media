@@ -53,7 +53,13 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.productView.PartialAttributeInfoView
 import com.tokopedia.product.detail.view.fragment.productView.PartialProductDescrFullView
 import com.tokopedia.product.detail.view.fragment.productView.PartialVariantAndRateEstView
-import com.tokopedia.product.detail.view.fragment.productview.*
+import com.tokopedia.product.detail.view.fragment.productview.PartialImageReviewView
+import com.tokopedia.product.detail.view.fragment.productview.PartialMostHelpfulReviewView
+import com.tokopedia.product.detail.view.fragment.productview.PartialLatestTalkView
+import com.tokopedia.product.detail.view.fragment.productview.PartialHeaderView
+import com.tokopedia.product.detail.view.fragment.productview.PartialProductStatisticView
+import com.tokopedia.product.detail.view.fragment.productview.PartialShopView
+import com.tokopedia.product.detail.view.fragment.productview.PartialButtonActionView
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -236,7 +242,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-
         })
         loadProductData()
     }

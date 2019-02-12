@@ -44,13 +44,9 @@ class ShopEtalaseViewHolder(itemView: View) : AbstractViewHolder<ShopEtalaseView
             etalasePickerRadioButton.visibility = View.GONE
         }
 
-        if (shopEtalaseViewModel.etalaseCount > 0) {
-            tvCount.text = getString(R.string.x_product,
-                    shopEtalaseViewModel.etalaseCount.toString())
-            tvCount.visibility = View.VISIBLE
-        } else {
-            tvCount.visibility = View.GONE
-        }
+        tvCount.text = getString(R.string.x_product,
+                shopEtalaseViewModel.etalaseCount.toString())
+        tvCount.visibility = View.VISIBLE
     }
 
     companion object {
