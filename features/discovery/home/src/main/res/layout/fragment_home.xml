@@ -70,7 +70,7 @@
                 app:tabPaddingStart="0dp"
                 app:tabPaddingEnd="0dp"
                 app:tabMode="scrollable"
-                app:tabRippleColor="@null"
+                app:tabBackground="@android:color/transparent"
                 android:background="@color/white"
                 android:visibility="gone"
                 app:tabIndicatorHeight="0dp"/>
