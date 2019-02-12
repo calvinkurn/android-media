@@ -8,6 +8,17 @@ import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeF
  */
 
 public class FlightSearchSeeOnlyBestPairingViewModel implements Visitable<FlightSearchAdapterTypeFactory> {
+
+    private String newPrice;
+
+    public FlightSearchSeeOnlyBestPairingViewModel(String newPrice) {
+        this.newPrice = newPrice;
+    }
+
+    public String getNewPrice() {
+        return newPrice;
+    }
+
     @Override
     public int type(FlightSearchAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);

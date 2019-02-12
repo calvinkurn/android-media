@@ -1,23 +1,25 @@
 package com.tokopedia.train.search.data.specification;
 
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.train.common.specification.DbFlowSpecification;
+import com.tokopedia.train.common.specification.RoomSpecification;
 import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nabillasabbaha on 06/07/18.
  */
-public class TrainSearchScheduleSpecification implements DbFlowSpecification {
+public class TrainSearchScheduleSpecification implements RoomSpecification {
 
     private int scheduleVariant;
     private long arrivalTimestampSelected = 0;
+    private List<Object> args;
 
     public TrainSearchScheduleSpecification(int scheduleVariant, String arrivalTimestampStringSelected) {
         this.scheduleVariant = scheduleVariant;
+        args = new ArrayList<>();
         setArrivalTimestampSelected(arrivalTimestampStringSelected);
     }
 
@@ -30,17 +32,24 @@ public class TrainSearchScheduleSpecification implements DbFlowSpecification {
         }
     }
 
-    @Override
-    public ConditionGroup getCondition() {
-        ConditionGroup conditionGroup = ConditionGroup.clause();
-        if (isReturnSchedule()) {
-            conditionGroup.and(TrainScheduleDbTable_Table.is_return_schedule.eq(true));
-            conditionGroup.and(TrainScheduleDbTable_Table.departure_time.greaterThan(arrivalTimestampSelected));
-        }
-        return conditionGroup;
-    }
-
     private boolean isReturnSchedule() {
         return scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE;
+    }
+
+    @Override
+    public String query() {
+        String query = "";
+        args.clear();
+        if (isReturnSchedule()) {
+            query = " isReturnSchedule = ? AND departureTime > ? ";
+            args.add(1);
+            args.add(arrivalTimestampSelected);
+        }
+        return query;
+    }
+
+    @Override
+    public List<Object> getArgs() {
+        return args;
     }
 }

@@ -134,6 +134,7 @@ public class CartMapperData implements ICartMapperData {
             if (responseCartData.getAttributes().getCrossSellingConfig() != null) {
                 CrossSellingConfig crossSellingConfig = new CrossSellingConfig();
                 crossSellingConfig.setSkipAble(responseCartData.getAttributes().getCrossSellingConfig().isSkipAble());
+                crossSellingConfig.setChecked(responseCartData.getAttributes().getCrossSellingConfig().isChecked());
                 crossSellingConfig.setHeaderTitle(responseCartData.getAttributes().getCrossSellingConfig().getWording().getHeaderTitle());
                 crossSellingConfig.setBodyTitle(responseCartData.getAttributes().getCrossSellingConfig().getWording().getBodyTitle());
                 crossSellingConfig.setBodyContentBefore(responseCartData.getAttributes().getCrossSellingConfig().getWording().getBodyContentBefore());

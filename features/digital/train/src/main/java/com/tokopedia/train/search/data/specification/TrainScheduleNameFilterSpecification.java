@@ -1,30 +1,41 @@
 package com.tokopedia.train.search.data.specification;
 
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.train.common.specification.DbFlowSpecification;
-import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
+import com.tokopedia.train.common.specification.RoomSpecification;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author rizkyfadillah on 15/03/18.
  */
 
-public class TrainScheduleNameFilterSpecification implements DbFlowSpecification {
+public class TrainScheduleNameFilterSpecification implements RoomSpecification {
 
     private List<String> trains;
+    private List<Object> args;
 
     public TrainScheduleNameFilterSpecification(List<String> trains) {
         this.trains = trains;
+        args = new ArrayList<>();
     }
 
     @Override
-    public ConditionGroup getCondition() {
-        ConditionGroup conditions = ConditionGroup.clause();
-        for (String trainName : trains) {
-            conditions.or(TrainScheduleDbTable_Table.train_name.eq(trainName));
+    public String query() {
+        String query = "(";
+        args.clear();
+        for (int i = 0; i < trains.size(); i++) {
+            query += " trainName = ? ";
+            args.add(trains.get(i));
+            if (i < trains.size() - 1) {
+                query += " OR ";
+            }
         }
-        return conditions;
+        query += ")";
+        return query;
     }
 
+    @Override
+    public List<Object> getArgs() {
+        return args;
+    }
 }

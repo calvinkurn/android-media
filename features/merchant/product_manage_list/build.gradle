@@ -41,6 +41,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.networkDependencies.glide
 

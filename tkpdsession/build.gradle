@@ -31,7 +31,6 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.updateinactivephone)
@@ -46,6 +45,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.plus

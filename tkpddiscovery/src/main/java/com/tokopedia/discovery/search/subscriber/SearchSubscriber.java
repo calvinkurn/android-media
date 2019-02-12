@@ -13,7 +13,7 @@ public class SearchSubscriber extends Subscriber<List<SearchData>> {
     public static final String RECENT_SEARCH = "recent_search";
     public static final String RECENT_VIEW = "recent_view";
     public static final String POPULAR_SEARCH = "popular_search";
-    public static final String DIGITAL = "digital";
+    public static final String DIGITAL = "top_digital";
     public static final String CATEGORY = "category";
     public static final String AUTOCOMPLETE = "autocomplete";
     public static final String HOTLIST = "hotlist";

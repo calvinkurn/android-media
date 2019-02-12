@@ -31,12 +31,14 @@ public class LoginSubscriber extends LoginCommonSubscriber<LoginEmailDomain> {
 
     @Override
     public void onError(Throwable e) {
+        view.stopTrace();
         view.enableArrow();
         super.onError(e);
     }
 
     @Override
     public void onNext(LoginEmailDomain loginEmailDomain) {
+        view.stopTrace();
         super.onNext(loginEmailDomain);
 
         if (!isGoToSecurityQuestion(loginEmailDomain.getLoginResult())

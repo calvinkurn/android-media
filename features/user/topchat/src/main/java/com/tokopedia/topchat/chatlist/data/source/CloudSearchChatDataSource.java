@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatlist.data.source;
 
-import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chatlist.data.mapper.SearchChatMapper;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -15,14 +15,14 @@ import rx.Observable;
 public class CloudSearchChatDataSource {
 
     private SearchChatMapper searchChatMapper;
-    private ChatService chatService;
+    private ChatApi chatApi;
 
-    public CloudSearchChatDataSource(ChatService chatService, SearchChatMapper searchChatMapper) {
-        this.chatService = chatService;
+    public CloudSearchChatDataSource(ChatApi chatApi, SearchChatMapper searchChatMapper) {
+        this.chatApi = chatApi;
         this.searchChatMapper = searchChatMapper;
     }
 
-    public Observable<InboxChatViewModel> searchChat(TKPDMapParam<String, Object> requestParams) {
-        return chatService.getApi().searchChat(requestParams).map(searchChatMapper);
+    public Observable<InboxChatViewModel> searchChat(HashMap<String, Object> requestParams) {
+        return chatApi.searchChat(requestParams).map(searchChatMapper);
     }
 }

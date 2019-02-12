@@ -25,22 +25,6 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
     }
 
     @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-
-        if (getActivity() == null) {
-            return;
-        }
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
-        if (getBottomSheetBehavior() != null)
-            getBottomSheetBehavior().setPeekHeight(screenHeight / 2);
-    }
-
-
-    @Override
     public void initView(View view) {
         TextView count = view.findViewById(R.id.text_quota_count);
         TextView title = view.findViewById(R.id.text_title);
@@ -52,7 +36,7 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
 
         action.setText(mData.getButtonText());
 
-        if (mData.getCatalog() == null || mData.getCatalog().getTitle() == null) {
+        if (mData.getCatalog() == null || TextUtils.isEmpty(mData.getCatalog().getTitle())) {
             title.setText(mData.getTitle());
             title.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
@@ -97,6 +81,7 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
             RouteManager.route(action.getContext(), mData.getAppLink());
             dismiss();
         });
+        updateHeight();
     }
 
     @Override
