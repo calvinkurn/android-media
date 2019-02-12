@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -81,6 +82,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final int BANK_INTENT = 34275;
     private static final int CONFIRM_PASSWORD_INTENT = 5964;
     private static final int BANK_SETTING_INTENT = 1324;
+    private static final int DEFAULT_MIN_FOR_SELECTED_BANK = 10000;
+    private static final int DEFAULT_SALDO_MIN = 50000;
+    private static final long SHOW_CASE_DELAY = 500;
 
     private int SELLER_STATE = 2;
     private int BUYER_STATE = 1;
@@ -238,8 +242,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         if (isSeller) {
             saldoTypeCV.setVisibility(View.VISIBLE);
-
-            new Handler().postDelayed(() -> startShowCase(), 500);
+            new Handler().postDelayed(this::startShowCase, SHOW_CASE_DELAY);
         } else {
             saldoTypeCV.setVisibility(View.GONE);
         }
@@ -251,15 +254,18 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 , MethodChecker.getDrawable(getActivity(), R.drawable.divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
 
-//        totalBalance.setText(getArguments().getString(BUNDLE_TOTAL_BALANCE, DEFAULT_TOTAL_BALANCE));
-
-        // TODO: 7/2/19 check first param
         withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 KeyboardHandler.hideSoftKeyboard(getActivity());
+                float balance;
+                if (currentState == SELLER_STATE) {
+                    balance = sellerSaldoBalance;
+                } else {
+                    balance = buyerSaldoBalance;
+                }
                 presenter.doWithdraw(
-                        "",//totalBalance.getText().toString(),
+                        String.valueOf((int) balance),//totalBalance.getText().toString(),
                         totalWithdrawal.getText().toString(),
                         bankAdapter.getSelectedBank()
                 );
@@ -268,29 +274,49 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         withdrawBuyerSaldoTV.setOnClickListener(v -> {
             if (currentState != BUYER_STATE) {
-                currentState = BUYER_STATE;
-                enableBuyerSaldoView();
+
+                if (buyerSaldoBalance == 0) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.refund_saldo_inactive));
+                } else if (buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.refund_saldo_less_min));
+                } else {
+                    currentState = BUYER_STATE;
+                    enableBuyerSaldoView();
+                }
             }
         });
 
         withdrawSellerSaldoTV.setOnClickListener(v -> {
             if (currentState != SELLER_STATE) {
-                currentState = SELLER_STATE;
-                enableSellerSaldoView();
-            }
-        });
 
-        withdrawAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                analytics.eventClickWithdrawalAll();
-                if (currentState == SELLER_STATE) {
-                    totalWithdrawal.setText(String.valueOf(sellerSaldoBalance));
+                if (sellerSaldoBalance == 0) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_inactive));
+                } else if (sellerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
-                    totalWithdrawal.setText(String.valueOf(buyerSaldoBalance));
+                    currentState = SELLER_STATE;
+                    enableSellerSaldoView();
                 }
 
             }
+        });
+
+        if (sellerSaldoBalance == 0 || sellerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
+            currentState = BUYER_STATE;
+            enableBuyerSaldoView();
+        } else {
+            currentState = SELLER_STATE;
+            enableSellerSaldoView();
+        }
+
+        withdrawAll.setOnClickListener(v -> {
+            analytics.eventClickWithdrawalAll();
+            if (currentState == SELLER_STATE) {
+                totalWithdrawal.setText(String.valueOf(sellerSaldoBalance));
+            } else {
+                totalWithdrawal.setText(String.valueOf(buyerSaldoBalance));
+            }
+
         });
 
         currencyTextWatcher = new CurrencyTextWatcher(totalWithdrawal, CurrencyEnum.RPwithSpace);
@@ -447,8 +473,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     private void checkDepositIsSufficient(int withdrawal) {
         float deposit;
-        // (int) StringUtils.convertToNumeric(totalBalance.getText().toString(), false);
-
         if (currentState == SELLER_STATE) {
             deposit = sellerSaldoBalance;
         } else {
@@ -458,7 +482,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         if (withdrawal > deposit) {
             totalWithdrawal.getBackground().mutate().
                     setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value));
+
+            if (currentState == SELLER_STATE) {
+                saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value_seller));
+            } else {
+                saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value_buyer));
+            }
+
             saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
         } else {
             totalWithdrawal.getBackground().mutate().
@@ -467,9 +497,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_500));
         }
 
-        /*if (withdrawal > deposit) {
-            showErrorWithdrawal(getStringResource(R.string.error_withdraw_exceed_balance));
-        }*/
     }
 
     private boolean checkMinimumWithdrawal(int withdrawal) {
@@ -489,13 +516,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             return true;
         }
 
-        /*if (withdrawal < min) {
-            showErrorWithdrawal(getActivity().getString(R.string.minimal_withdrawal, String.valueOf(min)));
-
-        } else {
-            showErrorWithdrawal(null);
-            return true;
-        }*/
     }
 
     private int checkSelectedBankMinimumWithdrawal() {
@@ -505,9 +525,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         }
         String selectedBankName = selectedBank.getBankName().toLowerCase();
         if (inBankGroup(selectedBankName)) {
-            return 10000;
+            return DEFAULT_MIN_FOR_SELECTED_BANK;
         } else {
-            return 50000;
+            return DEFAULT_SALDO_MIN;
         }
     }
 

@@ -48,8 +48,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private String paramStartDate;
     private String paramEndDate;
-    private static final String BUNDLE_TOTAL_BALANCE = "total_balance";
-    private static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
     private static final String DATE_FORMAT_WS = "yyyy/MM/dd";
     private boolean isSeller;
 

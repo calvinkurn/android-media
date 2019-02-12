@@ -14,8 +14,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
-import com.tokopedia.saldodetails.interactor.DepositCacheInteractor;
-import com.tokopedia.saldodetails.interactor.DepositCacheInteractorImpl;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.GqlWithdrawalTickerResponse;
