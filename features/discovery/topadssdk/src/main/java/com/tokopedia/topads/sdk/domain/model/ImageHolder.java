@@ -3,10 +3,14 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Author errysuprayogi on 29,January,2019
  */
 public class ImageHolder implements Parcelable {
+
+    @Expose(deserialize = false)
     private boolean loaded;
 
     protected ImageHolder(Parcel in) {
