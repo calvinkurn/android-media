@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.shopetalasepicker" >
+    <application>
+
+        <!--<activity-->
+            <!--android:name=".voucherList.MerchantVoucherListActivity"-->
+            <!--android:label="@string/merchant_voucher"-->
+            <!--android:theme="@style/Theme.White"-->
+            <!--android:screenOrientation="portrait" />-->
+    </application>
+</manifest>
