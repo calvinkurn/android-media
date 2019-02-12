@@ -1,5 +1,6 @@
 package com.tokopedia.iris.data.db.mapper
 
+import android.util.Log
 import com.tokopedia.iris.KEY_CONTAINER
 import com.tokopedia.iris.KEY_EVENT
 import com.tokopedia.iris.data.db.table.Tracking
@@ -39,7 +40,9 @@ class TrackingMapper {
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
+            Log.d("Iris Mapper", "$i : ${item.userId}")
             if (!item.event.isBlank()) {
+                Log.d("Iris Mapper", "$i : ${item.event}")
                 event.put(JSONObject(item.event))
                 val nextItem: Tracking? = try {
                     tracking[i+1]
