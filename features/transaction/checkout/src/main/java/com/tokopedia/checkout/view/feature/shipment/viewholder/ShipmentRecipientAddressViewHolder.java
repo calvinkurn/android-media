@@ -161,7 +161,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     }
 
     private void formatAddressName(TextView textView, String recipientName, String addressName) {
-        addressName = " (" + addressName + ")";
+        // addressName = " (" + addressName + ")";
         recipientName += addressName;
         int startSpan = recipientName.indexOf(addressName);
         int endSpan = recipientName.indexOf(addressName) + addressName.length();
