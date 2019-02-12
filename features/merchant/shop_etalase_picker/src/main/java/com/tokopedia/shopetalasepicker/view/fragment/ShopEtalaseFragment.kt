@@ -34,11 +34,15 @@ class ShopEtalaseFragment : BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAd
     lateinit var shopEtalasePresenter: ShopEtalasePresenter
 
     private var selectedEtalaseId: String? = null
+    private var isShowDefault: Boolean = false
+    private var isShowZeroProduct: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         arguments?.run {
             shopId = getString(ShopParamConstant.EXTRA_SHOP_ID)
             selectedEtalaseId = getString(ShopParamConstant.EXTRA_ETALASE_ID)
+            isShowDefault = getBoolean(ShopParamConstant.EXTRA_IS_SHOW_DEFAULT, false)
+            isShowZeroProduct = getBoolean(ShopParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
         }
         super.onCreate(savedInstanceState)
     }
@@ -57,7 +61,7 @@ class ShopEtalaseFragment : BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAd
     }
 
     override fun loadData(i: Int) {
-        shopEtalasePresenter.getShopEtalase(shopId)
+        shopEtalasePresenter.getShopEtalase(shopId, isShowDefault, isShowZeroProduct)
     }
 
     override fun getAdapterTypeFactory(): ShopEtalaseAdapterTypeFactory {
@@ -109,11 +113,14 @@ class ShopEtalaseFragment : BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAd
     companion object {
         val DEFAULT_INDEX_SELECTION = 0
 
-        fun createInstance(shoId: String?, selectedEtalaseId: String?): ShopEtalaseFragment {
+        fun createInstance(shoId: String?, selectedEtalaseId: String?, isShowDefault: Boolean? = false,
+                           isShowZeroProduct : Boolean? = false): ShopEtalaseFragment {
             val fragment = ShopEtalaseFragment()
             val arguments = Bundle()
             arguments.putString(ShopParamConstant.EXTRA_SHOP_ID, shoId)
             arguments.putString(ShopParamConstant.EXTRA_ETALASE_ID, selectedEtalaseId)
+            arguments.putBoolean(ShopParamConstant.EXTRA_IS_SHOW_DEFAULT, isShowDefault ?: false)
+            arguments.putBoolean(ShopParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct ?: false)
             fragment.arguments = arguments
             return fragment
         }

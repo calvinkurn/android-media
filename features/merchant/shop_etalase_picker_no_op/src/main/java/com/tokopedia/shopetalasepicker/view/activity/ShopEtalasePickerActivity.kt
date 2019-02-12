@@ -12,8 +12,11 @@ class ShopEtalasePickerActivity() {
 
     companion object {
 
-        @JvmStatic @JvmOverloads
-        fun createIntent(context: Context, shopId: String, selectedEtalaseId: String? = ""): Intent {
+        @JvmStatic
+        @JvmOverloads
+        fun createIntent(context: Context, shopId: String, selectedEtalaseId: String? = "",
+                         isShowDefault: Boolean? = false,
+                         isShowZeroProduct: Boolean? = false): Intent {
             val startMain = Intent(Intent.ACTION_MAIN)
             startMain.addCategory(Intent.CATEGORY_HOME)
             startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

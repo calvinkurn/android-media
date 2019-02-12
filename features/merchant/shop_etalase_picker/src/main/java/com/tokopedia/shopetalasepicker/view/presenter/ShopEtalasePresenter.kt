@@ -18,12 +18,12 @@ class ShopEtalasePresenter @Inject
 constructor(private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
             private val userSession: UserSession) : BaseDaggerPresenter<ShopEtalaseView>() {
 
-    fun getShopEtalase(shopId: String?) {
+    fun getShopEtalase(shopId: String?, isShowDefault: Boolean, isShowZeroProduct: Boolean) {
         if (shopId.isNullOrEmpty()) {
             return
         }
         val params = GetShopEtalaseByShopUseCase.createRequestParams(
-                shopId!!, true, false, shopId.equals(userSession.shopId, ignoreCase = true))
+                shopId!!, !isShowZeroProduct, !isShowDefault, shopId.equals(userSession.shopId, ignoreCase = true))
         getShopEtalaseByShopUseCase.execute(params, object : Subscriber<ArrayList<ShopEtalaseModel>>() {
             override fun onCompleted() {
 
