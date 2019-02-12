@@ -51,15 +51,15 @@ public class ShipmentAddressListPresenter
         return hasNext;
     }
 
-    public void resetAddressList(Context context, int order, RecipientAddressModel currentAddress) {
-        getAddressList(context, order, DEFAULT_KEYWORD, currentAddress, true);
+    public void resetAddressList(int order, RecipientAddressModel currentAddress) {
+        getAddressList(order, DEFAULT_KEYWORD, currentAddress, true);
     }
 
-    public void getAddressFromNewCreated(Context context, final RecipientAddressModel newAddress) {
-        getAddressList(context, 1, "", newAddress, true);
+    public void getAddressFromNewCreated(final RecipientAddressModel newAddress) {
+        getAddressList(1, "", newAddress, true);
     }
 
-    public void getAddressList(Context context, int order, String query,
+    public void getAddressList(int order, String query,
                                final RecipientAddressModel currentAddress, boolean resetPage) {
         if (!TextUtils.isEmpty(query)) {
             resetPage = !lastQueryKeyword.equals(query);
@@ -73,7 +73,7 @@ public class ShipmentAddressListPresenter
         if (currentPage == 1 || hasNext) {
             getMvpView().showLoading();
             mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
-                            .getRequestParams(context, order, query, currentPage++),
+                            .getRequestParams(order, query, currentPage++),
                     new Subscriber<PeopleAddressModel>() {
                         @Override
                         public void onCompleted() {

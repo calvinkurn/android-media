@@ -44,10 +44,7 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
         return Observable.zip(oldAddressRx, addressWithCornerRx, new PeopleAddressWithCornerMapper());
     }
 
-    public RequestParams getRequestParams(final Context context,
-                                          final int order,
-                                          final String query,
-                                          final int page) {
+    public RequestParams getRequestParams(final int order, final String query, final int page) {
 
         // Get people address list from api requires parameter of order, keyword, and page
         final HashMap<String, String> params = new HashMap<String, String>() {{

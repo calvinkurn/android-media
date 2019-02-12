@@ -431,7 +431,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onSearchReset() {
         if (getArguments() != null) {
-            mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC,
+            mShipmentAddressListPresenter.resetAddressList(ORDER_ASC,
                     getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
         }
     }
@@ -440,10 +440,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (getArguments() != null) {
             if (!query.isEmpty()) {
-                mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query,
+                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, query,
                         (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true);
             } else {
-                mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, "",
+                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, "",
                         (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage);
             }
         }
@@ -510,7 +510,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
                         newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
                         newRecipientAddressModel.setPostalCode(newAddress.getPostalCode());
-                        mShipmentAddressListPresenter.getAddressFromNewCreated(getActivity(), newRecipientAddressModel);
+                        mShipmentAddressListPresenter.getAddressFromNewCreated(newRecipientAddressModel);
                     }
                     onSearchReset();
                     break;
