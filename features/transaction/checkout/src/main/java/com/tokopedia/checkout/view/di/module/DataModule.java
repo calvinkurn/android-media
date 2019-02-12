@@ -31,6 +31,7 @@ import com.tokopedia.checkout.view.di.qualifier.CartTxActApiInterceptorQualifier
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
@@ -285,11 +286,7 @@ public class DataModule {
 
     @Provides
     GetAddressWithCornerUseCase provideGetAddressWithCornerUsecase(@ApplicationScope Context context) {
-        return new GetAddressWithCornerUseCase(context);
+        return new GetAddressWithCornerUseCase(context, new GraphqlUseCase());
     }
 
-//    @Provides
-//    UserSessionInterface provideUserSessionInterface() {
-//        return new com.tokopedia.user.session.UserSession(context);
-//    }
 }

@@ -4,41 +4,33 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.GqlKeroWithAddressResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by fajarnuha on 11/02/19.
  */
-public class GetAddressWithCornerUseCase extends GraphqlUseCase {
+public class GetAddressWithCornerUseCase {
 
     private Context context;
+    private GraphqlUseCase usecase;
 
-    public GetAddressWithCornerUseCase(Context context) {
+    public GetAddressWithCornerUseCase(Context context, GraphqlUseCase usecase) {
         this.context = context;
+        this.usecase = usecase;
     }
 
-    @Override
-    public void execute(RequestParams requestParams, Subscriber<GraphqlResponse> subscriber) {
-        clearRequest();
-        addRequest(getRequest());
-        super.execute(requestParams, subscriber);
-    }
-
-    @Override
-    public Observable<GraphqlResponse> getExecuteObservable(RequestParams requestParams) {
-        clearRequest();
-        addRequest(getRequest());
-        return super.getExecuteObservable(requestParams).subscribeOn(Schedulers.io())
+    public Observable<GqlKeroWithAddressResponse> getObservable() {
+        usecase.clearCache();
+        usecase.addRequest(getRequest());
+        return usecase.getExecuteObservable(null)
+                .map(graphqlResponse -> graphqlResponse.<GqlKeroWithAddressResponse>getData(GqlKeroWithAddressResponse.class))
+                .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

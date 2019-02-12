@@ -21,6 +21,7 @@ import rx.Observable;
 
 /**
  * @author Aghny A. Putra on 21/02/18
+ * Refactored by fajarnuha
  */
 
 public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
