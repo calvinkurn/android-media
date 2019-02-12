@@ -2,11 +2,9 @@ package com.tokopedia.checkout.domain.usecase;
 
 import android.content.Context;
 
-import com.tokopedia.checkout.data.mapper.AddressCornerMapper;
 import com.tokopedia.checkout.data.mapper.PeopleAddressWithCornerMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.GqlKeroWithAddressResponse;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.network.utils.AuthUtil;
@@ -46,13 +44,6 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
         return Observable.zip(oldAddressRx, addressWithCornerRx, new PeopleAddressWithCornerMapper());
     }
 
-    /**
-     * @param context
-     * @param order
-     * @param query
-     * @param page
-     * @return
-     */
     public RequestParams getRequestParams(final Context context,
                                           final int order,
                                           final String query,
