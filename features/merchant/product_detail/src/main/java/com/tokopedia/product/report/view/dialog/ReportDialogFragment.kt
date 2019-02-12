@@ -1,7 +1,6 @@
 package com.tokopedia.product.report.view.dialog
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -29,8 +28,6 @@ import com.tokopedia.product.report.model.reportType.ReportType
 import com.tokopedia.product.report.view.adapter.ReportTypeAdapter
 import com.tokopedia.product.report.view.tracking.ProductReportTracking
 import com.tokopedia.product.report.view.viewmodel.ProductReportViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_dialog_report_product.*
 import javax.inject.Inject
 
@@ -80,7 +77,9 @@ class ReportDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnReport.isEnabled = false
-        productReportViewModel.getProductReportType(productId)
+        productReportViewModel.getProductReportType(productId,
+                onSuccessGetReportType = this::onSuccessGetReportType,
+                onErrorGetReportType = this::onErrorGetReportType)
         btnCancel.setOnClickListener { dismiss() }
         btnReport.setOnClickListener {
             val description = etDesc.text.toString().trim()
@@ -90,7 +89,9 @@ class ReportDialogFragment : DialogFragment() {
             }
             productReportViewModel.reportProduct(productId,
                     reportTypeList[reportSpinner.selectedItemPosition].reportId.toString(),
-                    description)
+                    description,
+                    onSuccessReportProduct = this::onSuccessReportProduct,
+                    onErrorReportProduct = this::onErrorReportProduct)
             btnReport.isEnabled = false
         }
 
@@ -209,22 +210,6 @@ class ReportDialogFragment : DialogFragment() {
         dismiss()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        productReportViewModel.productReportTypeResp.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessGetReportType(it.data)
-                is Fail -> onErrorGetReportType(it.throwable)
-            }
-        })
-        productReportViewModel.productReportSubmitResp.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessReportProduct()
-                is Fail -> onErrorReportProduct(it.throwable)
-            }
-        })
-    }
-
     override fun onResume() {
         dialog.window?.run {
             val params = dialog.window!!.attributes
@@ -237,8 +222,6 @@ class ReportDialogFragment : DialogFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        productReportViewModel.productReportTypeResp.removeObservers(this)
-        productReportViewModel.productReportSubmitResp.removeObservers(this)
         productReportViewModel.clear()
     }
 

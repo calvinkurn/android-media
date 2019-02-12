@@ -33,10 +33,9 @@ class ProductWarehouseViewModel @Inject constructor(private val restRepository: 
                                                     @Named("Main")
                                                     val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val productWarehouseSubmitResp = MutableLiveData<Result<ProductActionSubmit>>()
-    val productMoveToEtalaseResp = MutableLiveData<Result<ProductActionSubmit>>()
-
-    fun moveToWarehouse(productId: String) {
+    fun moveToWarehouse(productId: String,
+                        onSuccessMoveToWarehouse : (()->Unit),
+                        onErrorMoveToWarehouse : ((Throwable)->Unit)) {
         launchCatchError(
                 block = {
                     val result = withContext(Dispatchers.IO) {
@@ -55,18 +54,20 @@ class ProductWarehouseViewModel @Inject constructor(private val restRepository: 
                     }
                     val dataResponse = (result?.getData() as DataResponse<ProductActionSubmit>).data
                     if (dataResponse.getIsSuccess()) {
-                        productWarehouseSubmitResp.value = Success(dataResponse)
+                        onSuccessMoveToWarehouse()
                     } else {
-                        productWarehouseSubmitResp.value = Fail(IOException())
+                        onErrorMoveToWarehouse(IOException())
                     }
                 },
                 onError = {
-                    productWarehouseSubmitResp.value = Fail(it)
+                    onErrorMoveToWarehouse(it)
                 }
         )
     }
 
-    fun moveToEtalase(productId: String, etalaseId: String?, etalaseName: String) {
+    fun moveToEtalase(productId: String, etalaseId: String?, etalaseName: String,
+                      onSuccessMoveToEtalase : (()->Unit),
+                      onErrorMoveToEtalase : ((Throwable)->Unit)) {
         launchCatchError(
                 block = {
                     val result = withContext(Dispatchers.IO) {
@@ -90,14 +91,13 @@ class ProductWarehouseViewModel @Inject constructor(private val restRepository: 
                     }
                     val dataResponse = (result?.getData() as DataResponse<ProductActionSubmit>).data
                     if (dataResponse.getIsSuccess()) {
-                        productMoveToEtalaseResp.value = Success(dataResponse)
+                        onSuccessMoveToEtalase()
                     } else {
-                        productMoveToEtalaseResp.value = Fail(IOException())
+                        onErrorMoveToEtalase(IOException())
                     }
                 },
                 onError = {
-                    it.toString()
-                    productMoveToEtalaseResp.value = Fail(it)
+                    onErrorMoveToEtalase(it)
                 }
         )
     }
