@@ -1,8 +1,8 @@
 ext {
 
-    compileSdkVersion = 27
+    compileSdkVersion = 28
     minSdkVersion = 16
-    targetSdkVersion = 27
+    targetSdkVersion = 28
     buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
@@ -74,20 +74,20 @@ ext {
     ]
 
     playServicesDependencies = [
-            plus             : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base             : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing      : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
-            analytics        : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            firebase         : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location         : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps             : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth             : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places           : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            plus             : "com.google.android.gms:play-services-plus:16.0.0",
+            base             : "com.google.android.gms:play-services-base:16.1.0",
+            appIndexing      : "com.google.firebase:firebase-appindexing:17.1.0",
+            analytics        : "com.google.android.gms:play-services-analytics:16.0.6",
+            firebase         : "com.google.firebase:firebase-messaging:17.3.4",
+            location         : "com.google.android.gms:play-services-location:16.0.0",
+            maps             : "com.google.android.gms:play-services-maps:16.0.0",
+            auth             : "com.google.android.gms:play-services-auth:16.0.1",
+            places           : "com.google.android.gms:play-services-places:16.0.0",
             mapsUtils        : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig     : "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon          : "com.google.firebase:firebase-perf:${playServiceVersion}",
-            ads              : "com.google.android.gms:play-services-ads:${playServiceVersion}",
-            firebaseAnalytics: "com.google.firebase:firebase-core:${playServiceVersion}",
+            remoteConfig     : "com.google.firebase:firebase-config:16.1.3",
+            perfMon          : "com.google.firebase:firebase-perf:16.2.3",
+            ads              : "com.google.android.gms:play-services-ads:17.1.2",
+            firebaseAnalytics: "com.google.firebase:firebase-core:16.0.6",
     ]
 
     butterKnifeDependencies = [
