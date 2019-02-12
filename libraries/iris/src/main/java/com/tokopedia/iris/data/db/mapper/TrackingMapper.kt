@@ -41,8 +41,8 @@ class TrackingMapper {
         for (i in tracking.indices) {
             val item = tracking[i]
             Log.d("Iris Mapper", "$i : ${item.userId}")
-            if (!item.event.isBlank()) {
-                Log.d("Iris Mapper", "$i : ${item.event}")
+            Log.d("Iris Mapper", "$i : ${item.event}")
+            if (!item.event.isBlank() or (item.event != "{}")) {
                 event.put(JSONObject(item.event))
                 val nextItem: Tracking? = try {
                     tracking[i+1]
@@ -50,7 +50,7 @@ class TrackingMapper {
                     null
                 }
                 val userId : String = nextItem?.userId ?: ""
-                if (userId != item.userId) {
+                if (item.userId != userId) {
                     if (event.length() > 0) {
                         row.put("event_data", event)
                         data.put(row)
@@ -62,6 +62,7 @@ class TrackingMapper {
             }
         }
         result.put("data", data)
+        Log.d("Iris Mapper", "all: $data")
         return result.toString()
     }
 
