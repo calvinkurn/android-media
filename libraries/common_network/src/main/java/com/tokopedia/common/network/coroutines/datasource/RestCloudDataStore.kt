@@ -136,7 +136,7 @@ class RestCloudDataStore : RestDataStore{
         } else {
             var body: String? = null
             if (request.body is String) {
-                body = request.body as String
+                body = request.body
             } else {
                 try {
                     body = CommonUtil.toJson(request.body)
