@@ -131,29 +131,11 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getGraphQLHeader(Promise promise) {
-        String[] sessionDatas = AuthUtil.getHeaderRequestReact(context);
-        String TkpdSessionId = sessionDatas[0];
-        String TkpdUserId = sessionDatas[1];
-        String AccountAuthorization = sessionDatas[2];
-        String OsType = sessionDatas[3];
-        String Device = sessionDatas[4];
-        String UserId = sessionDatas[5];
-        String XAppVersion = sessionDatas[6];
-        String XTkpdUserId = sessionDatas[7];
-        String XTkpdAppName = sessionDatas[8];
-        String XTkpdAppVersion = sessionDatas[9];
-
+        Map<String, String> headers = AuthUtil.getHeaderRequestReact(context);
         WritableMap writableMap = Arguments.createMap();
-        writableMap.putString(AuthUtil.HEADER_SESSION_ID, TkpdSessionId);
-        writableMap.putString(AuthUtil.HEADER_TKPD_USER_ID, TkpdUserId);
-        writableMap.putString(AuthUtil.HEADER_AUTHORIZATION, AccountAuthorization);
-        writableMap.putString(AuthUtil.PARAM_OS_TYPE, OsType);
-        writableMap.putString(AuthUtil.HEADER_DEVICE, Device);
-        writableMap.putString(AuthUtil.HEADER_USER_ID, UserId);
-        writableMap.putString(AuthUtil.HEADER_X_APP_VERSION, XAppVersion);
-        writableMap.putString(AuthUtil.HEADER_X_TKPD_USER_ID, XTkpdUserId);
-        writableMap.putString(AuthUtil.HEADER_X_TKPD_APP_NAME, XTkpdAppName);
-        writableMap.putString(AuthUtil.HEADER_X_TKPD_APP_VERSION, XTkpdAppVersion);
+        for(Map.Entry<String, String> item : headers.entrySet()) {
+           writableMap.putString(item.getKey(), item.getValue());
+        }
         promise.resolve(writableMap);
     }
 

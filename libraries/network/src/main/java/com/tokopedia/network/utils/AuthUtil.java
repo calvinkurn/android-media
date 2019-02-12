@@ -38,6 +38,7 @@ public class AuthUtil {
     public static final String HEADER_CONTENT_MD5 = "Content-MD5";
     public static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_PARAM_BEARER = "Bearer";
     public static final String HEADER_USER_ID = "X-User-ID";
     public static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     public static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
@@ -71,6 +72,7 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
     private static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
+    private static final String HEADER_ACCOUNT_AUTHORIZATION = "Accounts-Authorization";
 
     /**
      * default key is KEY_WSV$
@@ -271,20 +273,21 @@ public class AuthUtil {
         return gson.toJson(header);
     }
 
-    public static String[] getHeaderRequestReact(Context context) {
+    public static Map<String, String> getHeaderRequestReact(Context context) {
         UserSession session = new UserSession(context);
-        String TkpdSessionId = session.getDeviceId();
-        String TkpdUserId = session.isLoggedIn() ? session.getUserId() : "0";
-        String AccountAuthorization = String.format("Bearer %s", session.getAccessToken());
-        String OsType = "1";
-        String Device = String.format("android-%s", GlobalConfig.VERSION_NAME);
-        String UserId = session.isLoggedIn() ? session.getUserId() : "0";
-        String XAppVersion = String.valueOf(GlobalConfig.VERSION_NAME);
-        String XTkpdUserId = session.isLoggedIn() ? session.getUserId() : "0";
-        String XTkpdAppName = GlobalConfig.getPackageApplicationName();
-        String XTkpdAppVersion = "android-" + GlobalConfig.VERSION_NAME;
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HEADER_SESSION_ID, session.getDeviceId());
+        headers.put(HEADER_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
+        headers.put(HEADER_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER, session.getAccessToken()));
+        headers.put(HEADER_ACCOUNT_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER, session.getAccessToken()));
+        headers.put(PARAM_OS_TYPE, "1");
+        headers.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
+        headers.put(HEADER_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
+        headers.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_NAME));
+        headers.put(HEADER_X_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
+        headers.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headers.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
 
-        String[] sessionDatas = { TkpdSessionId, TkpdUserId, AccountAuthorization, OsType, Device, UserId, XAppVersion, XTkpdUserId, XTkpdAppName, XTkpdAppVersion };
-        return sessionDatas;
+        return headers;
     }
 }
