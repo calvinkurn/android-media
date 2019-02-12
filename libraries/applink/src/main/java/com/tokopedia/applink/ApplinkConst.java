@@ -66,7 +66,6 @@ public interface ApplinkConst {
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String TOPPICKS = "tokopedia://toppicks";
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
-
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
@@ -75,6 +74,10 @@ public interface ApplinkConst {
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
+    String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
+            "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
+            "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
     String REFERRAL = "tokopedia://referral";
@@ -199,9 +202,6 @@ public interface ApplinkConst {
 
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
-    String ASKSELLER = "tokopedia://topchat/askseller/{custom_subject}";
-    String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
-            "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -247,16 +247,11 @@ public interface ApplinkConst {
         String OPPONENT_NAME = "opponent_name";
         String OPPONENT_ROLE = "opponent_role";
         String SOURCE = "source";
-
         String TO_USER_ID = "toUserId";
         String TO_SHOP_ID = "toShopId";
-
         String CUSTOM_MESSAGE = "customMessage";
-        String CUSTOM_SUBJECT = "customSubject";
         String AVATAR = "avatar";
+        String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
-
-
-
     }
 }

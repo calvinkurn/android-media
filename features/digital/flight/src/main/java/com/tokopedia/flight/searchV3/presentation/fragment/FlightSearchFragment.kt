@@ -102,7 +102,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         setUpBottomAction()
         setUpSwipeRefresh()
 
-        flightSearchPresenter.initialize()
+        flightSearchPresenter.initialize(true)
 
         searchFlightData()
     }

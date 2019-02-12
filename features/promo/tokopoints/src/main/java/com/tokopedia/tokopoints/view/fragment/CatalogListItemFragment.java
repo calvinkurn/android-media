@@ -303,8 +303,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
         switch (resCode) {
             case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                labelPositive = getString(R.string.tp_label_shopping);
-                labelNegative = getString(R.string.tp_label_later);
+                labelPositive = getString(R.string.tp_label_ok);
                 break;
             case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                 labelPositive = getString(R.string.tp_label_complete_profile);
@@ -332,13 +331,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         if (labelNegative != null && !labelNegative.isEmpty()) {
             adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
                 switch (resCode) {
-                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                        AnalyticsTrackerUtil.sendEvent(getContext(),
-                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                                "");
-                        break;
                     case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                         AnalyticsTrackerUtil.sendEvent(getContext(),
                                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -361,8 +353,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
-
+                    dialogInterface.cancel();
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,

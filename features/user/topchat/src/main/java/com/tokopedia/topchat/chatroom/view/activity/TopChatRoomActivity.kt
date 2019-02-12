@@ -11,9 +11,6 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
-import com.tokopedia.topchat.common.InboxChatConstant
-import com.tokopedia.topchat.common.InboxMessageConstant
-
 
 class TopChatRoomActivity : BaseChatToolbarActivity() {
 
@@ -69,8 +66,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
 
         @JvmStatic
         fun getAskSellerIntent(context: Context, toShopId: String, shopName: String,
-                               customMessage: String, source: String,
-                               avatar: String): Intent {
+                               customMessage: String, source: String, avatar: String): Intent {
             val intent = getAskSellerIntent(context, toShopId, shopName, source,
                     avatar)
             val bundle = intent.extras
@@ -91,8 +87,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
 
         @JvmStatic
         fun getAskBuyerIntent(context: Context, toUserId: String, customerName: String,
-                              customMessage: String, source: String,
-                              avatar: String): Intent {
+                              customMessage: String, source: String, avatar: String): Intent {
             val intent = getAskUserIntent(context, toUserId, customerName, source, avatar)
             val bundle = intent.extras
             bundle.putString(ApplinkConst.Chat.CUSTOM_MESSAGE, customMessage)
@@ -132,6 +127,26 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             val intent = getAskSellerIntent(context,
                     toShopId,
                     shopName,
+                    customMessage,
+                    source,
+                    avatar
+                    )
+            return intent
+        }
+
+        @JvmStatic
+        @DeepLink(ApplinkConst.TOPCHAT_ASKBUYER)
+        fun getAskBuyerIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            val toUserId = extras.getString(ApplinkConst.Chat.TO_USER_ID,"0")
+            val userName = extras.getString(ApplinkConst.Chat.OPPONENT_NAME,"")
+            val customMessage = extras.getString(ApplinkConst.Chat.CUSTOM_MESSAGE,"")
+            val avatar = extras.getString(ApplinkConst.Chat.AVATAR,"")
+            val source = extras.getString(ApplinkConst.Chat.SOURCE,"deeplink")
+
+            val intent = getAskBuyerIntent(context,
+                    toUserId,
+                    userName,
                     customMessage,
                     source,
                     avatar
