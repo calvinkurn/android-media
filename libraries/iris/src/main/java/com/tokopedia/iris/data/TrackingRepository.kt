@@ -9,8 +9,8 @@ import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -43,7 +43,7 @@ class TrackingRepository (
             val request = service.sendSingleEvent(requestBody)
             val response = request.await()
             if (response.isSuccessful) {
-                Log.d("Iris", response.body().toString())
+                Log.d("Iris Service Single", response.body().toString())
             }
         }
     }

@@ -9,7 +9,7 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 
 /**
  * @author okasurya on 10/18/18.
@@ -34,13 +34,12 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                 val response = service.sendMultiEvent(requestBody)
                 response.await()
             }
+
             if (response.isSuccessful && response.code() == 200) {
-                Log.d("Iris Service", "${response.code()}")
+                Log.d("Iris Service Batch", response.body().toString())
                 trackingRepository.delete(trackings)
-                return Result.SUCCESS
             }
         }
-
-        return Result.FAILURE
+        return Result.success()
     }
 }

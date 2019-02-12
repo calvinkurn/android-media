@@ -6,8 +6,8 @@ package com.tokopedia.iris
 
 const val VERSION = "v1"
 
-const val BASE_URL = "https://merlin-staging.tokopedia.com/iris/$VERSION/"
-//const val BASE_URL = "https://merlin.tokopedia.com/iris/$VERSION/"
+//const val BASE_URL = "https://merlin-staging.tokopedia.com/iris/$VERSION/"
+const val BASE_URL = "https://merlin.tokopedia.com/iris/$VERSION/"
 
 const val SINGLE_EVENT = "track/dim-event"
 const val MULTI_EVENT = "track/dim-event"

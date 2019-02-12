@@ -6,17 +6,11 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.SendDataWorker
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import android.widget.Toast
-import android.app.AlarmManager
-import android.content.Context.ALARM_SERVICE
-import android.app.PendingIntent
-import android.content.Intent
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -65,11 +59,20 @@ class IrisAnalytics(context: Context) : Iris {
     private fun setWorkManager(config: Configuration) {
         val data: Data = Data.Builder().putInt(MAX_ROW, config.maxRow).build()
         val irisConstraint = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-        val workRequest = PeriodicWorkRequestBuilder<SendDataWorker>(config.intervals, TimeUnit.MINUTES)
+
+        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<SendDataWorker>()
                 .setInputData(data)
                 .addTag(WORKER_SEND_DATA)
                 .setConstraints(irisConstraint)
                 .build()
-        WorkManager.getInstance().enqueueUniquePeriodicWork(WORKER_SEND_DATA, ExistingPeriodicWorkPolicy.KEEP, workRequest)
+
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<SendDataWorker>(config.intervals, TimeUnit.MINUTES)
+                .setInputData(data)
+                .addTag(WORKER_SEND_DATA)
+                .setConstraints(irisConstraint)
+                .build()
+
+        WorkManager.getInstance().enqueue(oneTimeWorkRequest)
+        WorkManager.getInstance().enqueueUniquePeriodicWork(WORKER_SEND_DATA, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest)
     }
 }
