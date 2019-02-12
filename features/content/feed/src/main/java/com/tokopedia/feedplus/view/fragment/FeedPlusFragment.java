@@ -888,6 +888,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void stopTracePerformanceMon() {
+        performanceMonitoring.stopTrace();
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         loadData(isVisibleToUser);

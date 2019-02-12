@@ -177,7 +177,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|end"
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
@@ -256,14 +256,6 @@
             android:textStyle="normal"
             android:visibility="visible"
             tools:ignore="RtlSymmetry"
-            tools:visibility="visible" />
-
-        <View
-            android:id="@+id/shareSpace"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:visibility="visible"
             tools:visibility="visible" />
 
         <ImageView

@@ -53,7 +53,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         SwipeRefreshLayout.OnRefreshListener {
 
     private static final long DURATION_ANIMATOR = 1000;
-    private static final String FAVORITE_TRACE = "favorite_trace";
+    private static final String FAVORITE_TRACE = "mp_favorite_trace";
 
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -258,6 +258,10 @@ public class FragmentFavorite extends BaseDaggerFragment
         performanceMonitoring.stopTrace();
     }
 
+    @Override
+    public void stopTracePerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
+    }
 
     @Override
     public void showErrorLoadMore() {

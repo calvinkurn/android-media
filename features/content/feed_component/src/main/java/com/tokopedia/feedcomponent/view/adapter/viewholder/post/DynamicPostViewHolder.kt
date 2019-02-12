@@ -209,12 +209,10 @@ class DynamicPostViewHolder(v: View,
     private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text)) {
-                itemView.shareSpace.hide()
                 itemView.footerAction.show()
                 itemView.footerAction.text = footer.buttonCta.text
                 itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
             } else {
-                itemView.shareSpace.show()
                 itemView.footerAction.hide()
             }
 
