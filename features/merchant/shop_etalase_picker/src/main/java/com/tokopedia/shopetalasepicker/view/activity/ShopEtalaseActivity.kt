@@ -30,8 +30,8 @@ class ShopEtalaseActivity : BaseSimpleActivity() {
 
     companion object {
 
-        @JvmStatic
-        fun createIntent(context: Context, shopId: String, selectedEtalaseId: String): Intent {
+        @JvmStatic @JvmOverloads
+        fun createIntent(context: Context, shopId: String, selectedEtalaseId: String? = ""): Intent {
             val intent = Intent(context, ShopEtalaseActivity::class.java)
             intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId)
             intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, selectedEtalaseId)
