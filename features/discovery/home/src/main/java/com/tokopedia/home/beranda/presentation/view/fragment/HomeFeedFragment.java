@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.home.constant.ConstantKey;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
@@ -45,6 +46,8 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Inject
     UserSessionInterface userSession;
+
+    private TrackingQueue trackingQueue;
 
     private int totalScrollY;
     private int tabIndex;
@@ -72,6 +75,12 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         this.homeTabFeedListener = homeTabFeedListener;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        trackingQueue = new TrackingQueue(getActivity());
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,6 +96,12 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         addRecyclerViewItemDecoration();
         loadFirstPageData();
         initListeners();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        trackingQueue.sendAll();
     }
 
     private void addRecyclerViewItemDecoration() {
@@ -106,13 +121,13 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         super.renderList(list, hasNextPage);
         if (userSession.isLoggedIn()){
             HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
-                    getActivity(),
+                    trackingQueue,
                     list,
                     tabName.toLowerCase()
             );
         } else {
             HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
-                    getActivity(),
+                    trackingQueue,
                     list,
                     tabName.toLowerCase()
             );
@@ -171,13 +186,13 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
         if (userSession.isLoggedIn()) {
             HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
-                    getActivity(),
+                    trackingQueue,
                     homeFeedViewModel,
                     tabName.toLowerCase()
             );
         } else {
             HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
-                    getActivity(),
+                    trackingQueue,
                     homeFeedViewModel,
                     tabName.toLowerCase()
             );

@@ -80,6 +80,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -137,6 +138,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private int lastOffset;
     private AbTestingOfficialStore abTestingOfficialStore;
 
+    private TrackingQueue trackingQueue;
+
     private MainToolbar mainToolbar;
 
     private long serverTimeOffset = 0;
@@ -163,6 +166,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         abTestingOfficialStore = new AbTestingOfficialStore(getContext());
+        trackingQueue = new TrackingQueue(getActivity());
     }
 
     @Override
@@ -293,7 +297,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 FeedTabModel selectedFeedTabModel =
                         feedTabModelList.get(tab.getPosition());
                 HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        getActivity(),
+                        trackingQueue,
                         selectedFeedTabModel
                 );
             }
@@ -348,6 +352,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
+        trackingQueue.sendAll();
     }
 
     @Override

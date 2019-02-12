@@ -9,8 +9,10 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -477,10 +479,8 @@ public class HomePageTracking {
     }
 
     public static void eventClickOnHomePageRecommendationTab(
-            Context context,
+            TrackingQueue trackingQueue,
             FeedTabModel feedTabModel) {
-
-        AnalyticTracker tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
@@ -495,15 +495,13 @@ public class HomePageTracking {
                         )
                 )
         );
-        tracker.sendEnhancedEcommerce(data);
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     public static void eventImpressionOnProductRecommendationForLoggedInUser(
-            Context context,
+            TrackingQueue trackingQueue,
             List<HomeFeedViewModel> feedViewModels,
             String tabName) {
-
-        AnalyticTracker tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -516,15 +514,13 @@ public class HomePageTracking {
                         convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModels, tabName)
                 )
         );
-        tracker.sendEnhancedEcommerce(data);
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     public static void eventImpressionOnProductRecommendationForNonLoginUser(
-            Context context,
+            TrackingQueue trackingQueue,
             List<HomeFeedViewModel> feedViewModels,
             String tabName) {
-
-        AnalyticTracker tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -537,7 +533,7 @@ public class HomePageTracking {
                         convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModels, tabName)
                 )
         );
-        tracker.sendEnhancedEcommerce(data);
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     private static List<Object> convertHomeFeedViewModelListToObjectForLoggedInUser(
@@ -563,11 +559,9 @@ public class HomePageTracking {
     }
 
     public static void eventClickOnHomeProductFeedForLoggedInUser(
-            Context context,
+            TrackingQueue trackingQueue,
             HomeFeedViewModel homeFeedViewModel,
             String tabName) {
-
-        AnalyticTracker tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
@@ -590,15 +584,13 @@ public class HomePageTracking {
                         )
                 )
         );
-        tracker.sendEnhancedEcommerce(data);
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     public static void eventClickOnHomeProductFeedForNonLoginUser(
-            Context context,
+            TrackingQueue trackingQueue,
             HomeFeedViewModel homeFeedViewModel,
             String tabName) {
-
-        AnalyticTracker tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
@@ -621,7 +613,7 @@ public class HomePageTracking {
                         )
                 )
         );
-        tracker.sendEnhancedEcommerce(data);
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     public static void eventClickWishlistOnProductRecommendation(Context context, String tabName) {
