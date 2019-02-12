@@ -38,6 +38,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
         adapter = new SearchAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new OnScrollListenerAutocomplete(view.getContext(), view));
     }
 
     @Override

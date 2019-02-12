@@ -136,7 +136,11 @@ public interface TkpdCoreRouter {
 
     GCMHandler legacyGCMHandler();
 
-    void refereshFcmTokenToCMNotif(String token);
+    void refreshFCMTokenFromBackgroundToCM(String token, boolean force);
+
+    void refreshFCMFromInstantIdService(String token);
+
+    void refreshFCMTokenFromForegroundToCM();
 
     Iris getIris();
 }
