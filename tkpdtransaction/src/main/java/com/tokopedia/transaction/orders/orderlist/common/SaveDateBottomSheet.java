@@ -23,6 +23,7 @@ public class SaveDateBottomSheet extends BottomSheets {
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
     public static final String TITLE = "Filter Tanggal";
+    public static final String RESET_TITLE = "RESET";
 
     public static final Locale LOCALE = new Locale("in", "ID");
     private static final String MIN_DATE = "01/01/2017";
@@ -95,8 +96,6 @@ public class SaveDateBottomSheet extends BottomSheets {
 
                 travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "travel calendar");
 
-//                startActivityForResult(
-//                        TravelCalendarActivity.newInstance(getContext(), getDate(startDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 1);
             }
         });
         endDate.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +120,6 @@ public class SaveDateBottomSheet extends BottomSheets {
                 });
 
                 travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "travel calendar");
-//                startActivityForResult(TravelCalendarActivity.newInstance(getContext(), getDate(endDate.getText().toString()), getMinimumDate(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE), 2);
             }
         });
         saveDate.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +154,10 @@ public class SaveDateBottomSheet extends BottomSheets {
         return TITLE;
     }
 
+    @Override
+    protected String resetButtonTitle() {
+        return RESET_TITLE;
+    }
 
     private Date getDate(String date) {
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, LOCALE);
@@ -172,21 +174,6 @@ public class SaveDateBottomSheet extends BottomSheets {
         return minDate;
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == Activity.RESULT_OK) {
-//            Date date = (Date) data.getSerializableExtra(DATE_SELECTED);
-//            if (requestCode == 1) {
-//                filterStartDate = formatDate(DATE_FORMAT,date);
-//            } else if (requestCode == 2) {
-//                filterFinalDate = formatDate(DATE_FORMAT,date);
-//
-//            }
-//            setDateText();
-//        }
-//    }
-
     public static String formatDate(String format, Date date){
             DateFormat dateFormat = new SimpleDateFormat(format, LOCALE);
             return dateFormat.format(date);
@@ -196,4 +183,11 @@ public class SaveDateBottomSheet extends BottomSheets {
         void setResult(String startDate,String endDate);
     }
 
+    @Override
+    protected void onResetButtonClicked() {
+        super.onResetButtonClicked();
+        Calendar now = Calendar.getInstance();
+        startDate.setText(MIN_DATE);
+        endDate.setText(formatDate(DATE_FORMAT,now.getTime()));
+    }
 }

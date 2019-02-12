@@ -480,7 +480,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void finishOrderDetail() {
-//        getActivity().finish();
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 
 
@@ -624,6 +624,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             }
+
+            presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
         }
     }
 

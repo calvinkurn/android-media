@@ -442,7 +442,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
                 getView().hideProgressBar();
                 getView().finishOrderDetail();
-//                getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
             }
         });
     }
