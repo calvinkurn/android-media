@@ -112,7 +112,6 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
                 DATA_CATEGORY, getCategoryBreadcrumbs(),
                 DATA_LIST, String.format(
                         DATA_LIST_VALUE,
-                        getPosition(),
                         tabName,
                         getRecommendationType()
                 ),
@@ -131,7 +130,6 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
                 DATA_CATEGORY, getCategoryBreadcrumbs(),
                 DATA_LIST, String.format(
                         DATA_LIST_VALUE_NON_LOGIN,
-                        getPosition(),
                         tabName,
                         getRecommendationType()
                 ),

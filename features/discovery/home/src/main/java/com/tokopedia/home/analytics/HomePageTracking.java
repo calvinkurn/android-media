@@ -574,7 +574,6 @@ public class HomePageTracking {
                                 ACTION_FIELD, DataLayer.mapOf(
                                         LIST, String.format(
                                                 LIST_CLICK_FEED_HOME,
-                                                homeFeedViewModel.getPosition(),
                                                 tabName,
                                                 homeFeedViewModel.getRecommendationType()
                                         )),
@@ -603,7 +602,6 @@ public class HomePageTracking {
                                 ACTION_FIELD, DataLayer.mapOf(
                                         LIST, String.format(
                                                 LIST_CLICK_FEED_HOME_NON_LOGIN,
-                                                homeFeedViewModel.getPosition(),
                                                 tabName,
                                                 homeFeedViewModel.getRecommendationType()
                                         )),
