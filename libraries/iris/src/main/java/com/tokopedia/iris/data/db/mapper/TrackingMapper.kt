@@ -39,21 +39,23 @@ class TrackingMapper {
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
-            event.put(JSONObject(item.event))
-            val nextItem: Tracking? = try {
-                tracking[i+1]
-            } catch (e: IndexOutOfBoundsException) {
-                null
-            }
-            val userId : String = nextItem?.userId ?: ""
-            if (userId != item.userId) {
-                if (event.length() > 0) {
-                    row.put("event_data", event)
-                    data.put(row)
+            if (!item.event.isBlank()) {
+                event.put(JSONObject(item.event))
+                val nextItem: Tracking? = try {
+                    tracking[i+1]
+                } catch (e: IndexOutOfBoundsException) {
+                    null
                 }
-                row.put("device_id", item.deviceId)
-                row.put("user_id", item.userId)
-                event = JSONArray()
+                val userId : String = nextItem?.userId ?: ""
+                if (userId != item.userId) {
+                    if (event.length() > 0) {
+                        row.put("event_data", event)
+                        data.put(row)
+                    }
+                    row.put("device_id", item.deviceId)
+                    row.put("user_id", item.userId)
+                    event = JSONArray()
+                }
             }
         }
         result.put("data", data)
