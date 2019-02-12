@@ -51,6 +51,9 @@
     <string name="title_total_price">Total Harge</string>
     <string name="product_detail">Detail Produk</string>
     <string name="quantity_total">Jumlah</string>
+    <string name="label_desc">Deskripsi</string>
+    <string name="label_report_type">Jenis Laporan</string>
+    <string name="label_report_product">Laporkan Produk</string>
 
     <string name="product_shop_label">Penjual</string>
     <string name="label_chat_seller">Chat Penjual</string>
@@ -62,6 +65,11 @@
     <string name="exp_dialog_ok">Balik ke Beranda</string>
     <string name="wishlist_label">Wishlist</string>
     <string name="courier_title">Kurir</string>
+    <string name="redirect_report_product">Anda dapat melaporkan kasus dari produk ini melalui link ini.</string>
+    <string name="label_case">Kasus</string>
+    <string name="this_link">link ini</string>
+    <string name="description_must_be_filled">Deskripsi harus diisi</string>
+    <string name="thanks_for_product_report">Terimakasih untuk laporan Anda. Laporan tersebut akan diteruskan ke moderator kami.</string>
     <string name="promo">Promo</string>
     <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
@@ -81,4 +89,6 @@
     <string name="shipping_cost_descr_2">Durasi dihitung sejak barang diserahkan ke kurir</string>
     <string name="service_title_format_empty">%1$s</string>
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="success_warehousing_product">Produk berhasil digudangkan</string>
+    <string name="success_move_etalase">Produk berhasil dipindahkan ke etalase</string>
 </resources>

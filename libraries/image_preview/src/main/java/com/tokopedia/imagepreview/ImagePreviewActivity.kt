@@ -250,12 +250,12 @@ class ImagePreviewActivity : BaseSimpleActivity() {
 
         @JvmStatic
         @JvmOverloads
-        fun getIntent(context: Context,
-                      imageUris: ArrayList<String>,
-                      imageDesc: ArrayList<String>? = null,
-                      position: Int = 0,
-                      title: String? = null,
-                      description: String? = null): Intent {
+        fun getCallingIntent(context: Context,
+                             imageUris: ArrayList<String>,
+                             imageDesc: ArrayList<String>? = null,
+                             position: Int = 0,
+                             title: String? = null,
+                             description: String? = null): Intent {
             val intent = Intent(context, ImagePreviewActivity::class.java)
             val bundle = Bundle()
             bundle.putString(TITLE, title)

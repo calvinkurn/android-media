@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.product
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRD_STATE_ACTIVE
 
 data class Basic(
         @SerializedName("alias")
@@ -78,7 +79,7 @@ data class Basic(
 
         @SerializedName("status")
         @Expose
-        val status: Int = 0,
+        val status: Int = PRD_STATE_ACTIVE,
 
         @SerializedName("stock")
         @Expose

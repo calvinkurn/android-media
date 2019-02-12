@@ -16,12 +16,8 @@ import kotlinx.coroutines.experimental.Dispatchers
 import javax.inject.Named
 
 @ProductDetailScope
-@Module
+@Module (includes = [ProductDetailUserModule::class])
 class ProductDetailModule {
-
-    @Provides
-    @ProductDetailScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
 
     @ProductDetailScope
     @Provides

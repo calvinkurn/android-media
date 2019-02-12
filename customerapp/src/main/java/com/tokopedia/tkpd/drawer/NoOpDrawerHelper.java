@@ -40,7 +40,4 @@ public class NoOpDrawerHelper extends DrawerHelper {
     public void setExpand() {
 
     }
-
-    @Override
-    public void showFlashaleMenu() {}
 }

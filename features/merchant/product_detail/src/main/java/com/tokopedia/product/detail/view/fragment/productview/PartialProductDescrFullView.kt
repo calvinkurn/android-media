@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.productview
+package com.tokopedia.product.detail.view.fragment.productView
 
 import android.app.Activity
 import android.content.Intent

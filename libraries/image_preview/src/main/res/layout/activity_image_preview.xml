@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_12"
-            android:layout_below="@+id/title"
+            android:layout_below="@+id/tvTitle"
             android:layout_toRightOf="@+id/ivClose"
             android:layout_toEndOf="@+id/ivClose"
             android:layout_toLeftOf="@+id/ivDownload"
