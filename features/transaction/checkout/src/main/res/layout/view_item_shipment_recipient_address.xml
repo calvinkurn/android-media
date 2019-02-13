@@ -107,7 +107,7 @@
                 android:gravity="center"
                 android:paddingBottom="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_16"
-                android:text="@string/label_button_change_address" />
+                android:text="@string/label_button_change_address_new" />
 
         </LinearLayout>
 

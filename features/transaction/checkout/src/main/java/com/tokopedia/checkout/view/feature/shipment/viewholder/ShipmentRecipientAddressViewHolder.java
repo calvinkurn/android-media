@@ -76,9 +76,15 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         }
 
         tvChangeAddress.setVisibility(View.GONE);
-        tvAddressStatus.setVisibility(View.VISIBLE);
-        tvAddressName.setVisibility(View.GONE);
-        formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
+        if (recipientAddress.getAddressStatus() == 2) {
+            tvAddressStatus.setVisibility(View.VISIBLE);
+        } else {
+            tvAddressStatus.setVisibility(View.GONE);
+        }
+        // tvAddressName.setVisibility(View.GONE);
+        tvAddressName.setText(recipientAddress.getAddressName());
+        tvRecipientName.setText(recipientAddress.getRecipientName());
+        // formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));
         tvRecipientPhone.setVisibility(View.GONE);
 
