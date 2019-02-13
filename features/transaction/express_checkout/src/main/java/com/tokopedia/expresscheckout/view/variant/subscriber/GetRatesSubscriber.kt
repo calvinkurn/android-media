@@ -27,7 +27,8 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         e.printStackTrace()
         view?.hideLoading()
         view?.onNeedToValidateButtonBuyVisibility()
-        view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported) ?: "")
+        view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported)
+                ?: "")
     }
 
     override fun onNext(ratesData: ShippingRecommendationData) {
@@ -36,12 +37,16 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         if (ratesData.errorId != null && ratesData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
             showError(ratesData)
         } else if (ratesData.shippingDurationViewModels != null && ratesData.shippingDurationViewModels.size > 0) {
+            var defaultProduct: ProductData? = null
             // Check is service id available
             for (shippingDurationViewModel: ShippingDurationViewModel in ratesData.shippingDurationViewModels) {
                 // Reset promo data since not needed by express checkout
                 shippingDurationViewModel.serviceData.isPromo = 0
                 for (product: ProductData in shippingDurationViewModel.serviceData.products) {
                     product.promoCode = ""
+                    if (defaultProduct == null) {
+                        defaultProduct = product
+                    }
                 }
                 if (shippingDurationViewModel.serviceData.serviceId == profileServiceId) {
                     if (shippingDurationViewModel.serviceData.products.size > 0) {
@@ -63,7 +68,8 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                                     }
                                 }
                             }
-                            view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported) ?: "")
+                            view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported)
+                                    ?: "")
                             return
                         } else {
                             // First time load rates data come here
@@ -79,7 +85,14 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                     }
                 }
             }
-            showError(ratesData)
+            if (currentSpId == 0) {
+                presenter.prepareViewModel(defaultProduct)
+                view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported)
+                        ?: "")
+            } else {
+                view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported)
+                        ?: "")
+            }
         } else {
             showError(ratesData)
         }

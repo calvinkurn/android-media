@@ -99,7 +99,7 @@ interface CheckoutVariantContract {
 
         fun setAtcResponseModel(atcResponseModel: AtcResponseModel)
 
-        fun prepareViewModel(productData: ProductData)
+        fun prepareViewModel(productData: ProductData?)
 
         fun getShippingParam(quantity: Int, price: Long): ShippingParam
 

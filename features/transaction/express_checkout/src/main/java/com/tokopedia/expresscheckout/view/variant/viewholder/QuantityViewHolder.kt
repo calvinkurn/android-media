@@ -142,7 +142,7 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
                     subscriber.onNext(quantityModel)
                 }
             }
-        }).debounce(1000, TimeUnit.MILLISECONDS)
+        }).debounce(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<QuantityModel>() {

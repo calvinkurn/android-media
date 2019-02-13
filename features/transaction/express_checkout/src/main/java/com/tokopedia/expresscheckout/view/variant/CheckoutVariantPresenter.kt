@@ -53,9 +53,11 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
         this.atcResponseModel = atcResponseModel
     }
 
-    override fun prepareViewModel(productData: ProductData) {
-        view?.updateFragmentViewModel(atcResponseModel)
-        view?.showData(viewModelMapper.convertToViewModels(atcResponseModel, productData))
+    override fun prepareViewModel(productData: ProductData?) {
+        if (productData != null) {
+            view?.updateFragmentViewModel(atcResponseModel)
+            view?.showData(viewModelMapper.convertToViewModels(atcResponseModel, productData))
+        }
     }
 
     override fun loadExpressCheckoutData(atcRequestParam: AtcRequestParam) {

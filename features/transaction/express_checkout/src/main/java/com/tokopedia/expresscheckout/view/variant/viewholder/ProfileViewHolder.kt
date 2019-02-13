@@ -45,7 +45,9 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 itemView.tv_profile_payment_detail.text = element.paymentDetail
                 itemView.tv_change_profile.setOnClickListener { listener.onClickEditProfile() }
                 itemView.ll_profile_duration.setOnClickListener { listener.onClickEditDuration() }
+                itemView.img_bt_profile_show_more_shipping_duration.setOnClickListener { listener.onClickEditDuration() }
                 if (element.isDurationError) {
+                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
                     itemView.ll_profile_courier.visibility = View.GONE
                     itemView.tv_profile_shipping_duration_error.text = element.durationErrorMessage
                     itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE

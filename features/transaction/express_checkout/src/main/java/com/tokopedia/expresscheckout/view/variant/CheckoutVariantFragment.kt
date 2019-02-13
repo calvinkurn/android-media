@@ -969,7 +969,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     subscriber.onNext(forceReload)
                 }
             }
-        }).debounce(1000, TimeUnit.MILLISECONDS)
+        }).debounce(700, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<Boolean>() {
