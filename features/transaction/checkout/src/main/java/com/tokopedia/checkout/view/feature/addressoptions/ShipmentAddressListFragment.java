@@ -8,9 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -38,9 +35,9 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +75,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
     private int maxItemPosition;
     private boolean isLoading;
-    private boolean isMenuVisible;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
@@ -160,30 +156,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (isMenuVisible) {
-            menu.clear();
-            inflater.inflate(R.menu.menu_address_choice, menu);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_add_address && getActivity() != null) {
-            checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
-            startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
-                    getActivity(), null, token, false, false
-                    ),
-                    LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void initialListener(Activity activity) {
         mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
     }
@@ -252,9 +224,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             }
         });
 
-        isMenuVisible = false;
-        getActivity().invalidateOptionsMenu();
-
     }
 
     @Override
@@ -280,10 +249,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
-        if (!isMenuVisible && !recipientAddressModels.isEmpty() && getActivity() != null) {
-            isMenuVisible = true;
-            getActivity().invalidateOptionsMenu();
-        }
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
@@ -333,10 +298,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void showListEmpty() {
-        if (getActivity() != null) {
-            isMenuVisible = false;
-            getActivity().invalidateOptionsMenu();
-        }
         mShipmentAddressListAdapter.setAddressList(new ArrayList<>());
         mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.GONE);
@@ -346,10 +307,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void showError(String message) {
-        if (getActivity() != null) {
-            isMenuVisible = false;
-            getActivity().invalidateOptionsMenu();
-        }
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         llNoResult.setVisibility(View.GONE);
@@ -538,10 +495,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onAddAddressButtonClicked() {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
             startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
                     getActivity(), null, token, false, false),
                     LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+        }
     }
 
     @Override
