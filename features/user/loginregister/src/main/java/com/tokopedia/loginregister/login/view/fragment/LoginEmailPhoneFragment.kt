@@ -245,7 +245,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
                 LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
                 LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
-                LoginActivity.METHOD_WEBVIEW -> onLoginWebviewClick()
+                LoginActivity.METHOD_WEBVIEW -> {
+                    if (arguments != null
+                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "").isNotBlank()
+                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "").isNotBlank()) {
+                        val name = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "")
+                        val url = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "")
+                        onLoginWebviewClick(name, url)
+                    }
+                }
                 LoginActivity.METHOD_EMAIL -> {
                     actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
                     val email = arguments!!.getString(AUTO_LOGIN_EMAIL, "")
@@ -408,6 +416,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             tv.setOnClickListener { onLoginFacebookClick() }
         } else if (discoverItemViewModel.id.equals(GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
+        } else run {
+            tv.setOnClickListener { v ->
+                onLoginWebviewClick(discoverItemViewModel.name,
+                        discoverItemViewModel.url)
+            }
         }
     }
 
@@ -431,30 +444,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    private fun onLoginWebviewClick() {
+    private fun onLoginWebviewClick(name: String, url: String) {
 
-        if (arguments != null
-                && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "").isNotBlank()
-                && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "").isNotBlank()) {
+        actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_WEBVIEW + name
+        analytics.eventClickLoginWebview(name)
 
-            val name = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "")
-            val url = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "")
+        if (fragmentManager != null && activity != null) {
+            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            val newFragment = WebViewLoginFragment.createInstance(url, name)
+            newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW)
+            newFragment.show(fragmentTransaction, "dialog")
 
-            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_WEBVIEW + name
-            analytics.eventClickLoginWebview(name)
-
-            if (fragmentManager != null && activity != null) {
-                val fragmentTransaction = fragmentManager!!.beginTransaction()
-                val newFragment = WebViewLoginFragment.createInstance(url, name)
-                newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW)
-                newFragment.show(fragmentTransaction, "dialog")
-
-                activity!!.window.setSoftInputMode(
-                        WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-
-            }
-
+            activity!!.window.setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         }
+
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
@@ -817,7 +821,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val email = googleSignInAccount.email
                 val accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN)
                 presenter.loginGoogle(accessToken, email)
-            } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK){
+            } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
                 presenter.loginWebview(data)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
