@@ -15,6 +15,7 @@ data class ProductChild(
         var isAvailable: Boolean,
         var isSelected: Boolean,
         var stockWording: String,
+        var stock: Int,
         var minOrder: Int,
         var maxOrder: Int,
         var optionsId: ArrayList<Int>
@@ -30,6 +31,7 @@ data class ProductChild(
             parcel?.readString() ?: "",
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
+            parcel?.readInt() ?: 0,
             arrayListOf<Int>().apply {
                 parcel?.readList(this, Int::class.java.classLoader)
             }
@@ -43,6 +45,7 @@ data class ProductChild(
         parcel.writeByte(if (isAvailable) 1 else 0)
         parcel.writeByte(if (isSelected) 1 else 0)
         parcel.writeString(stockWording)
+        parcel.writeInt(stock)
         parcel.writeInt(minOrder)
         parcel.writeInt(maxOrder)
         parcel.writeList(optionsId)

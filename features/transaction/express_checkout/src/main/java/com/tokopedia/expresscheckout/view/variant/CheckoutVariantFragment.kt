@@ -372,6 +372,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                         onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
                     }
                 }
+
+                if (quantityViewModel != null) {
+                    quantityViewModel.maxOrderQuantity = newSelectedProductChild.stock
+                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
+                }
             }
 
             reloadRatesDebounceListener.onNeedToRecalculateRates(false)

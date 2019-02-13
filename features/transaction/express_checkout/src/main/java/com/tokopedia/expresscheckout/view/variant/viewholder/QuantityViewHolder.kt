@@ -71,6 +71,8 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
 
             setupMinButton(element)
             setupPlusButton(element)
+            validateQuantity(element)
+            actionListener.onNeedToValidateButtonBuyVisibility()
         }
     }
 

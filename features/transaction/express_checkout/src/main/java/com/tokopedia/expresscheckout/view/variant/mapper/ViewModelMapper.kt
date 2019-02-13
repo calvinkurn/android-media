@@ -94,6 +94,7 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
                     productChild.isAvailable = childModel.isBuyable ?: false
                     productChild.productPrice = childModel.price
                     productChild.stockWording = childModel.stockWording ?: ""
+                    productChild.stock = childModel.stock
                     productChild.minOrder = childModel.minOrder
                     productChild.maxOrder = if (childModel.maxOrder != 0) childModel.maxOrder else childModel.stock
                     productChild.optionsId = childModel.optionIds ?: ArrayList()
