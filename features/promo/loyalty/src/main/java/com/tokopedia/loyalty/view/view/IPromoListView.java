@@ -33,4 +33,6 @@ public interface IPromoListView extends IBaseView {
     Context getActivityContext();
 
     void renderErrorLoadNextPage(String message, int actualPage);
+
+    void stopPerformanceMonitoring();
 }
