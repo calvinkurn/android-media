@@ -75,6 +75,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
     private int maxItemPosition;
     private boolean isLoading;
+    private RecipientAddressModel mCurrAddress;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
@@ -174,6 +175,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
+        if (getArguments() != null) mCurrAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
     }
 
     @Override
@@ -426,9 +428,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
         mShipmentAddressListAdapter.updateSelected(position);
-        if (mCartAddressChoiceActivityListener != null && getActivity() != null){
-            RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel);
+        if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrAddress != null){
+            RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel, mCurrAddress.getId());
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
+        } else {
+            showError(getString(R.string.technical_problem_text));
         }
     }
 

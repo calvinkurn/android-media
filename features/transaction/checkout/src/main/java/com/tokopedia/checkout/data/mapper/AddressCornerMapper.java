@@ -79,12 +79,12 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
         return result;
     }
 
-    public static RecipientAddressModel converToCartModel(CornerAddressModel cornerModel) {
+    public static RecipientAddressModel converToCartModel(CornerAddressModel cornerModel, String defaultId) {
         return new RecipientAddressModel(
-                String.valueOf(cornerModel.getCornerId()),
+                defaultId, String.valueOf(cornerModel.getCornerId()),
                 "Tokopedia Corner",
                 cornerModel.getDistrictName(), cornerModel.getCornerBranchName(),
-                cornerModel.getRecipientFullName(), cornerModel.getCornerName(), true, "",
+                cornerModel.getRecipientFullName(), cornerModel.getCornerName(), "",
                 cornerModel.getCityName(), cornerModel.getCityId(), cornerModel.getDistrictId(), cornerModel.getProvinceId(), cornerModel.getPostalCode(),
                 cornerModel.getLatitude(), cornerModel.getLongitude(), cornerModel.getUserCornerId()
         );

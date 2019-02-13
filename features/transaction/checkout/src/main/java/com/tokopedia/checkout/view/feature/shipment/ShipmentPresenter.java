@@ -1263,9 +1263,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         int counter = codData == null ? -1 : codData.getCounterCod();
         String cornerId = "";
         if (getRecipientAddressModel() != null) {
-            cornerId = getRecipientAddressModel().isCornerAddress() ? getRecipientAddressModel().getId() : "";
+            cornerId = getRecipientAddressModel().getCornerId();
         }
-        getCourierRecommendationUseCase.execute(query, counter, cornerId,shipmentDetailData, 0,
+        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
                         shipmentCartItemModel, shopShipmentList, isInitialLoad));
