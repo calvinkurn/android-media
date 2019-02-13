@@ -16,6 +16,12 @@
             android:theme="@style/Theme.Transparent.Groupchat"
             android:configChanges="orientation|screenSize|locale"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+
+        <activity
+            android:name=".webview.PlayWebviewActivity"
+            android:label="@string/activity_channel"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>
