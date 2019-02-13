@@ -45,8 +45,6 @@ import rx.Subscriber;
 
 public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.View>
         implements CrackTokenContract.Presenter {
-
-    //    private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getCrackResultEggUseCase;
     private UserSession userSession;
@@ -282,6 +280,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     public void detachView() {
         getCrackResultEggUseCase.unsubscribe();
         getTokenTokopointsUseCase.unsubscribe();
+        getRewardsUseCase.unsubscribe();
         super.detachView();
     }
 }

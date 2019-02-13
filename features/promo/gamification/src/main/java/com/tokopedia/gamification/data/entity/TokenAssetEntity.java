@@ -33,6 +33,9 @@ public class TokenAssetEntity implements Parcelable {
 	@SerializedName("smallImgv2Url")
 	private String smallImgv2Url;
 
+	@SerializedName("tokenSourceUrl")
+	private String tokenSourceUrl;
+
     protected TokenAssetEntity(Parcel in) {
         smallImgUrl = in.readString();
         floatingImgUrl = in.readString();
@@ -42,6 +45,7 @@ public class TokenAssetEntity implements Parcelable {
         spriteUrl = in.readString();
         version = in.readInt();
         smallImgv2Url = in.readString();
+        tokenSourceUrl = in.readString();
     }
 
     public static final Creator<TokenAssetEntity> CREATOR = new Creator<TokenAssetEntity>() {
@@ -120,6 +124,14 @@ public class TokenAssetEntity implements Parcelable {
 		return smallImgv2Url;
 	}
 
+	public String getTokenSourceUrl() {
+		return tokenSourceUrl;
+	}
+
+	public void setTokenSourceUrl(String tokenSourceUrl) {
+		this.tokenSourceUrl = tokenSourceUrl;
+	}
+
 	@Override
  	public String toString(){
 		return 
@@ -150,5 +162,6 @@ public class TokenAssetEntity implements Parcelable {
         dest.writeString(spriteUrl);
         dest.writeInt(version);
         dest.writeString(smallImgv2Url);
+        dest.writeString(tokenSourceUrl);
     }
 }

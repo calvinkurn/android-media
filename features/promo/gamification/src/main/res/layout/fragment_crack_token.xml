@@ -39,12 +39,15 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken
+    <com.tokopedia.gamification.cracktoken.compoundview.WidgetEggSource
         android:id="@+id/widget_remaining_token_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:layout_gravity="bottom"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
         android:id="@+id/widget_reward"

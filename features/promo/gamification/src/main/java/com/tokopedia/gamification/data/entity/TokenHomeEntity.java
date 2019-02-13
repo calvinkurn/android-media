@@ -32,10 +32,15 @@ public class TokenHomeEntity implements Parcelable {
     @Expose
     private TokenEmptyStateEntity emptyState;
 
+    @SerializedName("tokenSourceMessage")
+    @Expose
+    private String[] tokenSourceMessage;
+
     protected TokenHomeEntity(Parcel in) {
         buttonApplink = in.readString();
         buttonURL = in.readString();
         countingMessage = in.createStringArray();
+        tokenSourceMessage = in.createStringArray();
         tokensUser = in.readParcelable(TokenUserEntity.class.getClassLoader());
         emptyState = in.readParcelable(TokenEmptyStateEntity.class.getClassLoader());
     }
@@ -72,6 +77,14 @@ public class TokenHomeEntity implements Parcelable {
         return emptyState;
     }
 
+    public String[] getTokenSourceMessage() {
+        return tokenSourceMessage;
+    }
+
+    public void setTokenSourceMessage(String[] tokenSourceMessage) {
+        this.tokenSourceMessage = tokenSourceMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -82,6 +95,7 @@ public class TokenHomeEntity implements Parcelable {
         dest.writeString(buttonApplink);
         dest.writeString(buttonURL);
         dest.writeStringArray(countingMessage);
+        dest.writeStringArray(tokenSourceMessage);
         dest.writeParcelable(tokensUser, flags);
         dest.writeParcelable(emptyState, flags);
     }

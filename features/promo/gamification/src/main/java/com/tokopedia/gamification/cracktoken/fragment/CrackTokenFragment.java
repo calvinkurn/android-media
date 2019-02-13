@@ -42,7 +42,7 @@ import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
-import com.tokopedia.gamification.cracktoken.compoundview.WidgetRemainingToken;
+import com.tokopedia.gamification.cracktoken.compoundview.WidgetEggSource;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResult;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
@@ -80,7 +80,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private TextView textCountdownTimer;
     private WidgetTokenView widgetTokenView;
     private WidgetCrackResult widgetCrackResult;
-    private WidgetRemainingToken widgetRemainingToken;
+    private WidgetEggSource widgetEggSource;
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
     private ProgressBar progressBar;
     private AbstractionRouter abstractionRouter;
@@ -120,7 +120,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
-        widgetRemainingToken = rootView.findViewById(R.id.widget_remaining_token_view);
+        widgetEggSource = rootView.findViewById(R.id.widget_remaining_token_view);
         widgetRewards = rootView.findViewById(R.id.widget_rewards);
         progressBar = rootView.findViewById(R.id.progress_bar);
         infoTitlePage = rootView.findViewById(R.id.text_info_page);
@@ -256,7 +256,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
                 tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
 
-                showTimer(tokenData);
+                showRewards(tokenData);
 
                 prevTimeStamp = 0;
             }
@@ -307,9 +307,17 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
                 trackingLuckyEggClick();
             }
+
+            @Override
+            public void showCrackResult(CrackResultEntity crackResult){
+                setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
+                widgetCrackResult.showCrackResult(crackResult);
+
+            }
         });
         showRemainingToken(tokenUser.getTokenAsset().getSmallImgv2Url(), tokenData.getSumTokenStr());
-        showTimer(tokenData);
+        widgetEggSource.showEggSource(tokenUser.getTokenAsset().getTokenSourceUrl(), tokenData.getHome().getTokenSourceMessage());
+        showRewards(tokenData);
         showInfoTitle();
     }
 
@@ -363,7 +371,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         textCountdownTimer.requestLayout();
     }
 
-    private void showTimer(@NonNull TokenDataEntity tokenData) {
+    private void showRewards(@NonNull TokenDataEntity tokenData) {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -529,19 +537,21 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void showCrackWidgetSuccess(final CrackResultEntity crackResult) {
         initCrackTokenSuccessHandler();
-        crackTokenSuccessHandler.postDelayed(new Runnable() {
+        crackTokenSuccessHandler.post(new Runnable() {
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
                 if (getContext()!=null) {
-                    widgetTokenView.split();
-                    setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
-                    widgetCrackResult.showCrackResult(crackResult);
-
-                    trackingRewardLuckyEggView(crackResult.getBenefitType());
+                    if(widgetTokenView.isCrackPercentageFull()) {
+                        widgetTokenView.clearTokenAnimation();
+                        widgetTokenView.split(crackResult);
+                        trackingRewardLuckyEggView(crackResult.getBenefitType());
+                    }else{
+                        crackTokenSuccessHandler.postDelayed(this, 100);
+                    }
                 }
             }
-        }, widgetTokenView.isCrackPercentageFull() ? 1 : 1000);
+        });     //1250ms as egg crack animation takes 1230ms
     }
 
     private void initCrackTokenSuccessHandler() {
@@ -551,6 +561,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             crackTokenSuccessHandler.removeCallbacksAndMessages(null);
         }
     }
+
 
     public boolean isShowReward() {
         return widgetCrackResult.isShowReward();

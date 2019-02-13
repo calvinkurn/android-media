@@ -57,6 +57,7 @@
           spriteUrl
           imageUrls
           imagev2Urls
+          tokenSourceUrl
         }
       }
     }

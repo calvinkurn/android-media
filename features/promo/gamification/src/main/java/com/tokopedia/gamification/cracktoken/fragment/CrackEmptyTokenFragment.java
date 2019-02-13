@@ -1,9 +1,14 @@
 package com.tokopedia.gamification.cracktoken.fragment;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +20,22 @@ import android.widget.TextView;
 
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
+import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResult;
+import com.tokopedia.gamification.cracktoken.contract.CrackEmptyTokenContract;
+import com.tokopedia.gamification.cracktoken.presenter.CrackEmptyTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
+import com.tokopedia.gamification.di.GamificationComponent;
+
+import javax.inject.Inject;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
@@ -30,7 +43,7 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
  * Created by nabillasabbaha on 4/3/18.
  */
 
-public class CrackEmptyTokenFragment extends BaseDaggerFragment {
+public class CrackEmptyTokenFragment extends BaseDaggerFragment implements CrackEmptyTokenContract.View {
 
     private static final String TOKEN_DATA_EXTRA = "token_data";
 
@@ -40,6 +53,12 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
     private TokenDataEntity tokenData;
     private TextView title;
     private ImageView ivContainer;
+    private Toolbar toolbar;
+    private TextView toolbarTitle;
+    private WidgetRewardCrackResult widgetRewards;
+    @Inject
+    CrackEmptyTokenPresenter crackEmptyTokenPresenter;
+
 
     public static Fragment newInstance(TokenDataEntity tokenData) {
         Fragment fragment = new CrackEmptyTokenFragment();
@@ -57,17 +76,42 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         tokenEmptyImage = rootView.findViewById(R.id.empty_lucky_egg);
         getMoreTokenBtn = rootView.findViewById(R.id.get_more_token_button);
         ivContainer = rootView.findViewById(R.id.iv_container);
-
+        toolbar = rootView.findViewById(R.id.toolbar);
+        toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(getString(R.string.toko_points_title));
+        widgetRewards = rootView.findViewById(R.id.widget_rewards);
+        setUpToolBar();
         return rootView;
+    }
+
+    private void setUpToolBar() {
+        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.black));
+    }
+
+    private void setDrawableColorFilter(Drawable drawable, int color) {
+        if (drawable != null) {
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        crackEmptyTokenPresenter.getRewardsCount();
+        if (getArguments() != null)
+            tokenData = getArguments().getParcelable(TOKEN_DATA_EXTRA);
+        if (tokenData == null)
+            return;
 
-        tokenData = getArguments().getParcelable(TOKEN_DATA_EXTRA);
+        if (!TextUtils.isEmpty(tokenData.getHome().getEmptyState().getTitle())){
+            title.setVisibility(View.VISIBLE);
+            title.setText(tokenData.getHome().getEmptyState().getTitle());
+        }else{
+            title.setVisibility(View.GONE);
+        }
 
-        title.setText(tokenData.getHome().getEmptyState().getTitle());
         getMoreTokenBtn.setText(tokenData.getHome().getEmptyState().getButtonText());
 
         ImageHandler.loadImageWithSignature(ivContainer, tokenData.getHome().getEmptyState().getBackgroundImgUrl(),
@@ -112,6 +156,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
     }
 
     private void setPercentageTokenImage() {
+
+
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
@@ -126,17 +172,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         ivFullLp.topMargin = imageMarginTop;
         tokenEmptyImage.requestLayout();
 
-        int dimen = 0;
-        if (getActivity() != null) {
-            dimen = getActivity().getResources().getDimensionPixelOffset(R.dimen.dp_112);
-        }
 
-        int titleMarginTop = imageMarginTop - dimen;
-        FrameLayout.LayoutParams titleLp = (FrameLayout.LayoutParams) title.getLayoutParams();
-        ivFullLp.gravity = CENTER_HORIZONTAL;
-        titleLp.topMargin = titleMarginTop;
-        title.requestLayout();
-        title.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -146,6 +182,14 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
+        GamificationComponent gamificationComponent =
+                GamificationComponentInstance.getComponent(getActivity().getApplication());
+        gamificationComponent.inject(this);
+        crackEmptyTokenPresenter.attachView(this);
+    }
 
+    @Override
+    public void updateRewards(int points, int coupons, int loyalty) {
+        widgetRewards.setRewards(points, coupons, loyalty);
     }
 }

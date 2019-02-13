@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -33,6 +32,7 @@ import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.TokenAssetEntity;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class WidgetTokenView extends FrameLayout {
     public static final int CRACK_STEP1_SHAKE_DURATION = 150;
     public static final int CRACK_STEP1_DURATION = 350;
     public static final int CRACK_STEP1_DEGREE = 3;
-    public static final int CRACK_STEP2_DEGREE = 6;
+    public static final int CRACK_STEP2_DEGREE = 3;
     public static final int CRACK_STEP2_DURATION = 350;
     public static final int CRACK_STEP2_SHAKE_DURATION = 120;
     public static final int CRACK_STEP2_START_DELAY = 80;
@@ -62,11 +62,13 @@ public class WidgetTokenView extends FrameLayout {
     public static final int CRACK_STEP3_DEGREE = 4;
     private static final long INFINITE_BOUNCE_START_DELAY = 2000;
     private static final long INFINITE_BOUNCE_DURATION = 180;
+    private static final long CRACK_BOUNCE_DURATION = 250;
+    private static final long CRACK_BOUNCE_BACK_DURATION = 200;
 
-    private ImageView imageViewFull;
-    private MaskedHeightImageView imageViewCracked;
-    private ImageView imageViewLeft;
-    private ImageView imageViewRight;
+    private volatile ImageView imageViewFull;
+    private volatile MaskedHeightImageView imageViewCracked;
+    private volatile ImageView imageViewLeft;
+    private volatile ImageView imageViewRight;
 
 
     private volatile boolean isTokenClicked;
@@ -85,6 +87,8 @@ public class WidgetTokenView extends FrameLayout {
 
     public interface WidgetTokenListener {
         void onClick();
+
+        void showCrackResult(CrackResultEntity crackResult);
     }
 
     public WidgetTokenView(@NonNull Context context) {
@@ -282,7 +286,7 @@ public class WidgetTokenView extends FrameLayout {
     private void shakeHardAndCrackAnimation() {
         imageViewFull.setPivotY(Y_PIVOT_PERCENT * imageViewFull.getHeight());
         imageViewCracked.setPivotY(Y_PIVOT_PERCENT * imageViewCracked.getHeight());
-        imageViewCracked.setVisibility(VISIBLE);
+        imageViewCracked.setVisibility(View.VISIBLE);
         initCrackingAnimationSet();
         playCrack();
         crackingAnimationSet.start();
@@ -345,13 +349,13 @@ public class WidgetTokenView extends FrameLayout {
                     PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP1_DEGREE, 0, CRACK_STEP1_DEGREE, 0);
             ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
             shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorFull.setRepeatCount(CRACK_STEP1_DURATION / (2 * CRACK_STEP1_SHAKE_DURATION));
-            shakeAnimatorFull.setDuration(CRACK_STEP1_SHAKE_DURATION);
+            shakeAnimatorFull.setRepeatCount(1);
+            shakeAnimatorFull.setDuration(CRACK_STEP1_DURATION);
 
             ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
             shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorCrack.setRepeatCount(CRACK_STEP1_DURATION / (2 * CRACK_STEP1_SHAKE_DURATION));
-            shakeAnimatorCrack.setDuration(CRACK_STEP1_SHAKE_DURATION);
+            shakeAnimatorCrack.setRepeatCount(1);
+            shakeAnimatorCrack.setDuration(CRACK_STEP1_DURATION);
 
             PropertyValuesHolder pvhMaskedCrack =
                     PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, 100, STEP1_END_MASKED_PERCENT);
@@ -370,13 +374,13 @@ public class WidgetTokenView extends FrameLayout {
                     PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP2_DEGREE, 0, CRACK_STEP2_DEGREE, 0);
             ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
             shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorFull.setRepeatCount(CRACK_STEP2_DURATION / (2 * CRACK_STEP2_SHAKE_DURATION));
-            shakeAnimatorFull.setDuration(CRACK_STEP2_SHAKE_DURATION);
+            shakeAnimatorFull.setRepeatCount(1);
+            shakeAnimatorFull.setDuration(CRACK_STEP2_DURATION);
 
             ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
             shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorCrack.setRepeatCount(CRACK_STEP2_DURATION / (2 * CRACK_STEP2_SHAKE_DURATION));
-            shakeAnimatorCrack.setDuration(CRACK_STEP2_SHAKE_DURATION);
+            shakeAnimatorCrack.setRepeatCount(1);
+            shakeAnimatorCrack.setDuration(CRACK_STEP2_DURATION);
 
             PropertyValuesHolder pvhMaskedCrack =
                     PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, STEP1_END_MASKED_PERCENT, STEP2_END_MASKED_PERCENT);
@@ -392,17 +396,17 @@ public class WidgetTokenView extends FrameLayout {
     private void initCracking3() {
         if (crackingAnimationSet3 == null) {
             crackingAnimationSet3 = new AnimatorSet();
-            PropertyValuesHolder pvhShake =
-                    PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP3_DEGREE, 0, CRACK_STEP3_DEGREE, 0);
-            ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
-            shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorFull.setRepeatCount(ValueAnimator.INFINITE);
-            shakeAnimatorFull.setDuration(CRACK_STEP3_SHAKE_DURATION);
-
-            ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
-            shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
-            shakeAnimatorCrack.setRepeatCount(ValueAnimator.INFINITE);
-            shakeAnimatorCrack.setDuration(CRACK_STEP3_SHAKE_DURATION);
+//            PropertyValuesHolder pvhShake =
+//                    PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP3_DEGREE, 0, CRACK_STEP3_DEGREE, 0);
+//            ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
+//            shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
+//            shakeAnimatorFull.setRepeatCount(ValueAnimator.INFINITE);
+//            shakeAnimatorFull.setDuration(CRACK_STEP3_DURATION);
+//
+//            ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
+//            shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
+//            shakeAnimatorCrack.setRepeatCount(ValueAnimator.INFINITE);
+//            shakeAnimatorCrack.setDuration(CRACK_STEP3_DURATION);
 
             PropertyValuesHolder pvhMaskedCrack =
                     PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, STEP2_END_MASKED_PERCENT, 0);
@@ -410,7 +414,7 @@ public class WidgetTokenView extends FrameLayout {
             maskCrackAnimator.setInterpolator(new AccelerateInterpolator());
             maskCrackAnimator.setDuration(CRACK_STEP3_DURATION);
 
-            crackingAnimationSet3.playTogether(shakeAnimatorFull, shakeAnimatorCrack, maskCrackAnimator);
+            crackingAnimationSet3.playTogether(maskCrackAnimator);
             crackingAnimationSet3.setStartDelay(CRACK_STEP3_START_DELAY);
         }
     }
@@ -427,15 +431,12 @@ public class WidgetTokenView extends FrameLayout {
         }
     }
 
-    public void split() {
+    public void split(CrackResultEntity crackResult) {
         playRewardSound();
         AnimatorSet bounceAnimatorSet = new AnimatorSet();
-        AnimatorSet bounceLeftAnimatorSet = new AnimatorSet();
-        AnimatorSet bounceRightAnimatorSet = new AnimatorSet();
         imageViewFull.setVisibility(View.GONE);
-        imageViewCracked.setVisibility(View.GONE);
-        imageViewLeft.setVisibility(View.VISIBLE);
-        imageViewRight.setVisibility(View.VISIBLE);
+        imageViewCracked.setPivotY(imageViewFull.getHeight());
+        imageViewCracked.setPivotX(imageViewFull.getWidth() * 0.5f);
 
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
@@ -444,44 +445,88 @@ public class WidgetTokenView extends FrameLayout {
             initialBounceAnimatorSet.removeListener(bounceListener);
             initialBounceAnimatorSet.cancel();
         }
-        imageViewLeft.setPivotY(imageViewLeft.getHeight());
-        imageViewLeft.setPivotX(imageViewLeft.getWidth() * 0.5f);
-        imageViewRight.setPivotY(imageViewRight.getHeight());
-        imageViewRight.setPivotX(imageViewRight.getWidth() * 0.5f);
+
+        quickBounce();
 
         PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.25f);
         PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.7f);
 
-        ObjectAnimator animLeftBounce = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, scalex, scaley);
-        animLeftBounce.setRepeatCount(1);
-        animLeftBounce.setRepeatMode(ValueAnimator.REVERSE);
-        animLeftBounce.setDuration(200);
+        ObjectAnimator animCrackBounce = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex, scaley);
+        animCrackBounce.setRepeatCount(1);
+        animCrackBounce.setRepeatMode(ValueAnimator.REVERSE);
+        animCrackBounce.setDuration(CRACK_BOUNCE_DURATION);
 
         PropertyValuesHolder scalex1 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f);
         PropertyValuesHolder scaley1 = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f);
 
-        ObjectAnimator animLeftBounceBack = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, scalex1, scaley1);
-        animLeftBounceBack.setDuration(150);
+        ObjectAnimator animCrackBounceBack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex1, scaley1);
+        animCrackBounceBack.setDuration(CRACK_BOUNCE_BACK_DURATION);
+        bounceAnimatorSet.playSequentially(animCrackBounce, animCrackBounceBack);
+        bounceAnimatorSet.setStartDelay(4 * INFINITE_BOUNCE_DURATION);
+        bounceAnimatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
-        ObjectAnimator animRightBounce = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, scalex, scaley);
-        animRightBounce.setRepeatCount(1);
-        animRightBounce.setRepeatMode(ValueAnimator.REVERSE);
-        animRightBounce.setDuration(200);
+            }
 
-        ObjectAnimator animRightBounceBack = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, scalex1, scaley1);
-        animRightBounceBack.setDuration(150);
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Animation rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
+                Animation rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
+                imageViewRight.startAnimation(rotateRightAnimation);
+                imageViewLeft.startAnimation(rotateLeftAnimation);
+                imageViewCracked.setVisibility(View.GONE);
+                imageViewLeft.setVisibility(View.VISIBLE);
+                imageViewRight.setVisibility(View.VISIBLE);
+                rotateLeftAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-        bounceLeftAnimatorSet.playSequentially(animLeftBounce, animLeftBounceBack);
-        bounceRightAnimatorSet.playSequentially(animRightBounce, animRightBounceBack);
-        bounceAnimatorSet.playTogether(bounceLeftAnimatorSet, bounceRightAnimatorSet);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        listener.showCrackResult(crackResult);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
         bounceAnimatorSet.start();
 
-        Animation rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
-        rotateRightAnimation.setStartOffset(300);
-        imageViewRight.setAnimation(rotateRightAnimation);
-        Animation rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
-        rotateLeftAnimation.setStartOffset(300);
-        imageViewLeft.setAnimation(rotateLeftAnimation);
+    }
+
+    private void quickBounce() {
+        AnimatorSet quickBounceAnimatorSet = new AnimatorSet();
+        PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f);
+        PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f);
+        ObjectAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex, scaley);
+        bounceAnim.setRepeatCount(2);
+        bounceAnim.setRepeatMode(ValueAnimator.REVERSE);
+        bounceAnim.setDuration(INFINITE_BOUNCE_DURATION);
+
+        PropertyValuesHolder scalex1 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f);
+        PropertyValuesHolder scaley1 = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f);
+        ObjectAnimator bounceBackAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex1, scaley1);
+        bounceBackAnim.setDuration(INFINITE_BOUNCE_DURATION);
+        quickBounceAnimatorSet.playSequentially(bounceAnim, bounceBackAnim);
+        quickBounceAnimatorSet.start();
     }
 
     private void reset() {
@@ -499,7 +544,7 @@ public class WidgetTokenView extends FrameLayout {
         shake();
     }
 
-    public void clearTokenAnimationAndCrack() {
+    public void clearTokenAnimation(){
         if (initialBounceAnimatorSet != null) {
             initialBounceAnimatorSet.removeListener(bounceListener);
             initialBounceAnimatorSet.cancel();
@@ -508,6 +553,10 @@ public class WidgetTokenView extends FrameLayout {
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
+    }
+
+    public void clearTokenAnimationAndCrack() {
+        clearTokenAnimation();
         shakeHardAndCrackAnimation();
         listener.onClick();
     }
