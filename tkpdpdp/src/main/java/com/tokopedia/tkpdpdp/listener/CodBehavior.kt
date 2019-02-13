@@ -11,13 +11,13 @@ import android.util.Log
 import android.view.View
 import com.tokopedia.tkpdpdp.R
 
-class CodBehavior : CoordinatorLayout.Behavior<View>{
+class CodBehavior : CoordinatorLayout.Behavior<View> {
     private var mTempRect: Rect? = null
     private var toolbarHeight = 0
 
-    constructor(): super()
+    constructor() : super()
 
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     override fun layoutDependsOn(parent: CoordinatorLayout?, child: View?, dependency: View?): Boolean {
         return dependency is AppBarLayout
@@ -37,14 +37,14 @@ class CodBehavior : CoordinatorLayout.Behavior<View>{
 
         if (toolbarHeight == 0) {
             val styledAttributes = dependency.context.theme.obtainStyledAttributes(
-                    intArrayOf( android.R.attr.actionBarSize ))
+                    intArrayOf(android.R.attr.actionBarSize))
             toolbarHeight = styledAttributes.getDimensionPixelSize(0, 0)
         }
 
         val rect = mTempRect!!
         ViewGroupUtils.getDescendantRect(parent, dependency, rect)
 
-        if (rect.bottom <= toolbarHeight + (child?.height ?: 0)){
+        if (rect.bottom <= toolbarHeight + (child?.height ?: 0)) {
             child?.visibility = View.INVISIBLE
         } else {
             child?.visibility = View.VISIBLE

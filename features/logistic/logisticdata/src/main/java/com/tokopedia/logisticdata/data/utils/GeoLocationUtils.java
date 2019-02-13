@@ -32,6 +32,7 @@ public class GeoLocationUtils {
             destination.setLatitude(String.valueOf(latitude));
             destination.setLongitude(String.valueOf(longitude));
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            // Possible improvement : Use observable create
             Observable.just(destination).map(new Func1<Destination, List<Address>>() {
                 @Override
                 public List<Address> call(Destination destination) {
