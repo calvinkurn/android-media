@@ -170,8 +170,9 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
-            nps                         : ":features:common:nps",
+            resourcesCommon             : ":features:common:resources_common",
             developerOptions            : ":features:common:developer_options",
+            nps                         : ":features:common:nps",
 
             broadcastMessage              : ":features:communication:broadcast_message",
 //            broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
