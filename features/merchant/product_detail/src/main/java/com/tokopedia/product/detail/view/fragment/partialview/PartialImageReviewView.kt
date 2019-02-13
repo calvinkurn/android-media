@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.productview
+package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
