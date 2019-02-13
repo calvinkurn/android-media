@@ -13,6 +13,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -43,7 +44,10 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.loyalty.LoyaltyRouter;
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant;
+import com.tokopedia.product.detail.common.data.model.ProductInfo;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
@@ -60,11 +64,15 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 
 
@@ -90,6 +98,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Inject
     GetShopInfoUseCase getShopInfoUseCase;
+
+    @Inject @Named("productUseCase")
+    GraphqlUseCase<ProductInfo.Response> getProductUseCase;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity, MapUrlUseCase mapUrlUseCase) {
         this.viewListener = activity;
@@ -242,7 +253,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
                 case DeepLinkChecker.PRODUCT:
-                    openDetailProduct(linkSegment, uriData);
+                    openProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_PRODUCT_INFO;
                     break;
                 case DeepLinkChecker.SHOP:
@@ -522,6 +533,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     prepareOpenWebView(uriData);
                 }
             }
+        });
+    }
+
+    private void openProduct(final List<String> linkSegment, final Uri uriData){
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, linkSegment.get(1));
+        parameters.put(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, linkSegment.get(0));
+        getProductUseCase.setRequestParams(parameters);
+        viewListener.showLoading();
+        getProductUseCase.execute(response -> {
+            viewListener.finishLoading();
+            if (response != null && response.getData().getBasic().getId() > 0){
+                String productApplink = ApplinkConst.PRODUCT_INFO.replace("{product_id}",
+                        response.getData().getBasic().getId()+"");
+                if (RouteManager.isSupportApplink(context, productApplink)){
+                    RouteManager.route(context, productApplink);
+                } else {
+                    prepareOpenWebView(uriData);
+                }
+            }
+            return null;
+        }, throwable -> {
+            viewListener.finishLoading();
+            viewListener.networkError(uriData);
+            return null;
         });
     }
 

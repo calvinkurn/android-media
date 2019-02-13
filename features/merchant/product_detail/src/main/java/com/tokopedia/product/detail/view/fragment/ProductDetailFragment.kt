@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -39,8 +40,8 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.product.ProductInfo
-import com.tokopedia.product.detail.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -53,7 +54,7 @@ import com.tokopedia.product.detail.view.fragment.productView.PartialAttributeIn
 import com.tokopedia.product.detail.view.fragment.productView.PartialProductDescrFullView
 import com.tokopedia.product.detail.view.fragment.productView.PartialVariantAndRateEstView
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
-import com.tokopedia.product.detail.view.fragment.productview.*
+import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
@@ -64,7 +65,6 @@ import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.base.adapter.Item
-import com.tokopedia.topads.sdk.domain.Xparams
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
@@ -163,6 +163,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
         }
         activity?.run {
+            NetworkClient.init(this)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
             productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)

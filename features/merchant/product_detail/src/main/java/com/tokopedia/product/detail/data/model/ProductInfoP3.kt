@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.product.detail.data.model.product.ProductOther
+import com.tokopedia.product.detail.common.data.model.ProductOther
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.talk.ProductTalkQuery

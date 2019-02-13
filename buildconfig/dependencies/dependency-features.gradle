@@ -238,6 +238,8 @@ ext {
             goldMerchantSubscribe       : ":features:merchant:gold_merchant_subscribe",
 //            goldMerchantSubscribe     : ":features:merchant:gold_merchant_subscribe_no_op",
             productDraftDatabase        : ":features:merchant:product_draft_database",
+            productDetailCommon         : ":features:merchant:product_detail_common",
+            productDetailRevamp         : ":features:merchant:product_detail",
             productManageItem           : ":features:merchant:product_manage_item",
             productManageList           : ":features:merchant:product_manage_list",
             productManageDetail         : ":features:merchant:product_detail",
@@ -271,10 +273,10 @@ ext {
             promoCheckoutCommon         : ":features:promo:promo_checkout_common",
 
             topAdsDashboard             : ":features:top_ads:top_ads_dashboard",
-            //topAdsDashboard           : ":features:top_ads:top_ads_dashboard_no_op",
+//            topAdsDashboard           : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",
             topAdsManagement            : ":features:top_ads:top_ads_management",
-            //topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
+//            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon      : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging         : ":features:top_ads:top_ads_management_sourcetagging",
 

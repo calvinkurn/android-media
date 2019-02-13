@@ -18,11 +18,14 @@ import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
+import com.tokopedia.product.detail.common.data.model.*
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.TopAdsDisplayResponse
-import com.tokopedia.product.detail.data.model.product.*
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
@@ -298,9 +301,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     fun isUserSessionActive(): Boolean = userSessionInterface.userId.isNotEmpty()
 
     companion object {
-        private const val PARAM_PRODUCT_ID = "productID"
-        private const val PARAM_SHOP_DOMAIN = "shopDomain"
-        private const val PARAM_PRODUCT_KEY = "productKey"
 
         private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_FIELDS = "fields"

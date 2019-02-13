@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.product.ProductOther
+import com.tokopedia.product.detail.common.data.model.ProductOther
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import kotlinx.android.synthetic.main.item_other_product.view.*
 

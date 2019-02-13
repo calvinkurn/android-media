@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.productShare)
+    implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.gallery)

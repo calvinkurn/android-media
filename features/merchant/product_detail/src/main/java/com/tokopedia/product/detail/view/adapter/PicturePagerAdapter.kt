@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.tokopedia.product.detail.data.model.product.Picture
+import com.tokopedia.product.detail.common.data.model.Picture
 
 class PicturePagerAdapter(private val context: Context,
                           private val pictures: MutableList<Picture> = mutableListOf(),

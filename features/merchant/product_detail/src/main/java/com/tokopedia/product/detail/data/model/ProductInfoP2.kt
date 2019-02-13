@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.data.model.product.Rating
-import com.tokopedia.product.detail.data.model.product.WishlistCount
+import com.tokopedia.product.detail.common.data.model.Rating
+import com.tokopedia.product.detail.common.data.model.WishlistCount
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 
 data class ProductInfoP2(
