@@ -1,6 +1,7 @@
 package com.tokopedia.network.utils;
 
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
@@ -278,19 +279,19 @@ public class AuthUtil {
         return gson.toJson(header);
     }
 
-    public static Map<String, String> getHeaderRequestReact(Context context) {
+    public static Map<String, String> getAuthHeaderReact(Context context,
+                                                         String path,
+                                                         String strParam,
+                                                         String method,
+                                                         String contentType) {
         UserSession session = new UserSession(context);
-        Map<String, String> headers = new HashMap<>();
+        Map<String, String> headers = getDefaultHeaderMap(path, strParam, method, contentType, KEY.KEY_WSV4_NEW, DATE_FORMAT, session.getUserId());
         headers.put(HEADER_SESSION_ID, session.getDeviceId());
         headers.put(HEADER_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
         headers.put(HEADER_ACCOUNT_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER, session.getAccessToken()));
         headers.put(PARAM_OS_TYPE, "1");
         headers.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
-        headers.put(HEADER_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
-        headers.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_NAME));
         headers.put(HEADER_X_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
-        headers.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        headers.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
 
         if(context.getApplicationContext() instanceof NetworkRouter) {
             FingerprintModel fingerprintModel = ((NetworkRouter) context.getApplicationContext()).getFingerprintModel();
