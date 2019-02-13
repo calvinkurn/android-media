@@ -17,12 +17,12 @@ class PlayPresenter @Inject constructor(
     : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter{
 
 
-    fun getPlayInfo(channelId: String?) {
+    fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit) {
         getPlayInfoUseCase.execute(
                 GetPlayInfoUseCase.createParams(channelId),
                 object : Subscriber<ChannelInfoViewModel>() {
                     override fun onNext(t: ChannelInfoViewModel?) {
-                        Log.d("tevplay", t.toString())
+                        t?.let { onSuccessGetInfo(it) }
                     }
 
                     override fun onCompleted() {

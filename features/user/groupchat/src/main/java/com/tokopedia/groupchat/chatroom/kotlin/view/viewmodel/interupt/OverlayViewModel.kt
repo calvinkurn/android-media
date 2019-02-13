@@ -2,12 +2,11 @@ package com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.interupt
 
 import android.os.Parcel
 import android.os.Parcelable
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.groupchat.chatroom.kotlin.domain.pojo.BaseGroupChatPojo
 import com.tokopedia.groupchat.chatroom.kotlin.view.adapter.chatroom.typefactory.GroupChatTypeFactory
+import com.tokopedia.groupchat.room.domain.pojo.BaseGroupChatPojo
 
 /**
  * @author by yfsx on 14/12/18.
@@ -38,7 +37,7 @@ import com.tokopedia.groupchat.chatroom.kotlin.view.adapter.chatroom.typefactory
         dest.writeParcelable(this.interuptViewModel, flags)
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel) : this() {
         this.isCloseable = `in`.readByte().toInt() != 0
         this.status = `in`.readInt()
         this.interuptViewModel = `in`.readParcelable(InteruptViewModel::class.java.classLoader)

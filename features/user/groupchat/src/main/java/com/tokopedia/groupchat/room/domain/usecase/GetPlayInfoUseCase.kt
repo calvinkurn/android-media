@@ -15,13 +15,13 @@ class GetPlayInfoUseCase @Inject constructor(private val channelInfoSource: Chan
 
     override fun createObservable(requestParams: RequestParams): Observable<ChannelInfoViewModel> {
         return channelInfoSource.getChannelInfo(requestParams.getString(
-                com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase.PARAM_CHANNEL_UUID, ""),
+                PARAM_CHANNEL_UUID, ""),
                 getRequestParamsWithoutPath(requestParams))
     }
 
     companion object {
 
-        val PARAM_CHANNEL_UUID = "channel_uuid"
+        const val PARAM_CHANNEL_UUID = "channel_uuid"
         private val PARAM_IS_REFRESH = "is_refresh"
         private val TRUE = 1
         private val FALSE = 0
