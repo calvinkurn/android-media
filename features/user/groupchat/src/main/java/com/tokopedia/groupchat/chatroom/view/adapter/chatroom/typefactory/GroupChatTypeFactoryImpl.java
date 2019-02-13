@@ -47,6 +47,10 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
         groupChatPointsViewHolderListener = fragment;
     }
 
+    public GroupChatTypeFactoryImpl() {
+
+    }
+
     @Override
     public int type(AdminAnnouncementViewModel adminAnnouncementViewModel) {
         return AdminAnnouncementViewHolder.LAYOUT;
