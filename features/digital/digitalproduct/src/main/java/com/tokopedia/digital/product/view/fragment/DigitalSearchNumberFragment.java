@@ -104,8 +104,8 @@ public class DigitalSearchNumberFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if (getArguments() != null){
             setupArguments(getArguments());
         }

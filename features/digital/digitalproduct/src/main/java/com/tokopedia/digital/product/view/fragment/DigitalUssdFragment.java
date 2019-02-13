@@ -152,6 +152,11 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
             digitalModuleRouter = (DigitalModuleRouter) getActivity().getApplicationContext();
         }
+
+        if (getArguments() != null){
+            setupArguments(getArguments());
+        }
+
     }
 
     @Override
@@ -165,14 +170,9 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getArguments() != null){
-            setupArguments(getArguments());
-        }
-
         if (savedInstanceState != null){
             onRestoreState(savedInstanceState);
         }
-
         presenter = new UssdProductDigitalPresenter(this);
     }
 
