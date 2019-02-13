@@ -19,6 +19,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
@@ -88,6 +89,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA =
             "EXTRA_STATE_CHECKOUT_PASS_DATA";
 
+    private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
+
     private final int COUPON_ACTIVE = 1;
 
     private CheckoutHolderView checkoutHolderView;
@@ -106,6 +109,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
     private boolean isAlreadyShowPostPaidPopUp;
+
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     @Inject
     CartDigitalPresenter presenter;
@@ -131,6 +137,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void navigateToLoggedInPage() {
+        stopTrace();
         if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
             Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
                     .getLoginIntent(getActivity());
@@ -138,6 +145,20 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
             }
         }
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_CHECKOUT_TRACE);
     }
 
     @Override

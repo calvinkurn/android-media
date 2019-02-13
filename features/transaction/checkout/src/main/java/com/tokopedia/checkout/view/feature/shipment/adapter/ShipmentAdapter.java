@@ -11,12 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
@@ -29,16 +25,22 @@ import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewH
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentRecipientAddressViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceTncModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -59,6 +61,7 @@ import javax.inject.Inject;
 public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int DEFAULT_ERROR_POSITION = -1;
+    public static final int HEADER_POSITION = 0;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -101,7 +104,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         Object item = shipmentDataList.get(position);
 
-        if (item instanceof PromoData) {
+        if (item instanceof ShipmentNotifierModel) {
+            return ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD;
+        } else if (item instanceof PromoData) {
             return CartVoucherPromoViewHolder.TYPE_VIEW_PROMO;
         } else if (item instanceof CartPromoSuggestion) {
             return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
@@ -126,7 +131,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
 
-        if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
+        if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
+            return new ShipmentNotifierViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             return new CartVoucherPromoViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             return new CartPromoSuggestionViewHolder(view, shipmentAdapterActionListener);
@@ -151,7 +158,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int viewType = getItemViewType(position);
         Object data = shipmentDataList.get(position);
 
-        if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
+        if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
+            ((ShipmentNotifierViewHolder) holder).bind((ShipmentNotifierModel) data);
+        } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             ((CartVoucherPromoViewHolder) holder).bindData((PromoData) data, position);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestion) data, position);
@@ -206,13 +215,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .customView(R.layout.show_case_checkout)
                 .prevStringRes(R.string.show_case_prev)
                 .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
+                .spacingRes(R.dimen.dp_12)
+                .arrowWidth(R.dimen.dp_16)
                 .textColorRes(R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(R.color.black)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.fontvs)
+                .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)
@@ -233,9 +242,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
+    public void addNotifierData(ShipmentNotifierModel shipmentNotifierModel) {
+        if (shipmentNotifierModel != null) {
+            shipmentDataList.add(HEADER_POSITION, shipmentNotifierModel);
+        }
+    }
+
     public void addPromoVoucherData(PromoData promoData) {
-        this.promoData = promoData;
-        shipmentDataList.add(promoData);
+        if (promoData != null) {
+            this.promoData = promoData;
+            shipmentDataList.add(promoData);
+        }
     }
 
     public void addPromoSuggestionData(CartPromoSuggestion cartPromoSuggestion) {
@@ -246,25 +263,33 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddressModel) {
-        this.recipientAddressModel = recipientAddressModel;
-        shipmentDataList.add(recipientAddressModel);
+        if (recipientAddressModel != null) {
+            this.recipientAddressModel = recipientAddressModel;
+            shipmentDataList.add(recipientAddressModel);
+        }
     }
 
     public void addCartItemDataList(List<ShipmentCartItemModel> shipmentCartItemModel) {
-        this.shipmentCartItemModelList = shipmentCartItemModel;
-        shipmentDataList.addAll(shipmentCartItemModel);
-        checkDataForCheckout();
+        if (shipmentCartItemModel != null) {
+            this.shipmentCartItemModelList = shipmentCartItemModel;
+            shipmentDataList.addAll(shipmentCartItemModel);
+            checkDataForCheckout();
+        }
     }
 
     public void addShipmentCostData(ShipmentCostModel shipmentCostModel) {
-        this.shipmentCostModel = shipmentCostModel;
-        shipmentDataList.add(shipmentCostModel);
-        updateShipmentCostModel();
+        if (shipmentCostModel != null) {
+            this.shipmentCostModel = shipmentCostModel;
+            shipmentDataList.add(shipmentCostModel);
+            updateShipmentCostModel();
+        }
     }
 
     public void addShipmentDonationModel(ShipmentDonationModel shipmentDonationModel) {
-        this.shipmentDonationModel = shipmentDonationModel;
-        shipmentDataList.add(shipmentDonationModel);
+        if (shipmentDonationModel != null) {
+            this.shipmentDonationModel = shipmentDonationModel;
+            shipmentDataList.add(shipmentDonationModel);
+        }
     }
 
     public void updateCheckoutButtonData(String defaultTotal) {
@@ -343,7 +368,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     return true;
                 }
 
-                for(CartItemModel item : shipmentCartItemModel.getCartItemModels()) {
+                for (CartItemModel item : shipmentCartItemModel.getCartItemModels()) {
                     if (item.isProtectionOptIn()) return true;
                 }
             }
@@ -381,13 +406,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (Object item : shipmentDataList) {
             if (item instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) item).getSelectedShipmentDetailData() != null) {
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setSelectedShipment(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setSelectedCourier(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUseDropshipper(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setDropshipperPhone(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setDropshipperName(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUseInsurance(null);
-                    ((ShipmentCartItemModel) item).getSelectedShipmentDetailData().setUsePartialOrder(false);
+                    ((ShipmentCartItemModel) item).setSelectedShipmentDetailData(null);
                 }
             } else if (item instanceof ShipmentCostModel) {
                 ((ShipmentCostModel) item).setAdditionalFee(0);
@@ -439,7 +458,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void checkDropshipperValidation() {
+    public void checkDropshipperValidation(int requestCode) {
         boolean hasSelectAllCourier = checkHasSelectAllCourier(true);
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
@@ -463,9 +482,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
 
-            shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition);
+            shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition, requestCode);
         } else {
-            shipmentAdapterActionListener.onDropshipperValidationResult(false, null, 0);
+            shipmentAdapterActionListener.onDropshipperValidationResult(false, null, 0, requestCode);
         }
     }
 
@@ -586,7 +605,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null);
-                if(!passCheckShipmentFromPaymentClick) {
+                if (!passCheckShipmentFromPaymentClick) {
                     shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData());
                 }
                 shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
@@ -615,7 +634,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
                     totalItem += cartItemModel.getQuantity();
 
-                    if(cartItemModel.isProtectionOptIn()) {
+                    if (cartItemModel.isProtectionOptIn()) {
                         totalPurchaseProtectionItem += cartItemModel.getQuantity();
                         totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
                     }
@@ -673,47 +692,49 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromo(PromoCodeCartShipmentData.DataVoucher dataVoucher) {
-        if (dataVoucher != null ) {
-            if(TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState())  == TickerCheckoutView.State.ACTIVE) {
-                shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
-                shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
-            }else{
+        if (shipmentCostModel != null) {
+            if (dataVoucher != null) {
+                if (TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState()) == TickerCheckoutView.State.ACTIVE) {
+                    shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
+                    shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+                } else {
+                    shipmentCostModel.setPromoPrice(0);
+                    shipmentCostModel.setPromoMessage(null);
+                }
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    Object itemAdapter = shipmentDataList.get(i);
+                    if (itemAdapter instanceof CartPromoSuggestion) {
+                        ((CartPromoSuggestion) itemAdapter).setVisible(false);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof RecipientAddressModel) {
+                        ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                        updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true);
+                    }
+                }
+            } else {
                 shipmentCostModel.setPromoPrice(0);
                 shipmentCostModel.setPromoMessage(null);
-            }
-            for (int i = 0; i < shipmentDataList.size(); i++) {
-                Object itemAdapter = shipmentDataList.get(i);
-                if (itemAdapter instanceof CartPromoSuggestion) {
-                    ((CartPromoSuggestion) itemAdapter).setVisible(false);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof RecipientAddressModel) {
-                    ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof ShipmentCartItemModel) {
-                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true);
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    Object itemAdapter = shipmentDataList.get(i);
+                    if (itemAdapter instanceof PromoData) {
+                        ((PromoData) itemAdapter).setState(TickerCheckoutView.State.EMPTY);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof CartPromoSuggestion) {
+                        ((CartPromoSuggestion) itemAdapter).setVisible(true);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof RecipientAddressModel) {
+                        ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
+                        notifyItemChanged(i);
+                    } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                        updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
+                    }
                 }
             }
-        } else {
-            shipmentCostModel.setPromoPrice(0);
-            shipmentCostModel.setPromoMessage(null);
-            for (int i = 0; i < shipmentDataList.size(); i++) {
-                Object itemAdapter = shipmentDataList.get(i);
-                if (itemAdapter instanceof PromoData) {
-                    ((PromoData) itemAdapter).setState(TickerCheckoutView.State.EMPTY);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof CartPromoSuggestion) {
-                    ((CartPromoSuggestion) itemAdapter).setVisible(true);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof RecipientAddressModel) {
-                    ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
-                    notifyItemChanged(i);
-                } else if (itemAdapter instanceof ShipmentCartItemModel) {
-                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
-                }
-            }
+            updateShipmentCostModel();
+            notifyItemChanged(getShipmentCostPosition());
         }
-        updateShipmentCostModel();
-        notifyItemChanged(getShipmentCostPosition());
     }
 
     public void resetCourierPromoState() {

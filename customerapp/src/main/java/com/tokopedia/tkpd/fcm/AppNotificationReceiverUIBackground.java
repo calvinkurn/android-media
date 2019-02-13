@@ -43,7 +43,6 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 
 import java.util.Map;
 
@@ -143,22 +142,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             serverId,
                             new SavePushNotificationCallback()
                     );
-                    break;
-
-                case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                        ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
-                    } else {
-                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                        String fullname = data.getString("full_name");
-
-                            applink = String.format("%s?fullname=%s", applink, fullname);
-
-                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                        buildNotifByData(data);
-
-                    }
                     break;
                 case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
                     if (SessionHandler.isUserHasShop(mContext)) {

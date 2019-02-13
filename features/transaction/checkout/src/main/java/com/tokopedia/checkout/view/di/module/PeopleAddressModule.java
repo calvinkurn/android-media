@@ -4,7 +4,7 @@ import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepositoryImpl;
 import com.tokopedia.checkout.view.common.utils.PagingHandler;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,18 +22,14 @@ public class PeopleAddressModule {
     }
 
     @Provides
-    PeopleService providePeopleService() {
-        return new PeopleService();
-    }
-
-    @Provides
     AddressModelMapper providePeopleAddressMapper() {
         return new AddressModelMapper();
     }
 
     @Provides
-    PeopleAddressRepositoryImpl providePeopleAddressRepositoryImpl(PeopleService peopleService, AddressModelMapper addressModelMapper) {
-        return new PeopleAddressRepositoryImpl(peopleService, addressModelMapper);
+    PeopleAddressRepositoryImpl providePeopleAddressRepositoryImpl(PeopleActApi peopleActApi,
+                                                                   AddressModelMapper addressModelMapper) {
+        return new PeopleAddressRepositoryImpl(peopleActApi, addressModelMapper);
     }
 
     @Provides

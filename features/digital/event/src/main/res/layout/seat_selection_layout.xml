@@ -116,8 +116,8 @@
 
         <ImageView
             android:id="@+id/small_preview"
-            android:layout_width="@dimen/pager_height"
-            android:layout_height="@dimen/pager_height"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_200"
             android:padding="@dimen/dp_8" />
     </FrameLayout>
 

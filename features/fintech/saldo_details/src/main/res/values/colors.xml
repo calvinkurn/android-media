@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sp_label_color">#868686</color>
+    <color name="sp_time_color">#61000000</color>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_apps"
+    android:orientation="vertical">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_flight_search_title_route"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/dp_8"
+        android:textSize="@dimen/sp_11"
+        app:fontSize="micro"
+        app:textViewTheme="lightDisabled"
+        tools:text="@string/flight_search_choose_return_flight" />
+
+</LinearLayout>

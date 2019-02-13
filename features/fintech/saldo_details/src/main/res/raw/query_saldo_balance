@@ -1,0 +1,7 @@
+query SaldoQuery($type: String!) {
+  saldo(type: $type) {
+      deposit
+      deposit_fmt
+      __typename
+      }
+  }

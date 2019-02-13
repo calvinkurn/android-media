@@ -201,8 +201,15 @@ public protected *;
 
 -dontwarn com.tokopedia.topchat.R$id
 
+# -- Coroutines --
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
 -keep public class android.support.design.widget.BottomNavigationView { *; }
 -keep public class android.support.design.internal.BottomNavigationMenuView { *; }
 -keep public class android.support.design.internal.BottomNavigationPresenter { *; }
 -keep public class android.support.design.internal.BottomNavigationItemView { *; }
+-keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}

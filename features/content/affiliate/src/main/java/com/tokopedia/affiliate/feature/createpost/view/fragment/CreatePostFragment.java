@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivi
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
-import com.tokopedia.affiliate.feature.createpost.view.preference.CreatePostPreference;
+import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager;
@@ -53,7 +54,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Inject
     CreatePostContract.Presenter presenter;
     @Inject
-    CreatePostPreference createPostPreference;
+    AffiliatePreference affiliatePreference;
     @Inject
     AffiliateAnalytics affiliateAnalytics;
 
@@ -229,12 +230,21 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     public void onErrorNotAffiliate() {
         if (getActivity() != null) {
+            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+
             String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
                     .concat(PRODUCT_ID_QUERY_PARAM)
                     .concat(viewModel.getProductId());
-            Intent intent = RouteManager.getIntent(getActivity(), onboardingApplink);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            Intent onboardingIntent = RouteManager.getIntent(getActivity(), onboardingApplink);
+            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            taskStackBuilder.addNextIntent(onboardingIntent);
+
+            Intent educationIntent = RouteManager.getIntent(
+                    getActivity(),
+                    ApplinkConst.AFFILIATE_EDUCATION);
+            taskStackBuilder.addNextIntent(educationIntent);
+
+            taskStackBuilder.startActivities();
             getActivity().finish();
         }
     }
@@ -304,7 +314,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             affiliateAnalytics.onTambahGambarButtonClicked(viewModel.getProductId());
             if (shouldShowExample()) {
                 goToImageExample(true);
-                createPostPreference.setFirstTime(getUserSession().getUserId());
+                affiliatePreference.setFirstTimeCreatePost(getUserSession().getUserId());
             } else {
                 goToImagePicker();
             }
@@ -338,7 +348,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private boolean shouldShowExample() {
-        return createPostPreference.isFirstTimeUser(getUserSession().getUserId());
+        return affiliatePreference.isFirstTimeCreatePost(getUserSession().getUserId());
     }
 
     private void setupHeader(Guide guide) {

@@ -222,8 +222,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value
-                || source.getId() == R.id.bottom_view_membership) {
+        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -231,6 +230,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
                     mValueMembershipDescription);
+        } else if (source.getId() == R.id.bottom_view_membership) {
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
@@ -335,28 +342,28 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
                 }
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FLOATING_LUCKY,
+                        "");
             });
 
             getView().findViewById(R.id.text_token_title).setOnClickListener(view -> {
                 if (mSumToken <= 0) {
                     showStartPurchaseBottomSheet(lobDetails.getTitle());
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_EMPTY,
-                            "");
                 } else {
                     if (getActivity() != null) {
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
-                            "");
                 }
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
+                        "");
             });
         }
     }
@@ -536,8 +543,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
         switch (resCode) {
             case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                labelPositive = getString(R.string.tp_label_shopping);
-                labelNegative = getString(R.string.tp_label_later);
+                labelPositive = getString(R.string.tp_label_ok);
                 break;
             case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                 labelPositive = getString(R.string.tp_label_complete_profile);
@@ -565,13 +571,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         if (labelNegative != null && !labelNegative.isEmpty()) {
             adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
                 switch (resCode) {
-                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                        AnalyticsTrackerUtil.sendEvent(getContext(),
-                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                                "");
-                        break;
                     case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                         AnalyticsTrackerUtil.sendEvent(getContext(),
                                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -594,8 +593,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
-
+                    dialogInterface.cancel();
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
@@ -658,10 +656,22 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
                     mPresenter.setPagerSelectedItem(position);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_PENUKARAN,
+                            "");
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
                     mPresenter.setPagerSelectedItem(position);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_KUPON_SAYA,
+                            "");
                 }
             }
 

@@ -62,9 +62,9 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {
-            networkInteractor.editAddress(mView.context(), param, getListener());
+            networkInteractor.editAddress(mView.context(), param, getListener(true));
         } else {
-            networkInteractor.addAddress(mView.context(), param, getListener());
+            networkInteractor.addAddress(mView.context(), param, getListener(false));
         }
     }
 
@@ -72,12 +72,20 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     public void requestReverseGeoCode(Context context, Destination destination) {
         GeoLocationUtils.getReverseGeoCodeParallel(context,
                 Double.parseDouble(destination.getLatitude()),
-                Double.parseDouble(destination.getLongitude()), resultAddress -> {
-                    mView.setPinpointAddress(resultAddress);
+                Double.parseDouble(destination.getLongitude()), new GeoLocationUtils.GeoLocationListener() {
+                    @Override
+                    public void getGeoCode(String resultAddress) {
+                        mView.setPinpointAddress(resultAddress);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        mView.showErrorSnackbar(message);
+                    }
                 });
     }
 
-    private AddressRepository.AddAddressListener getListener() {
+    private AddressRepository.AddAddressListener getListener(boolean isEditOperation) {
         return new AddressRepository.AddAddressListener() {
             @Override
             public void onSuccess(String address_id) {
@@ -88,6 +96,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                     mView.setAddress(address);
                 }
                 mView.successSaveAddress();
+                if (!isEditOperation) mView.onAddAddressSubmitSuccessRendered();
                 mView.finishActivity();
             }
 

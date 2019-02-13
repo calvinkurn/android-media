@@ -45,7 +45,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
+import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
@@ -161,18 +161,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
         daggerLoginComponent.inject(this);
     }
-
-//    public void initOuterInjector(SessionModule sessionModule) {
-//        AppComponent appComponent = getComponent(AppComponent.class);
-//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-//                DaggerSessionComponent.builder()
-//                        .appComponent(appComponent)
-//                        .sessionModule(sessionModule)
-//                        .build();
-//        daggerSessionComponent.inject(this);
-//
-//        presenter.attachView(this);
-//    }
 
     @Override
     public void onStart() {
@@ -614,11 +602,13 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     private void onLoginPhoneNumberClick() {
-        if (getActivity() != null) {
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
             actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_PHONE;
 
             analytics.eventClickLoginPhoneNumber(getActivity().getApplicationContext());
-            Intent intent = CheckLoginPhoneNumberActivity.getCallingIntent(getActivity());
+
+            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                    .getCheckLoginPhoneNumberIntent(getActivity());
             startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
         }
 
@@ -872,5 +862,10 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void stopTrace() {
+        //Not implemented here
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.flight.search.presentation.fragment;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
@@ -24,8 +22,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
@@ -48,7 +48,9 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +81,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
     private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
     private static final String SAVED_PROGRESS = "svd_progress";
+    private static final String FLIGHT_SEARCH_TRACE = "tr_flight_search";
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
 
@@ -100,6 +103,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     private FlightFilterModel flightFilterModel;
     private HorizontalProgressBar progressBar;
     private SwipeToRefresh swipeToRefresh;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean traceStop = false;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle bundle = new Bundle();
@@ -129,6 +134,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
             setNeedRefreshFromCache(true);
         }
+
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_SEARCH_TRACE);
     }
 
     @Nullable
@@ -164,15 +171,19 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void onResume() {
         super.onResume();
-        flightSearchPresenter.attachView(this);
-
         flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        flightSearchPresenter.unsubscribeAll();
+    }
+
+    @Override
+    public void onDestroy() {
         flightSearchPresenter.detachView();
+        super.onDestroy();
     }
 
     @Override
@@ -196,14 +207,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                             onSelectedFromDetail(selectedId);
                         }
                     }
-                    break;
-                case REQUEST_CODE_CHANGE_DATE:
-                    flightSearchPresenter.attachView(this);
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
-                    Calendar calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                     break;
             }
         }
@@ -283,7 +286,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void loadInitialData() {}
+    public void loadInitialData() {
+    }
 
     @Override
     public void loadData(int page) {
@@ -551,6 +555,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
+    public void traceStop() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
+    }
+
+    @Override
     public void onRetryClicked() {
         getAdapter().clearAllElements();
         flightSearchPresenter.resetCounterCall();
@@ -624,22 +636,49 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     public void onChangeDateClicked() {
         if (!getActivity().isFinishing()) {
+            Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+            maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
+            maxDate = FlightDateUtil.trimDate(maxDate);
+            String title = getString(R.string.travel_calendar_label_choose_departure_trip_date);
+            Date minDate;
+
+            if (isReturning()) {
+                String dateDepStr = passDataViewModel.getDate(false);
+                Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
+                minDate = FlightDateUtil.trimDate(dateDep);
+                title = getString(R.string.travel_calendar_label_choose_return_trip_date);
+            } else {
+                minDate = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate());
+
+                boolean isOneWay = passDataViewModel.isOneWay();
+                if (!isOneWay) {
+                    String dateReturnStr = passDataViewModel.getDate(true);
+                    Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
+                    maxDate = FlightDateUtil.trimDate(dateReturn);
+                }
+            }
+
             final String dateInput = passDataViewModel.getDate(isReturning());
             Date date = FlightDateUtil.stringToDate(dateInput);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                            flightSearchPresenter.resetCounterCall();
-                            flightSearchPresenter.onSuccessDateChanged(year, month, dayOfMonth);
-                        }
-                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-            DatePicker datePicker = datePickerDialog.getDatePicker();
-            setMinMaxDatePicker(datePicker);
-
-            datePickerDialog.show();
+            TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                    .setShowHoliday(true)
+                    .setMinDate(minDate)
+                    .setMaxDate(maxDate)
+                    .setTitle(title)
+                    .setSelectedDate(date)
+                    .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
+                    .build();
+            travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+                @Override
+                public void onClickDate(@NotNull Date dateSelected) {
+                    Calendar calendar = FlightDateUtil.getCurrentCalendar();
+                    calendar.setTime(dateSelected);
+                    flightSearchPresenter.resetCounterCall();
+                    flightSearchPresenter.onSuccessDateChanged(calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                }
+            });
+            travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "travel calendar");
         }
     }
 
@@ -811,33 +850,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                 flightSearchPresenter.setDelayHorizontalProgress();
             } else {
                 progressBar.setProgress(progress);
-            }
-        }
-    }
-
-    private void setMinMaxDatePicker(DatePicker datePicker) {
-        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
-        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
-        maxDate = FlightDateUtil.trimDate(maxDate);
-
-        if (isReturning()) {
-            String dateDepStr = passDataViewModel.getDate(false);
-            Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
-            dateDep = FlightDateUtil.trimDate(dateDep);
-            datePicker.setMinDate(dateDep.getTime());
-            datePicker.setMaxDate(maxDate.getTime());
-        } else {
-            Date dateNow = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate());
-            datePicker.setMinDate(dateNow.getTime());
-
-            boolean isOneWay = passDataViewModel.isOneWay();
-            if (!isOneWay) {
-                String dateReturnStr = passDataViewModel.getDate(true);
-                Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
-                dateReturn = FlightDateUtil.trimDate(dateReturn);
-                datePicker.setMaxDate(dateReturn.getTime());
-            } else {
-                datePicker.setMaxDate(maxDate.getTime());
             }
         }
     }

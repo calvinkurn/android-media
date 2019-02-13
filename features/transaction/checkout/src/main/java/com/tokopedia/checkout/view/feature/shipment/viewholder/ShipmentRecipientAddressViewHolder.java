@@ -13,12 +13,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-        if (recipientAddress.isFromPdp()) {
+        if (recipientAddress.isDisableMultipleAddress()) {
             tvSendToMultipleAddress.setVisibility(View.GONE);
         } else {
             tvSendToMultipleAddress.setVisibility(View.VISIBLE);
@@ -102,7 +102,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             }
         });
 
-        renderPickupPoint(pickupPointLayout, recipientAddress);
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
     }
 
@@ -128,42 +127,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                 + recipientAddress.getCityName() + ", "
                 + recipientAddress.getProvinceName() + ", "
                 + recipientAddress.getRecipientPhoneNumber();
-    }
-
-    private void renderPickupPoint(PickupPointLayout pickupPointLayout,
-                                   final RecipientAddressModel recipientAddress) {
-
-        pickupPointLayout.setListener(pickupPointListener(recipientAddress));
-
-        if (recipientAddress.getStore() == null) {
-            pickupPointLayout.unSetData(pickupPointLayout.getContext());
-            pickupPointLayout.enableChooserButton(pickupPointLayout.getContext());
-        } else {
-            pickupPointLayout.setData(pickupPointLayout.getContext(),
-                    recipientAddress.getStore().getStoreName(), recipientAddress.getStore().getAddress());
-        }
-
-    }
-
-    private PickupPointLayout.ViewListener pickupPointListener(
-            final RecipientAddressModel recipientAddress) {
-
-        return new PickupPointLayout.ViewListener() {
-            @Override
-            public void onChoosePickupPoint() {
-                shipmentAdapterActionListener.onChoosePickupPoint(recipientAddress);
-            }
-
-            @Override
-            public void onClearPickupPoint() {
-                shipmentAdapterActionListener.onClearPickupPoint(recipientAddress);
-            }
-
-            @Override
-            public void onEditPickupPoint() {
-                shipmentAdapterActionListener.onEditPickupPoint(recipientAddress);
-            }
-        };
     }
 
     private void formatAddressName(TextView textView, String recipientName, String addressName) {

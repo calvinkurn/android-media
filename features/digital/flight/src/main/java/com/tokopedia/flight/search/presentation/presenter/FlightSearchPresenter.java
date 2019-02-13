@@ -86,7 +86,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 
     @Override
     public void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
@@ -96,7 +97,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
-        flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(), journeyViewModel, adapterPosition);
+        if (isViewAttached()) {
+            flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(), journeyViewModel, adapterPosition);
+        }
         deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(journeyViewModel));
     }
 
@@ -367,6 +370,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+
+                        if (isViewAttached()) {
+                            getView().traceStop();
+                        }
                     }
 
                     @Override
@@ -380,25 +387,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                         if (getView().isDoneLoadData()) {
                             getView().addBottomPaddingForSortAndFilterActionButton();
                             getView().addToolbarElevation();
+                            getView().traceStop();
                         }
                     }
                 }
         );
-    }
-
-    @Override
-    public void detachView() {
-        if (compositeSubscription.hasSubscriptions()) {
-            compositeSubscription.unsubscribe();
-        }
-
-        flightSearchJourneyByIdUseCase.unsubscribe();
-        flightDeleteFlightSearchReturnDataUseCase.unsubscribe();
-        flightSearchCombinedUseCase.unsubscribe();
-        flightSortAndFilterUseCase.unsubscribe();
-        flightSearchV2UseCase.unsubscribe();
-
-        super.detachView();
     }
 
     @Override
@@ -409,6 +402,19 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Override
     public void resetCounterCall() {
         callCounter = 0;
+    }
+
+    @Override
+    public void unsubscribeAll() {
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
+        flightSearchJourneyByIdUseCase.unsubscribe();
+        flightDeleteFlightSearchReturnDataUseCase.unsubscribe();
+        flightSearchCombinedUseCase.unsubscribe();
+        flightSortAndFilterUseCase.unsubscribe();
+        flightSearchV2UseCase.unsubscribe();
     }
 
     private void deleteFlightReturnSearch(Subscriber subscriber) {

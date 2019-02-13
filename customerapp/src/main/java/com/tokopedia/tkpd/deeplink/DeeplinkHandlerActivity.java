@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.deeplink;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,10 +17,15 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -36,6 +40,8 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
@@ -58,6 +64,8 @@ import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
@@ -72,9 +80,10 @@ import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
+import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
+import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
@@ -89,13 +98,16 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
+import com.tokopedia.referral.deeplink.ReferralDeeplinkModule;
+import com.tokopedia.referral.deeplink.ReferralDeeplinkModuleLoader;
+import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModule;
+import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
 import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
@@ -116,14 +128,10 @@ import com.tokopedia.train.applink.TrainApplinkModule;
 import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
-import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -136,6 +144,7 @@ import io.branch.referral.BranchError;
         ProductAddDeeplinkModule.class,
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
+        ReferralDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
@@ -179,8 +188,12 @@ import io.branch.referral.BranchError;
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
+        PaymentSettingApplinkModule.class,
         RNDevOptionsApplinkModule.class,
-        UserIdentificationApplinkModule.class
+        UserIdentificationApplinkModule.class,
+        SaldoDetailsAppLinkModule.class,
+        ChatbotApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -194,6 +207,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new ProductAddDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
+                    new ReferralDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new DigitalApplinkModuleLoader(),
@@ -237,8 +251,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
+                    new PaymentSettingApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
-                    new UserIdentificationApplinkModuleLoader()
+                    new UserIdentificationApplinkModuleLoader(),
+                    new SaldoDetailsAppLinkModuleLoader(),
+                    new ChatbotApplinkModuleLoader(),
+                    new HomeCreditAppLinkModuleLoader()
             );
         }
 

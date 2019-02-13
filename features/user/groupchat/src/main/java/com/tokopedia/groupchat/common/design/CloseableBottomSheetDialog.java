@@ -21,10 +21,15 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     Context context;
     private CloseClickedListener closeListener;
+    private BackHardwareClickedListener backHardwareClickedListener;
 
     public interface CloseClickedListener {
         void onCloseDialog();
     }
+    public interface BackHardwareClickedListener {
+        void onBackHardwareClicked();
+    }
+
 
     private CloseableBottomSheetDialog(@NonNull Context context) {
         super(context);
@@ -53,10 +58,19 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         return closeableBottomSheetDialog;
     }
 
-    public static CloseableBottomSheetDialog createInstance(Context context, CloseClickedListener
-            closeListener) {
+    public static CloseableBottomSheetDialog createInstance(Context context,
+                                                            CloseClickedListener closeListener,
+                                                            BackHardwareClickedListener backHardwareClickedListener) {
         CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
-                (context);
+                (context){
+            @Override
+            public void onBackPressed() {
+                super.onBackPressed();
+                if(backHardwareClickedListener != null) {
+                    backHardwareClickedListener.onBackHardwareClicked();
+                }
+            }
+        };
         closeableBottomSheetDialog.setListener(closeListener);
         return closeableBottomSheetDialog;
     }

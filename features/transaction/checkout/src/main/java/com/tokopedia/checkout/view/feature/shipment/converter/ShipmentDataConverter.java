@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.feature.shipment.converter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -11,9 +10,10 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,6 +185,7 @@ public class ShipmentDataConverter {
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
         cartItemModel.setNoteToSeller(product.getProductNotes());
         cartItemModel.setPreOrder(product.isProductIsPreorder());
+        cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());

@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
@@ -64,6 +65,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         EmptyProductTalkViewHolder.TalkItemListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+
     override fun getContext(): Context? {
         return activity
     }
@@ -110,6 +113,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     var shopName: String = ""
     var shopAvatar: String = ""
 
+    private var isTraceStopped: Boolean = false
+
     override fun initInjector() {
         val productTalkComponent = DaggerProductTalkComponent.builder()
                 .talkComponent(getComponent(TalkComponent::class.java))
@@ -119,6 +124,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        const val TALK_PRODUCT_TRACE = "mp_talk_product_list"
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
@@ -126,6 +132,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
             return fragment
         }
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(TALK_PRODUCT_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -216,6 +227,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         presenter.getProductTalk(productId)
     }
 
+
     private fun setUpView(view: View) {
         val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
@@ -240,7 +252,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
         swiper = view.findViewById(R.id.swipeToRefresh)
         swiper.setOnRefreshListener { onRefreshData() }
     }
-
 
     private fun onRefreshData() {
         presenter.resetProductTalk(productId)
@@ -295,9 +306,16 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
         adapter.hideLoading()
         adapter.addList(productTalkViewModel.listThread)
+        stopTrace()
+    }
+
+    fun stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace()
+            isTraceStopped = true
+        }
     }
 
     override fun onLoadClicked() {

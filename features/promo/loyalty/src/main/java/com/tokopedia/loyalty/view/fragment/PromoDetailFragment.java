@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
@@ -59,6 +60,8 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     private static final int DETAIL_PROMO_FROM_DATA = 0;
     private static final int DETAIL_PROMO_FROM_SLUG = 1;
 
+    private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_DETAIL = "mp_promo_detail";
+
     private RefreshHandler refreshHandler;
 
     private RelativeLayout rlContainerLayout;
@@ -83,6 +86,8 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     PromoDataMapper promoDataMapper;
     @Inject
     CompositeSubscription compositeSubscription;
+    @Inject
+    PerformanceMonitoring performanceMonitoring;
 
     @Override
     protected String getScreenName() {
@@ -134,6 +139,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 this.promoSlug = getArguments().getString(ARG_EXTRA_PROMO_SLUG);
             }
         }
+        performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_DETAIL);
     }
 
     @Override
@@ -209,6 +215,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
         this.promoDetailAdapter.setPromoDetail(promoDataMapper.convert(promoData));
         this.promoDetailAdapter.notifyDataSetChanged();
         setFragmentLayout(promoData);
+        performanceMonitoring.stopTrace();
     }
 
     @Override

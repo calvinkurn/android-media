@@ -28,26 +28,29 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.google.android.flexbox.FlexboxLayout;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +103,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvFreeReturnLabel;
     private TextView tvPreOrder;
     private TextView tvCashback;
-    private LinearLayout llProductPoliciesLayout;
+    private FlexboxLayout llProductPoliciesLayout;
     private TextView tvItemCountAndWeight;
     private TextView tvNoteToSellerLabel;
     private TextView tvOptionalNoteToSeller;
@@ -467,8 +470,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isOfficialStore() || shipmentCartItemModel.isGoldMerchant()) {
-            ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
-            imgShopBadge.setVisibility(View.VISIBLE);
+            if (!shipmentCartItemModel.getShopBadge().isEmpty()) {
+                ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
+                imgShopBadge.setVisibility(View.VISIBLE);
+            }
         } else {
             imgShopBadge.setVisibility(View.GONE);
         }
@@ -517,7 +522,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
+        if (cartItemModel.isPreOrder()){
+            tvPreOrder.setText(cartItemModel.getPreOrderInfo());
+            tvPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            tvPreOrder.setVisibility(View.GONE);
+        }
         tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
         String cashback = "    " + tvCashback.getContext().getString(R.string.label_cashback) + " " +
                 cartItemModel.getCashback() + "    ";
@@ -681,7 +691,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            if (!shipmentDetailData.getSelectedCourier().isAllowDropshiper()) {
+            if (isCourierInstantOrSameday(shipmentDetailData.getSelectedCourier().getShipperId())) {
                 String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
                 String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
                 tvTickerInfo.setText(tickerInfo);
@@ -1313,6 +1323,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
         for (CartItemModel item : data.getCartItemModels()) {
             if (item.isProtectionOptIn()) return true;
+        }
+        return false;
+    }
+
+    private boolean isCourierInstantOrSameday(int shipperId) {
+        int[] ids = CourierConstant.INSTANT_SAMEDAY_COURIER;
+        for (int id : ids) {
+            if (shipperId == id) return true;
         }
         return false;
     }

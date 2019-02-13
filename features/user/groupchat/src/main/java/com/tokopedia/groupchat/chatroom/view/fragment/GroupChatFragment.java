@@ -123,6 +123,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private Handler sprintSaleHandler;
     private Runnable sprintSaleRunnable;
+    private CloseableBottomSheetDialog pinnedMessageDialog;
 
     int newMessageCounter;
 
@@ -462,9 +463,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
-        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(getActivity(), () -> {
+            ((GroupChatContract.View) getActivity()).showOverlayDialogOnScreen();
+        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+            @Override
+            public void onBackHardwareClicked() {
+
+            }
+        });
+
         View view = createPinnedMessageView(pinnedMessage);
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        pinnedMessageDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
@@ -478,9 +487,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             }
         });
-        dialog.setContentView(view, "Pinned Chat");
+        pinnedMessageDialog.setContentView(view, "Pinned Chat");
         view.setOnClickListener(null);
-        dialog.show();
+        pinnedMessageDialog.show();
+    }
+
+    public boolean isPinnedMessageShowing() {
+        if (pinnedMessageDialog != null) {
+            return pinnedMessageDialog.isShowing();
+        }
+        return false;
     }
 
     private View createPinnedMessageView(final PinnedMessageViewModel pinnedMessage) {

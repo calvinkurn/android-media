@@ -84,20 +84,22 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void actionCancelOrderButtonClicked() {
 
-        List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
-                .getFlightOrder().getJourneys());
+        if (isViewAttached() && getView().getFlightOrder() != null) {
+            List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
+                    .getFlightOrder().getJourneys());
 
-        boolean isRefundable = false;
-        for (FlightCancellationJourney item : items) {
-            if (item.isRefundable()) {
-                isRefundable = true;
+            boolean isRefundable = false;
+            for (FlightCancellationJourney item : items) {
+                if (item.isRefundable()) {
+                    isRefundable = true;
+                }
             }
-        }
 
-        if (isRefundable) {
-            getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
-        } else {
-            getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            if (isRefundable) {
+                getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            } else {
+                getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            }
         }
     }
 
