@@ -5,11 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
@@ -39,6 +41,20 @@ class ProductDetailActivity: BaseSimpleActivity(), HasComponent<ProductDetailCom
             }
             putExtras(bundle)
             data = uri
+        }
+
+        @JvmStatic
+        fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
+            putExtra(PARAM_PRODUCT_ID, productId.toString())
+        }
+    }
+
+    object DeeplinkIntents{
+        @DeepLink(ApplinkConst.PRODUCT_INFO)
+        @JvmStatic
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build()
+            return Intent(context, ProductDetailActivity::class.java).setData(uri).putExtras(extras)
         }
     }
 

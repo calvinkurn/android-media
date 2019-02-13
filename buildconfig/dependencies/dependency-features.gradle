@@ -142,6 +142,7 @@ ext {
             seller                      : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
             session                     : "com.tokopedia.session:session:${tkpdSessionVersion}",
             shopCommon                  : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
+            shopEtalasePicker           : "com.tokopedia.shopetalasepicker:shop-etalase-picker:${tkpdShopVersion}",
             shopPage                    : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
             shopOpen                    : "com.tokopedia.shop:shop-open:${tkpdShopVersion}",
             shopSettings                : "com.tokopedia.shop:shop-settings:${tkpdShopVersion}",
@@ -238,6 +239,8 @@ ext {
             goldMerchantSubscribe       : ":features:merchant:gold_merchant_subscribe",
 //            goldMerchantSubscribe     : ":features:merchant:gold_merchant_subscribe_no_op",
             productDraftDatabase        : ":features:merchant:product_draft_database",
+            productDetailCommon         : ":features:merchant:product_detail_common",
+            productDetailRevamp         : ":features:merchant:product_detail",
             productManageItem           : ":features:merchant:product_manage_item",
             productManageList           : ":features:merchant:product_manage_list",
             productManageDetail         : ":features:merchant:product_detail",
@@ -245,14 +248,13 @@ ext {
             reputation                  : ":features:merchant:reputation",
             reputationCommon            : ":features:merchant:reputation_common",
             shopCommon                  : ":features:merchant:shop_common",
+            shopEtalasePicker           : ":features:merchant:shop_etalase_picker",
             shopOpen                    : ":features:merchant:shop_open",
 //            shopOpen                    : ":features:merchant:shop_open_no_op",
             shopPage                    : ":features:merchant:shop_page",
 //            shopPage                    : ":features:merchant:shop_page_no_op",
             shopSettings                : ":features:merchant:shop_settings",
 //            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
-            shopEtalasePicker           : ":features:merchant:shop_etalase_picker",
-//            shopEtalasePicker           : ":features:merchant:shop_etalase_picker_no_op", // toggle for no op
 
             contactUs                   : ":features:operational:contact_us",
 
@@ -273,10 +275,10 @@ ext {
             promoCheckoutCommon         : ":features:promo:promo_checkout_common",
 
             topAdsDashboard             : ":features:top_ads:top_ads_dashboard",
-            //topAdsDashboard           : ":features:top_ads:top_ads_dashboard_no_op",
+//            topAdsDashboard           : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",
             topAdsManagement            : ":features:top_ads:top_ads_management",
-            //topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
+//            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon      : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging         : ":features:top_ads:top_ads_management_sourcetagging",
 

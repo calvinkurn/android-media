@@ -15,8 +15,8 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.product.Campaign
-import com.tokopedia.product.detail.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.Campaign
+import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.data.util.discountedPrice
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*

@@ -10,7 +10,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.Video
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import kotlinx.android.synthetic.main.item_youtube_thumbnail.view.*
 import java.lang.Exception

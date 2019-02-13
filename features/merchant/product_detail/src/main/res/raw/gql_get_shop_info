@@ -4,50 +4,55 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
         fields: $fields,
         domain: $shopDomain
     }){
-        shopCore{
-            shopID
-            domain
-            name
-            url
-        }
-        shopAssets{
-            avatar
-            cover
-        }
-        shipmentInfo{
-            isAvailable
-            code
-            shipmentID
-            image
-            name
-            product{
-                isAvailable
-                productName
-                shipProdID
-                uiHidden
+        result {
+            shopCore{
+                shopID
+                domain
+                name
+                url
             }
-            isPickup
-            maxAddFee
-            awbStatus
+            shopAssets{
+                avatar
+                cover
+            }
+            shipmentInfo{
+                isAvailable
+                code
+                shipmentID
+                image
+                name
+                product{
+                    isAvailable
+                    productName
+                    shipProdID
+                    uiHidden
+                }
+                isPickup
+                maxAddFee
+                awbStatus
+            }
+            shopLastActive
+            location
+            shopTerms
+            isAllowManage
+            isOwner
+            goldOS {
+                isGold
+                isGoldBadge
+                isOfficial
+            }
+            favoriteData{
+                totalFavorite
+                alreadyFavorited
+            }
+            statusInfo {
+                shopStatus
+                statusMessage
+                statusTitle
+            }
         }
-        shopLastActive
-        location
-        shopTerms
-        isAllowManage
-        isOwner
-        goldOS {
-            isGold
-            isGoldBadge
-            isOfficial
-        }
-        favoriteData{
-            totalFavorite
-            alreadyFavorited
-        }
-        statusInfo {
-            shopStatus
-            statusMessage
-            statusTitle
+        error {
+            message
         }
     }
 }

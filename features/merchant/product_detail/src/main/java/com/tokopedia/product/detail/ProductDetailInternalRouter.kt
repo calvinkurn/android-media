@@ -8,4 +8,7 @@ object ProductDetailInternalRouter{
     @JvmStatic
     fun getProductDetailIntent(context: Context, productUrl: String) = ProductDetailActivity.createIntent(context, productUrl)
 
+    @JvmStatic
+    fun getProductDetailIntentById(context: Context, productId: Int) = ProductDetailActivity.createIntent(context, productId)
+
 }

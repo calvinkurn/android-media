@@ -70,7 +70,8 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.PRODUCT_INFO)
+    //Deprecated
+    //@DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ProductInfoActivity.class)

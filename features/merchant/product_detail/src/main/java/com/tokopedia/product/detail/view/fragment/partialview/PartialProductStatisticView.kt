@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.view.fragment.partialview
 import android.app.Activity
 import android.view.View
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.product.ProductInfo
-import com.tokopedia.product.detail.data.model.product.Rating
+import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.Rating
 import com.tokopedia.product.detail.data.model.shop.ShopShipment
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*

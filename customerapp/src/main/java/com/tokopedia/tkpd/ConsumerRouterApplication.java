@@ -409,6 +409,8 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
@@ -512,7 +514,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsDashboardRouter,
         NpsRouter,
         DigitalRouter,
-        TrackingPromoCheckoutRouter {
+        TrackingPromoCheckoutRouter,
+        com.tokopedia.product.detail.ProductDetailRouter {
 
     private static final String EXTRA = "extra";
 
@@ -3496,5 +3499,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } else {
             goToCreateMerchantRedirect(context);
         }
+    }
+
+    @NotNull
+    @Override
+    public Intent getCartIntent(@NotNull Context context) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Intent getIntermediaryIntent(@NotNull Context context, int categoryId) {
+        return null;
     }
 }

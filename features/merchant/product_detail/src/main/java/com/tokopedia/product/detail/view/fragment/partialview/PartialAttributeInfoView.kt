@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.fragment.partialview
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.data.util.successRate
 import com.tokopedia.product.detail.data.util.thousandFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.view.*

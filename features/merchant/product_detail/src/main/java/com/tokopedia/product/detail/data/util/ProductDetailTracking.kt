@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.util
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.topads.sdk.domain.model.Product
 
 class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
 
@@ -85,6 +86,44 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
                 id.toString())
     }
 
+    fun eventTopAdsClicked(product: Product, position: Int) {
+        analyticTracker?.sendEnhancedEcommerce(
+                DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
+                        KEY_CATEGORY, ProductTrackingConstant.Category.PDP.toLowerCase(),
+                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
+                        KEY_LABEL, "",
+                        KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.CLICK,
+                            DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, ProductTrackingConstant.TopAds.PDP_TOPADS),
+                                    PRODUCTS, DataLayer.listOf(
+                                    DataLayer.mapOf(PROMO_NAME, product.name,
+                                            ID, product.id, PRICE, product.priceFormat,
+                                            BRAND, DEFAULT_VALUE,
+                                            CATEGORY, product.category.id,
+                                            VARIANT, DEFAULT_VALUE,
+                                            PROMO_POSITION, position + 1)
+                            ))
+                ))
+        )
+    }
+
+    fun eventTopAdsImpression(position: Int, product: Product) {
+        analyticTracker?.sendEnhancedEcommerce(
+                DataLayer.mapOf(KEY_EVENT, "productView",
+                        KEY_CATEGORY, ProductTrackingConstant.Category.PDP.toLowerCase(),
+                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION,
+                        KEY_LABEL, "",
+                        KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impression",
+                        DataLayer.listOf(
+                                DataLayer.mapOf(PROMO_NAME, product.name,
+                                        ID, product.id, PRICE, product.priceFormat,
+                                        BRAND, DEFAULT_VALUE,
+                                        CATEGORY, product.category.id,
+                                        VARIANT, DEFAULT_VALUE,
+                                        PROMO_POSITION, position + 1)
+                        ))
+        ))
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"
@@ -99,6 +138,15 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
         private const val PROMO_POSITION = "position"
         private const val PROMO_ID = "promo_id"
         private const val PROMO_CODE = "promo_id"
+
+        private const val ACTION_FIELD = "actionField"
+        private const val LIST = "list"
+        private const val PRODUCTS = "products"
+        private const val PRICE = "price"
+        private const val BRAND = "brand"
+        private const val DEFAULT_VALUE = "none / other"
+        private const val VARIANT = "variant"
+        private const val CATEGORY = "category"
     }
 
 }

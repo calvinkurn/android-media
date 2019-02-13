@@ -1,0 +1,12 @@
+package com.tokopedia.product.detail.estimasiongkir.di
+
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.product.detail.estimasiongkir.view.fragment.RatesEstimationDetailFragment
+
+import dagger.Component
+
+@RatesEstimationScope
+@Component(modules = arrayOf(RatesEstimationModule::class), dependencies = arrayOf(BaseAppComponent::class))
+interface RatesEstimationComponent {
+    fun inject(fragment: RatesEstimationDetailFragment)
+}

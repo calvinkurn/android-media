@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.product.PreOrder
+import com.tokopedia.product.detail.common.data.model.PreOrder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRD_STATE_WAREHOUSE
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
