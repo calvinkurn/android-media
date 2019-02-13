@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.loyalty.di.PromoFragmentScope;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
@@ -55,5 +56,11 @@ public class PromoListFragmentModule {
             return new PromoTrackingUtil((LoyaltyModuleRouter) context);
         }
         throw new RuntimeException("application must implement LoyaltyModuleRouter");
+    }
+
+    @Provides
+    @PromoFragmentScope
+    PerformanceMonitoring providePerformanceMonitoring(){
+        return new PerformanceMonitoring();
     }
 }

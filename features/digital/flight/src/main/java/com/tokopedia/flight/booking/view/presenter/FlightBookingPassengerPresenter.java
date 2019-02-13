@@ -330,8 +330,16 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         currentPassengerViewModel.setPassengerId(selectedPassenger.getPassengerId());
         currentPassengerViewModel.setPassengerFirstName(selectedPassenger.getPassengerFirstName());
         currentPassengerViewModel.setPassengerLastName(selectedPassenger.getPassengerLastName());
-        currentPassengerViewModel.setPassengerTitle(selectedPassenger.getPassengerTitle());
-        currentPassengerViewModel.setPassengerTitleId(selectedPassenger.getPassengerTitleId());
+
+        if ((isChildPassenger() || isInfantPassenger()) &&
+                selectedPassenger.getPassengerTitleId() == FlightPassengerTitleType.NYONYA) {
+            currentPassengerViewModel.setPassengerTitle(getView().getMissTitle());
+            currentPassengerViewModel.setPassengerTitleId(FlightPassengerTitleType.NONA);
+        } else {
+            currentPassengerViewModel.setPassengerTitle(selectedPassenger.getPassengerTitle());
+            currentPassengerViewModel.setPassengerTitleId(selectedPassenger.getPassengerTitleId());
+        }
+
         currentPassengerViewModel.setPassportNumber(selectedPassenger.getPassportNumber());
         currentPassengerViewModel.setPassportNationality(selectedPassenger.getPassportNationality());
         currentPassengerViewModel.setPassportIssuerCountry(selectedPassenger.getPassportIssuerCountry());

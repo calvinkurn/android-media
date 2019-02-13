@@ -370,6 +370,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+
+                        if (isViewAttached()) {
+                            getView().traceStop();
+                        }
                     }
 
                     @Override
@@ -383,6 +387,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                         if (getView().isDoneLoadData()) {
                             getView().addBottomPaddingForSortAndFilterActionButton();
                             getView().addToolbarElevation();
+                            getView().traceStop();
                         }
                     }
                 }
