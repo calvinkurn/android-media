@@ -31,6 +31,8 @@ import javax.inject.Inject
 class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), PlayContract.View {
 
     companion object {
+
+        const val YOUTUBE_DELAY = 1500
         private const val POST_ID = "{post_id}"
         fun createInstance(bundle: Bundle): PlayFragment {
             val fragment = PlayFragment()
@@ -59,7 +61,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
             viewState.setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
-            viewState.setSponsorData(it.adsId, it.adsImageUrl)
+            viewState.setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
+            viewState.initVideoFragment(childFragmentManager, it)
         }
     }
 
