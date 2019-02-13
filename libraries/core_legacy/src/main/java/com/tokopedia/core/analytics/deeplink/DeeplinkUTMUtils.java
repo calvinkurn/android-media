@@ -26,6 +26,7 @@ public class DeeplinkUTMUtils {
     private static final String QUICK_SEARCH_BOX = "com.google.android.googlequicksearchbox";
     private static final String APP_CRAWLER = "com.google.appcrawler";
     private static final String KEY_AMP = "amp";
+    private static final String TOKOPEDIA_PACKAGE = "com.tokopedia.tkpd";
 
     private DeeplinkUTMUtils() {
 
@@ -171,7 +172,10 @@ public class DeeplinkUTMUtils {
 
                 AndroidAppUri appUri = AndroidAppUri.newAndroidAppUri(referrerUri);
                 String referrerPackage = appUri.getPackageName();
-                if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
+
+                if (TOKOPEDIA_PACKAGE.equals(referrerPackage)) {
+                    //do nothing
+                } else if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
                     // App was opened from the Google app
 
                     campaign.setUtmSource("google_app");
