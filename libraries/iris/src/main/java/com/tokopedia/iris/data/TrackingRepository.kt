@@ -51,7 +51,7 @@ class TrackingRepository (
     private fun isSizeOver() : Boolean {
         val f: File? = context.getDatabasePath(DATABASE_NAME)
         if (f != null) {
-            Log.d("Iris", "${f.length()}")
+            Log.d("Iris", "Length DB: ${f.length()}")
             val sizeDbInMb = (f.length() / 1024) / 1024
             return sizeDbInMb >= 2
         }

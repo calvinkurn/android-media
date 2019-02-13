@@ -52,12 +52,12 @@ class TrackingMapper {
                 }
                 val userId : String = nextItem?.userId ?: ""
                 if (item.userId != userId) {
+                    row.put("device_id", item.deviceId)
+                    row.put("user_id", item.userId)
                     if (event.length() > 0) {
                         row.put("event_data", event)
                         data.put(row)
                     }
-                    row.put("device_id", item.deviceId)
-                    row.put("user_id", item.userId)
                     event = JSONArray()
                 }
             }

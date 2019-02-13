@@ -4,10 +4,10 @@ package com.tokopedia.iris
  * @author okasurya on 10/18/18.
  */
 
-const val VERSION = "v1"
+const val LIVE = "https://hub.tokopedia.com"
+const val STAGING = "https://hub-staging.tokopedia.com"
 
-//const val BASE_URL = "https://merlin-staging.tokopedia.com/iris/$VERSION/"
-const val BASE_URL = "https://merlin.tokopedia.com/iris/$VERSION/"
+const val BASE_URL = STAGING
 
 const val SINGLE_EVENT = "track/dim-event"
 const val MULTI_EVENT = "track/dim-event"

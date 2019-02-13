@@ -74,8 +74,6 @@ class IrisAnalytics(context: Context) : Iris {
                 .build()
 
         WorkManager.getInstance().enqueue(oneTimeWorkRequest)
-        Log.d("Iris Service Batch", "oneTimeWorkRequest")
         WorkManager.getInstance().enqueueUniquePeriodicWork(WORKER_SEND_DATA, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest)
-        Log.d("Iris Service Batch", "periodicWorkRequest")
     }
 }

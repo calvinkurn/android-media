@@ -38,9 +38,9 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
             }
 
             Log.d("Iris Service Batch", "Response Code: ${response.code()}")
+            Log.d("Iris Service Batch", response.body().toString())
 
             if (response.isSuccessful && response.code() == 200) {
-                Log.d("Iris Service Batch", response.body().toString())
                 trackingRepository.delete(trackings)
             }
         }
