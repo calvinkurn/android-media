@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.view.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
@@ -34,26 +32,16 @@ import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
-import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View, RefreshHandler.OnRefreshHandlerListener {
 
-    //    private static final String IS_USER_SELLER = "is_user_seller";
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
 
-//    public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE = "seller_total_balance";
-//    public static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE = "buyer_total_balance";
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
     public static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int";
 
@@ -100,12 +88,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private View sellerBalanceInfoIcon;
     private View saldoBalanceSeparator;
     private boolean isSellerEnabled;
-    private boolean hasShownShowCase = false;
     private boolean isSeller;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
-    ArrayList<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
 
-    private SaldoHistoryPagerAdapter saldoHistoryPagerAdapter;
     private float sellerSaldoBalance;
     private float buyerSaldoBalance;
     private float totalSaldoBalance;
@@ -173,80 +158,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         this.context = context;
     }
 
-    private ArrayList<ShowCaseObject> buildShowCase() {
-
-        ArrayList<ShowCaseObject> list = new ArrayList<>();
-        /*if (isSeller && getActivity() instanceof SaldoDepositActivity) {
-            list.add(new ShowCaseObject(
-                    ((SaldoDepositActivity) getActivity()).getSaldoTabLayout(),
-                    getString(R.string.saldo_seller_tab_title),
-                    getString(R.string.saldo_detail_intro_desc1),
-                    ShowCaseContentPosition.BOTTOM,
-                    Color.WHITE));
-
-            list.add(new ShowCaseObject(
-                    mainBalanceRL,
-                    getString(R.string.sp_title_withdraw),
-                    getString(R.string.saldo_detail_intro_desc2),
-                    ShowCaseContentPosition.BOTTOM,
-                    Color.WHITE));
-
-            list.add(new ShowCaseObject(
-                    dateSelectorLL,
-                    getString(R.string.deposit_summary_title_seller),
-                    getString(R.string.saldo_detail_intro_desc3),
-                    ShowCaseContentPosition.BOTTOM,
-                    Color.WHITE));
-
-            list.add(new ShowCaseObject(
-                    ((SaldoDepositActivity) getActivity()).getBuyerTabView(),
-                    getString(R.string.saldo_buyer_tab_title),
-                    getString(R.string.saldo_detail_intro_desc4),
-                    ShowCaseContentPosition.BOTTOM,
-                    Color.WHITE));
-
-            return list;
-
-        } else {
-            return null;
-        }*/
-        return list;
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         /*if (isVisibleToUser) {
             new Handler().postDelayed(this::setShowCase, SHOW_CASE_DELAY);
         }*/
-    }
-
-    private void setShowCase() {
-
-        ArrayList<ShowCaseObject> list = buildShowCase();
-        if (context == null || list == null) {
-            return;
-        }
-        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, SaldoDepositFragment.class.getName())) {
-            hasShownShowCase = true;
-            createShowCase().show((Activity) context,
-                    SaldoDepositFragment.class.getName(),
-                    list);
-        }
-    }
-
-    private ShowCaseDialog createShowCase() {
-        return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .titleTextColorRes(R.color.white)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .nextStringRes(R.string.intro_seller_saldo_finish_string)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
     }
 
 

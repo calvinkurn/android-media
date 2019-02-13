@@ -301,12 +301,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             }
         });
 
-        if (sellerSaldoBalance == 0 || sellerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
-            currentState = BUYER_STATE;
-            enableBuyerSaldoView();
-        } else {
+        if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
             currentState = SELLER_STATE;
             enableSellerSaldoView();
+        } else {
+            currentState = BUYER_STATE;
+            enableBuyerSaldoView();
         }
 
         withdrawAll.setOnClickListener(v -> {

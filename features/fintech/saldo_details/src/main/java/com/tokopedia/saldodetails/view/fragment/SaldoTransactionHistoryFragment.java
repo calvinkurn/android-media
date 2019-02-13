@@ -3,6 +3,7 @@ package com.tokopedia.saldodetails.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -49,10 +50,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     public static final String FOR_SELLER = "for_seller";
     public static final String FOR_BUYER = "for_buyer";
     public static final String FOR_ALL = "for_all";
-
-    private boolean buyerOnlyTranxn = false;
-    private boolean sellerOnlyTranxn = false;
-    private boolean allTranxn = false;
 
     private RelativeLayout startDateLayout;
     private RelativeLayout endDateLayout;
@@ -102,7 +99,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saldo_history, container, false);
         initViews(view);
         return view;
@@ -115,28 +112,17 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         initListeners();
     }
 
-    private void onFirstTimeLaunched() {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getInitialdata();
+    }
+
+    private void getInitialdata() {
         setActionsEnabled(false);
         saldoHistoryPresenter.setFirstDateParameter();
         saldoHistoryPresenter.getSummaryDeposit();
     }
-
-    /*private boolean restoreStateFromArguments() {
-        Bundle b = getArguments();
-        if (b == null) b = new Bundle();
-        savedState = b.getBundle("internalSavedViewState8954201239547");
-        return savedState != null;
-    }*/
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        /*if (!restoreStateFromArguments()) {
-            onFirstTimeLaunched();
-        }*/
-        onFirstTimeLaunched();
-    }
-
 
     private void initViews(View view) {
         startDateLayout = view.findViewById(R.id.start_date_layout);
@@ -154,9 +140,9 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     private void initialVar() {
 
         if (getArguments() != null) {
-            sellerOnlyTranxn = FOR_SELLER.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
-            buyerOnlyTranxn = FOR_BUYER.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
-            allTranxn = FOR_ALL.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
+            boolean sellerOnlyTranxn = FOR_SELLER.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
+            boolean buyerOnlyTranxn = FOR_BUYER.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
+            boolean allTranxn = FOR_ALL.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
         }
 
         isSeller = !TextUtils.isEmpty(userSession.getShopId());
@@ -182,7 +168,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         saldoTabItems.clear();
         singleTabItem = new SaldoHistoryTabItem();
         singleTabItem.setTitle("");
-        singleTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_ALL, isSellerEnabled()));
+        singleTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, isSellerEnabled(), saldoHistoryPresenter));
         saldoTabItems.add(singleTabItem);
         depositHistoryTabLayout.setVisibility(View.GONE);
         tabSeparator.setVisibility(View.GONE);
@@ -194,19 +180,19 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
         allSaldoHistoryTabItem = new SaldoHistoryTabItem();
         allSaldoHistoryTabItem.setTitle("Semua");
-        allSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_ALL, isSellerEnabled()));
+        allSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_ALL, isSellerEnabled(), saldoHistoryPresenter));
 
         saldoTabItems.add(allSaldoHistoryTabItem);
 
         buyerSaldoHistoryTabItem = new SaldoHistoryTabItem();
         buyerSaldoHistoryTabItem.setTitle("Refund");
-        buyerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, isSellerEnabled()));
+        buyerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, isSellerEnabled(), saldoHistoryPresenter));
 
         saldoTabItems.add(buyerSaldoHistoryTabItem);
 
         sellerSaldoHistoryTabItem = new SaldoHistoryTabItem();
         sellerSaldoHistoryTabItem.setTitle("Penghasilan");
-        sellerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_SELLER, isSellerEnabled()));
+        sellerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_SELLER, isSellerEnabled(), saldoHistoryPresenter));
 
         saldoTabItems.add(sellerSaldoHistoryTabItem);
 
@@ -427,12 +413,22 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     }
 
     @Override
+    public SaldoHistoryTabItem getSingleHistoryTabItem() {
+        return singleTabItem;
+    }
+
+    @Override
     public SaldoDepositAdapter getAllHistoryAdapter() {
         if (allSaldoHistoryTabItem != null) {
             return ((SaldoHistoryListFragment) allSaldoHistoryTabItem.getFragment()).getAdapter();
         } else {
             return createNewAdapter();
         }
+    }
+
+    @Override
+    public SaldoHistoryTabItem getAllSaldoHistoryTabItem() {
+        return allSaldoHistoryTabItem;
     }
 
 
@@ -446,6 +442,11 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     }
 
     @Override
+    public SaldoHistoryTabItem getBuyerSaldoHistoryTabItem() {
+        return buyerSaldoHistoryTabItem;
+    }
+
+    @Override
     public SaldoDepositAdapter getSellerHistoryAdapter() {
 
         if (sellerSaldoHistoryTabItem != null) {
@@ -454,6 +455,11 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         } else {
             return createNewAdapter();
         }
+    }
+
+    @Override
+    public SaldoHistoryTabItem getSellerSaldoHistoryTabItem() {
+        return sellerSaldoHistoryTabItem;
     }
 
     private SaldoDepositAdapter createNewAdapter() {

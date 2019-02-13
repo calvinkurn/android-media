@@ -3,6 +3,7 @@ package com.tokopedia.saldodetails.presenter;
 import android.content.Context;
 import android.util.Log;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -12,7 +13,9 @@ import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
 import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse;
 import com.tokopedia.saldodetails.response.model.GqlBuyerDepositSummaryResponse;
+import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
+import com.tokopedia.saldodetails.usecase.GetAllTransactionUsecase;
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
@@ -35,8 +38,11 @@ import static android.content.ContentValues.TAG;
 public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContract.View>
         implements SaldoHistoryContract.Presenter {
 
+    private static final int DEFAULT_PAGE = 1;
     @Inject
     GetDepositSummaryUseCase getDepositSummaryUseCase;
+    @Inject
+    GetAllTransactionUsecase getAllTransactionUsecase;
 
     private PagingHandler paging;
 //    private DepositCacheInteractor depositCacheInteractor;
@@ -87,25 +93,50 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
 
         getView().getAllHistoryAdapter().addElement(data.getAllDepositHistory().getDepositHistoryList());
+        ((BaseListFragment) getView().getAllSaldoHistoryTabItem().getFragment()).
+                updateScrollListenerState(data.getAllDepositHistory().isHaveNextPage());
         if (getView().getAllHistoryAdapter().getItemCount() == 0) {
             getView().getAllHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
         getView().getBuyerHistoryAdapter().addElement(data.getBuyerDepositHistory().getDepositHistoryList());
+        ((BaseListFragment) getView().getBuyerSaldoHistoryTabItem().getFragment()).
+                updateScrollListenerState(data.getBuyerDepositHistory().isHaveNextPage());
         if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
             getView().getBuyerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
         getView().getSellerHistoryAdapter().addElement(data.getSellerDepositHistory().getDepositHistoryList());
+        ((BaseListFragment) getView().getSellerSaldoHistoryTabItem().getFragment()).
+                updateScrollListenerState(data.getSellerDepositHistory().isHaveNextPage());
         if (getView().getSellerHistoryAdapter().getItemCount() == 0) {
             getView().getSellerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
-        if (paging.CheckNextPage()) {
+        /*if (paging.CheckNextPage()) {
             showLoading();
         } else {
             hideLoading();
+        }*/
+    }
+
+    private void setData(GqlCompleteTransactionResponse data) {
+        if (!isViewAttached() || getView().getAllHistoryAdapter() == null || data == null) {
+            return;
         }
+
+        getView().getAllHistoryAdapter().addElement(data.getAllDepositHistory().getDepositHistoryList());
+        ((BaseListFragment) getView().getAllSaldoHistoryTabItem().getFragment()).
+                updateScrollListenerState(data.getAllDepositHistory().isHaveNextPage());
+        if (getView().getAllHistoryAdapter().getItemCount() == 0) {
+            getView().getAllHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
+        }
+
+        /*if (paging.CheckNextPage()) {
+            showLoading();
+        } else {
+            hideLoading();
+        }*/
     }
 
     private void setData(GqlBuyerDepositSummaryResponse data) {
@@ -113,16 +144,18 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             return;
         }
 
-        getView().getAllHistoryAdapter().addElement(data.getBuyerDepositHistory().getDepositHistoryList());
-        if (getView().getAllHistoryAdapter().getItemCount() == 0) {
-            getView().getAllHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
+        getView().getBuyerHistoryAdapter().addElement(data.getBuyerDepositHistory().getDepositHistoryList());
+        ((BaseListFragment) getView().getSingleHistoryTabItem().getFragment()).
+                updateScrollListenerState(data.getBuyerDepositHistory().isHaveNextPage());
+        if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
+            getView().getBuyerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
-        if (paging.CheckNextPage()) {
+        /*if (paging.CheckNextPage()) {
             showLoading();
         } else {
             hideLoading();
-        }
+        }*/
     }
 
     private void showLoading() {
@@ -294,11 +327,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                         getView().getAllHistoryAdapter().clearAllElements();
                         getView().getBuyerHistoryAdapter().clearAllElements();
                         getView().getSellerHistoryAdapter().clearAllElements();
-//                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
                     }
-                    /*paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse()
-                            .isHaveNextPage());*/
-
                     setData(gqlDepositSummaryResponse);
                 } else {
                     if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
@@ -421,6 +450,25 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
     }
 
+    private Map<String, Object> getSummaryDepositParam(int page, int saldoType) {
+        SummaryDepositParam param = new SummaryDepositParam();
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
+        SimpleDateFormat sdf_ws = new SimpleDateFormat(DATE_FORMAT_WS);
+        try {
+            Date formattedStart = sdf.parse(paramStartDate);
+            Date formattedEnd = sdf.parse(paramEndDate);
+            param.setStartDate(getDateParam(sdf_ws.format(formattedStart)));
+            param.setEndDate(getDateParam(sdf_ws.format(formattedEnd)));
+        } catch (ParseException e) {
+            getView().showErrorMessage(getView().getString(R.string.sp_error_invalid_date));
+        }
+
+        param.setPage(page);
+        param.setSaldoType(saldoType);
+        return param.getParamSummaryDeposit();
+
+    }
+
     public boolean isSeller() {
         return isSeller;
     }
@@ -458,6 +506,298 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             getDepositSummaryUseCase.unsubscribe();
         } catch (Exception e) {
 
+        }
+    }
+
+    public void loadMoreAllTransaction(int lastItemPosition, int type) {
+        // TODO: 12/2/19 update scroll listener state
+        if (!isViewAttached()) {
+            return;
+        }
+        getView().removeError();
+        if (isValid()) {
+            showLoading();
+            getView().setActionsEnabled(false);
+
+            getAllTransactionUsecase.setIsSeller(isSeller());
+            getAllTransactionUsecase.setRequesting(true);
+            getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type));
+            getAllTransactionUsecase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
+                    getAllTransactionUsecase.setRequesting(false);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, e.toString());
+                    hideLoading();
+                    ErrorHandler.getErrorMessage(getView().getContext(), e);
+                    if (e instanceof UnknownHostException ||
+                            e instanceof SocketTimeoutException) {
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState();
+                        } else {
+                            getView().setRetry();
+                        }
+
+                    } else {
+                        getView().setActionsEnabled(true);
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                        } else {
+                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                        }
+                    }
+                }
+
+                @Override
+                public void onNext(GraphqlResponse graphqlResponse) {
+                    hideLoading();
+                    onAllTransactionsFetched(graphqlResponse, lastItemPosition);
+                }
+
+            });
+
+        } else {
+            finishLoading();
+        }
+    }
+
+    private void onAllTransactionsFetched(GraphqlResponse graphqlResponse, int page) {
+
+        if (!isViewAttached()) {
+            return;
+        }
+        getView().setActionsEnabled(true);
+
+        if (graphqlResponse != null &&
+                graphqlResponse.getData(GqlAllDepositSummaryResponse.class) != null) {
+
+            GqlCompleteTransactionResponse gqlCompleteTransactionResponse =
+                    graphqlResponse.getData(GqlCompleteTransactionResponse.class);
+
+            if (gqlCompleteTransactionResponse != null &&
+                    !gqlCompleteTransactionResponse.getAllDepositHistory().isHaveError()) {
+                setData(gqlCompleteTransactionResponse);
+            } else {
+                if (gqlCompleteTransactionResponse != null && gqlCompleteTransactionResponse.
+                        getAllDepositHistory() != null) {
+                    if (getView().getAllHistoryAdapter().getItemCount() == 0) {
+                        getView().showEmptyState(gqlCompleteTransactionResponse.
+                                getAllDepositHistory().getMessage());
+                    } else {
+                        getView().setRetry(gqlCompleteTransactionResponse.
+                                getAllDepositHistory().getMessage());
+                    }
+                }
+            }
+        } else {
+            if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
+                getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+            } else {
+                getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+            }
+        }
+        finishLoading();
+    }
+
+    public void loadMoreSellerTransaction(int lastItemPosition, int type) {
+        // TODO: 12/2/19 update scroll listener state
+        if (!isViewAttached()) {
+            return;
+        }
+        getView().removeError();
+        if (isValid()) {
+            showLoading();
+            getView().setActionsEnabled(false);
+
+            getAllTransactionUsecase.setIsSeller(isSeller());
+            getAllTransactionUsecase.setRequesting(true);
+            getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type));
+            getAllTransactionUsecase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
+                    getAllTransactionUsecase.setRequesting(false);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, e.toString());
+                    hideLoading();
+                    ErrorHandler.getErrorMessage(getView().getContext(), e);
+                    if (e instanceof UnknownHostException ||
+                            e instanceof SocketTimeoutException) {
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState();
+                        } else {
+                            getView().setRetry();
+                        }
+
+                    } else {
+                        getView().setActionsEnabled(true);
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                        } else {
+                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                        }
+                    }
+                }
+
+                @Override
+                public void onNext(GraphqlResponse graphqlResponse) {
+                    hideLoading();
+                    if (!isViewAttached()) {
+                        return;
+                    }
+                    getView().setActionsEnabled(true);
+
+                    if (graphqlResponse != null &&
+                            graphqlResponse.getData(GqlAllDepositSummaryResponse.class) != null) {
+
+                        GqlCompleteTransactionResponse gqlCompleteTransactionResponse =
+                                graphqlResponse.getData(GqlCompleteTransactionResponse.class);
+
+                        if (gqlCompleteTransactionResponse != null &&
+                                !gqlCompleteTransactionResponse.getAllDepositHistory().isHaveError()) {
+                            if (!isViewAttached() || getView().getSellerHistoryAdapter() == null) {
+                                return;
+                            }
+
+                            ((BaseListFragment) getView().getSellerSaldoHistoryTabItem().getFragment()).
+                                    updateScrollListenerState(gqlCompleteTransactionResponse.getAllDepositHistory().isHaveNextPage());
+
+                            getView().getSellerHistoryAdapter().addElement(
+                                    gqlCompleteTransactionResponse.getAllDepositHistory().getDepositHistoryList());
+                            if (getView().getSellerHistoryAdapter().getItemCount() == 0) {
+                                getView().getSellerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
+                            }
+                        } else {
+                            if (gqlCompleteTransactionResponse != null && gqlCompleteTransactionResponse.
+                                    getAllDepositHistory() != null) {
+                                if (getView().getSellerHistoryAdapter().getItemCount() == 0) {
+                                    getView().showEmptyState(gqlCompleteTransactionResponse.
+                                            getAllDepositHistory().getMessage());
+                                } else {
+                                    getView().setRetry(gqlCompleteTransactionResponse.
+                                            getAllDepositHistory().getMessage());
+                                }
+                            }
+                        }
+                    } else {
+                        if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                        } else {
+                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                        }
+                    }
+                    finishLoading();
+                }
+
+            });
+
+        } else {
+            finishLoading();
+        }
+    }
+
+    public void loadMoreBuyerTransaction(int lastItemPosition, int type) {
+// TODO: 12/2/19 update scroll listener state
+        if (!isViewAttached()) {
+            return;
+        }
+        getView().removeError();
+        if (isValid()) {
+            showLoading();
+            getView().setActionsEnabled(false);
+
+            getAllTransactionUsecase.setIsSeller(isSeller());
+            getAllTransactionUsecase.setRequesting(true);
+            getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type));
+            getAllTransactionUsecase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
+                    getAllTransactionUsecase.setRequesting(false);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, e.toString());
+                    hideLoading();
+                    ErrorHandler.getErrorMessage(getView().getContext(), e);
+                    if (e instanceof UnknownHostException ||
+                            e instanceof SocketTimeoutException) {
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState();
+                        } else {
+                            getView().setRetry();
+                        }
+
+                    } else {
+                        getView().setActionsEnabled(true);
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                        } else {
+                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                        }
+                    }
+                }
+
+                @Override
+                public void onNext(GraphqlResponse graphqlResponse) {
+                    hideLoading();
+                    if (!isViewAttached()) {
+                        return;
+                    }
+                    getView().setActionsEnabled(true);
+
+                    if (graphqlResponse != null &&
+                            graphqlResponse.getData(GqlCompleteTransactionResponse.class) != null) {
+
+                        GqlCompleteTransactionResponse gqlCompleteTransactionResponse =
+                                graphqlResponse.getData(GqlCompleteTransactionResponse.class);
+
+                        if (gqlCompleteTransactionResponse != null &&
+                                !gqlCompleteTransactionResponse.getAllDepositHistory().isHaveError()) {
+                            if (!isViewAttached() || getView().getBuyerHistoryAdapter() == null) {
+                                return;
+                            }
+
+                            getView().getBuyerHistoryAdapter().addElement(
+                                    gqlCompleteTransactionResponse.getAllDepositHistory().getDepositHistoryList());
+
+                            ((BaseListFragment) getView().getBuyerSaldoHistoryTabItem().getFragment()).
+                                    updateScrollListenerState(gqlCompleteTransactionResponse.getAllDepositHistory().isHaveNextPage());
+
+                            if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
+                                getView().getBuyerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
+                            }
+                        } else {
+                            if (gqlCompleteTransactionResponse != null && gqlCompleteTransactionResponse.
+                                    getAllDepositHistory() != null) {
+                                if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
+                                    getView().showEmptyState(gqlCompleteTransactionResponse.
+                                            getAllDepositHistory().getMessage());
+                                } else {
+                                    getView().setRetry(gqlCompleteTransactionResponse.
+                                            getAllDepositHistory().getMessage());
+                                }
+                            }
+                        }
+                    } else {
+                        if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                        } else {
+                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                        }
+                    }
+                    finishLoading();
+                }
+
+            });
+
+        } else {
+            finishLoading();
         }
     }
 }
