@@ -13,7 +13,7 @@ const val STAGING = "https://hub-staging.tokopedia.com/"
 
 const val VERSION = "iris/v1/"
 
-const val BASE_URL ="$STAGING$VERSION"
+const val BASE_URL ="$LIVE$VERSION"
 
 const val SINGLE_EVENT = "track/dim-event"
 const val MULTI_EVENT = "track/dim-event"
