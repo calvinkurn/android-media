@@ -3,10 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_rating_talk_courier"
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="@dimen/dp_16"
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <LinearLayout android:id="@+id/base_layout_rating"
         android:layout_width="wrap_content"

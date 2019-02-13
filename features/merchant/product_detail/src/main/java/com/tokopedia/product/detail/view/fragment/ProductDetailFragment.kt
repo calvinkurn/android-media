@@ -52,16 +52,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRD_STATE_AC
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialProductDescrFullView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialVariantAndRateEstView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialImageReviewView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialMostHelpfulReviewView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialLatestTalkView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialHeaderView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialShopView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
@@ -85,9 +75,17 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
+import kotlinx.android.synthetic.main.partial_layout_button_action.*
+import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
 import kotlinx.android.synthetic.main.partial_other_product.*
+import kotlinx.android.synthetic.main.partial_product_detail_header.*
+import kotlinx.android.synthetic.main.partial_product_detail_visibility.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
+import kotlinx.android.synthetic.main.partial_product_full_descr.*
+import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
+import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
+import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -268,7 +266,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun initializePartialView(view: View) {
         if (!::headerView.isInitialized) {
-            headerView = PartialHeaderView.build(view, activity)
+            headerView = PartialHeaderView.build(base_header, activity)
         }
 
         if (!::partialVariantAndRateEstView.isInitialized) {
@@ -276,29 +274,29 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
 
         if (!::productStatsView.isInitialized) {
-            productStatsView = PartialProductStatisticView.build(view)
+            productStatsView = PartialProductStatisticView.build(base_rating_talk_courier)
         }
 
         if (!::productDescrView.isInitialized) {
-            productDescrView = PartialProductDescrFullView.build(view, activity)
+            productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
         }
 
         if (!::actionButtonView.isInitialized) {
-            actionButtonView = PartialButtonActionView.build(view)
+            actionButtonView = PartialButtonActionView.build(base_btn_action)
         }
 
         if (!::productShopView.isInitialized) {
-            productShopView = PartialShopView.build(view)
+            productShopView = PartialShopView.build(base_shop_view)
         }
 
         if (!::attributeInfoView.isInitialized)
-            attributeInfoView = PartialAttributeInfoView.build(view)
+            attributeInfoView = PartialAttributeInfoView.build(base_attribute)
 
         if (!::imageReviewViewView.isInitialized)
-            imageReviewViewView = PartialImageReviewView.build(view)
+            imageReviewViewView = PartialImageReviewView.build(base_image_review)
 
         if (!::mostHelpfulReviewView.isInitialized)
-            mostHelpfulReviewView = PartialMostHelpfulReviewView.build(view)
+            mostHelpfulReviewView = PartialMostHelpfulReviewView.build(base_view_most_helpful_review)
 
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
@@ -405,7 +403,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun expandedAppBar() {
         initStatusBarDark()
         initToolbarTransparent()
-        fab_detail.show()
+        showFabDetailAfterLoadData()
     }
 
     private fun initToolbarTransparent() {
@@ -556,6 +554,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
         context?.let {
+            fab_detail.show()
             if (shopInfo.isAllowManage == 1) {
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
                 fab_detail.setOnClickListener {
@@ -570,6 +569,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
             } else {
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
             }
+        }
+    }
+
+    private fun showFabDetailAfterLoadData() {
+        if (productInfoViewModel.productInfoP3resp.value != null ||
+                (shopInfo != null && shopInfo?.isAllowManage == 1)) {
+            fab_detail.show()
         }
     }
 
@@ -606,8 +612,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             label_min_wholesale.visibility = View.VISIBLE
             base_view_wholesale.visibility = View.VISIBLE
         } else {
-            label_wholesale.visibility = View.GONE
-            label_wholesale.visibility = View.GONE
             base_view_wholesale.visibility = View.GONE
         }
         onSuccessGetProductVariantInfo(productInfoP1.productVariant)

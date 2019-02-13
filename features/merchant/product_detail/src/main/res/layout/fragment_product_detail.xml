@@ -62,7 +62,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="?attr/actionBarSize">
+            android:paddingBottom="?attr/actionBarSize"
+            android:descendantFocusability="blocksDescendants">
 
             <include layout="@layout/partial_product_detail_header"/>
             <include layout="@layout/partial_product_rating_talk_courier"/>
@@ -129,6 +130,7 @@
         android:layout_margin="16dp"
         android:clickable="true"
         android:visibility="gone"
+        tools:visibility="visible"
         app:backgroundTint="@color/white"
         app:borderWidth="0dp"
         app:layout_anchor="@id/appbar"

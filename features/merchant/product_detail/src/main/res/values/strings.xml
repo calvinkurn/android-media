@@ -91,4 +91,6 @@
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
     <string name="success_warehousing_product">Produk berhasil digudangkan</string>
     <string name="success_move_etalase">Produk berhasil dipindahkan ke etalase</string>
+    <string name="choose">Pilih</string>
+    <string name="and">dan</string>
 </resources>

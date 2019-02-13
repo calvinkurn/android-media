@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/dp_8"
-    android:background="@android:color/background_light">
+    android:background="@android:color/background_light"
+    android:id="@+id/base_header">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/discount_timer_holder"

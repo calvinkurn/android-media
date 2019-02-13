@@ -34,7 +34,7 @@
         android:id="@+id/label_choose_variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/label_choose_product_variant"
+        tools:text="@string/label_choose_product_variant"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/tkpd_main_green"
         android:layout_marginRight="@dimen/dp_16"

@@ -116,6 +116,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                         shopInfo?.goldOS?.isOfficial == 1))
                 activity?.overridePendingTransition(R.anim.pull_up, 0)
             }
+            visible()
         }
     }
 

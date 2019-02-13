@@ -4,13 +4,14 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesModel
 import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
 class PartialVariantAndRateEstView private constructor(private val view: View) {
-    private var hasData: Boolean = false
     var productVariant: ProductVariant? = null
 
     companion object {
@@ -20,15 +21,16 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
     fun renderData(onVariantClickedListener: (()->Unit)? = null) {
         //TODO hide/show logic for variant/rate/courier/etc
         with(view) {
-            if (productVariant == null) {
-                label_variant.visibility = View.GONE
-            } else {
+            if (productVariant != null) {
                 label_variant.visibility = View.VISIBLE
                 label_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 label_choose_variant.setOnClickListener { onVariantClickedListener?.invoke() }
-                hasData = true
+                val chooseString = "${view.context.getString(R.string.choose)} " +
+                        "${productVariant!!.variant?.map { it.name }?.joinToStringWithLast(separator = ", ",
+                                lastSeparator = " ${view.context.getString(R.string.and)} ")}"
+                label_choose_variant.text = chooseString
+                visible()
             }
-            if (hasData) visible() else gone()
         }
 
     }
@@ -37,7 +39,6 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
         if (ratesModel.id.isBlank()) return
 
         with(view){
-            hasData = true
             txt_rate_estimation_start.text = MethodChecker.fromHtml(ratesModel.texts.textMinPrice)
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
@@ -52,9 +53,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             } else {
                 variant_divider.gone()
             }
-
-
-            if (hasData) visible() else gone()
+            visible()
             setOnClickListener { onRateEstimationClicked?.invoke() }
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.app.Activity
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.Rating
@@ -23,11 +24,15 @@ class PartialProductStatisticView private constructor(private val view: View) {
             txt_discussion.text = context.getString(R.string.template_talk, data.stats.countTalk)
             txt_discussion.setOnClickListener { onDiscussionClicked?.invoke() }
             icon_discussion.setOnClickListener { onDiscussionClicked?.invoke() }
+            visible()
         }
     }
 
     fun renderRating(rating: Rating) {
-        view.tv_rating.text = rating.ratingScore
+        with(view) {
+            tv_rating.text = rating.ratingScore
+            visible()
+        }
     }
 
     fun renderClickShipment(activity: Activity, productId: String, shipment: List<ShopShipment>) {

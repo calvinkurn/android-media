@@ -22,7 +22,7 @@ class PartialShopView private constructor(private val view: View){
         with(view){
             shop_name.text = MethodChecker.fromHtml(shop.shopCore.name)
             ImageHandler.loadImage2(shop_ava, shop.shopAssets.avatar,
-                    R.drawable.ic_default_shop_ava)
+                    R.drawable.ic_shop_default_empty)
 
             var templateLocOnline = "${shop.location} "
             if (shop.shopLastActive.isNotBlank()){
@@ -66,7 +66,7 @@ class PartialShopView private constructor(private val view: View){
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
                         ContextCompat.getDrawable(context, R.drawable.ic_plus_add_white_24), null, null, null)
             }
-            base_shop_view.visible()
+            visible()
         }
     }
 

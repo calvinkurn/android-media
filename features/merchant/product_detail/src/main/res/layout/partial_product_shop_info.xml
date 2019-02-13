@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"
+    tools:visibility="visible"
     android:padding="@dimen/dp_16"
     android:background="@drawable/bg_bottom_shadow_top_line">
 

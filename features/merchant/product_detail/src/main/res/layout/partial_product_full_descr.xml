@@ -9,7 +9,10 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_24"
-    android:background="@drawable/bg_bottom_shadow_top_line">
+    android:background="@drawable/bg_bottom_shadow_top_line"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:id="@+id/base_info_and_description">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/title_product_info_label"

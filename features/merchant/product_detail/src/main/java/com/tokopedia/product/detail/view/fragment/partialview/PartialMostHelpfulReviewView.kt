@@ -17,13 +17,14 @@ class PartialMostHelpfulReviewView private constructor(private val view: View) {
     fun renderData(reviews: List<Review>, totalReview: Int){
         with(view){
             if (reviews.isEmpty()){
-                base_view_most_helpful_review.gone()
+                gone()
             } else {
                 review_viewpager.adapter = MostHelpfulReviewPagerAdapter(reviews)
                 review_page_indicator.setViewPager(review_viewpager)
                 review_page_indicator.notifyDataSetChanged()
                 base_view_most_helpful_review.visible()
                 txt_see_all_review.text = context.getString(R.string.label_see_all_review, totalReview.thousandFormatted())
+                visible()
             }
         }
     }
