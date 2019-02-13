@@ -33,5 +33,4 @@ public interface ChatroomComponent {
 
     void inject(PlayWebviewFragment fragment);
 
-
 }
