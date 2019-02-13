@@ -42,7 +42,7 @@ class TrackingMapper {
             val item = tracking[i]
             Log.d("Iris Mapper", "$i userId : ${item.userId}")
             Log.d("Iris Mapper", "$i event : ${item.event}")
-            if (!item.event.isBlank() or (item.event.contains("event"))) {
+            if (!item.event.isBlank() && (item.event.contains("event"))) {
                 Log.d("Iris Mapper", "$i eventIf : ${item.event}")
                 event.put(JSONObject(item.event))
                 val nextItem: Tracking? = try {
