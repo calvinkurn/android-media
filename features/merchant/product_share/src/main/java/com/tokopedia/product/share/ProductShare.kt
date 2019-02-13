@@ -70,7 +70,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
             }
             putExtra(Intent.EXTRA_REFERRER, shareUri)
-            putExtra(Intent.EXTRA_HTML_TEXT, shareUri)
+            putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
             putExtra(Intent.EXTRA_TITLE, title)
             putExtra(Intent.EXTRA_TEXT, shareContent)
             putExtra(Intent.EXTRA_SUBJECT, title)
