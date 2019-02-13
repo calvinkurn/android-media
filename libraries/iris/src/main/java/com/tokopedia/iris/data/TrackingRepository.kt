@@ -43,7 +43,7 @@ class TrackingRepository (
             val request = service.sendSingleEvent(requestBody)
             val response = request.await()
             if (response.isSuccessful) {
-                Log.d("Iris Service Single", response.body().toString())
+                Log.d("Iris Service Single", "${response.code()}: response.body().toString()")
             }
         }
     }
@@ -55,7 +55,6 @@ class TrackingRepository (
             val sizeDbInMb = (f.length() / 1024) / 1024
             return sizeDbInMb >= 2
         }
-        Log.d("Iris", "File DB NULL")
         return false
     }
 }

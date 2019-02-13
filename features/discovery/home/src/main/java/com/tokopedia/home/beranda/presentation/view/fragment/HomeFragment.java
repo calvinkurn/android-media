@@ -268,8 +268,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 } else {
                     floatingTextButton.setVisibility(View.GONE);
                 }
-
-               // stressTestIris();
             }
         });
 
@@ -284,14 +282,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 floatingTextButton.resetState();
             }
         });
-    }
-
-    private void stressTestIris() {
-        int i = 0;
-        while (i < 1000000) {
-            HomePageTracking.eventClickDynamicIcons(getActivity(), "IRIS STRESS TEST ANDROID");
-            i++;
-        }
     }
 
     private void scrollToRecommendList() {
