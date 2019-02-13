@@ -202,10 +202,6 @@ public protected *;
 -keep public class android.support.design.internal.BottomNavigationPresenter { *; }
 -keep public class android.support.design.internal.BottomNavigationItemView { *; }
 
-# Every class that extends exception
--keep class * extends java.lang.Exception
--keep class * extends java.lang.RuntimeExceptionException
-
 # -- Coroutines --
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
