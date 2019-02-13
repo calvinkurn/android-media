@@ -16,6 +16,16 @@
             android:theme="@style/Theme.Transparent.Groupchat"
             android:configChanges="orientation|screenSize|locale"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+
+        <activity
+            android:name=".room.view.activity.PlayActivity"
+            android:label="@string/activity_channel"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent.Groupchat"
+            android:configChanges="orientation|screenSize|locale"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+
     </application>
 
 </manifest>

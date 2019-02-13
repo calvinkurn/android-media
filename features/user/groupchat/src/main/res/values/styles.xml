@@ -3,6 +3,7 @@
 
     <style name="Theme.Transparent.Groupchat" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:statusBarColor">@color/pure_transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
     <style name="ToolbarGroupChat" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
