@@ -18,6 +18,8 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSession;
 import com.google.gson.Gson;
 import android.content.Context;
@@ -51,8 +53,11 @@ public class AuthUtil {
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
-    public static final String HEADER_SESSION_ID = "tkpd-sessionid";
+    public static final String HEADER_SESSION_ID = "Tkpd-SessionId";
     public static final String HEADER_OS_VERSION = "os_version";
+
+    private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
+    private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -278,7 +283,6 @@ public class AuthUtil {
         Map<String, String> headers = new HashMap<>();
         headers.put(HEADER_SESSION_ID, session.getDeviceId());
         headers.put(HEADER_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
-        headers.put(HEADER_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER, session.getAccessToken()));
         headers.put(HEADER_ACCOUNT_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER, session.getAccessToken()));
         headers.put(PARAM_OS_TYPE, "1");
         headers.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
@@ -287,6 +291,13 @@ public class AuthUtil {
         headers.put(HEADER_X_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
         headers.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headers.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+
+        if(context.getApplicationContext() instanceof NetworkRouter) {
+            FingerprintModel fingerprintModel = ((NetworkRouter) context.getApplicationContext()).getFingerprintModel();
+            String json = fingerprintModel.getFingerprintHash();
+            headers.put(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + session.getUserId()));
+            headers.put(KEY_FINGERPRINT_DATA, json);
+        }
 
         return headers;
     }
