@@ -27,6 +27,7 @@ class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListe
             if (element.productChildrenList.isNotEmpty()) {
                 for (productChild: ProductChild in element.productChildrenList) {
                     if (productChild.isSelected) {
+                        element.maxOrderQuantity = productChild.maxOrder
                         itemView.tv_product_name.text = productChild.productName
                         itemView.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productChild.productPrice, false)
                         stockWording = productChild.stockWording
@@ -39,7 +40,7 @@ class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 if (element.maxOrderQuantity > 0) stockWording = itemView.context.getString(R.string.label_stock_available)
             }
 
-            listener.onBindProductUpdateQuantityViewModel(stockWording)
+            listener.onBindProductUpdateQuantityViewModel(element, stockWording)
         }
     }
 

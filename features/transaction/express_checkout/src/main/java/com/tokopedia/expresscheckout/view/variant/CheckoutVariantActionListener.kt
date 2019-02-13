@@ -23,7 +23,7 @@ interface CheckoutVariantActionListener {
 
     fun onClickInsuranceInfo(insuranceInfo: String)
 
-    fun onBindProductUpdateQuantityViewModel(stockWording: String)
+    fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String)
 
     fun onBindVariantGetProductViewModel(): ProductViewModel?
 

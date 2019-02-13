@@ -103,10 +103,10 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
     private fun commitQuantityChange(element: QuantityViewModel) {
         setupMinButton(element)
         setupPlusButton(element)
-        actionListener.onNeedToValidateButtonBuyVisibility()
         if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
             actionListener.onChangeQuantity(element)
         }
+        actionListener.onNeedToValidateButtonBuyVisibility()
     }
 
     private fun validateQuantity(element: QuantityViewModel): Boolean {

@@ -502,9 +502,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return compositeSubscription
     }
 
-    override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
+    override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
         val quantityViewModel = fragmentViewModel.getQuantityViewModel()
         if (quantityViewModel != null) {
+            quantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity
             quantityViewModel.stockWording = stockWording
             onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
         }

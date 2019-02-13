@@ -95,7 +95,7 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
                     productChild.productPrice = childModel.price
                     productChild.stockWording = childModel.stockWording ?: ""
                     productChild.minOrder = childModel.minOrder
-                    productChild.maxOrder = childModel.maxOrder
+                    productChild.maxOrder = if (childModel.maxOrder != 0) childModel.maxOrder else childModel.stock
                     productChild.optionsId = childModel.optionIds ?: ArrayList()
                     val productVariantDataModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)
                     if (productVariantDataModel?.defaultChild == childModel.productId &&
