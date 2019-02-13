@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
@@ -24,6 +25,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.network.util.NetworkClient
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -50,11 +53,17 @@ import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
-import com.tokopedia.product.detail.view.fragment.productView.PartialAttributeInfoView
-import com.tokopedia.product.detail.view.fragment.productView.PartialProductDescrFullView
-import com.tokopedia.product.detail.view.fragment.productView.PartialVariantAndRateEstView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialProductDescrFullView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialVariantAndRateEstView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialImageReviewView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialMostHelpfulReviewView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialLatestTalkView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialHeaderView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialShopView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
-import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
@@ -64,6 +73,8 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
+import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sdk.base.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -126,6 +137,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563
         const val REQUEST_CODE_MERCHANT_VOUCHER = 564
+        const val REQUEST_CODE_ETALASE = 565
 
         private const val PDP_TRACE = "pdp_trace"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
@@ -150,6 +162,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
+        activity?.run { NetworkClient.init(this) }
         getComponent(ProductDetailComponent::class.java).inject(this)
     }
 
@@ -163,7 +176,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
         }
         activity?.run {
-            NetworkClient.init(this)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
             productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
@@ -172,13 +184,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 useVariant = false
         }
         setHasOptionsMenu(true)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        //TODO REQUEST_CODE_BUY handling result
-        //if OK will change the qty, remark notes, and variant selection
-
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -249,7 +254,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-
         })
         loadProductData()
     }
@@ -297,7 +301,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
-           latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
         if (!::otherProductView.isInitialized)
             otherProductView = PartialOtherProductView.build(base_other_product)
@@ -462,6 +465,37 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        //TODO REQUEST_CODE_BUY handling result
+        //if OK will change the qty, remark notes, and variant selection
+
+        //TODO merchant voucher
+        when (requestCode) {
+            REQUEST_CODE_ETALASE -> {
+                //TODO need to check if product id is null when device don't keep activity
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
+                    val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+                    if (productId != null && !selectedEtalaseName.isNullOrEmpty()) {
+                        showProgressDialog(onCancelClicked = { productWarehouseViewModel.clear() })
+                        productWarehouseViewModel.moveToEtalase(productId!!, selectedEtalaseId, selectedEtalaseName!!,
+                                onSuccessMoveToEtalase = this::onSuccessMoveToEtalase,
+                                onErrorMoveToEtalase = this::onErrorMoveToEtalase)
+                    }
+                }
+            }
+            REQUEST_CODE_MERCHANT_VOUCHER_DETAIL,
+            REQUEST_CODE_MERCHANT_VOUCHER -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    //TODO reload merchant voucher data;
+                    //presenter.loadMerchantVoucher
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+
+    }
+
     override fun onDestroy() {
         productInfoViewModel.productInfoP1Resp.removeObservers(this)
         productInfoViewModel.productInfoP2resp.removeObservers(this)
@@ -591,23 +625,31 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun onSuccessWarehouseProduct() {
         hideProgressDialog()
-        activity?.run {
-            ToasterNormal.make(findViewById(android.R.id.content),
-                    getString(R.string.success_warehousing_product),
-                    ToasterNormal.LENGTH_LONG)
-                    .show()
-            //TODO refresh reload product page force from network
-            loadProductData()
-        }
+        showToastSuccess(getString(R.string.success_warehousing_product))
+        //TODO refresh reload product page force from network
+        loadProductData()
     }
 
     @SuppressLint("Range")
     private fun onErrorWarehouseProduct(throwable: Throwable) {
         hideProgressDialog()
+        showToastError(throwable)
+    }
+
+    private fun showToastError(throwable: Throwable) {
         activity?.run {
             ToasterError.make(findViewById(android.R.id.content),
                     ErrorHandler.getErrorMessage(context, throwable),
                     ToasterError.LENGTH_LONG)
+                    .show()
+        }
+    }
+
+    private fun showToastSuccess(message: String) {
+        activity?.run {
+            ToasterNormal.make(findViewById(android.R.id.content),
+                    message,
+                    ToasterNormal.LENGTH_LONG)
                     .show()
         }
     }
@@ -617,25 +659,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
      */
     private fun onSuccessMoveToEtalase() {
         hideProgressDialog()
-        activity?.run {
-            ToasterNormal.make(findViewById(android.R.id.content),
-                    getString(R.string.success_move_etalase),
-                    ToasterNormal.LENGTH_LONG)
-                    .show()
-            //TODO refresh reload product page force from network
-            loadProductData()
-        }
+        showToastSuccess(getString(R.string.success_move_etalase))
+        //TODO refresh reload product page force from network
+        loadProductData()
     }
 
     @SuppressLint("Range")
     private fun onErrorMoveToEtalase(throwable: Throwable) {
         hideProgressDialog()
-        activity?.run {
-            ToasterError.make(findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(context, throwable),
-                    ToasterError.LENGTH_LONG)
-                    .show()
-        }
+        showToastError(throwable)
     }
 
     private fun onDiscussionClicked() {
@@ -794,14 +826,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun moveProductToEtalase() {
-        //TODO go to select etalase picker
-        val etalaseId = productInfo?.menu?.id
-        val etalaseName = productInfo?.menu?.name
-        if (productId != null && !etalaseName.isNullOrEmpty()) {
-            showProgressDialog(onCancelClicked = { productWarehouseViewModel.clear() })
-            productWarehouseViewModel.moveToEtalase(productId!!, etalaseId.toString(), etalaseName!!,
-                    onSuccessMoveToEtalase = this::onSuccessMoveToEtalase,
-                    onErrorMoveToEtalase = this::onErrorMoveToEtalase)
+        context?.run {
+            val shopId = productInfo?.basic?.shopID.toString()
+            if (shopId.isNotEmpty()) {
+                val etalaseId = productInfo?.menu?.id.toString() ?: ""
+                val shopEtalasePickerIntent = ShopEtalasePickerActivity.createIntent(this,
+                        shopId, etalaseId, false, true)
+                startActivityForResult(shopEtalasePickerIntent, REQUEST_CODE_ETALASE)
+            }
         }
     }
 
@@ -824,7 +856,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
                 productDetailTracking.eventReportLogin()
             } else {
-                //TODO show login
+                context?.run {
+                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
                 productDetailTracking.eventReportNoLogin()
             }
         }
@@ -837,7 +872,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 startActivity(router.getCartIntent(it))
             } else {
-                startActivityForResult(router.getLoginIntent(it), REQUEST_CODE_LOGIN)
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
             }
             if (hasVariant())
                 productDetailTracking.eventCartMenuClicked(""/*generated variant */)
