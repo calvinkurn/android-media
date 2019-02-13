@@ -28,34 +28,6 @@
             android:background="@color/red_30"
             tools:ignore="MergeRootFrame"/>
 
-        <ImageView
-            android:id="@+id/channel_banner"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/medium_green"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@+id/sponsor_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="1" />
-
-        <RelativeLayout
-            android:id="@+id/shadow_layer"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/shadow_layer_group_chat_banner"
-            android:adjustViewBounds="true"
-            android:alpha="0.1"
-            android:background="@color/black"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="@id/channel_banner"
-            app:layout_constraintTop_toTopOf="@id/channel_banner"
-            tools:visibility="gone" />
-
-
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager_play"
             android:layout_width="match_parent"

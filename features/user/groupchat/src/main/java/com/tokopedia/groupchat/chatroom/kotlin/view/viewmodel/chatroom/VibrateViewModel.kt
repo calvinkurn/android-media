@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.chatroom
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.groupchat.chatroom.kotlin.domain.pojo.BaseGroupChatPojo
+import com.tokopedia.groupchat.room.domain.pojo.BaseGroupChatPojo
 import com.tokopedia.groupchat.chatroom.kotlin.view.adapter.chatroom.typefactory.GroupChatTypeFactory
 
 /**
