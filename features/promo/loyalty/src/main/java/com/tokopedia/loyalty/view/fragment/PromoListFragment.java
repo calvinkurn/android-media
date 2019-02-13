@@ -302,6 +302,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isLoadMore) {
                     dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
+                    isLoadMore = false;
                 }
             }
         };
