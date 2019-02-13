@@ -53,16 +53,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
-import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialProductDescrFullView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialVariantAndRateEstView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialImageReviewView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialMostHelpfulReviewView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialLatestTalkView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialHeaderView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialShopView
-import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
+import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener

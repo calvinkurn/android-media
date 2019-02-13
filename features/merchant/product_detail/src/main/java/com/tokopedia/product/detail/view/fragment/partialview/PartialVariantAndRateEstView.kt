@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment.productView
+package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
