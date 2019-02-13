@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -109,7 +110,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String applink = "tokopedia://product/" + items.getId();
+                    String applink = ApplinkConst.PRODUCT_INFO.replace("{product_id}", String.valueOf(items.getId()));
                     RouteManager.route(context, applink);
                 }
             });

@@ -25,6 +25,14 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
+
+    private static final String SEARCH = "Search";
+    private static final String START_DATE = "StartDate";
+    private static final String END_DATE = "EndDate";
+    private static final String SORT = "Sort";
+    private static final String ORDER_STATUS = "OrderStatus";
+    private static final String ORDER_ID = "orderId";
+    private static final int PER_PAGE_COUNT = 10;
     GraphqlUseCase getOrderListUseCase;
 
     @Inject
@@ -43,20 +51,20 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (orderCategory.equalsIgnoreCase("MarketPlace")) {
             variables.put(OrderCategory.KEY_LABEL, orderCategory);
             variables.put(OrderCategory.PAGE, page);
-            variables.put(OrderCategory.PER_PAGE, 10);
-            variables.put("Search", getView().getSearchedString());
-            variables.put("StartDate", getView().getStartDate());
-            variables.put("EndDate", getView().getEndDate());
-            variables.put("Sort", "");
-            variables.put("OrderStatus", Integer.parseInt(getView().getSelectedFilter()));
+            variables.put(OrderCategory.PER_PAGE, PER_PAGE_COUNT);
+            variables.put(SEARCH, getView().getSearchedString());
+            variables.put(START_DATE, getView().getStartDate());
+            variables.put(END_DATE, getView().getEndDate());
+            variables.put(SORT, "");
+            variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderlist_marketplace), Data.class, variables);
         } else {
             variables.put(OrderCategory.KEY_LABEL, orderCategory);
             variables.put(OrderCategory.PAGE, page);
-            variables.put(OrderCategory.PER_PAGE, 10);
-            variables.put("orderId", orderId);
+            variables.put(OrderCategory.PER_PAGE, PER_PAGE_COUNT);
+            variables.put(ORDER_ID, orderId);
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderlist), Data.class, variables);

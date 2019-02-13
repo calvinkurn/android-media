@@ -235,7 +235,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         emptyLayoutMarketPlace = view.findViewById(R.id.empty_state_marketplace);
         quickSingleFilterView = view.findViewById(R.id.quick_filter);
         simpleSearchView = view.findViewById(R.id.simpleSearchView);
-        simpleSearchView.setSearchHint("Cari produk, toko, atau invoice");
+        simpleSearchView.setSearchHint(getContext().getResources().getString(R.string.search_hint_text));
         filterDate = view.findViewById(R.id.filterDate);
         mainContent = view.findViewById(R.id.mainContent);
         tryAgain = emptyLayoutMarketPlace.findViewById(R.id.tryAgain);

@@ -12,14 +12,6 @@ public class ErrorResponse extends BaseResponseError {
 	@SerializedName("error_message")
 	private List<String> errorMessage;
 
-	public List<String> getMessage_error() {
-		return message_error;
-	}
-
-	public void setMessage_error(List<String> message_error) {
-		this.message_error = message_error;
-	}
-
 	@SerializedName("message_error")
 	private List<String> message_error;
 
@@ -41,6 +33,14 @@ public class ErrorResponse extends BaseResponseError {
 
 	public List<String> getErrorMessage(){
 		return errorMessage;
+	}
+
+	public List<String> getMessageError() {
+		return message_error;
+	}
+
+	public void setMessage_error(List<String> message_error) {
+		this.message_error = message_error;
 	}
 
 	public void setData(Object data){
@@ -90,8 +90,8 @@ public class ErrorResponse extends BaseResponseError {
 	public String getErrorKey() {
 		if(getErrorMessage().size() >0) {
 			return getErrorMessage().get(0);
-		}else if(getMessage_error().size() > 0 ){
-			return getMessage_error().get(0);
+		}else if(getMessageError().size() > 0 ){
+			return getMessageError().get(0);
 		}else {
 			return "";
 		}
@@ -101,8 +101,8 @@ public class ErrorResponse extends BaseResponseError {
 	public boolean hasBody() {
 		if(getErrorMessage()  != null) {
 			return getErrorMessage().size() > 0;
-		} else if(getMessage_error()  != null) {
-			return getMessage_error().size() > 0;
+		} else if(getMessageError()  != null) {
+			return getMessageError().size() > 0;
 		}else {
 			return false;
 		}
@@ -112,8 +112,8 @@ public class ErrorResponse extends BaseResponseError {
 	public IOException createException() {
 		if (getErrorMessage() != null) {
 			return new MessageErrorException(getErrorMessage().get(0));
-		} else if (getMessage_error() != null) {
-			return new MessageErrorException(getMessage_error().get(0));
+		} else if (getMessageError() != null) {
+			return new MessageErrorException(getMessageError().get(0));
 		}else {
 			return new MessageErrorException("");
 		}

@@ -86,38 +86,41 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    public static final String NO_SALIN = "No. Resi";
+    public static final String NO_SANIN_NEXT_LINE = "\n\nSalin No. Resi";
+    public static final String BELI_LAGI = "Beli Lagi";
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
     @Inject
     OrderListDetailPresenter presenter;
-    LinearLayout mainView;
-    TextView statusLabel;
-    TextView statusValue;
-    TextView conditionalInfoText;
-    LinearLayout statusDetail;
-    TextView invoiceView;
-    TextView lihat;
-    TextView detailLabel;
-    LinearLayout detailContent;
-    TextView additionalText;
-    LinearLayout additionalInfoLayout;
-    TextView infoLabel;
-    LinearLayout infoValue;
-    LinearLayout totalPrice;
-    TextView helpLabel;
-    LinearLayout actionBtnLayout;
-    TextView primaryActionBtn;
-    TextView secondaryActionBtn;
-    FrameLayout parentLayout;
-    RecyclerView itemsRecyclerView;
-    TextView productInformationTitle;
-    LinearLayout paymentMethod;
+    private LinearLayout mainView;
+    private TextView statusLabel;
+    private TextView statusValue;
+    private TextView conditionalInfoText;
+    private LinearLayout statusDetail;
+    private TextView invoiceView;
+    private TextView lihat;
+    private TextView detailLabel;
+    private LinearLayout detailContent;
+    private TextView additionalText;
+    private LinearLayout additionalInfoLayout;
+    private TextView infoLabel;
+    private LinearLayout infoValue;
+    private LinearLayout totalPrice;
+    private TextView helpLabel;
+    private LinearLayout actionBtnLayout;
+    private TextView primaryActionBtn;
+    private TextView secondaryActionBtn;
+    private FrameLayout parentLayout;
+    private RecyclerView itemsRecyclerView;
+    private TextView productInformationTitle;
+    private LinearLayout paymentMethod;
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
-    CardView driverLayout, dropShipperLayout;
-    TextView statusLihat;
-    FrameLayout progressBarLayout;
+    private CardView driverLayout, dropShipperLayout;
+    private TextView statusLihat;
+    private FrameLayout progressBarLayout;
     private ClipData myClip;
     @Inject
     OrderListAnalytics orderListAnalytics;
@@ -230,7 +233,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         if(title.backgroundColor() !=null && !title.backgroundColor().isEmpty()){
             Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
             doubleTextView.setBottomTextBackground(drawable);
-            doubleTextView.setBottomTextRightPadding(20,10,20,10);
+            doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20),getResources().getDimensionPixelSize(R.dimen.dp_10),getResources().getDimensionPixelSize(R.dimen.dp_20),getResources().getDimensionPixelSize(R.dimen.dp_10));
 
             doubleTextView.setBottomTextBackgroundColor(Color.parseColor(title.backgroundColor()));
         }
@@ -264,14 +267,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     public void setDetail(Detail detail) {
         detailLabel.setText(getContext().getResources().getString(R.string.detail_product));
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        if (!detail.label().equalsIgnoreCase("No. Resi")) {
+        if (!detail.label().equalsIgnoreCase(NO_SALIN)) {
             doubleTextView.setTopText(detail.label());
             doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
             doubleTextView.setBottomText(detail.value());
             doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         } else {
             doubleTextView.setTopText(detail.label());
-            String text = detail.value() + "\n\nSalin No. Resi";
+            String text = detail.value() + NO_SANIN_NEXT_LINE;
             SpannableString spannableString = new SpannableString(text);
             int startIndexOfLink = text.indexOf("Salin");
             spannableString.setSpan(new ClickableSpan() {
@@ -300,7 +303,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
             doubleTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String applink = "tokopedia://shop/" + shopInfo.getShopId()  +"/info";
+                    String applink = ApplinkConst.SHOP_INFO.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
                     RouteManager.route(getContext(), applink);
                 }
             });
@@ -453,7 +456,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
             if (!actionButton.getActionColor().getTextColor().equals("")) {
                 textView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
             }
-            if(actionButton.getLabel().equalsIgnoreCase("Beli Lagi")) {
+            if(actionButton.getLabel().equalsIgnoreCase(BELI_LAGI)) {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -31,6 +31,7 @@ public class SaveDateBottomSheet extends BottomSheets {
     private String filterFinalDate = "";
     TextView startDate;
     TextView endDate;
+    DateFilterResult dateFilterResult;
 
     public SaveDateBottomSheet() {
 
@@ -47,7 +48,6 @@ public class SaveDateBottomSheet extends BottomSheets {
         return R.layout.select_filter_date;
     }
 
-    DateFilterResult dateFilterResult;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -81,7 +81,7 @@ public class SaveDateBottomSheet extends BottomSheets {
                         .setShowHoliday(true)
                         .setMinDate(getMinimumDate())
                         .setMaxDate(now.getTime())
-                        .setTitle("Filter Tanggal")
+                        .setTitle(TITLE)
                         .setSelectedDate(getDate(startDate.getText().toString()))
                         .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
                         .build();
@@ -106,7 +106,7 @@ public class SaveDateBottomSheet extends BottomSheets {
                         .setShowHoliday(true)
                         .setMinDate(getMinimumDate())
                         .setMaxDate(now.getTime())
-                        .setTitle("Filter Tanggal")
+                        .setTitle(TITLE)
                         .setSelectedDate(getDate(startDate.getText().toString()))
                         .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
                         .build();

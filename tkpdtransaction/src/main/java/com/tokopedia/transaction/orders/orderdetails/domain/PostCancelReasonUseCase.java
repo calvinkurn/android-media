@@ -45,11 +45,11 @@ public class PostCancelReasonUseCase extends RestRequestSupportInterceptorUseCas
         Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
         }.getType();
 
-        RestRequest restRequest1 = new RestRequest.Builder(this.url, token)
+        RestRequest cancelOrderRequest = new RestRequest.Builder(this.url, token)
                 .setRequestType(RequestType.POST)
                 .setBody(params)
                 .build();
-        tempRequest.add(restRequest1);
+        tempRequest.add(cancelOrderRequest);
         return tempRequest;
     }
 }

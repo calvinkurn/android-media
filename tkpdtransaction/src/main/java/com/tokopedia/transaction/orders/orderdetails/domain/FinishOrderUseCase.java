@@ -46,12 +46,12 @@ public class FinishOrderUseCase extends RestRequestSupportInterceptorUseCase {
         Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
         }.getType();
 
-        RestRequest restRequest1 = new RestRequest.Builder(this.endpoint, token)
+        RestRequest finishOrderRequest = new RestRequest.Builder(this.endpoint, token)
                 .setRequestType(RequestType.POST)
                 .setBody("")
                 .setQueryParams(params)
                 .build();
-        tempRequest.add(restRequest1);
+        tempRequest.add(finishOrderRequest);
         return tempRequest;
     }
 
