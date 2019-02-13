@@ -977,6 +977,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onPromoDragStart() {
+        refreshLayout.setCanChildScrollUp(true);
+    }
+
+    @Override
+    public void onPromoDragEnd() {
+        if (isAppBarFullyExpanded(lastOffset)) {
+            refreshLayout.setCanChildScrollUp(false);
+        }
+    }
+
+    @Override
     public void onScrollToTop() {
         if (appBarLayout != null) {
             appBarLayout.setExpanded(true);
