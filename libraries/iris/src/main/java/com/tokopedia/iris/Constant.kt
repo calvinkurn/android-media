@@ -3,9 +3,8 @@ package com.tokopedia.iris
 /**
  * @author okasurya on 10/18/18.
  */
-
-const val LIVE = "https://hub.tokopedia.com"
-const val STAGING = "https://hub-staging.tokopedia.com"
+const val LIVE = "https://hub.tokopedia.com/"
+const val STAGING = "https://hub-staging.tokopedia.com/"
 
 const val BASE_URL = STAGING
 
