@@ -40,9 +40,10 @@ class TrackingMapper {
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
-            Log.d("Iris Mapper", "$i : ${item.userId}")
-            Log.d("Iris Mapper", "$i : ${item.event}")
+            Log.d("Iris Mapper", "$i userId : ${item.userId}")
+            Log.d("Iris Mapper", "$i event : ${item.event}")
             if (!item.event.isBlank() or (item.event.contains("event", true))) {
+                Log.d("Iris Mapper", "$i eventIf : ${item.event}")
                 event.put(JSONObject(item.event))
                 val nextItem: Tracking? = try {
                     tracking[i+1]
