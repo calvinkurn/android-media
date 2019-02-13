@@ -86,7 +86,7 @@ class IrisSession(val context: Context) : Session {
         editor.commit()
     }
 
-    fun setTimestampPrevious(timestamp: String) {
+    private fun setTimestampPrevious(timestamp: String) {
         editor.putString(KEY_TIMESTAMP_PREVIOUS, timestamp)
         editor.commit()
     }

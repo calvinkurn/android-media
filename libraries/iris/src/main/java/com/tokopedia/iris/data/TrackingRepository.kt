@@ -2,6 +2,7 @@ package com.tokopedia.iris.data
 
 import android.content.Context
 import android.util.Log
+import com.tokopedia.iris.DATABASE_NAME
 import com.tokopedia.iris.Session
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
@@ -10,6 +11,7 @@ import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
+import java.io.File
 
 /**
  * @author okasurya on 10/25/18.
@@ -20,7 +22,14 @@ class TrackingRepository (
 
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
 
-    fun saveEvent(data: String, session: Session) = trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
+    fun saveEvent(data: String, session: Session) {
+
+        if (isSizeOver()) { // check if db over 2 MB
+            trackingDao.flush()
+        }
+
+        trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
+    }
 
     fun getFromOldest(maxRow: Int) = trackingDao.getFromOldest(maxRow)
 
@@ -34,8 +43,19 @@ class TrackingRepository (
             val request = service.sendSingleEvent(requestBody)
             val response = request.await()
             if (response.isSuccessful) {
-                Log.d("Iris", response.body().toString())
+                Log.d("Iris Service Single", response.body().toString())
             }
         }
+    }
+
+    private fun isSizeOver() : Boolean {
+        val f: File? = context.getDatabasePath(DATABASE_NAME)
+        if (f != null) {
+            Log.d("Iris", "Length DB: ${f.length()}")
+            val sizeDbInMb = (f.length() / 1024) / 1024
+            return sizeDbInMb >= 2
+        }
+        Log.d("Iris", "File DB NULL")
+        return false
     }
 }

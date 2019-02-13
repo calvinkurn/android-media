@@ -160,7 +160,6 @@ ext {
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             guava                 : "com.google.guava:guava:21.0",
-            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             viewModel             : "android.arch.lifecycle:viewmodel:$lifeCycleVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"

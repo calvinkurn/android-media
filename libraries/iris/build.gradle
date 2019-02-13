@@ -33,11 +33,13 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"
+    api rootProject.ext.miscDependencies.coroutineCore
     implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha10"
 
-    implementation "android.arch.persistence.room:runtime:1.1.1"
-    kapt "android.arch.persistence.room:compiler:1.1.1"
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
     implementation rootProject.ext.networkDependencies.retrofit

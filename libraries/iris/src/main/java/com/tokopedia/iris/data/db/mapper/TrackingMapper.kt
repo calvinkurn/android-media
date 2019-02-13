@@ -1,5 +1,6 @@
 package com.tokopedia.iris.data.db.mapper
 
+import android.util.Log
 import com.tokopedia.iris.KEY_CONTAINER
 import com.tokopedia.iris.KEY_EVENT
 import com.tokopedia.iris.data.db.table.Tracking
@@ -39,24 +40,30 @@ class TrackingMapper {
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
-            event.put(JSONObject(item.event))
-            val nextItem: Tracking? = try {
-                tracking[i+1]
-            } catch (e: IndexOutOfBoundsException) {
-                null
-            }
-            val userId : String = nextItem?.userId ?: ""
-            if (userId != item.userId) {
-                if (event.length() > 0) {
-                    row.put("event_data", event)
-                    data.put(row)
+            Log.d("Iris Mapper", "$i userId : ${item.userId}")
+            Log.d("Iris Mapper", "$i event : ${item.event}")
+            if (!item.event.isBlank() && (item.event.contains("event"))) {
+                Log.d("Iris Mapper", "$i eventIf : ${item.event}")
+                event.put(JSONObject(item.event))
+                val nextItem: Tracking? = try {
+                    tracking[i+1]
+                } catch (e: IndexOutOfBoundsException) {
+                    null
                 }
-                row.put("device_id", item.deviceId)
-                row.put("user_id", item.userId)
-                event = JSONArray()
+                val userId : String = nextItem?.userId ?: ""
+                if (item.userId != userId) {
+                    row.put("device_id", item.deviceId)
+                    row.put("user_id", item.userId)
+                    if (event.length() > 0) {
+                        row.put("event_data", event)
+                        data.put(row)
+                    }
+                    event = JSONArray()
+                }
             }
         }
         result.put("data", data)
+        Log.d("Iris Mapper", "all: $data")
         return result.toString()
     }
 

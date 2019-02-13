@@ -19,4 +19,7 @@ interface TrackingDao {
 
     @Insert
     fun insert(tracking: Tracking): Long
+
+    @Query("DELETE FROM tracking")
+    fun flush()
 }
