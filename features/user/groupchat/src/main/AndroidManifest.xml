@@ -18,7 +18,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
         <activity
-            android:name=".webview.PlayWebviewActivity"
+            android:name=".chatroom.view.activity.PlayWebviewActivity"
             android:label="@string/activity_channel"
             android:screenOrientation="portrait"
             />

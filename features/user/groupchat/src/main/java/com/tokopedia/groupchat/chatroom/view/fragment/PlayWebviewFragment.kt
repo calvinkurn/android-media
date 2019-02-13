@@ -1,14 +1,12 @@
-package com.tokopedia.groupchat.webview
+package com.tokopedia.groupchat.chatroom.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -17,6 +15,7 @@ import android.view.ViewGroup
 import android.webkit.*
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.applink.ApplinkConst
@@ -31,7 +30,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 12/02/19.
  */
-class PlayWebviewFragment : Fragment(), View.OnKeyListener {
+class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
 
     private var url: String = ""
     private var hasTitlebar: Boolean = false
@@ -58,6 +57,8 @@ class PlayWebviewFragment : Fragment(), View.OnKeyListener {
         fragment.arguments = bundle
         return fragment
     }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
