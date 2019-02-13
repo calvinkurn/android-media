@@ -572,7 +572,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
         getView().setActionsEnabled(true);
 
         if (graphqlResponse != null &&
-                graphqlResponse.getData(GqlAllDepositSummaryResponse.class) != null) {
+                graphqlResponse.getData(GqlCompleteTransactionResponse.class) != null) {
 
             GqlCompleteTransactionResponse gqlCompleteTransactionResponse =
                     graphqlResponse.getData(GqlCompleteTransactionResponse.class);

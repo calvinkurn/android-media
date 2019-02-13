@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,16 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
+import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener;
 import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter;
 import com.tokopedia.saldodetails.response.model.DepositHistoryList;
-
-import java.util.List;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.FOR_ALL;
 import static com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.FOR_BUYER;
@@ -29,7 +30,7 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
         SaldoDetailTransactionFactory> implements SaldoItemListener {
 
     private static final int SELLER_SALDO = 1;
-    private static final int BUYER_SALDO = 0 ;
+    private static final int BUYER_SALDO = 0;
     private static final int ALL_SALDO = 2;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -55,6 +56,7 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saldo_history_list, container, false);
         initViews(view);
+        initialVar();
         return view;
     }
 
@@ -65,7 +67,6 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initialVar();
         initListeners();
     }
 
@@ -74,9 +75,15 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
         return adapter;
     }
 
+    @NonNull
+    @Override
+    protected BaseListAdapter<DepositHistoryList, SaldoDetailTransactionFactory> createAdapterInstance() {
+        adapter = new SaldoDepositAdapter(getAdapterTypeFactory());
+        return adapter;
+    }
+
     private void initialVar() {
         transactionType = getArguments().getString(TRANSACTION_TYPE);
-        adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -89,9 +96,9 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
 //        recyclerView.addOnScrollListener(onScroll());
     }
 
-    public void loadData(List<DepositHistoryList> list) {
+    /*public void loadData(List<DepositHistoryList> list) {
         adapter.setElement(list);
-    }
+    }*/
 
     /*private RecyclerView.OnScrollListener onScroll() {
         return new RecyclerView.OnScrollListener() {
@@ -117,9 +124,11 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
         };
     }*/
 
+
     @Override
     protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener() {
-        return new EndlessRecyclerViewScrollListener(recyclerView.getLayoutManager()) {
+
+        return new DataEndLessScrollListener(recyclerView.getLayoutManager(), adapter) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 showLoading();
@@ -136,6 +145,25 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
                 }
             }
         };
+
+
+        /*return new EndlessRecyclerViewScrollListener(recyclerView.getLayoutManager()) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                showLoading();
+                switch (transactionType) {
+                    case FOR_ALL:
+                        presenter.loadMoreAllTransaction(page, ALL_SALDO);
+                        break;
+                    case FOR_BUYER:
+                        presenter.loadMoreBuyerTransaction(page, BUYER_SALDO);
+                        break;
+                    case FOR_SELLER:
+                        presenter.loadMoreSellerTransaction(page, SELLER_SALDO);
+                        break;
+                }
+            }
+        };*/
     }
 
     @Override

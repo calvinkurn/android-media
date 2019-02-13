@@ -59,10 +59,10 @@ public class GetAllTransactionUsecase {
                 GqlCompleteTransactionResponse.class,
                 variables, GET_SUMMARY_DEPOSIT);
 
-        GraphqlCacheStrategy cacheStrategy =
+        /*GraphqlCacheStrategy cacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                         .setExpiryTime(cacheDuration).setSessionIncluded(true).build();
-        graphqlUseCase.setCacheStrategy(cacheStrategy);
+        graphqlUseCase.setCacheStrategy(cacheStrategy);*/
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
     }

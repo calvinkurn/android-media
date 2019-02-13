@@ -19,7 +19,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <!--<android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -35,7 +35,19 @@
             android:layout_marginRight="@dimen/dp_1"
             android:layout_marginBottom="@dimen/dp_4" />
 
-    </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>-->
+
+    <fragment
+        android:id="@+id/saldo_history_layout"
+        android:name="com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_1"
+        android:layout_marginLeft="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_1"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginRight="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_4" />
 
 </android.support.design.widget.CoordinatorLayout>
 
