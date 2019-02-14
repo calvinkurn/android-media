@@ -145,6 +145,10 @@ public class ImpressedImageView extends AppCompatImageView {
         this.hintListener = hintListener;
     }
 
+    @Deprecated
+    /**
+     * Use setViewHintListener(ImageHolder holder, ViewHintListener hintListener)
+     */
     public void setViewHintListener(ViewHintListener hintListener) {
         this.hintListener = hintListener;
     }
