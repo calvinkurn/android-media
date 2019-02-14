@@ -254,6 +254,31 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         })
+        fab_detail.setOnClickListener {
+            if (productInfoViewModel.isUserSessionActive()) {
+                val productP3value = productInfoViewModel.productInfoP3resp.value
+                if (shopInfo != null && shopInfo?.isAllowManage == 1 &&
+                        productInfoViewModel.isShopOwner(shopInfo?.shopCore?.shopID?.toInt()
+                                ?: 0)) {
+                    if (productInfo?.basic?.status != ProductDetailConstant.PRD_STATE_PENDING) {
+                        gotoEditProduct()
+                    } else {
+                        // TODO show toast product status title
+                    }
+                } else if (productP3value != null) {
+                    if (productP3value.isWishlisted) {
+                        // go to unwishlist
+                    } else {
+                        // go to wishlist
+                    }
+                }
+            } else {
+                context?.run {
+                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
+            }
+        }
         loadProductData()
     }
 
@@ -557,13 +582,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             fab_detail.show()
             if (shopInfo.isAllowManage == 1) {
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
-                fab_detail.setOnClickListener {
-                    if (productInfo?.basic?.status != ProductDetailConstant.PRD_STATE_PENDING) {
-                        gotoEditProduct()
-                    } else {
-
-                    }
-                }
             } else if (wishlisted) {
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
             } else {

@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopEtalasePicker)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.wishListCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
