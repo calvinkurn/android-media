@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.chatbot.di.DaggerPlayComponent
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -22,6 +21,7 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
+import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import javax.inject.Inject
 
 /**
@@ -56,6 +56,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         presenter.getPlayInfo(arguments?.getString(PlayActivity.EXTRA_CHANNEL_UUID), onSuccessGetInfo())
     }
 
+    override fun loadData(page: Int) {
+
+    }
+
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
             viewState.onSuccessGetInfoFirstTime(it)
@@ -63,8 +67,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun initView(view: View) {
-        view.let {
-            viewState = PlayViewStateImpl(it, activity)
+        activity?.let {
+            viewState = PlayViewStateImpl(view, it)
         }
         setToolbarView(view)
     }

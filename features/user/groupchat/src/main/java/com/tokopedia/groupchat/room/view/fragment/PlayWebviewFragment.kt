@@ -21,6 +21,9 @@ import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.groupchat.room.di.PlayComponent
+import com.tokopedia.groupchat.room.di.DaggerPlayComponent
+
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics

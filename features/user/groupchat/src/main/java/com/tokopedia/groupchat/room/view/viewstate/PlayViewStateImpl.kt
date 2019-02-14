@@ -13,7 +13,6 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.util.TextFormatter
-import kotlinx.android.synthetic.main.bottom_sheet_rounded_header.view.*
 
 /**
  * @author : Steven 13/02/19
@@ -98,7 +97,7 @@ class PlayViewStateImpl(var view: View,
             bottomSheetBehavior.isHideable = true
             bottomSheetBehavior.setBottomSheetCallback(getBottomSheetCallback())
 
-            bottomSheetLayout.close_button.setOnClickListener {
+            bottomSheetLayout.findViewById<ImageView>(R.id.close_button).setOnClickListener {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
