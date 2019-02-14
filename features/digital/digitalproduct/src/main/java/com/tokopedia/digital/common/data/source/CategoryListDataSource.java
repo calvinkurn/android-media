@@ -10,6 +10,7 @@ import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Response;
@@ -37,14 +38,14 @@ public class CategoryListDataSource {
         this.categoryMapper = categoryMapper;
     }
 
-    public Observable<List<Category>> getCategoryList() {
-        return Observable.concat(getDataFromDb(), getDataFromCloud())
+    public Observable<List<Category>> getCategoryList(HashMap<String, Object> parameters) {
+        return Observable.concat(getDataFromDb(), getDataFromCloud(parameters))
                 .first(categoryEntities -> categoryEntities != null)
                 .map(categoryMapper);
     }
 
-    private Observable<List<CategoryEntity>> getDataFromCloud() {
-        return digitalEndpointService.getCategoryList()
+    private Observable<List<CategoryEntity>> getDataFromCloud(HashMap<String, Object> parameters) {
+        return digitalEndpointService.getCategoryList(parameters)
                 .map(getFuncTransformCategoryEntityList())
                 .doOnNext(categoryEntities -> {
                     deleteCache(categoryEntities);

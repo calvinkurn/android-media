@@ -15,7 +15,7 @@ class DigitalWidgetPresenter @Inject constructor(private val digitalWidgetUseCas
         BaseDaggerPresenter<DigitalWidgetContract.View>(), DigitalWidgetContract.Presenter {
 
     override fun fetchDataRechargeCategory() {
-        digitalWidgetUseCase.execute(RequestParams.EMPTY, object : Subscriber<List<Category>>() {
+        digitalWidgetUseCase.execute(digitalWidgetUseCase.createRequest(), object : Subscriber<List<Category>>() {
             override fun onCompleted() {
 
             }

@@ -27,7 +27,7 @@ public interface DigitalRestApi {
     Observable<Response<TkpdDigitalResponse>> getStatus();
 
     @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY_LIST)
-    Observable<Response<TkpdDigitalResponse>> getCategoryList();
+    Observable<Response<TkpdDigitalResponse>> getCategoryList(@QueryMap Map<String, Object> params);
 
     @GET(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     Observable<Response<DataResponse<ResponseCartData>>> getCart(@QueryMap Map<String, String> params);
