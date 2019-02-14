@@ -203,6 +203,7 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
                 wholesalePriceModels.add(getWholesalePriceModel(wholesalePrice))
             }
         }
+        productModel.wholesalePriceModel = wholesalePriceModels
         return productModel
     }
 

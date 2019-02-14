@@ -55,7 +55,10 @@ data class Child(
 
         @SerializedName("stock_wording")
         @Expose
-        val stockWording: String
+        val stockWording: String,
 
+        @SerializedName("stock_wording_html")
+        @Expose
+        val stockWordingHtml: String
 
 )

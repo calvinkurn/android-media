@@ -412,13 +412,18 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         if (fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.isNotEmpty() == true) {
             val wholesalePriceModels = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.asReversed()
             if (wholesalePriceModels != null) {
+                var eligibleForWholesalePrice = false
                 for (wholesalePriceModel: WholesalePriceModel in wholesalePriceModels) {
                     if (quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMax ||
                             (quantityViewModel.orderQuantity < wholesalePriceModel.qtyMax &&
                                     quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMin)) {
                         productViewModel?.productPrice = wholesalePriceModel.prdPrc
+                        eligibleForWholesalePrice = true
                         break
                     }
+                }
+                if (!eligibleForWholesalePrice) {
+                    productViewModel?.productPrice = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice ?: 0
                 }
             }
         }
