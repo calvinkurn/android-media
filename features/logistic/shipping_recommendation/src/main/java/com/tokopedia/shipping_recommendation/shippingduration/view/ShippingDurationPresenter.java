@@ -69,11 +69,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     @Override
     public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
                                           int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList) {
+                                          List<ShopShipment> shopShipmentList, int codHistory) {
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-            getCourierRecommendationUseCase.execute(query, shipmentDetailData, selectedServiceId, shopShipmentList,
+            getCourierRecommendationUseCase.execute(query, codHistory, shipmentDetailData, selectedServiceId, shopShipmentList,
                     new Subscriber<ShippingRecommendationData>() {
                         @Override
                         public void onCompleted() {

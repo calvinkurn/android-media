@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -22,6 +24,7 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
@@ -31,6 +34,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Deprecated
 public class GTMContainer implements IGTMContainer {
@@ -39,8 +43,6 @@ public class GTMContainer implements IGTMContainer {
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
     private static final int EXPIRE_CONTAINER_TIME_DEBUG = 900;
 
-    private static final String IS_EXCEPTION_ENABLED = "is_exception_enabled";
-    private static final String IS_USING_HTTP_2 = "is_using_http_2";
     private static final String TAG = GTMContainer.class.getSimpleName();
 
     private Context context;
@@ -79,6 +81,26 @@ public class GTMContainer implements IGTMContainer {
         } catch (Exception e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    public void loadContainer() {
+        try {
+            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
+            TagManager tagManager = getTagManager();
+            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
+                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
+
+            pResult.setResultCallback(cHolder -> {
+                ContainerHolderSingleton.setContainerHolder(cHolder);
+                if (isAllowRefreshDefault(cHolder)) {
+                    Log.i("GTM TKPD", "Refreshed Container ");
+                    cHolder.refresh();
+                    //setExpiryRefresh();
+                }
+            }, 2, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            TrackingUtils.eventError(context, context.getClass().toString(), e.toString());
         }
     }
 
@@ -201,6 +223,13 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
+        sendCustomAuth(shopID, shopType, pageType, productId);
+        sendScreen(screenName);
+        return this;
+    }
+
+    @Override
+    public GTMContainer sendCustomAuth(String shopID, String shopType, String pageType, String productId) {
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(sessionHandler.getLoginName());
         authEvent.setUserID(sessionHandler.getGTMLoginID());
@@ -210,10 +239,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setProductId(productId);
         authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
 
-        CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-
-        eventAuthenticate(authEvent).sendScreen(screenName);
-
+        eventAuthenticate(authEvent);
         return this;
     }
 
@@ -227,7 +253,7 @@ public class GTMContainer implements IGTMContainer {
 
 
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
-            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
@@ -235,11 +261,12 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
 
         } else {
-            GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
+            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
                     Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                     Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
                     Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
@@ -248,7 +275,8 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId()
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
         }
 
@@ -522,9 +550,9 @@ public class GTMContainer implements IGTMContainer {
                 context,
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
-                        AppEventTracking.EVENT_CATEGORY, "purchase category digital",
-                        AppEventTracking.EVENT_ACTION, "purchase action digital",
-                        AppEventTracking.EVENT_LABEL, "purchase label digital",
+                        AppEventTracking.EVENT_CATEGORY, "digital - thanks",
+                        AppEventTracking.EVENT_ACTION, "view purchase attempt",
+                        AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
                         Purchase.SHOP_ID, purchase.getShopId(),
                         Purchase.PAYMENT_ID, purchase.getPaymentId(),
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),

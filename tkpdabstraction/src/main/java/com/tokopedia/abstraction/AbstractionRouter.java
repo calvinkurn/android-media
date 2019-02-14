@@ -43,8 +43,6 @@ public interface AbstractionRouter {
 
     AnalyticTracker getAnalyticTracker();
 
-    void showForceHockeyAppDialog();
-
     void logInvalidGrant(Response response);
 
     void instabugCaptureUserStep(Activity activity, MotionEvent me);

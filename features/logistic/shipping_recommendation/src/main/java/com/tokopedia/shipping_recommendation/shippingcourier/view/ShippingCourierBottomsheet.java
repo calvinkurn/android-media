@@ -10,18 +10,21 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
+import com.tokopedia.shipping_recommendation.shippingcourier.di.DaggerShippingCourierComponent;
+import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierComponent;
+import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.shipping_recommendation.shippingcourier.di.DaggerShippingCourierComponent;
-import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierComponent;
-import com.tokopedia.shipping_recommendation.shippingcourier.di.ShippingCourierModule;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +157,8 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean hasCourierPromo, boolean isNeedPinpoint) {
+    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean isNeedPinpoint) {
+        ProductData productData = shippingCourierViewModel.getProductData();
         if (shippingCourierViewModel.getProductData().getError() != null) {
             if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 presenter.updateSelectedCourier(shippingCourierViewModel);
@@ -163,10 +167,11 @@ public class ShippingCourierBottomsheet extends BottomSheets
             presenter.updateSelectedCourier(shippingCourierViewModel);
         }
         CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
+        boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(
-                    courierItemData, presenter.getRecipientAddressModel(), cartPosition, hasCourierPromo,
-                    !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode()), isNeedPinpoint);
+                    courierItemData, presenter.getRecipientAddressModel(), cartPosition, isCod,
+                    !TextUtils.isEmpty(productData.getPromoCode()), isNeedPinpoint);
         }
         dismiss();
     }

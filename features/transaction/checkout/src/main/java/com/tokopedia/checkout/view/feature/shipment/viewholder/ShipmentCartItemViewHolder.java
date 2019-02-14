@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
@@ -36,7 +37,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvProductCountAndWeight;
     private LinearLayout mLlOptionalNoteToSellerLayout;
     private TextView mTvOptionalNoteToSeller;
-    private LinearLayout mllProductPoliciesLayout;
+    private FlexboxLayout mllProductPoliciesLayout;
     private ImageView mIvFreeReturnIcon;
     private TextView mTvFreeReturnLabel;
     private TextView mTvPreOrder;
@@ -122,7 +123,12 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
 
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
         mTvFreeReturnLabel.setVisibility(View.GONE);
-        mTvPreOrder.setVisibility(cartItem.isPreOrder() ? View.VISIBLE : View.GONE);
+        if (cartItem.isPreOrder()) {
+            mTvPreOrder.setText(cartItem.getPreOrderInfo());
+            mTvPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            mTvPreOrder.setVisibility(View.GONE);
+        }
         mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
         String cashback = "    " + mTvCashback.getContext().getString(R.string.label_cashback) +
                 " " + cartItem.getCashback() + "    ";

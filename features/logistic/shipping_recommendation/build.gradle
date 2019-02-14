@@ -30,20 +30,22 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactioncommon)
 
-    implementation rootProject.ext.debugToolsDependencies.chuck
-    
-    implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.miscDependencies.apacheLang
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
 
 }

@@ -8,5 +8,9 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 public interface CMRouter {
     String getUserId();
 
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
+    long getLongRemoteConfig(String key, long defaultValue);
+
     AnalyticTracker getAnalyticTracker();
 }

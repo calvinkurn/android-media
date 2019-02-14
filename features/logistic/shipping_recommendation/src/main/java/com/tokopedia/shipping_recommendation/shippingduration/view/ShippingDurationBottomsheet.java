@@ -43,6 +43,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
     public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
     public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
+    public static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -65,7 +66,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           int selectedServiceId,
                                                           List<ShopShipment> shopShipmentList,
                                                           RecipientAddressModel recipientAddressModel,
-                                                          int cartPosition) {
+                                                          int cartPosition, int codHistory) {
         ShippingDurationBottomsheet shippingDurationBottomsheet =
                 new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
@@ -74,6 +75,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
+        bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -121,11 +123,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
             presenter.setRecipientAddressModel(recipientAddressModel);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
+            int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
             setupRecyclerView(cartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             if (shipmentDetailData != null) {
-                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments);
+                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory);
             }
         }
     }
@@ -175,8 +178,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
                             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
                             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
+                            int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
                             if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments);
+                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory);
                             }
                         }
                     }

@@ -36,7 +36,7 @@ public interface ShippingDurationContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId, List<ShopShipment> shopShipmentList);
+        void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory);
 
         List<ShippingDurationViewModel> getShippingDurationViewModels();
 

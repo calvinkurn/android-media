@@ -1,0 +1,20 @@
+mutation campaign_reserve_product($campaign_id:Int!, $criteria_id:Int!, $product_id:Int!, $discounted_price:Int!,
+ $cashback:Int!, $custom_stock:Int!, $shop_id:Int!){
+    campaign_reserve_product(params:{
+    campaign_id:$campaign_id
+    shop_id:$shop_id
+	criteria_id:$criteria_id
+	product_id:$product_id
+	discounted_price:$discounted_price
+	cashback:$cashback
+	custom_stock:$custom_stock
+    }){
+        data{
+            criteria_id
+            is_available
+            message
+        }
+        message
+        status_code
+    }
+}

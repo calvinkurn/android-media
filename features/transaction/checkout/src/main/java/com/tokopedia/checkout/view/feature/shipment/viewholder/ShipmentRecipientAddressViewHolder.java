@@ -69,7 +69,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-        if (recipientAddress.isFromPdp()) {
+        if (recipientAddress.isDisableMultipleAddress()) {
             tvSendToMultipleAddress.setVisibility(View.GONE);
         } else {
             tvSendToMultipleAddress.setVisibility(View.VISIBLE);

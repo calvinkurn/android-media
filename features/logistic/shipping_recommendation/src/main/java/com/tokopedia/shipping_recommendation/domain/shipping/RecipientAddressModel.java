@@ -34,7 +34,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private boolean stateExtraPaddingTop;
 
     // Flag for one click shipment
-    private boolean isFromPdp;
+    private boolean isDisableMultipleAddress;
 
     public RecipientAddressModel() {
     }
@@ -199,12 +199,12 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.stateExtraPaddingTop = stateExtraPaddingTop;
     }
 
-    public boolean isFromPdp() {
-        return isFromPdp;
+    public boolean isDisableMultipleAddress() {
+        return isDisableMultipleAddress;
     }
 
-    public void setFromPdp(boolean fromPdp) {
-        isFromPdp = fromPdp;
+    public void setDisableMultipleAddress(boolean disableMultipleAddress) {
+        isDisableMultipleAddress = disableMultipleAddress;
     }
 
     @Override
@@ -287,7 +287,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeString(this.unixTime);
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
         dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFromPdp ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isDisableMultipleAddress ? (byte) 1 : (byte) 0);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -311,7 +311,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.unixTime = in.readString();
         this.selected = in.readByte() != 0;
         this.stateExtraPaddingTop = in.readByte() != 0;
-        this.isFromPdp = in.readByte() != 0;
+        this.isDisableMultipleAddress = in.readByte() != 0;
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

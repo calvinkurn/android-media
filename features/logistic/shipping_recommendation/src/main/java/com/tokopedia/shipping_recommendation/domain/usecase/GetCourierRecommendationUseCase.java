@@ -5,12 +5,12 @@ import android.text.TextUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -39,12 +39,13 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     }
 
     public void execute(String query,
+                        int codHistory,
                         ShipmentDetailData shipmentDetailData,
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
-        query = getQueryWithParams(query, shipmentDetailData);
+        query = getQueryWithParams(query, codHistory, shipmentDetailData);
 
         GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 
@@ -86,7 +87,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribe(subscriber);
     }
 
-    private String getQueryWithParams(String query, ShipmentDetailData shipmentDetailData) {
+    private String getQueryWithParams(String query, int codHistory, ShipmentDetailData shipmentDetailData) {
         StringBuilder queryStringBuilder = new StringBuilder(query);
 
         StringBuilder spidsStringBuilder = new StringBuilder();
@@ -152,6 +153,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.ORDER_VALUE, String.valueOf(shipmentDetailData.getShipmentCartData().getOrderValue()));
         queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shipmentDetailData.getShipmentCartData().getCategoryIds());
         queryStringBuilder = setParam(queryStringBuilder, Param.LANG, Param.VALUE_LANG_ID);
+        queryStringBuilder = setParam(queryStringBuilder, Param.USER_HISTORY, String.valueOf(codHistory));
 
         boolean isBlackbox = shipmentDetailData.getIsBlackbox();
         int blackbox = 0;
@@ -190,6 +192,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String ORDER_VALUE = "$order_value";
         static final String CAT_ID = "$cat_id";
         static final String LANG = "$lang";
+        static final String USER_HISTORY = "$user_history";
         static final String IS_BLACKBOX = "$is_blackbox";
         static final String ADDRESS_ID = "$address_id";
         static final String PREORDER = "$preorder";

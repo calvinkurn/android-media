@@ -17,12 +17,12 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
-import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
 import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
@@ -176,6 +176,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                     cartItemDataList.get(i).getOriginData().getPriceFormatted()
             );
             addressAdapterData.setPreOrder(cartItemDataList.get(i).getOriginData().isPreOrder());
+            addressAdapterData.setPreOrderInfo(cartItemDataList.get(i).getOriginData().getPreOrderInfo());
             addressAdapterData.setFreeReturn(cartItemDataList.get(i).getOriginData().isFreeReturn());
             addressAdapterData.setCashBack(cartItemDataList.get(i).getOriginData().isCashBack());
             addressAdapterData.setCashBackInfo(cartItemDataList.get(i).getOriginData().getCashBackInfo());

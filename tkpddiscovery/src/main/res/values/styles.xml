@@ -15,4 +15,11 @@
         <item name="android:textColor">@android:color/transparent</item>
         <item name="android:textSize">0.1sp</item>
     </style>
+
+    <style name="SearchTabWidgetText"
+        parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textColor">@color/black_38</item>
+    </style>
 </resources>

@@ -7,7 +7,6 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -25,6 +24,9 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
@@ -39,9 +41,6 @@
             android:name="android.support.VERSION"
             android:value="26.1.0"
             tools:replace="android:value"/>
-        <meta-data
-            android:name="net.hockeyapp.android.appIdentifier"
-            android:value="528b17702bf941a581f15e188677306b "/>
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"

@@ -215,6 +215,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
             @Override
             public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
                 getView().finishLoading();
                 if (e instanceof UnknownHostException) {
                     if (getView().getAdapter().getItemCount() == 0) {
@@ -241,6 +244,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                if (!isViewAttached()) {
+                    return;
+                }
 
                 GqlSaldoBalanceResponse usableSaldoBalanceResponse;
                 GqlHoldSaldoBalanceResponse holdSaldoBalanceResponse;
@@ -296,6 +302,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void getSummaryDeposit() {
+        if (!isViewAttached()) {
+            return;
+        }
         getView().removeError();
         if (isValid()) {
             showLoading();
@@ -346,6 +355,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     private void onDepositSummaryFetched(GraphqlResponse graphqlResponse) {
+        if (!isViewAttached()) {
+            return;
+        }
         getView().setActionsEnabled(true);
         if (graphqlResponse != null &&
                 graphqlResponse.getData(GqlDepositSummaryResponse.class) != null) {
@@ -441,6 +453,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
 
     private void setData(GqlDepositSummaryResponse data) {
+        if (!isViewAttached()) {
+            return;
+        }
         getView().getAdapter().addElement(data.getDepositActivityResponse().getDepositHistoryList());
         if (getView().getAdapter().getItemCount() == 0) {
             getView().getAdapter().addElement(getView().getDefaultEmptyViewModel());
@@ -455,6 +470,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void onDrawClicked(Intent intent) {
+        if (!isViewAttached()) {
+            return;
+        }
         Context context = getView().getContext();
         UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
@@ -522,16 +540,25 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void hideSaldoPrioritasFragment() {
+        if (!isViewAttached()) {
+            return;
+        }
         getView().hideSaldoPrioritasFragment();
     }
 
     @Override
     public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
+        if (!isViewAttached()) {
+            return;
+        }
         getView().showSaldoPrioritasFragment(sellerDetails);
     }
 
     @Override
     public void finishLoading() {
+        if (!isViewAttached()) {
+            return;
+        }
         getView().finishLoading();
     }
 

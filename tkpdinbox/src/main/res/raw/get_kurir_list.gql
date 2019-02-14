@@ -1,0 +1,12 @@
+{
+  get_shipping_list{
+    status
+    messageError
+    data{
+      shippingList{
+        id
+      	name
+      }
+    }
+  }
+}

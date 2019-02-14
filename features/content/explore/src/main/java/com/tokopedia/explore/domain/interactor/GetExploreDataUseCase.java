@@ -39,41 +39,22 @@ public class GetExploreDataUseCase {
     GetExploreDataUseCase(@ApplicationContext Context context, GraphqlUseCase graphqlUseCase) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
+        this.graphqlUseCase.setCacheStrategy(
+                new GraphqlCacheStrategy
+                        .Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.val())
+                        .setSessionIncluded(true)
+                        .build()
+        );
     }
 
     public void execute(Map<String, Object> variables,
                         Subscriber<GraphqlResponse> getExploreDataSubscriber) {
-
-        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy
-                .Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
-                .setSessionIncluded(true)
-                .build();
         String query = GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_get_explore_data);
 
         GraphqlRequest request = new GraphqlRequest(query, GetExploreData.class, variables);
 
-        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
-        graphqlUseCase.clearRequest();
-        graphqlUseCase.addRequest(request);
-        graphqlUseCase.execute(getExploreDataSubscriber);
-    }
-
-    public void executeNoCache(Map<String, Object> variables,
-                        Subscriber<GraphqlResponse> getExploreDataSubscriber) {
-
-        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
-                .setSessionIncluded(true)
-                .build();
-        String query = GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_get_explore_data);
-
-        GraphqlRequest request = new GraphqlRequest(query, GetExploreData.class, variables);
-
-        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(request);
         graphqlUseCase.execute(getExploreDataSubscriber);

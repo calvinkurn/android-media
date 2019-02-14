@@ -80,6 +80,8 @@ public interface FlightBookingReviewContract {
         void renderVoucherInfoData();
 
         String getComboKey();
+
+        void stopTrace();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{
