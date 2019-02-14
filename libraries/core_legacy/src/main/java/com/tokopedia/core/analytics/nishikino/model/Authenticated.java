@@ -12,6 +12,7 @@ public class Authenticated extends BaseGTMModel {
 
     public static final String KEY_CONTACT_INFO =       "contactInfo";
     public static final String KEY_USER_DEF_SHIPPING =  "userDefaultShipping";
+    public static final String KEY_DEEPLINK_URL = "deeplinkURL";
 
     private static final String KEY_USER_SELLER =        "userSeller";
     private static final String KEY_USER_FULLNAME =      "userFullName";
@@ -63,6 +64,7 @@ public class Authenticated extends BaseGTMModel {
     private String pageType;
     private String androidId;
     private String adsId;
+    private String deepLinkUrlStr;
 
     public void setUserDefaultShipping(){
         contactInfo.put(KEY_USER_DEF_SHIPPING, userDefaultShipping);
@@ -214,5 +216,13 @@ public class Authenticated extends BaseGTMModel {
 
     public void setAdsId(String adsId) {
         this.adsId = adsId;
+    }
+
+    public String getDeepLinkUrlStr() {
+        return deepLinkUrlStr;
+    }
+
+    public void setDeepLinkUrl(String deepLinkUrlStr) {
+        this.deepLinkUrlStr =  deepLinkUrlStr;
     }
 }

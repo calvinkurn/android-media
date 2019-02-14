@@ -251,6 +251,26 @@ public class GTMContainer implements IGTMContainer {
 
         authenticated.setAndroidId(sessionHandler.getAndroidId());
 
+        Map<String, Object> map = DataLayer.mapOf(
+                Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
+                Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
+                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
+                Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
+                Authenticated.ANDROID_ID, authenticated.getAndroidId(),
+                Authenticated.ADS_ID, authenticated.getAdsId(),
+                Authenticated.GA_CLIENT_ID, getClientIDString());
+
+        if (!TextUtils.isEmpty(authenticated.getcIntel())) {
+            map.put(Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel());
+        }
+
+        if (!TextUtils.isEmpty(authenticated.getDeepLinkUrlStr())) {
+            map.put(Authenticated.KEY_DEEPLINK_URL, authenticated.getDeepLinkUrlStr());
+        }
+        GTMDataLayer.pushGeneral(context, map);
+/*
 
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
             GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
@@ -260,6 +280,21 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
                     Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
                     Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
+                    Authenticated.ADS_ID, authenticated.getAdsId(),
+                    Authenticated.GA_CLIENT_ID, getClientIDString()
+            ));
+
+        }
+        if (TextUtils.isEmpty(authenticated.getDeepLinkUrlStr())) {
+            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
+                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
+                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
+                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
+                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
+                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
+                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
                     Authenticated.ANDROID_ID, authenticated.getAndroidId(),
                     Authenticated.ADS_ID, authenticated.getAdsId(),
                     Authenticated.GA_CLIENT_ID, getClientIDString()
@@ -279,6 +314,7 @@ public class GTMContainer implements IGTMContainer {
                     Authenticated.GA_CLIENT_ID, getClientIDString()
             ));
         }
+*/
 
         return this;
     }

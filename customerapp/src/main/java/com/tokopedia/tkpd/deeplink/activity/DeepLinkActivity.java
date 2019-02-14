@@ -19,6 +19,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -48,6 +49,9 @@ import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import rx.Observable;
 import rx.Observer;
@@ -88,6 +92,13 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
+        URL obtainedURL = null;
+        try {
+            obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
+            ScreenTracking.sendScreen(this, getScreenName(),obtainedURL.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
