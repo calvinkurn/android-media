@@ -29,7 +29,4 @@ public interface ChatroomComponent {
     void inject(ChannelInfoFragment fragment);
 
     void inject(GroupChatActivity activity);
-
-    void inject(PlayWebviewFragment fragment);
-
 }

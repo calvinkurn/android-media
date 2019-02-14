@@ -72,7 +72,7 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
     }
 
     override fun getScreenName(): String {
-       return GroupChatAnalytics.SCREEN_WEBVIEW_FULL
+       return GroupChatAnalytics.SCREEN_PLAY_WEBVIEW_FULL
     }
 
     override fun initInjector() {
