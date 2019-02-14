@@ -41,9 +41,12 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
         this.feedTabModelList.addAll(feedTabModelList);
         homeFeedFragmentList = new ArrayList<>();
         for (int i = 0; i < feedTabModelList.size(); i++) {
+            FeedTabModel feedTabModel = feedTabModelList.get(i);
+
             HomeFeedFragment homeFeedFragment = HomeFeedFragment.newInstance(
                     i,
-                    Integer.parseInt(feedTabModelList.get(i).getId())
+                    Integer.parseInt(feedTabModelList.get(i).getId()),
+                    feedTabModel.getName()
             );
             homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
             homeFeedFragmentList.add(homeFeedFragment);

@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
@@ -31,6 +30,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,7 +50,7 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    protected HomePresenter homePresenter(UserSession userSession,
+    protected HomePresenter homePresenter(UserSessionInterface userSession,
                                           GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         return realHomePresenter(userSession, getShopInfoByDomainUseCase);
     }
@@ -60,7 +60,7 @@ public class HomeModule {
         return new HomeFeedPresenter();
     }
 
-    protected HomePresenter realHomePresenter(UserSession userSession,
+    protected HomePresenter realHomePresenter(UserSessionInterface userSession,
                                               GetShopInfoByDomainUseCase getShopInfoByDomainUseCase){
         return new HomePresenter(userSession, getShopInfoByDomainUseCase);
     }
@@ -121,7 +121,7 @@ public class HomeModule {
     }
 
     @Provides
-    protected com.tokopedia.user.session.UserSession provideUserSession(
+    protected UserSessionInterface provideUserSession(
             @ApplicationContext Context context){
         return new com.tokopedia.user.session.UserSession(context);
     }

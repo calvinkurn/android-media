@@ -67,7 +67,8 @@ dependencies {
 
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
     implementation rootProject.ext.playServicesDependencies.analytics

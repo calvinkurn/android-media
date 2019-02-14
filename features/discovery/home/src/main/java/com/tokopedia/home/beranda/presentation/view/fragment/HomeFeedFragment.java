@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
@@ -24,6 +25,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.home.constant.ConstantKey;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,6 +36,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     public static final String ARG_TAB_INDEX = "ARG_TAB_INDEX";
     public static final String ARG_RECOM_ID = "ARG_RECOM_ID";
+    public static final String ARG_TAB_NAME = "ARG_TAB_NAME";
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
     private static final int DEFAULT_SPAN_COUNT = 2;
@@ -38,18 +44,27 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Inject
     HomeFeedPresenter presenter;
 
+    @Inject
+    UserSessionInterface userSession;
+
+    private TrackingQueue trackingQueue;
+
     private int totalScrollY;
     private int tabIndex;
     private int recomId;
+    private String tabName;
     private boolean hasLoadData;
     private HomeEggListener homeEggListener;
     private HomeTabFeedListener homeTabFeedListener;
 
-    public static HomeFeedFragment newInstance(int tabIndex, int recomId) {
+    public static HomeFeedFragment newInstance(int tabIndex,
+                                               int recomId,
+                                               String tabName) {
         HomeFeedFragment homeFeedFragment = new HomeFeedFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(HomeFeedFragment.ARG_TAB_INDEX, tabIndex);
         bundle.putInt(HomeFeedFragment.ARG_RECOM_ID, recomId);
+        bundle.putString(HomeFeedFragment.ARG_TAB_NAME, tabName);
         homeFeedFragment.setArguments(bundle);
         return homeFeedFragment;
     }
@@ -58,6 +73,12 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                             HomeTabFeedListener homeTabFeedListener) {
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        trackingQueue = new TrackingQueue(getActivity());
     }
 
     @Nullable
@@ -70,10 +91,17 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         tabIndex = getArguments().getInt(ARG_TAB_INDEX);
         recomId = getArguments().getInt(ARG_RECOM_ID);
+        tabName = getArguments().getString(ARG_TAB_NAME);
         super.onViewCreated(view, savedInstanceState);
         addRecyclerViewItemDecoration();
         loadFirstPageData();
         initListeners();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        trackingQueue.sendAll();
     }
 
     private void addRecyclerViewItemDecoration() {
@@ -86,6 +114,30 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     public void loadData(int page) {
         presenter.attachView(this);
         presenter.loadData(recomId, DEFAULT_TOTAL_ITEM_PER_PAGE, page);
+    }
+
+    @Override
+    public void renderList(@NonNull List<HomeFeedViewModel> list, boolean hasNextPage) {
+        super.renderList(list, hasNextPage);
+        hitHomeFeedImpressionTracker(list);
+    }
+
+    private void hitHomeFeedImpressionTracker(List<HomeFeedViewModel> list) {
+        if (list.size() > 0) {
+            if (userSession.isLoggedIn()){
+                HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
+                        trackingQueue,
+                        list,
+                        tabName.toLowerCase()
+                );
+            } else {
+                HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
+                        trackingQueue,
+                        list,
+                        tabName.toLowerCase()
+                );
+            }
+        }
     }
 
     @Override
@@ -119,6 +171,11 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 totalScrollY += dy;
+
+                if (!getUserVisibleHint()) {
+                    return;
+                }
+
                 if (homeEggListener != null) {
                     homeEggListener.hideEggOnScroll();
                 }
@@ -129,6 +186,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (!getUserVisibleHint()) {
+                    return;
+                }
                 if (homeTabFeedListener != null) {
                     homeTabFeedListener.onFeedContentScrollStateChanged(newState);
                 }
@@ -138,6 +198,20 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
+        if (userSession.isLoggedIn()) {
+            HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
+                    trackingQueue,
+                    homeFeedViewModel,
+                    tabName.toLowerCase()
+            );
+        } else {
+            HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
+                    trackingQueue,
+                    homeFeedViewModel,
+                    tabName.toLowerCase()
+            );
+        }
+
         goToProductDetail(homeFeedViewModel.getProductId(),
                 homeFeedViewModel.getImageUrl(),
                 homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());

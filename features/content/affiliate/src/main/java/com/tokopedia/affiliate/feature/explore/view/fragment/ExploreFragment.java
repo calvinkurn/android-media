@@ -33,12 +33,12 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
-import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
+import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.SortActivity;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
@@ -54,6 +54,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.affiliate.util.AffiliateHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
@@ -64,6 +65,11 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -80,11 +86,12 @@ public class ExploreFragment
         SearchInputView.Listener,
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
+    private static final String TAG_SHOWCASE = ExploreActivity.class.getName() + ".bottomNavigation";
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
     private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
-    private static final String KEY_DATA_FIRST_QUERY = "KEY_DATA_FIRST_QUERY";
+    private static final String PERFORMANCE_AFFILIATE = "mp_affiliate";
 
     private static final int ITEM_COUNT = 10;
     private static final int IMAGE_SPAN_COUNT = 2;
@@ -100,11 +107,11 @@ public class ExploreFragment
     private ExploreParams exploreParams;
     private FilterAdapter filterAdapter;
     private EmptyModel emptyResultModel;
-    private int oldScrollY = 0;
     private String firstCursor = "";
     private List<Visitable> tempFirstData = new ArrayList<>();
     private SortFilterModel tempLocalSortFilterData = new SortFilterModel();
     private RemoteConfig remoteConfig;
+    private PerformanceMonitoring performanceMonitoring;
 
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
@@ -118,7 +125,9 @@ public class ExploreFragment
     private CardView btnFilterMore;
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
+
     private boolean isCanDoAction;
+    private boolean isTraceStopped;
 
     @Inject
     UserSessionInterface userSession;
@@ -138,6 +147,11 @@ public class ExploreFragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_AFFILIATE);
+    }
 
     @Nullable
     @Override
@@ -238,6 +252,9 @@ public class ExploreFragment
             badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
             badgeView.setBadgeNumber(-1);
         }
+        if (!ShowCasePreference.hasShown(getActivity(), TAG_SHOWCASE)) {
+            showShowCase();
+        }
     }
 
     private void initListener() {
@@ -253,6 +270,7 @@ public class ExploreFragment
                 AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
                 goToProfile();
                 initProfileSection();
+                affiliateAnalytics.onClickProfileOnExplore();
             }
         });
 
@@ -518,7 +536,7 @@ public class ExploreFragment
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
             getFilteredFirstData(filters);
-            rvFilter.scrollTo(0,0);
+            rvFilter.smoothScrollToPosition(0);
         };
     }
 
@@ -689,6 +707,14 @@ public class ExploreFragment
         clearAutoCompleteAdapter(keyword);
     }
 
+    @Override
+    public void stopTrace() {
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
+    }
+
     private void clearAutoCompleteAdapter(String keyword) {
         searchView.setDelayTextChanged(0);
         searchView.getSearchTextView().setText(keyword);
@@ -742,5 +768,34 @@ public class ExploreFragment
             startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
             affiliatePreference.setFirstTimeEducation(userSession.getUserId());
         }
+    }
+
+    private void showShowCase() {
+        ShowCaseDialog showCaseDialog = createShowCase();
+
+        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+        showcases.add(new ShowCaseObject(
+                layoutProfile,
+                getString(R.string.title_showcase),
+                getString(R.string.desc_showcase),
+                ShowCaseContentPosition.UNDEFINED));
+
+        showCaseDialog.show(getActivity(), TAG_SHOWCASE, showcases);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.next)
+                .prevStringRes(R.string.previous)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
     }
 }

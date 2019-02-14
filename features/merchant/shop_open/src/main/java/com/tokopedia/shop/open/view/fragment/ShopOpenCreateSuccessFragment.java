@@ -122,7 +122,6 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
 
     @Override
     public void onErrorGetShopInfo(Throwable t) {
-        if(!GlobalConfig.DEBUG) Crashlytics.logException(t);
         loadingStateView.setErrorViewRes(R.layout.design_retry);
         View errorView = loadingStateView.getErrorView();
         errorView.findViewById(R.id.retry_but).setOnClickListener(new View.OnClickListener() {

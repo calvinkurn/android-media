@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -54,7 +55,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
     @Override
     public void bind(ProductFeedViewModel element) {
         data = element.getData();
-        if (data.getProduct() != null) {
+        if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
             bindProduct(data.getProduct());
         }
     }

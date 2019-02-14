@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -87,10 +88,10 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     @Override
     public void bind(ProductGridViewModel element) {
         data = element.getData();
-        if (data.getProduct() != null) {
+        if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
             bindProduct(data.getProduct());
         }
-        if (data.getShop() != null) {
+        if (data.getShop() != null && !TextUtils.isEmpty(data.getShop().getId())) {
             bindShopLocation(data.getShop());
         }
     }

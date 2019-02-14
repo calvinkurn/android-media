@@ -2,12 +2,13 @@ package com.tokopedia.checkout.domain.usecase;
 
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -48,9 +49,9 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
     @Override
     @SuppressWarnings("unchecked")
     public Observable<PromoCodeCartListData> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> paramCheckPromo = (TKPDMapParam<String, String>)
+        Map<String, String> paramCheckPromo = (Map<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO);
-        TKPDMapParam<String, String> paramUpdateCart = (TKPDMapParam<String, String>)
+        Map<String, String> paramUpdateCart = (Map<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART);
 
         if (paramUpdateCart != null)

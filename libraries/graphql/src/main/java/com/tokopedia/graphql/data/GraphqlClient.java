@@ -3,9 +3,8 @@ package com.tokopedia.graphql.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.graphqlGeneratedDatabaseHolder;
 import com.tokopedia.graphql.FingerprintManager;
+import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.CommonNetwork;
@@ -14,12 +13,11 @@ import com.tokopedia.user.session.UserSession;
 
 import retrofit2.Retrofit;
 
-import static com.tokopedia.network.constant.TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL;
-
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
     private static GraphqlApi sGraphqlApi = null;
     private static FingerprintManager sFingerprintManager;
+    private static GraphqlDatabase sGraphqlDatabase;
 
     private GraphqlClient() {
 
@@ -33,7 +31,7 @@ public class GraphqlClient {
                     userSession);
             sFingerprintManager = new FingerprintManager(userSession);
 
-            FlowManager.initModule(graphqlGeneratedDatabaseHolder.class);
+            sGraphqlDatabase = GraphqlDatabase.getInstance(context);
 
         }
     }
@@ -44,6 +42,14 @@ public class GraphqlClient {
         }
 
         return sRetrofit;
+    }
+
+    public static GraphqlDatabase getGraphqlDatabase() {
+        if (sGraphqlDatabase == null) {
+            throw new RuntimeException("Please call init() before using graphql library");
+        }
+
+        return sGraphqlDatabase;
     }
 
     public static GraphqlApi getApiInterface() {

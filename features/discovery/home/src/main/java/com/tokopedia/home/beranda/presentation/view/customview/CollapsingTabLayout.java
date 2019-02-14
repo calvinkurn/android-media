@@ -29,6 +29,7 @@ public class CollapsingTabLayout extends TabLayout {
     private static final long TAB_AUTO_SCROLL_DELAY_DURATION = 300;
     private static final int NONE = -1;
     private static final int MAX_TAB_COLLAPSE_SCROLL_RANGE = 200;
+    private static final int SCROLL_UP_THRESHOLD_BEFORE_EXPAND = 500;
 
     private String tabTitles[] = new String[] { "For You", "Promo Akhir Tahun", "Populer Minggu Ini" };
     private int[] imageResId = { R.drawable.background_tab_feed_1, R.drawable.background_tab_feed_2, R.drawable.background_tab_feed_3 };
@@ -37,6 +38,7 @@ public class CollapsingTabLayout extends TabLayout {
 
     private int tabMaxHeight;
     private int tabMinHeight;
+    private int leftmostItemPadding;
     private int lastTabSelectedPosition = NONE;
 
     TabIndicatorAnimator tabIndicatorExpandAnimator;
@@ -44,6 +46,7 @@ public class CollapsingTabLayout extends TabLayout {
     ValueAnimator tabHeightCollapseAnimator;
     private int lastPageScrolledPosition = NONE;
     private float lastTabCollapseFraction = 0f;
+    private int totalScrollUp;
 
     private boolean scrollEnabled = false;
 
@@ -139,11 +142,13 @@ public class CollapsingTabLayout extends TabLayout {
         lastPageScrolledPosition = NONE;
         lastTabCollapseFraction = 0f;
         scrollEnabled = false;
+        totalScrollUp = 0;
     }
 
     private void initResources() {
         tabMaxHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height);
         tabMinHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_min_height);
+        leftmostItemPadding = getResources().getDimensionPixelSize(R.dimen.dp_16);
     }
 
     private void initAnimator() {
@@ -160,13 +165,6 @@ public class CollapsingTabLayout extends TabLayout {
                     updateAllTabTextToDoubleLines();
                 }
                 adjustTabLayoutHeight((int) valueAnimator.getAnimatedValue());
-            }
-        });
-        tabHeightCollapseAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                lastTabCollapseFraction = tabHeightCollapseAnimator.getAnimatedFraction();
             }
         });
         tabHeightCollapseAnimator.setDuration(DEFAULT_ANIMATION_DURATION);
@@ -195,12 +193,14 @@ public class CollapsingTabLayout extends TabLayout {
     private void startTabHeightExpandAnimation() {
         if (tabHeightCollapseAnimator.getAnimatedFraction() > 0 && !tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.reverse();
+            lastTabCollapseFraction = 0;
         }
     }
 
     private void startTabHeightCollapseAnimation() {
         if (tabHeightCollapseAnimator.getAnimatedFraction() < 1 && !tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.start();
+            lastTabCollapseFraction = 1;
         }
     }
 
@@ -218,7 +218,7 @@ public class CollapsingTabLayout extends TabLayout {
             return;
         }
         setScrollEnabled(true);
-        int scrollTargetX = ((ViewGroup) getChildAt(0)).getChildAt(getSelectedTabPosition()).getLeft();
+        int scrollTargetX = ((ViewGroup) getChildAt(0)).getChildAt(getSelectedTabPosition()).getLeft() - leftmostItemPadding;
         Animator animator = ObjectAnimator.ofInt(this, "scrollX",  scrollTargetX).setDuration(DEFAULT_ANIMATION_DURATION);
         animator.addListener(
                 new AnimatorListenerAdapter() {
@@ -298,7 +298,17 @@ public class CollapsingTabLayout extends TabLayout {
 
     public void adjustTabCollapseOnScrolled(int dy, int totalScrollY) {
 
-        if (dy < 0 && totalScrollY > MAX_TAB_COLLAPSE_SCROLL_RANGE) {
+        if (dy == 0) {
+            return;
+        }
+
+        if (dy < 0) {
+            totalScrollUp -= dy;
+        } else {
+            totalScrollUp = 0;
+        }
+
+        if (dy < 0 && totalScrollY > MAX_TAB_COLLAPSE_SCROLL_RANGE && totalScrollUp < SCROLL_UP_THRESHOLD_BEFORE_EXPAND) {
             return;
         }
 

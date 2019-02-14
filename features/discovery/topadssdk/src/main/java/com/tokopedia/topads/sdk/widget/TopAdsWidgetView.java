@@ -8,7 +8,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -131,9 +133,9 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
         List<Item> visitables = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
-            if (d.getProduct() != null) {
+            if (d.getProduct() != null && !TextUtils.isEmpty(d.getProduct().getId())) {
                 visitables.add(ModelConverter.convertProductData(d, mode));
-            } else if (d.getShop() != null) {
+            } else if (d.getShop() != null && !TextUtils.isEmpty(d.getShop().getId())) {
                 visitables.add(ModelConverter.convertShopData(d, mode));
             }
         }
@@ -279,25 +281,37 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
 
     @Override
     public void showSuccessAddWishlist() {
-        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeGreen(getView(), getString(R.string.msg_success_add_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void showErrorAddWishlist() {
-        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_add_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeRed(getView(), getString(R.string.msg_error_add_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void showSuccessRemoveWishlist() {
-        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeGreen(getView(), getString(R.string.msg_success_remove_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void showErrorRemoveWishlist() {
-        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_remove_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeRed(getView(), getString(R.string.msg_error_remove_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private View getView() {
+        return getRootView().findViewById(android.R.id.content);
     }
 }

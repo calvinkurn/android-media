@@ -102,6 +102,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final String CART_TRACE = "mp_cart";
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
+    private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -173,17 +174,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDestroy() {
-        cartAdapter.unsubscribeSubscription();
-        super.onDestroy();
-    }
-
-    @Override
     public void onStop() {
         boolean hasChanges = dPresenter.dataHasChanged();
 
         try {
-            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
+            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null
+                    && getSelectedCartDataList().size() > 0 && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                 Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
                 service.putParcelableArrayListExtra(
                         UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
@@ -195,6 +191,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
 
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        cartAdapter.unsubscribeSubscription();
+        super.onDestroy();
     }
 
     @Override
@@ -535,8 +537,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onTopAdsItemClicked(Product product) {
-        Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
-        context.startActivity(intent);
+        if (getActivity() != null) {
+            Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+            getActivity().startActivity(intent);
+        }
     }
 
     @Override
@@ -1023,6 +1027,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderToAddressChoice() {
+        FLAG_BEGIN_SHIPMENT_PROCESS = true;
         boolean isAutoApplyPromoCodeApplied = dPresenter.getCartListData() != null &&
                 dPresenter.getCartListData().getAutoApplyData() != null &&
                 dPresenter.getCartListData().getAutoApplyData().isSuccess();

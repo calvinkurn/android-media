@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -51,5 +52,7 @@ public interface ShakeDetectContract {
         public void onActivityResult(int requestCode, int resultCode, Intent data);
 
         void onCancelClick();
+
+        void setPermissionChecker(PermissionCheckerHelper permissionCheckerHelper);
     }
 }
