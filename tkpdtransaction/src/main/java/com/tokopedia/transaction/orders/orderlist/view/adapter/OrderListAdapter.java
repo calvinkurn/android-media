@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -167,7 +168,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (categoryName.equals(""))
             currentHolder.categoryName.setVisibility(View.GONE);
         else
-            currentHolder.categoryName.setText(categoryName);
+            currentHolder.categoryName.setText(Html.fromHtml(Html.fromHtml(categoryName).toString()));
         currentHolder.title.setText(categoryTitle);
     }
 

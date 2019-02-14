@@ -313,4 +313,5 @@ Anda di sini.</string>
     <string name="search_hint_text">Cari produk, toko, atau invoice</string>
     <string name="selsesai_dialog_text_1">Pastikan Anda sudah menerima produk</string>
     <string name="selesai_dialog_text_2">Pastikan produk yang Anda terima sesuai pesanan</string>
+    <string name="title_activity_people_reason">Ajukan Pembatalan</string>
 </resources>

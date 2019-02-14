@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +84,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     ImageHandler.loadImage(context, productImage, items.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
                 }
                 if (!TextUtils.isEmpty(items.getTitle())) {
-                    productName.setText(items.getTitle());
+                    productName.setText(Html.fromHtml(items.getTitle()));
                 }
                 quantity.setText(String.format(context.getResources().getString(R.string.quantity), items.getQuantity(), items.getWeight()));
                 if (!TextUtils.isEmpty(items.getPrice()))
@@ -98,7 +99,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             if (items.getActionButtons().size() > 0) {
                 buyBtn.setVisibility(View.VISIBLE);
-                buyBtn.setText(items.getActionButtons().get(0).getName());
+                buyBtn.setText(items.getActionButtons().get(0).getLabel());
                 buyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
