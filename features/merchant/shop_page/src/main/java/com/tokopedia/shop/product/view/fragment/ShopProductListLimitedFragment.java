@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -205,7 +206,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shopInfo!= null) {
+                if (shopInfo != null) {
                     Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
                     ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
                 }
@@ -838,9 +839,21 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         shopProductViewModel, productPosition, shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
             }
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
-                shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
-                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName));
+        goToPDP(shopProductViewModel.getId());
+
+
+    }
+
+    /**
+     * This function is temporary for testing to avoid router and applink
+     * For Dynamic Feature Support
+     */
+    private void goToPDP(String productId) {
+        Intent intent = new Intent();
+        intent.setClassName(getContext().getPackageName(),
+                "com.tokopedia.product.detail.view.activity.ProductDetailActivity");
+        intent.putExtra("product_id", productId);
+        startActivity(intent);
     }
 
     @Override
@@ -858,7 +871,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         this.selectedEtalaseId = etalaseId;
                         this.selectedEtalaseName = etalaseName;
                     } else {
-                        if (shopInfo!= null) {
+                        if (shopInfo != null) {
                             Intent intent = ShopProductListActivity.createIntent(getActivity(),
                                     shopInfo.getInfo().getShopId(), "",
                                     etalaseId, attribution, sortName);
@@ -870,7 +883,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
                     needReloadData = true;
 
-                    if (shopPageTracking != null && shopInfo!= null) {
+                    if (shopPageTracking != null && shopInfo != null) {
                         shopPageTracking.clickMenuFromMoreMenu(
                                 shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                                 etalaseName,
@@ -1077,7 +1090,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         super.onAttachActivity(context);
         shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
     }
-
 
 
 }

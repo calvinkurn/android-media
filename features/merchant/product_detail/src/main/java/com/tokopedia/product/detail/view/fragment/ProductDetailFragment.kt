@@ -37,7 +37,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
-import com.tokopedia.product.detail.ProductDetailInternalRouter
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -53,6 +52,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
+import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.detail.view.util.AppBarState
@@ -146,8 +146,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
 
-        fun newInstance(productId: String? = null, productKey: String? = null,
-                        shopDomain: String? = null, isFromDeeplink: Boolean = false) =
+        fun newInstance(productId: String? = null,
+                        shopDomain: String? = null,
+                        productKey: String? = null,
+                        isFromDeeplink: Boolean = false) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
@@ -372,7 +374,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (product == null) return
             activity?.let {
                 productDetailTracking.eventTopAdsClicked(product, position)
-                startActivity(ProductDetailInternalRouter.getProductDetailIntentById(it, product.id.toInt()))
+                startActivity(ProductDetailActivity.createIntent(it, product.id.toInt()) )
             }
         }
     }
