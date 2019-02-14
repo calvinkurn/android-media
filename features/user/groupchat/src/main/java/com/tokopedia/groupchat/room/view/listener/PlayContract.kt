@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
  */
 interface PlayContract {
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
+        fun onBackPressed()
 
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.groupchat.chatroom.view.fragment
+package com.tokopedia.groupchat.room.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.webkit.*
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
@@ -22,6 +23,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,13 +54,35 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    fun createInstance(bundle: Bundle): PlayWebviewFragment {
-        val fragment = PlayWebviewFragment()
-        fragment.arguments = bundle
-        return fragment
+    companion object {
+        fun createInstance(bundle: Bundle): PlayWebviewFragment {
+            val fragment = PlayWebviewFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+
+        fun createInstance(url: String): PlayWebviewFragment {
+            val fragment = PlayWebviewFragment()
+            val bundle = Bundle()
+            bundle.putBoolean(ApplinkConst.Play.PARAM_HAS_TITLEBAR, false)
+            bundle.putString(ApplinkConst.Play.PARAM_URL, url)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
+    override fun getScreenName(): String {
+       return GroupChatAnalytics.SCREEN_WEBVIEW_FULL
+    }
 
+    override fun initInjector() {
+        if (activity != null && (activity as Activity).application != null) {
+            val playComponent = DaggerPlayComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+            playComponent.inject(this)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

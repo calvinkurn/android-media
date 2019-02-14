@@ -19,11 +19,12 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
+import com.tokopedia.groupchat.room.view.listener.PlayContract
 
 /**
  * @author : Steven 11/02/19
  */
- open class PlayActivity : BaseSimpleActivity() {
+open class PlayActivity : BaseSimpleActivity() {
 
     companion object {
 
@@ -44,7 +45,7 @@ import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
             intent.putExtras(bundle)
             return intent
         }
-        
+
         /**
          * @param channelId can also be substitued by channelUrl
          * @return Intent
@@ -64,7 +65,7 @@ import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
          * @param applinkData if applink contains tab id for access chat/vote/info fragment
          * @return Intent
          */
-        
+
         @JvmStatic
         fun getCallingIntent(context: Context, channelId: String, applinkData: String?): Intent {
             val intent = Intent(context, PlayActivity::class.java)
@@ -126,7 +127,7 @@ import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
             return taskStackBuilder
         }
     }
-    
+
     lateinit var channelBanner: ImageView
     lateinit var rootView: View
     val KEYBOARD_THRESHOLD = 100
@@ -234,5 +235,16 @@ import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
                 0
         }
         return 0
+    }
+
+    override fun onBackPressed() {
+        if (pagerAdapter.getItem(findViewById<ViewPager>(R.id.view_pager_play).currentItem) is
+                        PlayContract.View) {
+            (pagerAdapter.getItem(findViewById<ViewPager>(R.id.view_pager_play).currentItem) as
+                    PlayContract.View).onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
+
     }
 }

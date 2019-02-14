@@ -58,14 +58,13 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
-            viewState.setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
-            viewState.setSponsorData(it.adsId, it.adsImageUrl)
+            viewState.onSuccessGetInfoFirstTime(it)
         }
     }
 
     private fun initView(view: View) {
-        view?.let {
-            viewState = PlayViewStateImpl(it)
+        view.let {
+            viewState = PlayViewStateImpl(it, activity)
         }
         setToolbarView(view)
     }
@@ -136,8 +135,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    override fun loadData(page: Int) {
-
+    override fun onBackPressed() {
+        viewState.onBackPressed(activity)
     }
 
 }

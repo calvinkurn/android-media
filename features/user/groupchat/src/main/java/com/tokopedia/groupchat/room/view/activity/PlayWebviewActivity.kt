@@ -1,4 +1,4 @@
-package com.tokopedia.groupchat.chatroom.view.activity
+package com.tokopedia.groupchat.room.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.groupchat.chatroom.view.fragment.PlayWebviewFragment
+import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 
 /**
  * @author by nisie on 12/02/19.
@@ -20,7 +20,7 @@ class PlayWebviewActivity : BaseSimpleActivity() {
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return PlayWebviewFragment()
+        return PlayWebviewFragment.createInstance(bundle)
     }
 
     companion object {
