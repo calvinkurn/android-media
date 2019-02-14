@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.home.constant.ConstantKey;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -211,7 +212,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                     tabName.toLowerCase()
             );
         }
-
+        new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
         goToProductDetail(homeFeedViewModel.getProductId(),
                 homeFeedViewModel.getImageUrl(),
                 homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());

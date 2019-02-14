@@ -135,15 +135,33 @@ public class ImpressedImageView extends AppCompatImageView {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
+    /**
+     * Use this for non topads
+     * @param holder
+     * @param hintListener
+     */
+    public void setViewHintListener(ImageHolder holder, ViewHintListener hintListener){
+        this.image = holder;
+        this.hintListener = hintListener;
+    }
+
     public void setViewHintListener(ViewHintListener hintListener) {
         this.hintListener = hintListener;
     }
 
+    /**
+     * Use this for topads product image
+     * @param image
+     */
     public void setImage(ProductImage image) {
         this.image = image;
         Glide.with(getContext()).load(image.getM_ecs()).into(this);
     }
 
+    /**
+     * Use this for topads shop product image
+     * @param image
+     */
     public void setImage(ImageProduct image) {
         this.image = image;
         if(image.getImageUrl().isEmpty()){
@@ -155,6 +173,10 @@ public class ImpressedImageView extends AppCompatImageView {
         }
     }
 
+    /**
+     * Use this for topads headline shop
+     * @param image
+     */
     public void setImage(CpmImage image) {
         this.image = image;
         if(image.getFullEcs().isEmpty()){
