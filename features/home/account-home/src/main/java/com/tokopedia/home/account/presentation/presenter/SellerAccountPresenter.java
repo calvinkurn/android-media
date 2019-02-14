@@ -57,7 +57,6 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
         view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
-        // TODO: 23/1/19 update query to get seller saldo balance
         requestParams.putString(QUERY, query);
         requestParams.putString(TOPADS_QUERY, topadsQuery);
         Map<String, Object> variables = new HashMap<>();

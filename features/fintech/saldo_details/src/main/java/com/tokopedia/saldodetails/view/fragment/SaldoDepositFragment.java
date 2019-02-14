@@ -279,7 +279,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     protected void initialVar() {
-        isSeller = !TextUtils.isEmpty(userSession.getShopId());
+        isSeller = userSession.hasShop() || userSession.isAffiliate();//!TextUtils.isEmpty(userSession.getShopId());
         saldoDetailsPresenter.setSeller(isSellerEnabled);
         if (isSellerEnabled) {
             totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));

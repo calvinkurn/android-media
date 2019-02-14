@@ -145,7 +145,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             boolean allTranxn = FOR_ALL.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
         }
 
-        isSeller = !TextUtils.isEmpty(userSession.getShopId());
+        isSeller = userSession.hasShop() || userSession.isAffiliate();//!TextUtils.isEmpty(userSession.getShopId());
         if (isSeller) {
             loadMultipleTabItem();
         } else {

@@ -3,6 +3,7 @@ package com.tokopedia.home.account.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import com.tokopedia.navigation_common.model.AffiliateModel;
 import com.tokopedia.navigation_common.model.DepositModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.PendingCashbackModel;
@@ -28,6 +29,9 @@ public class AccountModel {
     @SerializedName("balance")
     @Expose
     private DepositModel deposit;
+    @SerializedName("affiliateCheck")
+    @Expose
+    private AffiliateModel affiliateModel;
     @SerializedName("wallet")
     @Expose
     private WalletModel wallet;
@@ -158,6 +162,14 @@ public class AccountModel {
 
     public void setVccUserBalance(VccUserBalance vccUserBalance) {
         this.vccUserBalance = vccUserBalance;
+    }
+
+    public AffiliateModel getAffiliateModel() {
+        return affiliateModel;
+    }
+
+    public void setAffiliateModel(AffiliateModel affiliateModel) {
+        this.affiliateModel = affiliateModel;
     }
 
     public PendingCashbackModel getPendingCashbackModel() {

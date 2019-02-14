@@ -94,6 +94,8 @@ public interface UserSessionInterface {
 
     void setIsMSISDNVerified(boolean isMsisdnVerified);
 
+    void setIsAffiliateStatus(boolean isAffiliate);
+
     void setHasPassword(boolean hasPassword);
 
     void setProfilePicture(String profilePicture);

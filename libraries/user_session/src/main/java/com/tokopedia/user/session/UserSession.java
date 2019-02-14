@@ -22,6 +22,7 @@ public class UserSession implements UserSessionInterface {
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String EMAIL = "EMAIL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
+    private static final String IS_AFFILIATE = "is_affiliate";
     private static final String PHONE_NUMBER = "PHONE_NUMBER";
 
     private static final String TEMP_USER_ID = "temp_login_id";
@@ -154,6 +155,11 @@ public class UserSession implements UserSessionInterface {
     public boolean isMsisdnVerified() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
+    }
+
+    public boolean isAffiliate() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_AFFILIATE, false);
     }
 
     public boolean hasShownSaldoWithdrawalWarning() {
@@ -349,6 +355,14 @@ public class UserSession implements UserSessionInterface {
     }
 
     @Override
+    public void setIsAffiliateStatus(boolean isAffiliate) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_AFFILIATE, isAffiliate);
+        editor.apply();
+    }
+
+    @Override
     public void setTempPhoneNumber(String userPhone) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -409,6 +423,7 @@ public class UserSession implements UserSessionInterface {
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
         editor.putBoolean(HAS_SHOWN_SALDO_INTRO_PAGE, false);
+        editor.putBoolean(IS_AFFILIATE, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(REFRESH_TOKEN, null);
         editor.putString(TOKEN_TYPE, null);

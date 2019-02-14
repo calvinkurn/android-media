@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -121,7 +120,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     }
 
     private void initializeView() {
-        isSeller = !TextUtils.isEmpty(userSession.getShopId());
+        isSeller = userSession.hasShop() || userSession.isAffiliate();
         TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
 
         if (isSeller) {
