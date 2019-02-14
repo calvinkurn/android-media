@@ -99,6 +99,8 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             @Override
             public void onError(Throwable e) {
                 getView().onError(e.getLocalizedMessage());
+
+                if (getView() != null) getView().onFinishRendering();
             }
 
             @Override

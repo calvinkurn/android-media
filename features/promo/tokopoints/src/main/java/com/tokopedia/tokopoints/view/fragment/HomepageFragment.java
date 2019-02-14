@@ -102,8 +102,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(FPM_TOKOPOINT);
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
