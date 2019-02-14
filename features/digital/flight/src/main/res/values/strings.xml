@@ -252,7 +252,7 @@
     <string name="flight_label_eticket">KIRIM E-TICKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
-    <string name="flight_label_cek_t_and_c">* Harap cek syarat dan ketentuan pada e-tiket Anda</string>
+    <string name="flight_label_cek_t_and_c">* Harap diingat bahwa terminal dapat berubah sewaktu-waktu</string>
     <string name="flight_order_failed_title">Transaksi Tidak Berhasil</string>
     <string name="flight_order_expire_title">Transaksi kadaluarsa</string>
     <string name="flight_order_order_id_prefix">Invoice :</string>
