@@ -46,6 +46,7 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
+import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
@@ -98,7 +99,7 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener,
-        NotificationListener, FragmentListener, HomeEggListener, HomeTabFeedListener {
+        NotificationListener, FragmentListener, HomeEggListener, HomeTabFeedListener, HomeInspirationListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -131,6 +132,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
+    private AbTestingOfficialStore abTestingOfficialStore;
     private ViewPager homeFeedsViewPager;
     private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
@@ -242,9 +244,30 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
 
+        initEggDragListener();
+
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         return view;
+    }
+
+    private void initEggDragListener() {
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            floatingEggButtonFragment.setOnDragListener(new FloatingEggButtonFragment.OnDragListener() {
+                @Override
+                public void onDragStart() {
+                    refreshLayout.setCanChildScrollUp(true);
+                }
+
+                @Override
+                public void onDragEnd() {
+                    if (isAppBarFullyExpanded(lastOffset)) {
+                        refreshLayout.setCanChildScrollUp(false);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -482,7 +505,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
                 this,
-                null,
+                this,
                 this
         );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
@@ -873,18 +896,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        if (getActivity().getApplication() instanceof IHomeRouter) {
-            ((IHomeRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    productId,
-                    imageSourceSingle,
-                    name,
-                    price
-            );
-        }
-    }
-
     public void openWebViewURL(String url, Context context) {
         if (!TextUtils.isEmpty(url) && context != null) {
             ((IHomeRouter) getActivity().getApplication())
@@ -963,6 +974,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public boolean isHomeFragment() {
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
         return (fragment instanceof HomeFragment);
+    }
+
+    @Override
+    public void onPromoDragStart() {
+        refreshLayout.setCanChildScrollUp(true);
+    }
+
+    @Override
+    public void onPromoDragEnd() {
+        if (isAppBarFullyExpanded(lastOffset)) {
+            refreshLayout.setCanChildScrollUp(false);
+        }
     }
 
     @Override
@@ -1154,6 +1177,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             homeFeedsTabLayout.scrollActiveTabToLeftScreen();
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
             homeFeedsTabLayout.snapCollapsingTab();
+        }
+    }
+
+    @Override
+    public void onGoToProductDetailFromInspiration(String productId, String imageSource, String name, String price) {
+        goToProductDetail(productId, imageSource, name, price);
+    }
+
+    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
+        if (getActivity().getApplication() instanceof IHomeRouter) {
+            ((IHomeRouter) getActivity().getApplication()).goToProductDetail(
+                    getActivity(),
+                    productId,
+                    imageSourceSingle,
+                    name,
+                    price
+            );
         }
     }
 }

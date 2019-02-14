@@ -171,6 +171,11 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 totalScrollY += dy;
+
+                if (!getUserVisibleHint()) {
+                    return;
+                }
+
                 if (homeEggListener != null) {
                     homeEggListener.hideEggOnScroll();
                 }
@@ -181,6 +186,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (!getUserVisibleHint()) {
+                    return;
+                }
                 if (homeTabFeedListener != null) {
                     homeTabFeedListener.onFeedContentScrollStateChanged(newState);
                 }

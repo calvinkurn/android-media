@@ -10,17 +10,9 @@ import java.util.ArrayList;
  * Created by henrypriyono on 1/12/18.
  */
 
-public interface HomeFeedListener {
+public interface HomeInspirationListener {
     void onGoToProductDetailFromInspiration(String productId,
                                             String imageSource,
                                             String name,
                                             String price);
-
-    void onRetryClicked();
-    void onShowRetryGetFeed();
-    void onSuccessGetFeed(ArrayList<Visitable> visitables);
-    void updateCursor(String currentCursor);
-    void updateCursorNoNextPageFeed();
-
-    Context getActivity();
 }
