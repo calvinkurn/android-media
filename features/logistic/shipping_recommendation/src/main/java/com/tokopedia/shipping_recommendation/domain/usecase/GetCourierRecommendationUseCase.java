@@ -38,11 +38,6 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         this.shippingDurationConverter = shippingDurationConverter;
     }
 
-    public void executeDummy(Subscriber<ShippingRecommendationData> subscriber,
-                             ShippingRecommendationData shippingRecommendationData) {
-        Observable.just(shippingRecommendationData).subscribe(subscriber);
-    }
-
     public void execute(String query,
                         ShipmentDetailData shipmentDetailData,
                         int selectedServiceId,

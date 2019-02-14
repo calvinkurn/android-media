@@ -39,7 +39,6 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
@@ -48,9 +47,6 @@ import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
-import com.tokopedia.shipping_recommendation.FileUtils;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
@@ -1236,7 +1232,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         })
         );
     }
-    // lempar cart, yg kmrn dikomen ga lempar cart
+
     @Override
     public void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
                                                 ShipmentDetailData shipmentDetailData,
@@ -1244,27 +1240,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad) {
 
-        // load network
-        String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query_new);
+        String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
         getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
                         shipmentCartItemModel, shopShipmentList, isInitialLoad));
-
-        // load local response_pilih_durasi
-        /*String raw = new FileUtils().readRawTextFile(getView().getActivityContext(), com.tokopedia.shipping_recommendation.R.raw.response_pilih_durasi);
-        Gson gson = new Gson();
-        GetRatesCourierRecommendationData getRatesCourierRecommendationData = gson.fromJson(raw, GetRatesCourierRecommendationData.class);
-        ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
-        ShippingDurationConverter shippingDurationConverter = new ShippingDurationConverter();
-        shippingRecommendationData.setShippingDurationViewModels(shippingDurationConverter.
-                convertToViewModel(
-                        getRatesCourierRecommendationData.getRatesData().getRatesDetailData().getServices(),
-                        shopShipmentList, shipmentDetailData, "", 0));
-
-        getCourierRecommendationUseCase.executeDummy(new GetCourierRecommendationSubscriber(
-                getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
-                shipmentCartItemModel, shopShipmentList, isInitialLoad), shippingRecommendationData);*/
     }
 
     @Override
