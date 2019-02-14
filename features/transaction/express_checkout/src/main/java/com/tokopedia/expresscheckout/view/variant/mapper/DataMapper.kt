@@ -14,7 +14,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 
 interface DataMapper {
 
-    fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData): ArrayList<Visitable<*>>
+    fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData?): ArrayList<Visitable<*>>
 
     fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteViewModel
 

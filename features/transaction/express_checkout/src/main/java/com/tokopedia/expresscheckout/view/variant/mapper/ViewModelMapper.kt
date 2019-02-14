@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 open class ViewModelMapper @Inject constructor() : DataMapper {
 
-    override fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData): ArrayList<Visitable<*>> {
+    override fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData?): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
 
         val variantViewModelList = ArrayList<TypeVariantViewModel>()
@@ -48,7 +48,7 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         }
         dataList.add(convertToNoteViewModel(atcResponseModel))
         val summaryViewModel = convertToSummaryViewModel(atcResponseModel)
-        if (productData.insurance.insuranceType != InsuranceConstant.INSURANCE_TYPE_NO) {
+        if (productData != null && productData.insurance.insuranceType != InsuranceConstant.INSURANCE_TYPE_NO) {
             dataList.add(convertToInsuranceViewModel(productData, summaryViewModel))
         }
         if (atcResponseModel.atcDataModel?.userProfileModelDefaultModel != null) {

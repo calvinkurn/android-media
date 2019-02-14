@@ -87,14 +87,16 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
             }
             if (currentSpId == 0) {
                 presenter.prepareViewModel(defaultProduct)
-                view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported)
-                        ?: "")
+            }
+            view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported)
+                    ?: "")
+        } else {
+            if (currentSpId == 0) {
+                view?.finishWithError("")
             } else {
                 view?.setShippingDurationError(view.getActivityContext()?.getString(R.string.label_error_duration_not_supported)
                         ?: "")
             }
-        } else {
-            showError(ratesData)
         }
     }
 

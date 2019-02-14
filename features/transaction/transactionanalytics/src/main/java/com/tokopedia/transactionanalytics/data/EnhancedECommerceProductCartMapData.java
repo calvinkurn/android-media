@@ -11,6 +11,10 @@ import java.util.Map;
 public class EnhancedECommerceProductCartMapData {
     private Map<String, Object> Product = new HashMap<>();
 
+    public static final String SHOP_TYPE_REGULER = "reguler";
+    public static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    public static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+
     private static final String KEY_NAME = "name";
     private static final String KEY_ID = "id";
     private static final String KEY_PRICE = "price";

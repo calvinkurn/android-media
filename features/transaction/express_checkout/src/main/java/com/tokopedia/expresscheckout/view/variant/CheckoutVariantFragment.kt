@@ -11,8 +11,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -53,16 +51,16 @@ import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourie
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
-import com.tokopedia.transactionanalytics.data.expresscheckout.ActionField
-import com.tokopedia.transactionanalytics.data.expresscheckout.Checkout
-import com.tokopedia.transactionanalytics.data.expresscheckout.Product
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.usecase.RequestParams
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
@@ -577,7 +575,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         } else {
             ConstantTransactionAnalytics.EventLabel.SUCCESS_NOT_DEFAULT
         }
-        analyticsTracker.enhanceEcommerceImpressionExpressCheckoutForm(generateEnhanceEcommerceData(ActionField.STEP_2), eventLabel)
+        analyticsTracker.enhanceEcommerceImpressionExpressCheckoutForm(generateEnhanceEcommerceData(EnhancedECommerceActionField.STEP_2), eventLabel)
         if (activity != null) startActivity(RouteManager.getIntent(activity, appLink))
         activity?.finish()
     }
@@ -708,53 +706,51 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         analyticsTracker.sendScreenName(activity, ConstantTransactionAnalytics.ScreenName.EXPRESS_CHECKOUT)
-        analyticsTracker.enhanceEcommerceImpressionExpressCheckoutForm(generateEnhanceEcommerceData(ActionField.STEP_1), "")
+        analyticsTracker.enhanceEcommerceImpressionExpressCheckoutForm(generateEnhanceEcommerceData(EnhancedECommerceActionField.STEP_1), "")
     }
 
-    fun generateEnhanceEcommerceData(step: Int): HashMap<String, JsonObject> {
-        val enhanceEcommerceData = HashMap<String, JsonObject>()
+    fun generateEnhanceEcommerceData(step: String): HashMap<String, Any> {
+        val enhanceEcommerceData = HashMap<String, Any>()
 
-        val actionField = ActionField()
-        actionField.step = if (step == ActionField.STEP_1) ActionField.STEP_1 else ActionField.STEP_2
-        actionField.option = if (step == ActionField.STEP_1) ActionField.OPTION_CLICK_CHECKOUT else ActionField.OPTION_CLICK_BAYAR
+        val actionField = EnhancedECommerceActionField()
+        actionField.setStep(if (step == EnhancedECommerceActionField.STEP_1) EnhancedECommerceActionField.STEP_1 else EnhancedECommerceActionField.STEP_2)
+        actionField.setOption(if (step == EnhancedECommerceActionField.STEP_1) EnhancedECommerceActionField.OPTION_CLICK_CHECKOUT else EnhancedECommerceActionField.OPTION_CLICK_BAYAR)
 
-        val product = Product()
+        val product = EnhancedECommerceProductCartMapData()
         val shopModel = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel
         val productChildren = fragmentViewModel.getProductViewModel()?.productChildrenList
         if (productChildren != null && productChildren.isNotEmpty()) {
             for (productChild: ProductChild in productChildren) {
                 if (productChild.isSelected) {
-                    product.name = productChild.productName
-                    product.id = productChild.productId
-                    product.price = productChild.productPrice
+                    product.setProductName(productChild.productName)
+                    product.setProductID(productChild.productId.toString())
+                    product.setPrice(productChild.productPrice.toString())
                     break
                 }
             }
         } else {
-            product.name = fragmentViewModel.getProductViewModel()?.productName
-            product.id = fragmentViewModel.getProductViewModel()?.parentId
-            product.price = fragmentViewModel.getProductViewModel()?.productPrice
+            product.setProductName(fragmentViewModel.getProductViewModel()?.productName)
+            product.setProductID(fragmentViewModel.getProductViewModel()?.parentId?.toString())
+            product.setPrice(fragmentViewModel.getProductViewModel()?.productPrice?.toString())
         }
 
         if (shopModel?.isOfficial == 1) {
-            product.shopType = Product.SHOP_TYPE_OFFICIAL_STORE
+            product.setShopType(EnhancedECommerceProductCartMapData.SHOP_TYPE_OFFICIAL_STORE)
         } else if (shopModel?.isGold == 1) {
-            product.shopType = Product.SHOP_TYPE_GOLD_MERCHANT
+            product.setShopType(EnhancedECommerceProductCartMapData.SHOP_TYPE_GOLD_MERCHANT)
         } else {
-            product.shopType = Product.SHOP_TYPE_REGULER
+            product.setShopType(EnhancedECommerceProductCartMapData.SHOP_TYPE_REGULER)
         }
 
-        product.quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
-        product.shopId = shopModel?.shopId
-        product.shopName = shopModel?.shopName
+        product.setQty(fragmentViewModel.getQuantityViewModel()?.orderQuantity ?: 0)
+        product.setShopId(shopModel?.shopId?.toString())
+        product.setShopName(shopModel?.shopName)
 
-        val checkout = Checkout()
-        checkout.actionField = actionField
-        checkout.products = arrayListOf(product)
+        val checkout = EnhancedECommerceCheckout()
+        checkout.setActionField(actionField.actionFieldMap)
+        checkout.addProduct(product.product)
 
-        val jsonTreeEnhanceEcommerceData = Gson().toJsonTree(checkout)
-        val jsonObjectEnhanceEcommerceData = jsonTreeEnhanceEcommerceData.asJsonObject
-        enhanceEcommerceData.put("checkout", jsonObjectEnhanceEcommerceData)
+        enhanceEcommerceData.put("checkout", checkout.checkoutMap)
 
         return enhanceEcommerceData
     }

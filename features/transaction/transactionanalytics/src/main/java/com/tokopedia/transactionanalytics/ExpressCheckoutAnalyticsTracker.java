@@ -16,7 +16,7 @@ public class ExpressCheckoutAnalyticsTracker extends TransactionAnalytics {
         super(analyticTracker);
     }
 
-    public void enhanceEcommerceImpressionExpressCheckoutForm(HashMap<String, JsonObject> data, String eventLabel) {
+    public void enhanceEcommerceImpressionExpressCheckoutForm(HashMap<String, Object> data, String eventLabel) {
         sendEnhancedEcommerce(
                 DataLayer.mapOf(
                         ConstantTransactionAnalytics.Key.EVENT, ConstantTransactionAnalytics.EventName.CHECKOUT,
