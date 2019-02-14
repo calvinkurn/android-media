@@ -1,29 +1,36 @@
 package com.tokopedia.train.search.data.specification;
 
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.train.common.specification.DbFlowSpecification;
-import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
+import com.tokopedia.train.common.specification.RoomSpecification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author rizkyfadillah on 14/03/18.
  */
 
-public class TrainSchedulePriceFilterSpecification implements DbFlowSpecification {
+public class TrainSchedulePriceFilterSpecification implements RoomSpecification {
 
     private long minPriceFilterValue;
     private long maxPriceFilterValue;
+    private List<Object> args;
 
     public TrainSchedulePriceFilterSpecification(long minPriceFilterValue, long maxPriceFilterValue) {
         this.minPriceFilterValue = minPriceFilterValue;
         this.maxPriceFilterValue = maxPriceFilterValue;
+        args = new ArrayList<>();
     }
 
     @Override
-    public ConditionGroup getCondition() {
-        ConditionGroup conditions = ConditionGroup.clause();
-        conditions.and(TrainScheduleDbTable_Table.adult_fare.lessThanOrEq(maxPriceFilterValue))
-                .and(TrainScheduleDbTable_Table.adult_fare.greaterThanOrEq(minPriceFilterValue));
-        return conditions;
+    public String query() {
+        args.clear();
+        return " adultFare <= ? AND adultFare >= ? ";
     }
 
+    @Override
+    public List<Object> getArgs() {
+        args.add(maxPriceFilterValue);
+        args.add(minPriceFilterValue);
+        return args;
+    }
 }

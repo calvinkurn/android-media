@@ -83,6 +83,7 @@ ext {
             maps             : "com.google.android.gms:play-services-maps:16.0.0",
             auth             : "com.google.android.gms:play-services-auth:16.0.1",
             places           : "com.google.android.gms:play-services-places:16.0.0",
+            phone            : "com.google.android.gms:play-services-auth-api-phone:16.0.0",
             mapsUtils        : "com.google.maps.android:android-maps-utils:0.4",
             remoteConfig     : "com.google.firebase:firebase-config:16.1.3",
             perfMon          : "com.google.firebase:firebase-perf:16.2.3",
@@ -110,7 +111,6 @@ ext {
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.2.2@aar",
             crashlyticsAnswers : "com.crashlytics.sdk.android:answers:1.4.6@aar",
-            hockeyApp   : "net.hockeyapp.android:HockeySDK:4.1.3",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 

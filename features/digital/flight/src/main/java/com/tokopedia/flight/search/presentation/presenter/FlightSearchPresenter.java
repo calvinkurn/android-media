@@ -142,7 +142,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
 
         if (dateToSet.after(twoYears)) {
-            getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+            getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error);
         } else if (!getView().isReturning() && dateToSet.before(FlightDateUtil.getCurrentDate())) {
             getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
         } else if (getView().isReturning() && dateToSet.before(FlightDateUtil.stringToDate(flightSearchPassDataViewModel.getDepartureDate()))) {
@@ -370,6 +370,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+
+                        if (isViewAttached()) {
+                            getView().traceStop();
+                        }
                     }
 
                     @Override
@@ -383,6 +387,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                         if (getView().isDoneLoadData()) {
                             getView().addBottomPaddingForSortAndFilterActionButton();
                             getView().addToolbarElevation();
+                            getView().traceStop();
                         }
                     }
                 }
