@@ -607,12 +607,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void gotToProductDetail(Context context) {
-        Intent intent = ProductInfoActivity.createInstance(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct) {
         ProductItem data = new ProductItem();
         data.setId(productId);
@@ -665,36 +659,6 @@ public abstract class SellerRouterApplication extends MainApplication
         context.startActivity(
                 getTopProfileIntent(context, userId)
         );
-    }
-
-    @Override
-    public void goToAddProductDetail(Context context) {
-        Intent intent = ProductInfoActivity.createInstance(context);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ProductInfoActivity.IS_ADDING_PRODUCT, true);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public Fragment getProductDetailInstanceDeeplink(
-            Context context, @NonNull ProductPass productPass) {
-
-        Fragment fragment = Fragment.instantiate(
-                context, ProductDetailRouter.PRODUCT_DETAIL_FRAGMENT);
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_PARAM_PRODUCT_PASS_DATA, productPass);
-        args.putBoolean(ARG_FROM_DEEPLINK, true);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void goToProductDetailForResult(Fragment fragment, String productId,
-                                           int adapterPosition, int requestCode) {
-        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
-                adapterPosition);
-        fragment.startActivityForResult(intent, requestCode);
     }
 
     @Override

@@ -22,22 +22,11 @@ import java.util.ArrayList;
 
 public interface PdpRouter {
 
-    void gotToProductDetail(Context context);
-
     void goToProductDetail(Context context, String productUrl);
 
     void goToProductDetail(Context context, ProductPass productPass);
 
     void goToProductDetail(Context context, ShareData shareData);
-
-    void goToAddProductDetail(Context context);
-
-    Fragment getProductDetailInstanceDeeplink(Context context, @NonNull ProductPass productPass);
-
-    void goToProductDetailForResult(Fragment fragment,
-                                    String productId,
-                                    int adapterPosition,
-                                    int requestCode);
 
     void openImagePreview(Context context, ArrayList<String> images, int position);
 
