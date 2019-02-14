@@ -36,11 +36,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
-import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
-import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 import com.tokopedia.gamification.cracktoken.util.BounceBackExponentialInterpolator;
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.util.HexValidator;
 
 import java.util.ArrayList;
@@ -159,8 +158,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
         if (crackResult.getImageBitmap() != null && !crackResult.getImageBitmap().isRecycled()) {
             imageViewCrackResult.setImageBitmap(crackResult.getImageBitmap());
-            imageViewCrackResult.startAnimation(animationCrackResult);
-            imageViewCrackResult.setVisibility(View.VISIBLE);
+            startImageResultAnimation(imageViewCrackResult, animationCrackResult);
         } else {
             if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
                 Glide.with(getContext())
@@ -191,8 +189,17 @@ public class WidgetCrackResult extends RelativeLayout {
         translateAnimationBgCrackResult.setDuration(DURATION_ANIM_BG_CRACK_RESULT);
         animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
 
-        imageViewBgCrackResult.startAnimation(animationBgCrackResult);
-        imageViewBgCrackResult.setVisibility(View.VISIBLE);
+        startImageResultAnimation(imageViewBgCrackResult, animationBgCrackResult);
+    }
+
+    private void startImageResultAnimation(ImageView imageViewCrack, AnimationSet animationCrackResult) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageViewCrack.startAnimation(animationCrackResult);
+                imageViewCrack.setVisibility(View.VISIBLE);
+            }
+        }, 100);
     }
 
     private void showCrackResultBackgroundAnimation() {
@@ -210,7 +217,7 @@ public class WidgetCrackResult extends RelativeLayout {
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setDuration(DURATION_ALPHA_ANIM_TEXT);
         containerTextCrackResult.setAnimation(alphaAnimation);
-        containerTextCrackResult.setVisibility(VISIBLE);
+        containerTextCrackResult.setVisibility(View.VISIBLE);
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
