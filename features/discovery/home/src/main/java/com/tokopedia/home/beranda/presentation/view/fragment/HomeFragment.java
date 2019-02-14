@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -82,6 +81,8 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -114,7 +115,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     HomePresenter presenter;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
@@ -137,6 +138,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private AppBarLayout appBarLayout;
     private HomeFeedPagerAdapter homeFeedPagerAdapter;
     private int lastOffset;
+
+    private TrackingQueue trackingQueue;
 
     private MainToolbar mainToolbar;
 
@@ -164,6 +167,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         abTestingOfficialStore = new AbTestingOfficialStore(getContext());
+        trackingQueue = new TrackingQueue(getActivity());
     }
 
     @Override
@@ -312,7 +316,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
+                FeedTabModel selectedFeedTabModel =
+                        feedTabModelList.get(tab.getPosition());
+                HomePageTracking.eventClickOnHomePageRecommendationTab(
+                        trackingQueue,
+                        selectedFeedTabModel
+                );
             }
 
             @Override
@@ -365,6 +374,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
+        trackingQueue.sendAll();
     }
 
     @Override
