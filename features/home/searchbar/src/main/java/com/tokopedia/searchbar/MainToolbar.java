@@ -59,8 +59,8 @@ public class MainToolbar extends Toolbar {
     }
 
     public void setInboxNumber(int badgeNumber) {
-        if (btnWishlist != null && btnWishlist.getTag().toString()
-                .equalsIgnoreCase(TAG_INBOX)) {
+        if (btnWishlist != null && btnWishlist.getTag() != null
+                && btnWishlist.getTag().toString().equalsIgnoreCase(TAG_INBOX)) {
             if (badgeView == null)
                 badgeView = new BadgeView(getContext());
 
