@@ -115,7 +115,7 @@
         android:id="@+id/chat_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom"
+        app:layout_constraintBottom_toTopOf="@id/pinned_message"
         app:layout_constraintTop_toBottomOf="@id/video_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -203,5 +203,85 @@
     </android.support.constraint.ConstraintLayout>
 
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/quick_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_12"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="gone"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_quick_reply"
+        />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey_300"
+        app:layout_constraintStart_toStartOf="@id/quick_reply"
+        app:layout_constraintTop_toTopOf="@id/quick_reply"
+        android:visibility="gone"
+        tools:visibility="gone"/>
+
+
+    <include
+        android:id="@+id/pinned_message"
+        layout="@layout/pinned_message_view_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_12"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/quick_reply"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_new_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:background="@drawable/label_new_chat"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/space_small"
+        android:paddingLeft="@dimen/space_med"
+        android:paddingRight="@dimen/space_med"
+        android:paddingTop="@dimen/space_small"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/pinned_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/new_message"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"/>
+
+        <Space
+            android:layout_width="@dimen/space_mini"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:layout_width="@dimen/arrow_size"
+            android:layout_height="@dimen/arrow_size"
+            android:layout_gravity="center_vertical"
+            android:rotation="180"
+            app:srcCompat="@drawable/ic_arrow_up_green"/>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

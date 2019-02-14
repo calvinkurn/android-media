@@ -3,6 +3,8 @@ package com.tokopedia.groupchat.room.view.viewstate
 import android.content.Context
 import android.os.Handler
 import android.support.v4.app.FragmentManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.Log
@@ -13,8 +15,10 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter
 import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
+import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
@@ -29,11 +33,27 @@ class PlayViewStateImpl(var view: View) : PlayViewState {
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
     private var videoContainer = view.findViewById<View>(R.id.video_horizontal)
-
+    private var quickReplyRecyclerView = view.findViewById<RecyclerView>(R.id.quick_reply)
     private var youTubePlayer: YouTubePlayer? = null
 
+
+    private lateinit var quickReplyAdapter: QuickReplyAdapter
     var youtubeRunnable: Handler = Handler()
 
+
+    init {
+//        val quickReplyTypeFactory = QuickReplyTypeFactoryImpl(this)
+//        quickReplyAdapter = QuickReplyAdapter(quickReplyTypeFactory)
+        quickReplyRecyclerView.layoutManager = LinearLayoutManager(
+                view.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+        )
+
+        val quickReplyItemDecoration = QuickReplyItemDecoration(view.context
+                .resources.getDimension(R.dimen.dp_16).toInt())
+        quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
+    }
 
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
@@ -48,7 +68,6 @@ class PlayViewStateImpl(var view: View) : PlayViewState {
             else -> setVisibilityHeader(View.GONE)
         }
     }
-
 
     override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
         if (TextUtils.isEmpty(blurredBannerUrl)) {
