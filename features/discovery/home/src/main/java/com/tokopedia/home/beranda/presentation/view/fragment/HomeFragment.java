@@ -138,7 +138,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private AppBarLayout appBarLayout;
     private HomeFeedPagerAdapter homeFeedPagerAdapter;
     private int lastOffset;
-    private AbTestingOfficialStore abTestingOfficialStore;
 
     private TrackingQueue trackingQueue;
 
