@@ -36,6 +36,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
@@ -44,6 +46,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }
 
 apply from: '../../publish_local.gradle'
