@@ -167,13 +167,6 @@ public class CollapsingTabLayout extends TabLayout {
                 adjustTabLayoutHeight((int) valueAnimator.getAnimatedValue());
             }
         });
-        tabHeightCollapseAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                lastTabCollapseFraction = tabHeightCollapseAnimator.getAnimatedFraction();
-            }
-        });
         tabHeightCollapseAnimator.setDuration(DEFAULT_ANIMATION_DURATION);
         //tabHeightCollapseAnimator.setStartDelay(TAB_AUTO_SCROLL_DELAY_DURATION);
     }
@@ -200,12 +193,14 @@ public class CollapsingTabLayout extends TabLayout {
     private void startTabHeightExpandAnimation() {
         if (tabHeightCollapseAnimator.getAnimatedFraction() > 0 && !tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.reverse();
+            lastTabCollapseFraction = 0;
         }
     }
 
     private void startTabHeightCollapseAnimation() {
         if (tabHeightCollapseAnimator.getAnimatedFraction() < 1 && !tabHeightCollapseAnimator.isStarted()) {
             tabHeightCollapseAnimator.start();
+            lastTabCollapseFraction = 1;
         }
     }
 
@@ -302,6 +297,10 @@ public class CollapsingTabLayout extends TabLayout {
     }
 
     public void adjustTabCollapseOnScrolled(int dy, int totalScrollY) {
+
+        if (dy == 0) {
+            return;
+        }
 
         if (dy < 0) {
             totalScrollUp -= dy;
