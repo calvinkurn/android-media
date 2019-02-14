@@ -88,7 +88,7 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        recyclerView.setNestedScrollingEnabled(false);
+//        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(false);
     }
 
