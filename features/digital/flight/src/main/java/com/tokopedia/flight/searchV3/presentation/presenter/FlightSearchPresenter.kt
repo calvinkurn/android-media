@@ -41,7 +41,16 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     private var maxCall: Int = 0
     private var callCounter: Int = 0
 
-    override fun initialize() {
+    override fun initialize(needDeleteData: Boolean) {
+
+        if (needDeleteData) {
+            if (view.isReturning()) {
+                deleteFlightReturnSearch(getNoActionSubscriber())
+            } else {
+                deleteAllSearchData(getNoActionSubscriber())
+            }
+        }
+
         if (!view.getSearchPassData().isOneWay &&
                 !view.isStatusCombineDone()) {
             fetchCombineData(view.getSearchPassData())
@@ -109,7 +118,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val twoYears: Date = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
 
         if (dateToSet.after(twoYears)) {
-            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error)
+            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error)
         } else if (!view.isReturning() && dateToSet.before(FlightDateUtil.getCurrentDate())) {
             view.showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error)
         } else if (view.isReturning() && dateToSet.before(FlightDateUtil.stringToDate(flightSearchPassDataViewModel.departureDate))) {
@@ -380,6 +389,21 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                 override fun onNext(t: Boolean?) {
                     view.onSuccessDeleteFlightCache()
+                }
+            }
+
+    private fun getNoActionSubscriber(): Subscriber<Boolean> =
+            object : Subscriber<Boolean>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable?) {
+                    e?.printStackTrace()
+                }
+
+                override fun onNext(t: Boolean?) {
+                    // No Action
                 }
             }
 

@@ -13,6 +13,8 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.useCase)
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

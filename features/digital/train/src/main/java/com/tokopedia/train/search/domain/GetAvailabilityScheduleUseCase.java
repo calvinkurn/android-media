@@ -9,8 +9,6 @@ import com.tokopedia.usecase.UseCase;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by nabillasabbaha on 3/12/18.
@@ -35,20 +33,10 @@ public class GetAvailabilityScheduleUseCase extends UseCase<List<List<TrainSched
     @Override
     public Observable<List<List<TrainScheduleViewModel>>> createObservable(RequestParams requestParams) {
         return Observable.from(availabilityKeySchedules)
-                .flatMap(new Func1<AvailabilityKeySchedule, Observable<List<TrainScheduleViewModel>>>() {
-                    @Override
-                    public Observable<List<TrainScheduleViewModel>> call(AvailabilityKeySchedule availabilityKeySchedule) {
-                        RequestParams requestParams = RequestParams.create();
-                        requestParams.putObject(TRAIN_ID_KEY, availabilityKeySchedule.getIdTrain());
-                        return Observable.zip(Observable.just(availabilityKeySchedule),
-                                trainRepository.getAvailabilitySchedule(requestParams.getParameters()),
-                                new Func2<AvailabilityKeySchedule, List<TrainScheduleViewModel>, List<TrainScheduleViewModel>>() {
-                                    @Override
-                                    public List<TrainScheduleViewModel> call(AvailabilityKeySchedule availabilityKeySchedule, List<TrainScheduleViewModel> trainScheduleViewModels) {
-                                        return trainScheduleViewModels;
-                                    }
-                                });
-                    }
+                .flatMap(it -> {
+                    RequestParams reqParam = RequestParams.create();
+                    reqParam.putObject(TRAIN_ID_KEY, it.getIdTrain());
+                    return trainRepository.getAvailabilitySchedule(reqParam.getParameters());
                 })
                 .toList();
     }
