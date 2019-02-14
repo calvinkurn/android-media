@@ -129,6 +129,8 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                 } else {
                     getView().onSuccessTicker(data.getTokoPoints().getTicker().getTickers());
                 }
+
+                if (getView() != null) getView().onFinishRendering();
             }
         });
     }
