@@ -3,9 +3,9 @@ package com.tokopedia.groupchat.room.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.ChannelInfoViewModel
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.chatroom.*
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.interupt.InteruptViewModel
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.room.domain.pojo.OverlayMessageAssetPojo
 import com.tokopedia.groupchat.room.domain.pojo.OverlayMessagePojo
 import com.tokopedia.groupchat.room.domain.pojo.PinnedMessagePojo
@@ -265,7 +265,7 @@ class ChannelInfoMapper @Inject constructor() : Func1<Response<DataResponse<Chan
         }
     }
 
-    private fun convertInteruptViewModel(pojo: OverlayMessageAssetPojo): InteruptViewModel{
+    private fun convertInteruptViewModel(pojo: OverlayMessageAssetPojo): InteruptViewModel {
         return pojo.let {
             InteruptViewModel(
                     it.title,

@@ -15,4 +15,5 @@ interface PlayViewState {
     fun getToolbar(): Toolbar?
     fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?)
     fun initVideoFragment(fragmentManager: FragmentManager, viewModel: ChannelInfoViewModel)
+    fun onSuccessGetInfo(it: ChannelInfoViewModel)
 }

@@ -17,11 +17,11 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
 
     @LayoutRes
     public static final int LAYOUT = R.layout.image_view_holder;
-    private final ChatroomContract.View.ImageAnnouncementViewHolderListener listener;
+    private final ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener listener;
 
     private ImageView contentImage;
 
-    public ImageAnnouncementViewHolder(View itemView, ChatroomContract.View.ImageAnnouncementViewHolderListener listener) {
+    public ImageAnnouncementViewHolder(View itemView, ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener listener) {
         super(itemView);
         this.listener = listener;
         contentImage = itemView.findViewById(R.id.content_image);
