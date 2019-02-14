@@ -374,6 +374,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                                 CommonUtils.dumper(e.getStackTrace());
                                                 getView().showErrorMessage(e.getMessage());
                                                 getView().hideProgressBar();
+                                                getView().finishOrderDetail();
                                             }
 
                                             @Override
@@ -423,6 +424,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 CommonUtils.dumper(e.getStackTrace());
                 getView().hideProgressBar();
                 getView().showErrorMessage(e.getMessage());
+                getView().finishOrderDetail();
             }
 
             @Override

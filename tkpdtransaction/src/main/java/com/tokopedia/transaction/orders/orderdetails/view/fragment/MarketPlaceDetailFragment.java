@@ -428,7 +428,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void showErrorMessage(String message) {
-        ToasterError.make(getView(), message).show();
+        ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -484,6 +484,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void finishOrderDetail() {
+        mainView.requestLayout();
 //        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 
