@@ -39,6 +39,7 @@ public interface AddAddressContract {
 
         void setPinpointAddress(String address);
 
+        void onAddAddressSubmitSuccessRendered();
     }
 
     interface Presenter {

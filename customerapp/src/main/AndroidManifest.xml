@@ -39,9 +39,6 @@
             android:value="26.1.0"
             tools:replace="android:value"/>
         <meta-data
-            android:name="net.hockeyapp.android.appIdentifier"
-            android:value="528b17702bf941a581f15e188677306b "/>
-        <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
             tools:replace="android:value"/>

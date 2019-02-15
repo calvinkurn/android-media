@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.design.text.SearchInputView;
@@ -95,6 +96,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     private View notifier;
     private TextView sendBroadcast;
     private ShowCaseDialog showCaseDialog;
+    private PerformanceMonitoring fpm;
 
     public static InboxChatFragment createInstance(String navigation) {
         InboxChatFragment fragment = new InboxChatFragment();
@@ -113,6 +115,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_CHAT_LIST);
     }
 
     @Override
@@ -351,6 +354,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             @Override
             public void run() {
                 presenter.setResultFetch(inboxChatViewModel);
+                fpm.stopTrace();
             }
         });
     }
@@ -405,6 +409,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void showError(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
+        fpm.stopTrace();
     }
 
 
@@ -421,6 +426,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                 presenter.getMessage();
             }
         });
+        fpm.stopTrace();
     }
 
     @Override

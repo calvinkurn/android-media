@@ -77,6 +77,7 @@
             android:name=".newdiscovery.search.SearchActivity"
             android:screenOrientation="portrait"
             android:label="@string/image_search_title"
+            android:windowSoftInputMode="adjustNothing"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

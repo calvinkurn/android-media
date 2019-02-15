@@ -227,7 +227,7 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -1355,11 +1355,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         intent.putExtra(ContactUsActivity.EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
-    }
-
-    @Override
-    public void showForceHockeyAppDialog() {
-        ServerErrorHandler.showForceHockeyAppDialog();
     }
 
     @Override

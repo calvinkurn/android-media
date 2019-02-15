@@ -2,15 +2,10 @@ package com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-
-import com.tokopedia.groupchat.chatroom.kotlin.domain.pojo.ExitMessage
-import com.tokopedia.groupchat.chatroom.kotlin.domain.pojo.channelinfo.SettingGroupChat
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.chatroom.ChannelPartnerViewModel
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.chatroom.GroupChatPointsViewModel
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.chatroom.PinnedMessageViewModel
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.chatroom.SprintSaleViewModel
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.domain.pojo.ExitMessage
+import com.tokopedia.groupchat.room.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 
 /**

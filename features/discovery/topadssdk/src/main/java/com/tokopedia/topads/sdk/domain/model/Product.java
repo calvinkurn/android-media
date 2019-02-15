@@ -43,43 +43,43 @@ public class Product implements Parcelable {
     private static final String KEY_IMAGE_PRODUCT = "image_product";
 
     @SerializedName(KEY_ID)
-    private String id;
-    private String adRefKey;
-    private String adId;
+    private String id = "";
+    private String adRefKey = "";
+    private String adId = "";
     @SerializedName(KEY_NAME)
-    private String name;
+    private String name = "";
     @SerializedName(KEY_WISHLIST)
-    private boolean wishlist;
+    private boolean wishlist = false;
     @SerializedName(KEY_IMAGE)
-    private ProductImage image;
+    private ProductImage image = new ProductImage();
     @SerializedName(KEY_URI)
-    private String uri;
+    private String uri = "";
     @SerializedName(KEY_RELATIVE_URI)
-    private String relativeUri;
+    private String relativeUri = "";
     @SerializedName(KEY_PRICE_FORMAT)
-    private String priceFormat;
+    private String priceFormat = "";
     @SerializedName(KEY_COUNT_TALK_FORMAT)
-    private String countTalkFormat;
+    private String countTalkFormat = "";
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
-    private String countReviewFormat;
+    private String countReviewFormat = "";
     @SerializedName(KEY_CATEGORY)
-    private Category category;
+    private Category category = new Category();
     @SerializedName(KEY_PRODUCT_PREORDER)
-    private boolean productPreorder;
+    private boolean productPreorder = false;
     @SerializedName(KEY_PRODUCT_WHOLESALE)
-    private boolean productWholesale;
+    private boolean productWholesale = false;
     @SerializedName(KEY_FREERETURN)
-    private String freeReturn;
+    private String freeReturn = "";
     @SerializedName(KEY_PRODUCT_CASHBACK)
-    private boolean productCashback;
+    private boolean productCashback = false;
     @SerializedName(KEY_PRODUCT_CASHBACK_RATE)
-    private String productCashbackRate;
+    private String productCashbackRate = "";
     @SerializedName(KEY_PRODUCT_NEW_LABEL)
-    private boolean productNewLabel;
+    private boolean productNewLabel = false;
     @SerializedName(KEY_PRODUCT_RATE)
-    private int productRating;
+    private int productRating = 0;
     @SerializedName(KEY_APPLINKS)
-    private String applinks;
+    private String applinks = "";
     @SerializedName(KEY_WHOLESALE_PRICE)
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     @SerializedName(KEY_LABELS)
@@ -89,8 +89,8 @@ public class Product implements Parcelable {
     @SerializedName(KEY_BOTTOM_LABEL)
     private List<String> bottomLabels = new ArrayList<>();
     @SerializedName(KEY_IMAGE_PRODUCT)
-    private ImageProduct imageProduct;
-    private boolean loaded;
+    private ImageProduct imageProduct = new ImageProduct();
+    private boolean loaded = false;
 
     public Product() {
     }

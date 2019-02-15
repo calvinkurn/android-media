@@ -96,4 +96,6 @@
     <string name="default_error_enter_channel">Maaf, Saat Ini Play Sedang Ramai Pengunjung</string>
     <string name="check_next_event_schedule">Cek Jadwal Acara Selanjutnya</string>
 
+    <string name="chat_hint">Chat...</string>
+
 </resources>

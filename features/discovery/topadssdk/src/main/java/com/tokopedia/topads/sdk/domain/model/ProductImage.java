@@ -21,18 +21,18 @@ public class ProductImage implements Parcelable {
     private static final String KEY_XS_ECS = "xs_ecs";
 
     @SerializedName(KEY_M_URL)
-    private String m_url;
+    private String m_url = "";
     @SerializedName(KEY_S_URL)
-    private String s_url;
+    private String s_url = "";
     @SerializedName(KEY_XS_URL)
-    private String xs_url;
+    private String xs_url = "";
     @SerializedName(KEY_M_ECS)
-    private String m_ecs;
+    private String m_ecs = "";
     @SerializedName(KEY_S_ECS)
-    private String s_ecs;
+    private String s_ecs = "";
     @SerializedName(KEY_XS_ECS)
-    private String xs_ecs;
-    private boolean impressed;
+    private String xs_ecs = "";
+    private boolean impressed = false;
 
     public ProductImage() {
     }
