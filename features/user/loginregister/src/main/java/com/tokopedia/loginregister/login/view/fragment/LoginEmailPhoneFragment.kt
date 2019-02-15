@@ -867,7 +867,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             presenter.loginGoogle(accessToken, email)
         } catch (e: ApiException) {
             onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
-                    String.format(getString(R.string.failed_login_google),
+                    String.format(getString(R.string.loginregister_failed_login_google),
                             e.statusCode.toString())
             )
         }
