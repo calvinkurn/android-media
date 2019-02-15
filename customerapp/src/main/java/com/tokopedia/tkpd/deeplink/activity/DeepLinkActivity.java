@@ -92,13 +92,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
-        URL obtainedURL = null;
-        try {
-            obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
-            ScreenTracking.sendScreen(this, getScreenName(),obtainedURL.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        presenter.sendAuthenticatedEvent(uriData,getScreenName());
     }
 
     @Override
