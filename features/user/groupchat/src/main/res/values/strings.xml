@@ -83,6 +83,9 @@
     <string name="channel_not_belong_to_user">Anda belum terhubung dengan Play. Silahkan
         coba kembali.</string>
 
+
+    <string name="recommendation_from">Rekomendasi Dari</string>
+
     <string name="exit_group_chat_title">Title</string>
     <string name="exit_group_chat_body">Body</string>
     <string name="exit_group_chat_yes">Yes</string>
