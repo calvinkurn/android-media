@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">tradein</string>
+    <string name="header_section_price">Kisaran harga jual HP Anda</string>
+    <string name="product_not_elligible">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
+    <string name="model_not_found">Tidak dapat menemukan model HP</string>
+    <string name="go_to_product_details">Kembali Ke Detail Produk</string>
+    <string name="text_price_holder">Harga Hp kamu Rp $1%d</string>
+    <string name="text_check_functionality">Mulai Cek Fungsi</string>
+</resources>

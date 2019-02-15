@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_product_modal.*
 import kotlinx.android.synthetic.main.layout_variant_activity_section_notes.*
 import kotlinx.android.synthetic.main.layout_variant_activity_section_quantity.*
 import kotlinx.android.synthetic.main.variant_title_item.*
+import model.TradeInParams
 
 class ProductModalFragment : BaseDaggerFragment() {
 
@@ -34,9 +35,11 @@ class ProductModalFragment : BaseDaggerFragment() {
         private const val ARGS_SELECTED_QUANTITY = "ARGS_SELECTED_QUANTITY"
         private const val ARGS_SELECTED_REMARK_NOTES = "ARGS_SELECTED_REMARK_NOTES"
         private const val ARGS_STATE_FORM_PRODUCT_MODAL = "ARGS_STATE_FORM_PRODUCT_MODAL"
+        private const val ARGS_TRADEIN_PARAMS = "ARGS_TRADE_IN_PARAMS"
 
         fun newInstance(variant: ProductVariant?,
                         detailData: ProductDetailData?,
+                        tradeInParams: TradeInParams?,
                         quantity: Int,
                         remarkNotes: String,
                         stateProductModal: Int
@@ -45,6 +48,7 @@ class ProductModalFragment : BaseDaggerFragment() {
             val bundle = Bundle()
             bundle.putParcelable(ARGS_PRODUCT_VARIANT, variant)
             bundle.putParcelable(ARGS_PRODUCT_DETAIL, detailData)
+            bundle.putParcelable(ARGS_TRADEIN_PARAMS, tradeInParams)
             bundle.putInt(ARGS_SELECTED_QUANTITY, quantity)
             bundle.putString(ARGS_SELECTED_REMARK_NOTES, remarkNotes)
             bundle.putInt(ARGS_STATE_FORM_PRODUCT_MODAL, stateProductModal)
@@ -63,15 +67,17 @@ class ProductModalFragment : BaseDaggerFragment() {
 
     private var productVariant: ProductVariant? = null
     private var productData: ProductDetailData? = null
+    private var tradeInParams: TradeInParams? = null
     private var selectedQuantity: Int? = 0
     private var stateProductModal: Int? = 0
     private var selectedRemarkNotes: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         productVariant = arguments?.getParcelable(ARGS_PRODUCT_VARIANT)
         productData = arguments?.getParcelable(ARGS_PRODUCT_DETAIL)
+        tradeInParams = arguments?.getParcelable(ARGS_TRADEIN_PARAMS)
+        super.onCreate(savedInstanceState)
         selectedQuantity = arguments?.getInt(ARGS_SELECTED_QUANTITY)
         selectedRemarkNotes = arguments?.getString(ARGS_SELECTED_REMARK_NOTES)
         stateProductModal = arguments?.getInt(ARGS_STATE_FORM_PRODUCT_MODAL)
@@ -144,6 +150,7 @@ class ProductModalFragment : BaseDaggerFragment() {
             }
         }
     }
+
     private fun renderButtonNonVariant() {
         if (productData?.shopInfo?.shopStatus == 1) {
             activity?.let {
@@ -228,12 +235,13 @@ class ProductModalFragment : BaseDaggerFragment() {
                 text_variant_stock.setTextColor(ContextCompat.getColor(it, R.color.black_70))
             }
         }
+        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams)
 
         number_picker_quantitiy_product.setInitialState(
                 Integer.parseInt(productData?.info?.productMinOrder),
                 DEFAULT_MAXIMUM_STOCK_PICKER,
                 selectedQuantity!!
-                )
+        )
 
         number_picker_quantitiy_product.setOnPickerActionListener { num ->
             selectedQuantity = num
@@ -254,7 +262,7 @@ class ProductModalFragment : BaseDaggerFragment() {
 
         if (isCampaign()) {
             text_original_price.text = productData?.campaign?.originalPriceFmt
-            text_original_price.paintFlags = text_original_price.paintFlags ; Paint.STRIKE_THRU_TEXT_FLAG
+            text_original_price.paintFlags = text_original_price.paintFlags; Paint.STRIKE_THRU_TEXT_FLAG
             text_discount.text = String.format(
                     getString(R.string.label_discount_percentage),
                     productData?.campaign?.discountedPercentage

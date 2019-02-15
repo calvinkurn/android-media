@@ -33,6 +33,9 @@ import com.tokopedia.tkpdpdp.customview.NumberPickerWithCounterView;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.TradeInParams;
+import view.customview.TradeInTextView;
+
 import static android.view.View.VISIBLE;
 import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
 import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
@@ -43,6 +46,7 @@ public class VariantActivity extends TActivity  implements
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
+    public static final String KEY_TRADE_IN_PARAMS ="TRADE_IN_PARAMS";
     public static final String KEY_STATE_OPEN_VARIANT = "KEY_STATE_OPEN_VARIANT";
     public static final String KEY_STATE_RESULT_VARIANT = "KEY_STATE_RESULT_VARIANT";
     public static final String KEY_SELECTED_QUANTIY = "KEY_QUANTITY";
@@ -104,6 +108,7 @@ public class VariantActivity extends TActivity  implements
     private String selectedRemarkNotes;
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
+    private TradeInParams tradeInParams;
     private String mainImage = "";
     private LocalCacheHandler localCacheHandler;
 
@@ -168,6 +173,8 @@ public class VariantActivity extends TActivity  implements
         viewContainerQty = findViewById(R.id.view_qty_product);
         viewContainerRemark = findViewById(R.id.view_remark_for_seller);
         viewContainerButton = findViewById(R.id.all_kind_button_buy);
+        TradeInTextView tradeInTextView = findViewById(R.id.tv_trade_in);
+        tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams);
 
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&

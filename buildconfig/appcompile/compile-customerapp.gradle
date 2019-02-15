@@ -14,6 +14,7 @@ include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
 include "features:content:interest_pick"
+include "features:category:tradein"
 
 include "features:digital:flight_no_op"
 include "features:digital:digital_browse"

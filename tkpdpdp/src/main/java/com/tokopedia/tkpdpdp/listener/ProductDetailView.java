@@ -31,6 +31,8 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.TradeInParams;
+
 /**
  * @author ANGGA on 11/2/2015.
  */
@@ -378,4 +380,6 @@ public interface ProductDetailView extends ViewListener {
     void onImageFromBuyerClick(int viewType, String reviewId);
 
     void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position);
+
+    void checkTradeIn(TradeInParams tradeInParams);
 }
