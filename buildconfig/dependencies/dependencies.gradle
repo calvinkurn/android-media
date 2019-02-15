@@ -83,6 +83,7 @@ ext {
             maps             : "com.google.android.gms:play-services-maps:${playServiceVersion}",
             auth             : "com.google.android.gms:play-services-auth:${playServiceVersion}",
             places           : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            phone            : "com.google.android.gms:play-services-auth-api-phone:${playServiceVersion}",
             mapsUtils        : "com.google.maps.android:android-maps-utils:0.4",
             remoteConfig     : "com.google.firebase:firebase-config:${playServiceVersion}",
             perfMon          : "com.google.firebase:firebase-perf:${playServiceVersion}",

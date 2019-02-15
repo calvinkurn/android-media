@@ -14,10 +14,8 @@ import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
 import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherEntity;
 import com.tokopedia.train.reviewdetail.data.specification.TrainCheckVoucherSpecification;
-import com.tokopedia.train.scheduledetail.data.specification.TrainStationByStationCodeSpecification;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.train.search.data.specification.TrainAvailabilitySearchSpecification;
-import com.tokopedia.train.search.data.specification.TrainDetailScheduleSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleSpecification;
 import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
@@ -28,13 +26,8 @@ import com.tokopedia.train.seat.data.entity.TrainChangeSeatEntity;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
 import com.tokopedia.train.seat.data.specification.TrainChangeSeatSpecification;
 import com.tokopedia.train.seat.data.specification.TrainSeatSpecification;
-import com.tokopedia.train.seat.domain.model.TrainPassengerSeat;
 import com.tokopedia.train.seat.domain.model.request.ChangeSeatMapRequest;
-import com.tokopedia.train.station.data.TrainStationDataStoreFactory;
-import com.tokopedia.train.station.data.specification.TrainPopularStationSpecification;
-import com.tokopedia.train.station.data.specification.TrainStationByKeywordSpecification;
-import com.tokopedia.train.station.data.specification.TrainStationCityByKeywordSpecification;
-import com.tokopedia.train.station.data.specification.TrainStationSpecification;
+import com.tokopedia.train.station.data.TrainStationDataStoreNewFactory;
 import com.tokopedia.train.station.domain.model.TrainStation;
 
 import java.util.HashMap;
@@ -50,7 +43,7 @@ import rx.Observable;
 public class TrainRepositoryImpl implements TrainRepository {
 
     private TrainSeatCloudDataStore trainSeatCloudDataStore;
-    private TrainStationDataStoreFactory trainStationDataStoreFactory;
+    private TrainStationDataStoreNewFactory trainStationDataStoreFactory;
     private TrainScheduleDataStoreFactory trainScheduleDataStoreFactory;
     private TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore;
     private TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore;
@@ -58,7 +51,7 @@ public class TrainRepositoryImpl implements TrainRepository {
     private TrainPromoCloudDataStore trainPromoCloudDataStore;
 
     public TrainRepositoryImpl(TrainSeatCloudDataStore trainSeatCloudDataStore,
-                               TrainStationDataStoreFactory trainStationDataStoreFactory,
+                               TrainStationDataStoreNewFactory trainStationDataStoreFactory,
                                TrainScheduleDataStoreFactory scheduleDataStoreFactory,
                                TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore,
                                TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore,
@@ -73,39 +66,38 @@ public class TrainRepositoryImpl implements TrainRepository {
         this.trainPromoCloudDataStore = trainPromoCloudDataStore;
     }
 
+// STATION ===============================
+
     @Override
     public Observable<List<TrainStation>> getPopularStations() {
-        return trainStationDataStoreFactory.getStations(new TrainPopularStationSpecification());
+        return trainStationDataStoreFactory.getPopularStation();
     }
 
     @Override
     public Observable<List<TrainStation>> getAllStations() {
-        return trainStationDataStoreFactory.getStations(new TrainStationSpecification());
-    }
-
-    @Override
-    public Observable<List<TrainChangeSeatEntity>> changeSeats(List<ChangeSeatMapRequest> requests) {
-        return trainSeatCloudDataStore.changeSeats(new TrainChangeSeatSpecification(requests));
+        return trainStationDataStoreFactory.getAllStations();
     }
 
     @Override
     public Observable<List<TrainStation>> getStationsByKeyword(String keyword) {
-        return trainStationDataStoreFactory.getStations(new TrainStationByKeywordSpecification(keyword));
+        return trainStationDataStoreFactory.getStationByKeyword(keyword);
     }
 
     @Override
     public Observable<TrainStation> getStationByStationCode(String stationCode) {
-        return trainStationDataStoreFactory.getStation(new TrainStationByStationCodeSpecification(stationCode));
-    }
-
-    @Override
-    public Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant) {
-        return trainScheduleDataStoreFactory.getScheduleTrain(new TrainScheduleSpecification(mapParam), scheduleVariant);
+        return trainStationDataStoreFactory.getStationByStationCode(stationCode);
     }
 
     @Override
     public Observable<List<TrainStation>> getStationCitiesByKeyword(String keyword) {
-        return trainStationDataStoreFactory.getStations(new TrainStationCityByKeywordSpecification(keyword));
+        return trainStationDataStoreFactory.getStationCitiesByKeyword(keyword);
+    }
+
+// SCHEDULE ===============================
+
+    @Override
+    public Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant) {
+        return trainScheduleDataStoreFactory.getSchedules(new TrainScheduleSpecification(mapParam), scheduleVariant);
     }
 
     @Override
@@ -120,13 +112,20 @@ public class TrainRepositoryImpl implements TrainRepository {
 
     @Override
     public Observable<TrainScheduleViewModel> getDetailSchedule(String idSchedule) {
-        return trainScheduleDataStoreFactory.getDetailScheduleById(new TrainDetailScheduleSpecification(idSchedule));
+        return trainScheduleDataStoreFactory.getDetailScheduleById(idSchedule);
     }
 
     @Override
     public Observable<Integer> getCountSchedule(FilterSearchData filterSearchData, int scheduleVariant,
                                                 String arrivalTimestampSelected) {
         return trainScheduleDataStoreFactory.getCountSchedule(filterSearchData, scheduleVariant, arrivalTimestampSelected);
+    }
+
+// ALL ================================
+
+    @Override
+    public Observable<List<TrainChangeSeatEntity>> changeSeats(List<ChangeSeatMapRequest> requests) {
+        return trainSeatCloudDataStore.changeSeats(new TrainChangeSeatSpecification(requests));
     }
 
     @Override
