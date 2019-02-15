@@ -28,9 +28,9 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     TextView voteQuestion;
     View voteLayout;
     Context context;
-    private final ChatroomContract.View.VoteAnnouncementViewHolderListener listener;
+    private final ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener listener;
 
-    public VoteAnnouncementViewHolder(View itemView, ChatroomContract.View.VoteAnnouncementViewHolderListener imageListener) {
+    public VoteAnnouncementViewHolder(View itemView, ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener imageListener) {
         super(itemView);
         voteIcon = itemView.findViewById(R.id.vote_icon);
         voteTitle = itemView.findViewById(R.id.vote_title);

@@ -7,8 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.AdminMsg;
 import com.tokopedia.groupchat.chatroom.domain.pojo.EventHandlerPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.GeneratedMessagePojo;
@@ -37,6 +35,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.WebSocketResponse;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 

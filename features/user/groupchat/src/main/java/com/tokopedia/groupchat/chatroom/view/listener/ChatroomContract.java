@@ -16,20 +16,11 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewMo
 
 public interface ChatroomContract {
 
-    interface View extends CustomerView {
-
-        Context getContext();
-
-        void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage);
-
-        void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel);
-
-        void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
-
-        void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
-
+    interface QuickReply extends CustomerView {
         void addQuickReply(String text);
+    }
 
+    interface ChatItem extends CustomerView {
         interface ImageAnnouncementViewHolderListener {
             void onImageAnnouncementClicked(String url);
         }
@@ -51,6 +42,20 @@ public interface ChatroomContract {
         interface GroupChatPointsViewHolderListener{
             void onPointsClicked(String url);
         }
+    }
+
+    interface View extends CustomerView {
+
+        Context getContext();
+
+        void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage);
+
+        void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel);
+
+        void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
+
+        void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

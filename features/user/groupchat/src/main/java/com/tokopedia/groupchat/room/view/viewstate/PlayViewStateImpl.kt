@@ -1,33 +1,74 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
+import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
+import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.widget.ImageView
+import android.widget.TextView
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactoryImpl
+import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
+import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
+import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
 /**
  * @author : Steven 13/02/19
  */
-class PlayViewStateImpl(var view: View,
-                        var activity: FragmentActivity) : PlayViewState {
+class PlayViewStateImpl(
+        var userSession: UserSessionInterface,
+        var view: View,
+        var activity: FragmentActivity,
+        quickReplyListener: ChatroomContract.QuickReply,
+        imageListener: ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
+        voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
+        sprintSaleViewHolderListener: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
+        groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener
+
+) : PlayViewState {
 
     private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
+
+    private lateinit var viewModel: ChannelInfoViewModel
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
-    var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
-    var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
+    private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
+    private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
+    private var videoContainer = view.findViewById<View>(R.id.video_horizontal)
+    private var pinnedMessageContainer = view.findViewById<View>(R.id.pinned_message)
+    private var quickReplyRecyclerView = view.findViewById<RecyclerView>(R.id.quick_reply)
+    private var youTubePlayer: YouTubePlayer? = null
+    private var replyEditText: BackEditText = view.findViewById(R.id.reply_edit_text)
+    private var login: View = view.findViewById(R.id.login)
+    private var inputTextWidget: View = view.findViewById(R.id.bottom)
+
     val dynamicIcon = view.findViewById<ImageView>(R.id.dynamic_icon)
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
@@ -35,23 +76,122 @@ class PlayViewStateImpl(var view: View,
     lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
 
-    lateinit var overlayBottomSheet : CloseableBottomSheetDialog
+    lateinit var overlayBottomSheet: CloseableBottomSheetDialog
 
-    override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel) {
+
+    private var quickReplyAdapter: QuickReplyAdapter
+    var youtubeRunnable: Handler = Handler()
+
+
+    init {
+        val groupChatTypeFactory = GroupChatTypeFactoryImpl(
+                imageListener,
+                voteAnnouncementListener,
+                sprintSaleViewHolderListener,
+                groupChatPointsViewHolderListener
+        )
+        val quickReplyTypeFactory = QuickReplyTypeFactoryImpl(quickReplyListener)
+        quickReplyRecyclerView.layoutManager = LinearLayoutManager(
+                view.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+        )
+        quickReplyAdapter = QuickReplyAdapter(quickReplyTypeFactory)
+        quickReplyRecyclerView.adapter = quickReplyAdapter
+
+        val quickReplyItemDecoration = QuickReplyItemDecoration(view.context
+                .resources.getDimension(R.dimen.dp_16).toInt())
+        quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
+
+        replyEditText.setOnClickListener {
+            showWidgetAboveInput(false)
+//            setSprintSaleIcon(null)
+        }
+
+        replyEditText.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+            showWidgetAboveInput(false)
+//            setSprintSaleIcon(null)
+        }
+
+        replyEditText.setKeyImeChangeListener { keyCode, event ->
+            if (KeyEvent.KEYCODE_BACK == event.keyCode) {
+                showWidgetAboveInput(true)
+            }
+        }
+
+        showLoginButton(!userSession.isLoggedIn)
+    }
+
+    override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
+        viewModel = it
+
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
-        setSponsorData(it.adsId, it.adsImageUrl)
+        setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
+        initVideoFragment(childFragmentManager, it)
+        showWidgetAboveInput(userSession.isLoggedIn)
+
         setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
         setDynamicIconNotification(true)
         setDynamicBackground("")
         setFloatingIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest", "")
-        setQuickReply()
-        setPinnedMessage(it.pinnedMessageViewModel)
+
         setChannelInfoBottomSheet()
         setOverlayBottomSheet(it.overlayViewModel)
+
     }
 
-    private fun setQuickReply() {
-        //TODO inflate Quick Reply
+    private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
+        if (isUserLoggedIn) {
+            setPinnedMessage(viewModel.pinnedMessageViewModel)
+            setQuickReply(viewModel.quickRepliesViewModel)
+        } else {
+            setPinnedMessage(null)
+            setQuickReply(null)
+        }
+    }
+
+    private fun showLoginButton(show: Boolean) {
+        if (show) {
+            login.visibility = View.VISIBLE
+            inputTextWidget.visibility = View.GONE
+        } else {
+            login.visibility = View.GONE
+            inputTextWidget.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setPinnedMessage(pinnedMessageViewModel: PinnedMessageViewModel?) {
+        if (pinnedMessageViewModel != null) {
+            pinnedMessageContainer.visibility = View.VISIBLE
+            (pinnedMessageContainer.findViewById(R.id.message) as TextView).text = pinnedMessageViewModel.title
+            pinnedMessageContainer.setOnClickListener { view ->
+                //                if (channelInfoViewModel != null) {
+                //                    analytics.eventClickAdminPinnedMessage(
+                //                            String.format("%s - %s", channelInfoViewModel.getChannelId(), pinnedMessage.title))
+                //                }
+                //
+//                    showPinnedMessageBottomSheet(pinnedMessage)
+            }
+        } else {
+            pinnedMessageContainer.visibility = View.GONE
+        }
+    }
+
+    private fun setQuickReply(quickRepliesViewModel: List<GroupChatQuickReplyItemViewModel>?) {
+        quickReplyRecyclerView.visibility = View.GONE
+        quickRepliesViewModel?.let {
+            if (it.isEmpty()) return
+            quickReplyRecyclerView.visibility = View.VISIBLE
+            quickReplyAdapter.setList(quickRepliesViewModel)
+//            userSession.let {
+//                if(it.isLoggedIn){
+//                    quickReplyRecyclerView.visibility = View.VISIBLE
+//                    quickReplyAdapter.setList(quickRepliesViewModel)
+//                } else{
+//                    quickReplyRecyclerView.visibility = View.GONE
+//                }
+//            }
+        }
     }
 
     private fun setChannelInfoBottomSheet() {
@@ -59,26 +199,15 @@ class PlayViewStateImpl(var view: View,
     }
 
     private fun setOverlayBottomSheet(overlayViewModel: OverlayViewModel?) {
-        if(overlayViewModel == null){
+        if (overlayViewModel == null) {
             return
         }
 
-        if(!::overlayBottomSheet.isInitialized){
+        if (!::overlayBottomSheet.isInitialized) {
             //TODO initialize overlay
         }
 
         //TODO show overlay
-    }
-
-    private fun setPinnedMessage(pinnedMessageViewModel: PinnedMessageViewModel?) {
-        if (pinnedMessageViewModel == null) {
-            return
-        }
-
-        if(pinnedMessageViewModel.title.isBlank()){
-            //TODO pinnedMessage.visibility = View.GONE
-        }
-
     }
 
     private fun setDynamicBackground(backgroundUrl: String) {
@@ -125,16 +254,125 @@ class PlayViewStateImpl(var view: View,
         channelBanner.visibility = visible
     }
 
-
-    override fun setSponsorData(adsId: String?, adsImageUrl: String?) {
-        if (adsId == null) {
+    fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?) {
+        if (adsId == null || adsImageUrl == null) {
             sponsorLayout.visibility = View.GONE
         } else {
             sponsorLayout.visibility = View.VISIBLE
+            ImageHandler.loadImage2(sponsorImage, adsImageUrl, R.drawable.loading_page)
+            sponsorImage.setOnClickListener {}
+        }
 
-            ImageHandler.loadImage2(sponsorImage,
-                    adsImageUrl,
-                    R.drawable.loading_page)
+        if (sponsorLayout.visibility == View.VISIBLE) {
+            //TODO analytics event view banner
+        }
+    }
+
+    fun autoPlayVideo() {
+        youtubeRunnable.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+    }
+
+    fun initVideoFragment(fragmentManager: FragmentManager, viewModel: ChannelInfoViewModel) {
+        videoContainer.visibility = View.GONE
+        viewModel.videoId?.let {
+            if (it.isEmpty()) return
+            val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
+            videoFragment.run {
+                videoContainer.visibility = View.VISIBLE
+                sponsorLayout.visibility = View.GONE
+
+                youTubePlayer?.let {
+                    it.cueVideo(viewModel.videoId)
+                    autoPlayVideo()
+                }
+
+                videoFragment.initialize(
+                        YoutubePlayerConstant.GOOGLE_API_KEY,
+                        object : YouTubePlayer.OnInitializedListener {
+                            override fun onInitializationSuccess(provider: YouTubePlayer.Provider, player: YouTubePlayer, wasRestored: Boolean) {
+                                if (!wasRestored) {
+                                    try {
+                                        youTubePlayer = player
+
+                                        youTubePlayer?.let {
+                                            it.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
+                                            it.setShowFullscreenButton(false)
+                                            it.cueVideo(viewModel.videoId)
+                                            autoPlayVideo()
+
+//                                            it.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
+//                                                internal var TAG = "youtube"
+//
+//                                                override fun onPlaying() {
+//                                                    Log.i(TAG, "onPlaying: ")
+//                                                    if (onPlayTime == 0L) {
+//                                                        onPlayTime = System.currentTimeMillis() / 1000L
+//                                                    }
+//                                                    analytics.eventClickAutoPlayVideo(getChannelInfoViewModel()!!.getChannelId())
+//                                                }
+//
+//                                                override fun onPaused() {
+//                                                    Log.i(TAG, "onPaused: ")
+//                                                    onPauseTime = System.currentTimeMillis() / 1000L
+//                                                }
+//
+//                                                override fun onStopped() {
+//                                                    Log.i(TAG, "onStopped: ")
+//                                                }
+//
+//                                                override fun onBuffering(b: Boolean) {
+//                                                    Log.i(TAG, "onBuffering: ")
+//                                                }
+//
+//                                                override fun onSeekTo(i: Int) {
+//                                                    Log.i(TAG, "onSeekTo: ")
+//                                                }
+//                                            })
+//
+//                                            it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
+//                                                internal var TAG = "youtube"
+//
+//                                                override fun onLoading() {
+//                                                    Log.i(TAG, "onLoading: ")
+//                                                }
+//
+//                                                override fun onLoaded(s: String) {
+//                                                    Log.i(TAG, "onLoaded: ")
+//                                                }
+//
+//                                                override fun onAdStarted() {
+//                                                    Log.i(TAG, "onAdStarted: ")
+//                                                }
+//
+//                                                override fun onVideoStarted() {
+//                                                    Log.i(TAG, "onVideoStarted: ")
+//                                                }
+//
+//                                                override fun onVideoEnded() {
+//                                                    Log.i(TAG, "onVideoEnded: ")
+//                                                    onEndTime = System.currentTimeMillis() / 1000L
+//                                                }
+//
+//                                                override fun onError(errorReason: YouTubePlayer.ErrorReason) {
+//                                                    Log.i(TAG, errorReason.declaringClass() + " onError: " + errorReason.name)
+//                                                }
+//                                            })
+                                        }
+
+                                    } catch (e: Exception) {
+                                        onInitializationFailure(provider, YouTubeInitializationResult.SERVICE_MISSING)
+                                    }
+
+                                }
+                            }
+
+                            override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
+                                Log.e(GroupChatActivity::class.java.simpleName, "Youtube Player View initialization failed")
+                            }
+                        }
+                )
+
+            }
         }
     }
 

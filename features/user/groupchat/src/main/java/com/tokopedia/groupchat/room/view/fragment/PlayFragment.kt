@@ -3,6 +3,7 @@ package com.tokopedia.groupchat.room.view.fragment
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,10 +13,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
+import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
+import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
@@ -28,9 +35,19 @@ import javax.inject.Inject
  * @author : Steven 11/02/19
  */
 
-class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), PlayContract.View {
+class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), PlayContract.View,
+        ChatroomContract.QuickReply,
+        ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
+        ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
+        ChatroomContract.ChatItem.SprintSaleViewHolderListener,
+        ChatroomContract.ChatItem.GroupChatPointsViewHolderListener {
+
+    private var snackbarWebsocket: Snackbar? = null
 
     companion object {
+
+        const val YOUTUBE_DELAY = 1500
+
         private const val POST_ID = "{post_id}"
         fun createInstance(bundle: Bundle): PlayFragment {
             val fragment = PlayFragment()
@@ -65,14 +82,17 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
-            viewState.onSuccessGetInfoFirstTime(it)
+            viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
             saveGCTokenToCache()
+            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
         }
     }
 
     private fun initView(view: View) {
         activity?.let {
-            viewState = PlayViewStateImpl(view, it)
+            viewState = PlayViewStateImpl(userSession, view,
+                    it, this, this, this,
+                    this, this)
         }
         setToolbarView(view)
     }
@@ -121,7 +141,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun getAdapterTypeFactory(): GroupChatTypeFactoryImpl {
-        return GroupChatTypeFactoryImpl()
+        return GroupChatTypeFactoryImpl(this, this, this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -154,5 +174,63 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             false
     }
 
+
+    override fun addQuickReply(text: String?) {
+    }
+
+    override fun onImageAnnouncementClicked(url: String?) {
+
+    }
+
+    override fun onVoteComponentClicked(type: String?, name: String?) {
+
+    }
+
+    override fun onSprintSaleProductClicked(sprintSaleViewModel: SprintSaleProductViewModel?, position: Int) {
+
+    }
+
+    override fun onSprintSaleComponentClicked(sprintSaleAnnouncementViewModel: SprintSaleAnnouncementViewModel?) {
+
+    }
+
+    override fun onSprintSaleIconClicked(sprintSaleViewModel: SprintSaleViewModel?) {
+
+    }
+
+    override fun onPointsClicked(url: String?) {
+
+    }
+
+    override fun onOpenWebSocket() {
+        snackbarWebsocket?.dismiss()
+    }
+
+    override fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean) {
+
+    }
+
+    override fun setSnackBarConnectingWebSocket() {
+        if (userSession.isLoggedIn) {
+            snackbarWebsocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
+            snackbarWebsocket?.let {
+                it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
+                it.show()
+            }
+        }
+    }
+
+    override fun setSnackBarRetryConnectingWebSocket() {
+        if (userSession.isLoggedIn) {
+            snackbarWebsocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
+            snackbarWebsocket?.let {
+                it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
+                it.setAction(getString(R.string.retry), View.OnClickListener {
+                    setSnackBarConnectingWebSocket()
+                })
+                it.show()
+            }
+        }
+    }
 
 }

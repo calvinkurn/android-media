@@ -1,11 +1,21 @@
 package com.tokopedia.groupchat.room.view.presenter
 
 import android.util.Log
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
+import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
+import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket
+import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.user.session.UserSessionInterface
+import okhttp3.WebSocket
+import okio.ByteString
 import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 /**
@@ -16,6 +26,7 @@ class PlayPresenter @Inject constructor(
         var getPlayInfoUseCase: GetPlayInfoUseCase)
     : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter{
 
+    private var mSubscription: CompositeSubscription? = null
 
     fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit) {
         getPlayInfoUseCase.execute(
@@ -33,5 +44,125 @@ class PlayPresenter @Inject constructor(
                     }
 
                 })
+    }
+
+
+    override fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?) {
+
+        var settings = settingGroupChat ?: SettingGroupChat()
+        processUrl(userSession, channelId, groupChatToken, settings)
+        connectWebSocket(userSession.userId, userSession.deviceId, userSession.accessToken, settings, groupChatToken)
+    }
+
+    private fun connectWebSocket(userId: String?, deviceId: String?, accessToken: String?, settings: SettingGroupChat, groupChatToken: String) {
+
+        if (mSubscription == null || mSubscription!!.isUnsubscribed) {
+            mSubscription = CompositeSubscription()
+        }
+
+        view.setSnackBarConnectingWebSocket()
+
+        val subscriber = object : WebSocketSubscriber() {
+            override fun onOpen(webSocket: WebSocket) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", " on WebSocket open")
+//                    showDummy("onOpened $webSocketUrlWithToken", "logger open")
+                }
+                view.onOpenWebSocket()
+            }
+
+            override fun onMessage(text: String) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", text)
+//                    showDummy(text, "logger message")
+                }
+            }
+
+            override fun onMessage(item: Visitable<*>, hideMessage: Boolean) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "item")
+                }
+                view.onMessageReceived(item, hideMessage)
+            }
+
+            override fun onMessage(byteString: ByteString) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", byteString.toString())
+                }
+            }
+
+            override fun onReconnect() {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "onReconnect")
+                    showDummy("reconnecting", "logger reconnect")
+                }
+                view.setSnackBarConnectingWebSocket()
+            }
+
+            override fun onClose() {
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "onClose")
+                    showDummy("onClose", "logger close")
+                }
+                destroyWebSocket()
+                connectWebSocket(userId, deviceId, accessToken, settings, groupChatToken)
+            }
+
+            override fun onError(e: Throwable) {
+                super.onError(e)
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "onError " + e.toString())
+                    showDummy(e.toString(), "logger error")
+                }
+                view.setSnackBarRetryConnectingWebSocket()
+//                reportWebSocket(e)
+            }
+        }
+        val subscription = RxWebSocket.get(
+                webSocketUrl,
+                accessToken,
+                settings.delay,
+                settings.maxRetries,
+                settings.pingInterval,
+                groupChatToken
+        ).subscribe(subscriber)
+
+        mSubscription!!.add(subscription)
+    }
+
+    private lateinit var channelId: String
+    private lateinit var webSocketUrl: String
+    private lateinit var webSocketUrlWithToken: String
+
+    private fun processUrl(userSession: UserSessionInterface, channelId: String, groupChatToken: String?, settingGroupChat: SettingGroupChat?) {
+        var magicString = ChatroomUrl.GROUP_CHAT_WEBSOCKET_DOMAIN
+//        magicString = localCacheHandler.getString("ip_groupchat", magicString)
+
+        this.webSocketUrl = String.format("%s%s%s", magicString, ChatroomUrl.PATH_WEB_SOCKET_GROUP_CHAT_URL, channelId)
+        this.webSocketUrlWithToken = String.format("s%s%s", webSocketUrl, "&token=", groupChatToken)
+        this.channelId = channelId
+
+    }
+
+    private fun showDummy(message: String?, senderName: String) {
+//        val showLog = localCacheHandler.getBoolean("log_groupchat", false)!!
+//        if (showLog!!) {
+//            val dummy = ChatViewModel(
+//                    message!!,
+//                    System.currentTimeMillis(),
+//                    System.currentTimeMillis(),
+//                    1231.toString(),
+//                    "123321",
+//                    senderName,
+//                    "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
+//                    false,
+//                    false
+//            )
+//            view.onMessageReceived(dummy, !showLog!!)
+//        }
+    }
+
+    fun destroyWebSocket() {
+        mSubscription?.clear()
     }
 }

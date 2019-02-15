@@ -70,10 +70,10 @@ class SettingGroupChat : Parcelable {
 
     companion object {
 
-        val DEFAULT_PING = 10000
-        val DEFAULT_MAX_RETRIES = 3
-        val DEFAULT_MAX_CHAR = 200
-        val DEFAULT_DELAY = 5000
+        const val DEFAULT_PING = 10000
+        const val DEFAULT_MAX_RETRIES = 3
+        const val DEFAULT_MAX_CHAR = 200
+        const val DEFAULT_DELAY = 5000
 
         val CREATOR: Parcelable.Creator<SettingGroupChat> = object : Parcelable.Creator<SettingGroupChat> {
             override fun createFromParcel(`in`: Parcel): SettingGroupChat {

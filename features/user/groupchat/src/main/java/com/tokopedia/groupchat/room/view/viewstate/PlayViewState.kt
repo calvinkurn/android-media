@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 
@@ -10,12 +10,11 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
  */
 interface PlayViewState {
 
-    fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel)
+    fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
 
     fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?)
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
     fun getToolbar(): Toolbar?
-    fun setSponsorData(adsId: String?, adsImageUrl: String?)
     fun onBackPressed() : Boolean
 
 }

@@ -11,7 +11,6 @@ import android.support.v4.app.TaskStackBuilder
 import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.view.View
-import android.widget.ImageView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.groupchat.GroupChatModuleRouter
@@ -19,12 +18,145 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
+import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 
 /**
  * @author : Steven 11/02/19
  */
 open class PlayActivity : BaseSimpleActivity() {
+
+    lateinit var rootView: View
+    lateinit var viewPager: ViewPager
+    val KEYBOARD_THRESHOLD = 100
+    private lateinit var pagerAdapter: FragmentPagerAdapter
+
+    override fun getNewFragment(): Fragment? {
+//        val bundle = Bundle()
+//        if (intent != null && intent.extras != null) {
+//            bundle.putAll(intent.extras)
+//        }
+//        return PlayFragment.createInstance(bundle)
+        return null
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.play_activity
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initView()
+    }
+
+    private fun initView() {
+        setupToolbar()
+        setFragment()
+    }
+
+    private fun setFragment() {
+
+        viewPager = findViewById<ViewPager>(R.id.view_pager_play)
+
+        val fragmentList = ArrayList<Fragment>()
+
+        val bundle = Bundle()
+        val channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        bundle.putString(PlayActivity.EXTRA_CHANNEL_UUID, channelId)
+        fragmentList.add(BlankFragment.createInstance(bundle = Bundle()))
+        fragmentList.add(PlayFragment.createInstance(bundle))
+
+        pagerAdapter = FragmentPagerAdapter(supportFragmentManager, fragmentList)
+        viewPager.adapter = pagerAdapter
+
+    }
+
+    private fun setupToolbar() {
+//        if (isLollipopOrNewer()) {
+//            TransparentStatusBarHelper.assistActivity(this)
+//        }
+//        removePaddingStatusBar()
+
+//        toolbar = findViewById(R.id.toolbar)
+//        channelBanner = findViewById(R.id.channel_banner)
+//
+//        if (isLollipopOrNewer()) {
+//            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+//            toolbar.setPadding(0, getStatusBarHeight(), 0, 0)
+//        }
+        setSupportActionBar(toolbar)
+//
+//        if (supportActionBar != null) {
+//            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+//        }
+    }
+
+    private fun isLollipopOrNewer(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+    }
+
+
+    private fun removePaddingStatusBar() {
+
+        rootView = findViewById<View>(R.id.root_view)
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val heightDiff = rootView.rootView.height - rootView.height
+
+            if (heightDiff > KEYBOARD_THRESHOLD) {
+                removePaddingIfKeyboardIsShowing()
+            } else {
+                addPaddingIfKeyboardIsClosed()
+            }
+        }
+    }
+
+    private fun addPaddingIfKeyboardIsClosed() {
+        if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
+            val container = rootView.findViewById<View>(R.id.container)
+            val params = container
+                    .layoutParams as ConstraintLayout.LayoutParams
+            params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(this))
+            container.layoutParams = params
+        }
+    }
+
+    private fun removePaddingIfKeyboardIsShowing() {
+        if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
+            val container = rootView.findViewById<View>(R.id.container)
+            val params = container.layoutParams as ConstraintLayout.LayoutParams
+            params.setMargins(0, 0, 0, 0)
+            container.layoutParams = params
+        }
+    }
+
+    fun getSoftButtonsBarSizePort(activity: Activity): Int {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            val metrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(metrics)
+            val usableHeight = metrics.heightPixels
+            activity.windowManager.defaultDisplay.getRealMetrics(metrics)
+            val realHeight = metrics.heightPixels
+            return if (realHeight > usableHeight)
+                realHeight - usableHeight
+            else
+                0
+        }
+        return 0
+    }
+
+    override fun onBackPressed() {
+        val currentFragment = pagerAdapter.getItem(viewPager.currentItem)
+        if (currentFragment is PlayFragment && currentFragment.onBackPressed()) {
+            currentFragment.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
+
+    }
+
 
     companion object {
 
@@ -126,134 +258,5 @@ open class PlayActivity : BaseSimpleActivity() {
             taskStackBuilder.addNextIntent(detailsIntent)
             return taskStackBuilder
         }
-    }
-
-    lateinit var channelBanner: ImageView
-    lateinit var rootView: View
-    val KEYBOARD_THRESHOLD = 100
-    private lateinit var pagerAdapter: FragmentPagerAdapter
-
-    override fun getNewFragment(): Fragment? {
-//        val bundle = Bundle()
-//        if (intent != null && intent.extras != null) {
-//            bundle.putAll(intent.extras)
-//        }
-//        return PlayFragment.createInstance(bundle)
-        return null
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.play_activity
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initView()
-    }
-
-    private fun initView() {
-        setupToolbar()
-        setFragment()
-    }
-
-    private fun setFragment() {
-
-        val fragmentList = ArrayList<Fragment>()
-
-        val bundle = Bundle()
-        val channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
-        bundle.putString(PlayActivity.EXTRA_CHANNEL_UUID, channelId)
-        fragmentList.add(PlayFragment.createInstance(bundle))
-
-        pagerAdapter = FragmentPagerAdapter(supportFragmentManager, fragmentList)
-        findViewById<ViewPager>(R.id.view_pager_play).adapter = pagerAdapter
-    }
-
-    private fun setupToolbar() {
-//        if (isLollipopOrNewer()) {
-//            TransparentStatusBarHelper.assistActivity(this)
-//        }
-//        removePaddingStatusBar()
-
-//        toolbar = findViewById(R.id.toolbar)
-//        channelBanner = findViewById(R.id.channel_banner)
-//
-//        if (isLollipopOrNewer()) {
-//            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-//            toolbar.setPadding(0, getStatusBarHeight(), 0, 0)
-//        }
-        setSupportActionBar(toolbar)
-//
-//        if (supportActionBar != null) {
-//            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-//        }
-    }
-
-    private fun isLollipopOrNewer(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-    }
-
-
-    private fun removePaddingStatusBar() {
-
-        rootView = findViewById<View>(R.id.root_view)
-        rootView.viewTreeObserver.addOnGlobalLayoutListener {
-            val heightDiff = rootView.rootView.height - rootView.height
-
-            if (heightDiff > KEYBOARD_THRESHOLD) {
-                removePaddingIfKeyboardIsShowing()
-            } else {
-                addPaddingIfKeyboardIsClosed()
-            }
-        }
-    }
-
-    private fun addPaddingIfKeyboardIsClosed() {
-        if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-            val container = rootView.findViewById<View>(R.id.container)
-            val params = container
-                    .layoutParams as ConstraintLayout.LayoutParams
-            params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(this))
-            container.layoutParams = params
-        }
-    }
-
-    private fun removePaddingIfKeyboardIsShowing() {
-        if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-            val container = rootView.findViewById<View>(R.id.container)
-            val params = container.layoutParams as ConstraintLayout.LayoutParams
-            params.setMargins(0, 0, 0, 0)
-            container.layoutParams = params
-        }
-    }
-
-    fun getSoftButtonsBarSizePort(activity: Activity): Int {
-        // getRealMetrics is only available with API 17 and +
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val metrics = DisplayMetrics()
-            activity.windowManager.defaultDisplay.getMetrics(metrics)
-            val usableHeight = metrics.heightPixels
-            activity.windowManager.defaultDisplay.getRealMetrics(metrics)
-            val realHeight = metrics.heightPixels
-            return if (realHeight > usableHeight)
-                realHeight - usableHeight
-            else
-                0
-        }
-        return 0
-    }
-
-    override fun onBackPressed() {
-        if (pagerAdapter.getItem(findViewById<ViewPager>(R.id.view_pager_play).currentItem) is
-                        PlayFragment
-                &&   (pagerAdapter.getItem(findViewById<ViewPager>(R.id.view_pager_play).currentItem) as
-                        PlayFragment).onBackPressed()) {
-
-        } else {
-            super.onBackPressed()
-        }
-
     }
 }
