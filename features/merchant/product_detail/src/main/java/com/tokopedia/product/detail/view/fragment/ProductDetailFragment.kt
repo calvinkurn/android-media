@@ -265,10 +265,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     } else {
                         // TODO show toast product status title
                     }
-                } else if (productP3value != null ) {
+                } else if (productP3value != null) {
                     if (it.isActivated) {
                         productId?.let {
-                            showProgressDialog()
                             productInfoViewModel.removeWishList(it,
                                     onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
                                     onErrorRemoveWishList = this::onErrorRemoveWishList)
@@ -277,7 +276,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
                     } else {
                         productId?.let {
-                            showProgressDialog()
                             productInfoViewModel.addWishList(it,
                                     onSuccessAddWishlist = this::onSuccessAddWishlist,
                                     onErrorAddWishList = this::onErrorAddWishList)
@@ -603,7 +601,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
             fab_detail.show()
             if (shopInfo.isAllowManage == 1) {
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
-            } else if (wishlisted) {
+            } else {
+                updateWishlist(wishlisted)
+            }
+        }
+    }
+
+    private fun updateWishlist(wishlisted: Boolean) {
+        context?.let {
+            if (wishlisted) {
                 fab_detail.isActivated = true
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
             } else {
@@ -716,29 +722,25 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
-        hideProgressDialog()
         showToastError(MessageErrorException(errorMessage))
     }
 
-    private fun onSuccessRemoveWishlist(productId:String?) {
-        hideProgressDialog()
-        shopInfo?.run {
-            updateWishlist(this, false)
-        }
+    private fun onSuccessRemoveWishlist(productId: String?) {
+        showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+        productInfoViewModel.productInfoP3resp.value?.isWishlisted = false
+        updateWishlist(false)
         //TODO clear cache
         //TODO action success remove wishlist. in old version, will broadcast
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
-        hideProgressDialog()
         showToastError(MessageErrorException(errorMessage))
     }
 
-    private fun onSuccessAddWishlist(productId:String?) {
-        hideProgressDialog()
-        shopInfo?.run {
-            updateWishlist(this, true)
-        }
+    private fun onSuccessAddWishlist(productId: String?) {
+        showToastSuccess(getString(R.string.msg_success_add_wishlist))
+        productInfoViewModel.productInfoP3resp.value?.isWishlisted = true
+        updateWishlist(true)
         //TODO clear cache
         //TODO action success add wishlist. in old version, will broadcast
     }
