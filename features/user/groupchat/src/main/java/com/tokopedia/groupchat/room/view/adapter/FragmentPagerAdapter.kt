@@ -14,7 +14,7 @@ import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 class FragmentPagerAdapter(fm: FragmentManager?, var channelId: String?) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
-        if(position == 1) {
+        if(position == 0) {
             return BlankFragment.createInstance(bundle = Bundle())
         }
 

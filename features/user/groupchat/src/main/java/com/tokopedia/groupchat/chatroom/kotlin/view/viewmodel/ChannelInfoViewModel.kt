@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
-import com.tokopedia.groupchat.room.domain.pojo.ExitMessage
-import com.tokopedia.groupchat.room.domain.pojo.channelinfo.SettingGroupChat
+import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
+import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 
 /**

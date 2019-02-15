@@ -702,7 +702,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void resetNewMessageCounter() {
         newMessageCounter = 0;
         chatNotificationView.setVisibility(View.GONE);
-
     }
 
     @Override

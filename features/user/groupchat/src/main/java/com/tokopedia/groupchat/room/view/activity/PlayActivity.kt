@@ -158,6 +158,7 @@ import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
     private fun setFragment() {
         pagerAdapter = FragmentPagerAdapter(supportFragmentManager, intent?.extras?.getString(EXTRA_CHANNEL_UUID))
         findViewById<ViewPager>(R.id.view_pager_play).adapter = pagerAdapter
+        findViewById<ViewPager>(R.id.view_pager_play).currentItem = 1
     }
 
     private fun setupToolbar() {
