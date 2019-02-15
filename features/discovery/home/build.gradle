@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -69,6 +71,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.features.productCard)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -111,6 +114,7 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.stetho
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 apply from: '../../../publish_local.gradle'

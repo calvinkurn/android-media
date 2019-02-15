@@ -32,7 +32,7 @@ public class BannerView extends BaseCustomView {
     private static final String SAVED = "instance state BannerView.class";
     private static final String SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress";
 
-    private RecyclerView bannerRecyclerView;
+    protected RecyclerView bannerRecyclerView;
     private ViewGroup bannerIndicator;
     private View bannerSeeAll;
     private Handler bannerHandler;
@@ -47,8 +47,8 @@ public class BannerView extends BaseCustomView {
 
     private ArrayList<ImageView> indicatorItems;
     private ArrayList<Boolean> impressionStatusList;
-    private List<String> promoImageUrls;
-    private int currentPosition;
+    protected List<String> promoImageUrls;
+    protected int currentPosition;
 
     public BannerView(@NonNull Context context) {
         super(context);
@@ -139,14 +139,18 @@ public class BannerView extends BaseCustomView {
         init();
     }
 
-    private void init() {
-        View view = inflate(getContext(), R.layout.widget_banner, this);
+    protected void init() {
+        View view = inflateView();
         bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category);
         bannerIndicator = view.findViewById(R.id.indicator_banner_container);
         bannerSeeAll = view.findViewById(R.id.promo_link);
         indicatorItems = new ArrayList<>();
         impressionStatusList = new ArrayList<>();
         promoImageUrls = new ArrayList<>();
+    }
+
+    protected View inflateView() {
+        return inflate(getContext(), R.layout.widget_banner, this);
     }
 
     public void buildView() {
@@ -156,7 +160,7 @@ public class BannerView extends BaseCustomView {
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
 
-        BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
+        BannerPagerAdapter bannerPagerAdapter = getBannerAdapter();
         bannerRecyclerView.setHasFixedSize(true);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
@@ -231,6 +235,10 @@ public class BannerView extends BaseCustomView {
             };
             startAutoScrollBanner();
         }
+    }
+
+    protected BannerPagerAdapter getBannerAdapter() {
+        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
     }
 
     public void setPagerAdapter(BannerPagerAdapter bannerPagerAdapter) {

@@ -417,7 +417,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
                 if (offset == lastOffset) {
                     return;
+                }` `
+
+                float offsetAlpha = (appBarLayout.getY() / 300) * -1;
+                if (offsetAlpha >= 2.55) {
+                    offsetAlpha = 2.55f;
                 }
+//                mainToolbar.setBackgroundAlpha(offsetAlpha*100);
 
                 if (isAppBarFullyExpanded(offset)) {
                     refreshLayout.setCanChildScrollUp(false);

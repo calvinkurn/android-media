@@ -73,7 +73,7 @@ public class MainToolbar extends Toolbar {
         userSession = new UserSession(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
-        inflate(context, R.layout.main_toolbar, this);
+        inflateResource(context);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
         btnWishlist = findViewById(R.id.btn_wishlist);
@@ -131,6 +131,10 @@ public class MainToolbar extends Toolbar {
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
+    }
+
+    public void inflateResource(Context context) {
+        inflate(context, R.layout.main_toolbar, this);
     }
 
     public ImageButton getBtnNotification() {
