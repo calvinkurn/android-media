@@ -195,6 +195,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             ));
         }
 
+
         menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction_1));
         menuGrid.setItems(getDigitalOrderMenu());
