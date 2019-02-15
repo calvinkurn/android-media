@@ -150,14 +150,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                         }
                     }
                 }
-                REQUEST_CODE_CHANGE_DATE -> {
-/*                    flightSearchPresenter.attachView(this)
-                    val dateString: Date = data?.getSerializableExtra(TravelCalendarA.DATE_SELECTED) as Date
-                    val calendarSelected: Calendar = Calendar.getInstance()
-                    calendarSelected.time = dateString
-                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE))*/
-                }
             }
         }
     }
@@ -691,7 +683,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val EMPTY_MARGIN = 0
         private val REQUEST_CODE_SEARCH_FILTER = 1
         private val REQUEST_CODE_SEE_DETAIL_FLIGHT = 2
-        private val REQUEST_CODE_CHANGE_DATE = 3
         private val SAVED_FILTER_MODEL = "svd_filter_model"
         private val SAVED_SORT_OPTION = "svd_sort_option"
         private val SAVED_AIRPORT_COMBINE = "svd_airport_combine"
