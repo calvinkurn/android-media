@@ -95,17 +95,19 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productVariantResp.value = Fail(e)
             }
         }) {
-            productInfoP1Resp.value = Fail(it)
+            //productInfoP1Resp.value = Fail(it)
             // for testing
             val gson = Gson()
             val response = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_info_p1),
                     ProductInfo.Response::class.java)
             val productInfoP1 = ProductInfoP1()
             productInfoP1.productInfo = response.data
+            productInfoP1Resp.value = Success(productInfoP1)
 
             //FOR Testing only, remove all below code after testing
             val responseVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
                     ProductDetailVariantResponse::class.java)
+            productVariantResp.value = Success(responseVariant.data)
             val productInfoP2 = getProductInfoP2(response.data.basic.shopID, response.data.basic.id, resources)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain

@@ -23,6 +23,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             if (productVariant != null) {
                 label_variant.visible()
                 label_choose_variant.visible()
+                variant_divider.visible()
                 label_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 label_choose_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 val chooseString = "${view.context.getString(R.string.choose)} " +
@@ -33,6 +34,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             } else {
                 label_variant.gone()
                 label_choose_variant.gone()
+                variant_divider.gone()
             }
         }
 
