@@ -4,7 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
+import com.tokopedia.withdraw.view.model.BankAccount;
+//import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class WithdrawContract {
 
         void hideLoading();
 
-        void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank, boolean verifiedAccount);
+        void onSuccessGetWithdrawForm(List<BankAccount> bankAccount, int defaultBank);
 
         void showError(String throwable);
 
@@ -39,13 +40,15 @@ public class WithdrawContract {
         void goToSettingBank();
 
         void itemSelected();
+
+        String loadRawString(int resId);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
 
         void getWithdrawForm();
 
-        void doWithdraw(String totalBalance, String totalWithdrawal, BankAccountViewModel selectedBank);
+        void doWithdraw(String totalBalance, String totalWithdrawal, BankAccount selectedBank);
 
         void refreshBankList();
     }

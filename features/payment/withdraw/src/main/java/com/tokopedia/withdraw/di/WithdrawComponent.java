@@ -4,10 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
+import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
+import com.tokopedia.withdraw.view.fragment.WithdrawPasswordFragment;
 
 import dagger.Component;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
 
 /**
  * @author by StevenFredian on 30/07/18.
@@ -21,9 +23,16 @@ public interface WithdrawComponent {
     @ApplicationContext
     Context getApplicationContext();
 
-    Retrofit.Builder retrofitBuilder();
+   /* Retrofit.Builder retrofitBuilder();
 
     @WithdrawQualifier
-    OkHttpClient provideOkHttpClient();
+    OkHttpClient provideOkHttpClient();*/
 
+    void inject(WithdrawFragment fragment);
+
+    void inject(WithdrawActivity withdrawActivity);
+
+    void inject(WithdrawPasswordFragment withdrawPasswordFragment);
+
+    void inject(WithdrawPasswordActivity withdrawPasswordActivity);
 }

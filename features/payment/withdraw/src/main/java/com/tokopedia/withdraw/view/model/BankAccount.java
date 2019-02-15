@@ -1,182 +1,180 @@
 
 package com.tokopedia.withdraw.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
-public class BankAccount {
+public class BankAccount implements Parcelable {
 
     @SerializedName("bank_id")
     @Expose
-    private int bankId;
-    @SerializedName("bank_branch")
-    @Expose
-    private int bankBranch;
-    @SerializedName("bank_account_name")
-    @Expose
-    private String bankAccountName;
-    @SerializedName("bank_account_number")
-    @Expose
-    private String bankAccountNumber;
-    @SerializedName("is_verified_account")
-    @Expose
-    private int isVerifiedAccount;
-    @SerializedName("bank_account_id")
+    private String bankId;
+    @SerializedName("acc_id")
     @Expose
     private String bankAccountId;
+    @SerializedName("acc_name")
+    @Expose
+    private String bankAccountName;
+    @SerializedName("branch")
+    @Expose
+    private String bankBranch;
     @SerializedName("bank_name")
     @Expose
     private String bankName;
-    @SerializedName("is_default_bank")
+    @SerializedName("acc_number")
     @Expose
-    private int isDefaultBank;
+    private String bankAccountNumber;
+
+    @SerializedName("type")
+    @Expose
+    private String type;
+
+    private boolean isChecked;
 
     /**
-     * 
-     * @return
-     *     The bankId
+     * @return The bankId
      */
-    public int getBankId() {
+    public String getBankId() {
         return bankId;
     }
 
     /**
-     * 
-     * @param bankId
-     *     The bank_id
+     * @param bankId The bank_id
      */
-    public void setBankId(int bankId) {
+    public void setBankId(String bankId) {
         this.bankId = bankId;
     }
 
     /**
-     * 
-     * @return
-     *     The bankBranch
+     * @return The bankBranch
      */
-    public int getBankBranch() {
+    public String getBankBranch() {
         return bankBranch;
     }
 
     /**
-     * 
-     * @param bankBranch
-     *     The bank_branch
+     * @param bankBranch The bank_branch
      */
-    public void setBankBranch(int bankBranch) {
+    public void setBankBranch(String bankBranch) {
         this.bankBranch = bankBranch;
     }
 
     /**
-     * 
-     * @return
-     *     The bankAccountName
+     * @return The bankAccountName
      */
     public String getBankAccountName() {
         return MethodChecker.fromHtml(bankAccountName).toString();
     }
 
     /**
-     * 
-     * @param bankAccountName
-     *     The bank_account_name
+     * @param bankAccountName The bank_account_name
      */
     public void setBankAccountName(String bankAccountName) {
         this.bankAccountName = bankAccountName;
     }
 
     /**
-     * 
-     * @return
-     *     The bankAccountNumber
+     * @return The bankAccountNumber
      */
     public String getBankAccountNumber() {
         return bankAccountNumber;
     }
 
     /**
-     * 
-     * @param bankAccountNumber
-     *     The bank_account_number
+     * @param bankAccountNumber The bank_account_number
      */
     public void setBankAccountNumber(String bankAccountNumber) {
         this.bankAccountNumber = bankAccountNumber;
     }
 
     /**
-     * 
-     * @return
-     *     The isVerifiedAccount
-     */
-    public Boolean isVerifiedAccount() {
-        return isVerifiedAccount == 1;
-    }
-
-    /**
-     * 
-     * @param isVerifiedAccount
-     *     The is_verified_account
-     */
-    public void setIsVerifiedAccount(int isVerifiedAccount) {
-        this.isVerifiedAccount = isVerifiedAccount;
-    }
-
-    /**
-     * 
-     * @return
-     *     The bankAccountId
+     * @return The bankAccountId
      */
     public String getBankAccountId() {
         return bankAccountId;
     }
 
     /**
-     * 
-     * @param bankAccountId
-     *     The bank_account_id
+     * @param bankAccountId The bank_account_id
      */
     public void setBankAccountId(String bankAccountId) {
         this.bankAccountId = bankAccountId;
     }
 
     /**
-     * 
-     * @return
-     *     The bankName
+     * @return The bankName
      */
     public String getBankName() {
         return MethodChecker.fromHtml(bankName).toString();
     }
 
     /**
-     * 
-     * @param bankName
-     *     The bank_name
+     * @param bankName The bank_name
      */
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
 
-    /**
-     * 
-     * @return
-     *     The isDefaultBank
-     */
-    public int getIsDefaultBank() {
-        return isDefaultBank;
+    public void setChecked(boolean b) {
+        this.isChecked = b;
     }
 
-    /**
-     * 
-     * @param isDefaultBank
-     *     The is_default_bank
-     */
-    public void setIsDefaultBank(int isDefaultBank) {
-        this.isDefaultBank = isDefaultBank;
+    public boolean isChecked() {
+        return isChecked;
     }
 
-    public int getIsVerifiedAccount() {
-        return isVerifiedAccount;
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.bankId);
+        dest.writeString(this.bankBranch);
+        dest.writeString(this.bankAccountName);
+        dest.writeString(this.bankAccountNumber);
+        dest.writeString(this.bankAccountId);
+        dest.writeString(this.bankName);
+        dest.writeString(this.type);
+        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
+    }
+
+    public BankAccount() {
+    }
+
+    protected BankAccount(Parcel in) {
+        this.bankId = in.readString();
+        this.bankBranch = in.readString();
+        this.bankAccountName = in.readString();
+        this.bankAccountNumber = in.readString();
+        this.bankAccountId = in.readString();
+        this.bankName = in.readString();
+        this.type = in.readString();
+        this.isChecked = in.readByte() != 0;
+    }
+
+    public static final Creator<BankAccount> CREATOR = new Creator<BankAccount>() {
+        @Override
+        public BankAccount createFromParcel(Parcel source) {
+            return new BankAccount(source);
+        }
+
+        @Override
+        public BankAccount[] newArray(int size) {
+            return new BankAccount[size];
+        }
+    };
 }

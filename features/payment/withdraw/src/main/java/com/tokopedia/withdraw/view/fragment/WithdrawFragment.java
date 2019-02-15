@@ -52,19 +52,21 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.WithdrawRouter;
-import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
 import com.tokopedia.withdraw.view.adapter.BankAdapter;
 import com.tokopedia.withdraw.view.decoration.SpaceItemDecoration;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
+import com.tokopedia.withdraw.view.model.BankAccount;
 import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
-import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,6 +77,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
 import static com.tokopedia.withdraw.view.activity.WithdrawActivity.IS_SELLER;
 
 public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View {
@@ -108,7 +111,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     //    public static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
 //    private static final String DEFAULT_TOTAL_BALANCE = "Rp.0,-";
     //    private View info;
-    private List<BankAccountViewModel> listBank;
+    private List<BankAccount> listBank;
     private BottomSheetDialog confirmPassword;
     private Observable<String> nominalObservable;
     private List<String> bankWithMinimumWithdrawal;
@@ -138,14 +141,17 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Inject
     WithdrawAnalytics analytics;
 
+
+    @Inject
+    UserSession userSession;
+
     @Override
     protected void initInjector() {
         WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
 
-        DaggerDepositWithdrawComponent.builder().withdrawComponent(withdrawComponent)
-                .build().inject(this);
+        withdrawComponent.inject(this);
 
         presenter.attachView(this);
     }
@@ -313,9 +319,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawAll.setOnClickListener(v -> {
             analytics.eventClickWithdrawalAll();
             if (currentState == SELLER_STATE) {
-                totalWithdrawal.setText(String.valueOf(sellerSaldoBalance));
+                totalWithdrawal.setText(String.valueOf((long) sellerSaldoBalance));
             } else {
-                totalWithdrawal.setText(String.valueOf(buyerSaldoBalance));
+                totalWithdrawal.setText(String.valueOf((long) buyerSaldoBalance));
             }
 
         });
@@ -520,7 +526,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     private int checkSelectedBankMinimumWithdrawal() {
-        BankAccountViewModel selectedBank = bankAdapter.getSelectedBank();
+        BankAccount selectedBank = bankAdapter.getSelectedBank();
         if (selectedBank == null) {
             return 0;
         }
@@ -545,7 +551,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         if (bankAdapter == null) {
             return false;
         }
-        BankAccountViewModel bankAccountViewModel = bankAdapter.getSelectedBank();
+        BankAccount bankAccountViewModel = bankAdapter.getSelectedBank();
         return bankAccountViewModel != null
                 && (!TextUtils.isEmpty(bankAccountViewModel.getBankName()));
     }
@@ -582,10 +588,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
-    public void onSuccessGetWithdrawForm(List<BankAccountViewModel> bankAccount, int defaultBank, boolean verifiedAccount) {
+    public void onSuccessGetWithdrawForm(List<BankAccount> bankAccount, int defaultBank) {
         bankAdapter.setList(bankAccount);
         bankAdapter.setDefault(defaultBank);
-        if (!verifiedAccount) {
+        if (!userSession.isMsisdnVerified()) {
             showMustVerify();
         }
     }
@@ -669,6 +675,17 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
+    public String loadRawString(int resId) {
+        InputStream rawResource = getResources().openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {
+            rawResource.close();
+        } catch (IOException e) {
+        }
+        return content;
+    }
+
+    @Override
     public void itemSelected() {
         String withdrawalString = totalWithdrawal.getText().toString();
         int withdrawal = (int) StringUtils.convertToNumeric(withdrawalString, false);
@@ -684,13 +701,21 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
                     BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccountViewModel model = new BankAccountViewModel();
+                    /*BankAccountViewModel model = new BankAccountViewModel();
                     model.setBankId(Integer.parseInt(parcelable.getBankId()));
                     model.setBankName(parcelable.getBankName());
                     model.setBankAccountId(parcelable.getAccountId());
                     model.setBankAccountName(parcelable.getAccountName());
-                    model.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAdapter.addItem(model);
+                    model.setBankAccountNumber(parcelable.getAccountNumber());*/
+
+                    BankAccount bankAccount = new BankAccount();
+                    bankAccount.setBankAccountId(parcelable.getAccountId());
+                    bankAccount.setBankAccountName(parcelable.getAccountName());
+                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
+                    bankAccount.setBankId(parcelable.getBankId());
+                    bankAccount.setBankName(parcelable.getBankName());
+
+                    bankAdapter.addItem(bankAccount);
                     bankAdapter.changeItemSelected(listBank.size() - 2);
                     itemSelected();
                     snackBarInfo.setText(R.string.success_add_bank);

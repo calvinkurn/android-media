@@ -2,35 +2,25 @@ package com.tokopedia.withdraw.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.withdraw.R;
-import com.tokopedia.withdraw.domain.model.DoWithdrawDomainModel;
-import com.tokopedia.withdraw.domain.usecase.DoWithdrawUseCase;
 import com.tokopedia.withdraw.view.listener.WithdrawPasswordContract;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * @author by StevenFredian on 30/07/18.
  */
 
 public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPasswordContract.View>
-        implements WithdrawPasswordContract.Presenter{
-
+        implements WithdrawPasswordContract.Presenter {
 
 
     private UserSession userSession;
-    private DoWithdrawUseCase doWithdrawUseCase;
+//    private DoWithdrawUseCase doWithdrawUseCase;
 
     @Inject
-    public WithdrawPasswordPresenter(DoWithdrawUseCase useCase, UserSession userSession){
-        this.doWithdrawUseCase = useCase;
+    public WithdrawPasswordPresenter(/*DoWithdrawUseCase useCase,*/ UserSession userSession) {
+//        this.doWithdrawUseCase = useCase;
         this.userSession = userSession;
     }
 
@@ -42,13 +32,13 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
 
     @Override
     public void detachView() {
-        doWithdrawUseCase.unsubscribe();
+//        doWithdrawUseCase.unsubscribe();
         super.detachView();
     }
 
     @Override
     public void doWithdraw(int withdrawal, BankAccountViewModel bankAccountViewModel, String password, boolean isSellerWithdrawal) {
-        doWithdrawUseCase.execute(DoWithdrawUseCase.createParams
+        /*doWithdrawUseCase.execute(DoWithdrawUseCase.createParams
                         (userSession, withdrawal, bankAccountViewModel, password, isSellerWithdrawal)
                 , new Subscriber<DoWithdrawDomainModel>() {
             @Override
@@ -88,6 +78,6 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
                     getView().showSuccessWithdraw();
                 }
             }
-        });
+        });*/
     }
 }

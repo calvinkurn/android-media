@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
-import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
@@ -50,8 +49,9 @@ public class WithdrawActivity extends BaseSimpleActivity {
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
 
-        DaggerDepositWithdrawComponent.builder().withdrawComponent(withdrawComponent)
-                .build().inject(this);
+        /*DaggerDepositWithdrawComponent.builder().withdrawComponent(withdrawComponent)
+                .build().inject(this);*/
+        withdrawComponent.inject(this);
     }
 
     @Override
