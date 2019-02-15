@@ -673,9 +673,6 @@ public class LoginActivityTest {
     }
 
     private void defaultMockGoogle() {
-//        intending(hasComponent(GoogleSignInActivity.class.getName())).respondWith(
-//                mockGoogleActivityResult("test123@gmailcom", null, "12345")
-//        );
     }
 
     /**
