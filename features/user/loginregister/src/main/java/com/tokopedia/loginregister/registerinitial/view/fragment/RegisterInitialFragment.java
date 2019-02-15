@@ -466,7 +466,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                                 getContext()));
             } catch (ApiException e) {
                 onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
-                        String.format(getString(R.string.failed_login_google),
+                        String.format(getString(R.string.loginregister_failed_login_google),
                                 String.valueOf(e.getStatusCode())));
             }
         }

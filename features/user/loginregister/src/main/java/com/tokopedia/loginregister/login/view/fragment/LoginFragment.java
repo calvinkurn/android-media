@@ -760,7 +760,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             presenter.loginGoogle(accessToken, email);
         } catch (ApiException e) {
             onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
-                    String.format(getString(R.string.failed_login_google),
+                    String.format(getString(R.string.loginregister_failed_login_google),
                             String.valueOf(e.getStatusCode()))
             );
         }
