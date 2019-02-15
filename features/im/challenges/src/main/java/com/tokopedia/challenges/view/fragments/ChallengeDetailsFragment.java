@@ -1,28 +1,28 @@
 package com.tokopedia.challenges.view.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
@@ -30,21 +30,23 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.adapter.ChallengeMainDetailsAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
-import com.tokopedia.challenges.view.adapter.util.StickHeaderItemDecoration;
 import com.tokopedia.challenges.view.adapter.viewHolder.SubmissionViewHolder;
-import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.contractor.ChallengeDetailsContract;
 import com.tokopedia.challenges.view.customview.CountDownView;
 import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ChallengeDetailsPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.usecase.RequestParams;
 
@@ -52,12 +54,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * @author lalit.singh
  */
 public class ChallengeDetailsFragment extends BaseDaggerFragment implements ChallengeDetailsContract.View,
-        StickHeaderItemDecoration.OnShowMainHeader, TabLayout.OnTabSelectedListener, View.OnClickListener,
-        SubmissionItemAdapter.INavigateToActivityRequest, SubmissionViewHolder.SubmissionViewHolderListener {
+        View.OnClickListener, SubmissionItemAdapter.INavigateToActivityRequest,
+        SubmissionViewHolder.SubmissionViewHolderListener, ChallengeMainDetailsAdapter.OnChallengeDetailClickListener {
 
 
     @Inject
@@ -65,9 +72,9 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     private String challengeId;
     private Boolean isPastChallenge;
+    SortBy sortBy = SortBy.Recent;
 
     private Result challengeResult;
-    private boolean isWinnerList;
 
     /*Views*/
     View mainContentView;
@@ -80,22 +87,21 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     private CountDownView countDownView;
     private ConstraintLayout timerView;
     private RecyclerView mainRecyclerView;
-    private LinearLayout headerContainer;
-    private AppBarLayout appBarLayout;
-    private TextView mostRecent;
-    private TextView buzzPoints;
 
-    TabLayout tabLayout;
+
+    private String tncText;
 
 
     ChallengeMainDetailsAdapter mainDetailsAdapter;
     private TextView submitPhoto;
 
     Handler handler = new Handler();
-    private boolean isFromAdapter;
-    private FloatingActionButton btnShare;
-    private View bottomMarginView;
-    private View submitButton;
+    private View bottomButtons;
+    private boolean isWinnerList;
+    private CloseableBottomSheetDialog tncCloseableDialog;
+    private String tncHtml, challengeDescriptionHtml;
+    private String buzzPointText;
+    private CloseableBottomSheetDialog challengeDesciptionDialog;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallengeDetailsFragment();
@@ -132,30 +138,13 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         timerProgressBar = view.findViewById(R.id.progressBar);
         countDownView = view.findViewById(R.id.count_down);
         mainRecyclerView = view.findViewById(R.id.recyclerView_challengeDetailsMain);
-        headerContainer = view.findViewById(R.id.headerContainer);
         submitPhoto = view.findViewById(R.id.submit_photo);
 
-        tabLayout = view.findViewById(R.id.tab_challenges);
-        tabLayout.addOnTabSelectedListener(this);
-        appBarLayout = view.findViewById(R.id.app_bar);
-        mostRecent = view.findViewById(R.id.tv_most_recent);
-        buzzPoints = view.findViewById(R.id.tv_buzz_points);
-        btnShare = view.findViewById(R.id.fab_share);
-        bottomMarginView = view.findViewById(R.id.bottom_margin_view);
-        submitButton = view.findViewById(R.id.ll_continue);
-        mostRecent.setOnClickListener(this);
-        buzzPoints.setOnClickListener(this);
-
+        bottomButtons = view.findViewById(R.id.ll_continue);
+        view.findViewById(R.id.iv_sort).setOnClickListener(this);
+        view.findViewById(R.id.iv_share).setOnClickListener(this);
         if (isPastChallenge) {
-            btnShare.setVisibility(View.GONE);
-            submitButton.setVisibility(View.GONE);
-            bottomMarginView.setVisibility(View.GONE);
-        } else {
-            btnShare.setOnClickListener(this);
-            submitButton.setOnClickListener(this);
-            btnShare.setVisibility(View.VISIBLE);
-            submitButton.setVisibility(View.VISIBLE);
-            bottomMarginView.setVisibility(View.VISIBLE);
+            bottomButtons.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(challengeId) || challengeResult == null) {
@@ -164,17 +153,15 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             challengeId = challengeResult.getId();
             mPresenter.initialize(false, challengeResult);
         }
-
-        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-            if (Math.abs(verticalOffset) - appBarLayout.getTotalScrollRange() > -(appBarLayout.getTotalScrollRange() / 2)) {
-                btnShare.hide();
-            } else {
-                btnShare.show();
-            }
-        });
-
         return view;
     }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
 
     @Override
     protected void initInjector() {
@@ -212,12 +199,12 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     @Override
     public void showProgressBar() {
-
+        //TODO show Progress dialog here
     }
 
     @Override
     public void hideProgressBar() {
-
+        //Todo hide Progress dialog here
     }
 
     @Override
@@ -243,10 +230,50 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         else {
             tvHashTag.setVisibility(View.GONE);
         }
-
+        if (challengeDescriptionHtml == null)
+            createChallengeDescriptionText(challengeResult.getDescription());
         addChallengeDetailToAdapter();
     }
 
+
+    @Override
+    public void renderTnC(TermsNCondition termsNCondition) {
+        tncText = termsNCondition.getTerms();
+        if (tncHtml == null)
+            createTermsConditions(tncText);
+        if (null != mainDetailsAdapter) {
+            mainDetailsAdapter.setTnc(termsNCondition.getTerms());
+        }
+
+        tncCloseableDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        tncCloseableDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+            FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                }
+            });
+            handler.postDelayed(() -> {
+                WebView webView = d.findViewById(R.id.webview);
+                webView.loadDataWithBaseURL("fake://", tncHtml, "text/html", "UTF-8", null);
+            }, 50);
+        });
+        View infoDialogView = getLayoutInflater().inflate(R.layout.bottomsheet_webview_layout, null);
+        tncCloseableDialog.setContentView(infoDialogView, getString(R.string.ch_terms_conditions));
+    }
 
     @Override
     public void renderCountDownView(String participatedText) {
@@ -276,20 +303,93 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     private void addChallengeDetailToAdapter() {
         if (null == mainDetailsAdapter) {
-            mainDetailsAdapter = new ChallengeMainDetailsAdapter(getActivity(), challengeResult, mPresenter, isPastChallenge, this, this);
+            mainDetailsAdapter = new ChallengeMainDetailsAdapter(getActivity(), challengeResult, mPresenter,
+                    isPastChallenge, this, this, this);
             mainRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mainRecyclerView.setAdapter(mainDetailsAdapter);
             mainRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-                    Log.d("Challenge", "State:---" + newState);
-                    if (newState != RecyclerView.SCROLL_STATE_IDLE)
+                    if (newState != RecyclerView.SCROLL_STATE_IDLE) {
                         mainDetailsAdapter.onViewScrolled();
+                    }
+                    if (!isPastChallenge) {
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            showBottomButton(true);
+                        } else {
+                            showBottomButton(false);
+                        }
+                    }
                 }
             });
 
-            mainRecyclerView.addItemDecoration(new StickHeaderItemDecoration(mainDetailsAdapter, this));
+        }
+    }
+
+    boolean isBottomVisible = true;
+
+    private void showBottomButton(boolean show) {
+        if (!show && isBottomVisible) {
+            isBottomVisible = false;
+            Animation slide = null;
+
+            slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                    0.0f, Animation.RELATIVE_TO_SELF, 1.0F);
+
+            slide.setDuration(400);
+            slide.setFillAfter(true);
+            slide.setFillEnabled(true);
+            bottomButtons.startAnimation(slide);
+
+            slide.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    bottomButtons.clearAnimation();
+                    bottomButtons.setVisibility(View.INVISIBLE);
+
+                }
+
+            });
+        } else if (show && !isBottomVisible) {
+            isBottomVisible = true;
+            Animation slide = null;
+            slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                    1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+
+            slide.setDuration(400);
+            slide.setFillAfter(true);
+            slide.setFillEnabled(true);
+            bottomButtons.startAnimation(slide);
+
+            slide.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    bottomButtons.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    bottomButtons.clearAnimation();
+                }
+            });
         }
     }
 
@@ -376,7 +476,6 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     @Override
     public void setSnackBarErrorMessage(String message, View.OnClickListener listener) {
         View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-
         ToasterError
                 .make(rootView,
                         message,
@@ -395,7 +494,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     @Override
     public void onLike(SubmissionResult result) {
-        Toast.makeText(getActivity(), "Liked", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "Liked", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -403,6 +502,10 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         navigateToActivityRequest(intent, requestCode);
     }
 
+    @Override
+    public void openVideoView(SubmissionResult submissionResult) {
+        ((ChallengeDetailsActivity) getActivity()).openVideoPlayer(submissionResult);
+    }
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
@@ -424,58 +527,12 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         super.onDestroyView();
     }
 
-    @Override
-    public void onShowHeader(boolean show) {
-        isFromAdapter = true;
-        if (show) {
-            tabLayout.getTabAt(1).select();
-            headerContainer.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.getTabAt(0).select();
-            headerContainer.setVisibility(View.INVISIBLE);
-        }
-        isFromAdapter = false;
-    }
-
-    private void scrollToList() {
-        appBarLayout.setExpanded(false);
-        View topChild = mainRecyclerView.getChildAt(0);
-        mainRecyclerView.smoothScrollBy(0, topChild.getHeight() - mainRecyclerView.computeVerticalScrollOffset());
-    }
-
-    private void scrollToTop() {
-        mainRecyclerView.scrollToPosition(0);
-    }
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        if (!isFromAdapter)
-            if (tab.getPosition() == 0) {
-                scrollToTop();
-            } else {
-                scrollToList();
-            }
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
-    }
-
     public void sortByRecent() {
         handler.postDelayed(() -> {
             mainRecyclerView.stopScroll();
-            mostRecent.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
-            buzzPoints.setBackgroundResource(R.drawable.bg_ch_bubble_default);
             mPresenter.setPageStart(0);
             mPresenter.setSortType(Utils.QUERY_PARAM_KEY_SORT_RECENT);
             mainDetailsAdapter.clearList();
-            mainDetailsAdapter.setSortingType(Utils.QUERY_PARAM_KEY_SORT_RECENT);
             mPresenter.unsubscribe();
             mPresenter.loadMoreItems();
         }, 100L);
@@ -485,12 +542,9 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     public void sortByBuzzPoints() {
         handler.postDelayed(() -> {
             mainRecyclerView.stopScroll();
-            buzzPoints.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
-            mostRecent.setBackgroundResource(R.drawable.bg_ch_bubble_default);
             mPresenter.setPageStart(0);
             mPresenter.setSortType(Utils.QUERY_PARAM_KEY_SORT_POINTS);
             mainDetailsAdapter.clearList();
-            mainDetailsAdapter.setSortingType(Utils.QUERY_PARAM_KEY_SORT_POINTS);
             mPresenter.unsubscribe();
             mPresenter.loadMoreItems();
         }, 100L);
@@ -506,26 +560,18 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             sortByRecent();
         } else if (viewId == R.id.ll_continue) {
             mPresenter.onSubmitButtonClick();
-        } else if (viewId == R.id.tv_tnc) {
-            /*fragmentCallbacks.replaceFragment(tncText, getString(R.string.ch_terms_conditions));
-            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+        } /*else if (viewId == R.id.tv_tnc) {
+            fragmentCallbacks.replaceFragment(tncText, getString(R.string.ch_terms_conditions));
+           *//* analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);*/
-        } else if (viewId == R.id.fab_share) {
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);*//*
+        } */ else if (viewId == R.id.fab_share || viewId == R.id.iv_share) {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
+        } else if (viewId == R.id.iv_sort) {
+            showSortingDialog();
         }
 
-        /*else if (v.getId() == R.id.tv_see_all) {
-            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION_SEE_ALL,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, "");
-            Intent intent = AllSubmissionsActivity.newInstance(getActivity());
-            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
-            intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, challengeId);
-            startActivity(intent);
-        } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
-            fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.ch_generate_buzz_points));
-        } else if (v.getId() == R.id.tv_tnc) {
+        /*else if (v.getId() == R.id.tv_tnc) {
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.ch_terms_conditions));
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
@@ -533,5 +579,162 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         } else if (v.getId() == R.id.fab_share) {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
         }*/
+    }
+
+    private void showSortingDialog() {
+        CloseableBottomSheetDialog sortingDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        sortingDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+            FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+
+        View sortingView = getLayoutInflater().inflate(R.layout.bottomsheet_sort_layout, null);
+        sortingDialog.setContentView(sortingView, "Sort By");
+        sortingView.setOnClickListener(null);
+        sortingDialog.show();
+
+        sortingView.findViewById(R.id.tv_recent).setOnClickListener(view -> {
+            if (sortBy != SortBy.Recent) {
+                sortBy = SortBy.Recent;
+                sortByRecent();
+            }
+            sortingDialog.dismiss();
+        });
+        sortingView.findViewById(R.id.tv_topScore).setOnClickListener(view -> {
+            if (sortBy != SortBy.BuzzPoint) {
+                sortBy = SortBy.BuzzPoint;
+                sortByBuzzPoints();
+            }
+            sortingDialog.dismiss();
+        });
+    }
+
+    @Override
+    public void onTncClick() {
+        if (tncHtml == null)
+            return;
+        tncCloseableDialog.show();
+    }
+
+    public void onShowBuzzPointsText() {
+        buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication())
+                .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
+        if (!TextUtils.isEmpty(buzzPointText)) {
+            CloseableBottomSheetDialog sortingDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+            sortingDialog.setOnShowListener(dialog -> {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+                buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication())
+                        .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
+                if (!TextUtils.isEmpty(buzzPointText)) {
+                    Utils.generateBulletText(d.findViewById(R.id.buzzTextContainer), buzzPointText);
+                }
+            });
+            View sortingView = getLayoutInflater().inflate(R.layout.bottomsheet_buzz_point_layout, null);
+            sortingDialog.setContentView(sortingView, "Buzz Point");
+            sortingView.setOnClickListener(null);
+            sortingDialog.show();
+        }
+    }
+
+    @Override
+    public void onShowChallengeDescription() {
+        if (challengeDescriptionHtml == null)
+            return;
+        if (challengeDesciptionDialog == null) {
+            challengeDesciptionDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+            challengeDesciptionDialog.setOnShowListener(dialog -> {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        }
+                    }
+
+                    @Override
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                    }
+                });
+                handler.postDelayed(() -> {
+                    WebView webView = d.findViewById(R.id.webview);
+                    webView.loadDataWithBaseURL("fake://", challengeDescriptionHtml, "text/html",
+                            "UTF-8", null);
+                }, 50);
+            });
+            View infoDialogView = getLayoutInflater().inflate(R.layout.bottomsheet_webview_layout, null);
+            challengeDesciptionDialog.setContentView(infoDialogView, getString(R.string.ch_description));
+        }
+        challengeDesciptionDialog.show();
+    }
+
+    public enum SortBy {
+        BuzzPoint, Recent;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    public void createChallengeDescriptionText(String text) {
+        Observable.fromCallable(() -> new MarkdownProcessor().markdown(text))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        challengeDescriptionHtml = s;
+                    }
+                });
+    }
+
+    public void createTermsConditions(String text) {
+        Observable.fromCallable(() -> new MarkdownProcessor().markdown(text))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        tncHtml = s;
+                    }
+                });
     }
 }

@@ -5,23 +5,21 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.adapter.util.StickHeaderItemDecoration;
 import com.tokopedia.challenges.view.adapter.viewHolder.SubmissionViewHolder;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
-import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
 
 import java.util.List;
@@ -29,37 +27,38 @@ import java.util.List;
 /**
  * @author lalit.singh
  */
-public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
-        implements StickHeaderItemDecoration.StickyHeaderInterface {
+public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
 
     private final Context context;
     private final Result challengeResult;
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
     private List<SubmissionResult> submissionWinnerResults;
     private List<SubmissionResult> allSubmissionList;
-    boolean isPastChallenge;
+    private boolean isPastChallenge;
 
-    CustomVideoPlayer customVideoPlayer;
+    private CustomVideoPlayer customVideoPlayer;
     private int VIDEO_POS = 0;
 
-    boolean isLoaderVisible = true;
+    private boolean isLoaderVisible = true;
 
-    LoadMoreListener loadMoreListener;
+    private LoadMoreListener loadMoreListener;
 
     Handler handler = new Handler();
 
-    private int VIEW_CHALLENGE_DETAIL = 0, VIEW_HEADER = 1,
-            VIEW_SUBMISSION = 2, VIEW_LOADER = 3;
+    private int VIEW_CHALLENGE_DETAIL = 0, VIEW_SUBMISSION = 1, VIEW_LOADER = 2;
 
-    private String sortType = Utils.QUERY_PARAM_KEY_SORT_RECENT;
+    private SubmissionItemAdapter.INavigateToActivityRequest request;
 
-    SubmissionItemAdapter.INavigateToActivityRequest request;
+    private SubmissionViewHolder.SubmissionViewHolderListener listener;
+    private OnChallengeDetailClickListener onChallengeDetailListener;
 
-    SubmissionViewHolder.SubmissionViewHolderListener listener;
+    private String tncText;
 
     public ChallengeMainDetailsAdapter(Context context, Result result, LoadMoreListener loadMoreListener,
                                        boolean isPastChallenge, SubmissionItemAdapter.INavigateToActivityRequest request,
-                                       SubmissionViewHolder.SubmissionViewHolderListener listener) {
+                                       SubmissionViewHolder.SubmissionViewHolderListener listener,
+                                       OnChallengeDetailClickListener onTncClickListener) {
+        this.onChallengeDetailListener = onTncClickListener;
         this.context = context;
         this.challengeResult = result;
         this.isPastChallenge = isPastChallenge;
@@ -75,12 +74,10 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
             inflater = LayoutInflater.from(parent.getContext());
         if (viewType == VIEW_CHALLENGE_DETAIL)
             return new ChallengeDetailViewHolder(inflater.inflate(R.layout.layout_challenge_details, parent, false));
-        else if (viewType == VIEW_HEADER)
-            return new HeaderViewHolder(inflater.inflate(R.layout.item_header, parent, false));
         else if (viewType == VIEW_LOADER)
             return new FooterViewHolder(inflater.inflate(R.layout.loading_layout, parent, false));
         else
-            return new SubmissionViewHolder(inflater.inflate(R.layout.submission_item, parent, false),
+            return new SubmissionViewHolder(inflater.inflate(R.layout.submission_layout, parent, false),
                     context, isPastChallenge);
     }
 
@@ -92,13 +89,20 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
         }
     }
 
+    public void setTnc(String tncText) {
+        if (this.tncText == null) {
+            this.tncText = tncText;
+            notifyItemChanged(0);
+        }
+    }
+
     public void setSubmissionList(List<SubmissionResult> submissionResults) {
         if (allSubmissionList == null) {
             allSubmissionList = submissionResults;
-            handler.postDelayed(() -> notifyItemRangeInserted(2, submissionResults.size()), 100L);
+            handler.postDelayed(() -> notifyItemRangeInserted(1, submissionResults.size()), 100L);
         } else {
             allSubmissionList.addAll(submissionResults);
-            (new Handler()).postDelayed(() -> notifyItemRangeChanged(2, allSubmissionList.size()), 100L);
+            (new Handler()).postDelayed(() -> notifyItemRangeChanged(1, allSubmissionList.size()), 100L);
         }
     }
 
@@ -133,20 +137,10 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
         if (position == 0) {
             populateDescription((ChallengeDetailViewHolder) holder);
         } else if (holder instanceof SubmissionViewHolder) {
-            ((SubmissionViewHolder) holder).itemView.setTag(allSubmissionList.get(position - 2));
-            ((SubmissionViewHolder) holder).bindData(allSubmissionList.get(position - 2), listener);
-        } else if (holder instanceof HeaderViewHolder) {
-            HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
-            if (sortType.equals(Utils.QUERY_PARAM_KEY_SORT_RECENT)) {
-                viewHolder.recentFirst.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
-                viewHolder.mostPointFirst.setBackgroundResource(R.drawable.bg_ch_bubble_default);
-            } else {
-                viewHolder.mostPointFirst.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
-                viewHolder.recentFirst.setBackgroundResource(R.drawable.bg_ch_bubble_default);
-            }
+            ((SubmissionViewHolder) holder).itemView.setTag(allSubmissionList.get(position - 1));
+            ((SubmissionViewHolder) holder).bindData(allSubmissionList.get(position - 1), listener);
         }
     }
-
 
     private void populateDescription(ChallengeDetailViewHolder viewHolder) {
         View itemView = viewHolder.itemView;
@@ -155,18 +149,30 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
             itemView.setTag(true);
             String buzzPointText = ((ChallengesModuleRouter) context.getApplicationContext())
                     .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
-            if (!TextUtils.isEmpty(buzzPointText)) {
-                viewHolder.containerBuzzPoint.setVisibility(View.VISIBLE);
-                Utils.generateBulletText(viewHolder.bulletTextContainer, buzzPointText);
+            if (TextUtils.isEmpty(buzzPointText)) {
+                viewHolder.bulletText.setVisibility(View.GONE);
+                viewHolder.dividerBuzz.setVisibility(View.GONE);
+            }else {
+                viewHolder.bulletText.setVisibility(View.VISIBLE);
+                viewHolder.dividerBuzz.setVisibility(View.VISIBLE);
             }
-            viewHolder.tvShortDescription.setText(challengeResult.getDescription());
+            String description = challengeResult.getDescription();
+            if (description.length() > 150) {
+                description = description.substring(0, 150);
+                viewHolder.tvShortDescription.setText(new StringBuilder().append(description).append("...").toString());
+                viewHolder.tvShortDescription.setTag(true);
+                viewHolder.tvShortDescription
+                        .append(Html.fromHtml("<font color='#42b549'>More</font>"));
+            } else {
+                viewHolder.tvShortDescription.setText(description);
+            }
+
             if (challengeResult.getPrizes() != null
                     && challengeResult.getPrizes().size() > 0) {
                 LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
                 viewHolder.prizeRecyclerView.setLayoutManager(mLayoutManager1);
                 AwardAdapter awardAdapter = new AwardAdapter(challengeResult.getPrizes());
                 viewHolder.prizeRecyclerView.setAdapter(awardAdapter);
-
                 if (challengeResult.getSharing().getAssets() != null
                         && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
                     customVideoPlayer = viewHolder.customVideoPlayer;
@@ -178,6 +184,11 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
             } else {
                 viewHolder.containerPrize.setVisibility(View.GONE);
             }
+        }
+
+        if (viewHolder.ivTnc.getTag() == null && tncText != null) {
+            viewHolder.ivTnc.setTag(true);
+            viewHolder.ivTnc.setVisibility(View.VISIBLE);
         }
 
         if (isPastChallenge && viewHolder.containerWinners.getTag() == null)
@@ -199,7 +210,7 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
     public int getItemCount() {
         int itemCount = 0;
         if (challengeResult != null) {
-            itemCount = itemCount + 2;
+            itemCount = itemCount + 1;
             if (isLoaderVisible)
                 itemCount = itemCount + 1;
         }
@@ -213,12 +224,11 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
     public int getItemViewType(int position) {
         if (position == 0) {
             return VIEW_CHALLENGE_DETAIL;
-        } else if (position == 1) {
-            return VIEW_HEADER;
-        } else if (allSubmissionList == null && position == 2) {
+        }
+        if (allSubmissionList == null && position == 1) {
             return VIEW_LOADER;
         } else {
-            int loaderPosition = allSubmissionList.size() + 2;
+            int loaderPosition = allSubmissionList.size() + 1;
             if (position == loaderPosition)
                 return VIEW_LOADER;
         }
@@ -260,44 +270,52 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
         }
     }
 
-    public void setSortingType(String sortType) {
-        this.sortType = sortType;
-        handler.postDelayed(() -> notifyItemChanged(1), 100);
-    }
-
     private class ChallengeDetailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final RecyclerView prizeRecyclerView, winnerRecyclerView;
-        TextView tvShortDescription, tvSeeMoreLessButton, seeMoreBuzzPoints;
-        WebView fullDescriptionWebView;
+        TextView tvShortDescription, /*tvSeeMoreLessButton,*/
+                seeMoreBuzzPoints;
+        // WebView fullDescriptionWebView;
         Result challengeResult;
+        final ImageView ivTnc;
 
-        View containerPrize, containerWinners, containerVideo, containerBuzzPoint;
-        LinearLayout bulletTextContainer;
+        View containerPrize, containerWinners, containerVideo, containerBuzzPoint, dividerBuzz;
+        TextView bulletText;
 
         CustomVideoPlayer customVideoPlayer;
 
         public ChallengeDetailViewHolder(View view) {
             super(view);
             tvShortDescription = view.findViewById(R.id.short_description);
-            tvSeeMoreLessButton = view.findViewById(R.id.seemorebutton_description);
-            fullDescriptionWebView = view.findViewById(R.id.markdownView);
-            tvSeeMoreLessButton.setOnClickListener(this);
+            tvShortDescription.setOnClickListener(this);
+            //tvSeeMoreLessButton = view.findViewById(R.id.seemorebutton_description);
+            //fullDescriptionWebView = view.findViewById(R.id.markdownView);
+            //tvSeeMoreLessButton.setOnClickListener(this);
             containerPrize = view.findViewById(R.id.cl_awards);
             containerWinners = view.findViewById(R.id.cl_winners);
             prizeRecyclerView = view.findViewById(R.id.rv_awards);
             winnerRecyclerView = view.findViewById(R.id.rv_winners);
             containerVideo = view.findViewById(R.id.cl_video_player);
             customVideoPlayer = view.findViewById(R.id.video_player);
-
             containerBuzzPoint = view.findViewById(R.id.cl_how_buzzpoints);
             seeMoreBuzzPoints = view.findViewById(R.id.seemorebutton_buzzpoints);
-            bulletTextContainer = view.findViewById(R.id.tv_how_buzz_points_text);
+            bulletText = view.findViewById(R.id.tv_how_buzz_points);
+            dividerBuzz = view.findViewById(R.id.divider3);
+            bulletText.setOnClickListener(this);
+            ivTnc = view.findViewById(R.id.iv_tnc);
+            ivTnc.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            if (fullDescriptionWebView.getVisibility() == View.GONE) {
+            int viewId = view.getId();
+            if (viewId == R.id.short_description && view.getTag() != null && onChallengeDetailListener != null) {
+                onChallengeDetailListener.onShowChallengeDescription();
+            } else if (viewId == R.id.tv_how_buzz_points && onChallengeDetailListener != null) {
+                onChallengeDetailListener.onShowBuzzPointsText();
+            } else if (viewId == R.id.iv_tnc && onChallengeDetailListener != null) {
+                onChallengeDetailListener.onTncClick();
+            } /*else if (fullDescriptionWebView.getVisibility() == View.GONE) {
                 tvSeeMoreLessButton.setText(R.string.ch_see_less);
                 MarkdownProcessor m = new MarkdownProcessor();
                 String html = m.markdown(challengeResult.getDescription());
@@ -309,7 +327,7 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
                 tvSeeMoreLessButton.setText(R.string.ch_see_more);
                 tvShortDescription.setVisibility(View.VISIBLE);
                 fullDescriptionWebView.setVisibility(View.GONE);
-            }
+            }*/
         }
     }
 
@@ -323,43 +341,16 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter
         }
     }
 
-    @Override
-    public int getHeaderPositionForItem(int itemPosition) {
-        int headerPosition = 0;
-        do {
-            if (this.isHeader(itemPosition)) {
-                headerPosition = itemPosition;
-                break;
-            }
-            itemPosition -= 1;
-        } while (itemPosition >= 0);
-        return headerPosition;
-    }
-
-    @Override
-    public int getHeaderLayout(int headerPosition) {
-        return R.layout.item_header;
-    }
-
-    @Override
-    public boolean isHeader(int itemPosition) {
-        if (itemPosition == 1)
-            return true;
-        return false;
-    }
-
-    private class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView recentFirst, mostPointFirst;
-
-        public HeaderViewHolder(@NonNull View itemView) {
-            super(itemView);
-            recentFirst = itemView.findViewById(R.id.tv_most_recent);
-            mostPointFirst = itemView.findViewById(R.id.tv_buzz_points);
-        }
-    }
-
     public interface LoadMoreListener {
         void onLoadMoreStarts();
+    }
+
+    public interface OnChallengeDetailClickListener {
+        void onTncClick();
+
+        void onShowBuzzPointsText();
+
+        void onShowChallengeDescription();
     }
 
 }

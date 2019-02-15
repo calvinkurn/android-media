@@ -16,6 +16,7 @@ import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.adapter.ChallengeMainDetailsAdapter;
 import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -150,7 +151,7 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
                     getView().hideProgressBar();
                     getView().setChallengeResult(challengeResult);
                     getView().renderChallengeDetail(challengeResult);
-                    //getTermsNCondition(challengeResult.getId());
+                    getTermsNCondition(challengeResult.getId());
                     loadCountdownView(challengeResult, isPastChallenge);
                     if (isPastChallenge) {
                         getWinnerList();
@@ -168,7 +169,7 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
                 getWinnerList();
             }
             onLoadMoreStarts();
-            //getTermsNCondition(challengeResult.getId());
+            getTermsNCondition(challengeResult.getId());
         }
     }
 
@@ -212,6 +213,30 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
                     Log.d("ChallengeMain", "LOAD_MORE: LAST PAGE in onNext");
                     getView().hideSubmissionListLoader();
                 }
+            }
+        });
+    }
+
+
+    public void getTermsNCondition(String id) {
+        getTermsNConditionUseCase.setCollectionID(id);
+        getTermsNConditionUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (!isViewAttached()) return;
+                RestResponse res1 = typeRestResponseMap.get(TermsNCondition.class);
+                TermsNCondition termsNCondition = res1.getData();
+                getView().renderTnC(termsNCondition);
             }
         });
     }

@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.adapter.viewHolder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,26 +13,33 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
+import com.tokopedia.challenges.view.customview.MExpandableTextView;
+import com.tokopedia.challenges.view.model.User;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
 
 /**
  * @author lalit.singh
  */
-public class SubmissionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class SubmissionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, MExpandableTextView.OnExpandListener {
     public View itemView;
     private ImageView submissionImage;
     private TextView tvBuzzPoints;
+    private TextView tvParticipantUserName;
     private TextView submissionTitle;
     private ImageView ivFavourite;
     private ImageView ivShareVia;
+    private ImageView ivUserAvatar;
+    private ImageView ivVideoIcon;
     private TextView tvWinnerNumber;
+    private MExpandableTextView tvPostDescription;
 
     private Context context;
     private boolean isWinner;
     private boolean isPastChallenge;
 
     private SubmissionViewHolderListener listener;
+
 
     public SubmissionViewHolder(View itemView, Context context, boolean isPastChallenge) {
         super(itemView);
@@ -43,14 +51,19 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
         submissionTitle = itemView.findViewById(R.id.tv_submission_title);
         ivFavourite = itemView.findViewById(R.id.iv_like);
         ivShareVia = itemView.findViewById(R.id.iv_share);
+        ivUserAvatar = itemView.findViewById(R.id.iv_userAvatar);
+        ivVideoIcon = itemView.findViewById(R.id.play_icon);
+        tvParticipantUserName = itemView.findViewById(R.id.tv_participantUserName);
         tvWinnerNumber = itemView.findViewById(R.id.tv_winner_number);
+        tvPostDescription = itemView.findViewById(R.id.tv_submission_description);
+        itemView.findViewById(R.id.cl_participant).setVisibility(View.VISIBLE);
     }
 
-    public void bindData(final SubmissionResult productItem, SubmissionViewHolderListener listener) {
+    public void bindData(final SubmissionResult submissionResult, SubmissionViewHolderListener listener) {
         this.listener = listener;
-        submissionTitle.setText(productItem.getTitle());
-        if (productItem.getCollection() != null &&
-                Utils.checkIsPastChallenge(productItem.getCollection().getEndDate())) {
+        submissionTitle.setText(submissionResult.getTitle());
+        if (submissionResult.getCollection() != null &&
+                Utils.checkIsPastChallenge(submissionResult.getCollection().getEndDate())) {
             ivFavourite.setVisibility(View.GONE);
             ivShareVia.setVisibility(View.GONE);
         } else {
@@ -59,17 +72,17 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
         }
 
         ImageHandler.loadImage(context, submissionImage,
-                Utils.getImageUrlForSubmission(productItem.getThumbnailUrl()),
+                Utils.getImageUrlForSubmission(submissionResult.getThumbnailUrl()),
                 R.color.grey_1100, R.color.grey_1100);
 
-        if (productItem.getMe() != null) {
-            setLikes(productItem.getMe().isLiked());
+        if (submissionResult.getMe() != null) {
+            setLikes(submissionResult.getMe().isLiked());
         } else {
             setLikes(false);
         }
-        tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
+        tvBuzzPoints.setText(String.valueOf(submissionResult.getPoints()));
         if (isWinner) {
-            int position = Utils.getWinnerPosition(productItem.getAwards());
+            int position = Utils.getWinnerPosition(submissionResult.getAwards());
             if (position != -1) {
                 tvWinnerNumber.setVisibility(View.VISIBLE);
                 tvWinnerNumber.setText(String.valueOf(position));
@@ -77,14 +90,43 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
         } else {
             tvWinnerNumber.setVisibility(View.GONE);
             tvWinnerNumber.setText("");
+        }
 
+        if (submissionResult.getMedia() != null && submissionResult.getMedia().get(0).getVideo() != null
+                && submissionResult.getMedia().get(0).getVideo().getSources() != null) {
+            ivVideoIcon.setVisibility(View.VISIBLE);
+            submissionImage.setOnClickListener(this);
+        } else {
+            ivVideoIcon.setVisibility(View.INVISIBLE);
+            submissionImage.setOnClickListener(null);
+        }
+
+        if (!TextUtils.isEmpty(submissionResult.getDescription())) {
+            tvPostDescription.setVisibility(View.VISIBLE);
+            tvPostDescription.setTag(submissionResult);
+            tvPostDescription.setText(submissionResult.getDescription());
+            if (submissionResult.isExpanded()) {
+                tvPostDescription.expand();
+            } else {
+                tvPostDescription.collapse();
+            }
+            tvPostDescription.setListener(this);
+        } else {
+            tvPostDescription.setVisibility(View.GONE);
         }
         itemView.setOnClickListener(this);
         ivShareVia.setOnClickListener(this);
         ivFavourite.setOnClickListener(this);
+        setUserData(submissionResult.getUser());
+    }
+
+    private void setUserData(User user) {
+        ImageHandler.loadImageCircle2(context, ivUserAvatar, user.getThumbnailImage(), R.drawable.ic_big_notif_customerapp);
+        tvParticipantUserName.setText(user.getTitle());
     }
 
     private void setLikes(boolean isLiked) {
+        //todo hit server... liked
         if (((SubmissionResult) itemView.getTag()).getMe() != null) {
             ((SubmissionResult) itemView.getTag()).getMe().setLiked(isLiked);
             if (isLiked) {
@@ -98,7 +140,9 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
     @Override
     public void onClick(View v) {
         SubmissionResult result = (SubmissionResult) itemView.getTag();
-        if (v.getId() == R.id.iv_like) {
+        if (v.getId() == R.id.iv_challenge) {
+            listener.openVideoView(result);
+        } else if (v.getId() == R.id.iv_like) {
             listener.onLike(result);
             if (result.getMe() != null) {
                 setLikes(!result.getMe().isLiked());
@@ -119,7 +163,35 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
             detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             listener.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, 0);
         }
-        /*if (v.getId() == R.id.iv_share) {
+    }
+
+    @Override
+    public void onExpand() {
+        if (tvPostDescription != null && tvPostDescription.getTag() != null) {
+            SubmissionResult submissionResult = (SubmissionResult) tvPostDescription.getTag();
+            submissionResult.setExpanded(true);
+        }
+    }
+
+    @Override
+    public void onCollapsed() {
+        if (tvPostDescription != null && tvPostDescription.getTag() != null) {
+            SubmissionResult submissionResult = (SubmissionResult) tvPostDescription.getTag();
+            submissionResult.setExpanded(false);
+        }
+    }
+
+    public interface SubmissionViewHolderListener {
+        void onLike(SubmissionResult result);
+
+        void onNavigateToActivityRequest(Intent intent, int requestCode, int position);
+
+        void openVideoView(SubmissionResult submissionResult);
+    }
+
+}
+
+ /*if (v.getId() == R.id.iv_share) {
             ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), categoryItems.get(getIndex()), false);
             if (categoryItems.get(getIndex()).getCollection() != null) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
@@ -149,12 +221,3 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
 
             navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
         }*/
-
-
-    }
-
-    public interface SubmissionViewHolderListener {
-        void onLike(SubmissionResult result);
-        void onNavigateToActivityRequest(Intent intent, int requestCode, int position);
-    }
-}

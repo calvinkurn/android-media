@@ -7,6 +7,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.usecase.RequestParams;
@@ -30,6 +31,8 @@ public interface ChallengeDetailsContract {
         void renderChallengeDetail(Result challengeResult);
 
         void renderWinnerItems(SubmissionResponse submissionResponse);
+
+        void renderTnC(TermsNCondition termsNCondition);
 
         void renderCountDownView(String participatedText);
 

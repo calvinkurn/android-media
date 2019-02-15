@@ -15,12 +15,12 @@ public class StickHeaderItemDecoration extends RecyclerView.ItemDecoration {
 
     private boolean isHeaderShowing = false;
 
-    public StickHeaderItemDecoration(@NonNull StickyHeaderInterface listener, OnShowMainHeader onShowMainHeader) {
-        mListener = listener;
-        this.onShowMainHeader = onShowMainHeader;
+    public StickHeaderItemDecoration(/*@NonNull StickyHeaderInterface listener*//*, OnShowMainHeader onShowMainHeader*/) {
+       // mListener = listener;
+       // this.onShowMainHeader = onShowMainHeader;
     }
 
-    @Override
+   /* @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
         View topChild = parent.getChildAt(0);
@@ -43,20 +43,20 @@ public class StickHeaderItemDecoration extends RecyclerView.ItemDecoration {
 
 
         showHeader();
-    }
+    }*/
 
     private void hideHeader() {
-        if (isHeaderShowing) {
+        /*if (isHeaderShowing) {
             onShowMainHeader.onShowHeader(false);
             isHeaderShowing = false;
-        }
+        }*/
     }
 
     private void showHeader() {
-        if (!isHeaderShowing) {
+        /*if (!isHeaderShowing) {
             onShowMainHeader.onShowHeader(true);
             isHeaderShowing = true;
-        }
+        }*/
     }
 
 
