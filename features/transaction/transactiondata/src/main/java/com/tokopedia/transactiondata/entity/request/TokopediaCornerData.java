@@ -21,6 +21,12 @@ public class TokopediaCornerData {
     public TokopediaCornerData() {
     }
 
+    public TokopediaCornerData(boolean isTokopediaCorner, int userCornerId, int cornerId) {
+        this.isTokopediaCorner = isTokopediaCorner;
+        this.userCornerId = userCornerId;
+        this.cornerId = cornerId;
+    }
+
     public boolean isTokopediaCorner() {
         return isTokopediaCorner;
     }

@@ -635,10 +635,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void checkPromoShipment(String promoCode, boolean isOneClickShipment) {
 
+        TokopediaCornerData cornerData = null;
+        RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
+        if (recipientAddressModel != null && recipientAddressModel.isCornerAddress()) {
+            cornerData = new TokopediaCornerData(
+                    true,
+                    Integer.parseInt(recipientAddressModel.getUserCornerId()),
+                    Integer.parseInt(recipientAddressModel.getCornerId())
+            );
+        }
+
         CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest =
                 new CheckPromoCodeCartShipmentRequest.Builder()
                         .promoCode(promoCode)
                         .data(promoCodeCartShipmentRequestDataList)
+                        .cornerData(cornerData)
                         .build();
 
         checkPromoCodeFinalUseCase.execute(checkPromoCodeFinalUseCase.createRequestParams(
@@ -858,20 +869,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return null;
         }
 
-        CheckoutRequest.Builder checkoutBuilder = new CheckoutRequest.Builder()
-                .promoCode(promoCode)
-                .isDonation(isDonation)
-                .data(dataCheckoutRequestList);
-
+        TokopediaCornerData cornerData = null;
         if (getRecipientAddressModel().isCornerAddress()) {
             TokopediaCornerData tokopediaCornerData = new TokopediaCornerData();
             tokopediaCornerData.setTokopediaCorner(true);
             tokopediaCornerData.setUserCornerId(Integer.parseInt(getRecipientAddressModel().getUserCornerId()));
             tokopediaCornerData.setCornerId(Integer.parseInt(getRecipientAddressModel().getId()));
-            checkoutBuilder.cornerData(tokopediaCornerData);
+            cornerData = tokopediaCornerData;
         }
 
-        return checkoutBuilder.build();
+        return new CheckoutRequest.Builder()
+                .promoCode(promoCode)
+                .isDonation(isDonation)
+                .data(dataCheckoutRequestList)
+                .cornerData(cornerData)
+                .build();
     }
 
     @Override
