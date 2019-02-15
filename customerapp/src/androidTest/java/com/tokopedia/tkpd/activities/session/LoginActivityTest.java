@@ -713,8 +713,6 @@ public class LoginActivityTest {
         Instrumentation.ActivityResult result =
                 new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null);
 
-//        intending(hasComponent(GoogleSignInActivity.class.getName())).respondWith(result);
-
         mIntentsRule.getIndexMockWebServer(0).enqueue(mIntentsRule.getBaseJsonFactory().createSuccess200Response("api_discover.json"));
 
         startLoginActivity();
