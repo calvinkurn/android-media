@@ -150,6 +150,8 @@ public class DeeplinkUTMUtils {
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
+                } else if (host.contains("tokopedia.com")) {
+                    //do nothing
                 } else {
 
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
