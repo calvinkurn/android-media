@@ -8,16 +8,16 @@ import com.google.gson.annotations.Expose;
 /**
  * Author errysuprayogi on 29,January,2019
  */
-public class ImageHolder implements Parcelable {
+public class ImpressHolder implements Parcelable {
 
-    @Expose(serialize = false)
+    @Expose(serialize = false, deserialize = false)
     private boolean invoke;
 
-    protected ImageHolder(Parcel in) {
+    protected ImpressHolder(Parcel in) {
         invoke = in.readByte() != 0;
     }
 
-    public ImageHolder() {
+    public ImpressHolder() {
 
     }
 
@@ -31,15 +31,15 @@ public class ImageHolder implements Parcelable {
         return 0;
     }
 
-    public static final Creator<ImageHolder> CREATOR = new Creator<ImageHolder>() {
+    public static final Creator<ImpressHolder> CREATOR = new Creator<ImpressHolder>() {
         @Override
-        public ImageHolder createFromParcel(Parcel in) {
-            return new ImageHolder(in);
+        public ImpressHolder createFromParcel(Parcel in) {
+            return new ImpressHolder(in);
         }
 
         @Override
-        public ImageHolder[] newArray(int size) {
-            return new ImageHolder[size];
+        public ImpressHolder[] newArray(int size) {
+            return new ImpressHolder[size];
         }
     };
 

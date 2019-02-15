@@ -11,7 +11,7 @@ import org.json.JSONObject;
 /**
  * @author by errysuprayogi on 4/3/17.
  */
-public class ProductImage extends ImageHolder implements Parcelable {
+public class ProductImage extends ImpressHolder implements Parcelable {
 
     private static final String KEY_M_URL = "m_url";
     private static final String KEY_S_URL = "s_url";
