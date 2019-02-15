@@ -238,7 +238,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     }
 
     /*
-    // Constructor for corner Address mapping
+    // Constructor for corner Address mapping, please don't use it otherwise
      */
     public RecipientAddressModel(String id, String cornerId, String addressName, String cityName, String street,
                                  String recipientName, String destinationDistrictName, String recipientPhoneNumber,
@@ -252,6 +252,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.recipientName = recipientName;
         this.destinationDistrictName = destinationDistrictName;
         this.isCornerAddress = true;
+        this.isDisableMultipleAddress = true;
         this.recipientPhoneNumber = recipientPhoneNumber;
         this.provinceName = provinceName;
         this.destinationDistrictId = districtId;
