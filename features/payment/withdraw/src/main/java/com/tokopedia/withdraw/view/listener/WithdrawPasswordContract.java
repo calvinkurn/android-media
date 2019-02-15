@@ -25,6 +25,6 @@ public class WithdrawPasswordContract {
 
     public interface Presenter extends CustomerPresenter<View> {
 
-        void doWithdraw(int withdrawal, BankAccountViewModel o, String password);
+        void doWithdraw(int withdrawal, BankAccountViewModel bankAccountViewModel, String password, boolean isSellerWithdrawal);
     }
 }

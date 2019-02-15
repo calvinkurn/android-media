@@ -47,9 +47,9 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
     }
 
     @Override
-    public void doWithdraw(int withdrawal, BankAccountViewModel bankAccountViewModel, String password) {
+    public void doWithdraw(int withdrawal, BankAccountViewModel bankAccountViewModel, String password, boolean isSellerWithdrawal) {
         doWithdrawUseCase.execute(DoWithdrawUseCase.createParams
-                        (userSession, withdrawal, bankAccountViewModel, password)
+                        (userSession, withdrawal, bankAccountViewModel, password, isSellerWithdrawal)
                 , new Subscriber<DoWithdrawDomainModel>() {
             @Override
             public void onCompleted() {

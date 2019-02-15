@@ -89,8 +89,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private int SELLER_STATE = 2;
     private int BUYER_STATE = 1;
     private TkpdHintTextInputLayout wrapperTotalWithdrawal;
-    //    private CloseableBottomSheetDialog infoDialog;
-    private CloseableBottomSheetDialog saldoWithdrawInfoDialog;
     RecyclerView bankRecyclerView;
     private View withdrawButton;
     private View withdrawAll;
@@ -122,6 +120,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private float sellerSaldoBalance;
     private int currentState = 0;
     private boolean isSeller = false;
+    private boolean sellerWithdrawal;
     private TextView saldoTitleTV;
     private CardView saldoTypeCV;
     private TextView saldoValueTV;
@@ -184,7 +183,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         infoDialogView.setOnClickListener(null);*/
 
 
-        saldoWithdrawInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        //    private CloseableBottomSheetDialog infoDialog;
+        CloseableBottomSheetDialog saldoWithdrawInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         saldoWithdrawInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -254,22 +254,19 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 , MethodChecker.getDrawable(getActivity(), R.drawable.divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
 
-        withdrawButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                KeyboardHandler.hideSoftKeyboard(getActivity());
-                float balance;
-                if (currentState == SELLER_STATE) {
-                    balance = sellerSaldoBalance;
-                } else {
-                    balance = buyerSaldoBalance;
-                }
-                presenter.doWithdraw(
-                        String.valueOf((int) balance),//totalBalance.getText().toString(),
-                        totalWithdrawal.getText().toString(),
-                        bankAdapter.getSelectedBank()
-                );
+        withdrawButton.setOnClickListener(v -> {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
+            float balance;
+            if (currentState == SELLER_STATE) {
+                balance = sellerSaldoBalance;
+            } else {
+                balance = buyerSaldoBalance;
             }
+            presenter.doWithdraw(
+                    String.valueOf((int) balance),//totalBalance.getText().toString(),
+                    totalWithdrawal.getText().toString(),
+                    bankAdapter.getSelectedBank()
+            );
         });
 
         withdrawBuyerSaldoTV.setOnClickListener(v -> {
@@ -281,6 +278,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.refund_saldo_less_min));
                 } else {
                     currentState = BUYER_STATE;
+                    sellerWithdrawal = false;
                     enableBuyerSaldoView();
                 }
             }
@@ -295,6 +293,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
                     currentState = SELLER_STATE;
+                    sellerWithdrawal = true;
                     enableSellerSaldoView();
                 }
 
@@ -303,9 +302,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
             currentState = SELLER_STATE;
+            sellerWithdrawal = true;
             enableSellerSaldoView();
         } else {
             currentState = BUYER_STATE;
+            sellerWithdrawal = false;
             enableBuyerSaldoView();
         }
 
@@ -645,6 +646,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         Intent intent = new Intent(getActivity(), WithdrawPasswordActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(WithdrawPasswordActivity.BUNDLE_WITHDRAW, totalWithdrawal.getText().toString());
+        bundle.putBoolean(WithdrawPasswordActivity.BUNDLE_IS_SELLER_WITHDRAWAL, sellerWithdrawal);
         bundle.putParcelable(WithdrawPasswordActivity.BUNDLE_BANK, bankAdapter.getSelectedBank());
         intent.putExtras(bundle);
         startActivityForResult(intent, CONFIRM_PASSWORD_INTENT);

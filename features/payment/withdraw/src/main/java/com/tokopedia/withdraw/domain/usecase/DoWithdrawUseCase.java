@@ -54,7 +54,7 @@ public class DoWithdrawUseCase extends UseCase<DoWithdrawDomainModel> {
     }
 
     public static RequestParams createParams(UserSession userSession, int withdrawal
-            , BankAccountViewModel bankAccountViewModel, String password) {
+            , BankAccountViewModel bankAccountViewModel, String password, boolean isSellerWithdrawal) {
         RequestParams requestParams = RequestParams.EMPTY;
         String deviceId = userSession.getDeviceId();
         String userId = userSession.getUserId();

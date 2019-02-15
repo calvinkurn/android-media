@@ -32,7 +32,7 @@ import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import javax.inject.Inject;
 
-public class WithdrawPasswordFragment extends BaseDaggerFragment implements WithdrawPasswordContract.View{
+public class WithdrawPasswordFragment extends BaseDaggerFragment implements WithdrawPasswordContract.View {
 
 
     private View withdrawButton;
@@ -45,7 +45,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
     protected String getScreenName() {
         return null;
     }
-    
+
     @Inject
     WithdrawPasswordPresenter presenter;
 
@@ -89,11 +89,12 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
             public void onClick(View v) {
                 int withdrawal = (int) StringUtils.convertToNumeric(
                         getArguments().getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)
-                        ,false);
+                        , false);
+                boolean isSellerWithdrawal = getArguments().getBoolean(WithdrawPasswordActivity.BUNDLE_IS_SELLER_WITHDRAWAL);
                 wrapperPassword.setError(null);
                 presenter.doWithdraw(withdrawal, (BankAccountViewModel) getArguments()
-                        .get(WithdrawPasswordActivity.BUNDLE_BANK)
-                        , passwordView.getText().toString());
+                                .get(WithdrawPasswordActivity.BUNDLE_BANK)
+                        , passwordView.getText().toString(), isSellerWithdrawal);
             }
         });
 
