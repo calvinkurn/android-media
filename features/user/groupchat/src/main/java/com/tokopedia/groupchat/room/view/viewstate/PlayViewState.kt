@@ -16,5 +16,6 @@ interface PlayViewState {
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
     fun getToolbar(): Toolbar?
     fun setSponsorData(adsId: String?, adsImageUrl: String?)
-    fun onBackPressed(activity: FragmentActivity?)
+    fun onBackPressed() : Boolean
+
 }

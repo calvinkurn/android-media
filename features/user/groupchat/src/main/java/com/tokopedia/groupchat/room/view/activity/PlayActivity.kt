@@ -19,7 +19,7 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
-import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 
 /**
  * @author : Steven 11/02/19
@@ -157,7 +157,15 @@ open class PlayActivity : BaseSimpleActivity() {
     }
 
     private fun setFragment() {
-        pagerAdapter = FragmentPagerAdapter(supportFragmentManager, intent?.extras?.getString(EXTRA_CHANNEL_UUID))
+
+        val fragmentList = ArrayList<Fragment>()
+
+        val bundle = Bundle()
+        val channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        bundle.putString(PlayActivity.EXTRA_CHANNEL_UUID, channelId)
+        fragmentList.add(PlayFragment.createInstance(bundle))
+
+        pagerAdapter = FragmentPagerAdapter(supportFragmentManager, fragmentList)
         findViewById<ViewPager>(R.id.view_pager_play).adapter = pagerAdapter
     }
 
@@ -239,9 +247,10 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         if (pagerAdapter.getItem(findViewById<ViewPager>(R.id.view_pager_play).currentItem) is
-                        PlayContract.View) {
-            (pagerAdapter.getItem(findViewById<ViewPager>(R.id.view_pager_play).currentItem) as
-                    PlayContract.View).onBackPressed()
+                        PlayFragment
+                &&   (pagerAdapter.getItem(findViewById<ViewPager>(R.id.view_pager_play).currentItem) as
+                        PlayFragment).onBackPressed()) {
+
         } else {
             super.onBackPressed()
         }

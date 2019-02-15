@@ -141,20 +141,8 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
             if (url.isBlank())
                 finish()
 
-            gcToken = getGCToken()
+            gcToken = userSession.gcToken
         }
-    }
-
-    private fun getGCToken(): String {
-        activity?.run{
-            val LOGIN_SESSION = "LOGIN_SESSION"
-            val KEY_GC_TOKEN = "gc_token"
-
-            val sharedPrefs = applicationContext.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE)
-            return sharedPrefs.getString(KEY_GC_TOKEN, "")
-        }
-
-        return ""
     }
 
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {

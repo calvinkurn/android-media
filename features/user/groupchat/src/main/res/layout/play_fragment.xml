@@ -6,209 +6,239 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/channel_banner"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/medium_green"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/sponsor_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_weight="1" />
-
-    <RelativeLayout
-        android:id="@+id/shadow_layer"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/shadow_layer_group_chat_banner"
-        android:adjustViewBounds="true"
-        android:alpha="0.1"
-        android:background="@color/black"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="@id/channel_banner"
-        app:layout_constraintTop_toTopOf="@id/channel_banner"
-        app:layout_constraintBottom_toBottomOf="@id/channel_banner"
-        tools:visibility="gone" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
-        app:titleTextAppearance="@style/ToolbarGroupChat"
-        tools:layout_height="?attr/actionBarSize"
-        tools:title="title" />
-
-    <LinearLayout
-        android:id="@+id/sponsor_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        app:layout_constraintDimensionRatio="6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:foreground="@drawable/bg_sponsor_border"
-            app:cardBackgroundColor="@color/transparent"
-            app:cardCornerRadius="@dimen/card_channel_elevation"
-            app:cardElevation="0dp"
-            app:contentPadding="@dimen/space_atomic">
-
-            <ImageView
-                android:id="@+id/sponsor_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:scaleType="fitXY"
-                tools:src="@tools:sample/avatars" />
-        </android.support.v7.widget.CardView>
-
-        <android.support.v4.widget.Space
-
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_8" />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/video_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
-        tools:ignore="MergeRootFrame"
-        tools:visibility="gone">
-
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/video_container"
-            android:name="com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/chat_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom"
-        app:layout_constraintTop_toBottomOf="@id/video_horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_weight="0.5"
-        android:background="@color/yellow_1"
-        tools:ignore="MergeRootFrame" />
 
     <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/bottom"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/green_200"
-        tools:ignore="MergeRootFrame">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/button_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            app:layout_constraintBottom_toBottomOf="@id/bottom"
-            app:layout_constraintEnd_toEndOf="@id/bottom"
-            app:layout_constraintRight_toRightOf="@id/bottom"
-            app:layout_constraintTop_toTopOf="@id/reply_edit_text"
-            android:src="@drawable/ic_send_24dp_green"
-            tools:layout_editor_absoluteX="42dp"
-            tools:layout_editor_absoluteY="460dp"
-            tools:visibility="visible" />
-
-        <com.tokopedia.design.text.BackEditText
-            android:id="@+id/reply_edit_text"
+            android:id="@+id/channel_banner"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_rounded_chat_input"
-            android:inputType="textMultiLine"
-            android:maxLength="200"
-            android:maxLines="5"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8"
-            android:textSize="@dimen/sp_14"
-            android:hint="@string/chat_hint"
-            app:layout_constraintBottom_toBottomOf="@id/bottom"
-            app:layout_constraintEnd_toStartOf="@+id/button_send"
-            app:layout_constraintRight_toLeftOf="@+id/button_send"
-            app:layout_constraintStart_toStartOf="@id/bottom"
+            android:layout_height="0dp"
+            android:background="@color/medium_green"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/sponsor_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            app:layout_constraintVertical_weight="1"/>
 
-        <TextView
-            android:id="@+id/login"
+        <RelativeLayout
+            android:id="@+id/shadow_layer"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/shadow_layer_group_chat_banner"
+            android:adjustViewBounds="true"
+            android:alpha="0.1"
+            android:background="@color/black"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/channel_banner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@id/channel_banner"
+            app:layout_constraintTop_toTopOf="@id/channel_banner"
+            tools:visibility="gone"/>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:background="@drawable/top_shadow"
-            android:elevation="@dimen/elevation_login_group_chat"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:paddingBottom="@dimen/dp_20"
-            android:paddingTop="@dimen/dp_30"
-            android:text="@string/login_to_chat"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="normal"
-            android:visibility="gone" />
+            android:gravity="top"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
+            app:titleTextAppearance="@style/ToolbarGroupChat"
+            tools:layout_height="?attr/actionBarSize"
+            tools:title="title"/>
+
+        <LinearLayout
+            android:id="@+id/sponsor_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_8"
+            app:layout_constraintDimensionRatio="6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:foreground="@drawable/bg_sponsor_border"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="@dimen/card_channel_elevation"
+                app:cardElevation="0dp"
+                app:contentPadding="@dimen/space_atomic">
+
+                <ImageView
+                    android:id="@+id/sponsor_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:scaleType="fitXY"
+                    tools:src="@tools:sample/avatars"/>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v4.widget.Space
+
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/video_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
+            tools:ignore="MergeRootFrame"
+            tools:visibility="gone">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                      xmlns:tools="http://schemas.android.com/tools"
+                      android:id="@+id/video_container"
+                      android:name="com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/chat_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/yellow_1"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            app:layout_constraintVertical_weight="0.5"
+            tools:ignore="MergeRootFrame"/>
+
+        <ImageView
+            android:id="@+id/webview_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/video_horizontal"
+            />
+
+        <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/bottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/green_200"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MergeRootFrame">
+
+
+            <ImageView
+                android:id="@+id/dynamic_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:src="@drawable/ic_three_dots_more_menu"
+                app:layout_constraintBottom_toBottomOf="@id/bottom"
+                app:layout_constraintEnd_toEndOf="@id/bottom"
+                app:layout_constraintLeft_toRightOf="@+id/reply_edit_text"
+                app:layout_constraintRight_toLeftOf="@+id/button_send"
+                app:layout_constraintTop_toTopOf="@id/reply_edit_text"
+                tools:layout_editor_absoluteX="42dp"
+                tools:layout_editor_absoluteY="460dp"
+                tools:visibility="visible"/>
+
+            <ImageView
+                android:id="@+id/button_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:src="@drawable/ic_send_24dp_green"
+                app:layout_constraintBottom_toBottomOf="@id/bottom"
+                app:layout_constraintEnd_toEndOf="@id/bottom"
+                app:layout_constraintRight_toRightOf="@id/bottom"
+                app:layout_constraintTop_toTopOf="@id/reply_edit_text"
+                app:layout_constraintLeft_toRightOf="@id/dynamic_icon"
+                tools:layout_editor_absoluteX="42dp"
+                tools:layout_editor_absoluteY="460dp"
+                tools:visibility="visible"/>
+
+            <com.tokopedia.design.text.BackEditText
+                android:id="@+id/reply_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:background="@drawable/bg_rounded_chat_input"
+                android:hint="@string/chat_hint"
+                android:inputType="textMultiLine"
+                android:maxLength="200"
+                android:maxLines="5"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintBottom_toBottomOf="@id/bottom"
+                app:layout_constraintEnd_toStartOf="@+id/button_send"
+                app:layout_constraintRight_toLeftOf="@+id/button_send"
+                app:layout_constraintStart_toStartOf="@id/bottom"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/top_shadow"
+                android:elevation="@dimen/elevation_login_group_chat"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp_30"
+                android:paddingBottom="@dimen/dp_20"
+                android:text="@string/login_to_chat"
+                android:textColor="@color/medium_green"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="normal"
+                android:visibility="gone"/>
+
+
+        </android.support.constraint.ConstraintLayout>
 
 
     </android.support.constraint.ConstraintLayout>
-
-
-
-</android.support.constraint.ConstraintLayout>
 
     <include layout="@layout/bottom_sheet_rounded_header"/>
 

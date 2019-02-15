@@ -21,7 +21,7 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
-import com.tokopedia.groupchat.room.di.DaggerPlayComponent
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -41,6 +41,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     @Inject
     lateinit var presenter: PlayPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     open lateinit var viewState: PlayViewState
 
@@ -63,6 +66,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
             viewState.onSuccessGetInfoFirstTime(it)
+            saveGCTokenToCache()
         }
     }
 
@@ -139,8 +143,16 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    override fun onBackPressed() {
-        viewState.onBackPressed(activity)
+    private fun saveGCTokenToCache() {
+        userSession.gcToken = "asd"
     }
+
+    override fun onBackPressed(): Boolean {
+        return if (::viewState.isInitialized) {
+            viewState.onBackPressed()
+        } else
+            false
+    }
+
 
 }
