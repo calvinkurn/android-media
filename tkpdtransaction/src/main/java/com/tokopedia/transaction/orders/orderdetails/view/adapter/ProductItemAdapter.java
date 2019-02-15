@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -100,6 +102,19 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (items.getActionButtons().size() > 0) {
                 buyBtn.setVisibility(View.VISIBLE);
                 buyBtn.setText(items.getActionButtons().get(0).getLabel());
+                GradientDrawable shape = new GradientDrawable();
+                shape.setShape(GradientDrawable.RECTANGLE);
+                shape.setCornerRadius(context.getResources().getDimensionPixelSize(R.dimen.dp_4));
+                if (!items.getActionButtons().get(0).getActionColor().getBackground().equals("")) {
+                    shape.setColor((Color.parseColor(items.getActionButtons().get(0).getActionColor().getBackground())));
+                }
+                if (!items.getActionButtons().get(0).getActionColor().getBorder().equals("")) {
+                    shape.setStroke(context.getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(items.getActionButtons().get(0).getActionColor().getBorder()));
+                }
+                buyBtn.setBackground(shape);
+                if (!items.getActionButtons().get(0).getActionColor().getTextColor().equals("")) {
+                    buyBtn.setTextColor(Color.parseColor(items.getActionButtons().get(0).getActionColor().getTextColor()));
+                }
                 buyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

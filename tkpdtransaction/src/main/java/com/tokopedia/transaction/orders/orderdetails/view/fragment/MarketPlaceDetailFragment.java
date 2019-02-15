@@ -37,6 +37,8 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
@@ -80,7 +82,7 @@ import javax.inject.Inject;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
-public class MarketPlaceDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
+public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String ACTION_BUTTON_URL = "action_button_url";
@@ -99,30 +101,32 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     private TextView statusLabel;
     private TextView statusValue;
     private TextView conditionalInfoText;
-    private LinearLayout statusDetail;
     private TextView invoiceView;
     private TextView lihat;
     private TextView detailLabel;
-    private LinearLayout detailContent;
     private TextView additionalText;
-    private LinearLayout additionalInfoLayout;
     private TextView infoLabel;
+    private TextView helpLabel;
+    private LinearLayout statusDetail;
+    private LinearLayout detailContent;
+    private LinearLayout additionalInfoLayout;
     private LinearLayout infoValue;
     private LinearLayout totalPrice;
-    private TextView helpLabel;
     private LinearLayout actionBtnLayout;
+    private LinearLayout paymentMethod;
     private TextView primaryActionBtn;
     private TextView secondaryActionBtn;
     private FrameLayout parentLayout;
     private RecyclerView itemsRecyclerView;
     private TextView productInformationTitle;
-    private LinearLayout paymentMethod;
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
     private CardView driverLayout, dropShipperLayout;
     private TextView statusLihat;
     private FrameLayout progressBarLayout;
     private ClipData myClip;
+    private SwipeToRefresh swipeToRefresh;
+    private RefreshHandler refreshHandler;
     @Inject
     OrderListAnalytics orderListAnalytics;
     private ShopInfo shopInfo;
@@ -176,6 +180,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         productInformationTitle = view.findViewById(R.id.product_info_label);
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
@@ -186,7 +191,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
+        refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        refreshHandler.startRefresh();
+        refreshHandler.setPullEnabled(true);
+//        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 
     @Override
@@ -231,10 +239,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         if (!TextUtils.isEmpty(title.textColor())) {
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         }
-        if(title.backgroundColor() !=null && !title.backgroundColor().isEmpty()){
+        if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
             Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
             doubleTextView.setBottomTextBackground(drawable);
-            doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20),getResources().getDimensionPixelSize(R.dimen.dp_10),getResources().getDimensionPixelSize(R.dimen.dp_20),getResources().getDimensionPixelSize(R.dimen.dp_10));
+            doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10), getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10));
 
             doubleTextView.setBottomTextBackgroundColor(Color.parseColor(title.backgroundColor()));
         }
@@ -366,7 +374,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dropshipper_info, null);
         TextView dropShipperName = view.findViewById(R.id.dropShipper_name);
         TextView dropShipperNumber = view.findViewById(R.id.dropShipper_phone);
-        dropShipperName.setText(dropShipper.getDropShipperName());
+        dropShipperName.setText(Html.fromHtml(dropShipper.getDropShipperName()));
         dropShipperNumber.setText(dropShipper.getDropShipperPhone());
         detailContent.addView(view);
     }
@@ -387,7 +395,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 driverLayout.setVisibility(View.VISIBLE);
             }
             if (!TextUtils.isEmpty(driverDetails.getDriverName())) {
-                driverName.setText(driverDetails.getDriverName());
+                driverName.setText(Html.fromHtml(driverDetails.getDriverName()));
                 driverLayout.setVisibility(View.VISIBLE);
             }
             if (!TextUtils.isEmpty(driverDetails.getDriverPhone())) {
@@ -411,14 +419,20 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void showProgressBar() {
+        if (!refreshHandler.isRefreshing()) {
+            refreshHandler.setRefreshing(true);
+            refreshHandler.setPullEnabled(false);
+        }
         progressBarLayout.setVisibility(View.VISIBLE);
-        mainView.setVisibility(View.GONE);
+        swipeToRefresh.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProgressBar() {
+        refreshHandler.finishRefresh();
+        refreshHandler.setPullEnabled(true);
         progressBarLayout.setVisibility(View.GONE);
-        mainView.setVisibility(View.VISIBLE);
+        swipeToRefresh.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -429,6 +443,17 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
     @Override
     public void showErrorMessage(String message) {
         ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void clearDynamicViews() {
+        statusDetail.removeAllViews();
+        detailContent.removeAllViews();
+        additionalInfoLayout.removeAllViews();
+        infoValue.removeAllViews();
+        totalPrice.removeAllViews();
+        actionBtnLayout.removeAllViews();
+        paymentMethod.removeAllViews();
     }
 
     @Override
@@ -457,14 +482,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
             if (!actionButton.getActionColor().getTextColor().equals("")) {
                 textView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
             }
-            if(actionButton.getLabel().equalsIgnoreCase(BELI_LAGI)) {
+            if (actionButton.getLabel().equalsIgnoreCase(BELI_LAGI)) {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         presenter.onBuyAgain(getAppContext().getResources());
                     }
                 });
-            }else {
+            } else {
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
                     textView.setOnClickListener(clickActionButton(actionButton));
                 }
@@ -484,7 +509,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void finishOrderDetail() {
-        mainView.requestLayout();
+//        mainView.requestLayout();
+        refreshHandler.startRefresh();
 //        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 
@@ -527,9 +553,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                 final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
                     @Override
                     public int layoutResId() {
-                        if(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
+                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
                             return R.layout.dialog_seller_finish;
-                        }else {
+                        } else {
                             return super.layoutResId();
                         }
                     }
@@ -580,8 +606,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
                         String invoiceUrl;
                         Uri uri = Uri.parse(actionButton.getUri());
                         invoiceUrl = uri.getQueryParameter("invoiceUrl");
-                        String applink = "tokopedia://topchat/askseller/" + shopId ;
-                        applink = applink.concat("?customMessage=" + invoiceUrl + "&source=" + "tx_ask_seller" + "&opponent_name=" +"" + "&avatar=" + "");
+                        String applink = "tokopedia://topchat/askseller/" + shopId;
+                        applink = applink.concat("?customMessage=" + invoiceUrl + "&source=" + "tx_ask_seller" + "&opponent_name=" + "" + "&avatar=" + "");
                         RouteManager.route(getContext(), applink);
                     }
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
@@ -778,6 +804,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ord
 
     @Override
     public void setMainViewVisible(int visibility) {
-        mainView.setVisibility(visibility);
+        swipeToRefresh.setVisibility(visibility);
+    }
+
+    @Override
+    public void onRefresh(View view) {
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 }

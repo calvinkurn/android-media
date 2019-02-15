@@ -269,6 +269,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             return;
         getView().hideProgressBar();
         getView().setStatus(details.status());
+        getView().clearDynamicViews();
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
             getView().setConditionalInfo(details.conditionalInfo());
         }

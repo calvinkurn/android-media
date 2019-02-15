@@ -90,6 +90,7 @@ public interface OrderListDetailContract {
 
         void showErrorMessage(String message);
 
+        void clearDynamicViews();
     }
 
     interface Presenter extends CustomerPresenter<View> {

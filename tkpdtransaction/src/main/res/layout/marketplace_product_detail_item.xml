@@ -29,10 +29,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_10"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_14"
             android:maxLines="@integer/int_3"
             android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
+            android:textColor="@color/light_primary"
             app:layout_constraintLeft_toRightOf="@id/img_product"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -44,7 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textSize="12sp"
+            android:textSize="@dimen/sp_11"
+            android:textColor="@color/font_black_secondary_54"
             app:layout_constraintLeft_toLeftOf="@id/txt_product_name"
             app:layout_constraintTop_toBottomOf="@id/txt_product_name"
             tools:text="2 Barang(20kg)" />
@@ -55,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColor="@color/orange_red"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintLeft_toLeftOf="@id/txt_quantity"
             app:layout_constraintTop_toBottomOf="@id/txt_quantity"
             tools:text="Rp 2.000.000" />
@@ -66,6 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_marginLeft="10dp"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_item_price"
             tools:text="Tambah kecap bang sama kuahnya banyakin mantap lu bang" />
@@ -87,6 +92,8 @@
             android:layout_margin="10dp"
             android:layout_marginLeft="10dp"
             android:text="Total Harga:"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/font_black_secondary_54"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
@@ -97,7 +104,7 @@
             android:layout_margin="10dp"
             android:layout_marginLeft="10dp"
             android:textColor="@color/orange_red"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_total"
             tools:text="Rp 4.000.000" />

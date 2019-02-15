@@ -6,11 +6,18 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
+
+
 
         <LinearLayout
             android:id="@+id/main_view"
@@ -39,7 +46,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/status"
-                            android:textSize="@dimen/sp_11" />
+                            android:textSize="@dimen/sp_12" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -51,7 +58,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:textSize="@dimen/font_medium"
+                                android:textSize="@dimen/fonts"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -60,6 +67,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/lihat_text"
                                 android:textColor="@color/green_250"
+                                android:textSize="@dimen/sp_12"
                                 android:visibility="gone" />
                         </LinearLayout>
 
@@ -221,7 +229,8 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dp_16"
                         android:text="@string/info_label"
-                        android:textSize="@dimen/font_medium"
+                        android:textSize="@dimen/sp_14"
+                        android:textColor="@color/black_70"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -313,6 +322,8 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"

@@ -361,7 +361,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void renderEmptyList(int typeRequest) {
         if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
-            swipeToRefresh.setVisibility(View.GONE);
+            swipeToRefresh.setVisibility(View.VISIBLE);
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
                 emptyLayoutMarketPlace.setVisibility(View.VISIBLE);
             } else {

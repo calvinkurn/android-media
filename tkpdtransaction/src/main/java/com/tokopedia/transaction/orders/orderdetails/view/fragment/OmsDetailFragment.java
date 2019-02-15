@@ -441,6 +441,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void clearDynamicViews() {
+
+    }
+
+    @Override
     public void setMainViewVisible(int visibility) {
         mainView.setVisibility(visibility);
     }
