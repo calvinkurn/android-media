@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.util
 import android.support.annotation.IntDef
 
 object ProductDetailConstant {
+    @JvmField
     var BASE_REST_URL = "https://ws.tokopedia.com/"
 
     const val PRD_STATE_ACTIVE = 1
