@@ -99,6 +99,8 @@ import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.common.TokoPointDrawerData;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
@@ -553,6 +555,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingOptimizerRouter,
         LoginRegisterPhoneRouter{
 
+
+    private final static int IRIS_ROW_LIMIT = 50;
+    private final static long IRIS_TIME_MINUTES = 15;
+
     private static final String EXTRA = "extra";
 
     @Inject
@@ -578,6 +584,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private UserSession userSession;
     private AnalyticTracker analyticTracker;
 
+    private Iris mIris;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -588,10 +596,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         initCMPushNotification();
+        initIris();
     }
 
     private void initDaggerInjector() {
         getReactNativeComponent().inject(this);
+    }
+
+    private void initIris() {
+        mIris = Iris.Companion.init(this);
+
+        boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
+
+        mIris.setService(new Configuration(
+                IRIS_ROW_LIMIT,
+                IRIS_TIME_MINUTES,
+                irisEnable
+        ));
+    }
+
+    @Override
+    public Iris getIris() {
+        return mIris;
     }
 
     private FlightConsumerComponent getFlightConsumerComponent() {
@@ -3264,6 +3290,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             invalidateCategoryMenuData();
             onLogout(getApplicationComponent());
+            mIris.setUserId("");
 
             Intent intent = getHomeIntent(activity);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -3433,6 +3460,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Crashlytics.setUserIdentifier(userId);
         BranchSdkUtils.sendIdentityEvent(userId);
         BranchSdkUtils.sendLoginEvent(applicationContext);
+        mIris.setUserId(userId);
+        mIris.setDeviceId(getSession().getDeviceId());
     }
 
     @Override
