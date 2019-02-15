@@ -33,8 +33,8 @@ public class BannerView extends BaseCustomView {
     private static final String SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress";
 
     protected RecyclerView bannerRecyclerView;
-    private ViewGroup bannerIndicator;
-    private View bannerSeeAll;
+    protected ViewGroup bannerIndicator;
+    protected View bannerSeeAll;
     private Handler bannerHandler;
     private Runnable runnableScrollBanner;
     private boolean autoScrollOnProgress;
@@ -45,8 +45,8 @@ public class BannerView extends BaseCustomView {
     private OnPromoAllClickListener onPromoAllClickListener;
     private OnPromoDragListener onPromoDragListener;
 
-    private ArrayList<ImageView> indicatorItems;
-    private ArrayList<Boolean> impressionStatusList;
+    protected ArrayList<ImageView> indicatorItems;
+    protected ArrayList<Boolean> impressionStatusList;
     protected List<String> promoImageUrls;
     protected int currentPosition;
 
@@ -140,17 +140,13 @@ public class BannerView extends BaseCustomView {
     }
 
     protected void init() {
-        View view = inflateView();
+        View view = inflate(getContext(), R.layout.widget_banner, this);;
         bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category);
         bannerIndicator = view.findViewById(R.id.indicator_banner_container);
         bannerSeeAll = view.findViewById(R.id.promo_link);
         indicatorItems = new ArrayList<>();
         impressionStatusList = new ArrayList<>();
         promoImageUrls = new ArrayList<>();
-    }
-
-    protected View inflateView() {
-        return inflate(getContext(), R.layout.widget_banner, this);
     }
 
     public void buildView() {
