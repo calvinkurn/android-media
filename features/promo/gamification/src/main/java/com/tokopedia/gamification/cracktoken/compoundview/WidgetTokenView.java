@@ -432,7 +432,6 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     public void split(CrackResultEntity crackResult) {
-        playRewardSound();
         AnimatorSet bounceAnimatorSet = new AnimatorSet();
         imageViewFull.setVisibility(View.GONE);
         imageViewCracked.setPivotY(imageViewFull.getHeight());
@@ -481,7 +480,7 @@ public class WidgetTokenView extends FrameLayout {
                 rotateLeftAnimation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-
+                        playRewardSound();
                     }
 
                     @Override

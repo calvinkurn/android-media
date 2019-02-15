@@ -120,7 +120,10 @@ public class WidgetRewardCrackResult extends FrameLayout {
         PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, REWARD_SCALE_FACTOR);
 
         ObjectAnimator bouncePointsAnim = ObjectAnimator.ofPropertyValuesHolder(rewardType, scalex, scaley);
-        rewardType.setPivotX(rewardType.getWidth());
+        if (viewType == TYPE_LOYALTY)
+            rewardType.setPivotX(0);
+        else
+            rewardType.setPivotX(rewardType.getWidth());
         bouncePointsAnim.setStartDelay(REWARDS_VIEW_SCALE_UP_START_DELAY);
         bouncePointsAnim.setDuration(REWARDS_VIEW_SCALE_UP_DURATION);
         bouncePointsAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -134,7 +137,8 @@ public class WidgetRewardCrackResult extends FrameLayout {
         });
         bouncePointsAnim.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) { }
+            public void onAnimationStart(Animator animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -144,10 +148,12 @@ public class WidgetRewardCrackResult extends FrameLayout {
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) { }
+            public void onAnimationCancel(Animator animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animation) { }
+            public void onAnimationRepeat(Animator animation) {
+            }
         });
         bouncePointsAnim.start();
 
@@ -207,7 +213,7 @@ public class WidgetRewardCrackResult extends FrameLayout {
         else
             tvList = tvCouponsList;
 
-        int listLength=tvList.size();
+        int listLength = tvList.size();
         for (int i = listLength - 1; i >= 0; i--) {
             TextView tvListItem = tvList.get(i);
             AnimationSet animatorSet = new AnimationSet(true);
@@ -241,7 +247,8 @@ public class WidgetRewardCrackResult extends FrameLayout {
 
         animator.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) { }
+            public void onAnimationStart(Animator animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -250,10 +257,12 @@ public class WidgetRewardCrackResult extends FrameLayout {
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) { }
+            public void onAnimationCancel(Animator animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animation) { }
+            public void onAnimationRepeat(Animator animation) {
+            }
         });
         animator.start();
     }

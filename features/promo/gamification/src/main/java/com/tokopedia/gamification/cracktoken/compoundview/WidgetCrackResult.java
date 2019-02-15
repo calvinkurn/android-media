@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -58,11 +59,12 @@ public class WidgetCrackResult extends RelativeLayout {
     private static final int DURATION_ANIM_BG_CRACK_RESULT = 800;
     private static final int DURATION_ALPHA_ANIM = 800;
     private static final int DURATION_ALPHA_ANIM_TEXT = 500;
-    private static final long SLIDE_INFO_LEFT_TO_RIGHT_DURATION = 500;
+    private static final long SLIDE_INFO_LEFT_TO_RIGHT_DURATION = 250;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY = 100;
-    private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION = 502;
+    private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION = 250;
     private static final long COUNTER_ANIMATION_DURATION = 500;
     private static final long COUNTER_ANIMATION_START_DELAY = 200;
+    private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET = 500;
 
     private ImageView imageViewBgCrackResult;
     private ImageView imageViewCrackResult;
@@ -182,11 +184,9 @@ public class WidgetCrackResult extends RelativeLayout {
         animationBgCrackResult.addAnimation(rotateAnimationCrackResult);
 
         Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_bg_crack_result);
-        scaleAnimationBgCrackResult.setDuration(DURATION_ANIM_BG_CRACK_RESULT);
         animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
 
         TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-        translateAnimationBgCrackResult.setDuration(DURATION_ANIM_BG_CRACK_RESULT);
         animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
 
         startImageResultAnimation(imageViewBgCrackResult, animationBgCrackResult);
@@ -257,11 +257,8 @@ public class WidgetCrackResult extends RelativeLayout {
 
                     }
                 }
-                if (animationList != null && animationList.size() > 0) {
-                    counterAnimatorSet = new AnimatorSet();
-                    counterAnimatorSet.playTogether(animationList);
-                    counterAnimatorSet.start();
-                }
+                startCounterAnimation(rewardTexts != null ? rewardTexts.size() : 0);
+
             }
 
             @Override
@@ -274,7 +271,19 @@ public class WidgetCrackResult extends RelativeLayout {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = Gravity.CENTER;
             textView.setGravity(Gravity.CENTER);
-            textView.setText(rewardText.getText());
+            textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
+            if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
+                String rewardStr = "";
+                if (!TextUtils.isEmpty(rewardText.getTemplateText())) {
+                    int index = rewardText.getTemplateText().indexOf(' ');
+                    if (index != -1 && index < rewardText.getTemplateText().length()) {
+                        rewardStr = rewardText.getTemplateText().substring(index + 1);
+                    }
+                }
+                textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
+            } else {
+                textView.setText(rewardText.getText());
+            }
             textView.setLayoutParams(layoutParams);
             if (HexValidator.validate(rewardText.getColor())) {
                 textView.setTextColor(Color.parseColor(rewardText.getColor()));
@@ -287,6 +296,20 @@ public class WidgetCrackResult extends RelativeLayout {
             listCrackResultText.addView(textView);
         }
 
+    }
+
+    private void startCounterAnimation(int rewardsCount) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if (animationList != null && animationList.size() > 0) {
+                    counterAnimatorSet = new AnimatorSet();
+                    counterAnimatorSet.playTogether(animationList);
+                    counterAnimatorSet.start();
+                }
+            }
+        }, rewardsCount * 150);
     }
 
     private float measureFrontTextWidth(float textSize, String textToMeasure) {
@@ -313,23 +336,26 @@ public class WidgetCrackResult extends RelativeLayout {
         } else {
             multiplierColor = getContext().getResources().getColor(R.color.default_text_reward_color);
         }
-        String infoString = rewardText.getTierInformation() + " " + rewardText.getMultiplier();
+        String infoString = rewardText.getTierInformation() + " " + rewardText.getMultiplier() + "X";
         Spannable wordtoSpan = new SpannableString(infoString);
 
         wordtoSpan.setSpan(new ForegroundColorSpan(multiplierColor), infoString.indexOf(rewardText.getMultiplier()), infoString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         TextView textViewTierInfo = new TextView(getContext());
+        textViewTierInfo.setTypeface(textViewTierInfo.getTypeface(), Typeface.BOLD);
         textViewTierInfo.setText(wordtoSpan);
         textViewTierInfo.setBackgroundResource(R.drawable.ic_multiplier);
-        int padding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, textView.getHeight() - padding);
-        layoutParams.topMargin = padding / 2;
-        layoutParams.bottomMargin = padding / 2;
+        int topBottomPadding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
+        int rightPadding = getResources().getDimensionPixelOffset(R.dimen.dp_12);
+        int leftPadding = getResources().getDimensionPixelOffset(R.dimen.dp_16);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, textView.getHeight() - topBottomPadding);
+        layoutParams.topMargin = topBottomPadding / 2;
+        layoutParams.bottomMargin = topBottomPadding / 2;
         textViewTierInfo.setGravity(Gravity.CENTER);
         textViewTierInfo.setLayoutParams(layoutParams);
         textViewTierInfo.setX(textView.getX());
         textViewTierInfo.setY(textView.getY());
-        textViewTierInfo.setPadding(padding, padding, padding, padding);
+        textViewTierInfo.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding);
 
         if (tvTierInfoList == null) {
             tvTierInfoList = new ArrayList<TextView>();
@@ -377,8 +403,10 @@ public class WidgetCrackResult extends RelativeLayout {
         AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
         alphaAnimation.setFillAfter(true);
         alphaAnimation.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION);
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift, 0f, 0f);
+        alphaAnimation.setStartOffset(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET);
+        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift + 300, 0f, 0f);
         translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
+        translateAnimationCrackResult.setStartOffset(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET);
         translateAnimationCrackResult.setFillAfter(true);
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -408,7 +436,6 @@ public class WidgetCrackResult extends RelativeLayout {
     private void initCountAnimation(TextView textView, int valueBefore, int valueAfter, String text) {
         ValueAnimator animator = ValueAnimator.ofInt(valueBefore, valueAfter);
         animator.setDuration(COUNTER_ANIMATION_DURATION);
-        animator.setStartDelay(COUNTER_ANIMATION_START_DELAY);
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
