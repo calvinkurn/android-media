@@ -23,8 +23,6 @@ public interface AbstractionRouter {
 
     void showMaintenancePage();
 
-    void showForceLogoutDialog(Response response);
-
     void showServerError(Response response);
 
     void gcmUpdate() throws IOException;
