@@ -193,18 +193,19 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="@drawable/top_shadow"
+        android:alpha="0.7"
         android:elevation="@dimen/elevation_login_group_chat"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:paddingBottom="@dimen/dp_20"
         android:paddingTop="@dimen/dp_30"
         android:text="@string/login_to_chat"
-        android:textColor="@color/medium_green"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="visible"
-        tools:visibility="gone"/>
+        tools:visibility="visible"/>
 
 
 
