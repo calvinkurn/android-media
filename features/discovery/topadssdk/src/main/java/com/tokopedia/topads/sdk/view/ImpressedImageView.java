@@ -181,7 +181,7 @@ public class ImpressedImageView extends AppCompatImageView {
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
         } else {
-            Glide.with(getContext()).load(image.getImageUrl()).into(this);
+            ImageHandler.loadImageThumbs(getContext(), this, image.getImageUrl());
         }
     }
 
@@ -192,7 +192,7 @@ public class ImpressedImageView extends AppCompatImageView {
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
         } else {
-            Glide.with(getContext()).load(image.getFullEcs()).into(this);
+            ImageHandler.loadImageThumbs(getContext(), this, image.getFullEcs());
         }
     }
 
