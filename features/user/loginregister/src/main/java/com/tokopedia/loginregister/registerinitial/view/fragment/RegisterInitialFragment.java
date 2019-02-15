@@ -377,7 +377,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 handleRegisterWebview(resultCode, data);
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                handleGoogleSignInResult(task);
+                if (task != null) {
+                    handleGoogleSignInResult(task);
+                }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
