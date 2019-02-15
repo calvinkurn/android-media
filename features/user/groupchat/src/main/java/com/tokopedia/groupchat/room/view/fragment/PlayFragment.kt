@@ -1,14 +1,19 @@
 package com.tokopedia.groupchat.room.view.fragment
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
+import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -63,10 +68,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     lateinit var userSession: UserSessionInterface
 
     open lateinit var viewState: PlayViewState
+    private lateinit var rootView : View
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.play_fragment, container, false)
-        TransparentStatusBarHelper.assistActivity(activity)
         return view
     }
 
@@ -99,20 +105,83 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun setToolbarView(view: View) {
 
+//        if (isLollipopOrNewer()) {
+//            TransparentStatusBarHelper.assistActivity(activity)
+//        }
+//        removePaddingStatusBar()
+
         var toolbar = viewState.getToolbar()
 
-        if (isLollipopOrNewer()) {
-            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-            toolbar?.setPadding(0, getStatusBarHeight(), 0, 0)
-        }
+//        if (isLollipopOrNewer()) {
+//            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+//            toolbar?.setPadding(0, getStatusBarHeight(), 0, 0)
+//        }
         activity?.let {
             (it as AppCompatActivity).let {
                 it.setSupportActionBar(toolbar)
                 it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
         }
+    }
+
+    private fun removePaddingStatusBar() {
+        val KEYBOARD_THRESHOLD = 100
+
+        view?.let{
+            rootView = it.findViewById<View>(R.id.root_view)
+            rootView.viewTreeObserver?.addOnGlobalLayoutListener {
+                val heightDiff = rootView.rootView.height - rootView.height
+
+                if (heightDiff > KEYBOARD_THRESHOLD) {
+                    removePaddingIfKeyboardIsShowing()
+                } else {
+                    addPaddingIfKeyboardIsClosed()
+                }
+            }
+        }
+
+    }
+
+    private fun addPaddingIfKeyboardIsClosed() {
+        activity?.run{
+            if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
+                val container = rootView.findViewById<View>(R.id.container)
+                val params = container
+                        .layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(this))
+                container.layoutParams = params
+            }
+        }
+
+    }
+
+    private fun removePaddingIfKeyboardIsShowing() {
+        activity?.run{
+            if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
+                val container = rootView.findViewById<View>(R.id.container)
+                val params = container.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, 0, 0, 0)
+                container.layoutParams = params
+            }
+        }
+    }
+
+    fun getSoftButtonsBarSizePort(activity: FragmentActivity): Int {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            val metrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(metrics)
+            val usableHeight = metrics.heightPixels
+            activity.windowManager.defaultDisplay.getRealMetrics(metrics)
+            val realHeight = metrics.heightPixels
+            return if (realHeight > usableHeight)
+                realHeight - usableHeight
+            else
+                0
+        }
+        return 0
     }
 
     fun getStatusBarHeight(): Int {
