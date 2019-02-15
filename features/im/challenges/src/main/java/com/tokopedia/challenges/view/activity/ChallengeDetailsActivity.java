@@ -55,6 +55,7 @@ public class ChallengeDetailsActivity extends ChallengesBaseActivity implements 
             if (fragment != null) {
                 DialogFragment df = (DialogFragment) fragment;
                 df.dismiss();
+                return;
             }
         }
         super.onBackPressed();

@@ -95,8 +95,9 @@ public class VideoViewFragment extends DialogFragment implements CustomVideoPlay
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.iv_close)
-            dismiss();
+        if (view.getId() == R.id.iv_close) {
+            getActivity().onBackPressed();
+        }
     }
 }
 
