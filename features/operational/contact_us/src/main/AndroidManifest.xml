@@ -76,5 +76,11 @@
             android:label="Detail Kendala"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity android:name="com.tokopedia.contactus.inboxticket2.view.activity.ActivityProvideRating"
+            android:exported="true"
+            android:label="Detail Kendala"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>

@@ -124,7 +124,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         edMessage.getText().clear();
         setSubmitButtonEnabled(false);
 
-        viewHelpRate.setVisibility(View.GONE);
+        //viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
 
         int textSizeLabel = 11;
@@ -147,7 +147,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getColor(R.color.black_38), textSizeLabel));
             showIssueClosed();
 
-        } else if (ticketDetail.isShowRating()) {
+        } else if (/*Sandeep*/true) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
                     getResources().getColor(R.color.red_30),
                     getResources().getColor(R.color.red_150), textSizeLabel));
@@ -300,6 +300,22 @@ public class InboxDetailActivity extends InboxBaseActivity
                 "");
     }
 
+    @OnClick({R2.id.btn_inactive_1,R2.id.btn_inactive_2,R2.id.btn_inactive_3,R2.id.btn_inactive_4,R2.id.btn_inactive_5,})
+    void onEmojiClick(View v) {
+            if(v.getId() == R.id.btn_inactive_1) {
+                startActivity(ActivityProvideRating.getInstance(this, 1));
+            }else if (v.getId() == R.id.btn_inactive_2) {
+                startActivity(ActivityProvideRating.getInstance(this, 2));
+            }else if (v.getId() == R.id.btn_inactive_3) {
+                startActivity(ActivityProvideRating.getInstance(this, 3));
+            }else if (v.getId() == R.id.btn_inactive_4) {
+                startActivity(ActivityProvideRating.getInstance(this, 4));
+            }else if (v.getId() == R.id.btn_inactive_5) {
+                startActivity(ActivityProvideRating.getInstance(this, 5));
+            }
+    }
+
+
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
         ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
@@ -310,17 +326,12 @@ public class InboxDetailActivity extends InboxBaseActivity
                 "");
     }
 
-    @OnClick({R2.id.btn_no,
-            R2.id.btn_yes,
+    @OnClick({
             R2.id.txt_hyper,
             R2.id.tv_view_transaction})
     void onClickListener(View v) {
         int id = v.getId();
-        if (id == R.id.btn_yes) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_yes, rateCommentID);
-        } else if (id == R.id.btn_no) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_no, rateCommentID);
-        } else if (id == R.id.txt_hyper) {
+        if (id == R.id.txt_hyper) {
             setResult(RESULT_FINISH);
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
@@ -399,7 +410,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         edMessage.getText().clear();
         setSubmitButtonEnabled(false);
         edMessage.setHint(R.string.type_here);
-        viewHelpRate.setVisibility(View.GONE);
+       // viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,
                 getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
@@ -408,7 +419,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void showIssueClosed() {
-        viewHelpRate.setVisibility(View.GONE);
+        //viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,
@@ -418,7 +429,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void enterSearchMode(String search, int total) {
         textToolbar.setVisibility(View.GONE);
-        viewHelpRate.setVisibility(View.GONE);
+      //  viewHelpRate.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.GONE);
         detailAdapter.enterSearchMode(search);
         String placeHolder = "/%s";

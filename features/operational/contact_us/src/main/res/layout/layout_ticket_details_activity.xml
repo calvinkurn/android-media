@@ -184,11 +184,11 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
 
     <include
         android:id="@+id/view_help_rate"
-        layout="@layout/layout_yes_no"
+        layout="@layout/layout_rating"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

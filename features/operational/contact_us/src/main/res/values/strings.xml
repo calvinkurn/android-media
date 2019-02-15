@@ -59,7 +59,7 @@
     <string name="invoice_id">ID: #%1$s</string>
     <string name="need_rating">Beri Penilaian</string>
     <string name="max_image_warning">Maksimal 5 lampiran diizinkan</string>
-    <string name="text_satisfied">Apakah sudah membantu?</string>
+    <string name="text_satisfied">Beri nilai pada kualitas layanan kami</string>
     <string name="select_bad_reason">Keluhan tentang CS kami</string>
     <string name="cu_no_more_results">Tidak Ada Lagi Hasil</string>
     <string name="hint_attachment">Catatan: Mohon lampirkan data yang diminta</string>

@@ -1,0 +1,15 @@
+query chipGetInboxDetailQuery($caseID: String!) {
+chipGetInboxDetail(caseID: $caseID) {
+    data {
+      isSuccess
+      tickets {
+        id
+      	badCsatReasonList{
+          id
+          message
+        }
+      }
+    }
+    messageError
+  }
+  }

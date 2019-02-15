@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_24"
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@color/grey_300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_help_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="8dp"
+        android:text="@string/text_satisfied"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toTopOf="@+id/btn_inactive_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/divider" />
+
+    <ImageView
+        android:id="@+id/btn_inactive_1"
+        android:layout_width="40dp"
+        android:layout_height="@dimen/dp_40"
+        android:gravity="center"
+        android:text="@string/no"
+        android:src="@drawable/rating_inactive_1"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_14"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_inactive_2"
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+
+    <ImageView
+        android:id="@+id/btn_inactive_2"
+        android:layout_width="43dp"
+        android:layout_height="@dimen/dp_40"
+        android:gravity="center"
+        android:src="@drawable/rating_inactive_2"
+        android:text="@string/no"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_14"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_inactive_1"
+        app:layout_constraintRight_toLeftOf="@+id/btn_inactive_3"
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+
+    <ImageView
+        android:id="@+id/btn_inactive_3"
+        android:layout_width="40dp"
+        android:layout_height="@dimen/dp_40"
+        android:gravity="center"
+        android:src="@drawable/rating_inactive_3"
+        android:text="@string/no"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_14"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_inactive_2"
+        app:layout_constraintRight_toLeftOf="@+id/btn_inactive_4"
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+
+    <ImageView
+        android:id="@+id/btn_inactive_4"
+        android:layout_width="40dp"
+        android:layout_height="@dimen/dp_40"
+        android:gravity="center"
+        android:src="@drawable/rating_inactive_4"
+        android:text="@string/no"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_14"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_inactive_3"
+        app:layout_constraintRight_toLeftOf="@+id/btn_inactive_5"
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+
+    <ImageView
+        android:id="@+id/btn_inactive_5"
+        android:layout_width="40dp"
+        android:layout_height="@dimen/dp_40"
+        android:gravity="center"
+        android:src="@drawable/rating_inactive_5"
+        android:text="@string/no"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_14"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_inactive_4"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+
+</android.support.constraint.ConstraintLayout>
