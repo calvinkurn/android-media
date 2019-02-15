@@ -882,7 +882,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
             for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
-                if (shippingCourierViewModel.productData.isRecommend) {
+                if (shippingCourierViewModel.productData.isRecommend || shippingCourierViewModel.serviceData.serviceId == selectedServiceId) {
                     if (shippingCourierViewModel.serviceData.error != null &&
                             !TextUtils.isEmpty(shippingCourierViewModel.serviceData.error.errorMessage) &&
                             shippingCourierViewModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
