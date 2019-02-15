@@ -195,6 +195,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 is Fail -> onErrorGetProductInfo(it.throwable)
             }
         })
+        productInfoViewModel.productVariantResp.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetProductVariantInfo(it.data)
+                is Fail -> onErrorGetProductVariantInfo(it.throwable)
+            }
+        })
 
         productInfoViewModel.productInfoP2resp.observe(this, Observer {
             it?.run { renderProductInfo2(this) }
@@ -498,9 +504,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun loadProductData() {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            productInfoViewModel.getProductInfo(GraphqlHelper.loadRawString(resources, R.raw.gql_get_product_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_product_info),
-                    ProductParams(productId, shopDomain, productKey), resources)
+            productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), resources)
         }
     }
 
@@ -539,6 +543,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP1Resp.removeObservers(this)
         productInfoViewModel.productInfoP2resp.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
+        productInfoViewModel.productVariantResp.removeObservers(this)
         productInfoViewModel.clear()
         productWarehouseViewModel.clear()
         super.onDestroy()
@@ -661,18 +666,17 @@ class ProductDetailFragment : BaseDaggerFragment() {
         } else {
             base_view_wholesale.visibility = View.GONE
         }
-        onSuccessGetProductVariantInfo(productInfoP1.productVariant)
         activity?.invalidateOptionsMenu()
     }
 
     private fun onErrorGetProductVariantInfo(throwable: Throwable) {
         //TODO variant error
+        partialVariantAndRateEstView.renderData(null, this::onVariantClicked)
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
         productVariant = data
-        partialVariantAndRateEstView.productVariant = data
-        partialVariantAndRateEstView.renderData(this::onVariantClicked)
+        partialVariantAndRateEstView.renderData(data, this::onVariantClicked)
     }
 
     private fun onSuccessWarehouseProduct() {
