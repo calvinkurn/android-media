@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ImageProduct extends ImageHolder implements Parcelable {
+public class ImageProduct extends ImpressHolder implements Parcelable {
 
     private static final String KEY_PRODUCT_ID = "product_id";
     private static final String KEY_PRODUCT_NAME = "product_name";

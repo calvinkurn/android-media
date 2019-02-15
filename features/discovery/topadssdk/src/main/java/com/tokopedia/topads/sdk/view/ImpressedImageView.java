@@ -15,7 +15,7 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.CpmImage;
-import com.tokopedia.topads.sdk.domain.model.ImageHolder;
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
@@ -28,7 +28,7 @@ import android.view.ViewTreeObserver;
 public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
-    private ImageHolder image;
+    private ImpressHolder image;
     private ViewHintListener hintListener;
     private float radius = 0.0f;
     private Path path;
