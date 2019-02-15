@@ -318,10 +318,13 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runGTMFirstTime(this);
-        TrackingUtils.runAppsFylerFirstTime(this);
-        TrackingUtils.runMoengageFirstTime(this);
-        TrackingUtils.enableDebugging(this, isDebug());
+        //TODO to be remove, after sellerapp is added Trackapp library
+        if (GlobalConfig.isSellerApp()) {
+            TrackingUtils.runGTMFirstTime(this);
+            TrackingUtils.runAppsFylerFirstTime(this);
+            TrackingUtils.runMoengageFirstTime(this);
+            TrackingUtils.enableDebugging(this, isDebug());
+        }
     }
 
     public void initCrashlytics() {
