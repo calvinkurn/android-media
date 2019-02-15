@@ -74,6 +74,8 @@ import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
+import com.tokopedia.kyc.OvoUpgradeDeeplinkModule;
+import com.tokopedia.kyc.OvoUpgradeDeeplinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
@@ -159,6 +161,7 @@ import io.branch.referral.BranchError;
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
+        OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
@@ -208,6 +211,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),
+                    new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new DigitalApplinkModuleLoader(),

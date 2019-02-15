@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="8sp"
+                android:paddingTop="@dimen/dp_24"
+                android:paddingBottom="@dimen/dp_11"
+                android:text="Lengkapi data-data Anda"
+                android:textColor="#4c2a86"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="6sp"
+                android:text="Proses hanya membutuhkan waktu beberapa menit"
+                android:textColor="#2d263b"
+                android:textSize="14sp"
+                android:paddingBottom="@dimen/dp_30"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/dashed_circle"
+                android:src="@drawable/ic_card" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="6sp"
+                android:text="Mohon siapkan KTP Anda bagi WNI dan Passport Anda bagi WNA/Foreigner"
+                android:textColor="#2d263b"
+                android:textSize="14sp"
+                android:paddingTop="@dimen/dp_20"
+                android:paddingBottom="@dimen/dp_32"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:id="@+id/start_upgrade_process"
+                android:text="MULAI"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_bg_rounded_corners"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+            <TextView
+                android:paddingTop="@dimen/dp_20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="6sp"
+                android:text="Proses ini dilakukan sepenuhnya oleh OVO.  Lihat Syarat &amp; Ketentuan OVO"
+                android:textColor="#6b767e"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></include>
+</RelativeLayout>
