@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
+import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
@@ -27,7 +28,11 @@ class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListe
             if (element.productChildrenList.isNotEmpty()) {
                 for (productChild: ProductChild in element.productChildrenList) {
                     if (productChild.isSelected) {
-                        element.maxOrderQuantity = productChild.maxOrder
+                        if (productChild.isAvailable && productChild.stock == 0) {
+                            element.maxOrderQuantity = MAX_QUANTITY
+                        } else {
+                            element.maxOrderQuantity = productChild.maxOrder
+                        }
                         itemView.tv_product_name.text = productChild.productName
                         itemView.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productChild.productPrice, false)
                         stockWording = productChild.stockWording

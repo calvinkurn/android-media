@@ -1,8 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant.mapper
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
@@ -78,7 +77,7 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
             if (productModel.productInvenageValue > 0) {
                 productViewModel.maxOrderQuantity = productModel.productInvenageValue
             } else {
-                productViewModel.maxOrderQuantity = atcResponseModel.atcDataModel?.maxQuantity ?: 10000
+                productViewModel.maxOrderQuantity = atcResponseModel.atcDataModel?.maxQuantity ?: MAX_QUANTITY
             }
         }
         productViewModel.productPrice = productModel?.productPrice ?: 0

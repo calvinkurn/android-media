@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.domain.mapper.atc
 
+import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcResponse
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.data.entity.response.profile.Address
@@ -150,7 +151,7 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         productModel.productFinsurance = product.productFinsurance
         productModel.productId = product.productId
         productModel.productImageSrc200Square = product.productImageSrc200Square
-        productModel.productInvenageValue = product.productInvenageValue
+        productModel.productInvenageValue = if (product.productInvenageValue > 0) product.productInvenageValue else MAX_QUANTITY
         productModel.productIsFreeReturns = product.productIsFreeReturns
         productModel.productIsPreorder = product.productIsPreorder
         productModel.productMenuId = product.productMenuId

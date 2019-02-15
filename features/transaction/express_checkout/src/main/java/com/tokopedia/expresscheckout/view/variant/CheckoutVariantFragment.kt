@@ -25,6 +25,7 @@ import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Com
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
+import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter
@@ -372,7 +373,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
 
                 if (quantityViewModel != null) {
-                    quantityViewModel.maxOrderQuantity = newSelectedProductChild.stock
+                    if (newSelectedProductChild.isAvailable && newSelectedProductChild.stock == 0) {
+                        quantityViewModel.maxOrderQuantity = MAX_QUANTITY
+                    } else {
+                        quantityViewModel.maxOrderQuantity = newSelectedProductChild.stock
+                    }
                     onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
                 }
             }
