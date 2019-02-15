@@ -1439,7 +1439,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
     }
 
     @Override
@@ -1447,7 +1447,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                      String customSubject, String customMessage, String source, String avatar) {
 
         return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
 
     }
 
@@ -1464,7 +1464,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject,
+                source, "");
     }
 
     @Override
@@ -1690,8 +1691,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.showForceLogoutDialog();
+    public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 

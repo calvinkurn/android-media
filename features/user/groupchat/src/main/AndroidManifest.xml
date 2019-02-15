@@ -26,6 +26,14 @@
             android:configChanges="orientation|screenSize|locale"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
+
+        <activity
+            android:name=".room.view.activity.PlayWebviewActivity"
+            android:label="@string/activity_channel"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+
+            />
     </application>
 
 </manifest>

@@ -59,6 +59,7 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.constant.BerandaUrl;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
@@ -341,6 +342,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         BerandaUrl.GRAPHQL_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         BerandaUrl.DOMAIN_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
         ChatUrl.Companion.setTOPCHAT(ConsumerAppBaseUrl.CHAT_DOMAIN);
+        com.tokopedia.network.constant.TkpdBaseURL.ACCOUNTS_DOMAIN =
+                ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
+        CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
+
     }
 
 

@@ -18,6 +18,8 @@ interface PlayContract {
         fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean)
         fun setSnackBarConnectingWebSocket()
         fun setSnackBarRetryConnectingWebSocket()
+        fun onBackPressed() : Boolean
+
         fun onLoginClicked(channelId: String)
         fun onTotalViewChanged(participantViewModel: ParticipantViewModel)
         fun vibratePhone()

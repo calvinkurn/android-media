@@ -1,0 +1,24 @@
+query ($latitude: String, $longitude: String) {
+  triggerVerifyShake(latitude: $latitude, longitude: $longitude) {
+    tkp_url
+    vibrate
+    enabled
+    enable
+    valid_campaigns {
+      id
+      tkp_url
+      vibrate
+      success_message
+      title
+      is_valid
+      assets
+      error_message_en
+      error_message_id
+      campaign_distance
+    }
+    code
+    status
+    message
+    message_error
+  }
+}

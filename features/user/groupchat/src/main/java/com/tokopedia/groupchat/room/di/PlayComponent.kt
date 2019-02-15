@@ -1,9 +1,10 @@
-package com.tokopedia.chatbot.di
+package com.tokopedia.groupchat.room.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.groupchat.room.di.PlayModule
 import com.tokopedia.groupchat.room.di.PlayScope
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
+import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 import dagger.Component
 
 /**
@@ -15,4 +16,5 @@ interface PlayComponent {
 
     fun inject(playFragment: PlayFragment)
 
+    fun inject(fragment: PlayWebviewFragment)
 }
