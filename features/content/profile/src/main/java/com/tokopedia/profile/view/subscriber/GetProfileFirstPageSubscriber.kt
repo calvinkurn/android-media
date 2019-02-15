@@ -12,6 +12,8 @@ import rx.Subscriber
 class GetProfileFirstPageSubscriber(private val view: ProfileContract.View)
     : Subscriber<DynamicFeedProfileViewModel>() {
     override fun onNext(t: DynamicFeedProfileViewModel) {
+        val size = t.dynamicFeedDomainModel?.postList?.size
+        size.toString()
 //        view.onSuccessGetProfileFirstPage(t)
     }
 
