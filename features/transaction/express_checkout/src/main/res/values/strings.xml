@@ -1,7 +1,7 @@
 <resources>
 
     <string name="activity_title_checkout_variant">Detail Produk</string>
-    <string name="format_note_counter" formatted="false">%s / %s</string>
+    <string name="format_note_counter" formatted="false">%1$s / %2$s</string>
     <string name="label_insurance_info_short_yes">Transaksi ini terlindungi asuransi</string>
     <string name="label_insurance_info_short_no">Transaksi ini tidak terlindungi asuransi</string>
     <string name="title_choose_other_template">Pilih Template Lain</string>
@@ -31,5 +31,8 @@
     <string name="label_total_shipping_price">Total Ongkos Kirim</string>
     <string name="label_additional_fee">Biaya Layanan</string>
     <string name="label_insurance_price">Asuransi</string>
+    <string name="label_duration_with_value"><![CDATA[Durasi <b>%1$s</b>]]></string>
+    <string name="label_courier_with_value"><![CDATA[Kurir <b>%1$s</b>]]></string>
+    <string name="label_address_with_value"><![CDATA[<b>%1$s</b> %2$s]]></string>
 
 </resources>

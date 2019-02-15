@@ -39,7 +39,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 itemView.ll_no_profile_container.visibility = View.GONE
                 itemView.ll_profile_container.visibility = View.VISIBLE
 
-                itemView.tv_profile_address_name.text = getHtmlFormat("<b>${element.addressTitle}</b> ${element.addressDetail}")
+                itemView.tv_profile_address_name.text = getHtmlFormat(String.format(getString(R.string.label_address_with_value), element.addressTitle, element.addressDetail))
 
                 ImageHandler.loadImageRounded2(itemView.context, itemView.img_profile_payment_method, element.paymentOptionImageUrl)
                 itemView.tv_profile_payment_detail.text = element.paymentDetail
@@ -47,28 +47,28 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 itemView.ll_profile_duration.setOnClickListener { listener.onClickEditDuration() }
                 itemView.img_bt_profile_show_more_shipping_duration.setOnClickListener { listener.onClickEditDuration() }
                 if (element.isDurationError) {
-                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
+                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat(String.format(getString(R.string.label_duration_with_value), element.shippingDuration))
                     itemView.ll_profile_courier.visibility = View.GONE
                     itemView.tv_profile_shipping_duration_error.text = element.durationErrorMessage
                     itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE
                     itemView.tv_profile_shipping_courier_error.visibility = View.GONE
                     itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { }
                 } else if (element.isCourierError) {
-                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
+                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat(String.format(getString(R.string.label_duration_with_value), element.shippingDuration))
                     itemView.tv_profile_shipping_duration_error.visibility = View.GONE
                     itemView.tv_profile_shipping_courier_error.text = element.courierErrorMessage
                     itemView.tv_profile_shipping_courier_error.visibility = View.VISIBLE
                     itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
                     itemView.ll_profile_courier.setOnClickListener { listener.onClickEditCourier() }
                 } else {
-                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat("Durasi <b>${element.shippingDuration}</b>")
+                    itemView.tv_profile_shipping_duration_value.text = getHtmlFormat(String.format(getString(R.string.label_duration_with_value), element.shippingDuration))
                     itemView.tv_profile_shipping_duration_error.visibility = View.GONE
                     itemView.tv_profile_shipping_courier_error.visibility = View.GONE
                     if (element.shippingCourier.isNotEmpty()) {
                         itemView.ll_profile_courier.visibility = View.VISIBLE
                         itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
                         itemView.ll_profile_courier.setOnClickListener { listener.onClickEditCourier() }
-                        itemView.tv_profile_shipping_courier.text = getHtmlFormat("Kurir <b>${element.shippingCourier}</b>")
+                        itemView.tv_profile_shipping_courier.text = getHtmlFormat(String.format(getString(R.string.label_courier_with_value), element.shippingCourier))
                     } else {
                         itemView.ll_profile_courier.visibility = View.GONE
                     }

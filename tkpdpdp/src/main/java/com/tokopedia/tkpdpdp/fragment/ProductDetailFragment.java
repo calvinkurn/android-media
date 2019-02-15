@@ -837,7 +837,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
                 atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
                 atcRequestParam.setNotes("");
-                atcRequestParam.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
+                int qty = 0;
+                try {
+                    qty = Integer.parseInt(productData.getInfo().getProductMinOrder());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                atcRequestParam.setQuantity(qty);
                 Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                         .getExpressCheckoutIntent(getActivity(), atcRequestParam);
                 if (intent != null) {
@@ -1886,7 +1892,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
                                 .show();
                     } else {
-                        if (getActivity() != null) {
+                        if (getActivity() != null && errorBottomsheets != null) {
                             errorBottomsheets.setData(
                                     getActivity().getString(R.string.bottomsheet_title_global_error),
                                     getActivity().getString(R.string.bottomsheet_message_global_error),
