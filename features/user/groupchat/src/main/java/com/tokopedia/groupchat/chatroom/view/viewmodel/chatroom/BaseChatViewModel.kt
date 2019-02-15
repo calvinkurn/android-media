@@ -12,27 +12,27 @@ import com.tokopedia.groupchat.common.util.TimeConverter
 open class BaseChatViewModel : Parcelable {
 
     var isShowHeaderTime: Boolean = false
-    var message: String? = null
+    var message: String? = ""
         private set
     var createdAt: Long = 0
         private set
     var updatedAt: Long = 0
         private set
-    var formattedCreatedAt: String? = null
+    var formattedCreatedAt: String? = ""
         private set
-    var formattedUpdatedAt: String? = null
+    var formattedUpdatedAt: String? = ""
         private set
-    var messageId: String? = null
+    var messageId: String? = ""
         private set
     private var headerTime: Long = 0
-    var formattedHeaderTime: String? = null
+    var formattedHeaderTime: String? = ""
         private set
 
-    var senderId: String? = null
+    var senderId: String? = ""
 
-    var senderName: String? = null
+    var senderName: String? = ""
 
-    var senderIconUrl: String? = null
+    var senderIconUrl: String? = ""
 
     var isInfluencer: Boolean = false
 
@@ -56,7 +56,7 @@ open class BaseChatViewModel : Parcelable {
         this.isAdministrator = false
     }
 
-    internal constructor(message: String, createdAt: Long, updatedAt: Long, messageId: String,
+    internal constructor(message: String, createdAt: Long, updatedAt: Long, messageId: String?,
                          senderId: String, senderName: String, senderIconUrl: String,
                          isInfluencer: Boolean, isAdministrator: Boolean) {
         this.isShowHeaderTime = false

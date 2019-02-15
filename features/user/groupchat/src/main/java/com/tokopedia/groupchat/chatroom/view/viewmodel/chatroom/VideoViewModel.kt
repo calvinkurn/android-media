@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory
-import com.tokopedia.groupchat.room.domain.pojo.BaseGroupChatPojo
+import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
 
 /**
  * @author by StevenFredian on 24/09/18.
@@ -16,7 +16,7 @@ class VideoViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parce
 
     @SerializedName("video_id")
     @Expose
-    var videoId: String? = null
+    var videoId: String = ""
 
     constructor(videoId: String) {
         this.videoId = videoId

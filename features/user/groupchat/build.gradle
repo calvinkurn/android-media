@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.websocket)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

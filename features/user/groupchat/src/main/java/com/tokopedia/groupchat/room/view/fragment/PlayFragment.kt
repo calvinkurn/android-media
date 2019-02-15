@@ -1,10 +1,13 @@
 package com.tokopedia.groupchat.room.view.fragment
 
 import android.app.Activity
-import android.graphics.Color
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.support.design.widget.Snackbar
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
@@ -13,20 +16,18 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel
-import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
@@ -34,6 +35,7 @@ import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -51,6 +53,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     companion object {
 
+        var VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1)
+        const val REQUEST_LOGIN = 111
         const val YOUTUBE_DELAY = 1500
 
         private const val POST_ID = "{post_id}"
@@ -97,7 +101,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun initView(view: View) {
         activity?.let {
             viewState = PlayViewStateImpl(userSession, view,
-                    it, this, this, this,
+                    it,this, this, this, this,
                     this, this)
         }
         setToolbarView(view)
@@ -279,6 +283,68 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     }
 
+    override fun onTotalViewChanged(participantViewModel: ParticipantViewModel) {
+        viewState.onTotalViewChanged(participantViewModel.channelId, participantViewModel.totalView)
+    }
+
+    override fun vibratePhone() {
+        val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+        vibrator?.let{
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_LENGTH, VibrationEffect
+                        .DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(VIBRATE_LENGTH)
+            }
+        }
+    }
+
+    override fun onPinnedMessageUpdated(it: PinnedMessageViewModel) {
+        viewState.onPinnedMessageUpdated(it)
+    }
+
+    override fun onAdsUpdated(it: AdsViewModel) {
+        viewState.onAdsUpdated(it)
+    }
+
+    override fun onChannelDeleted() {
+        viewState.onChannelDeleted()
+    }
+
+    override fun backToChannelList() {
+        activity?.let {
+            if(it.isTaskRoot){
+                startActivity((it.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(context))
+            }
+            it.finish()
+            it.onBackPressed()
+        }
+    }
+
+    override fun onVideoUpdated(it: VideoViewModel) {
+        viewState.onVideoUpdated(it, childFragmentManager)
+
+    }
+
+    override fun handleEvent(event: EventGroupChatViewModel) {
+        when {
+            event.isFreeze -> viewState.onChannelFrozen(event.channelId)
+            event.isBanned -> viewState.banUser(event.userId)
+        }
+    }
+
+    override fun showOverlayDialog(it: OverlayViewModel) {
+
+    }
+
+    override fun closeOverlayDialog() {
+
+    }
+
+    override fun onQuickReplyUpdated(it: GroupChatQuickReplyViewModel) {
+        viewState.onQuickReplyUpdated(it)
+    }
+
     override fun setSnackBarConnectingWebSocket() {
         if (userSession.isLoggedIn) {
             snackbarWebsocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
@@ -302,4 +368,23 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onLoginClicked(channelId: String) {
+//      analytics.eventClickLogin(channelId)
+
+        startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
+                .getLoginIntent(activity), REQUEST_LOGIN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_LOGIN) {
+            viewState.onSuccessLogin()
+            presenter.getPlayInfo(arguments?.getString(PlayActivity.EXTRA_CHANNEL_UUID), onSuccessGetInfo())
+        }
+    }
+
+
+    override fun addIncomingMessage(it: Visitable<*>) {
+        viewState.onMessageReceived(it)
+    }
 }

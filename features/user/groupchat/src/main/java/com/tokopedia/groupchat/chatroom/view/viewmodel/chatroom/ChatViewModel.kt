@@ -8,7 +8,7 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
  */
 
 class ChatViewModel(message: String, createdAt: Long, updatedAt: Long,
-                    messageId: String, senderId: String, senderName: String,
+                    messageId: String?, senderId: String, senderName: String,
                     senderIconUrl: String, isInfluencer: Boolean, isAdministrator: Boolean) : BaseChatViewModel(message, createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl, isInfluencer, isAdministrator), Visitable<GroupChatTypeFactory> {
 
     override fun type(typeFactory: GroupChatTypeFactory): Int {

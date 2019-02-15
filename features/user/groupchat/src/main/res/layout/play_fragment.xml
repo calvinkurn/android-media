@@ -45,8 +45,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top"
             android:layout_marginTop="@dimen/dp_24"
+            android:gravity="top"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -118,25 +118,27 @@
 
         </RelativeLayout>
 
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                                                xmlns:tools="http://schemas.android.com/tools"
-                                                android:id="@+id/chat_list"
-                                                android:layout_width="0dp"
-                                                android:layout_height="0dp"
-                                                android:background="@color/yellow_1"
-                                                app:layout_constraintBottom_toTopOf="@id/quick_reply"
-                                                app:layout_constraintEnd_toEndOf="parent"
-                                                app:layout_constraintHorizontal_bias="0.0"
-                                                app:layout_constraintHorizontal_weight="1"
-                                                app:layout_constraintStart_toStartOf="parent"
-                                                app:layout_constraintTop_toBottomOf="@id/video_horizontal"
-                                                app:layout_constraintVertical_weight="0.5"
-                                                tools:ignore="MergeRootFrame"/>
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/chat_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/quick_reply"
+            app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_weight="0.5"
+            android:background="@color/black"
+            android:alpha="0.1"
+            tools:ignore="MergeRootFrame"/>
 
         <ImageView
             android:id="@+id/webview_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/video_horizontal"
             />
@@ -148,14 +150,14 @@
                                                      android:layout_width="0dp"
                                                      android:layout_height="wrap_content"
                                                      android:background="@color/green_200"
+                                                     android:paddingLeft="@dimen/dp_16"
+                                                     android:paddingRight="@dimen/dp_16"
+                                                     android:paddingBottom="@dimen/dp_16"
                                                      android:visibility="gone"
                                                      app:layout_constraintBottom_toBottomOf="parent"
                                                      app:layout_constraintEnd_toEndOf="parent"
                                                      app:layout_constraintStart_toStartOf="parent"
                                                      tools:ignore="MergeRootFrame"
-                                                     android:paddingBottom="@dimen/dp_16"
-                                                     android:paddingRight="@dimen/dp_16"
-                                                     android:paddingLeft="@dimen/dp_16"
                                                      tools:visibility="visible">
 
             <ImageView
@@ -164,11 +166,11 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_play_dynamic_icon"
+                android:layout_marginRight="@dimen/dp_5"
                 app:layout_constraintBottom_toBottomOf="@id/bottom"
                 app:layout_constraintRight_toLeftOf="@+id/icon_dynamic"
                 app:layout_constraintTop_toTopOf="@id/reply_edit_text"
-                android:layout_marginRight="@dimen/dp_5"
+                app:srcCompat="@drawable/ic_play_dynamic_icon"
 
                 tools:visibility="visible"/>
 
@@ -176,9 +178,9 @@
                 android:id="@+id/notification_quiz"
                 android:layout_width="@dimen/dp_10"
                 android:layout_height="@dimen/dp_10"
-                app:srcCompat="@drawable/circle_red_notification"
                 app:layout_constraintRight_toRightOf="@id/icon_quiz"
-                app:layout_constraintTop_toTopOf="@id/icon_quiz"/>
+                app:layout_constraintTop_toTopOf="@id/icon_quiz"
+                app:srcCompat="@drawable/circle_red_notification"/>
 
             <ImageView
                 android:id="@+id/icon_dynamic"
@@ -186,22 +188,22 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_play_dynamic_icon"
+                android:layout_marginRight="@dimen/dp_5"
                 app:layout_constraintBottom_toBottomOf="@id/bottom"
                 app:layout_constraintRight_toLeftOf="@+id/button_send"
                 app:layout_constraintTop_toTopOf="@id/reply_edit_text"
+                app:srcCompat="@drawable/ic_play_dynamic_icon"
                 tools:layout_editor_absoluteX="42dp"
                 tools:layout_editor_absoluteY="460dp"
-                android:layout_marginRight="@dimen/dp_5"
                 tools:visibility="visible"/>
 
             <ImageView
                 android:id="@+id/notification_dynamic_icon"
                 android:layout_width="@dimen/dp_10"
                 android:layout_height="@dimen/dp_10"
-                app:srcCompat="@drawable/circle_red_notification"
                 app:layout_constraintRight_toRightOf="@id/icon_dynamic"
-                app:layout_constraintTop_toTopOf="@id/icon_dynamic"/>
+                app:layout_constraintTop_toTopOf="@id/icon_dynamic"
+                app:srcCompat="@drawable/circle_red_notification"/>
 
             <ImageView
                 android:id="@+id/button_send"
@@ -209,11 +211,11 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_send_24dp_green"
                 app:layout_constraintBottom_toBottomOf="@id/bottom"
                 app:layout_constraintEnd_toEndOf="@id/bottom"
                 app:layout_constraintRight_toRightOf="@id/bottom"
                 app:layout_constraintTop_toTopOf="@id/reply_edit_text"
+                app:srcCompat="@drawable/ic_send_24dp_green"
                 tools:layout_editor_absoluteX="42dp"
                 tools:layout_editor_absoluteY="460dp"
                 tools:visibility="visible"/>
@@ -224,6 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="@dimen/dp_5"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:background="@drawable/bg_rounded_chat_input"
                 android:hint="@string/chat_hint"
@@ -241,7 +244,6 @@
                 app:layout_constraintRight_toLeftOf="@+id/icon_quiz"
                 app:layout_constraintStart_toStartOf="@id/bottom"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginRight="@dimen/dp_5"
                 tools:visibility="visible"/>
 
         </android.support.constraint.ConstraintLayout>

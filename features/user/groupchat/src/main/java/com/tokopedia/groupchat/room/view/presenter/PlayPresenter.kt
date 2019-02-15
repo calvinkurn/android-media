@@ -1,17 +1,21 @@
 package com.tokopedia.groupchat.room.view.presenter
 
 import android.util.Log
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
-import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket
-import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.domain.mapper.PlayWebSocketMessageMapper
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocket
+import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.websocket.WebSocketSubscriber
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
@@ -23,7 +27,8 @@ import javax.inject.Inject
  */
 
 class PlayPresenter @Inject constructor(
-        var getPlayInfoUseCase: GetPlayInfoUseCase)
+        var getPlayInfoUseCase: GetPlayInfoUseCase,
+        var webSocketMessageMapper: PlayWebSocketMessageMapper)
     : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter{
 
     private var mSubscription: CompositeSubscription? = null
@@ -33,7 +38,11 @@ class PlayPresenter @Inject constructor(
                 GetPlayInfoUseCase.createParams(channelId),
                 object : Subscriber<ChannelInfoViewModel>() {
                     override fun onNext(t: ChannelInfoViewModel?) {
-                        t?.let { onSuccessGetInfo(it) }
+                        if(t != null) {
+                            onSuccessGetInfo(t)
+                        }else {
+                            view.onChannelDeleted()
+                        }
                     }
 
                     override fun onCompleted() {
@@ -54,13 +63,11 @@ class PlayPresenter @Inject constructor(
         connectWebSocket(userSession.userId, userSession.deviceId, userSession.accessToken, settings, groupChatToken)
     }
 
-    private fun connectWebSocket(userId: String?, deviceId: String?, accessToken: String?, settings: SettingGroupChat, groupChatToken: String) {
+    private fun connectWebSocket(userId: String?, deviceId: String?, accessToken: String, settings: SettingGroupChat, groupChatToken: String) {
 
         if (mSubscription == null || mSubscription!!.isUnsubscribed) {
             mSubscription = CompositeSubscription()
         }
-
-        view.setSnackBarConnectingWebSocket()
 
         val subscriber = object : WebSocketSubscriber() {
             override fun onOpen(webSocket: WebSocket) {
@@ -78,11 +85,27 @@ class PlayPresenter @Inject constructor(
                 }
             }
 
-            override fun onMessage(item: Visitable<*>, hideMessage: Boolean) {
+            override fun onMessage(webSocketResponse: WebSocketResponse) {
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "item")
                 }
-                view.onMessageReceived(item, hideMessage)
+
+                var item = webSocketMessageMapper.map(webSocketResponse)
+                var hideMessage = webSocketMessageMapper.mapHideMessage(webSocketResponse)
+                item?.let {
+                    when (it) {
+                        is ParticipantViewModel -> view.onTotalViewChanged(it)
+                        is VibrateViewModel -> view.vibratePhone()
+                        is AdsViewModel -> view.onAdsUpdated(it)
+                        is PinnedMessageViewModel -> view.onPinnedMessageUpdated(it)
+                        is VideoViewModel -> view.onVideoUpdated(it)
+                        is EventGroupChatViewModel -> view.handleEvent(it)
+                        is GroupChatQuickReplyViewModel -> view.onQuickReplyUpdated(it)
+                        is OverlayViewModel -> view.showOverlayDialog(it)
+                        is OverlayCloseViewModel -> view.closeOverlayDialog()
+                        else -> {view.addIncomingMessage(it)}
+                    }
+                }
             }
 
             override fun onMessage(byteString: ByteString) {
@@ -105,7 +128,6 @@ class PlayPresenter @Inject constructor(
                     showDummy("onClose", "logger close")
                 }
                 destroyWebSocket()
-                connectWebSocket(userId, deviceId, accessToken, settings, groupChatToken)
             }
 
             override fun onError(e: Throwable) {
@@ -118,14 +140,15 @@ class PlayPresenter @Inject constructor(
 //                reportWebSocket(e)
             }
         }
-        val subscription = RxWebSocket.get(
-                webSocketUrl,
-                accessToken,
-                settings.delay,
-                settings.maxRetries,
-                settings.pingInterval,
-                groupChatToken
-        ).subscribe(subscriber)
+        val rxWebSocket = RxWebSocket[
+                webSocketUrlWithToken,
+                accessToken
+//                , settings.delay,
+//                settings.maxRetries,
+//                settings.pingInterval,
+//                groupChatToken
+        ]
+        val subscription = rxWebSocket?.subscribe(subscriber)
 
         mSubscription!!.add(subscription)
     }
@@ -139,7 +162,7 @@ class PlayPresenter @Inject constructor(
 //        magicString = localCacheHandler.getString("ip_groupchat", magicString)
 
         this.webSocketUrl = String.format("%s%s%s", magicString, ChatroomUrl.PATH_WEB_SOCKET_GROUP_CHAT_URL, channelId)
-        this.webSocketUrlWithToken = String.format("s%s%s", webSocketUrl, "&token=", groupChatToken)
+        this.webSocketUrlWithToken = String.format("%s%s%s", webSocketUrl, "&token=", groupChatToken)
         this.channelId = channelId
 
     }

@@ -71,6 +71,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
         pagerAdapter = FragmentPagerAdapter(supportFragmentManager, fragmentList)
         viewPager.adapter = pagerAdapter
+        viewPager.currentItem = 1
 
     }
 
