@@ -156,8 +156,8 @@ subprojects {
                 substitute module('android.arch.lifecycle:viewmodel') with module('android.arch.lifecycle:viewmodel:1.1.1')
                 substitute module('android.arch.lifecycle:livedata-core') with module('android.arch.lifecycle:livedata-core:1.1.1')
                 substitute module('org.apache.commons:commons-lang3') with module('org.apache.commons:commons-lang3:3.5')
-                substitute module('com.google.android.gms:play-services-base') with module('com.google.android.gms:play-services-base:16.0.1')
-                substitute module('com.google.firebase:firebase-iid') with module('com.google.firebase:firebase-iid:17.0.4')
+                substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
+                substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
             }
         }
     }

@@ -31,6 +31,25 @@ ext {
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
 
+    playServiceBaseVersion = '16.0.1'
+    playServiceFirebaseIidVersion = '17.0.4'
+
+    playServiceGms = '16.0.0'
+    playServiceBase = '16.1.0'
+    playServiceAppIndexing = '17.1.0'
+    playServiceAnalytics = '16.0.6'
+    playServiceFirebaseMessaging = '17.3.4'
+    playServiceLocation = '16.0.0'
+    playServiceMaps = '16.0.0'
+    playServiceAuth = '16.0.1'
+    playServicePlace = '16.0.0'
+    playServiceAuthApiPhone = '16.0.0'
+    playServiceMapsUtil = '0.4'
+    playServiceFirebaseRemoteConfig = '16.1.3'
+    playServiceFirebasePerfMon = '16.2.3'
+    playServiceAds = '17.1.2'
+    playServiceFirebaseAnalytics = '16.0.6'
+
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
     MockkVersion = '1.9.kotlin12'
@@ -74,21 +93,21 @@ ext {
     ]
 
     playServicesDependencies = [
-            plus             : "com.google.android.gms:play-services-plus:16.0.0",
-            base             : "com.google.android.gms:play-services-base:16.1.0",
-            appIndexing      : "com.google.firebase:firebase-appindexing:17.1.0",
-            analytics        : "com.google.android.gms:play-services-analytics:16.0.6",
-            firebase         : "com.google.firebase:firebase-messaging:17.3.4",
-            location         : "com.google.android.gms:play-services-location:16.0.0",
-            maps             : "com.google.android.gms:play-services-maps:16.0.0",
-            auth             : "com.google.android.gms:play-services-auth:16.0.1",
-            places           : "com.google.android.gms:play-services-places:16.0.0",
-            phone            : "com.google.android.gms:play-services-auth-api-phone:16.0.0",
-            mapsUtils        : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig     : "com.google.firebase:firebase-config:16.1.3",
-            perfMon          : "com.google.firebase:firebase-perf:16.2.3",
-            ads              : "com.google.android.gms:play-services-ads:17.1.2",
-            firebaseAnalytics: "com.google.firebase:firebase-core:16.0.6",
+            plus             : "com.google.android.gms:play-services-plus:${playServiceGms}",
+            base             : "com.google.android.gms:play-services-base:${playServiceBase}",
+            appIndexing      : "com.google.firebase:firebase-appindexing:${playServiceAppIndexing}",
+            analytics        : "com.google.android.gms:play-services-analytics:${playServiceAnalytics}",
+            firebase         : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
+            location         : "com.google.android.gms:play-services-location:${playServiceLocation}",
+            maps             : "com.google.android.gms:play-services-maps:${playServiceMaps}",
+            auth             : "com.google.android.gms:play-services-auth:${playServiceAuth}",
+            places           : "com.google.android.gms:play-services-places:${playServicePlace}",
+            phone            : "com.google.android.gms:play-services-auth-api-phone:${playServiceAuthApiPhone}",
+            mapsUtils        : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
+            remoteConfig     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
+            perfMon          : "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
+            ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
+            firebaseAnalytics: "com.google.firebase:firebase-core:${playServiceFirebaseAnalytics}",
     ]
 
     butterKnifeDependencies = [
