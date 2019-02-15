@@ -819,7 +819,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (Object o : shipmentDataList) {
             if (o instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel cartItemModel = (ShipmentCartItemModel) o;
-                cartItemModel.getSelectedShipmentDetailData().setUseDropshipper(false);
+                if (cartItemModel.getSelectedShipmentDetailData() != null) {
+                    cartItemModel.getSelectedShipmentDetailData().setUseDropshipper(false);
+                }
             }
         }
         notifyDataSetChanged();
