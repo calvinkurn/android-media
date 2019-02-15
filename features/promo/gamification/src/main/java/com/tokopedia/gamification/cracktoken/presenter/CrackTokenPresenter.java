@@ -78,7 +78,6 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                 new Subscriber<CrackResult>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -89,6 +88,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                         CrackResult errorCrackResult = createGeneralErrorCrackResult();
 
                         getView().onErrorCrackToken(errorCrackResult);
+                        getView().onFinishCrackToken();
                     }
 
                     @Override
@@ -104,6 +104,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                             CrackResult errorCrackResult = createGeneralErrorCrackResult();
                             getView().onErrorCrackToken(errorCrackResult);
                         }
+                        getView().onFinishCrackToken();
                     }
                 });
     }
