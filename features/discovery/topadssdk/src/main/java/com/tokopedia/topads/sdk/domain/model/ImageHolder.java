@@ -11,10 +11,10 @@ import com.google.gson.annotations.Expose;
 public class ImageHolder implements Parcelable {
 
     @Expose(serialize = false)
-    private boolean loaded;
+    private boolean invoke;
 
     protected ImageHolder(Parcel in) {
-        loaded = in.readByte() != 0;
+        invoke = in.readByte() != 0;
     }
 
     public ImageHolder() {
@@ -23,7 +23,7 @@ public class ImageHolder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (loaded ? 1 : 0));
+        dest.writeByte((byte) (invoke ? 1 : 0));
     }
 
     @Override
@@ -43,11 +43,11 @@ public class ImageHolder implements Parcelable {
         }
     };
 
-    public boolean isLoaded() {
-        return loaded;
+    public boolean isInvoke() {
+        return invoke;
     }
 
-    public void loaded(){
-        this.loaded = true;
+    public void invoke(){
+        this.invoke = true;
     }
 }

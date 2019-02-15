@@ -35,6 +35,7 @@ public class ImpressedImageView extends AppCompatImageView {
     private RectF rect;
     private int offset;
     private TypedArray styledAttributes;
+    private ViewTreeObserver.OnScrollChangedListener scrollChangedListener;
 
     public ImpressedImageView(Context context) {
         super(context);
@@ -49,7 +50,13 @@ public class ImpressedImageView extends AppCompatImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        registerObserver(this);
+        invoke();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        revoke();
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -75,24 +82,45 @@ public class ImpressedImageView extends AppCompatImageView {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 
-    private void registerObserver(View view){
+    private void setScrollChangedListener(ViewTreeObserver.OnScrollChangedListener scrollChangedListener) {
+        this.scrollChangedListener = scrollChangedListener;
+    }
+
+    private ViewTreeObserver.OnScrollChangedListener getScrollChangedListener() {
+        return scrollChangedListener;
+    }
+
+    private void revoke(){
+        getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
+    }
+
+    private void invoke(){
         getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if(isVisible(view) && image!=null && !image.isLoaded()){
-                    if(hintListener!=null){
-                        hintListener.onViewHint();
+                setScrollChangedListener(this);
+                if (isVisible(getView())) {
+                    if (image != null && !image.isInvoke()) {
+                        if(hintListener!=null){
+                            hintListener.onViewHint();
+                        }
+                        if(image instanceof ProductImage){
+                            new ImpresionTask().execute(((ProductImage) image).getM_url());
+                        } else if(image instanceof CpmImage){
+                            new ImpresionTask().execute(((CpmImage) image).getFullUrl());
+                        }
+                        image.invoke();
                     }
-                    getViewTreeObserver().removeOnScrollChangedListener(this);
-                    if(image instanceof ProductImage){
-                        new ImpresionTask().execute(((ProductImage) image).getM_url());
-                    } else if(image instanceof CpmImage){
-                        new ImpresionTask().execute(((CpmImage) image).getFullUrl());
+                    if (getViewTreeObserver().isAlive()) {
+                        getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
                     }
-                    image.loaded();
                 }
             }
         });
+    }
+
+    private View getView() {
+        return this;
     }
 
     public void setOffset(int offset) {
