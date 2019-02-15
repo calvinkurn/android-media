@@ -28,7 +28,7 @@ import android.view.ViewTreeObserver;
 public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
-    private ImpressHolder image;
+    private ImpressHolder holder;
     private ViewHintListener hintListener;
     private float radius = 0.0f;
     private Path path;
@@ -100,16 +100,16 @@ public class ImpressedImageView extends AppCompatImageView {
             public void onScrollChanged() {
                 setScrollChangedListener(this);
                 if (isVisible(getView())) {
-                    if (image != null && !image.isInvoke()) {
+                    if (holder != null && !holder.isInvoke()) {
                         if(hintListener!=null){
                             hintListener.onViewHint();
                         }
-                        if(image instanceof ProductImage){
-                            new ImpresionTask().execute(((ProductImage) image).getM_url());
-                        } else if(image instanceof CpmImage){
-                            new ImpresionTask().execute(((CpmImage) image).getFullUrl());
+                        if(holder instanceof ProductImage){
+                            new ImpresionTask().execute(((ProductImage) holder).getM_url());
+                        } else if(holder instanceof CpmImage){
+                            new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
                         }
-                        image.invoke();
+                        holder.invoke();
                     }
                     if (getViewTreeObserver().isAlive()) {
                         getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
@@ -168,8 +168,8 @@ public class ImpressedImageView extends AppCompatImageView {
      * @param holder
      * @param hintListener
      */
-    public void setViewHintListener(ImageHolder holder, ViewHintListener hintListener){
-        this.image = holder;
+    public void setViewHintListener(ImpressHolder holder, ViewHintListener hintListener){
+        this.holder = holder;
         this.hintListener = hintListener;
     }
 
@@ -186,7 +186,7 @@ public class ImpressedImageView extends AppCompatImageView {
      * @param image
      */
     public void setImage(ProductImage image) {
-        this.image = image;
+        this.holder = image;
         Glide.with(getContext()).load(image.getM_ecs()).into(this);
     }
 
@@ -195,7 +195,7 @@ public class ImpressedImageView extends AppCompatImageView {
      * @param image
      */
     public void setImage(ImageProduct image) {
-        this.image = image;
+        this.holder = image;
         if(image.getImageUrl().isEmpty()){
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color
@@ -210,7 +210,7 @@ public class ImpressedImageView extends AppCompatImageView {
      * @param image
      */
     public void setImage(CpmImage image) {
-        this.image = image;
+        this.holder = image;
         if(image.getFullEcs().isEmpty()){
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color

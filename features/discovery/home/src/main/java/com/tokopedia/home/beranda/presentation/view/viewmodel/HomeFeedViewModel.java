@@ -3,9 +3,9 @@ package com.tokopedia.home.beranda.presentation.view.viewmodel;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
-import com.tokopedia.topads.sdk.domain.model.ImageHolder;
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
-public class HomeFeedViewModel extends ImageHolder implements Visitable<HomeFeedTypeFactory> {
+public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFeedTypeFactory> {
     private static final String DATA_NONE_OTHER = "none / other";
     private static final String DATA_NAME = "name";
     private static final String DATA_ID = "id";
