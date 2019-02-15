@@ -37,6 +37,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -163,7 +164,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        activity?.run { NetworkClient.init(this) }
         getComponent(ProductDetailComponent::class.java).inject(this)
     }
 
@@ -259,20 +259,32 @@ class ProductDetailFragment : BaseDaggerFragment() {
         fab_detail.setOnClickListener {
             if (productInfoViewModel.isUserSessionActive()) {
                 val productP3value = productInfoViewModel.productInfoP3resp.value
-                if (shopInfo != null && shopInfo?.isAllowManage == 1 &&
-                        productInfoViewModel.isShopOwner(shopInfo?.shopCore?.shopID?.toInt()
-                                ?: 0)) {
+                if (shopInfo != null && shopInfo?.isAllowManage == 1) {
                     if (productInfo?.basic?.status != ProductDetailConstant.PRD_STATE_PENDING) {
                         gotoEditProduct()
                     } else {
                         // TODO show toast product status title
                     }
-                } else if (productP3value != null) {
-                    if (productP3value.isWishlisted) {
-                        // go to unwishlist
+                } else if (productP3value != null ) {
+                    if (it.isActivated) {
+                        productId?.let {
+                            showProgressDialog()
+                            productInfoViewModel.removeWishList(it,
+                                    onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
+                                    onErrorRemoveWishList = this::onErrorRemoveWishList)
+                            // TODO tracking
+                        }
+
                     } else {
-                        // go to wishlist
+                        productId?.let {
+                            showProgressDialog()
+                            productInfoViewModel.addWishList(it,
+                                    onSuccessAddWishlist = this::onSuccessAddWishlist,
+                                    onErrorAddWishList = this::onErrorAddWishList)
+                            // TODO tracking
+                        }
                     }
+                    // TODO tracking for affiliate
                 }
             } else {
                 context?.run {
@@ -359,8 +371,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
         topads_carousel.setAdsItemClickListener(adsItemsClickListener)
         topads_carousel.setAdsListener(adsListener)
-        topads_carousel.setAdsItemImpressionListener { position, product -> product?.let {
-            productDetailTracking.eventTopAdsImpression(position, it) }}
+        topads_carousel.setAdsItemImpressionListener { position, product ->
+            product?.let {
+                productDetailTracking.eventTopAdsImpression(position, it)
+            }
+        }
     }
 
     private val adsItemsClickListener = object : TopAdsItemClickListener {
@@ -374,12 +389,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (product == null) return
             activity?.let {
                 productDetailTracking.eventTopAdsClicked(product, position)
-                startActivity(ProductDetailActivity.createIntent(it, product.id.toInt()) )
+                startActivity(ProductDetailActivity.createIntent(it, product.id.toInt()))
             }
         }
     }
 
-    private val adsListener = object : TopAdsListener{
+    private val adsListener = object : TopAdsListener {
         override fun onTopAdsLoaded(list: MutableList<Item<Any>>?) {
             topads_carousel.visible()
         }
@@ -532,9 +547,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
-        productInfoP3.rateEstimation?.let { partialVariantAndRateEstView.renderRateEstimation(it.rates,
-                shopInfo?.location ?: "", ::gotoRateEstimation)}
-        shopInfo?.let {  updateWishlist(it, productInfoP3.isWishlisted) }
+        productInfoP3.rateEstimation?.let {
+            partialVariantAndRateEstView.renderRateEstimation(it.rates,
+                    shopInfo?.location ?: "", ::gotoRateEstimation)
+        }
+        shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
         imageReviewViewView.renderData(productInfoP3.imageReviews)
         mostHelpfulReviewView.renderData(productInfoP3.helpfulReviews, productInfo?.stats?.countReview
                 ?: 0)
@@ -546,8 +563,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun gotoRateEstimation() {
         if (productInfo == null && shopInfo == null) return
-        activity?.let { startActivity(RatesEstimationDetailActivity.createIntent(it,
-                shopInfo!!.shopCore.domain, productInfo!!.basic.weight, productInfo!!.basic.weightUnit)) }
+        activity?.let {
+            startActivity(RatesEstimationDetailActivity.createIntent(it,
+                    shopInfo!!.shopCore.domain, productInfo!!.basic.weight, productInfo!!.basic.weightUnit))
+        }
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
@@ -585,8 +604,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (shopInfo.isAllowManage == 1) {
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
             } else if (wishlisted) {
+                fab_detail.isActivated = true
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
             } else {
+                fab_detail.isActivated = false
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
             }
         }
@@ -689,10 +710,37 @@ class ProductDetailFragment : BaseDaggerFragment() {
         loadProductData()
     }
 
-    @SuppressLint("Range")
     private fun onErrorMoveToEtalase(throwable: Throwable) {
         hideProgressDialog()
         showToastError(throwable)
+    }
+
+    private fun onErrorRemoveWishList(errorMessage: String?) {
+        hideProgressDialog()
+        showToastError(MessageErrorException(errorMessage))
+    }
+
+    private fun onSuccessRemoveWishlist(productId:String?) {
+        hideProgressDialog()
+        shopInfo?.run {
+            updateWishlist(this, false)
+        }
+        //TODO clear cache
+        //TODO action success remove wishlist. in old version, will broadcast
+    }
+
+    private fun onErrorAddWishList(errorMessage: String?) {
+        hideProgressDialog()
+        showToastError(MessageErrorException(errorMessage))
+    }
+
+    private fun onSuccessAddWishlist(productId:String?) {
+        hideProgressDialog()
+        shopInfo?.run {
+            updateWishlist(this, true)
+        }
+        //TODO clear cache
+        //TODO action success add wishlist. in old version, will broadcast
     }
 
     private fun onDiscussionClicked() {
@@ -940,7 +988,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         loadingProgressDialog?.dismiss()
     }
 
-    private fun showProgressDialog(onCancelClicked: (() -> Unit)?) {
+    private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
         if (loadingProgressDialog == null) {
             loadingProgressDialog = activity?.createDefaultProgressDialog(
                     getString(R.string.title_loading),

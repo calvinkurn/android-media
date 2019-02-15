@@ -158,7 +158,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
-        GraphqlClient.init(getApplicationContext());
+        GraphqlClient.init(this);
+        NetworkClient.init(this);
         InstabugInitalize.init(this);
     }
 

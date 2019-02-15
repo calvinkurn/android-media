@@ -386,10 +386,6 @@ public class WishListImpl implements WishList {
                 onFinishedDeleteWishlist(position);
             }
 
-            @Override
-            public String getString(int resId) {
-                return context.getString(resId);
-            }
         });
 
     }
