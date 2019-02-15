@@ -26,7 +26,7 @@ public class TokopointHomeDrawerData implements Parcelable {
         this.offFlag = offFlag;
         this.hasNotif = hasNotif;
         this.userTier = userTier;
-        this.rewardPoints=rewardPoints;
+        this.rewardPoints = rewardPoints;
         this.rewardPointsStr = rewardPointsStr;
         this.mainPageUrl = mainPageUrl;
         this.mainPageTitle = mainPageTitle;
@@ -111,6 +111,7 @@ public class TokopointHomeDrawerData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.offFlag);
         dest.writeInt(this.hasNotif);
+        dest.writeLong(this.rewardPoints);
         dest.writeString(this.rewardPointsStr);
         dest.writeString(this.mainPageUrl);
         dest.writeString(this.mainPageTitle);
@@ -121,6 +122,7 @@ public class TokopointHomeDrawerData implements Parcelable {
     protected TokopointHomeDrawerData(Parcel in) {
         this.offFlag = in.readInt();
         this.hasNotif = in.readInt();
+        this.rewardPoints = in.readLong();
         this.rewardPointsStr = in.readString();
         this.mainPageUrl = in.readString();
         this.mainPageTitle = in.readString();
