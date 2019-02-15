@@ -69,7 +69,7 @@ class PlayViewStateImpl(
     private var login: View = view.findViewById(R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
 
-    val dynamicIcon = view.findViewById<ImageView>(R.id.dynamic_icon)
+    val dynamicIcon = view.findViewById<ImageView>(R.id.icon_dynamic)
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
     var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
@@ -133,7 +133,8 @@ class PlayViewStateImpl(
         setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
         setDynamicIconNotification(true)
         setDynamicBackground("")
-        setFloatingIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest", "")
+        setFloatingIcon("tokopedia://webview?url=https://www.tokopedia" +
+                ".com/play/trivia-quiz?campaign=nakamatest", "https://i.gifer.com/M8tf.gif")
 
         setChannelInfoBottomSheet()
         setOverlayBottomSheet(it.overlayViewModel)
@@ -383,7 +384,12 @@ class PlayViewStateImpl(
             return
         }
 
-        ImageHandler.LoadImage(webviewIcon, iconUrl)
+        if (iconUrl.toLowerCase().endsWith("gif")) {
+            ImageHandler.loadGifFromUrl(webviewIcon, iconUrl, R.drawable.ic_loading_toped)
+        } else {
+            ImageHandler.LoadImage(webviewIcon, iconUrl)
+        }
+
         webviewIcon.setOnClickListener {
             RouteManager.route(view.context, redirectUrl)
         }
@@ -410,6 +416,8 @@ class PlayViewStateImpl(
     }
 
     private fun showWebviewBottomSheet(url: String) {
+        bottomSheetLayout.visibility = View.VISIBLE
+
         if (!::bottomSheetBehavior.isInitialized) {
             bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
