@@ -90,12 +90,17 @@
 
                     <TextView
                         android:id="@+id/tv_select_payment_method"
-                        style="@style/button_payment"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
+                        android:layout_width="@dimen/dp_150"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="@dimen/dp_10"
                         android:background="@drawable/transaction_checkout_orange_button_rounded"
-                        android:text="@string/label_choose_payment"
-                        android:textColor="@color/white" />
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        android:text="@string/label_choose_payment" />
 
                 </LinearLayout>
 
