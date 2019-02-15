@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class TokopointHomeDrawerData implements Parcelable {
+    private long rewardPoints;
     private int offFlag;
     private int hasNotif;
     private UserTier userTier;
@@ -16,6 +17,7 @@ public class TokopointHomeDrawerData implements Parcelable {
     public TokopointHomeDrawerData(int offFlag,
                                    int hasNotif,
                                    UserTier userTier,
+                                   long rewardPoints,
                                    String rewardPointsStr,
                                    String mainPageUrl,
                                    String mainPageTitle,
@@ -24,6 +26,7 @@ public class TokopointHomeDrawerData implements Parcelable {
         this.offFlag = offFlag;
         this.hasNotif = hasNotif;
         this.userTier = userTier;
+        this.rewardPoints=rewardPoints;
         this.rewardPointsStr = rewardPointsStr;
         this.mainPageUrl = mainPageUrl;
         this.mainPageTitle = mainPageTitle;
@@ -136,4 +139,12 @@ public class TokopointHomeDrawerData implements Parcelable {
             return new TokopointHomeDrawerData[size];
         }
     };
+
+    public long getRewardPoints() {
+        return rewardPoints;
+    }
+
+    public void setRewardPoints(long rewardPoints) {
+        this.rewardPoints = rewardPoints;
+    }
 }

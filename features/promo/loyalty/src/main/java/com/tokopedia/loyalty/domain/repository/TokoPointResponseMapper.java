@@ -99,6 +99,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
                 && tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
                 tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints() != null) {
             userTier.setRewardPointsStr(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints().getRewardString());//getUserTier().getRewardPointsStr());
+            userTier.setRewardPoints(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints().getReward());
 
         } else {
             userTier.setRewardPointsStr("");

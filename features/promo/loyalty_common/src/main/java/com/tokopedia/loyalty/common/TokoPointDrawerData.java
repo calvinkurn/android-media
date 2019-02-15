@@ -128,11 +128,13 @@ public class TokoPointDrawerData implements Parcelable {
         private String tierNameDesc;
         private String tierImageUrl;
         private String rewardPointsStr;
+        private long rewardPoints;
 
         protected UserTier(Parcel in) {
             tierNameDesc = in.readString();
             tierImageUrl = in.readString();
             rewardPointsStr = in.readString();
+            rewardPoints = in.readLong();
         }
 
         public static final Creator<UserTier> CREATOR = new Creator<UserTier>() {
@@ -184,6 +186,15 @@ public class TokoPointDrawerData implements Parcelable {
             parcel.writeString(tierNameDesc);
             parcel.writeString(tierImageUrl);
             parcel.writeString(rewardPointsStr);
+            parcel.writeLong(rewardPoints);
+        }
+
+        public void setRewardPoints(long rewardPoints) {
+            this.rewardPoints = rewardPoints;
+        }
+
+        public long getRewardPoints() {
+            return rewardPoints;
         }
     }
 
