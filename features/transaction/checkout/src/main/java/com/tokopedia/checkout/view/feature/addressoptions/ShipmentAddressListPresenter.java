@@ -51,16 +51,16 @@ public class ShipmentAddressListPresenter
         return hasNext;
     }
 
-    public void resetAddressList(int order, RecipientAddressModel currentAddress) {
-        getAddressList(order, DEFAULT_KEYWORD, currentAddress, true);
+    public void resetAddressList(int order, RecipientAddressModel currentAddress, boolean isDisableCorner) {
+        getAddressList(order, DEFAULT_KEYWORD, currentAddress, true, isDisableCorner);
     }
 
-    public void getAddressFromNewCreated(final RecipientAddressModel newAddress) {
-        getAddressList(1, "", newAddress, true);
+    public void getAddressFromNewCreated(final RecipientAddressModel newAddress, boolean isDisableCorner) {
+        getAddressList(1, "", newAddress, true, isDisableCorner);
     }
 
-    public void getAddressList(int order, String query,
-                               final RecipientAddressModel currentAddress, boolean resetPage) {
+    public void getAddressList(int order, String query, final RecipientAddressModel currentAddress,
+                               boolean resetPage, boolean isDisableCorner) {
         if (!TextUtils.isEmpty(query)) {
             resetPage = !lastQueryKeyword.equals(query);
         }
@@ -133,7 +133,8 @@ public class ShipmentAddressListPresenter
                                                     getMvpView().stopTrace();
                                                 } else {
                                                     if (peopleAddressModel.getCornerAddressModelsList() != null &&
-                                                            !peopleAddressModel.getCornerAddressModelsList().isEmpty()) {
+                                                            !peopleAddressModel.getCornerAddressModelsList().isEmpty() &&
+                                                            !isDisableCorner) {
                                                         getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
                                                         getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
                                                     }

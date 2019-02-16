@@ -61,6 +61,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private static final String PARAMS = "params";
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
+    public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -75,6 +76,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
     private int maxItemPosition;
     private boolean isLoading;
+    private boolean isDisableCorner;
     private RecipientAddressModel mCurrAddress;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
@@ -96,6 +98,15 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
+        shipmentAddressListFragment.setArguments(bundle);
+        return shipmentAddressListFragment;
+    }
+
+    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress, boolean isDisableCorner) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        bundle.putBoolean(ARGUMENT_DISABLE_CORNER, isDisableCorner);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
@@ -175,7 +186,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
-        if (getArguments() != null) mCurrAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
+        if (getArguments() != null) {
+            mCurrAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
+            isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);
+        }
     }
 
     @Override
@@ -391,7 +405,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onSearchReset() {
         if (getArguments() != null) {
             mShipmentAddressListPresenter.resetAddressList(ORDER_ASC,
-                    getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+                    getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), isDisableCorner);
         }
     }
 
@@ -400,10 +414,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getArguments() != null) {
             if (!query.isEmpty()) {
                 mShipmentAddressListPresenter.getAddressList(ORDER_ASC, query,
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true);
+                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true, isDisableCorner);
             } else {
                 mShipmentAddressListPresenter.getAddressList(ORDER_ASC, "",
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage);
+                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage, isDisableCorner);
             }
         }
     }
@@ -471,7 +485,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
                         newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
                         newRecipientAddressModel.setPostalCode(newAddress.getPostalCode());
-                        mShipmentAddressListPresenter.getAddressFromNewCreated(newRecipientAddressModel);
+                        mShipmentAddressListPresenter.getAddressFromNewCreated(newRecipientAddressModel, isDisableCorner);
                     }
                     onSearchReset();
                     break;
