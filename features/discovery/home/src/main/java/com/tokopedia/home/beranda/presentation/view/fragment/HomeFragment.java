@@ -68,6 +68,7 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -95,7 +96,7 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, HomeFeedListener,
         CountDownView.CountDownListener,
-        NotificationListener, FragmentListener {
+        NotificationListener, InboxNotificationListener, FragmentListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -1102,6 +1103,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void notifyToolbarForAbTesting() {
         if (mainToolbar != null) {
             mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
+        }
+    }
+
+    @Override
+    public void onNotifyBadgeInboxNotification(int number) {
+        if (mainToolbar != null) {
+            mainToolbar.setInboxNumber(number);
         }
     }
 }

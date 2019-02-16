@@ -392,6 +392,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
 
+    implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
