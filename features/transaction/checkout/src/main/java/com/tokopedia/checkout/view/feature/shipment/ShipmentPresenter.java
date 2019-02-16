@@ -875,11 +875,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         TokopediaCornerData cornerData = null;
         if (getRecipientAddressModel().isCornerAddress()) {
-            TokopediaCornerData tokopediaCornerData = new TokopediaCornerData();
-            tokopediaCornerData.setTokopediaCorner(true);
-            tokopediaCornerData.setUserCornerId(Integer.parseInt(getRecipientAddressModel().getUserCornerId()));
-            tokopediaCornerData.setCornerId(Integer.parseInt(getRecipientAddressModel().getCornerId()));
-            cornerData = tokopediaCornerData;
+            cornerData = new TokopediaCornerData(
+                    true, Integer.parseInt(getRecipientAddressModel().getUserCornerId()),
+                    Integer.parseInt(getRecipientAddressModel().getCornerId())
+            );
         }
 
         return new CheckoutRequest.Builder()
