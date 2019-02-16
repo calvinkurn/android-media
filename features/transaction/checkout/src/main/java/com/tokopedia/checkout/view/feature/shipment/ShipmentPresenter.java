@@ -400,6 +400,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     public boolean checkAddressHasChanged(RecipientAddressModel oldModel, RecipientAddressModel newModel) {
+        if (oldModel.isCornerAddress()) return !oldModel.equalCorner(newModel);
         return !oldModel.equals(newModel);
     }
 

@@ -265,6 +265,13 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.cornerId = cornerId;
     }
 
+    public boolean equalCorner(RecipientAddressModel that) {
+        return getCityId().equals(that.getCityId()) &&
+                getDestinationDistrictId().equals(that.getDestinationDistrictId()) &&
+                getId().equals(that.getId()) && getPostalCode().equals(that.getPostalCode())
+                && getProvinceId().equals(that.getProvinceId());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
