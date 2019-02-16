@@ -24,8 +24,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent.Groupchat"
             android:configChanges="orientation|screenSize|locale"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
 
+
+        <activity
+            android:name=".room.view.activity.PlayWebviewActivity"
+            android:label="@string/activity_channel"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+
+            />
     </application>
 
 </manifest>

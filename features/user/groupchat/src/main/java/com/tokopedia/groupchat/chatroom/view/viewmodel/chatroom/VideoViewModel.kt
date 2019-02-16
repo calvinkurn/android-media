@@ -16,7 +16,7 @@ class VideoViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parce
 
     @SerializedName("video_id")
     @Expose
-    var videoId: String? = null
+    var videoId: String = ""
 
     constructor(videoId: String) {
         this.videoId = videoId

@@ -4,6 +4,9 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.support.constraint.ConstraintLayout
+import android.support.design.widget.BottomSheetBehavior
+import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -20,6 +23,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
@@ -31,10 +36,12 @@ import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
+import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
@@ -47,9 +54,9 @@ import java.util.concurrent.TimeUnit
  * @author : Steven 13/02/19
  */
 class PlayViewStateImpl(
-        var fragmentManager: FragmentManager,
         var userSession: UserSessionInterface,
         var view: View,
+        var activity: FragmentActivity,
         var listener: PlayContract.View,
         quickReplyListener: ChatroomContract.QuickReply,
         imageListener: ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
@@ -73,6 +80,17 @@ class PlayViewStateImpl(
     private var replyEditText: BackEditText = view.findViewById(R.id.reply_edit_text)
     private var login: View = view.findViewById(R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
+
+    val dynamicIcon = view.findViewById<ImageView>(R.id.icon_dynamic)
+    val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
+
+    var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
+    lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
+
+    lateinit var overlayBottomSheet: CloseableBottomSheetDialog
+
+
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
     private var quickReplyAdapter: QuickReplyAdapter
     private var adapter: GroupChatAdapter
@@ -171,21 +189,35 @@ class PlayViewStateImpl(
         chatNotificationView.visibility = View.GONE
     }
 
-    private fun showWidgetAboveInput(show: Boolean) {
-        if (show) {
+    override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
+        viewModel = it
+
+        setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
+        setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
+        initVideoFragment(childFragmentManager, it.videoId)
+        showWidgetAboveInput(userSession.isLoggedIn)
+
+        setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
+        setDynamicIconNotification(true)
+        setDynamicBackground("")
+        setFloatingIcon("tokopedia://webview?url=https://www.tokopedia" +
+                ".com/play/trivia-quiz?campaign=nakamatest", "https://i.gifer.com/M8tf.gif")
+
+        setChannelInfoBottomSheet()
+        setOverlayBottomSheet(it.overlayViewModel)
+
+        showLoginButton(!userSession.isLoggedIn)
+
+    }
+
+    private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
+        if (isUserLoggedIn) {
             setPinnedMessage(viewModel.pinnedMessageViewModel)
             setQuickReply(viewModel.quickRepliesViewModel)
         } else {
             setPinnedMessage(null)
             setQuickReply(null)
         }
-    }
-
-    override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
-        viewModel = it
-        showLoginButton(!userSession.isLoggedIn)
-        showWidgetAboveInput(userSession.isLoggedIn)
-        initVideoFragment()
     }
 
     private fun showLoginButton(show: Boolean) {
@@ -205,9 +237,9 @@ class PlayViewStateImpl(
         setSponsorData(viewModel.adsId, viewModel.adsImageUrl, viewModel.adsName)
     }
 
-    override fun onVideoUpdated(it: VideoViewModel) {
+    override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
         viewModel.videoId = it.videoId
-        initVideoFragment()
+        initVideoFragment(childFragmentManager, it.videoId)
     }
 
     override fun onChannelFrozen(channelId: String) {
@@ -311,6 +343,30 @@ class PlayViewStateImpl(
         }
     }
 
+    private fun setChannelInfoBottomSheet() {
+        //TODO channel Info
+    }
+
+    private fun setOverlayBottomSheet(overlayViewModel: OverlayViewModel?) {
+        if (overlayViewModel == null) {
+            return
+        }
+
+        if (!::overlayBottomSheet.isInitialized) {
+            //TODO initialize overlay
+        }
+
+        //TODO show overlay
+    }
+
+    private fun setDynamicBackground(backgroundUrl: String) {
+        if (backgroundUrl.isBlank()) {
+            //TODO clear background
+        } else {
+            //TODO add background
+        }
+    }
+
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
         toolbar.title = title
@@ -347,7 +403,7 @@ class PlayViewStateImpl(
         channelBanner.visibility = visible
     }
 
-    override fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?) {
+    fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?) {
         if (adsId == null || adsImageUrl == null) {
             sponsorLayout.visibility = View.GONE
         } else {
@@ -357,7 +413,7 @@ class PlayViewStateImpl(
         }
 
         if (sponsorLayout.visibility == View.VISIBLE) {
-            //TO DO analytics event view banner
+            //TODO analytics event view banner
         }
     }
 
@@ -365,11 +421,11 @@ class PlayViewStateImpl(
         youtubeRunnable.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
     }
 
-    override fun initVideoFragment() {
+    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String) {
         videoContainer.visibility = View.GONE
-        val videoId = viewModel.videoId
-        videoId?.let {
+        videoId.let {
             if (it.isEmpty()) return
+
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoContainer.visibility = View.VISIBLE
@@ -495,6 +551,94 @@ class PlayViewStateImpl(
         if(login.visibility != VISIBLE){
             chatNotificationView.visibility = VISIBLE
         }
+    }
+
+
+    private fun setFloatingIcon(redirectUrl: String, iconUrl: String) {
+        if (iconUrl.isBlank()
+                || redirectUrl.isBlank()
+                || !RouteManager.isSupportApplink(view.context, redirectUrl)) {
+            return
+        }
+
+        if (iconUrl.toLowerCase().endsWith("gif")) {
+            ImageHandler.loadGifFromUrl(webviewIcon, iconUrl, R.drawable.ic_loading_toped)
+        } else {
+            ImageHandler.LoadImage(webviewIcon, iconUrl)
+        }
+
+        webviewIcon.setOnClickListener {
+            RouteManager.route(view.context, redirectUrl)
+        }
+
+    }
+
+    private fun setDynamicIcon(redirectUrl: String) {
+        if (redirectUrl.isBlank()) {
+            return
+        }
+
+        dynamicIcon.setOnClickListener {
+            showWebviewBottomSheet(redirectUrl)
+        }
+    }
+
+    private fun setDynamicIconNotification(hasNotification: Boolean) {
+
+        if (hasNotification) {
+            //TODO set red dot
+        } else {
+            //TODO clear notification
+        }
+    }
+
+    private fun showWebviewBottomSheet(url: String) {
+        bottomSheetLayout.visibility = View.VISIBLE
+
+        if (!::bottomSheetBehavior.isInitialized) {
+            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            bottomSheetBehavior.isHideable = true
+            bottomSheetBehavior.setBottomSheetCallback(getBottomSheetCallback())
+
+            bottomSheetLayout.findViewById<ImageView>(R.id.close_button).setOnClickListener {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
+
+        if (!::bottomSheetWebviewFragment.isInitialized) {
+            bottomSheetWebviewFragment = PlayWebviewFragment.createInstance(url)
+            activity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.bottom_sheet_fragment_container,
+                            bottomSheetWebviewFragment,
+                            bottomSheetWebviewFragment.javaClass.simpleName)
+                    .commit()
+        }
+
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+    }
+
+    private fun getBottomSheetCallback(): BottomSheetBehavior.BottomSheetCallback? {
+        return object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+
+            }
+
+            override fun onStateChanged(p0: View, newState: Int) {
+
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return if (::bottomSheetBehavior.isInitialized
+                && bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            true
+        } else false
     }
 
 }

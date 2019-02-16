@@ -77,6 +77,7 @@ public class GroupChatAnalytics {
     public static final String ATTRIBUTE_PARTNER_LOGO = "Logo";
 
     public static final String SCREEN_CHAT_ROOM = "/group-chat-room/";
+    public static final String SCREEN_PLAY_WEBVIEW_FULL= "/group-chat-webvie-full/";
 
     private static final String EE_PROMO_CLICK = "promoClick";
     private static final String EE_PROMO_VIEW = "promoView";

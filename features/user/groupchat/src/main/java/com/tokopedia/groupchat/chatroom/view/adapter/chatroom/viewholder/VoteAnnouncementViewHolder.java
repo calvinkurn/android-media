@@ -82,9 +82,9 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     private void setVoteStarted(VoteAnnouncementViewModel element) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_play_dynamic_icon);
         } else {
-            voteIcon.setImageResource(R.drawable.ic_vote);
+            voteIcon.setImageResource(R.drawable.ic_play_dynamic_icon);
         }
         voteTitle.setText(R.string.title_poll_started);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.medium_green));

@@ -58,7 +58,7 @@
     <dimen name="shadow_layer_group_chat_banner">128dp</dimen>
 
     <dimen name="max_width_template">132dp</dimen>
-    <dimen name="min_width_template">52dp</dimen>
+    <dimen name="min_width_template">50dp</dimen>
     <dimen name="min_height_template">32dp</dimen>
 
     <dimen name="min_width_button_shopping">160dp</dimen>

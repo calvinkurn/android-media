@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nisie on 11/30/16.
@@ -77,6 +79,22 @@ public class TkpdWebView extends WebView {
                     AuthUtil.KEY.KEY_WSV4, userId, accessToken));
         }
     }
+
+    public void loadAuthUrl(String url, String userId, String accessToken, HashMap<String,
+            String> additionalHeaders) {
+        if (TextUtils.isEmpty(userId)) {
+            loadUrl(url);
+        } else {
+            Map<String,String> header =  AuthUtil.generateHeadersWithBearer(
+                    Uri.parse(url).getPath(),
+                    getQuery(Uri.parse(url).getQuery()),
+                    "GET",
+                    AuthUtil.KEY.KEY_WSV4, userId, accessToken);
+            header.putAll(additionalHeaders);
+            loadUrl(url,header);
+        }
+    }
+
 
     private String getQuery(String query) {
         return query != null ? query : "";
