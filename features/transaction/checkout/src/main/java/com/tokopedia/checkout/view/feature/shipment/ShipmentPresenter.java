@@ -878,7 +878,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             TokopediaCornerData tokopediaCornerData = new TokopediaCornerData();
             tokopediaCornerData.setTokopediaCorner(true);
             tokopediaCornerData.setUserCornerId(Integer.parseInt(getRecipientAddressModel().getUserCornerId()));
-            tokopediaCornerData.setCornerId(Integer.parseInt(getRecipientAddressModel().getId()));
+            tokopediaCornerData.setCornerId(Integer.parseInt(getRecipientAddressModel().getCornerId()));
             cornerData = tokopediaCornerData;
         }
 
