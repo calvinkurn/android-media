@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -290,7 +291,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment) {
+    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, @Nullable String cornerId) {
         if (isFromMultipleAddress) {
             getView().showLoading();
         } else {
@@ -298,6 +299,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
+        if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
@@ -478,7 +480,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment) {
+    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId) {
         boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
             processCheckout(voucherCode, isOneClickShipment);
@@ -486,6 +488,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showLoading();
             TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
             paramGetShipmentForm.put("lang", "id");
+            if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,

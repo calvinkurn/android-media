@@ -293,7 +293,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
-            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
+            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), null);
         } else {
             shipmentPresenter.setShipmentCartItemModelList(savedShipmentCartItemModelList);
             shipmentPresenter.setCartPromoSuggestion(savedCartPromoSuggestion);
@@ -485,7 +485,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
-                        shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
+                        shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), null);
                     }
                 });
 
@@ -863,7 +863,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
         if (shipmentAdapter.hasAppliedPromoCode()) {
-            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
+            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), selectedAddress.getCornerId());
         }
         if (selectedAddress.isCornerAddress()) {
             shipmentAdapter.disableDropshipper();
@@ -937,7 +937,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
         } else {
             shipmentSelectionStateDataHashSet.clear();
-            shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment());
+            shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), null);
         }
     }
 
@@ -958,7 +958,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void onResultFromPayment(int resultCode) {
         if (getActivity() != null) {
             if (resultCode == TopPayActivity.PAYMENT_CANCELLED || resultCode == TopPayActivity.PAYMENT_FAILED) {
-                shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment());
+                shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), null);
             } else {
                 getActivity().setResult(resultCode);
                 getActivity().finish();
@@ -1018,7 +1018,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
 
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS:
-                shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
+                shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), null);
                 break;
 
             case Activity.RESULT_CANCELED:
@@ -1377,9 +1377,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onDropshipperValidationResult(boolean result, Object shipmentData,
                                               int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
+            RecipientAddressModel addressModel = shipmentPresenter.getRecipientAddressModel();
+            String cornerId = (addressModel != null) ? addressModel.getCornerId() : null;
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
-                    shipmentPresenter.processCheckShipmentPrepareCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
+                    shipmentPresenter.processCheckShipmentPrepareCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment(), cornerId);
                     shipmentPresenter.processSaveShipmentState();
                     break;
                 case REQUEST_CODE_COD:
