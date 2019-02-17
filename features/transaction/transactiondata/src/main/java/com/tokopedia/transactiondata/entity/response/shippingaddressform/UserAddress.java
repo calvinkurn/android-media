@@ -60,7 +60,7 @@ public class UserAddress {
     private String longitude;
     @SerializedName("corner_id")
     @Expose
-    private String cornerId;
+    private int cornerId;
 
     public int getAddressId() {
         return addressId;
@@ -130,11 +130,11 @@ public class UserAddress {
         return longitude;
     }
 
-    public String getCornerId() {
+    public int getCornerId() {
         return cornerId;
     }
 
-    public void setCornerId(String cornerId) {
+    public void setCornerId(int cornerId) {
         this.cornerId = cornerId;
     }
 }
