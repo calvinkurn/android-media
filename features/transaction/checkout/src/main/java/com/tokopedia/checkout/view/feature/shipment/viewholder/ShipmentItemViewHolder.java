@@ -402,7 +402,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
         renderErrorAndWarning(shipmentCartItemModel);
         renderInsurance(shipmentCartItemModel);
-        renderDropshipper();
+        renderDropshipper(recipientAddressModel != null && recipientAddressModel.isCornerAddress());
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
     }
@@ -813,13 +813,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
 
-    private void renderDropshipper() {
+    private void renderDropshipper(boolean isCorner) {
         if (shipmentDataList != null) {
             ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition());
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                     shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
 
-                if (!shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().isAllowDropshiper()) {
+                if (!shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().isAllowDropshiper() || isCorner) {
                     llDropshipper.setVisibility(View.GONE);
                     llDropshipperInfo.setVisibility(View.GONE);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);

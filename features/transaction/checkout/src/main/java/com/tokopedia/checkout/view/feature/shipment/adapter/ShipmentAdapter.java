@@ -815,18 +815,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void disableDropshipper() {
-        for (Object o : shipmentDataList) {
-            if (o instanceof ShipmentCartItemModel) {
-                ShipmentCartItemModel cartItemModel = (ShipmentCartItemModel) o;
-                if (cartItemModel.getSelectedShipmentDetailData() != null) {
-                    cartItemModel.getSelectedShipmentDetailData().setUseDropshipper(false);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
-
     public RequestData getRequestData(RecipientAddressModel recipientAddressModel, List<ShipmentCartItemModel> shipmentCartItemModelList) {
         RecipientAddressModel addressModel;
         if (recipientAddressModel != null) {
