@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ovo_premier_verifikasi_sukses" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_36"
+                android:gravity="center_horizontal"
+                android:text="Hore! Kamu Bergabung ke OVO Premier"
+                android:textColor="#b3000000"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="4sp"
+                android:text="Saatnya nikmati keuntungan dari OVO Premier:"
+                android:textColor="#61000000"
+                android:textSize="14sp" />
+
+            <TextView
+                style="@style/TextView.CheckList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_16"
+                android:lineSpacingExtra="4sp"
+                android:text="Batas saldo OVO Cash Rp10.000.000"
+                android:textColor="#61000000"
+                android:textSize="14sp" />
+
+            <TextView
+                style="@style/TextView.CheckList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:lineSpacingExtra="4sp"
+                android:text="Transfer ke antar pengguna OVO Cash"
+                android:textColor="#61000000"
+                android:textSize="14sp" />
+
+            <TextView
+                style="@style/TextView.CheckList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:lineSpacingExtra="4sp"
+                android:text="Bebas biaya transfer ke rekening bank"
+                android:textColor="#61000000"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Mulai Transaksi di Tokopedia"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
+                android:background="@drawable/btn_bg_green_curved_corners"
+                android:gravity="center_horizontal"
+                android:text="Mulai Transaksi di Tokopedia"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></include>
+</RelativeLayout>
