@@ -19,6 +19,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
@@ -76,7 +77,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
         }
     }
 
-    public void processToShareProduct(Context context, @NonNull ShareData shareData) {
+    public void processToShareProduct(Context context, @NonNull LinkerData shareData) {
         UnifyTracking.eventShareProduct(context);
     }
 

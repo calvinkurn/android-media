@@ -133,6 +133,7 @@
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
+/libraries/linker                       @tokopedia/minion-yoda
 
 /libraries/pagination                   @lavekush-t
 /libraries/common_network/              @lavekush-t

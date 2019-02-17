@@ -139,7 +139,7 @@ ext {
             moengage   : "com.moengage:moe-android-sdk:9.1.04",
             moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
             moengageMSG: "com.moengage:addon-messaging:2.0.03",
-            branch     : "io.branch.sdk.android:library:2.+",
+            branch     : "io.branch.sdk.android:library:3.0.4+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
     ]
 
