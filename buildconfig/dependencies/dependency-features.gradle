@@ -199,6 +199,7 @@ ext {
             train                         : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
 
+            categoryCommon              : ":features:discovery:category_common",
             flashsaleManagement         : ":features:discovery:flashsale_management",
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon   : ":features:discovery:flashsale_management_common",
