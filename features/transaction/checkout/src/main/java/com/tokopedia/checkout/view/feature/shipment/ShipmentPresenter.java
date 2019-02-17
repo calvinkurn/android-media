@@ -327,10 +327,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        RecipientAddressModel newAddress = getView().getShipmentDataConverter()
+                .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
-            setRecipientAddressModel(getView().getShipmentDataConverter()
-                    .getRecipientAddressModel(cartShipmentAddressFormData));
-        } else {
+            setRecipientAddressModel(newAddress);
+        } else if (!checkHaveSameCurrentCodAddress(newAddress.getCornerId())){
             setRecipientAddressModel(null);
         }
 
@@ -358,6 +359,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             isPurchaseProtectionPage = true;
             mTrackerPurchaseProtection.eventImpressionOfProduct();
         }
+    }
+
+    private boolean checkHaveSameCurrentCodAddress(String cornerId) {
+        RecipientAddressModel curr = getRecipientAddressModel();
+        if (curr == null) return false;
+        return (curr.isCornerAddress()) && (curr.getCornerId().equals(cornerId));
     }
 
     @Override

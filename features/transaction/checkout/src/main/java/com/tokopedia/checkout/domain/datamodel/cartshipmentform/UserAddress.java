@@ -24,6 +24,7 @@ public class UserAddress implements Parcelable {
     private String address2;
     private String latitude;
     private String longitude;
+    private String cornerId;
 
     public int getAddressId() {
         return addressId;
@@ -161,6 +162,17 @@ public class UserAddress implements Parcelable {
         this.longitude = longitude;
     }
 
+    public String getCornerId() {
+        return cornerId;
+    }
+
+    public void setCornerId(String cornerId) {
+        this.cornerId = cornerId;
+    }
+
+    public UserAddress() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -185,9 +197,7 @@ public class UserAddress implements Parcelable {
         dest.writeString(this.address2);
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);
-    }
-
-    public UserAddress() {
+        dest.writeString(this.cornerId);
     }
 
     protected UserAddress(Parcel in) {
@@ -208,9 +218,10 @@ public class UserAddress implements Parcelable {
         this.address2 = in.readString();
         this.latitude = in.readString();
         this.longitude = in.readString();
+        this.cornerId = in.readString();
     }
 
-    public static final Parcelable.Creator<UserAddress> CREATOR = new Parcelable.Creator<UserAddress>() {
+    public static final Creator<UserAddress> CREATOR = new Creator<UserAddress>() {
         @Override
         public UserAddress createFromParcel(Parcel source) {
             return new UserAddress(source);
