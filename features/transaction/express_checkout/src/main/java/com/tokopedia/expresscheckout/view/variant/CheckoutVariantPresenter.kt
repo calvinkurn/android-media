@@ -103,7 +103,7 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
     override fun checkoutExpress(fragmentViewModel: FragmentViewModel) {
         view?.showLoadingDialog()
-
+        view?.generateFingerprintPublicKey()
         if (fragmentViewModel.getProfileViewModel()?.isStateHasRemovedProfile == false) {
             doCheckoutExpressUseCase.setParams(fragmentViewModel, getDataCheckoutRequest(fragmentViewModel))
             doCheckoutExpressUseCase.execute(RequestParams.create(), DoCheckoutExpressSubscriber(view, this, checkoutDomainModelMapper))

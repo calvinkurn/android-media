@@ -2,6 +2,7 @@ package com.tokopedia.expresscheckout.view.variant
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -552,6 +553,19 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun finishWithError(messages: String) {
         fragmentListener.finishWithResult(messages)
+    }
+
+    override fun generateFingerprintPublicKey() {
+        if (!fragmentViewModel.hasGenerateFingerprintPublicKey) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && router.checkoutModuleRouterGetEnableFingerprintPayment()) {
+                val publicKey = router.checkoutModuleRouterGeneratePublicKey()
+                if (publicKey != null) {
+                    fragmentViewModel.fingerprintPublicKey = router.checkoutModuleRouterGetPublicKey(publicKey)
+                }
+            }
+            fragmentViewModel.hasGenerateFingerprintPublicKey = true
+        }
     }
 
     override fun navigateAtcToOcs() {

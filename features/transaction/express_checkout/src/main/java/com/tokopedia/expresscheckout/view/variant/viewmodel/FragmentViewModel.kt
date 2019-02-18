@@ -15,7 +15,9 @@ data class FragmentViewModel(
         var lastPrice: Int? = 0,
         var isStateChanged: Boolean? = false, // True if there are error or user activity (change qty / change courier / change note / change variant / check insurance)
         var shippingCourierViewModels: MutableList<ShippingCourierViewModel>? = null,
-        var viewModels: ArrayList<Visitable<*>> = ArrayList()
+        var viewModels: ArrayList<Visitable<*>> = ArrayList(),
+        var hasGenerateFingerprintPublicKey: Boolean = false,
+        var fingerprintPublicKey: String? = null
 ) {
 
     fun getProfileViewModel(): ProfileViewModel? {

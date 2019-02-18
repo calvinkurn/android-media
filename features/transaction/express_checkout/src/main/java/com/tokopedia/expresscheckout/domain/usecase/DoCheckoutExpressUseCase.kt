@@ -46,6 +46,8 @@ open class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val 
         val checkoutRequestParam = CheckoutRequestParam()
         checkoutRequestParam.carts = cart
         checkoutRequestParam.profile = profile
+        checkoutRequestParam.fingerprintSupport = fragmentViewModel.fingerprintPublicKey?.isNotEmpty()?.toString()
+        checkoutRequestParam.fingerprintPublicKey = fragmentViewModel.fingerprintPublicKey
 
         val jsonTreeCheckoutRequest = Gson().toJsonTree(checkoutRequestParam)
         val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject

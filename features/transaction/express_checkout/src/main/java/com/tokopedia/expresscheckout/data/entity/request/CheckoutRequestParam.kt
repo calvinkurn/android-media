@@ -17,7 +17,7 @@ data class CheckoutRequestParam(
         var clientId: String? = null,
 
         @SerializedName("fingerprint_support")
-        var fingerprintSupport: String? = null,
+        var fingerprintSupport: String? = "false",
 
         @SerializedName("fingerprint_publickey")
         var fingerprintPublicKey: String? = null

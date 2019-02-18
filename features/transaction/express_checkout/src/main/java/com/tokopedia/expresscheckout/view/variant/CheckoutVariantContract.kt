@@ -76,6 +76,8 @@ interface CheckoutVariantContract {
 
         fun navigateCheckoutToThankYouPage(appLink: String)
 
+        fun generateFingerprintPublicKey()
+
         fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult>
 
         fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData>

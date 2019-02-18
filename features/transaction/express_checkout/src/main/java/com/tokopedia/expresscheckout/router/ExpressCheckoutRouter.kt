@@ -11,6 +11,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
+import java.security.PublicKey
 
 /**
  * Created by Irfan Khoirul on 12/12/18.
@@ -29,4 +30,11 @@ interface ExpressCheckoutRouter {
     fun checkoutProduct(checkoutRequest: CheckoutRequest, isOneClickShipment: Boolean, isExpressCheckout: Boolean): Observable<CheckoutData>
 
     fun updateAddress(requestParams: RequestParams): Observable<String>
+
+    fun checkoutModuleRouterGetEnableFingerprintPayment(): Boolean
+
+    fun checkoutModuleRouterGeneratePublicKey(): PublicKey?
+
+    fun checkoutModuleRouterGetPublicKey(publicKey: PublicKey): String
+
 }
