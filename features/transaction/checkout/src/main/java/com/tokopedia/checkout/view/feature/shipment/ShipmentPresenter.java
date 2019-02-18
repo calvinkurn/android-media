@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
@@ -46,6 +45,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
@@ -55,6 +55,14 @@ import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.transaction.common.sharedata.EditAddressParam;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
@@ -64,12 +72,6 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapDa
 import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
 import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -1145,17 +1147,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         latitude = addressLatitude;
         longitude = addressLongitude;
 
-        params.put(EditAddressUseCase.Params.ADDRESS_ID, addressId);
-        params.put(EditAddressUseCase.Params.ADDRESS_NAME, addressName);
-        params.put(EditAddressUseCase.Params.ADDRESS_STREET, addressStreet);
-        params.put(EditAddressUseCase.Params.POSTAL_CODE, postalCode);
-        params.put(EditAddressUseCase.Params.DISTRICT_ID, districtId);
-        params.put(EditAddressUseCase.Params.CITY_ID, cityId);
-        params.put(EditAddressUseCase.Params.PROVINCE_ID, provinceId);
-        params.put(EditAddressUseCase.Params.LATITUDE, latitude);
-        params.put(EditAddressUseCase.Params.LONGITUDE, longitude);
-        params.put(EditAddressUseCase.Params.RECEIVER_NAME, receiverName);
-        params.put(EditAddressUseCase.Params.RECEIVER_PHONE, receiverPhone);
+        params.put(EditAddressParam.ADDRESS_ID, addressId);
+        params.put(EditAddressParam.ADDRESS_NAME, addressName);
+        params.put(EditAddressParam.ADDRESS_STREET, addressStreet);
+        params.put(EditAddressParam.POSTAL_CODE, postalCode);
+        params.put(EditAddressParam.DISTRICT_ID, districtId);
+        params.put(EditAddressParam.CITY_ID, cityId);
+        params.put(EditAddressParam.PROVINCE_ID, provinceId);
+        params.put(EditAddressParam.LATITUDE, latitude);
+        params.put(EditAddressParam.LONGITUDE, longitude);
+        params.put(EditAddressParam.RECEIVER_NAME, receiverName);
+        params.put(EditAddressParam.RECEIVER_PHONE, receiverPhone);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putAllString(params);
@@ -1294,15 +1296,39 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
+        ShippingParam shippingParam = getShippingParam(shipmentDetailData);
+
         int counter = codData == null ? -1 : codData.getCounterCod();
         String cornerId = "";
         if (getRecipientAddressModel() != null) {
             cornerId = getRecipientAddressModel().getCornerId();
         }
-        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentDetailData, 0,
+        getCourierRecommendationUseCase.execute(query, counter, cornerId, shippingParam, spId, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
                         shipmentCartItemModel, shopShipmentList, isInitialLoad));
+    }
+
+    @NonNull
+    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData) {
+        ShippingParam shippingParam = new ShippingParam();
+        shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
+        shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
+        shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
+        shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
+        shippingParam.setDestinationDistrictId(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
+        shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+        shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+        shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+        shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
+        shippingParam.setShopId(shipmentDetailData.getShopId());
+        shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
+        shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
+        shippingParam.setInsurance(shipmentDetailData.getShipmentCartData().getInsurance());
+        shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
+        shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
+        shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
+        return shippingParam;
     }
 
     @Override

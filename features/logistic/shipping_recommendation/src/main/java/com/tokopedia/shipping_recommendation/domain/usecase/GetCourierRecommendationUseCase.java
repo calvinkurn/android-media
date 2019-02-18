@@ -1,11 +1,17 @@
 package com.tokopedia.shipping_recommendation.domain.usecase;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.shipping_recommendation.domain.ShippingParam;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
@@ -40,12 +46,18 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     public void execute(String query,
                         int codHistory,
                         String cornerId,
-                        ShipmentDetailData shipmentDetailData,
+                        ShippingParam shippingParam,
+                        int selectedSpId,
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<ShippingRecommendationData> subscriber) {
+        query = getQueryWithParams(query, codHistory, cornerId, shopShipments, shippingParam);
+        executeQuery(query, selectedSpId, selectedServiceId, shopShipments, subscriber);
+    }
+
+    private void executeQuery(String query, int selectedSpId, int selectedServiceId, List<ShopShipment> shopShipments,
+                              Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
-        query = getQueryWithParams(query, codHistory, cornerId, shipmentDetailData);
 
         GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 
@@ -76,7 +88,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 shippingRecommendationData.setShippingDurationViewModels(
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
-                                                shopShipments, shipmentDetailData, ratesId, selectedServiceId
+                                                shopShipments, selectedSpId, ratesId, selectedServiceId
                                         )
                                 );
                             }
@@ -87,11 +99,10 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribe(subscriber);
     }
 
-    private String getQueryWithParams(String query, int codHistory, String cornerId, ShipmentDetailData shipmentDetailData) {
+    private String getQueryWithParams(String query, int codHistory, String cornerId, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
         StringBuilder queryStringBuilder = new StringBuilder(query);
 
         StringBuilder spidsStringBuilder = new StringBuilder();
-        List<ShopShipment> shopShipmentList = shipmentDetailData.getShipmentCartData().getShopShipments();
         for (int i = 0; i < shopShipmentList.size(); i++) {
             List<ShipProd> shipProdList = shopShipmentList.get(i).getShipProds();
             if (shipProdList != null) {
@@ -105,56 +116,50 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.SPIDS, spidsStringBuilder.toString());
 
         StringBuilder originStringBuilder = new StringBuilder();
-        originStringBuilder.append(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
-        if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getOriginPostalCode())) {
-            originStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
+        originStringBuilder.append(shippingParam.getOriginDistrictId());
+        if (!TextUtils.isEmpty(shippingParam.getOriginPostalCode())) {
+            originStringBuilder.append("|").append(shippingParam.getOriginPostalCode());
         } else {
             originStringBuilder.append("|").append("0");
         }
-        if (shipmentDetailData.getShipmentCartData().getOriginLatitude() != null) {
-            originStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getOriginLatitude());
+        if (shippingParam.getOriginLatitude() != null) {
+            originStringBuilder.append("|").append(shippingParam.getOriginLatitude());
         }
-        if (shipmentDetailData.getShipmentCartData().getOriginLongitude() != null) {
-            originStringBuilder.append(",")
-                    .append(shipmentDetailData.getShipmentCartData().getOriginLongitude());
+        if (shippingParam.getOriginLongitude() != null) {
+            originStringBuilder.append(",").append(shippingParam.getOriginLongitude());
         }
         queryStringBuilder = setParam(queryStringBuilder, Param.ORIGIN, originStringBuilder.toString());
 
         StringBuilder destinationStringBuilder = new StringBuilder();
-        destinationStringBuilder.append(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
-        if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getDestinationPostalCode())) {
-            destinationStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+        destinationStringBuilder.append(shippingParam.getDestinationDistrictId());
+        if (!TextUtils.isEmpty(shippingParam.getDestinationPostalCode())) {
+            destinationStringBuilder.append("|").append(shippingParam.getDestinationPostalCode());
         } else {
             originStringBuilder.append("|").append("0");
         }
-        if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() != null) {
-            destinationStringBuilder.append("|")
-                    .append(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+        if (shippingParam.getDestinationLatitude() != null) {
+            destinationStringBuilder.append("|").append(shippingParam.getDestinationLatitude());
         }
-        if (shipmentDetailData.getShipmentCartData().getDestinationLongitude() != null) {
-            destinationStringBuilder.append(",")
-                    .append(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+        if (shippingParam.getDestinationLongitude() != null) {
+            destinationStringBuilder.append(",").append(shippingParam.getDestinationLongitude());
         }
         queryStringBuilder = setParam(queryStringBuilder, Param.DESTINATION, destinationStringBuilder.toString());
 
-        double weightInKilograms = shipmentDetailData.getShipmentCartData().getWeight() / KILOGRAM_DIVIDER;
+        double weightInKilograms = shippingParam.getWeightInKilograms();
         queryStringBuilder = setParam(queryStringBuilder, Param.WEIGHT, String.valueOf(weightInKilograms));
 
         int cornerIdInt = TextUtils.isEmpty(cornerId) ? 0 : Integer.parseInt(cornerId);
         queryStringBuilder = setParam(queryStringBuilder, Param.CORNER_ID, String.valueOf(cornerIdInt));
 
-        queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shipmentDetailData.getShopId());
+        queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shippingParam.getShopId());
         queryStringBuilder = setParam(queryStringBuilder, Param.TYPE, Param.VALUE_ANDROID);
         queryStringBuilder = setParam(queryStringBuilder, Param.FROM, Param.VALUE_CLIENT);
-        queryStringBuilder = setParam(queryStringBuilder, Param.TOKEN, shipmentDetailData.getShipmentCartData().getToken());
-        queryStringBuilder = setParam(queryStringBuilder, Param.UT, shipmentDetailData.getShipmentCartData().getUt());
-        queryStringBuilder = setParam(queryStringBuilder, Param.INSURANCE, String.valueOf(shipmentDetailData.getShipmentCartData().getInsurance()));
-        queryStringBuilder = setParam(queryStringBuilder, Param.PRODUCT_INSURANCE, String.valueOf(shipmentDetailData.getShipmentCartData().getProductInsurance()));
-        queryStringBuilder = setParam(queryStringBuilder, Param.ORDER_VALUE, String.valueOf(shipmentDetailData.getShipmentCartData().getOrderValue()));
-        queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shipmentDetailData.getShipmentCartData().getCategoryIds());
+        queryStringBuilder = setParam(queryStringBuilder, Param.TOKEN, shippingParam.getToken());
+        queryStringBuilder = setParam(queryStringBuilder, Param.UT, shippingParam.getUt());
+        queryStringBuilder = setParam(queryStringBuilder, Param.INSURANCE, String.valueOf(shippingParam.getInsurance()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.PRODUCT_INSURANCE, String.valueOf(shippingParam.getProductInsurance()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.ORDER_VALUE, String.valueOf(shippingParam.getOrderValue()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shippingParam.getCategoryIds());
         queryStringBuilder = setParam(queryStringBuilder, Param.LANG, Param.VALUE_LANG_ID);
         queryStringBuilder = setParam(queryStringBuilder, Param.USER_HISTORY, String.valueOf(codHistory));
 

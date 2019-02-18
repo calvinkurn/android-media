@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.datamodel.cartcheckout;
+package com.tokopedia.transactiondata.entity.shared.checkout;
 
 import android.os.Parcel;
 import android.os.Parcelable;
