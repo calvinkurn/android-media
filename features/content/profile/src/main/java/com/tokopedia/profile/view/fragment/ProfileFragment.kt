@@ -22,6 +22,15 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
@@ -62,7 +71,16 @@ import javax.inject.Inject
  * @author by milhamj on 9/17/18.
  */
 class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like {
+        ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like,
+        DynamicPostViewHolder.DynamicPostListener,
+        BannerAdapter.BannerItemListener,
+        TopadsShopViewHolder.TopadsShopListener,
+        RecommendationCardAdapter.RecommendationCardListener,
+        CardTitleView.CardTitleListener,
+        ImagePostViewHolder.ImagePostListener,
+        YoutubeViewHolder.YoutubePostListener,
+        PollAdapter.PollOptionListener,
+        GridPostAdapter.GridItemListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -189,8 +207,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return ProfileTypeFactoryImpl(this, this)
+        return ProfileTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this)
     }
+
+
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
@@ -528,6 +559,86 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         loadingLayout.visibility = View.GONE
     }
 
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onCommentClick(positionInFeed: Int, id: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onActionPopup() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onActionRedirect(redirectUrl: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTitleCtaClick(redirectUrl: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)
@@ -820,4 +931,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 || remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_ALL, false))
                 && remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_RULES, true)
     }
+
+
 }
