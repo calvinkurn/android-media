@@ -19,6 +19,9 @@ import rx.functions.Func1;
  * Created by fajarnuha on 09/02/19.
  */
 public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleAddressModel> {
+
+    private static final String ADDRESS_NAME_SAMPAI = "Tokopedia Corner";
+
     @Override
     public PeopleAddressModel call(AddressCornerResponse addressCornerResponse) {
         PeopleAddressModel result = new PeopleAddressModel();
@@ -82,7 +85,7 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
     public static RecipientAddressModel converToCartModel(CornerAddressModel cornerModel, String defaultId) {
         return new RecipientAddressModel(
                 defaultId, String.valueOf(cornerModel.getCornerId()),
-                "Tokopedia Corner",
+                ADDRESS_NAME_SAMPAI,
                 cornerModel.getDistrictName(), cornerModel.getCornerBranchName(),
                 cornerModel.getRecipientFullName(), cornerModel.getCornerName(), "",
                 cornerModel.getCityName(), cornerModel.getCityId(), cornerModel.getDistrictId(), cornerModel.getProvinceId(), cornerModel.getPostalCode(),
