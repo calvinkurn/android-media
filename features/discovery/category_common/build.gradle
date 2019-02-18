@@ -6,7 +6,7 @@ android {
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdCategoryCommmon']
+                arguments = ['targetModuleName': 'TkpdCategory']
             }
         }
     }

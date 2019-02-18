@@ -307,6 +307,7 @@ dependencies {
     implementation project(rootProject.ext.features.flashsaleManagement)
     implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.categoryCommon)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.commonDigital)
