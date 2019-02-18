@@ -435,7 +435,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     }
 
     private void setCouponToUi(CouponValueEntity data) {
-        if (getView() == null || data.isEmpty()) {
+        if (getView() == null || data == null || data.isEmpty()) {
             return;
         }
 
