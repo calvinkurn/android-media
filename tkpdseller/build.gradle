@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.imageuploader)
 
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
@@ -53,8 +54,7 @@ dependencies {
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactioncommon)
-
-    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.logisticdistrictrecommendation)
 
     implementation rootProject.ext.miscDependencies.dagger

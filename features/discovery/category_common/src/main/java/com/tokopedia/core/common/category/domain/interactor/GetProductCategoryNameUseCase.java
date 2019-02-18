@@ -1,10 +1,7 @@
 package com.tokopedia.core.common.category.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
-import com.tokopedia.core.common.category.domain.interactor.BaseCategoryUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -18,12 +15,8 @@ public class GetProductCategoryNameUseCase extends BaseCategoryUseCase<String> {
     public static final String CAT_ID = "cat_id";
 
     @Inject
-    public GetProductCategoryNameUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            CategoryRepository categoryRepository
-    ) {
-        super(threadExecutor, postExecutionThread, categoryRepository);
+    public GetProductCategoryNameUseCase(CategoryRepository categoryRepository) {
+        super(categoryRepository);
     }
 
     public static RequestParams createRequestParam(long categoryId) {

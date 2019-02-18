@@ -1,9 +1,8 @@
 package com.tokopedia.core.common.category.data.source.cloud;
 
-import com.tokopedia.core.base.common.util.GetData;
+import com.tokopedia.core.common.category.data.mapper.SimpleResponseMapper;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.core.common.category.data.source.cloud.model.CategoryVersionServiceModel;
-import com.tokopedia.core.common.mapper.SimpleResponseMapper;
 
 import javax.inject.Inject;
 
@@ -23,6 +22,6 @@ public class CategoryVersionCloud {
     public Observable<CategoryVersionServiceModel> checkVersion() {
         return api
                 .checkVersion()
-                .map(new SimpleResponseMapper<CategoryVersionServiceModel>());
+                .map(new SimpleResponseMapper<>());
     }
 }

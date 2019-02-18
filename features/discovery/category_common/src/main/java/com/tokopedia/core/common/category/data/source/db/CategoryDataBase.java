@@ -5,8 +5,6 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.core.database.DbFlowDatabase;
-import com.tokopedia.core2.R2;
 
 /**
  * @author sebastianuskh on 4/3/17.

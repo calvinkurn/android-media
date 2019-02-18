@@ -1,10 +1,8 @@
 package com.tokopedia.core.common.category.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -12,11 +10,11 @@ import rx.Observable;
  * @author sebastianuskh on 5/8/17.
  */
 
-public class ClearCategoryCacheUseCase extends UseCase<Boolean>{
+public class ClearCategoryCacheUseCase extends UseCase<Boolean> {
     private final CategoryRepository categoryRepository;
 
-    public ClearCategoryCacheUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
-        super(threadExecutor, postExecutionThread);
+    public ClearCategoryCacheUseCase(CategoryRepository categoryRepository) {
+        super();
         this.categoryRepository = categoryRepository;
     }
 

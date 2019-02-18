@@ -1,12 +1,9 @@
 package com.tokopedia.core.common.category.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.common.category.data.source.db.CategoryDataBase;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
-import com.tokopedia.core.common.category.domain.interactor.BaseCategoryUseCase;
 import com.tokopedia.core.common.category.domain.model.CategoryDomainModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -23,8 +20,8 @@ public class FetchCategoryWithParentChildUseCase extends BaseCategoryUseCase<Lis
     public static final String CATEGORY_PARENT = "CATEGORY_PARENT";
 
     @Inject
-    public FetchCategoryWithParentChildUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
-        super(threadExecutor, postExecutionThread, categoryRepository);
+    public FetchCategoryWithParentChildUseCase(CategoryRepository categoryRepository) {
+        super(categoryRepository);
     }
 
     @Override

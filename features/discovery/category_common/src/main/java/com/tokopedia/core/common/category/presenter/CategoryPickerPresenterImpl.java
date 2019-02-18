@@ -1,6 +1,5 @@
 package com.tokopedia.core.common.category.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryFromSelectedUseCase;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryWithParentChildUseCase;
 import com.tokopedia.core.common.category.domain.model.CategoryDomainModel;
@@ -8,6 +7,7 @@ import com.tokopedia.core.common.category.domain.model.CategoryLevelDomainModel;
 import com.tokopedia.core.common.category.view.mapper.CategoryViewMapper;
 import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

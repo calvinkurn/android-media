@@ -1,8 +1,8 @@
 package com.tokopedia.core.common.category.data.source.cloud;
 
+import com.tokopedia.core.common.category.data.mapper.SimpleResponseMapper;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.core.common.category.data.source.cloud.model.CategoryServiceModel;
-import com.tokopedia.core.common.mapper.SimpleResponseMapper;
 
 import javax.inject.Inject;
 
@@ -22,6 +22,6 @@ public class CategoryCloud {
 
     public Observable<CategoryServiceModel> fetchDataFromNetwork() {
         return api.fetchCategory()
-                .map(new SimpleResponseMapper<CategoryServiceModel>());
+                .map(new SimpleResponseMapper<>());
     }
 }

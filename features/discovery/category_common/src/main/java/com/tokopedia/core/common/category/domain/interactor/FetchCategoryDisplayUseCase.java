@@ -1,10 +1,7 @@
 package com.tokopedia.core.common.category.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
-import com.tokopedia.core.common.category.domain.interactor.BaseCategoryUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -22,8 +19,8 @@ public class FetchCategoryDisplayUseCase extends BaseCategoryUseCase<List<String
     public static final int UNSELECTED = -2;
 
     @Inject
-    public FetchCategoryDisplayUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
-        super(threadExecutor, postExecutionThread, categoryRepository);
+    public FetchCategoryDisplayUseCase(CategoryRepository categoryRepository) {
+        super(categoryRepository);
     }
 
     @Override
