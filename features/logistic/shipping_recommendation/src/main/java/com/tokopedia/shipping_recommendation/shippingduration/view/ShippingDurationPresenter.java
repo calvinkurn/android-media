@@ -82,7 +82,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     @Override
     public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
                                           int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList, int codHistory) {
+                                          List<ShopShipment> shopShipmentList, int codHistory, String cornerId) {
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
@@ -93,12 +93,12 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
-            loadDuration(selectedSpId, selectedServiceId, codHistory, shopShipmentList, query, shippingParam);
+            loadDuration(selectedSpId, selectedServiceId, codHistory, cornerId, shopShipmentList, query, shippingParam);
         }
     }
 
-    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam) {
-        getCourierRecommendationUseCase.execute(query, codHistory, shippingParam, selectedSpId, selectedServiceId, shopShipmentList,
+    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, String cornerId, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam) {
+        getCourierRecommendationUseCase.execute(query, codHistory, cornerId, shippingParam, selectedSpId, selectedServiceId, shopShipmentList,
                 new Subscriber<ShippingRecommendationData>() {
                     @Override
                     public void onCompleted() {

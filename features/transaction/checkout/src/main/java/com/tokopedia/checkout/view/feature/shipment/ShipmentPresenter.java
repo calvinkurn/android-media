@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -77,6 +78,7 @@ import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.TokopediaCornerData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.SaveShipmentStateRequest;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateDropshipData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductData;
@@ -291,7 +293,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment) {
+    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, @Nullable String cornerId) {
         if (isFromMultipleAddress) {
             getView().showLoading();
         } else {
@@ -299,6 +301,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
+        if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
@@ -326,9 +329,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        RecipientAddressModel newAddress = getView().getShipmentDataConverter()
+                .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
-            setRecipientAddressModel(getView().getShipmentDataConverter()
-                    .getRecipientAddressModel(cartShipmentAddressFormData));
+            if (!checkHaveSameCurrentCodAddress(newAddress.getCornerId())) {
+                setRecipientAddressModel(newAddress);
+            }
         } else {
             setRecipientAddressModel(null);
         }
@@ -357,6 +363,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             isPurchaseProtectionPage = true;
             mTrackerPurchaseProtection.eventImpressionOfProduct();
         }
+    }
+
+    private boolean checkHaveSameCurrentCodAddress(String cornerId) {
+        RecipientAddressModel curr = getRecipientAddressModel();
+        if (curr == null) return false;
+        return (curr.isCornerAddress()) && (curr.getCornerId().equals(cornerId));
     }
 
     @Override
@@ -399,6 +411,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     public boolean checkAddressHasChanged(RecipientAddressModel oldModel, RecipientAddressModel newModel) {
+        if (oldModel.isCornerAddress()) return !oldModel.equalCorner(newModel);
         return !oldModel.equals(newModel);
     }
 
@@ -479,7 +492,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment) {
+    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId) {
         boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
             processCheckout(voucherCode, isOneClickShipment);
@@ -487,6 +500,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showLoading();
             TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
             paramGetShipmentForm.put("lang", "id");
+            if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
@@ -636,10 +650,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void checkPromoShipment(String promoCode, boolean isOneClickShipment) {
 
+        TokopediaCornerData cornerData = null;
+        RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
+        if (recipientAddressModel != null && recipientAddressModel.isCornerAddress()) {
+            cornerData = new TokopediaCornerData(
+                    true,
+                    Integer.parseInt(recipientAddressModel.getUserCornerId()),
+                    Integer.parseInt(recipientAddressModel.getCornerId())
+            );
+        }
+
         CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest =
                 new CheckPromoCodeCartShipmentRequest.Builder()
                         .promoCode(promoCode)
                         .data(promoCodeCartShipmentRequestDataList)
+                        .cornerData(cornerData)
                         .build();
 
         checkPromoCodeFinalUseCase.execute(checkPromoCodeFinalUseCase.createRequestParams(
@@ -859,10 +884,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return null;
         }
 
+        TokopediaCornerData cornerData = null;
+        if (getRecipientAddressModel().isCornerAddress()) {
+            cornerData = new TokopediaCornerData(
+                    true, Integer.parseInt(getRecipientAddressModel().getUserCornerId()),
+                    Integer.parseInt(getRecipientAddressModel().getCornerId())
+            );
+        }
+
         return new CheckoutRequest.Builder()
                 .promoCode(promoCode)
                 .isDonation(isDonation)
                 .data(dataCheckoutRequestList)
+                .cornerData(cornerData)
                 .build();
     }
 
@@ -1265,6 +1299,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ShippingParam shippingParam = getShippingParam(shipmentDetailData);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
+        String cornerId = "";
+        if (getRecipientAddressModel() != null) {
+            cornerId = getRecipientAddressModel().getCornerId();
+        }
+        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentDetailData, 0,
         getCourierRecommendationUseCase.execute(query, counter, shippingParam, spId, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,

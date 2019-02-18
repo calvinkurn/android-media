@@ -14,6 +14,7 @@ public class PeopleAddressModel implements Parcelable {
     private List<RecipientAddressModel> recipientAddressModelList;
     private Token token;
     private Paging paging;
+    private List<CornerAddressModel> cornerAddressModelsList;
 
     public List<RecipientAddressModel> getRecipientAddressModelList() {
         return recipientAddressModelList;
@@ -37,6 +38,14 @@ public class PeopleAddressModel implements Parcelable {
 
     public void setPaging(Paging paging) {
         this.paging = paging;
+    }
+
+    public List<CornerAddressModel> getCornerAddressModelsList() {
+        return cornerAddressModelsList;
+    }
+
+    public void setCornerAddressModelsList(List<CornerAddressModel> cornerAddressModelsList) {
+        this.cornerAddressModelsList = cornerAddressModelsList;
     }
 
     @Override

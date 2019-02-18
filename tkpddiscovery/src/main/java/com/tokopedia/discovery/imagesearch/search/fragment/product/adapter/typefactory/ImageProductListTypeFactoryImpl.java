@@ -32,10 +32,12 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
 
     private final ProductListener itemClickListener;
     private final Config topAdsConfig;
+    private final String searchQuery;
 
-    public ImageProductListTypeFactoryImpl(ProductListener itemClickListener, Config config) {
+    public ImageProductListTypeFactoryImpl(ProductListener itemClickListener, Config config, String searchQuery) {
         this.itemClickListener = itemClickListener;
         this.topAdsConfig = config;
+        this.searchQuery = searchQuery;
     }
 
     @Override
@@ -88,7 +90,7 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
         } else if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, itemClickListener);
         } else if(type == HeaderViewHolder.LAYOUT){
-            viewHolder = new HeaderViewHolder(view, itemClickListener, topAdsConfig);
+            viewHolder = new HeaderViewHolder(view, itemClickListener, searchQuery);
         } else if (type == ImageEmptySearchViewHolder.LAYOUT) {
             viewHolder = new ImageEmptySearchViewHolder(view, itemClickListener, topAdsConfig);
         } else if (type == GuidedSearchViewHolder.LAYOUT) {

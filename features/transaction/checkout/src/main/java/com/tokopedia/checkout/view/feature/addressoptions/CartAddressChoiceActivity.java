@@ -222,13 +222,16 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
+        RecipientAddressModel currentAddress = (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
-                return ShipmentAddressListFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                return ShipmentAddressListFragment.newInstance(currentAddress);
+            case TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT :
+            case TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
+                return ShipmentAddressListFragment.newInstance(currentAddress, true);
             default:
                 defaultFragment = ShipmentAddressListFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                        currentAddress);
                 return defaultFragment;
         }
     }

@@ -66,6 +66,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     ShippingDurationContract.Presenter presenter;
     @Inject
     ShippingDurationAdapter shippingDurationAdapter;
+    private String mCornerId = "";
 
     public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
                                                           int selectedServiceId,
@@ -142,15 +143,18 @@ public class ShippingDurationBottomsheet extends BottomSheets
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
+            if (recipientAddressModel != null) {
+                mCornerId = recipientAddressModel.isCornerAddress() ? recipientAddressModel.getId() : "";
+            }
             isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
             setupRecyclerView(cartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
             ShippingParam shippingParam = getArguments().getParcelable(ARGUMENT_SHIPPING_PARAM);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             if (shipmentDetailData != null) {
-                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory);
+                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mCornerId);
             } else if (shippingParam != null) {
-                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory);
+                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mCornerId);
             }
         }
     }
@@ -202,7 +206,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
                             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
                             if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory);
+                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mCornerId);
                             }
                         }
                     }

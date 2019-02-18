@@ -23,7 +23,12 @@ import android.widget.TextView
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -37,7 +42,6 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.R.id.register_button
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -48,9 +52,6 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
@@ -60,6 +61,7 @@ import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData
 import com.tokopedia.sessioncommon.data.model.SecurityPojo
@@ -94,6 +96,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_REGISTER_PHONE = 113
     private val REQUEST_ADD_NAME_REGISTER_PHONE = 114
     private val REQUEST_WELCOME_PAGE = 115
+    private val REQUEST_LOGIN_GOOGLE = 116
 
     val IS_AUTO_LOGIN = "auto_login"
     val AUTO_LOGIN_METHOD = "method"
@@ -116,6 +119,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
     private lateinit var callbackManager: CallbackManager
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     @Inject
     lateinit var analytics: LoginRegisterAnalytics
@@ -213,6 +217,16 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         callbackManager = CallbackManager.Factory.create()
+
+        activity?.run {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(GOOGLE_API_KEY)
+                    .requestEmail()
+                    .requestProfile()
+                    .build()
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        }
+
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
 
     }
@@ -429,8 +443,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_GOOGLE
 
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
-            val intent = Intent(activity, GoogleSignInActivity::class.java)
-            startActivityForResult(intent, RC_SIGN_IN_GOOGLE)
+
+            val intent = mGoogleSignInClient.signInIntent
+            startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
         }
 
     }
@@ -816,13 +831,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
-            } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) run {
-                val googleSignInAccount = data.getParcelableExtra<GoogleSignInAccount>(KEY_GOOGLE_ACCOUNT)
-                val email = googleSignInAccount.email
-                val accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN)
-                presenter.loginGoogle(accessToken, email)
-            } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
-                presenter.loginWebview(data)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
@@ -873,6 +881,25 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    /**
+     * Please refer to the
+     * [class reference for][com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes]
+     */
+    private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            val accessToken = account!!.idToken
+            val email = account.email
+            presenter.loginGoogle(accessToken, email)
+        } catch (e: ApiException) {
+            onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
+                    String.format(getString(R.string.loginregister_failed_login_google),
+                            e.statusCode.toString())
+            )
+        }
+
     }
 
     private fun goToProfileCompletionPage() {

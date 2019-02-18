@@ -16,6 +16,7 @@ import com.tokopedia.checkout.data.repository.AddressRepository;
 import com.tokopedia.checkout.data.repository.AddressRepositoryImpl;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepositoryImpl;
+import com.tokopedia.checkout.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartApiOkHttpClientQualifier;
@@ -29,10 +30,13 @@ import com.tokopedia.checkout.view.di.qualifier.CartQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
+import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
+import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.transactiondata.apiservice.CartApi;
 import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
 import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
@@ -276,12 +280,13 @@ public class DataModule {
 
     @Provides
     PeopleAddressRepository providePeopleAddressRepository(@CartQualifier PeopleActApi peopleActApi,
-                                                           AddressModelMapper addressModelMapper) {
-        return new PeopleAddressRepositoryImpl(peopleActApi, addressModelMapper);
+                                                           GetAddressWithCornerUseCase addressWithCornerUseCase) {
+        return new PeopleAddressRepositoryImpl(peopleActApi, addressWithCornerUseCase);
     }
 
-//    @Provides
-//    UserSessionInterface provideUserSessionInterface() {
-//        return new com.tokopedia.user.session.UserSession(context);
-//    }
+    @Provides
+    GetAddressWithCornerUseCase provideGetAddressWithCornerUsecase(@ApplicationScope Context context) {
+        return new GetAddressWithCornerUseCase(context, new GraphqlUseCase());
+    }
+
 }

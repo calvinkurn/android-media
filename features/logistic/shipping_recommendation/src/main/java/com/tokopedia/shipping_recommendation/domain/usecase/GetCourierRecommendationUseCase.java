@@ -45,6 +45,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
     public void execute(String query,
                         int codHistory,
+                        String cornerId,
                         ShippingParam shippingParam,
                         int selectedSpId,
                         int selectedServiceId,
@@ -57,6 +58,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     private void executeQuery(String query, int selectedSpId, int selectedServiceId, List<ShopShipment> shopShipments,
                               Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
+        query = getQueryWithParams(query, codHistory, cornerId, shipmentDetailData);
 
         GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 
@@ -98,7 +100,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribe(subscriber);
     }
 
-    private String getQueryWithParams(String query, int codHistory, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
+    private String getQueryWithParams(String query, int codHistory, String cornerId, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
         StringBuilder queryStringBuilder = new StringBuilder(query);
 
         StringBuilder spidsStringBuilder = new StringBuilder();
@@ -147,6 +149,9 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         double weightInKilograms = shippingParam.getWeightInKilograms();
         queryStringBuilder = setParam(queryStringBuilder, Param.WEIGHT, String.valueOf(weightInKilograms));
 
+        int cornerIdInt = TextUtils.isEmpty(cornerId) ? 0 : Integer.parseInt(cornerId);
+        queryStringBuilder = setParam(queryStringBuilder, Param.CORNER_ID, String.valueOf(cornerIdInt));
+
         queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shippingParam.getShopId());
         queryStringBuilder = setParam(queryStringBuilder, Param.TYPE, Param.VALUE_ANDROID);
         queryStringBuilder = setParam(queryStringBuilder, Param.FROM, Param.VALUE_CLIENT);
@@ -184,6 +189,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String CAT_ID = "$cat_id";
         static final String LANG = "$lang";
         static final String USER_HISTORY = "$user_history";
+        static final String CORNER_ID = "$corner_id";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";
