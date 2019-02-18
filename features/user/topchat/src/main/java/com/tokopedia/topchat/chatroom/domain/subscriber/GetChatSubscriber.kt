@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.domain.subscriber
 
-import android.util.Log
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
