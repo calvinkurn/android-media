@@ -64,7 +64,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
-                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId,
+                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
                         PARAM_PRODUCT_KEY to productParams.productName)
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
