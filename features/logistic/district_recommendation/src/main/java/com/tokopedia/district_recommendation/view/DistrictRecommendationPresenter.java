@@ -45,9 +45,11 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
                 String.valueOf(token.getUnixTime()));
         params.putString(GetDistrictRequestUseCase.PARAM_QUERY, query);
 
-        getView().showLoading();
-        getDistrictRequestUseCase.execute(params, new GetDistrictRecommendationSubscriber(
-                getView(), this, addressViewModelMapper));
+        if (getView() != null) {
+            getView().showLoading();
+            getDistrictRequestUseCase.execute(params, new GetDistrictRecommendationSubscriber(
+                    getView(), this, addressViewModelMapper));
+        }
     }
 
 }

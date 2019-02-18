@@ -42,6 +42,8 @@ public class AutoCompleteTracking {
     public static final String PRODUCT_POSITION = "position";
     public static final String NONE_OTHER = "none / other";
     private static final String LABEL_RECENT_VIEW_CLICK = "po: %s - applink: %s";
+    private static final String LABEL_HOTLIST_CLICK = "keyword: %s - hotlist: %s - hotlist id: %s - po: %s - applink: %s";
+    public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
 
     public static void eventClickPopularSearch(Context context, String label) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -109,6 +111,31 @@ public class AutoCompleteTracking {
                 TOP_NAV,
                 String.format("click - category autocomplete - tab: %s", tabName),
                 label
+        );
+    }
+
+    public static void eventClickInHotlist(Context context,
+                                           String keyword,
+                                           String hotlistName,
+                                           String id,
+                                           int position,
+                                           String applink) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_TOP_NAV,
+                TOP_NAV,
+                ACTION_CLICK_HOTLIST_SUGGESTION,
+                String.format(
+                        LABEL_HOTLIST_CLICK,
+                        keyword,
+                        hotlistName,
+                        id,
+                        String.valueOf(position),
+                        applink
+                )
         );
     }
 

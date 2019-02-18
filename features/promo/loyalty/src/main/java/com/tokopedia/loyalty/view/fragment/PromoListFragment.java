@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
@@ -38,6 +37,7 @@ import com.tokopedia.loyalty.view.adapter.PromoListAdapter;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.data.PromoSubMenuData;
+import com.tokopedia.loyalty.view.listener.RecyclerViewScrollListener;
 import com.tokopedia.loyalty.view.presenter.IPromoListPresenter;
 import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListView;
@@ -88,7 +88,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     private BottomSheetView bottomSheetViewInfoPromoCode;
     private boolean isLoadMore;
     private String filterSelected = "";
-    private EndlessRecyclerViewScrollListener endlessRecyclerviewListener;
+    private RecyclerViewScrollListener recyclerViewScrollListener;
 
 
     private String autoSelectedCategoryId;
@@ -135,7 +135,6 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         if (errorView != null) errorView.setVisibility(View.GONE);
         if (firstTimeLoad) {
             adapter.addAllItems(promoDataList);
-            performanceMonitoring.stopTrace();
         } else {
             adapter.addAllItemsLoadMore(promoDataList);
         }
@@ -175,6 +174,11 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
                 dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
     }
 
     @Override
@@ -293,15 +297,16 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         adapter = new PromoListAdapter(new ArrayList<PromoData>(), this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvPromoList.setLayoutManager(layoutManager);
-        endlessRecyclerviewListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        recyclerViewScrollListener = new RecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isLoadMore) {
                     dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
+                    isLoadMore = false;
                 }
             }
         };
-        rvPromoList.addOnScrollListener(endlessRecyclerviewListener);
+        rvPromoList.addOnScrollListener(recyclerViewScrollListener);
         rvPromoList.setAdapter(adapter);
     }
 
@@ -474,7 +479,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     @Override
     public void onRefresh(View view) {
-        endlessRecyclerviewListener.resetState();
+        recyclerViewScrollListener.resetState();
         dPresenter.setPage(1);
         dPresenter.processGetPromoList(filterSelected, promoMenuData.getTitle());
     }

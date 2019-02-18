@@ -66,7 +66,9 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
             @Override
             public void onBackPressed() {
                 super.onBackPressed();
-                backHardwareClickedListener.onBackHardwareClicked();
+                if(backHardwareClickedListener != null) {
+                    backHardwareClickedListener.onBackHardwareClicked();
+                }
             }
         };
         closeableBottomSheetDialog.setListener(closeListener);

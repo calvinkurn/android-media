@@ -73,4 +73,5 @@
     <string name="value_status_followed">\u2022 Following</string>
     <string name="label_shop_status">Status Toko:</string>
     <string name="label_shop_inactive">Sudah Tidak Aktif</string>
+    <string name="label_shop_close">Tutup</string>
 </resources>

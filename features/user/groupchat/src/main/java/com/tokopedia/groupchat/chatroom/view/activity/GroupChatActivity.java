@@ -42,7 +42,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.facebook.CallbackManager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -244,7 +243,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private int initialFragment;
     private GroupChatViewModel viewModel;
 
-    private CallbackManager callbackManager;
     private Snackbar snackbarError;
 
     @Inject
@@ -304,7 +302,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             finish();
         }
 
-        callbackManager = CallbackManager.Factory.create();
         userSession = ((AbstractionRouter) getApplication()).getSession();
 
         initView();
@@ -997,7 +994,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

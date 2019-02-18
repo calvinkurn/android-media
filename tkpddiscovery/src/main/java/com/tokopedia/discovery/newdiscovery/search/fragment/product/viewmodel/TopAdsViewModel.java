@@ -14,11 +14,17 @@ public class TopAdsViewModel implements Visitable<ProductListTypeFactory> {
 
 
     private List<Data> dataList = new ArrayList<>();
+    private String query;
 
-    public TopAdsViewModel(TopAdsModel model) {
+    public TopAdsViewModel(TopAdsModel model, String query) {
         if (model.getData() != null && model.getData().size() > 0) {
             this.dataList = model.getData();
+            this.query = query;
         }
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     public List<Data> getDataList() {

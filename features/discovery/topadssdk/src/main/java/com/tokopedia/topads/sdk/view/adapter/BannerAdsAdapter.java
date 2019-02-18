@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
 
 import java.util.ArrayList;
@@ -53,4 +54,5 @@ public class BannerAdsAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public int getItemCount() {
         return list.size();
     }
+
 }

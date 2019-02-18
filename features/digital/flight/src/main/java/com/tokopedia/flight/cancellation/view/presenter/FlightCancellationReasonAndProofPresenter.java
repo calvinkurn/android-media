@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
@@ -312,7 +313,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
 
         for (FlightCancellationViewModel viewModel : cancellationWrapperViewModel.getGetCancellations()) {
             for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
-                if (!uniquePassengers.contains(getPassengerName(passengerViewModel))) {
+                if (!uniquePassengers.contains(getPassengerName(passengerViewModel)) &&
+                        passengerViewModel.getType() == FlightBookingPassenger.ADULT) {
                     uniquePassengers.add(getPassengerName(passengerViewModel));
                 }
             }
@@ -325,7 +327,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         List<String> uniquePassengers = new ArrayList<>();
         for (FlightCancellationViewModel viewModel : cancellationViewModel.getGetCancellations()) {
             for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
-                if (!uniquePassengers.contains(passengerViewModel.getPassengerId())) {
+                if (!uniquePassengers.contains(passengerViewModel.getPassengerId()) &&
+                        passengerViewModel.getType() == FlightBookingPassenger.ADULT) {
                     uniquePassengers.add(passengerViewModel.getPassengerId());
                 }
             }
