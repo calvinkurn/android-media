@@ -8,6 +8,7 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
 
@@ -60,5 +61,9 @@ class ProfileActivity : BaseSimpleActivity() {
         } else {
             ProfileEmptyFragment.createInstance(bundle)
         }
+    }
+
+    fun hideToolbar(){
+        toolbar.hide()
     }
 }
