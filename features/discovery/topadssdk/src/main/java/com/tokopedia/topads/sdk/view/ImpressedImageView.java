@@ -50,13 +50,17 @@ public class ImpressedImageView extends AppCompatImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        invoke();
+        if(!holder.isInvoke()) {
+            invoke();
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        revoke();
+        if(holder.isInvoke()) {
+            revoke();
+        }
     }
 
     private void init(Context context, AttributeSet attrs) {
