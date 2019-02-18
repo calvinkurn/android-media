@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Campaign(
-        @SerializedName("appLinks")
+        @SerializedName("applinks")
         @Expose
         val applinks: String = "",
 
@@ -34,11 +34,15 @@ data class Campaign(
 
         @SerializedName("originalPrice")
         @Expose
-        val originalPrice: Int = 0,
+        val originalPrice: Float = 0f,
+
+        @SerializedName("discountedPrice")
+        @Expose
+        val discountedPrice: Float = 0f,
 
         @SerializedName("percentageAmount")
         @Expose
-        val percentage: Int = 0,
+        val percentage: Float = 0f,
 
         @SerializedName("startDate")
         @Expose

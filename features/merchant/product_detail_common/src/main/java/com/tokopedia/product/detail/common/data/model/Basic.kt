@@ -32,10 +32,6 @@ data class Basic(
         @Expose
         val isEligibleCod: Boolean = false,
 
-        @SerializedName("isFreeReturn")
-        @Expose
-        val isFreeReturn: Boolean = false,
-
         @SerializedName("isKreasiLokal")
         @Expose
         val isKreasiLokal: Boolean = false,
@@ -79,10 +75,6 @@ data class Basic(
         @SerializedName("status")
         @Expose
         val status: Int = 1,
-
-        @SerializedName("stock")
-        @Expose
-        val stock: Int = 0,
 
         @SerializedName("url")
         @Expose

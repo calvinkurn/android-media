@@ -14,25 +14,11 @@ data class Brand(
 
         @SerializedName("name")
         @Expose
-        val name: String = ""
-)
-
-data class Catalog(
-        @SerializedName("id")
-        @Expose
-        val id: Int = 0,
-
-        @SerializedName("is_active")
-        @Expose
-        val isActive: Boolean = false,
-
-        @SerializedName("name")
-        @Expose
         val name: String = "",
 
-        @SerializedName("url")
+        @SerializedName("brandStatus")
         @Expose
-        val url: String = ""
+        val status: Int = 0
 )
 
 data class Menu(
@@ -47,4 +33,28 @@ data class Menu(
         @SerializedName("url")
         @Expose
         val url: String = ""
+)
+
+data class Variant(
+        @SerializedName("parentID")
+        @Expose
+        val parentID: String = "",
+
+        @SerializedName("isVariant")
+        @Expose
+        val isVariant: Boolean = false
+)
+
+data class Stock(
+        @SerializedName("useStock")
+        @Expose
+        val useStock: Boolean = false,
+
+        @SerializedName("value")
+        @Expose
+        val value: Int = 0,
+
+        @SerializedName("stockWording")
+        @Expose
+        val stockWording: String = ""
 )

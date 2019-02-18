@@ -17,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.Campaign
 import com.tokopedia.product.detail.common.data.model.ProductInfo
-import com.tokopedia.product.detail.data.util.discountedPrice
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 import java.text.SimpleDateFormat

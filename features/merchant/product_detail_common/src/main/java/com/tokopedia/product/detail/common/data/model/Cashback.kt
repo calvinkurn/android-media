@@ -23,28 +23,7 @@ data class PreOrder(
         val timeUnit: Int = 0
 )
 
-data class ReturnInfo(
-        @SerializedName("colorHex")
-        @Expose
-        val colorHex: String = "",
-
-        @SerializedName("colorRgb")
-        @Expose
-        val colorRgb: String = "",
-
-        @SerializedName("content")
-        @Expose
-        val content: String = "",
-
-        @SerializedName("icon")
-        @Expose
-        val icon: String = ""
-)
-
 data class Wholesale(
-        @SerializedName("maxQty")
-        @Expose
-        val maxQty: Int = 0,
 
         @SerializedName("minQty")
         @Expose

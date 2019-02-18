@@ -8,7 +8,7 @@ import java.util.*
 val IDRLocale = NumberFormat.getCurrencyInstance(Locale("in", "id"))
 val decimalFormat = DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale("in", "id")))
 
-fun Int.getCurrencyFormatted(): String {
+fun Number.getCurrencyFormatted(): String {
     IDRLocale.maximumFractionDigits = 0
     return IDRLocale.format(this)
 }
