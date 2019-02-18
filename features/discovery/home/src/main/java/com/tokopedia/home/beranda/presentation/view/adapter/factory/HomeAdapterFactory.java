@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
+import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.CategorySectionViewHolder;
@@ -17,6 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicCh
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SixGridChannelViewHolder;
@@ -35,6 +37,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -43,15 +46,19 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewMod
 public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTypeFactory {
 
     private final HomeCategoryListener listener;
+    private HomeFeedsListener homeFeedsListener;
     private final CountDownView.CountDownListener countDownListener;
     private HomeInspirationListener inspirationListener;
     private final FragmentManager fragmentManager;
 
     public HomeAdapterFactory(FragmentManager fragmentManager, HomeCategoryListener listener,
-                              HomeInspirationListener inspirationListener, CountDownView.CountDownListener countDownListener) {
+                              HomeInspirationListener inspirationListener,
+                              HomeFeedsListener homeFeedsListener,
+                              CountDownView.CountDownListener countDownListener) {
         this.fragmentManager = fragmentManager;
         this.listener = listener;
         this.inspirationListener = inspirationListener;
+        this.homeFeedsListener = homeFeedsListener;
         this.countDownListener = countDownListener;
     }
 
@@ -100,6 +107,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         return InspirationViewHolder.LAYOUT;
     }
 
+    public int type(RetryModel retryModel) {
+        return RetryViewHolder.LAYOUT;
+    }
+
     @Override
     public int type(TopAdsViewModel topAdsViewModel) {
         return TopAdsViewHolder.LAYOUT;
@@ -144,6 +155,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new DynamicChannelHeroViewHolder(view, listener);
         else if (type == DynamicChannelSprintViewHolder.LAYOUT)
             viewHolder = new DynamicChannelSprintViewHolder(view, listener, countDownListener);
+        else if (type == RetryViewHolder.LAYOUT)
+            viewHolder = new RetryViewHolder(view, homeFeedsListener);
         else if (type == TopAdsViewHolder.LAYOUT)
             viewHolder = new TopAdsViewHolder(view);
         else if (type == TopAdsDynamicChannelViewHolder.LAYOUT)

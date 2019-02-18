@@ -47,6 +47,7 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
+import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
@@ -100,7 +101,8 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener,
-        NotificationListener, FragmentListener, HomeEggListener, HomeTabFeedListener, HomeInspirationListener {
+        NotificationListener, FragmentListener, HomeEggListener,
+        HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -553,6 +555,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.getItemAnimator().setChangeDuration(0);
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
+                this,
                 this,
                 this,
                 this
@@ -1145,12 +1148,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onTabFeedLoadError(Throwable e) {
+    public void onRetryLoadFeeds() {
+        adapter.removeRetry();
+        adapter.showLoading();
+        presenter.getFeedTabData();
+    }
 
+    @Override
+    public void onTabFeedLoadError(Throwable e) {
+        adapter.hideLoading();
+        adapter.showRetry();
     }
 
     @Override
     public void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList) {
+        adapter.hideLoading();
         initHomeFeedsViewPager(feedTabModelList);
     }
 
@@ -1158,6 +1170,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onHomeDataLoadSuccess() {
         if (!isFeedLoaded) {
             presenter.getFeedTabData();
+            adapter.showLoading();
             isFeedLoaded = true;
         }
     }
