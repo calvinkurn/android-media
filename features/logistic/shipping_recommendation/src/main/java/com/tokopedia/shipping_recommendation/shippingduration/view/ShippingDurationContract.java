@@ -42,7 +42,7 @@ public interface ShippingDurationContract {
         void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId,
                                        List<ShopShipment> shopShipmentList, int codHistory, String cornerId);
 
-        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory);
+        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, String cornerId);
 
         List<ShippingDurationViewModel> getShippingDurationViewModels();
 
