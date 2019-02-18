@@ -12,24 +12,29 @@ import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
 class PartialVariantAndRateEstView private constructor(private val view: View) {
-    var productVariant: ProductVariant? = null
 
     companion object {
         fun build(_view: View) = PartialVariantAndRateEstView(_view)
     }
 
-    fun renderData(onVariantClickedListener: (()->Unit)? = null) {
+    fun renderData(productVariant: ProductVariant?, onVariantClickedListener: (()->Unit)? = null) {
         //TODO hide/show logic for variant/rate/courier/etc
         with(view) {
             if (productVariant != null) {
-                label_variant.visibility = View.VISIBLE
+                label_variant.visible()
+                label_choose_variant.visible()
+                variant_divider.visible()
                 label_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 label_choose_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 val chooseString = "${view.context.getString(R.string.choose)} " +
-                        "${productVariant!!.variant?.map { it.name }?.joinToStringWithLast(separator = ", ",
+                        "${productVariant.variant?.map { it.name }?.joinToStringWithLast(separator = ", ",
                                 lastSeparator = " ${view.context.getString(R.string.and)} ")}"
                 label_choose_variant.text = chooseString
                 visible()
+            } else {
+                label_variant.gone()
+                label_choose_variant.gone()
+                variant_divider.gone()
             }
         }
 

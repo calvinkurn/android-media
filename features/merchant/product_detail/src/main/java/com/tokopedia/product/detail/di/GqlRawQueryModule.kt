@@ -12,12 +12,20 @@ import dagger.multibindings.StringKey
 @ProductDetailScope
 @Module
 class GqlRawQueryModule {
+
     @ProductDetailScope
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_SHOP)
-    fun provideRawShopQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_info)
+    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_INFO)
+    fun provideRawProductInfo(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_info)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_VARIANT)
+    fun provideRawVariant(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_variant)
 
     @ProductDetailScope
     @Provides

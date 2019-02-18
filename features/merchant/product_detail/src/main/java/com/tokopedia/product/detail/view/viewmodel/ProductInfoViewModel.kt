@@ -31,18 +31,19 @@ import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.ProductTalkQuery
 import com.tokopedia.product.detail.data.model.variant.ProductDetailVariantResponse
+import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.topads.sdk.domain.Xparams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.experimental.*
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -57,56 +58,56 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productInfoP1Resp = MutableLiveData<Result<ProductInfoP1>>()
     val productInfoP2resp = MutableLiveData<ProductInfoP2>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
+    val productVariantResp = MutableLiveData<Result<ProductVariant>>()
 
-    fun getProductInfo(productInfoQuery: String, productVariantQuery: String, productParams: ProductParams, resources: Resources) {
+    fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId,
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
                         PARAM_PRODUCT_KEY to productParams.productName)
-                val graphqlInfoRequest = GraphqlRequest(productInfoQuery, ProductInfo.Response::class.java, paramsInfo)
-
-                val paramsVariant = mapOf(PARAM_PRODUCT_ID to productParams.productId)
-                val graphqlVariantRequest = GraphqlRequest(productVariantQuery, ProductDetailVariantResponse::class.java, paramsVariant)
+                val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlInfoRequest, graphqlVariantRequest), cacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
             productInfoP1.productInfo = data.getSuccessData<ProductInfo.Response>().data
+            productInfoP1Resp.value = Success(productInfoP1)
 
             //if fail, will not interrupt the product info
-            try {
-                val productVariant = data.getSuccessData<ProductDetailVariantResponse>()
-                productInfoP1.productVariant = productVariant.data
-            } catch (e: Throwable) {
-                // productVariantResp.value = Fail(e)
-                //FOR Testing
-                val gson = Gson()
-                val responseVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
-                        ProductDetailVariantResponse::class.java)
-                productInfoP1.productVariant = responseVariant.data
+            val variantJob = async {
+                val paramsVariant = mapOf(PARAM_PRODUCT_ID to productParams.productId)
+                val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
+                val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy).getSuccessData<ProductDetailVariantResponse>()
             }
-            productInfoP1Resp.value = Success(productInfoP1)
+
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID, productInfoP1.productInfo.basic.id, resources)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
             productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, resources)
+
+            try {
+                productVariantResp.value = Success(variantJob.await().data)
+            } catch (e: Exception) {
+                productVariantResp.value = Fail(e)
+            }
         }) {
-            //productInfoResp.value = Fail(it)
+            //productInfoP1Resp.value = Fail(it)
             // for testing
             val gson = Gson()
             val response = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_info_p1),
                     ProductInfo.Response::class.java)
             val productInfoP1 = ProductInfoP1()
             productInfoP1.productInfo = response.data
+            productInfoP1Resp.value = Success(productInfoP1)
 
             //FOR Testing only, remove all below code after testing
             val responseVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
                     ProductDetailVariantResponse::class.java)
-            productInfoP1.productVariant = responseVariant.data
-            productInfoP1Resp.value = Success(productInfoP1)
+            productVariantResp.value = Success(responseVariant.data)
             val productInfoP2 = getProductInfoP2(response.data.basic.shopID, response.data.basic.id, resources)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
@@ -183,12 +184,18 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     private fun generateTopAdsParams(productInfo: ProductInfo): String {
         val xparams = Xparams().apply {
-            product_id = 140253038 //productInfo.basic.id
-            product_name = "sofa L Putus tangan minang" //productInfo.basic.name
-            source_shop_id = 1707618 //productInfo.basic.shopID
-            /*if (productInfo.category.detail.size > 2)
-                child_cat_id = productInfo.category.detail[2].id*/
-            child_cat_id = 984
+            //            product_id = 140253038 //productInfo.basic.id
+//            product_name = "sofa L Putus tangan minang" //productInfo.basic.name
+//            source_shop_id = 1707618 //productInfo.basic.shopID
+//            /*if (productInfo.category.detail.size > 2)
+//                child_cat_id = productInfo.category.detail[2].id*/
+//            child_cat_id = 984
+
+            product_id = productInfo.basic.id
+            product_name = productInfo.basic.name
+            source_shop_id = productInfo.basic.shopID
+            if (productInfo.category.detail.size > 2)
+                child_cat_id = productInfo.category.detail[2].id
         }
 
         return mapOf(TopAdsDisplay.KEY_ITEM to TopAdsDisplay.DEFAULT_TOTAL_ITEM,
@@ -305,7 +312,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun removeWishList(productId: String,
                        onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
-                       onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?){
+                       onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
         removeWishlistUseCase.createObservable(productId,
                 userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
