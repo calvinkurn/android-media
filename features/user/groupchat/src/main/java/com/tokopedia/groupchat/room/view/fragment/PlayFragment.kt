@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
@@ -170,7 +170,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         activity?.let {
             viewState = PlayViewStateImpl(userSession, view,
                     it,this, this, this, this,
-                    this, this)
+                    this, this, sendMessage())
         }
         setToolbarView(view)
     }
@@ -454,5 +454,31 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun addIncomingMessage(it: Visitable<*>) {
         viewState.onMessageReceived(it)
+    }
+
+
+    private fun sendMessage(): (PendingChatViewModel) -> Unit {
+        return {
+            presenter.sendMessage(it, ::afterSendMessage, ::onSuccessSendMessage, ::onErrorSendMessage)
+        }
+    }
+
+    private fun afterSendMessage() {
+        viewState.afterSendMessage()
+    }
+
+    private fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel) {
+        viewState.onSuccessSendMessage(pendingChatViewModel)
+    }
+
+    private fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
+        viewState.onErrorSendMessage(pendingChatViewModel, exception)
+        ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
+    }
+
+    override fun onDestroy() {
+        viewState.destroy()
+        presenter.detachView()
+        super.onDestroy()
     }
 }

@@ -5,10 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 
 /**
  * @author : Steven 13/02/19
@@ -32,4 +29,8 @@ interface PlayViewState {
     fun onChannelDeleted()
     fun onQuickReplyUpdated(it: GroupChatQuickReplyViewModel)
     fun onMessageReceived(it: Visitable<*>)
+    fun destroy()
+    fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel)
+    fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?)
+    fun afterSendMessage()
 }

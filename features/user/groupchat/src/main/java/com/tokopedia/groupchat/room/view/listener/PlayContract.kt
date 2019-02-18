@@ -38,5 +38,11 @@ interface PlayContract {
 
     interface Presenter: CustomerPresenter<View> {
         fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?)
+        fun sendMessage(
+                viewModel: PendingChatViewModel,
+                afterSendMessage: () -> Unit,
+                onSuccessSendMessage: (PendingChatViewModel) -> Unit,
+                onErrorSendMessage: (PendingChatViewModel, Exception?) -> Unit
+        )
     }
 }
