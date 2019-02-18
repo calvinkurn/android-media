@@ -44,6 +44,7 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
+                    android:gravity="top"
                     app:contentInsetStart="0dp"
                     app:contentInsetLeft="0dp"
                     app:layout_anchor="@id/home_content_container"

@@ -19,6 +19,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,6 +118,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     UserSessionInterface userSession;
 
+    private View fragmentRootView;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
     private CoordinatorLayout root;
@@ -138,6 +140,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private AppBarLayout appBarLayout;
     private HomeFeedPagerAdapter homeFeedPagerAdapter;
     private int lastOffset;
+    private int fragmentHeight;
+    private int actionBarHeight;
 
     private TrackingQueue trackingQueue;
 
@@ -250,6 +254,47 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fragmentRootView = view;
+        initResources();
+        disableExpandFeedSection();
+    }
+
+    private void initResources() {
+        TypedValue typedValue = new TypedValue();
+        if (getActivity() != null && getActivity().getTheme() != null &&
+                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
+        }
+    }
+
+    private void disableExpandFeedSection() {
+        if (fragmentHeight > 0) {
+            mainToolbar.getLayoutParams().height = fragmentHeight;
+            mainToolbar.requestLayout();
+            return;
+        }
+
+        if (fragmentRootView != null) {
+            fragmentRootView.post(new Runnable() {
+                @Override
+                public void run() {
+                    fragmentHeight = fragmentRootView.getMeasuredHeight();
+                    mainToolbar.getLayoutParams().height = fragmentHeight;
+                    mainToolbar.requestLayout();
+                }
+            });
+        }
+    }
+
+    private void enableExpandFeedSection() {
+        mainToolbar.getLayoutParams().height = actionBarHeight;
+        mainToolbar.requestLayout();
+    }
+
     private void initEggDragListener() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
@@ -302,6 +347,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
+        enableExpandFeedSection();
         homeFeedsTabLayout.setVisibility(View.VISIBLE);
         homeFeedsViewPager.setVisibility(View.VISIBLE);
         if (homeFeedPagerAdapter == null) {
@@ -722,6 +768,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsViewPager.setVisibility(View.GONE);
         homeFeedsViewPager.setAdapter(null);
         homeFeedsTabLayout.setup(homeFeedsViewPager, new ArrayList<>());
+        disableExpandFeedSection();
     }
 
     @Override
