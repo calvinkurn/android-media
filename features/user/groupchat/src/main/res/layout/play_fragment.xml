@@ -132,6 +132,7 @@
             app:layout_constraintVertical_weight="0.5"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            android:overScrollMode="never"
             tools:ignore="MergeRootFrame" />
 
         <ImageView
@@ -141,115 +142,19 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/video_horizontal" />
 
-
-        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+        <include
             android:id="@+id/bottom"
+            layout="@layout/input_play"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/green_200"
-            android:paddingBottom="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:visibility="gone"
+            app:layout_constraintVertical_weight="1.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MergeRootFrame"
-            tools:visibility="visible">
-
-            <ImageView
-                android:id="@+id/icon_quiz"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dp_5"
-                app:layout_constraintBottom_toBottomOf="@id/bottom"
-                app:layout_constraintRight_toLeftOf="@+id/icon_dynamic"
-                app:layout_constraintTop_toTopOf="@id/reply_edit_text"
-                app:srcCompat="@drawable/ic_play_dynamic_icon"
-
-                tools:visibility="visible" />
-
-            <ImageView
-                android:id="@+id/notification_quiz"
-                android:layout_width="@dimen/dp_10"
-                android:layout_height="@dimen/dp_10"
-                app:layout_constraintRight_toRightOf="@id/icon_quiz"
-                app:layout_constraintTop_toTopOf="@id/icon_quiz"
-                app:srcCompat="@drawable/circle_red_notification" />
-
-            <ImageView
-                android:id="@+id/icon_dynamic"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dp_5"
-                app:layout_constraintBottom_toBottomOf="@id/bottom"
-                app:layout_constraintRight_toLeftOf="@+id/button_send"
-                app:layout_constraintTop_toTopOf="@id/reply_edit_text"
-                app:srcCompat="@drawable/ic_play_dynamic_icon"
-                tools:layout_editor_absoluteX="42dp"
-                tools:layout_editor_absoluteY="460dp"
-                tools:visibility="visible" />
-
-            <ImageView
-                android:id="@+id/notification_dynamic_icon"
-                android:layout_width="@dimen/dp_10"
-                android:layout_height="@dimen/dp_10"
-                app:layout_constraintRight_toRightOf="@id/icon_dynamic"
-                app:layout_constraintTop_toTopOf="@id/icon_dynamic"
-                app:srcCompat="@drawable/circle_red_notification" />
-
-            <ImageView
-                android:id="@+id/button_send"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                app:layout_constraintBottom_toBottomOf="@id/bottom"
-                app:layout_constraintEnd_toEndOf="@id/bottom"
-                app:layout_constraintRight_toRightOf="@id/bottom"
-                app:layout_constraintTop_toTopOf="@id/reply_edit_text"
-                app:srcCompat="@drawable/ic_send_24dp_green"
-                tools:layout_editor_absoluteX="42dp"
-                tools:layout_editor_absoluteY="460dp"
-                tools:visibility="visible" />
-
-            <com.tokopedia.design.text.BackEditText
-                android:id="@+id/reply_edit_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_5"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_rounded_chat_input"
-                android:hint="@string/chat_hint"
-                android:inputType="textMultiLine"
-                android:maxLength="200"
-                android:maxLines="5"
-                android:paddingBottom="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
-                android:textSize="@dimen/sp_14"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@id/bottom"
-                app:layout_constraintEnd_toStartOf="@+id/icon_quiz"
-                app:layout_constraintRight_toLeftOf="@+id/icon_quiz"
-                app:layout_constraintStart_toStartOf="@id/bottom"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
-
-        </android.support.constraint.ConstraintLayout>
-
+            app:layout_constraintStart_toStartOf="parent"/>
         <TextView
             android:id="@+id/login"
             android:layout_width="match_parent"
-            android:layout_height="92dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:alpha="0.7"
@@ -265,7 +170,7 @@
             android:textStyle="normal"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/quick_reply"
@@ -357,7 +262,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.85" />
+            app:layout_constraintGuide_percent="0.85"
+            app:layout_constraintEnd_toStartOf="@id/webview_icon"/>
 
     </android.support.constraint.ConstraintLayout>
 

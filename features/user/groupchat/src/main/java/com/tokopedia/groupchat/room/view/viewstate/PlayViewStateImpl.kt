@@ -23,6 +23,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.text.BackEditText
@@ -43,6 +45,8 @@ import com.tokopedia.groupchat.common.util.TextFormatter
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -62,7 +66,8 @@ class PlayViewStateImpl(
         imageListener: ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         sprintSaleViewHolderListener: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
-        groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener
+        groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
+        sendMessage: (viewModel: PendingChatViewModel) -> Unit
 
 ) : PlayViewState {
 
@@ -80,6 +85,9 @@ class PlayViewStateImpl(
     private var replyEditText: BackEditText = view.findViewById(R.id.reply_edit_text)
     private var login: View = view.findViewById(R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
+    private var iconQuiz: View = view.findViewById(R.id.icon_quiz)
+    private var iconDynamic: View = view.findViewById(R.id.icon_dynamic)
+    private var sendButton: View = view.findViewById(R.id.button_send)
 
     val dynamicIcon = view.findViewById<ImageView>(R.id.icon_dynamic)
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
@@ -89,7 +97,6 @@ class PlayViewStateImpl(
     lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
 
     lateinit var overlayBottomSheet: CloseableBottomSheetDialog
-
 
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
     private var quickReplyAdapter: QuickReplyAdapter
@@ -115,7 +122,7 @@ class PlayViewStateImpl(
         chatRecyclerView.layoutManager = layoutManager
         chatRecyclerView.adapter = adapter
         val itemDecoration = SpaceItemDecoration(view.context
-                .getResources().getDimension(R.dimen.space_chat).toInt())
+                .getResources().getDimension(R.dimen.space_play_chat).toInt())
         chatRecyclerView.addItemDecoration(itemDecoration)
 
         chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -150,17 +157,29 @@ class PlayViewStateImpl(
 
         replyEditText.setOnClickListener {
             showWidgetAboveInput(false)
+            inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
+            sendButton.show()
+            iconDynamic.hide()
+            iconQuiz.hide()
 //            setSprintSaleIcon(null)
         }
 
         replyEditText.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             showWidgetAboveInput(false)
+            inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
 //            setSprintSaleIcon(null)
+            sendButton.show()
+            iconDynamic.hide()
+            iconQuiz.hide()
         }
 
         replyEditText.setKeyImeChangeListener { keyCode, event ->
             if (KeyEvent.KEYCODE_BACK == event.keyCode) {
                 showWidgetAboveInput(true)
+                inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
+                sendButton.hide()
+                iconDynamic.show()
+                iconQuiz.show()
             }
         }
 
@@ -174,6 +193,22 @@ class PlayViewStateImpl(
             attemptResetNewMessageCounter()
             scrollToBottom()
         }
+
+        sendButton.setOnClickListener {
+            var emp = !TextUtils.isEmpty(replyEditText.text.toString().trim { it <= ' ' })
+            if (emp) {
+                val pendingChatViewModel = PendingChatViewModel(checkText(replyEditText.text.toString()),
+                        userSession.userId,
+                        userSession.name,
+                        userSession.profilePicture,
+                        false)
+                sendMessage(pendingChatViewModel)
+            }
+        }
+    }
+
+    private fun checkText(replyText: String): String {
+        return replyText.replace("<", "&lt;")
     }
 
     open fun scrollToBottom() {
@@ -641,4 +676,35 @@ class PlayViewStateImpl(
         } else false
     }
 
+    override fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel) {
+        val viewModel = ChatViewModel(
+                pendingChatViewModel.message!!,
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                "",
+                userSession.userId,
+                userSession.name,
+                userSession.profilePicture,
+                false,
+                false)
+        adapter.addReply(viewModel)
+        adapter.notifyItemInserted(0)
+        setQuickReply(null)
+        this.viewModel.quickRepliesViewModel = null
+        scrollToBottom()
+    }
+
+    override fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
+
+    }
+
+    override fun afterSendMessage() {
+        KeyboardHandler.DropKeyboard(view.context, view)
+        replyEditText.text.clear()
+    }
+
+    override fun destroy() {
+        youTubePlayer?.release()
+        youtubeRunnable.removeCallbacksAndMessages(null)
+    }
 }

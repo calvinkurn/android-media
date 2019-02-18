@@ -37,7 +37,8 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
     }
 
     override fun type(myChatViewModel: ChatViewModel): Int {
-        return ChatViewHolder.LAYOUT
+        return PlayChatViewHolder.LAYOUT
+//        return ChatViewHolder.LAYOUT
     }
 
     override fun type(pendingChatViewModel: PendingChatViewModel): Int {
@@ -101,6 +102,8 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
             viewHolder = GeneratedMessageViewHolder(parent)
         } else if (type == GroupChatPointsViewHolder.LAYOUT) {
             viewHolder = GroupChatPointsViewHolder(parent, groupChatPointsViewHolderListener)
+        } else if (type == PlayChatViewHolder.LAYOUT){
+            viewHolder = PlayChatViewHolder(parent)
         } else {
             viewHolder = super.createViewHolder(parent, type)
         }

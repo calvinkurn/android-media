@@ -43,7 +43,7 @@
             android:id="@+id/background_vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_network_error"
+            android:background="@color/green_200"
             android:fitsSystemWindows="true"
             tools:ignore="MergeRootFrame" />
 

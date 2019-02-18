@@ -9,11 +9,13 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam
 import com.tokopedia.groupchat.room.domain.mapper.PlayWebSocketMessageMapper
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
+import com.tokopedia.websocket.WebSocketException
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import okhttp3.WebSocket
@@ -187,5 +189,36 @@ class PlayPresenter @Inject constructor(
 
     fun destroyWebSocket() {
         mSubscription?.clear()
+    }
+
+    override fun detachView() {
+        super.detachView()
+        getPlayInfoUseCase.unsubscribe()
+        destroyWebSocket()
+    }
+
+    override fun sendMessage(
+            viewModel: PendingChatViewModel,
+            afterSendMessage: () -> Unit,
+            onSuccessSendMessage: (PendingChatViewModel) -> Unit,
+            onErrorSendMessage: (PendingChatViewModel, Exception?) -> Unit) {
+        var errorSendIndicator: Exception? = null
+        try {
+            RxWebSocket.send(GroupChatWebSocketParam.getParamSend(channelId, viewModel.message), null)
+        } catch (e: WebSocketException) {
+            errorSendIndicator = e
+            showDummy(e.toString(), "error logger send")
+        }
+
+        if(errorSendIndicator == null){
+            onSuccessSendMessage(viewModel)
+        } else if(errorSendIndicator !is WebSocketException){
+            onErrorSendMessage(viewModel, errorSendIndicator)
+        } else if(errorSendIndicator is WebSocketException) {
+            view.setSnackBarRetryConnectingWebSocket()
+        }
+
+
+        afterSendMessage()
     }
 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_8"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_12"
+    tools:background="@color/red_150">
+
+        <!--<ImageView-->
+        <!--android:id="@+id/notification_dynamic_icon"-->
+        <!--android:layout_width="@dimen/dp_10"-->
+        <!--android:layout_height="@dimen/dp_10"-->
+        <!--app:layout_constraintRight_toRightOf="@id/icon_dynamic"-->
+        <!--app:layout_constraintTop_toTopOf="@id/icon_dynamic"-->
+        <!--app:srcCompat="@drawable/circle_red_notification" />-->
+
+
+
+        <!--<ImageView-->
+        <!--android:id="@+id/notification_quiz"-->
+        <!--android:layout_width="@dimen/dp_10"-->
+        <!--android:layout_height="@dimen/dp_10"-->
+        <!--app:layout_constraintRight_toRightOf="@id/icon_quiz"-->
+        <!--app:layout_constraintTop_toTopOf="@id/icon_quiz"-->
+        <!--app:srcCompat="@drawable/circle_red_notification" />-->
+
+        <com.tokopedia.design.text.BackEditText
+            android:id="@+id/reply_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:background="@drawable/bg_rounded_chat_input"
+            android:hint="@string/chat_hint"
+            android:inputType="textMultiLine"
+            android:maxLength="200"
+            android:maxLines="5"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:textColorHint="@color/play_transparent_hint_reply"
+            android:textSize="@dimen/sp_14"
+            android:visibility="visible"
+            tools:hint="afdfin\dfjidifja\nofkdokfdodkfodko\djfidjidjfij\nokdfokdodkfo\ndofkdkfok"
+            android:layout_weight="1"
+            tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/icon_quiz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:visibility="visible"
+        android:layout_gravity="bottom"
+        app:srcCompat="@drawable/ic_play_dynamic_icon"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/icon_dynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:visibility="visible"
+        android:layout_gravity="bottom"
+        app:srcCompat="@drawable/ic_play_dynamic_icon"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/button_send"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_40"
+        android:paddingLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        android:visibility="gone"
+        android:layout_gravity="bottom"
+        app:srcCompat="@drawable/ic_send_24dp_green"
+        tools:visibility="visible" />
+
+
+</LinearLayout>
