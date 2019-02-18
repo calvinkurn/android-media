@@ -31,5 +31,5 @@ data class Wholesale(
 
         @SerializedName("price")
         @Expose
-        val price: Int = 0
+        val price: Float = 0f
 )

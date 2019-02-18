@@ -18,7 +18,7 @@ data class Stats(
 
         @SerializedName("rating")
         @Expose
-        val rating: Int = 0
+        val rating: Float = 0f
 )
 
 data class TxStats(
