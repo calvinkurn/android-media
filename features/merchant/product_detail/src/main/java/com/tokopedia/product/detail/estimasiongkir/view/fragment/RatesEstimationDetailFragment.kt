@@ -39,7 +39,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
 
     private var shopDomain: String = ""
     private var productWeightUnit: String = LABEL_GRAM
-    private var productWeight: Int = 0
+    private var productWeight: Float = 0f
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -59,7 +59,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         arguments?.let {
             shopDomain = it.getString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, "")
             productWeightUnit = it.getString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, LABEL_GRAM)
-            productWeight = it.getInt(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0)
+            productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
             productWeight
         }
 
@@ -76,7 +76,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
 
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
-        val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight.toFloat() else (productWeight.toFloat()/1000)
+        val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight/1000)
         presenter.getCostEstimation(GraphqlHelper.loadRawString(resources, R.raw.gql_pdp_estimasi_ongkir), weightInKg, shopDomain)
     }
 
@@ -127,10 +127,10 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Int, productWeightUnit: String) = RatesEstimationDetailFragment().apply {
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String) = RatesEstimationDetailFragment().apply {
             arguments = Bundle().apply {
                 putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
-                putInt(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
+                putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                 putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
             }
         }

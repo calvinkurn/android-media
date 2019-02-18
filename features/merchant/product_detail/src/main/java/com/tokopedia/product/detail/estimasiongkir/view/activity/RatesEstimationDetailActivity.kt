@@ -18,7 +18,7 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
 
     override fun getNewFragment(): Fragment {
         val shopDomain = intent.getStringExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN)
-        val weight = intent.getIntExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0)
+        val weight = intent.getFloatExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
         val weightUnit = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT)
         return RatesEstimationDetailFragment.createInstance(shopDomain, weight, weightUnit)
     }
@@ -32,7 +32,7 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
     companion object {
 
         @JvmStatic
-        fun createIntent(context: Context, shopDomain: String, productWeight: Int, productWeightUnit: String): Intent {
+        fun createIntent(context: Context, shopDomain: String, productWeight: Float, productWeightUnit: String): Intent {
             return Intent(context, RatesEstimationDetailActivity::class.java)
                     .putExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
