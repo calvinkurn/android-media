@@ -74,6 +74,5 @@ public interface SaldoDetailContract {
         void getTickerWithdrawalMessage();
         void getMerchantSaldoDetails();
         void onDrawClicked(Intent intent);
-        void onRefresh();
     }
 }

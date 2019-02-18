@@ -7,15 +7,19 @@ import java.util.List;
 public class DepositActivityResponse {
 
     @SerializedName("message")
+    private
     String message;
 
     @SerializedName("have_error")
+    private
     boolean haveError;
 
     @SerializedName("have_next_page")
+    private
     boolean haveNextPage;
 
     @SerializedName("deposit_history_list")
+    private
     List<DepositHistoryList> depositHistoryList;
 
     public String getMessage() {

@@ -113,11 +113,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             getView().getSellerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
-        /*if (paging.CheckNextPage()) {
-            showLoading();
-        } else {
-            hideLoading();
-        }*/
     }
 
     private void setData(GqlCompleteTransactionResponse data) {
@@ -132,11 +127,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             getView().getAllHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
-        /*if (paging.CheckNextPage()) {
-            showLoading();
-        } else {
-            hideLoading();
-        }*/
     }
 
     private void setData(GqlBuyerDepositSummaryResponse data) {
@@ -151,11 +141,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             getView().getBuyerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
-        /*if (paging.CheckNextPage()) {
-            showLoading();
-        } else {
-            hideLoading();
-        }*/
     }
 
     private void showLoading() {
@@ -384,7 +369,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
                     if (paging.getPage() == 1) {
                         getView().getSingleTabAdapter().clearAllElements();
-//                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
                     }
                     paging.setHasNext(gqlDepositSummaryResponse.getBuyerDepositHistory()
                             .isHaveNextPage());

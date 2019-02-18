@@ -48,7 +48,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
-        implements SaldoDetailContract.View, RefreshHandler.OnRefreshHandlerListener {
+        implements SaldoDetailContract.View/*, RefreshHandler.OnRefreshHandlerListener*/ {
 
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
@@ -63,19 +63,17 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Inject
     UserSession userSession;
-    TextView totalBalanceTV;
-    TextView drawButton;
-    RelativeLayout mainBalanceRL;
+    private TextView totalBalanceTV;
+    private TextView drawButton;
 
-    RelativeLayout topSlideOffBar;
-    RelativeLayout holdBalanceLayout;
-    TextView amountBeingReviewed;
-    View saldoFrameLayout;
-    SaldoDatePickerUtil datePicker;
-    LinearLayoutManager linearLayoutManager;
-    LinearLayout tickerMessageRL;
-    TextView tickeRMessageTV;
-    ImageView tickerMessageCloseButton;
+    private RelativeLayout topSlideOffBar;
+    private RelativeLayout holdBalanceLayout;
+    private TextView amountBeingReviewed;
+    private View saldoFrameLayout;
+    private LinearLayoutManager linearLayoutManager;
+    private LinearLayout tickerMessageRL;
+    private TextView tickeRMessageTV;
+    private ImageView tickerMessageCloseButton;
 
 
     private RelativeLayout buyerSaldoBalanceRL;
@@ -95,6 +93,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private float sellerSaldoBalance;
     private float buyerSaldoBalance;
     private float totalSaldoBalance;
+
+    public SaldoDepositFragment() {
+    }
 
     public static SaldoDepositFragment createInstance(boolean isSellerEnabled) {
         SaldoDepositFragment saldoDepositFragment = new SaldoDepositFragment();
@@ -225,7 +226,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         tickerMessageRL = view.findViewById(R.id.ticker_message_layout);
         tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
         tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
-        mainBalanceRL = view.findViewById(R.id.main_balance_rl);
         buyerBalanceTV = view.findViewById(R.id.buyer_balance);
         sellerBalanceTV = view.findViewById(R.id.seller_balance);
         buyerSaldoBalanceRL = view.findViewById(R.id.saldo_buyer_balance_rl);
@@ -317,7 +317,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
-        datePicker = new SaldoDatePickerUtil(getActivity());
         if (isSellerEnabled && getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
@@ -548,7 +547,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void refresh() {
         saldoHistoryFragment.onRefresh();
-        saldoDetailsPresenter.onRefresh();
     }
 
     @Override
@@ -573,10 +571,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                 () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
 
-    @Override
+   /* @Override
     public void onRefresh(View view) {
-        saldoDetailsPresenter.onRefresh();
-    }
+        saldoHistoryFragment.onRefresh();
+    }*/
 
     @Override
     public void onDestroy() {

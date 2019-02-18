@@ -27,7 +27,6 @@ public class GetAllTransactionUsecase {
     private Context context;
     private boolean isRequesting;
     private Map<String, Object> variables;
-    private boolean isSeller;
 
     @Inject
     public GetAllTransactionUsecase(@ApplicationContext Context context) {
@@ -67,6 +66,6 @@ public class GetAllTransactionUsecase {
     }
 
     public void setIsSeller(boolean seller) {
-        this.isSeller = seller;
+        boolean isSeller = seller;
     }
 }

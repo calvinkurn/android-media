@@ -15,55 +15,6 @@ public class GqlSaldoBalanceResponse {
         this.saldo = saldo;
     }
 
-    /*@SerializedName("usableSellerSaldo")
-    private Saldo usableSellerSaldo;
-
-    @SerializedName("holdSellerSaldo")
-    private Saldo holdSellerSaldo;
-
-    @SerializedName("holdBuyerSaldo")
-    private Saldo holdBuyerSaldo;
-
-    public Saldo getUsableBuyerSaldo() {
-        return usableBuyerSaldo;
-    }
-
-    public void setUsableBuyerSaldo(Saldo usableBuyerSaldo) {
-        this.usableBuyerSaldo = usableBuyerSaldo;
-    }
-
-    public Saldo getUsableSellerSaldo() {
-        return usableSellerSaldo;
-    }
-
-    public void setUsableSellerSaldo(Saldo usableSellerSaldo) {
-        this.usableSellerSaldo = usableSellerSaldo;
-    }
-
-    public Saldo getHoldSellerSaldo() {
-        return holdSellerSaldo;
-    }
-
-    public void setHoldSellerSaldo(Saldo holdSellerSaldo) {
-        this.holdSellerSaldo = holdSellerSaldo;
-    }
-
-    public Saldo getSaldo() {
-        return usableBuyerSaldo;
-    }
-
-    public void setSaldo(Saldo saldo) {
-        this.usableBuyerSaldo = saldo;
-    }
-
-    public Saldo getHoldBuyerSaldo() {
-        return holdBuyerSaldo;
-    }
-
-    public void setHoldBuyerSaldo(Saldo holdBuyerSaldo) {
-        this.holdBuyerSaldo = holdBuyerSaldo;
-    }*/
-
     public class Saldo {
 
         @SerializedName("buyer_hold")

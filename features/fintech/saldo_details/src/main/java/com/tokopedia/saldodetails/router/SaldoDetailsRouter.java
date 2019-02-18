@@ -12,8 +12,6 @@ public interface SaldoDetailsRouter {
 
     boolean isSaldoNativeEnabled();
 
-    CacheManager getGlobalCacheManager();
-
     Intent getInboxTicketCallingIntent(Context context);
 
     Intent getProfileSettingIntent(Context context);
