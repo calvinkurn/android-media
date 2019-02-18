@@ -39,7 +39,7 @@ public class BannerView extends BaseCustomView {
     private Runnable runnableScrollBanner;
     private boolean autoScrollOnProgress;
 
-    private OnPromoClickListener onPromoClickListener;
+    protected OnPromoClickListener onPromoClickListener;
     private OnPromoLoadedListener onPromoLoadedListener;
     private OnPromoScrolledListener onPromoScrolledListener;
     private OnPromoAllClickListener onPromoAllClickListener;
