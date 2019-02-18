@@ -86,5 +86,5 @@ data class Basic(
 
         @SerializedName("weightUnit")
         @Expose
-        val weightUnit: Int = 0
+        val weightUnit: String = ""
 )

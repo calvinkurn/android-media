@@ -20,7 +20,7 @@ data class PreOrder(
 
         @SerializedName("timeUnit")
         @Expose
-        val timeUnit: Int = 0
+        val timeUnit: String = ""
 )
 
 data class Wholesale(

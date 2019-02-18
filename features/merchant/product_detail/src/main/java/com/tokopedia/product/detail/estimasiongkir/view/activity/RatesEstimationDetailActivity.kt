@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.product.detail.data.util.LABEL_GRAM
 import com.tokopedia.product.detail.estimasiongkir.data.constant.RatesEstimationConstant
 import com.tokopedia.product.detail.estimasiongkir.di.RatesEstimationModule
 import com.tokopedia.product.detail.estimasiongkir.di.RatesEstimationComponent
@@ -18,7 +19,7 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
     override fun getNewFragment(): Fragment {
         val shopDomain = intent.getStringExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN)
         val weight = intent.getIntExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0)
-        val weightUnit = intent.getIntExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, 0)
+        val weightUnit = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT)
         return RatesEstimationDetailFragment.createInstance(shopDomain, weight, weightUnit)
     }
 
@@ -31,7 +32,7 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
     companion object {
 
         @JvmStatic
-        fun createIntent(context: Context, shopDomain: String, productWeight: Int, productWeightUnit: Int): Intent {
+        fun createIntent(context: Context, shopDomain: String, productWeight: Int, productWeightUnit: String): Intent {
             return Intent(context, RatesEstimationDetailActivity::class.java)
                     .putExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
