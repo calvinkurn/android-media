@@ -57,13 +57,14 @@ class ProfileActivity : BaseSimpleActivity() {
             bundle.putAll(it)
         }
         return if (GlobalConfig.isCustomerApp()) {
+            hideToolbar()
             ProfileFragment.createInstance(bundle)
         } else {
             ProfileEmptyFragment.createInstance(bundle)
         }
     }
 
-    fun hideToolbar(){
+     fun hideToolbar(){
         toolbar.hide()
     }
 }

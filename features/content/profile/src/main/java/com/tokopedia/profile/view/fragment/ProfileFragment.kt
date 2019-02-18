@@ -111,9 +111,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
-        if (activity is ProfileActivity) {
-            (context as ProfileActivity).hideToolbar()
-        }
         initVar(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
     }
