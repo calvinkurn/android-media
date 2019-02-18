@@ -33,7 +33,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListener {
 
     private var url: String = ""
-    private var hasTitlebar: Boolean = false
     private var gcToken: String = ""
     private var doubleTapExit = false
     private val EXIT_DELAY_MILLIS = 2000
@@ -76,8 +75,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     private fun setupViewModel(savedInstanceState: Bundle?) {
         activity?.run {
-            hasTitlebar = getParamBoolean(ApplinkConst.Play.PARAM_HAS_TITLEBAR, arguments,
-                    savedInstanceState, true)
 
             url = getParamString(ApplinkConst.Play.PARAM_URL, arguments,
                     savedInstanceState, "")
@@ -99,12 +96,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.run{
-            if (!hasTitlebar
-                    && this is AppCompatActivity) {
-                (activity as AppCompatActivity).supportActionBar?.hide()
-            }
-        }
 
         loadWebview()
     }
@@ -134,29 +125,11 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 KeyEvent.KEYCODE_BACK -> if (webview.canGoBack()) {
                     webview.goBack()
                     return true
-                } else if (!hasTitlebar) {
-                    doubleTapExit()
-                    return true
                 }
             }
         }
         return false
     }
-
-    private fun doubleTapExit() {
-        activity?.run {
-            if (doubleTapExit) {
-                finish()
-            } else {
-                doubleTapExit = true
-                val exitMessage = "Tekan sekali lagi untuk keluar"
-                Toast.makeText(this, exitMessage, Toast.LENGTH_SHORT).show()
-                Handler().postDelayed({ doubleTapExit = false }, EXIT_DELAY_MILLIS.toLong())
-            }
-        }
-
-    }
-
 
     private fun getWebviewChromeClient(): WebChromeClient? {
         return object : WebChromeClient() {
