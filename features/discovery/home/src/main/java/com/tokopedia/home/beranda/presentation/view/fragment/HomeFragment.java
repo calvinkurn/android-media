@@ -275,8 +275,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void disableExpandFeedSection() {
         if (fragmentHeight > 0) {
-            mainToolbar.getLayoutParams().height = fragmentHeight;
-            mainToolbar.requestLayout();
+            setMargins(mainToolbar, 0, 0, 0, fragmentHeight - actionBarHeight);
             return;
         }
 
@@ -285,16 +284,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 @Override
                 public void run() {
                     fragmentHeight = fragmentRootView.getMeasuredHeight();
-                    mainToolbar.getLayoutParams().height = fragmentHeight;
-                    mainToolbar.requestLayout();
+                    setMargins(mainToolbar, 0, 0, 0, fragmentHeight - actionBarHeight);
                 }
             });
         }
     }
 
     private void enableExpandFeedSection() {
-        mainToolbar.getLayoutParams().height = actionBarHeight;
-        mainToolbar.requestLayout();
+        setMargins(mainToolbar, 0, 0, 0, 0);
+    }
+
+    private void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
     }
 
     private void initEggDragListener() {
