@@ -296,7 +296,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                             for (int i = 0; i < listData.size(); i++) {
                                 Data data = listData.get(i);
-                                if (data.getProduct() != null) {
+                                if (data.getProduct() != null
+                                        && !TextUtils.isEmpty(data.getProduct().getId())) {
                                     listTopAds.add(new FeedEnhancedTracking.Promotion(
                                             Integer.valueOf(data.getId()),
                                             FeedEnhancedTracking.Promotion
@@ -309,7 +310,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                             Integer.valueOf(data.getId()),
                                             FeedEnhancedTracking.Promotion.TRACKING_EMPTY
                                     ));
-                                } else if (data.getShop() != null) {
+                                } else if (data.getShop() != null
+                                        && !TextUtils.isEmpty(data.getShop().getId())) {
                                     listTopAds.add(new FeedEnhancedTracking.Promotion(
                                             Integer.valueOf(data.getId()),
                                             FeedEnhancedTracking.Promotion
@@ -532,7 +534,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private FeedTopAdsViewModel convertToTopadsViewModel(DataFeedDomain domain) {
-        boolean isTopadsShop = domain.getContent().getTopAdsList().get(0).getProduct() == null;
+        Data data = domain.getContent().getTopAdsList().get(0);
+        boolean isTopadsShop = data.getProduct() == null || TextUtils.isEmpty(data.getProduct().getId());
         int topadsSize = 0;
 
         if (isTopadsShop) {

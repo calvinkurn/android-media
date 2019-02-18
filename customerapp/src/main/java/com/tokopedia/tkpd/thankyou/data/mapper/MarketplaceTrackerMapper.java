@@ -6,8 +6,13 @@ import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.LinkerCommerceData;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
@@ -15,6 +20,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -54,8 +60,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData)));
-                    BranchSdkUtils.sendCommerceEvent(MainApplication.getAppContext(), getTrackignBranchIOData(orderData));
+                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData), getTax(paymentData)));
+                    LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
+                            getTrackignBranchIOData(orderData)));
                     indexOrdersData++;
                 }
 
@@ -66,6 +73,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return false;
+    }
+
+    private String getTax(PaymentData paymentData) {
+        float tax = paymentData.getFeeAmount();
+        if(paymentData.getPaymentGateway() != null) {
+            tax += paymentData.getPaymentGateway().getGatewayFee();
+        }
+        return Float.toString(tax);
     }
 
     private Purchase getAppsFlyerTrackingData(List<OrderData> orders) {
@@ -93,7 +108,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return purchase;
     }
 
-    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode) {
+    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode, String tax) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
@@ -107,6 +122,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        purchase.setAffiliation(getShopName(orderData));
+        purchase.setTax(tax);
         purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
@@ -164,7 +181,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         return "";
     }
-    
+
     private String getPaymentType(PaymentMethod paymentMethod) {
         if (paymentMethod != null && paymentMethod.getMethod() != null) {
             switch (paymentMethod.getMethod()) {
@@ -216,7 +233,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private String getProductCategory(OrderDetail orderDetail) {
         if (orderDetail.getProduct() != null
                 && orderDetail.getProduct().getProductCategory() != null) {
-            return orderDetail.getProduct().getProductCategory().getCategoryName();
+            return orderDetail.getProduct().getProductCategory().getCategoryNameLevel1()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel2()
+                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel3();
         }
 
         return "";
@@ -230,24 +249,43 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return "";
     }
 
-    private BranchIOPayment getTrackignBranchIOData(OrderData orderData) {
-        BranchIOPayment branchIOPayment = new BranchIOPayment();
+    private LinkerCommerceData getTrackignBranchIOData(OrderData orderData) {
+
+        LinkerCommerceData linkerCommerceData = new LinkerCommerceData();
+
+        UserSession userSession = new UserSession(LinkerManager.getInstance().getContext());
+
+        UserData userData = new UserData();
+        userData.setUserId(userSession.getUserId());
+        userData.setPhoneNumber(userSession.getPhoneNumber());
+        userData.setName(userSession.getName());
+        userData.setEmail(userSession.getEmail());
+
+        linkerCommerceData.setUserData(userData);
+
+        com.tokopedia.linker.model.PaymentData branchIOPayment = new com.tokopedia.linker.model.PaymentData();
+
         branchIOPayment.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
         branchIOPayment.setShipping(String.valueOf((int)orderData.getShippingPrice()));
         branchIOPayment.setRevenue(String.valueOf((int)paymentData.getPaymentAmount()));
-        branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
+        branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf(orderData.getItemPrice()));
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
-            product.put(BranchIOPayment.KEY_ID, String.valueOf(orderDetail.getProductId()));
-            product.put(BranchIOPayment.KEY_NAME, getProductName(orderDetail));
-            product.put(BranchIOPayment.KEY_PRICE, String.valueOf((int)orderDetail.getProductPrice()));
-            product.put(BranchIOPayment.KEY_QTY, String.valueOf(orderDetail.getQuantity()));
-            product.put(BranchIOPayment.KEY_CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));
+            product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
+            product.put(LinkerConstants.NAME, getProductName(orderDetail));
+            product.put(LinkerConstants.PRICE, String.valueOf((int)orderDetail.getProductPrice()));
+            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE,String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
+                    String.valueOf(orderDetail.getProductPrice()))));
+            product.put(LinkerConstants.QTY, String.valueOf(orderDetail.getQuantity()));
+            product.put(LinkerConstants.CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));
 
             branchIOPayment.setProduct(product);
         }
-        return branchIOPayment;
+
+        linkerCommerceData.setPaymentData(branchIOPayment);
+
+        return linkerCommerceData;
     }
 }

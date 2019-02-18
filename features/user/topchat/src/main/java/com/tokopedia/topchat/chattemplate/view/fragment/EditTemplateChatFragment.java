@@ -17,18 +17,22 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
+import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
 import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
-import com.tokopedia.topchat.common.di.DaggerTemplateChatComponent;
+import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.common.util.Events;
 
 import java.util.List;
@@ -38,7 +42,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import com.tokopedia.core.analytics.UnifyTracking;
 
 /**
  * Created by stevenfredian on 12/22/17.
@@ -69,6 +72,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Inject
     EditTemplateChatPresenter presenter;
+
+    @Inject
+    ChatTemplateAnalytics analytics;
 
 
     @Override
@@ -107,7 +113,8 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
             if (allowDelete == ENABLE_DELETE) {
                 showDialogDelete();
             } else {
-                showError(getActivity().getString(R.string.minimum_template_chat_warning));
+                showError(new MessageErrorException(getActivity().getString(R.string
+                        .minimum_template_chat_warning)));
             }
 
             return true;
@@ -228,19 +235,19 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerTemplateChatComponent daggerTemplateChatComponent =
-                (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                        .appComponent(appComponent).build();
-        daggerTemplateChatComponent.inject(this);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
+                    .getBaseAppComponent();
+            DaggerTemplateChatComponent daggerTemplateChatComponent =
+                    (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
+                            .baseAppComponent(appComponent).build();
+            daggerTemplateChatComponent.inject(this);
+        }
     }
 
     @Override
     public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
-        UnifyTracking.eventClickTemplate(getActivity(), TopChatAnalytics.Category.ADD_TEMPLATE,
-                TopChatAnalytics.Action.UPDATE_TEMPLATE,
-                TopChatAnalytics.Name.INBOX_CHAT);
-
+        analytics.eventClickTemplate();
         Intent intent = new Intent();
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
         intent.putExtra(TemplateChatFragment.LIST_RESULT, s);
@@ -268,12 +275,8 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showError(String error) {
-        if (error.equals("")) {
-            SnackbarManager.make(getActivity(), getActivity().getString(R.string.default_request_error_bad_request), Snackbar.LENGTH_LONG).show();
-        } else {
-            SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();
-        }
+    public void showError(Throwable error) {
+        SnackbarManager.make(getActivity(), ErrorHandler.getErrorMessage(getContext(), error), Snackbar.LENGTH_LONG).show();
     }
 
     @Override

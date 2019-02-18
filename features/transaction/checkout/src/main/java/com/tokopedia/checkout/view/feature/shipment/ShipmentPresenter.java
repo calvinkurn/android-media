@@ -1377,6 +1377,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
                     mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
+                    processReloadCheckoutPageBecauseOfError(isOneClickShipment);
                     getView().showToastError("");
                 } else if (response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {

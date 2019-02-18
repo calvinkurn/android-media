@@ -9,19 +9,16 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
 import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
-import com.tokopedia.tokocash.network.exception.WalletException;
-import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
-import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
-import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
+import com.tokopedia.tokocash.network.exception.WalletException;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
 
@@ -30,6 +27,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_BRANCHIO;
 import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
@@ -43,30 +43,27 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         implements QrScannerContract.Presenter {
 
     private static final String TAG_QR_PAYMENT = "QR";
+    private static final String IDENTIFIER = "identifier";
 
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
-    private GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase;
-    private GetBalanceTokoCashUseCase getBalanceTokoCashUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
     private Context context;
     private UserSession userSession;
     private LocalCacheHandler localCacheHandler;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
-                              GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase,
-                              GetBalanceTokoCashUseCase getBalanceTokoCashUseCase,
                               BranchIODeeplinkUseCase branchIODeeplinkUseCase,
                               @ApplicationContext Context context, UserSession userSession,
                               @IdentifierWalletQualifier LocalCacheHandler localCacheHandler
     ) {
         this.postBarCodeDataUseCase = postBarCodeDataUseCase;
-        this.getInfoQrTokoCashUseCase = getInfoQrTokoCashUseCase;
         this.context = context;
         this.userSession = userSession;
         this.localCacheHandler = localCacheHandler;
-        this.getBalanceTokoCashUseCase = getBalanceTokoCashUseCase;
         this.branchIODeeplinkUseCase = branchIODeeplinkUseCase;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -79,7 +76,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 onScanCompleteGetInfoQrPayment(uri.getPathSegments().get(0));
             } else if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
                 onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
-            } else if(host.contains("tokopedia.link")){
+            } else if (host.contains("tokopedia.link")) {
                 onScanBranchIOLink(barcodeData);
             } else if (host.contains("tokopedia")) {
                 openActivity(barcodeData);
@@ -108,17 +105,17 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                    CampaignTracking.eventScanQRCode("fail",context.getString(R.string.msg_dialog_wrong_scan),"");
+                    CampaignTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
                 } else {
                     getView().showErrorNetwork(e);
-                    CampaignTracking.eventScanQRCode("fail",context.getString(R.string.msg_dialog_wrong_scan),"");
+                    CampaignTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
                 }
             }
 
             @Override
             public void onNext(BranchIOAndroidDeepLink branchIOAndroidDeepLink) {
                 openActivity(Constants.Schemes.APPLINKS + "://" + branchIOAndroidDeepLink.getAndroidDeeplinkPath());
-                CampaignTracking.eventScanQRCode("success","",branchIOAndroidDeepLink.getAndroidDeeplinkPath());
+                CampaignTracking.eventScanQRCode("success", "", branchIOAndroidDeepLink.getAndroidDeeplinkPath());
             }
         });
     }
@@ -127,7 +124,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         if (isUserLogin()) {
             getAbTagsForContinuingPayment(qrcode);
         } else {
-            localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, qrcode);
+            localCacheHandler.putString(IDENTIFIER, qrcode);
             localCacheHandler.applyEditor();
             getView().interruptToLoginPage();
         }
@@ -152,13 +149,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 } else {
                     getView().showErrorNetwork(e);
                 }
-                CampaignTracking.eventScanQRCode("fail",idCampaign,"");
+                CampaignTracking.eventScanQRCode("fail", idCampaign, "");
             }
 
             @Override
             public void onNext(CampaignResponseEntity s) {
                 openActivity(s.getUrl());
-                CampaignTracking.eventScanQRCode("success",idCampaign,s.getUrl());
+                CampaignTracking.eventScanQRCode("success", idCampaign, s.getUrl());
             }
         });
     }
@@ -174,9 +171,9 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     @Override
     public void onScanCompleteAfterLoginQrPayment() {
         if (isUserLogin()) {
-            getAbTagsForContinuingPayment(localCacheHandler.getString(GetInfoQrTokoCashUseCase.IDENTIFIER));
+            getAbTagsForContinuingPayment(localCacheHandler.getString(IDENTIFIER));
         } else {
-            localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, "");
+            localCacheHandler.putString(IDENTIFIER, "");
             localCacheHandler.applyEditor();
         }
     }
@@ -187,34 +184,43 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private void getAbTagsForContinuingPayment(final String qrCode) {
         getView().showProgressDialog();
-        getBalanceTokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<BalanceTokoCash>() {
-            @Override
-            public void onCompleted() {
+        compositeSubscription.add(
+                getView().getBalanceTokoCash()
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<BalanceTokoCash>() {
+                            @Override
+                            public void onCompleted() {
 
-            }
+                            }
 
-            @Override
-            public void onError(Throwable e) {
-                getView().hideProgressDialog();
-                getView().showErrorNetwork(e);
-            }
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().hideProgressDialog();
+                                    getView().showErrorNetwork(e);
+                                }
+                            }
 
-            @Override
-            public void onNext(BalanceTokoCash balanceTokoCash) {
-                if (isContinuingPayment(balanceTokoCash.getAbTags())) {
-                    getInfoQrWallet(qrCode);
-                } else {
-                    getView().hideProgressDialog();
-                    getView().showErrorGetInfo(context.getString(R.string.no_available_feature));
-                }
-            }
-        });
+                            @Override
+                            public void onNext(BalanceTokoCash balanceTokoCash) {
+                                if (isContinuingPayment(balanceTokoCash.getAbTags())) {
+                                    getInfoQrWallet(qrCode);
+                                } else {
+                                    getView().hideProgressDialog();
+                                    getView().showErrorGetInfo(context.getString(R.string.no_available_feature));
+                                }
+                            }
+                        }));
     }
 
     private boolean isContinuingPayment(List<String> abTags) {
-        for (String abTag : abTags) {
-            if (abTag.equals(TAG_QR_PAYMENT)) {
-                return true;
+        if (abTags != null) {
+            for (String abTag : abTags) {
+                if (abTag.equals(TAG_QR_PAYMENT)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -222,40 +228,47 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private void getInfoQrWallet(final String qrcode) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, qrcode);
-        getInfoQrTokoCashUseCase.execute(requestParams, new Subscriber<InfoQrTokoCash>() {
-            @Override
-            public void onCompleted() {
+        requestParams.putString(IDENTIFIER, qrcode);
+        compositeSubscription.add(getView().getInfoQrTokoCash(requestParams)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<InfoQrTokoCash>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                getView().hideProgressDialog();
-                if (e instanceof WalletException) {
-                    getView().showErrorGetInfo(e.getMessage());
-                } else {
-                    getView().showErrorNetwork(e);
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().hideProgressDialog();
+                            if (e instanceof WalletException) {
+                                getView().showErrorGetInfo(e.getMessage());
+                            } else {
+                                getView().showErrorNetwork(e);
+                            }
+                        }
+                    }
 
-            @Override
-            public void onNext(InfoQrTokoCash infoQrTokoCash) {
-                getView().hideProgressDialog();
-                if (infoQrTokoCash != null) {
-                    Intent intent = NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
-                    getView().startActivityForResult(intent, getView().getRequestCodeForQrPayment());
-                } else {
-                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                }
-            }
-        });
+                    @Override
+                    public void onNext(InfoQrTokoCash infoQrTokoCash) {
+                        getView().hideProgressDialog();
+                        if (infoQrTokoCash != null) {
+                            getView().navigateToNominalActivityPage(qrcode, infoQrTokoCash);
+                        } else {
+                            getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                        }
+                    }
+                })
+        );
     }
 
     @Override
     public void destroyView() {
-        if (getBalanceTokoCashUseCase != null) getBalanceTokoCashUseCase.unsubscribe();
-        if (getInfoQrTokoCashUseCase != null) getInfoQrTokoCashUseCase.unsubscribe();
+        if (compositeSubscription != null & compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
         if (postBarCodeDataUseCase != null) postBarCodeDataUseCase.unsubscribe();
     }
 }

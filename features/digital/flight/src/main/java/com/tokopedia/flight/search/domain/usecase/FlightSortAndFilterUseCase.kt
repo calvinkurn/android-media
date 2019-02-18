@@ -31,7 +31,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
         return flightSearchRepository.getSearchFilter(sortOption, filterModel)
-                    .map { mapToFlightJourneyViewModel(it) }
+                .map { mapToFlightJourneyViewModel(it) }
     }
 
     private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>): List<FlightJourneyViewModel> {

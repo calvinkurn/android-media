@@ -1374,15 +1374,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onDropshipperValidationResult(boolean result, Object shipmentData,
                                               int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
+            String voucherCode = "";
+            if (shipmentAdapter != null && shipmentAdapter.getPromoData() != null) {
+                voucherCode = shipmentAdapter.getPromoData().getPromoCodeSafe();
+            }
             RecipientAddressModel addressModel = shipmentPresenter.getRecipientAddressModel();
             String cornerId = (addressModel != null) ? addressModel.getCornerId() : null;
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
-                    shipmentPresenter.processCheckShipmentPrepareCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment(), cornerId);
+                    shipmentPresenter.processCheckShipmentPrepareCheckout(voucherCode, isOneClickShipment(), cornerId);
                     shipmentPresenter.processSaveShipmentState();
                     break;
                 case REQUEST_CODE_COD:
-                    shipmentPresenter.proceedCodCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
+                    shipmentPresenter.proceedCodCheckout(voucherCode, isOneClickShipment());
             }
 
         } else if (shipmentData != null && !result) {
@@ -1712,7 +1716,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
             codHistory = shipmentPresenter.getCodData().getCounterCod();
         }
-
         if (shipmentDetailData != null) {
             shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                     shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,

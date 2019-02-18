@@ -520,7 +520,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
+        if (cartItemModel.isPreOrder()){
+            tvPreOrder.setText(cartItemModel.getPreOrderInfo());
+            tvPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            tvPreOrder.setVisibility(View.GONE);
+        }
         tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
         String cashback = "    " + tvCashback.getContext().getString(R.string.label_cashback) + " " +
                 cartItemModel.getCashback() + "    ";

@@ -39,8 +39,6 @@
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG"
-        tools:node="remove"/>
 
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
@@ -139,9 +137,7 @@
             android:label="@string/title_activity_settings_notification"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.journeyapps.barcodescanner.CaptureActivity"
-            android:screenOrientation="fullSensor"
-            tools:replace="screenOrientation" />
+            android:name="com.journeyapps.barcodescanner.CaptureActivity" />
         <activity
             android:name="com.tokopedia.core.MaintenancePage"
             android:label="@string/title_activity_maintenance_page"
@@ -276,22 +272,10 @@
             android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
         <service
-            android:name="com.tokopedia.core.service.DownloadService"
-            android:exported="false" />
-        <service
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
             android:exported="false" > </service>
         <service
-            android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
-            android:exported="false" />
-        <service
             android:name="com.tokopedia.core.service.DownloadService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.talkview.intentservice.TalkDetailIntentService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.talk.talkproduct.intentservice.TalkAddNewIntentService"
             android:exported="false" />
 
         <!-- ======================================================= -->

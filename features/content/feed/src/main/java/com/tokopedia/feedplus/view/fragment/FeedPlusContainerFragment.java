@@ -16,9 +16,9 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
 import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +28,12 @@ import java.util.List;
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FragmentListener, NotificationListener {
+        implements FragmentListener, NotificationListener, InboxNotificationListener {
 
     private MainToolbar mainToolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private UserSession userSession;
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
     private AbTestingOfficialStore abTestingOfficialStore;
@@ -97,11 +96,11 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        userSession = new UserSession(getContext());
         abTestingOfficialStore = new AbTestingOfficialStore(getContext());
     }
-
+    
     private void initView() {
+        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
         setAdapter();
         if (hasCategoryIdParam()) {
             goToExplore();
@@ -112,15 +111,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private void setAdapter() {
         List<FeedPlusTabItem> tabItemList = new ArrayList<>();
 
-        if (userSession.isLoggedIn()) {
-            tabItemList.add(new FeedPlusTabItem(
-                    getString(R.string.tab_my_feed),
-                    getFeedPlusFragment())
-            );
-            tabLayout.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.setVisibility(View.GONE);
-        }
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_my_feed),
+                getFeedPlusFragment())
+        );
 
         tabItemList.add(new FeedPlusTabItem(
                 getString(R.string.tab_explore),
@@ -176,5 +170,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (mainToolbar != null) {
             mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
         }
+    }
+
+    @Override
+    public void onNotifyBadgeInboxNotification(int number) {
+        mainToolbar.setInboxNumber(number);
     }
 }

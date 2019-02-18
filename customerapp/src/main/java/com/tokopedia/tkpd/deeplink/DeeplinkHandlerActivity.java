@@ -20,15 +20,17 @@ import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -36,8 +38,8 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
@@ -72,6 +74,12 @@ import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
+import com.tokopedia.linker.model.LinkerDeeplinkData;
+import com.tokopedia.linker.model.LinkerDeeplinkResult;
+import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
@@ -80,6 +88,8 @@ import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
+import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
+import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
@@ -131,10 +141,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
 
 import org.json.JSONObject;
 
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
-
-
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         ProductAddDeeplinkModule.class,
@@ -184,13 +190,15 @@ import io.branch.referral.BranchError;
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
+        PaymentSettingApplinkModule.class,
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
         SaldoDetailsAppLinkModule.class,
+        ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
 
-public class DeeplinkHandlerActivity extends AppCompatActivity {
+public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static ApplinkDelegate applinkDelegate;
 
@@ -245,9 +253,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
+                    new PaymentSettingApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
                     new SaldoDetailsAppLinkModuleLoader(),
+                    new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader()
             );
         }
@@ -258,7 +268,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initBranchSession();
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
 
         if (GlobalConfig.isCustomerApp()) {
@@ -372,18 +381,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         return destination;
     }
 
-    private void initBranchSession() {
-        Branch branch = Branch.getInstance();
-        if (branch != null) {
-            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID(this));
-            branch.initSession(new Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject referringParams, BranchError error) {
-                    if (error == null) {
-                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, DeeplinkHandlerActivity.this);
-                    }
-                }
-            }, this.getIntent().getData(), this);
-        }
+    @Override
+    public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(this, TkpdCache.CACHE_PROMO_CODE);
+        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
+                linkerDefferedDeeplinkData.getPromoCode() : "");
+    }
+
+    @Override
+    public void onError(LinkerError linkerError) {
+
     }
 }

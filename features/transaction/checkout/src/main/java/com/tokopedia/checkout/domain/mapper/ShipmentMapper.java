@@ -264,6 +264,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductIsPreorder(product.getProductIsPreorder() == 1);
                                 productResult.setPreOrderDurationDay(product.getProductPreorder() != null ?
                                         product.getProductPreorder().getDurationDay() : 0);
+                                if (product.getProductPreorder() != null
+                                        && product.getProductPreorder().getDurationText() != null) {
+                                    productResult.setProductPreOrderInfo("PO " + product.getProductPreorder().getDurationText());
+                                }
                                 productResult.setProductCashback(product.getProductCashback());
                                 productResult.setProductMinOrder(product.getProductMinOrder());
                                 productResult.setProductInvenageValue(product.getProductInvenageValue());

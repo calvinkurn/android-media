@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -59,6 +60,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
+    private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
@@ -75,6 +77,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private TextView mBtnBarCode;
     private View mViewCodeSeparator;
     private TextView mTextSwipeNote;
+    private PerformanceMonitoring fpmDetailTokopoint;
 
     @Inject
     public CouponCatalogPresenter mPresenter;
@@ -83,6 +86,12 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         Fragment fragment = new CouponCatalogFragment();
         fragment.setArguments(extras);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        fpmDetailTokopoint = PerformanceMonitoring.start(FPM_DETAIL_TOKOPOINT);
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -300,8 +309,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         switch (resCode) {
             case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                labelPositive = getString(R.string.tp_label_shopping);
-                labelNegative = getString(R.string.tp_label_later);
+                labelPositive = getString(R.string.tp_label_ok);
                 break;
             case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                 labelPositive = getString(R.string.tp_label_complete_profile);
@@ -329,13 +337,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (labelNegative != null && !labelNegative.isEmpty()) {
             adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
                 switch (resCode) {
-                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                        AnalyticsTrackerUtil.sendEvent(getContext(),
-                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                                "");
-                        break;
                     case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                         AnalyticsTrackerUtil.sendEvent(getContext(),
                                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -358,8 +359,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
-
+                    dialogInterface.cancel();
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
@@ -985,6 +985,12 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     public void onSwipeError(String errorMessage) {
         mSwipeCardView.reset();
         SnackbarManager.make(mSwipeCardView, errorMessage, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFinishRendering() {
+        if (fpmDetailTokopoint != null)
+            fpmDetailTokopoint.stopTrace();
     }
 
     public void showPinPage(String code, String pinInfo) {

@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
@@ -25,6 +26,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationC
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.util.ContainNullException
+import com.tokopedia.kotlin.util.isContainNull
 import rx.functions.Func1
 import javax.inject.Inject
 
@@ -52,6 +55,13 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val posts: MutableList<Visitable<*>> = ArrayList()
         var lastCursor = ""
         var hasNext = false
+
+        isContainNull(feedQuery) {
+            val exception = ContainNullException("Found $it in ${DynamicFeedMapper::class.java.simpleName}")
+            Crashlytics.logException(exception)
+            throw exception
+        }
+
         feedQuery?.let {
             for (feed in it.feedv2.data) {
                 val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->
@@ -201,7 +211,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body)
+        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body, template)
         val trackingPostModel = mapPostTracking(feed)
 
         if (shouldAddCardPost(feed, contentList)) {
@@ -233,7 +243,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 isGridNotEmpty
     }
 
-    private fun mapPostContent(body: Body): MutableList<BasePostViewModel> {
+    private fun mapPostContent(body: Body, template: Template): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
 
         for (media in body.media) {
@@ -241,7 +251,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
-                CONTENT_GRID -> list.add(mapPostGrid(media))
+                CONTENT_GRID -> list.add(mapPostGrid(media, template))
             }
         }
 
@@ -308,7 +318,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         )
     }
 
-    private fun mapPostGrid(media: Media): GridPostViewModel {
+    private fun mapPostGrid(media: Media, template: Template): GridPostViewModel {
         val itemList: MutableList<GridItemViewModel> = ArrayList()
 
         for (item in media.mediaItems) {
@@ -325,7 +335,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 itemList,
                 media.text,
                 media.appLink,
-                media.totalItems
+                media.totalItems,
+                template.cardpost.body.mediaGridButton
         )
     }
 

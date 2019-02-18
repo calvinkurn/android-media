@@ -58,6 +58,7 @@ import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -1045,7 +1046,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void shareProduct(ShareData data) {
+    public void shareProduct(LinkerData data) {
         interactionListener.shareProductInfo(data);
     }
 
@@ -1488,12 +1489,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onNullData() {
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.logException(new ProductNotFoundException());
-            }
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
+            String uri = pass != null ? pass.getProductUri() : "";
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.logException(new ProductNotFoundException(uri));
+            }
             if (webViewHandleListener != null) {
-                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+                webViewHandleListener.catchToWebView(uri);
             }
         } else {
             showToastMessage("Produk tidak ditemukan!");

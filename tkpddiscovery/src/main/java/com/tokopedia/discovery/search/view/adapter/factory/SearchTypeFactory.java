@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
@@ -36,6 +37,8 @@ public interface SearchTypeFactory {
     int type(AutoCompleteSearch viewModel);
 
     int type(RecentViewSearch viewModel);
+
+    int type(HotlistSearch viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

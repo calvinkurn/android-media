@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.loyaltyCommon)
 
     implementation rootProject.ext.debugToolsDependencies.chuck
