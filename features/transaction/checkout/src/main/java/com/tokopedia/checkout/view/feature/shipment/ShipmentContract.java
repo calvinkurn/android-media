@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -206,7 +207,7 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
@@ -218,7 +219,7 @@ public interface ShipmentContract {
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
 
-        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment);
+        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId);
 
         void processCheckout(String voucherCode, boolean isOneClickShipment);
 
