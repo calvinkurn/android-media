@@ -9,9 +9,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.data.model.DataDeposit
@@ -28,8 +30,11 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetPopulateDataAdU
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsPopulateTotalAdsUseCase
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -228,5 +233,33 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     fun resetDate() {
         topAdsDatePickerInteractor.resetDate()
+    }
+
+    fun getAutoTopUpStatus(rawQuery: String) {
+        val graphqlUseCase = GraphqlUseCase()
+        val shopId: String = userSession.shopId
+        val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
+        val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, variables)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {
+                view?.onErrorGetAutoTopUpStatus(e)
+            }
+
+            override fun onNext(graphqlResponse: GraphqlResponse) {
+                val data = graphqlResponse.getSuccessData<AutoTopUpData.Response>()
+
+                if (data.response == null){
+                    view?.onErrorGetAutoTopUpStatus(Exception("Tidak ada data"))
+                } else if (data.response.errors.isEmpty()){
+                    view?.onSuccessGetAutoTopUpStatus(data.response.data)
+                } else {
+                    view?.onErrorGetAutoTopUpStatus(ResponseErrorException(data.response.errors))
+                }
+            }
+        })
     }
 }
