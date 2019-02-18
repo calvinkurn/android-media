@@ -95,4 +95,12 @@
     <string name="label_credit_used">Total Terpakai</string>
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="top_ads_no_credit_history">Belum Ada Transaksi</string>
+    <string name="descr_min_autotopup">Kredit TopAds akan terisi secara otomatis dari saldo Tokopedia ketika kredit kurang dari %1$s</string>
+    <string name="topads_inactive">Tidak Aktif</string>
+    <string name="label_status">Status</string>
+    <string name="title_add_auto_topup">Nominal Top Up</string>
+    <string name="subtitle_add_auto_topup">Jumlah kredit yang ingin Anda tambahkan secara otomatis.</string>
+    <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
+    <string name="tooltip_auto_topup_descr">Kredit TopAds akan terisi secara otomatis dari Saldo Tokopedia.</string>
+    <string name="auto_topup_success_changed">Status Auto Top Up Berhasil Diperbaharui</string>
 </resources>
