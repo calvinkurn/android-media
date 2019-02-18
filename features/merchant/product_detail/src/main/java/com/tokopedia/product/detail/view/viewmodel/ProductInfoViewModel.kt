@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
@@ -72,10 +73,22 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
-            data.getSuccessData<ProductInfo.Response>().data?.let {
+
+            // for unsigned
+            val error = data.getError(ProductInfo.Response::class.java)
+            if (error == null || error.isEmpty()){
+                data.getData<ProductInfo.Response>(ProductInfo.Response::class.java).data?.let {
+                    productInfoP1.productInfo =  it
+                    productInfoP1Resp.value = Success(productInfoP1)
+                }
+            } else {
+                throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            }
+
+            /*data.getSuccessData<ProductInfo.Response>().data?.let {
                 productInfoP1.productInfo =  it
                 productInfoP1Resp.value = Success(productInfoP1)
-            }
+            }*/
 
             //if fail, will not interrupt the product info
             val variantJob = async {
