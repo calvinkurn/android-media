@@ -15,7 +15,6 @@ class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, GetExistingChatPojo::class.java,
                 routingOnNext(graphqlResponse), onErrorGetChat)
-        Log.d("tevx", graphqlResponse.toString())
     }
 
 
@@ -32,7 +31,6 @@ class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
 
     override fun onError(e: Throwable) {
         onErrorGetChat(e)
-        Log.d("tevx", e.toString())
     }
 
 }
