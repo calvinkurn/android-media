@@ -14,14 +14,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.productcard.R;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 public class ProductCardView extends BaseCustomView {
 
-    private TextView textName;
-    private TextView textPrice;
-    private ImageView imageView;
-    private View topAdsIcon;
-    private View wishlistButton;
+    public TextView textName;
+    public TextView textPrice;
+    public ImpressedImageView imageView;
+    public View topAdsIcon;
+    public View wishlistButton;
 
     public ProductCardView(@NonNull Context context) {
         super(context);

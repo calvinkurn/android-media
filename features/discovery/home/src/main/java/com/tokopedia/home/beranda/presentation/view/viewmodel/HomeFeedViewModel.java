@@ -3,8 +3,9 @@ package com.tokopedia.home.beranda.presentation.view.viewmodel;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
-public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
+public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFeedTypeFactory> {
     private static final String DATA_NONE_OTHER = "none / other";
     private static final String DATA_NAME = "name";
     private static final String DATA_ID = "id";
@@ -24,6 +25,8 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
     private String recommendationType;
     private String imageUrl;
     private String price;
+    private String clickUrl;
+    private String trackerImageUrl;
     private int priceNumber;
     private boolean isTopAds;
 
@@ -33,6 +36,8 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
                              String recommendationType,
                              String imageUrl,
                              String price,
+                             String clickUrl,
+                             String trackerImageUrl,
                              int priceNumber,
                              boolean isTopAds,
                              int position) {
@@ -42,6 +47,8 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
         this.recommendationType = recommendationType;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.clickUrl = clickUrl;
+        this.trackerImageUrl = trackerImageUrl;
         this.priceNumber = priceNumber;
         this.isTopAds = isTopAds;
         this.position = position;
@@ -69,6 +76,14 @@ public class HomeFeedViewModel implements Visitable<HomeFeedTypeFactory> {
 
     public String getCategoryBreadcrumbs() {
         return categoryBreadcrumbs;
+    }
+
+    public String getClickUrl() {
+        return clickUrl;
+    }
+
+    public String getTrackerImageUrl() {
+        return trackerImageUrl;
     }
 
     public void setCategoryBreadcrumbs(String categoryBreadcrumbs) {

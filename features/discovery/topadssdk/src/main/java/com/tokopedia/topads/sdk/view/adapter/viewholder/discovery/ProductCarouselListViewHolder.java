@@ -16,6 +16,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
@@ -25,7 +26,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarousel
  */
 
 public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCarouselListViewModel> implements
-        View.OnClickListener {
+        View.OnClickListener, PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_carousel_item;
@@ -46,7 +47,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     private int offset;
 
 
-    public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener, int clickPosition,
+    public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener,
                                          TopAdsItemImpressionListener impressionListener,
                                          boolean enableWishlist, int offset) {
         super(itemView);
@@ -115,4 +116,8 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
         }
     }
 
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
+    }
 }

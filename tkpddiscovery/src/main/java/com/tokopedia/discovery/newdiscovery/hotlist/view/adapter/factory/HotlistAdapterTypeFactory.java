@@ -25,10 +25,12 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
 
     private final HotlistListener mHotlistListener;
     private final String searchQuery;
+    private final String hotlistAlias;
 
-    public HotlistAdapterTypeFactory(HotlistListener mHotlistListener, String searchQuery) {
+    public HotlistAdapterTypeFactory(HotlistListener mHotlistListener, String searchQuery, String hotlistAlias) {
         this.mHotlistListener = mHotlistListener;
         this.searchQuery = searchQuery;
+        this.hotlistAlias = hotlistAlias;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if (type == HotlistHeaderViewHolder.LAYOUT) {
-            viewHolder = new HotlistHeaderViewHolder(parent, mHotlistListener, searchQuery);
+            viewHolder = new HotlistHeaderViewHolder(parent, mHotlistListener, searchQuery, hotlistAlias);
         } else if (type == BigGridProductViewHolder.LAYOUT) {
             viewHolder = new BigGridProductViewHolder(parent, mHotlistListener);
         } else if (type == GridProductViewHolder.LAYOUT) {
