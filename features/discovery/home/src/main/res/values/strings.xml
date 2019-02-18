@@ -42,4 +42,6 @@
     
     <string name="sc_wishlist_title">Cek Wishlist sangat mudah</string>
     <string name="sc_wishlist_desc">Produk Wishlist tersimpan di sini. Siap dipindahkan ke keranjang belanja kapan pun.</string>
+    <string name="home_feed_retry">Mohon maaf terjadi kendala, silakan coba lagi.</string>
+    <string name="home_feed_retry_button">Coba Lagi</string>
 </resources>

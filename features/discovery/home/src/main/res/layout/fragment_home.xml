@@ -25,6 +25,16 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+                <com.tokopedia.searchbar.MainToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    android:gravity="top"
+                    app:contentInsetStart="0dp"
+                    app:contentInsetLeft="0dp"
+                    app:layout_collapseMode="pin"
+                    app:screenName="/"/>
+
                 <FrameLayout
                     android:id="@+id/home_content_container"
                     android:layout_width="match_parent"
@@ -39,17 +49,6 @@
                         android:tag="home_list"/>
 
                 </FrameLayout>
-
-                <com.tokopedia.searchbar.MainToolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:gravity="top"
-                    app:contentInsetStart="0dp"
-                    app:contentInsetLeft="0dp"
-                    app:layout_anchor="@id/home_content_container"
-                    app:layout_collapseMode="pin"
-                    app:screenName="/"/>
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
