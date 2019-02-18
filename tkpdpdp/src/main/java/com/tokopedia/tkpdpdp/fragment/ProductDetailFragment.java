@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -58,6 +59,7 @@ import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -70,6 +72,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -258,7 +261,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener,
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener,
         ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
 
     private static final int FROM_COLLAPSED = 0;
@@ -982,7 +985,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         productData.setProductUrl(data.getInfo().getProductUrl());
         productData.setProductImageUrl(data.getProductImages().get(0).getImageSrc());
         productData.setShopUrl(data.getShopInfo().getShopUrl());
-        productData.setShopName(data.getShopInfo().getShopName());
+        productData.setShopName(Html.fromHtml(data.getShopInfo().getShopName()).toString());
 
         checkAndExecuteReferralAction(productData);
 
@@ -1045,7 +1048,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void shareProduct(ShareData data) {
+    public void shareProduct(LinkerData data) {
         interactionListener.shareProductInfo(data);
     }
 
@@ -2696,7 +2699,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
             topAds.setAdsItemClickListener(this);
             topAds.setAdsListener(this);
-            topAds.setAdsItemImpressionListener(this);
+            topAds.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+                @Override
+                public void onImpressionProductAdsItem(int position, Product product) {
+                    TopAdsGtmTracker.eventProductDetailProductView(getContext(), product, position);
+                }
+            });
             topAds.setConfig(config);
             topAds.loadTopAds();
         } catch (Exception e) {
@@ -2726,12 +2734,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        ProductPageTracking.eventTopAdsClicked(getActivity(), position, product);
-    }
-
-    @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
-        ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
+        TopAdsGtmTracker.eventProductDetailProductClick(getContext(), product, position);
     }
 
     @Override

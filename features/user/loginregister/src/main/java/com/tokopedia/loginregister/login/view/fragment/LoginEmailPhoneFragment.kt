@@ -53,6 +53,7 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
+import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
@@ -258,7 +259,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
                 LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
                 LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
-
+                LoginActivity.METHOD_WEBVIEW -> {
+                    if (arguments != null
+                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "").isNotBlank()
+                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "").isNotBlank()) {
+                        val name = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "")
+                        val url = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "")
+                        onLoginWebviewClick(name, url)
+                    }
+                }
                 LoginActivity.METHOD_EMAIL -> {
                     actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
                     val email = arguments!!.getString(AUTO_LOGIN_EMAIL, "")
@@ -421,6 +430,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             tv.setOnClickListener { onLoginFacebookClick() }
         } else if (discoverItemViewModel.id.equals(GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
+        } else run {
+            tv.setOnClickListener { v ->
+                onLoginWebviewClick(discoverItemViewModel.name,
+                        discoverItemViewModel.url)
+            }
         }
     }
 
@@ -443,6 +457,23 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }
+    }
+
+    private fun onLoginWebviewClick(name: String, url: String) {
+
+        actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_WEBVIEW + name
+        analytics.eventClickLoginWebview(name)
+
+        if (fragmentManager != null && activity != null) {
+            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            val newFragment = WebViewLoginFragment.createInstance(url, name)
+            newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW)
+            newFragment.show(fragmentTransaction, "dialog")
+
+            activity!!.window.setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        }
+
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
@@ -800,9 +831,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
-            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                handleGoogleSignInResult(task)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {

@@ -460,9 +460,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation (rootProject.ext.analyticsDependencies.branch) {
-        exclude module: 'answers-shim'
-    }
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
@@ -544,6 +541,8 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.features.challenges)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
@@ -551,6 +550,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackinterface)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
+    implementation project(rootProject.ext.libraries.cacheManager)
 }
 
 
