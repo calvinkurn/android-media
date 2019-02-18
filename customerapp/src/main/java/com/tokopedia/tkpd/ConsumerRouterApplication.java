@@ -46,6 +46,7 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
@@ -99,6 +100,8 @@ import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.common.TokoPointDrawerData;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
@@ -123,6 +126,22 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.util.DataMapper;
+import com.tokopedia.gallery.ImageReviewGalleryActivity;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.nps.NpsRouter;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -142,7 +161,6 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -196,6 +214,7 @@ import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
+import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
@@ -271,9 +290,6 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifcenter.NotifCenterRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.NpsRouter;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
@@ -312,8 +328,6 @@ import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.referral.ReferralAction;
 import com.tokopedia.referral.ReferralRouter;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
@@ -400,6 +414,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -434,6 +449,7 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
@@ -456,6 +472,7 @@ import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
+
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -540,6 +557,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
         LoginPhoneNumberRouter,
+        LinkerRouter,
         TopAdsDashboardRouter,
         NpsRouter,
         DigitalRouter,
@@ -552,6 +570,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ChatbotRouter,
         TrackingOptimizerRouter,
         LoginRegisterPhoneRouter{
+
+
+    private final static int IRIS_ROW_LIMIT = 50;
+    private final static long IRIS_TIME_MINUTES = 15;
 
     private static final String EXTRA = "extra";
 
@@ -578,6 +600,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private UserSession userSession;
     private AnalyticTracker analyticTracker;
 
+    private Iris mIris;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -588,10 +612,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         initCMPushNotification();
+        initIris();
     }
 
     private void initDaggerInjector() {
         getReactNativeComponent().inject(this);
+    }
+
+    private void initIris() {
+        mIris = Iris.Companion.init(this);
+
+        boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
+
+        mIris.setService(new Configuration(
+                IRIS_ROW_LIMIT,
+                IRIS_TIME_MINUTES,
+                irisEnable
+        ));
+    }
+
+    @Override
+    public Iris getIris() {
+        return mIris;
     }
 
     private FlightConsumerComponent getFlightConsumerComponent() {
@@ -758,7 +800,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToProductDetail(Context context, ShareData shareData) {
+    public void goToProductDetail(Context context, LinkerData shareData) {
         Intent intent = ProductInfoActivity.createInstance(context, shareData);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);
@@ -1301,7 +1343,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getBranchAutoApply(Activity activity) {
-        return BranchSdkUtils.getAutoApplyCouponIfAvailable(activity);
+        return null;
     }
 
     @Override
@@ -1439,7 +1481,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
     }
 
     @Override
@@ -1447,7 +1489,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                      String customSubject, String customMessage, String source, String avatar) {
 
         return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
 
     }
 
@@ -1464,7 +1506,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject,
+                source, "");
     }
 
     @Override
@@ -2206,7 +2249,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
-        return BranchSdkUtils.getAutoApplyCouponIfAvailable(getAppContext());
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(context, TkpdCache.CACHE_PROMO_CODE);
+        return persistentCacheManager.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
     }
 
     @Override
@@ -2313,8 +2357,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.SHOP_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
                 .setTextContent(shareLabel)
                 .setUri(shopUrl)
@@ -2526,22 +2570,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void generateBranchLink(String channelId, String title, String contentMessage,
                                    String imgUrl, String shareUrl,
                                    Activity activity, final ShareListener listener) {
-        ShareData shareData = ShareData.Builder.aShareData()
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setId(channelId)
                 .setName(title)
                 .setTextContent(title)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
-                .setType(ShareData.GROUPCHAT_TYPE)
+                .setType(LinkerData.GROUPCHAT_TYPE)
                 .build();
 
-        BranchSdkUtils.generateBranchLink(shareData, activity, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                listener.onGenerateLink(shareContents, shareUri);
-            }
-        });
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        listener.onGenerateLink(linkerShareData.getShareContents(), linkerShareData.getShareUri());
+                    }
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }));
     }
 
     @Override
@@ -2555,7 +2605,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
                                String shareUrl, String userId, String sharing) {
-        ShareData shareData = ShareData.Builder.aShareData()
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setId(channelId)
                 .setName(title)
                 .setTextContent(contentMessage)
@@ -2566,7 +2616,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(shareUrl)
                 .setSource(userId) // just using existing variable
                 .setPrice(sharing) // here too
-                .setType(ShareData.GROUPCHAT_TYPE)
+                .setType(LinkerData.GROUPCHAT_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();
     }
@@ -2574,13 +2624,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void shareFeed(Activity activity, String detailId, String url, String title, String
             imageUrl, String description) {
-        ShareData shareData = ShareData.Builder.aShareData()
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setId(detailId)
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
                 .setUri(url)
-                .setType(ShareData.FEED_TYPE)
+                .setType(LinkerData.FEED_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();
     }
@@ -2610,8 +2660,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sharePromoLoyalty(Activity activity, PromoData promoData) {
-        ShareData shareData = ShareData.Builder.aShareData()
+    public void sharePromoLoyalty(Activity activity,PromoData promoData) {
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(ShareData.PROMO_TYPE)
                 .setId(promoData.getSlug())
                 .setName(promoData.getTitle())
@@ -2623,24 +2673,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareDeal(Context context, String uri, String name, String imageUrl) {
-        ShareData shareData = ShareData.Builder.aShareData()
+    public void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl) {
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
                 .setName(name)
                 .setUri(uri)
+                .setDesktopUrl(desktopUrl)
                 .setImgUri(imageUrl)
                 .build();
-        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                share.setType("text/plain");
-                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-                Intent intent = Intent.createChooser(share, getString(R.string.share_link));
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                context.startActivity(intent);
-            }
-        });
+
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
+                        Intent intent = Intent.createChooser(share, getString(R.string.share_link));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        context.startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }));
+
     }
 
     @Override
@@ -3263,6 +3323,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             invalidateCategoryMenuData();
             onLogout(getApplicationComponent());
+            mIris.setUserId("");
 
             Intent intent = getHomeIntent(activity);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -3283,8 +3344,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_desc, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.INDI_CHALLENGE_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.INDI_CHALLENGE_TYPE)
                 .setName(title)
                 .setUri(url)
                 .setSource(channel)
@@ -3295,13 +3356,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setDeepLink(deepLink)
                 .build();
 
-        BranchSdkUtils.generateBranchLink(shareData, context, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        listener.onGenerateLink(linkerShareData.getShareContents(), linkerShareData.getShareUri());
+                    }
 
-                listener.onGenerateLink(shareContents, branchUrl);
-            }
-        });
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }));
     }
 
     @Override
@@ -3416,7 +3482,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public String getDefferedDeeplinkPathIfExists() {
-        return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
+        String dd4Seesion = AppsflyerContainer.getDefferedDeeplinkPathIfExists();
+        return dd4Seesion;
     }
 
     @Override
@@ -3430,8 +3497,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingUtils.eventPushUserID(getAppContext(), getTkpdCoreRouter().legacySessionHandler().getGTMLoginID());
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
-        BranchSdkUtils.sendIdentityEvent(userId);
-        BranchSdkUtils.sendLoginEvent(applicationContext);
+        UserSessionInterface userSession = new com.tokopedia.user.session.UserSession(this);
+
+        if(userSession.isLoggedIn()) {
+            UserData userData = new UserData();
+            userData.setUserId(userSession.getUserId());
+            userData.setEmail(userSession.getEmail());
+            userData.setPhoneNumber(userSession.getPhoneNumber());
+
+            //Identity Event
+            LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData));
+
+            //Login Event
+            LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData));
+        }
+        mIris.setUserId(userId);
+        mIris.setDeviceId(getSession().getDeviceId());
     }
 
     @Override
@@ -3464,8 +3547,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendBranchRegisterEvent(String email, String phone) {
-        BranchSdkUtils.sendRegisterEvent(getAppContext(), email, phone);
-    }
+        UserData userData = new UserData();
+        userData.setEmail(email);
+        userData.setPhoneNumber(phone);
+        LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData));
+        }
 
     /**
      * App Rating - Nps
@@ -3637,7 +3724,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setBranchReferralCode(String referralCode){
-        BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = referralCode;
+        PersistentCacheManager persistentCacheManager =
+                new PersistentCacheManager(context, TkpdCache.CACHE_PROMO_CODE);
+        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, referralCode);
     }
 
     @Override
@@ -3669,8 +3758,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    private ShareData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
-        ShareData shareData = ShareData.Builder.aShareData()
+    private LinkerData createShareDataFromHashMap(HashMap<String, String> keyValueMap){
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
                 .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
                 .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))

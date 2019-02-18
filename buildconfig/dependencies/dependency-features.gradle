@@ -37,13 +37,12 @@ ext {
     tkpdPaymentManagementSystem = '2.22'
     tkpdPhoneVerificationVersion = '2.22'
     tkpdProductVersion = '2.22'
+    tkpdPromoApplyVersion = '1.01'
     tkpdProfileVersion = '2.22'
     tkpdReactNativeVersion = '2.22'
     tkpdReputationVersion = '2.22'
-    tkpdRideVersion = '1.+'
     tkpdPdpVersion = '2.22'
     tkpdRecentviewVersion = '2.22'
-    tkpdRideVersion = '2.22'
     tkpdSellerVersion = '2.22'
     tkpdSessionVersion = '2.22'
     tkpdShopVersion = '2.22'
@@ -105,6 +104,7 @@ ext {
             challenges              : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
             changePhoneNumber       : "com.tokopedia.changephonenumber:changephonenumber:${tkpdChangePhoneNumberVersion}",
             core                    : "com.tokopedia.core:core:${tkpdCoreVersion}",
+            common_promo   : "com.tokopedia.common_promo:common_promo:${tkpdPromoApplyVersion}",
             digital                 : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             digitalDeals            : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             discovery               : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
@@ -145,7 +145,6 @@ ext {
             referral                : "com.tokopedia.referral:referral:${tkpdReferralVersion}",
             reputation              : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon        : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
-            ride                    : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             seller                  : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
             session                 : "com.tokopedia.session:session:${tkpdSessionVersion}",
             shopCommon              : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
@@ -254,6 +253,7 @@ ext {
             productManageItem             : ":features:merchant:product_manage_item",
             productManageList             : ":features:merchant:product_manage_list",
             productShare                  : ":features:merchant:product_share",
+            common_promo         : ":features:im:common_promo",
             referral                      : ":features:im:referral",
 
             reputation                    : ":features:merchant:reputation",

@@ -217,7 +217,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         if (id == R.id.action_menu_share) {
             Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getSeoUrl(),
                     getView().getActivity(), dealsDetailsResponse.getDisplayName(),
-                    dealsDetailsResponse.getImageWeb());
+                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getDesktopUrl());
         } else {
             getView().getActivity().onBackPressed();
         }

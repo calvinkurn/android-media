@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -23,8 +24,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
@@ -604,13 +605,16 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
     @Override
     public void autoApplyCouponIfAvailable(String digitalCategoryId) {
-        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getActivity());
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(getView().getActivity(), TkpdCache.CACHE_PROMO_CODE);
+        String savedCoupon = persistentCacheManager.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucher(savedCoupon, digitalCategoryId);
         }
     }
 
     private void removeBranchPromoIfNeeded() {
-        BranchSdkUtils.removeCouponCode(getView().getActivity());
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(getView().getActivity(),
+                TkpdCache.CACHE_PROMO_CODE);
+        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
     }
 }

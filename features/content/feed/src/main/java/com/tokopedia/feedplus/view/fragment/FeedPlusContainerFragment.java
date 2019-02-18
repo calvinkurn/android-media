@@ -16,6 +16,7 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
 import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
 
@@ -27,7 +28,7 @@ import java.util.List;
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FragmentListener, NotificationListener {
+        implements FragmentListener, NotificationListener, InboxNotificationListener {
 
     private MainToolbar mainToolbar;
     private TabLayout tabLayout;
@@ -99,6 +100,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
     
     private void initView() {
+        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
         setAdapter();
         if (hasCategoryIdParam()) {
             goToExplore();
@@ -168,5 +170,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         if (mainToolbar != null) {
             mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
         }
+    }
+
+    @Override
+    public void onNotifyBadgeInboxNotification(int number) {
+        mainToolbar.setInboxNumber(number);
     }
 }
