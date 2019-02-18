@@ -58,7 +58,7 @@ data class Basic(
 
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
+        val price: Float = 0f,
 
         @SerializedName("priceCurrency")
         @Expose
@@ -82,7 +82,7 @@ data class Basic(
 
         @SerializedName("weight")
         @Expose
-        val weight: Int = 0,
+        val weight: Float = 0f,
 
         @SerializedName("weightUnit")
         @Expose

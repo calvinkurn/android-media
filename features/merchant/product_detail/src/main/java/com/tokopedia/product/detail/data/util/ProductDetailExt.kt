@@ -19,4 +19,4 @@ val TxStats.successRate: Float
             else 100f * txSuccess.toFloat()/(txSuccess + txReject).toFloat()
 
 val Basic.weightInKg: Float
-    get() = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat()/ KILO
+    get() = if (weightUnit.toLowerCase() == KG) weight else weight/ KILO
