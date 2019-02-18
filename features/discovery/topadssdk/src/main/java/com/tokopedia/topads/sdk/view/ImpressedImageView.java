@@ -19,6 +19,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+
 import android.view.ViewTreeObserver;
 
 /**
@@ -50,19 +51,23 @@ public class ImpressedImageView extends AppCompatImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        invoke();
+        if (holder != null && !holder.isInvoke()) {
+            invoke();
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        revoke();
+        if (holder != null && holder.isInvoke()) {
+            revoke();
+        }
     }
 
     private void init(Context context, AttributeSet attrs) {
         path = new Path();
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImpressedImageView, 0, 0);
-        try{
+        try {
             radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_corner_radius, 8.0f);
         } finally {
             styledAttributes.recycle();
@@ -90,23 +95,23 @@ public class ImpressedImageView extends AppCompatImageView {
         return scrollChangedListener;
     }
 
-    private void revoke(){
+    private void revoke() {
         getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
     }
 
-    private void invoke(){
+    private void invoke() {
         getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 setScrollChangedListener(this);
                 if (isVisible(getView())) {
                     if (holder != null && !holder.isInvoke()) {
-                        if(hintListener!=null){
+                        if (hintListener != null) {
                             hintListener.onViewHint();
                         }
-                        if(holder instanceof ProductImage){
+                        if (holder instanceof ProductImage) {
                             new ImpresionTask().execute(((ProductImage) holder).getM_url());
-                        } else if(holder instanceof CpmImage){
+                        } else if (holder instanceof CpmImage) {
                             new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
                         }
                         holder.invoke();
@@ -148,7 +153,7 @@ public class ImpressedImageView extends AppCompatImageView {
     }
 
     private int getOffsetHeight() {
-        if(offset > 0){
+        if (offset > 0) {
             return getScreenHeight() - offset;
         } else {
             return getScreenHeight() - getResources().getDimensionPixelOffset(R.dimen.dp_45);
@@ -165,10 +170,11 @@ public class ImpressedImageView extends AppCompatImageView {
 
     /**
      * Use this for non topads
+     *
      * @param holder
      * @param hintListener
      */
-    public void setViewHintListener(ImpressHolder holder, ViewHintListener hintListener){
+    public void setViewHintListener(ImpressHolder holder, ViewHintListener hintListener) {
         this.holder = holder;
         this.hintListener = hintListener;
     }
@@ -183,6 +189,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
     /**
      * Use this for topads product image
+     *
      * @param image
      */
     public void setImage(ProductImage image) {
@@ -192,11 +199,12 @@ public class ImpressedImageView extends AppCompatImageView {
 
     /**
      * Use this for topads shop product image
+     *
      * @param image
      */
     public void setImage(ImageProduct image) {
         this.holder = image;
-        if(image.getImageUrl().isEmpty()){
+        if (image.getImageUrl().isEmpty()) {
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
@@ -207,11 +215,12 @@ public class ImpressedImageView extends AppCompatImageView {
 
     /**
      * Use this for topads headline shop
+     *
      * @param image
      */
     public void setImage(CpmImage image) {
         this.holder = image;
-        if(image.getFullEcs().isEmpty()){
+        if (image.getFullEcs().isEmpty()) {
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
