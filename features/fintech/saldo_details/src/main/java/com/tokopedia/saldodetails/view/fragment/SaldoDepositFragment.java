@@ -1,11 +1,13 @@
 package com.tokopedia.saldodetails.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
@@ -32,7 +35,15 @@ import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -53,23 +64,15 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Inject
     UserSession userSession;
     TextView totalBalanceTV;
-    /*RelativeLayout startDateLayout;
-    RelativeLayout endDateLayout;
-    TextView startDateTV;
-    TextView endDateTV;*/
     TextView drawButton;
     RelativeLayout mainBalanceRL;
 
-    //    RecyclerView recyclerView;
     RelativeLayout topSlideOffBar;
     RelativeLayout holdBalanceLayout;
     TextView amountBeingReviewed;
-    //    TextView depositSummaryTitleTV;
     View saldoFrameLayout;
     SaldoDatePickerUtil datePicker;
-    //    SaldoDepositAdapter adapter;
     LinearLayoutManager linearLayoutManager;
-    //    Snackbar snackbar;
     LinearLayout tickerMessageRL;
     TextView tickeRMessageTV;
     ImageView tickerMessageCloseButton;
@@ -81,24 +84,21 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private TextView sellerBalanceTV;
     private Context context;
     private TextView checkBalanceStatus;
-    //    private boolean isSeller;
     private TextView totalBalanceTitle;
     private View totalBalanceInfo;
     private View buyerBalanceInfoIcon;
     private View sellerBalanceInfoIcon;
     private View saldoBalanceSeparator;
     private boolean isSellerEnabled;
-    private boolean isSeller;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
     private float sellerSaldoBalance;
     private float buyerSaldoBalance;
     private float totalSaldoBalance;
 
-    public static SaldoDepositFragment createInstance(/*boolean isSeller,*/ boolean isSellerEnabled) {
+    public static SaldoDepositFragment createInstance(boolean isSellerEnabled) {
         SaldoDepositFragment saldoDepositFragment = new SaldoDepositFragment();
         Bundle bundle = new Bundle();
-//        bundle.putBoolean(IS_USER_SELLER, isSeller);
         bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled);
         saldoDepositFragment.setArguments(bundle);
         return saldoDepositFragment;
@@ -140,17 +140,63 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         initialVar();
         initListeners();
+        startShowCase();
     }
 
-    /*@Override
-    public void loadData(int page) {
+    private void startShowCase() {
+        new Handler().postDelayed(this::setShowCase, SHOW_CASE_DELAY);
+    }
 
-    }*/
+    private void setShowCase() {
+        ArrayList<ShowCaseObject> list = buildShowCase();
+        if (context == null || list == null) {
+            return;
+        }
+        if (!ShowCasePreference.hasShown(context, SaldoDepositFragment.class.getName())) {
+            createShowCase().show((Activity) context,
+                    SaldoDepositFragment.class.getName(),
+                    list);
+        }
+    }
 
-   /* @Override
-    protected SaldoDetailTransactionFactory getAdapterTypeFactory() {
-        return new SaldoDetailTransactionFactory(this);
-    }*/
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.intro_seller_saldo_finish_string)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
+
+    private ArrayList<ShowCaseObject> buildShowCase() {
+
+        ArrayList<ShowCaseObject> list = new ArrayList<>();
+        if (isSellerEnabled && getActivity() instanceof SaldoDepositActivity) {
+            list.add(new ShowCaseObject(
+                    buyerSaldoBalanceRL,
+                    getString(R.string.saldo_total_balance_buyer),
+                    getString(R.string.saldo_balance_buyer_desc),
+                    ShowCaseContentPosition.BOTTOM,
+                    Color.WHITE));
+
+            list.add(new ShowCaseObject(
+                    sellerSaldoBalanceRL,
+                    getString(R.string.saldo_total_balance_seller),
+                    getString(R.string.saldo_intro_description_seller),
+                    ShowCaseContentPosition.BOTTOM,
+                    Color.WHITE));
+
+            return list;
+
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -158,20 +204,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         this.context = context;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        /*if (isVisibleToUser) {
-            new Handler().postDelayed(this::setShowCase, SHOW_CASE_DELAY);
-        }*/
-    }
-
-
     @SuppressLint("Range")
     private void initViews(View view) {
 
         if (getArguments() != null) {
-//            isSeller = getArguments().getBoolean(IS_USER_SELLER);
             isSellerEnabled = getArguments().getBoolean(IS_SELLER_ENABLED);
         }
         totalBalanceTitle = view.findViewById(R.id.saldo_deposit_text);
@@ -179,12 +215,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         buyerBalanceInfoIcon = view.findViewById(R.id.saldo_buyer_deposit_text_info);
         sellerBalanceInfoIcon = view.findViewById(R.id.saldo_seller_deposit_text_info);
-
         totalBalanceTV = view.findViewById(R.id.total_balance);
-        /*startDateLayout = view.findViewById(R.id.start_date_layout);
-        endDateLayout = view.findViewById(R.id.end_date_layout);
-        startDateTV = view.findViewById(R.id.start_date_tv);
-        endDateTV = view.findViewById(R.id.end_date_tv);*/
         drawButton = view.findViewById(R.id.withdraw_button);
         topSlideOffBar = view.findViewById(R.id.deposit_header);
         holdBalanceLayout = view.findViewById(R.id.hold_balance_layout);
@@ -195,9 +226,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
         tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
         mainBalanceRL = view.findViewById(R.id.main_balance_rl);
-//        depositSummaryTitleTV = view.findViewById(R.id.deposit_summary_title_tv);
-//        dateSelectorLL = view.findViewById(R.id.date_selector_ll);
-
         buyerBalanceTV = view.findViewById(R.id.buyer_balance);
         sellerBalanceTV = view.findViewById(R.id.seller_balance);
         buyerSaldoBalanceRL = view.findViewById(R.id.saldo_buyer_balance_rl);
@@ -206,12 +234,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(R.id.saldo_history_layout);
     }
-
-    /*@Override
-    public RecyclerView getRecyclerView(View view) {
-        this.recyclerView = super.getRecyclerView(view);
-        return super.getRecyclerView(view);
-    }*/
 
     private void initListeners() {
         drawButton.setOnClickListener(v -> {
@@ -232,7 +254,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         checkBalanceStatus.setOnClickListener(v -> {
             try {
-                Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
+                Intent intent = ((SaldoDetailsRouter) Objects.requireNonNull(getActivity()).getApplication())
                         .getInboxTicketCallingIntent(context);
                 startActivity(intent);
             } catch (Exception e) {
@@ -241,13 +263,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         });
 
         tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));
-        /*startDateLayout.setOnClickListener(onStartDateClicked());
-        endDateLayout.setOnClickListener(onEndDateClicked());*/
-//        recyclerView.addOnScrollListener(onScroll());
     }
 
     private void showMustVerify() {
-        new android.support.v7.app.AlertDialog.Builder(getActivity())
+        new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
                 .setMessage(getActivity().getString(R.string.sp_alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
@@ -262,13 +281,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void goToWithdrawActivity() {
-        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
+        Intent intent = ((SaldoDetailsRouter) Objects.requireNonNull(getActivity()).getApplication()).getWithdrawIntent(context, isSellerEnabled());
         saldoDetailsPresenter.onDrawClicked(intent);
     }
 
     private void showSaldoWarningDialog() {
 
-        new android.support.v7.app.AlertDialog.Builder(getActivity())
+        new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(R.string.sp_saldo_withdraw_warning_title))
                 .setMessage(getActivity().getString(R.string.sp_saldo_withdraw_warning_desc))
                 .setPositiveButton(
@@ -279,7 +298,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     protected void initialVar() {
-        isSeller = userSession.hasShop() || userSession.isAffiliate();//!TextUtils.isEmpty(userSession.getShopId());
         saldoDetailsPresenter.setSeller(isSellerEnabled);
         if (isSellerEnabled) {
             totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
@@ -347,7 +365,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     protected void initInjector() {
 
         SaldoDetailsComponent saldoDetailsComponent =
-                SaldoDetailsComponentInstance.getComponent(getActivity().getApplication());
+                SaldoDetailsComponentInstance.getComponent(Objects.requireNonNull(getActivity()).getApplication());
         saldoDetailsComponent.inject(this);
         saldoDetailsPresenter.attachView(this);
     }

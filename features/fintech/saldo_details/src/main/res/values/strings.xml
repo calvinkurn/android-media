@@ -56,8 +56,6 @@
     <string name="total_saldo_text">Total Saldo Aktif</string>
     <string name="saldo_balance_buyer_desc">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
     <string name="saldo_balance_seller_desc">Berisi dana hasil penjualan. Saldo Penghasilan tidak dapat digunakan untuk pembelanjaan. Tetapi dapat digunakan untuk berlangganan Power Merchant dan Kredit TopAds.</string>
-    <string name="saldo_detail_intro_desc1">Berisi dana hasil penjualan dan tidak dapat digunakan untuk pembayaran. Juga berfungsi sebagai sumber dana untuk pemotongan  biaya kurir, komisi affiliate, dan transaksi lainnya.</string>
-    <string name="saldo_detail_intro_desc2">Anda dapat mencairkan dana dari Saldo Toko ke rekening bank.</string>
     <string name="deposit_summary_title_seller">Riwayat Saldo Penghasilan</string>
     <string name="saldo_detail_intro_desc3">Pantau riwayat mutasi dana  dalam periode yang  ditentukan.</string>
     <string name="deposit_summary_title_buyer">Riwayat Saldo Refund</string>
