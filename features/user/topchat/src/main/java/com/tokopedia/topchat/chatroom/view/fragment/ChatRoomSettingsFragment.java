@@ -70,7 +70,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
 
         if (getArguments() != null) {
             messageId = getArguments().getString(ApplinkConst.Chat.MESSAGE_ID);
-            shopId = getArguments().getString(ApplinkConst.Chat.SHOP_ID);
+            shopId = String.valueOf(getArguments().getInt(ApplinkConst.Chat.SHOP_ID, 0));
             this.chatSettingsResponse = getArguments().getParcelable(InboxChatConstant.CHATRESPONSEMODEL);
             isChatEnabled = getArguments().getBoolean(InboxChatConstant.CHAT_ENABLED, true);
             chatRole = getArguments().getString(InboxChatConstant.CHAT_ROLE);
