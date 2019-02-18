@@ -19,7 +19,6 @@ buildscript {
 dependencies {
     //google login
     implementation rootProject.ext.playServicesDependencies.auth
-    implementation rootProject.ext.playServicesDependencies.plus
 
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
