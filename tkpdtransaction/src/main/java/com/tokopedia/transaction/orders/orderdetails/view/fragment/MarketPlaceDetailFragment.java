@@ -194,7 +194,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
         refreshHandler.startRefresh();
         refreshHandler.setPullEnabled(true);
-//        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 
     @Override
@@ -225,7 +224,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
         shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), android.graphics.Color.parseColor(conditionalInfo.color().border()));
         conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
 
     }
