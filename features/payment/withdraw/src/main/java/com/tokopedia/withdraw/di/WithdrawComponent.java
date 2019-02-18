@@ -23,11 +23,6 @@ public interface WithdrawComponent {
     @ApplicationContext
     Context getApplicationContext();
 
-   /* Retrofit.Builder retrofitBuilder();
-
-    @WithdrawQualifier
-    OkHttpClient provideOkHttpClient();*/
-
     void inject(WithdrawFragment fragment);
 
     void inject(WithdrawActivity withdrawActivity);

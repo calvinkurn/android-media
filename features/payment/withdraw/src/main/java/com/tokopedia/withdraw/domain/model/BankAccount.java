@@ -1,5 +1,5 @@
 
-package com.tokopedia.withdraw.view.model;
+package com.tokopedia.withdraw.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

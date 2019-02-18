@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.graphql.data.model.CacheType;
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -18,8 +16,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-import static com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.cacheDuration;
 
 public class GetDepositSummaryUseCase {
 
@@ -57,21 +53,15 @@ public class GetDepositSummaryUseCase {
             query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_details_for_all);
 
             graphqlRequest = new GraphqlRequest(
-                    query,
-                    GqlAllDepositSummaryResponse.class,
+                    query, GqlAllDepositSummaryResponse.class,
                     variables, GET_SUMMARY_DEPOSIT);
         } else {
             query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_details_for_buyer);
             graphqlRequest = new GraphqlRequest(
-                    query,
-                    GqlBuyerDepositSummaryResponse.class,
+                    query, GqlBuyerDepositSummaryResponse.class,
                     variables, GET_SUMMARY_DEPOSIT);
         }
 
-        /*GraphqlCacheStrategy cacheStrategy =
-                new GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(cacheDuration).setSessionIncluded(true).build();
-        graphqlUseCase.setCacheStrategy(cacheStrategy);*/
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
     }

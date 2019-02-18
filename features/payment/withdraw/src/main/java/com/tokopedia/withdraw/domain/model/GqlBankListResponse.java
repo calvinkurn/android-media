@@ -2,7 +2,6 @@ package com.tokopedia.withdraw.domain.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.withdraw.view.model.BankAccount;
 
 import java.util.List;
 

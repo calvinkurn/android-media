@@ -48,21 +48,12 @@ public class GetAllTransactionUsecase {
     public void execute(Subscriber<GraphqlResponse> subscriber) {
         graphqlUseCase.clearRequest();
         setRequesting(true);
-
-        String query;
         GraphqlRequest graphqlRequest;
+        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_all_transaction);
 
-        query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_all_transaction);
-
-        graphqlRequest = new GraphqlRequest(
-                query,
-                GqlCompleteTransactionResponse.class,
+        graphqlRequest = new GraphqlRequest(query, GqlCompleteTransactionResponse.class,
                 variables, GET_SUMMARY_DEPOSIT);
 
-        /*GraphqlCacheStrategy cacheStrategy =
-                new GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(cacheDuration).setSessionIncluded(true).build();
-        graphqlUseCase.setCacheStrategy(cacheStrategy);*/
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
     }

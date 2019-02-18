@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
-import com.tokopedia.withdraw.view.model.BankAccount;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import java.util.List;
  */
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
+    private static final String DEFAULT_BANK_ID = "1";
     WithdrawAnalytics analytics;
 
 
@@ -210,10 +211,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         return listBank.get(selectedItem);
     }
 
-    public void setDefault(int defaultBank) {
+    public void setDefault() {
 
         for (int i = 0; i < listBank.size(); i++) {
-            if ("1".equalsIgnoreCase(listBank.get(i).getType())) {
+            if (DEFAULT_BANK_ID.equalsIgnoreCase(listBank.get(i).getType())) {
                 selectedItem = i;
                 break;
             }

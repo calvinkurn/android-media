@@ -47,7 +47,7 @@ public class GetTickerWithdrawalMessageUseCase {
                 usableRequestMap);
 
         GraphqlCacheStrategy cacheStrategy =
-                new GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                new GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                         .setExpiryTime(cacheDuration).setSessionIncluded(true).build();
 
         graphqlUseCase.setCacheStrategy(cacheStrategy);

@@ -7,7 +7,7 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.domain.model.GqlGetBankDataResponse;
 import com.tokopedia.withdraw.domain.usecase.GqlGetBankDataUseCase;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
-import com.tokopedia.withdraw.view.model.BankAccount;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 
 import javax.inject.Inject;
 
@@ -21,12 +21,9 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
         implements WithdrawContract.Presenter {
 
     private GqlGetBankDataUseCase gqlGetBankDataUseCase;
-    //    private DepositUseCase depositUseCase;
 
     @Inject
-    public WithdrawPresenter(/*DepositUseCase depositUseCase,*/ GqlGetBankDataUseCase gqlGetBankDataUseCase) {
-//        this.depositUseCase = depositUseCase;
-//        this.userSession = userSession;
+    public WithdrawPresenter(GqlGetBankDataUseCase gqlGetBankDataUseCase) {
         this.gqlGetBankDataUseCase = gqlGetBankDataUseCase;
     }
 
@@ -50,7 +47,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
             @Override
             public void onError(Throwable throwable) {
                 getView().hideLoading();
-                getView().showError(throwable.getMessage().toString());
+                getView().showError(throwable.getMessage());
             }
 
             @Override
@@ -59,34 +56,13 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
                 GqlGetBankDataResponse gqlGetBankDataResponse = graphqlResponse.getData(GqlGetBankDataResponse.class);
 
                 if (gqlGetBankDataResponse != null) {
-                    getView().onSuccessGetWithdrawForm(gqlGetBankDataResponse.getBankAccount().getBankAccountList()
-                            , 1 /*gqlGetBankDataResponse.getDefaultBank()*/);
+                    getView().onSuccessGetWithdrawForm(gqlGetBankDataResponse.getBankAccount().getBankAccountList());
                 }
                 getView().hideLoading();
 
             }
         });
 
-        /*depositUseCase.execute(DepositUseCase.createParams(userSession), new Subscriber<InfoDepositDomainModel>() {
-            @Override
-            public void onCompleted() {
-                getView().hideLoading();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                getView().hideLoading();
-                getView().showError(throwable.getMessage().toString());
-            }
-
-            @Override
-            public void onNext(InfoDepositDomainModel infoDepositDomainModel) {
-                getView().hideLoading();
-                getView().onSuccessGetWithdrawForm(infoDepositDomainModel.getBankAccount()
-                        , infoDepositDomainModel.getDefaultBank(), infoDepositDomainModel.getVerifiedAccount());
-
-            }
-        });*/
     }
 
     @Override
@@ -122,7 +98,6 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
         if (gqlGetBankDataUseCase != null) {
             gqlGetBankDataUseCase.unsubscribe();
         }
-//        depositUseCase.unsubscribe();
         super.detachView();
     }
 

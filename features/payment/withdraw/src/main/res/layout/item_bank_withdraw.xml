@@ -6,9 +6,7 @@
     android:layout_marginTop="@dimen/dp_8"
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_4"
-    android:paddingLeft="@dimen/dp_4">
+    android:paddingBottom="@dimen/dp_8">
 
     <ImageView
         android:id="@+id/radio"

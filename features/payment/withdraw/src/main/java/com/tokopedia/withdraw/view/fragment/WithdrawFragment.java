@@ -58,11 +58,11 @@ import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
 import com.tokopedia.withdraw.view.adapter.BankAdapter;
 import com.tokopedia.withdraw.view.decoration.SpaceItemDecoration;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
-import com.tokopedia.withdraw.view.model.BankAccount;
 import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 
 import java.io.IOException;
@@ -70,6 +70,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -101,7 +102,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     //    private EditText totalBalance;
     private EditText totalWithdrawal;
     private View loadingLayout;
-    private CurrencyTextWatcher currencyTextWatcher;
 
     //    public static final String BUNDLE_TOTAL_BALANCE = "total_balance";
 //    private static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE = "seller_total_balance";
@@ -112,8 +112,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 //    private static final String DEFAULT_TOTAL_BALANCE = "Rp.0,-";
     //    private View info;
     private List<BankAccount> listBank;
-    private BottomSheetDialog confirmPassword;
-    private Observable<String> nominalObservable;
     private List<String> bankWithMinimumWithdrawal;
 
     private TextView withdrawBuyerSaldoTV;
@@ -205,7 +203,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             }
         });
 
-        confirmPassword = new BottomSheetDialog(getActivity());
+        BottomSheetDialog confirmPassword = new BottomSheetDialog(getActivity());
         View confirmPasswordView = getLayoutInflater().inflate(R.layout.layout_confirm_password, null);
         confirmPassword.setContentView(confirmPasswordView);
 
@@ -326,7 +324,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         });
 
-        currencyTextWatcher = new CurrencyTextWatcher(totalWithdrawal, CurrencyEnum.RPwithSpace);
+        CurrencyTextWatcher currencyTextWatcher = new CurrencyTextWatcher(totalWithdrawal, CurrencyEnum.RPwithSpace);
         currencyTextWatcher.setDefaultValue("");
 
         if (currencyTextWatcher != null) {
@@ -349,7 +347,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             }
         });
 
-        nominalObservable = EventsWatcher.text(totalWithdrawal);
+        Observable<String> nominalObservable = EventsWatcher.text(totalWithdrawal);
 
         Observable<Boolean> nominalMapper = nominalObservable.map(new Func1<String, Boolean>() {
             @Override
@@ -588,9 +586,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
-    public void onSuccessGetWithdrawForm(List<BankAccount> bankAccount, int defaultBank) {
+    public void onSuccessGetWithdrawForm(List<BankAccount> bankAccount) {
         bankAdapter.setList(bankAccount);
-        bankAdapter.setDefault(defaultBank);
+        bankAdapter.setDefault();
         if (!userSession.isMsisdnVerified()) {
             showMustVerify();
         }
@@ -729,19 +727,21 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 break;
             case CONFIRM_PASSWORD_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    new AlertDialog.Builder(getActivity())
+                    AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                             .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
                             .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
                             .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    getActivity().setResult(Activity.RESULT_OK);
+                                    Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_OK);
                                     getActivity().finish();
                                 }
                             })
                             .setCancelable(false)
-                            .show();
+                            .create();
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.tkpd_main_green));
+                    dialog.show();
                 }
                 break;
             default:

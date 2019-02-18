@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 
 /**
  * @author by StevenFredian on 30/07/18.
@@ -21,10 +21,12 @@ public class WithdrawPasswordContract {
         void showErrorPassword(String error);
 
         void showSuccessWithdraw();
+
+        String loadRawString(int id);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
 
-        void doWithdraw(int withdrawal, BankAccountViewModel bankAccountViewModel, String password, boolean isSellerWithdrawal);
+        void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal);
     }
 }
