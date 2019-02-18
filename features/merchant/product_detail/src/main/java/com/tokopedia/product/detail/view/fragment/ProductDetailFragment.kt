@@ -642,7 +642,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
-
+        ToasterError.make(coordinator, throwable.localizedMessage).show()
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
