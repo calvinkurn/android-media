@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -27,7 +29,9 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.bottomsheet.RoundedCornerBottomSheetDialog
 import com.tokopedia.design.text.BackEditText
+import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
@@ -43,6 +47,7 @@ import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
+import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.kotlin.extensions.view.hide
@@ -92,11 +97,13 @@ class PlayViewStateImpl(
     val dynamicIcon = view.findViewById<ImageView>(R.id.icon_dynamic)
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
-    var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
-    lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+        var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
     lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
+    lateinit var bottomSheetWebviewDialog: BottomSheetDialog
+    lateinit var bottomSheetWebviewBehavior: BottomSheetBehavior<View>
 
     lateinit var overlayBottomSheet: CloseableBottomSheetDialog
+    lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
 
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
     private var quickReplyAdapter: QuickReplyAdapter
@@ -211,6 +218,51 @@ class PlayViewStateImpl(
         return replyText.replace("<", "&lt;")
     }
 
+    private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
+        if (!::pinnedMessageDialog.isInitialized) {
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
+        }
+
+        val pinnedMessageView = createPinnedMessageView(viewModel)
+        pinnedMessageDialog.setOnShowListener() { dialog ->
+            val d = dialog as BottomSheetDialog
+
+            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+                pinnedMessageView.findViewById<ImageView>(R.id.thumbnail).visibility = View.VISIBLE
+            }
+        }
+
+        pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
+        view.setOnClickListener(null)
+        pinnedMessageDialog.show()
+
+    }
+
+    private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
+        val view = activity.layoutInflater.inflate(R.layout
+                .layout_pinned_message_expanded, null)
+        ImageHandler.loadImageCircle2(activity, view.findViewById(R.id.pinned_message_avatar) as ImageView, channelInfoViewModel!!.adminPicture, R.drawable.ic_loading_toped_new)
+        (view.findViewById<View>(R.id.chat_header).findViewById(R.id.nickname) as TextView).text =
+                channelInfoViewModel.adminName
+        channelInfoViewModel.pinnedMessageViewModel?.let {
+            (view.findViewById(R.id.message) as TextView).text = it.message
+            ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
+                    .drawable.loading_page)
+            if (!TextUtils.isEmpty(it.imageUrl)) {
+                view.findViewById<ImageView>(R.id.thumbnail).setOnClickListener {
+                    (activity.applicationContext as GroupChatModuleRouter)
+                            .openRedirectUrl(activity,
+                                    channelInfoViewModel.pinnedMessageViewModel!!.imageUrl)
+                }
+            }
+            view.findViewById<ImageView>(R.id.thumbnail).visibility = View.GONE
+        }
+
+        return view
+    }
+
     open fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -234,7 +286,7 @@ class PlayViewStateImpl(
 
         setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
         setDynamicIconNotification(true)
-        setDynamicBackground("")
+        setDynamicBackground("https://i.pinimg.com/originals/12/da/77/12da776434178d3a19176fb76048faba.jpg")
         setFloatingIcon("tokopedia://webview?url=https://www.tokopedia" +
                 ".com/play/trivia-quiz?campaign=nakamatest", "https://i.gifer.com/M8tf.gif")
 
@@ -247,12 +299,16 @@ class PlayViewStateImpl(
 
     private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
         if (isUserLoggedIn) {
-            setPinnedMessage(viewModel.pinnedMessageViewModel)
+            setPinnedMessage(viewModel)
             setQuickReply(viewModel.quickRepliesViewModel)
         } else {
-            setPinnedMessage(null)
+            hidePinnedMessage()
             setQuickReply(null)
         }
+    }
+
+    private fun hidePinnedMessage() {
+        pinnedMessageContainer.visibility = View.GONE
     }
 
     private fun showLoginButton(show: Boolean) {
@@ -337,27 +393,33 @@ class PlayViewStateImpl(
 
     override fun onPinnedMessageUpdated(it: PinnedMessageViewModel) {
         viewModel.pinnedMessageViewModel = it
-        setPinnedMessage(it)
+        setPinnedMessage(viewModel)
     }
 
     override fun onSuccessLogin() {
         showLoginButton(userSession.isLoggedIn)
     }
 
-    private fun setPinnedMessage(pinnedMessageViewModel: PinnedMessageViewModel?) {
-        if (pinnedMessageViewModel != null) {
-            pinnedMessageContainer.visibility = View.VISIBLE
-            (pinnedMessageContainer.findViewById(R.id.message) as TextView).text = pinnedMessageViewModel.title
-            pinnedMessageContainer.setOnClickListener { view ->
-                //                if (channelInfoViewModel != null) {
-                //                    analytics.eventClickAdminPinnedMessage(
-                //                            String.format("%s - %s", channelInfoViewModel.getChannelId(), pinnedMessage.title))
-                //                }
-                //
-//                    showPinnedMessageBottomSheet(pinnedMessage)
-            }
-        } else {
+    private fun setPinnedMessage(channelInfoViewModel: ChannelInfoViewModel) {
+
+        if (channelInfoViewModel.pinnedMessageViewModel == null) {
             pinnedMessageContainer.visibility = View.GONE
+        } else {
+            pinnedMessageContainer.visibility = View.VISIBLE
+
+            channelInfoViewModel.pinnedMessageViewModel?.let {
+                pinnedMessageContainer.visibility = View.VISIBLE
+                (pinnedMessageContainer.findViewById(R.id.message) as TextView).text =
+                        it.title
+                pinnedMessageContainer.setOnClickListener { view ->
+                    //                                if (channelInfoViewModel != null) {
+//                                    analytics.eventClickAdminPinnedMessage(
+//                                            String.format("%s - %s", channelInfoViewModel.getChannelId(), pinnedMessage.title))
+//                                }
+
+                    showPinnedMessage(channelInfoViewModel)
+                }
+            }
         }
     }
 
@@ -396,9 +458,9 @@ class PlayViewStateImpl(
 
     private fun setDynamicBackground(backgroundUrl: String) {
         if (backgroundUrl.isBlank()) {
-            //TODO clear background
+            activity.window?.setBackgroundDrawable(null)
         } else {
-            //TODO add background
+            ImageHandler.loadBackgroundImage(activity.window, backgroundUrl)
         }
     }
 
@@ -583,7 +645,7 @@ class PlayViewStateImpl(
     }
 
     private fun showNewMessageReceived(newMessageCounter: Int) {
-        if(login.visibility != VISIBLE){
+        if (login.visibility != VISIBLE) {
             chatNotificationView.visibility = VISIBLE
         }
     }
@@ -628,31 +690,58 @@ class PlayViewStateImpl(
     }
 
     private fun showWebviewBottomSheet(url: String) {
-        bottomSheetLayout.visibility = View.VISIBLE
 
-        if (!::bottomSheetBehavior.isInitialized) {
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            bottomSheetBehavior.isHideable = true
-            bottomSheetBehavior.setBottomSheetCallback(getBottomSheetCallback())
+        val bottomSheetDialog = PlayWebviewDialogFragment.createInstance(url)
+        bottomSheetDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
 
-            bottomSheetLayout.findViewById<ImageView>(R.id.close_button).setOnClickListener {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        }
+//        if (!::bottomSheetWebviewBehavior.isInitialized) {
+//            bottomSheetWebviewBehavior = BottomSheetBehavior.from(bottomSheetLayout)
+//            bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+//            bottomSheetWebviewBehavior.isHideable = true
+//            bottomSheetWebviewBehavior.setBottomSheetCallback(getBottomSheetCallback())
+//
+//            bottomSheetLayout.findViewById<ImageView>(R.id.close_button).setOnClickListener {
+//                bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+//            }
+//        }
+//
+//        if (!::bottomSheetWebviewFragment.isInitialized) {
+//            bottomSheetWebviewFragment = PlayWebviewFragment.createInstance(url)
+//            activity.supportFragmentManager.beginTransaction()
+//                    .replace(R.id.bottom_sheet_fragment_container,
+//                            bottomSheetWebviewFragment,
+//                            bottomSheetWebviewFragment.javaClass.simpleName)
+//                    .commit()Bt
+//        }
+//        bottomSheetLayout.visibility = View.VISIBLE
+//
+//        bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        if (!::bottomSheetWebviewFragment.isInitialized) {
-            bottomSheetWebviewFragment = PlayWebviewFragment.createInstance(url)
-            activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.bottom_sheet_fragment_container,
-                            bottomSheetWebviewFragment,
-                            bottomSheetWebviewFragment.javaClass.simpleName)
-                    .commit()
-        }
+        /////
+//        if (!::bottomSheetWebviewDialog.isInitialized) {
+//            bottomSheetWebviewDialog.show()
+//        }
+//
+//        if (!::bottomSheetWebviewFragment.isInitialized) {
+//            bottomSheetWebviewFragment = PlayWebviewFragment.createInstance(url)
+//        }
 
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+//        webviewBottomSheetDialog.initView(bottomSheetWebviewFragment)
+//
+//        webviewBottomSheetDialog.setOnShowListener { dialog ->
+//            val d = dialog as BottomSheetDialog
+//
+//            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+//            if (bottomSheet != null) {
+//                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+//            }
+//        }
+//
+//        webviewBottomSheetDialog.show()
 
     }
+
+
 
     private fun getBottomSheetCallback(): BottomSheetBehavior.BottomSheetCallback? {
         return object : BottomSheetBehavior.BottomSheetCallback() {
@@ -663,15 +752,15 @@ class PlayViewStateImpl(
             override fun onStateChanged(p0: View, newState: Int) {
 
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED)
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
     }
 
     override fun onBackPressed(): Boolean {
-        return if (::bottomSheetBehavior.isInitialized
-                && bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        return if (::bottomSheetWebviewBehavior.isInitialized
+                && bottomSheetWebviewBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+            bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             true
         } else false
     }
