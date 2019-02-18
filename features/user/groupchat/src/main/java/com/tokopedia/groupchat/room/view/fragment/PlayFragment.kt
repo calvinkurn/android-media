@@ -249,6 +249,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
 
     override fun addQuickReply(text: String?) {
+//        if (activity != null
+//                && activity is GroupChatContract.View
+//                && (activity as GroupChatContract.View).getChannelInfoViewModel() != null) {
+//            analytics.eventClickQuickReply(
+//                    String.format("%s - %s", (activity as GroupChatContract.View).getChannelInfoViewModel()!!.getChannelId(), message))
+//        }
+
+        viewState.onQuickReplyClicked(text)
     }
 
     override fun onImageAnnouncementClicked(url: String?) {
@@ -368,7 +376,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    override fun onLoginClicked(channelId: String) {
+    override fun onLoginClicked(channelId: String?) {
 //      analytics.eventClickLogin(channelId)
 
         startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
@@ -406,6 +414,59 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
         viewState.onErrorSendMessage(pendingChatViewModel, exception)
         ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewState.onKeyboardHidden()
+        if (canResume()) {
+//            kickIfIdleForTooLong()
+//
+//            if (viewModel != null && viewModel.getChannelInfoViewModel() != null
+//                    && !isFirstTime) {
+//                if (!channelInfoDialog.isShowing() || loading.getVisibility() != View.VISIBLE) {
+//                    showLoading()
+//                    presenter.refreshChannelInfo(viewModel.getChannelUuid())
+//                }
+//
+//            }
+//
+//            if (notifReceiver == null) {
+//                notifReceiver = object : BroadcastReceiver() {
+//                    override fun onReceive(context: Context, intent: Intent) {
+//                        if (intent.extras != null) {
+//                            onGetNotif(intent.extras!!)
+//                        }
+//                    }
+//                }
+//            }
+//
+//            try {
+//                LocalBroadcastManager.getInstance(this).registerReceiver(notifReceiver, IntentFilter(TkpdState.LOYALTY_GROUP_CHAT))
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//
+//            if (viewModel != null) {
+//                viewModel.setTimeStampAfterResume(System.currentTimeMillis())
+//            }
+//            }
+        }
+    }
+
+    private fun canResume(): Boolean {
+            return true
+    //        return viewModel != null && (viewModel.getTimeStampAfterResume() == 0L || viewModel.getTimeStampAfterResume() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterResume() > PAUSE_RESUME_TRESHOLD_TIME)
+        }
+
+    private fun canPause(): Boolean {
+        return true
+//        return viewModel != null && (viewModel.getTimeStampAfterPause() == 0L || (viewModel.getTimeStampAfterPause() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > PAUSE_RESUME_TRESHOLD_TIME
+//                && canResume()))
     }
 
     override fun onDestroy() {

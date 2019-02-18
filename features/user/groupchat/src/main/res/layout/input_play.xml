@@ -52,6 +52,7 @@
             android:textColorHint="@color/play_transparent_hint_reply"
             android:textSize="@dimen/sp_14"
             android:visibility="visible"
+            android:layout_gravity="center"
             tools:hint="afdfin\dfjidifja\nofkdokfdodkfodko\djfidjidjfij\nokdfokdodkfo\ndofkdkfok"
             android:layout_weight="1"
             tools:visibility="visible" />

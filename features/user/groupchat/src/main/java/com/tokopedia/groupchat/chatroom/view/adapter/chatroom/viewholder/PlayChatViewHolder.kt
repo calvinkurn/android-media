@@ -30,6 +30,7 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
     }
 
     override fun bind(element: ChatViewModel) {
+        message.text = ""
         var userName = getUserName(element.senderName, element.isAdministrator)
         message.append(userName)
         message.append(" ")

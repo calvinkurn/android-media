@@ -20,7 +20,7 @@ interface PlayContract {
         fun setSnackBarRetryConnectingWebSocket()
         fun onBackPressed() : Boolean
 
-        fun onLoginClicked(channelId: String)
+        fun onLoginClicked(channelId: String?)
         fun onTotalViewChanged(participantViewModel: ParticipantViewModel)
         fun vibratePhone()
         fun onAdsUpdated(it: AdsViewModel)

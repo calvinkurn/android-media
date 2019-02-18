@@ -72,7 +72,7 @@ class PlayViewStateImpl(
 ) : PlayViewState {
 
     private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
-    private lateinit var viewModel: ChannelInfoViewModel
+    private var viewModel: ChannelInfoViewModel? = null
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
@@ -94,17 +94,18 @@ class PlayViewStateImpl(
 
     var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
     lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-    lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
 
+    lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
     lateinit var overlayBottomSheet: CloseableBottomSheetDialog
 
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
+
     private var quickReplyAdapter: QuickReplyAdapter
     private var adapter: GroupChatAdapter
-
     private var newMessageCounter: Int = 0
 
     private var youtubeRunnable: Handler = Handler()
+
     private var layoutManager: LinearLayoutManager
 
     init {
@@ -156,37 +157,23 @@ class PlayViewStateImpl(
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
         replyEditText.setOnClickListener {
-            showWidgetAboveInput(false)
-            inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
-            sendButton.show()
-            iconDynamic.hide()
-            iconQuiz.hide()
-//            setSprintSaleIcon(null)
+            onKeyboardShown()
         }
 
         replyEditText.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
-            showWidgetAboveInput(false)
-            inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
-//            setSprintSaleIcon(null)
-            sendButton.show()
-            iconDynamic.hide()
-            iconQuiz.hide()
+            onKeyboardShown()
         }
 
         replyEditText.setKeyImeChangeListener { keyCode, event ->
             if (KeyEvent.KEYCODE_BACK == event.keyCode) {
-                showWidgetAboveInput(true)
-                inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
-                sendButton.hide()
-                iconDynamic.show()
-                iconQuiz.show()
+                onKeyboardHidden()
             }
         }
 
         showLoginButton(!userSession.isLoggedIn)
 
         login.setOnClickListener {
-            listener.onLoginClicked(viewModel.channelId)
+            listener.onLoginClicked(viewModel?.channelId)
         }
 
         chatNotificationView.setOnClickListener {
@@ -205,6 +192,26 @@ class PlayViewStateImpl(
                 sendMessage(pendingChatViewModel)
             }
         }
+    }
+
+    override fun onKeyboardHidden() {
+        showWidgetAboveInput(true)
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
+        sendButton.hide()
+        iconDynamic.show()
+        iconQuiz.show()
+        toolbar.show()
+
+    }
+
+    fun onKeyboardShown() {
+        showWidgetAboveInput(false)
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
+        sendButton.show()
+        iconDynamic.hide()
+        iconQuiz.hide()
+        toolbar.hide()
+//            setSprintSaleIcon(null)
     }
 
     private fun checkText(replyText: String): String {
@@ -247,8 +254,10 @@ class PlayViewStateImpl(
 
     private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
         if (isUserLoggedIn) {
-            setPinnedMessage(viewModel.pinnedMessageViewModel)
-            setQuickReply(viewModel.quickRepliesViewModel)
+            viewModel?.let {
+                setPinnedMessage(it.pinnedMessageViewModel)
+                setQuickReply(it.quickRepliesViewModel)
+            }
         } else {
             setPinnedMessage(null)
             setQuickReply(null)
@@ -266,19 +275,19 @@ class PlayViewStateImpl(
     }
 
     override fun onAdsUpdated(it: AdsViewModel) {
-        viewModel.adsImageUrl = it.adsUrl
-        viewModel.adsId = it.adsId
-        viewModel.adsLink = it.adsLink
-        setSponsorData(viewModel.adsId, viewModel.adsImageUrl, viewModel.adsName)
+        viewModel?.adsImageUrl = it.adsUrl
+        viewModel?.adsId = it.adsId
+        viewModel?.adsLink = it.adsLink
+        setSponsorData(viewModel?.adsId, viewModel?.adsImageUrl, viewModel?.adsName)
     }
 
     override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
-        viewModel.videoId = it.videoId
+        viewModel?.videoId = it.videoId
         initVideoFragment(childFragmentManager, it.videoId)
     }
 
     override fun onChannelFrozen(channelId: String) {
-        if (channelId == viewModel.channelId) {
+        if (channelId == viewModel?.channelId) {
             val myAlertDialog = AlertDialog.Builder(view.context)
             myAlertDialog.setTitle(getStringResource(R.string.channel_not_found))
             myAlertDialog.setMessage(getStringResource(R.string.channel_deactivated))
@@ -303,7 +312,7 @@ class PlayViewStateImpl(
 
                 builder.setMessage(errorMessage)
 
-                viewModel.bannedMessage?.let {
+                viewModel?.bannedMessage?.let {
                     builder.setMessage(it)
                 }
 
@@ -311,8 +320,8 @@ class PlayViewStateImpl(
                     dialogInterface.dismiss()
                     val intent = Intent()
 //                    if (viewModel != null) {
-//                        intent.putExtra(TOTAL_VIEW, viewModel.totalView)
-//                        intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition())
+//                        intent.putExtra(TOTAL_VIEW, viewModel?.totalView)
+//                        intent.putExtra(EXTRA_POSITION, viewModel?.getChannelPosition())
 //                    }
 //                    setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent)
                     listener.backToChannelList()
@@ -336,7 +345,7 @@ class PlayViewStateImpl(
     }
 
     override fun onPinnedMessageUpdated(it: PinnedMessageViewModel) {
-        viewModel.pinnedMessageViewModel = it
+        viewModel?.pinnedMessageViewModel = it
         setPinnedMessage(it)
     }
 
@@ -367,15 +376,19 @@ class PlayViewStateImpl(
             if (it.isEmpty()) return
             quickReplyRecyclerView.visibility = View.VISIBLE
             quickReplyAdapter.setList(quickRepliesViewModel)
-//            userSession.let {
-//                if(it.isLoggedIn){
-//                    quickReplyRecyclerView.visibility = View.VISIBLE
-//                    quickReplyAdapter.setList(quickRepliesViewModel)
-//                } else{
-//                    quickReplyRecyclerView.visibility = View.GONE
-//                }
-//            }
         }
+    }
+
+    override fun onQuickReplyClicked(message: String?) {
+        val text = replyEditText.getText().toString()
+        val index = replyEditText.getSelectionStart()
+        replyEditText.setText(MethodChecker.fromHtml(String.format(
+                "%s %s %s",
+                text.substring(0, index),
+                message,
+                text.substring(index)
+        )))
+        sendButton.performClick()
     }
 
     private fun setChannelInfoBottomSheet() {
@@ -482,7 +495,7 @@ class PlayViewStateImpl(
                                         youTubePlayer?.let {
                                             it.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
                                             it.setShowFullscreenButton(false)
-                                            it.cueVideo(viewModel.videoId)
+                                            it.cueVideo(viewModel?.videoId)
                                             autoPlayVideo()
 
 //                                            it.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
@@ -562,7 +575,7 @@ class PlayViewStateImpl(
     }
 
     override fun onTotalViewChanged(channelId: String, totalView: String) {
-        if (channelId == viewModel.channelId) {
+        if (channelId == viewModel?.channelId) {
             setToolbarParticipantCount(view.context, totalView)
         }
     }
@@ -583,7 +596,7 @@ class PlayViewStateImpl(
     }
 
     private fun showNewMessageReceived(newMessageCounter: Int) {
-        if(login.visibility != VISIBLE){
+        if (login.visibility != VISIBLE) {
             chatNotificationView.visibility = VISIBLE
         }
     }
@@ -690,7 +703,7 @@ class PlayViewStateImpl(
         adapter.addReply(viewModel)
         adapter.notifyItemInserted(0)
         setQuickReply(null)
-        this.viewModel.quickRepliesViewModel = null
+        this.viewModel?.quickRepliesViewModel = null
         scrollToBottom()
     }
 
@@ -700,6 +713,7 @@ class PlayViewStateImpl(
 
     override fun afterSendMessage() {
         KeyboardHandler.DropKeyboard(view.context, view)
+        onKeyboardHidden()
         replyEditText.text.clear()
     }
 
