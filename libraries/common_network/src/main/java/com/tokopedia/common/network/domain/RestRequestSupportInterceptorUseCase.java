@@ -3,6 +3,7 @@ package com.tokopedia.common.network.domain;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.common.network.BuildConfig;
 import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponse;
@@ -50,7 +51,9 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
                 NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
                     String message = String.format("Found %s in %s", errorMessage, RestRequestSupportInterceptorUseCase.class.getSimpleName());
                     ContainNullException exception = new ContainNullException(message);
-                    Crashlytics.logException(exception);
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
                     throw exception;
                 });
             }
