@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.Campaign
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.data.util.numberFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -71,7 +72,7 @@ class PartialHeaderView private constructor(private val view: View,
                         campaign.originalPrice.getCurrencyFormatted())
 
                 text_original_price.paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentage)
+                text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentage.numberFormatted())
 
                 text_original_price.visibility = View.VISIBLE
                 text_discount.visibility = View.VISIBLE
