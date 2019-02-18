@@ -159,6 +159,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             productImage.setM_url(grid.getImpression());
             productImage.setM_ecs(grid.getImageUrl());
             model.setProductImage(productImage);
+            model.setApplink(grid.getApplink());
             model.setProductClickUrl(grid.getProductClickUrl());
             items.add(model);
         }

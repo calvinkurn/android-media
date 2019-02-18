@@ -88,7 +88,7 @@ public interface WishListView {
 
     void displayContentList(boolean isShow);
 
-    void setSearchNotFound();
+    void setSearchNotFound(String query);
 
     void displayLoading(boolean isShow);
 
