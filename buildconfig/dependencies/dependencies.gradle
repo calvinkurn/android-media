@@ -6,7 +6,7 @@ ext {
     buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.3.0"
+    kotlinVersion = "1.2.71"
 
     lifeCycleVersion = "1.1.1"
 
@@ -83,6 +83,7 @@ ext {
             maps             : "com.google.android.gms:play-services-maps:${playServiceVersion}",
             auth             : "com.google.android.gms:play-services-auth:${playServiceVersion}",
             places           : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            phone            : "com.google.android.gms:play-services-auth-api-phone:${playServiceVersion}",
             mapsUtils        : "com.google.maps.android:android-maps-utils:0.4",
             remoteConfig     : "com.google.firebase:firebase-config:${playServiceVersion}",
             perfMon          : "com.google.firebase:firebase-perf:${playServiceVersion}",
@@ -110,7 +111,6 @@ ext {
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.2.2@aar",
             crashlyticsAnswers : "com.crashlytics.sdk.android:answers:1.4.6@aar",
-            hockeyApp   : "net.hockeyapp.android:HockeySDK:4.1.3",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 

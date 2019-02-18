@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -982,7 +983,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         productData.setProductUrl(data.getInfo().getProductUrl());
         productData.setProductImageUrl(data.getProductImages().get(0).getImageSrc());
         productData.setShopUrl(data.getShopInfo().getShopUrl());
-        productData.setShopName(data.getShopInfo().getShopName());
+        productData.setShopName(Html.fromHtml(data.getShopInfo().getShopName()).toString());
 
         checkAndExecuteReferralAction(productData);
 

@@ -25,26 +25,26 @@ public class Data implements Parcelable {
     private static final String KEY_PRODUCT = "product";
 
     @SerializedName(KEY_ID)
-    private String id;
+    private String id = "";
     @SerializedName(KEY_AD_REF)
-    private String adRefKey;
+    private String adRefKey = "";
     @SerializedName(KEY_REDIRECT)
-    private String redirect;
+    private String redirect = "";
     @SerializedName(KEY_STICKER_ID)
-    private String stickerId;
+    private String stickerId = "";
     @SerializedName(KEY_STICKER_IMAGE)
-    private String stickerImage;
+    private String stickerImage = "";
     @SerializedName(KEY_PRODUCT_CLICK_URL)
-    private String productClickUrl;
+    private String productClickUrl = "";
     @SerializedName(KEY_PRODUCT_WISHLIST_URL)
-    private String productWishlistUrl;
+    private String productWishlistUrl = "";
     @SerializedName(KEY_SHOP_CLICK_URL)
-    private String shopClickUrl;
+    private String shopClickUrl = "";
     @SerializedName(KEY_SHOP)
-    private Shop shop;
+    private Shop shop = new Shop();
     @SerializedName(KEY_PRODUCT)
-    private Product product;
-    private boolean favorit;
+    private Product product = new Product();
+    private boolean favorit = false;
 
     public Data() {
     }

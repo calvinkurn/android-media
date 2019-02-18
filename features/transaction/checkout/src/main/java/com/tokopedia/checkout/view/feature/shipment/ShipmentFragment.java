@@ -1374,13 +1374,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onDropshipperValidationResult(boolean result, Object shipmentData,
                                               int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
+            String voucherCode = "";
+            if (shipmentAdapter != null && shipmentAdapter.getPromoData() != null) {
+                voucherCode = shipmentAdapter.getPromoData().getPromoCodeSafe();
+            }
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
-                    shipmentPresenter.processCheckShipmentPrepareCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
+                    shipmentPresenter.processCheckShipmentPrepareCheckout(voucherCode, isOneClickShipment());
                     shipmentPresenter.processSaveShipmentState();
                     break;
                 case REQUEST_CODE_COD:
-                    shipmentPresenter.proceedCodCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
+                    shipmentPresenter.proceedCodCheckout(voucherCode, isOneClickShipment());
             }
 
         } else if (shipmentData != null && !result) {
@@ -1753,7 +1757,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void reloadCourier(ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
-        if (shipmentCartItemModel.getSelectedShipmentDetailData().getShopId() == null) {
+        if (shipmentCartItemModel != null && shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                shipmentCartItemModel.getSelectedShipmentDetailData().getShopId() == null) {
             shipmentCartItemModel.getSelectedShipmentDetailData().setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
         }
         shipmentPresenter.processGetCourierRecommendation(

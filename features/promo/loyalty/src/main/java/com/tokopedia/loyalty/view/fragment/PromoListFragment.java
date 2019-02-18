@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
@@ -60,6 +61,8 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     private static final String EXTRA_STATE_PROMO_MENU_DATA = "EXTRA_STATE_PROMO_MENU_DATA";
     private static final String EXTRA_STATE_FILTER_SELECTED = "EXTRA_STATE_FILTER_SELECTED";
 
+    private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_LIST = "mp_promo_list";
+
     private static final int PROMO_DETAIL_REQUEST_CODE = 0;
 
     private static final String TYPE_FILTER_ALL = "all";
@@ -73,6 +76,8 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     CompositeSubscription compositeSubscription;
     @Inject
     PromoTrackingUtil promoTrackingUtil;
+    @Inject
+    PerformanceMonitoring performanceMonitoring;
 
     private RefreshHandler refreshHandler;
 
@@ -84,6 +89,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     private boolean isLoadMore;
     private String filterSelected = "";
     private RecyclerViewScrollListener recyclerViewScrollListener;
+
 
     private String autoSelectedCategoryId;
 
@@ -102,6 +108,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
+        performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_LIST);
     }
 
     @Nullable
@@ -167,6 +174,11 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
                 dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
     }
 
     @Override
@@ -290,6 +302,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isLoadMore) {
                     dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
+                    isLoadMore = false;
                 }
             }
         };
@@ -315,7 +328,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             @Override
             public void selectFilter(String typeFilter) {
                 String subCategoryName = getSubCategoryNameById(typeFilter);
-                promoTrackingUtil.eventPromoListClickSubCategory(getActivity(),subCategoryName);
+                promoTrackingUtil.eventPromoListClickSubCategory(getActivity(), subCategoryName);
 
                 actionListener.onChangeFilter(typeFilter);
 
@@ -400,7 +413,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName) {
-        promoTrackingUtil.eventPromoListClickCopyToClipboardPromoCode(getActivity(),promoName);
+        promoTrackingUtil.eventPromoListClickCopyToClipboardPromoCode(getActivity(), promoName);
         ClipboardManager clipboard = (ClipboardManager)
                 getActivityContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(

@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -53,6 +52,7 @@ import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
+import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
@@ -94,7 +94,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_REGISTER_PHONE = 113
     private val REQUEST_ADD_NAME_REGISTER_PHONE = 114
     private val REQUEST_WELCOME_PAGE = 115
-
 
     val IS_AUTO_LOGIN = "auto_login"
     val AUTO_LOGIN_METHOD = "method"
@@ -246,7 +245,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
                 LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
                 LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
-
+                LoginActivity.METHOD_WEBVIEW -> {
+                    if (arguments != null
+                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "").isNotBlank()
+                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "").isNotBlank()) {
+                        val name = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "")
+                        val url = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "")
+                        onLoginWebviewClick(name, url)
+                    }
+                }
                 LoginActivity.METHOD_EMAIL -> {
                     actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
                     val email = arguments!!.getString(AUTO_LOGIN_EMAIL, "")
@@ -409,6 +416,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             tv.setOnClickListener { onLoginFacebookClick() }
         } else if (discoverItemViewModel.id.equals(GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
+        } else run {
+            tv.setOnClickListener { v ->
+                onLoginWebviewClick(discoverItemViewModel.name,
+                        discoverItemViewModel.url)
+            }
         }
     }
 
@@ -430,6 +442,23 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }
+    }
+
+    private fun onLoginWebviewClick(name: String, url: String) {
+
+        actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_WEBVIEW + name
+        analytics.eventClickLoginWebview(name)
+
+        if (fragmentManager != null && activity != null) {
+            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            val newFragment = WebViewLoginFragment.createInstance(url, name)
+            newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW)
+            newFragment.show(fragmentTransaction, "dialog")
+
+            activity!!.window.setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        }
+
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
@@ -792,6 +821,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val email = googleSignInAccount.email
                 val accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN)
                 presenter.loginGoogle(accessToken, email)
+            } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
+                presenter.loginWebview(data)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {

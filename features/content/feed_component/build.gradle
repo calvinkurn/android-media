@@ -43,4 +43,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }
