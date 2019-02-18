@@ -72,6 +72,7 @@ public class ShipmentDataConverter {
                 userAddress.getLongitude() : null);
 
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
+        recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
 
         return recipientAddress;
     }
@@ -185,6 +186,7 @@ public class ShipmentDataConverter {
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
         cartItemModel.setNoteToSeller(product.getProductNotes());
         cartItemModel.setPreOrder(product.isProductIsPreorder());
+        cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());

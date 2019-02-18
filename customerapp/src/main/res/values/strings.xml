@@ -136,4 +136,6 @@
     <string name="share_link">Share Link!!!</string>
     <string name="produk_yang_mungkin_anda_suka">Produk yang mungkin Anda suka</string>
     <string name="title_header_saldo_intro" >Info Detail Saldo</string>
+    <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
+        pengiriman dan mendapatkan rekomendasi produk. Perbolehkan?</string>
 </resources>

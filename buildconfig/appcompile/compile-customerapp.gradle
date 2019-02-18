@@ -52,6 +52,7 @@ include "features:home:account-home"
 
 include "features:im:challenges"
 //include "features:im:challenges_no_op"
+include "features:im:common_promo"
 include "features:im:referral"
 
 include "features:logistic:tracking"
@@ -120,6 +121,9 @@ include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
 
+include "features:transaction:express_checkout"
+//include "features:transaction:express_checkout_no_op"
+include "features:transaction:express_checkout_common"
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"

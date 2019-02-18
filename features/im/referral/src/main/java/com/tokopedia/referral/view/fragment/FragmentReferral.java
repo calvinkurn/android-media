@@ -196,7 +196,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = ((ReferralRouter) getContext()).getLoginIntent(getActivity());
+        Intent intent = ((ReferralRouter) getContext().getApplicationContext()).getLoginIntent(getActivity());
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 

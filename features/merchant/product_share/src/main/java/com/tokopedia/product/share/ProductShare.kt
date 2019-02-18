@@ -7,15 +7,18 @@ import android.graphics.drawable.Drawable
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import io.branch.indexing.BranchUniversalObject
-import io.branch.referral.util.LinkProperties
 import java.io.File
 import java.lang.Exception
 
@@ -70,7 +73,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
             }
             putExtra(Intent.EXTRA_REFERRER, shareUri)
-            putExtra(Intent.EXTRA_HTML_TEXT, shareUri)
+            putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
             putExtra(Intent.EXTRA_TITLE, title)
             putExtra(Intent.EXTRA_TEXT, shareContent)
             putExtra(Intent.EXTRA_SUBJECT, title)
@@ -80,64 +83,37 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
-    private fun isAndroidIosUrlActivated() = remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB, true)
 
     private fun generateBranchLink(file: File?, data: ProductData) {
         if (isBranchUrlActive()){
-            val branchUniversalObject = createBranchUniversalObject(data)
-            val linkProperties = createLinkProperties(data)
-            branchUniversalObject.generateShortUrl(activity, linkProperties) {url, error ->
-                if (error == null){
-                    openIntentShare(file, data.productName, data.getShareContent(url), url)
-                } else {
+            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                    productDataToLinkerDataMapper(data), object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult) {
+                    openIntentShare(file, data.productName, data.getShareContent(linkerShareData.url), linkerShareData.url)
+                }
+
+                override fun onError(linkerError: LinkerError) {
                     openIntentShare(file,  data.productName, data.getShareContent(data.renderShareUri), data.renderShareUri)
                 }
-            }
+            }))
         } else {
             openIntentShare(file,  data.productName, data.getShareContent(data.renderShareUri), data.renderShareUri)
         }
 
     }
 
-    private fun createBranchUniversalObject(data: ProductData) = BranchUniversalObject().apply {
-        canonicalIdentifier = data.productId
-        title = data.productName
-        setContentDescription(data.productName)
-        setContentImageUrl(data.productImageUrl ?: "")
-        setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
-    }
-
-    private fun createLinkProperties(data: ProductData) = LinkProperties().apply {
-        campaign = CAMPAIGN_NAME
-        channel = ARG_UTM_SOURCE
-        feature = ARG_UTM_MEDIUM
-        addControlParameter(PARAM_OG_URL, null)
-        addControlParameter(PARAM_OG_TITLE, data.productName)
-        addControlParameter(PARAM_OG_IMAGE_URL, data.productImageUrl)
-        addControlParameter(PARAM_OG_DESCR, data.productName)
-        addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri)
-
-        val deeplinkUrl = generateAppLink(ApplinkConst.PRODUCT_INFO, data.productId)
-
-        addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkUrl)
-        addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkUrl)
-
-        if (isAndroidIosUrlActivated()){
-            addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri)
-            addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri)
-        }
-    }
-
-    private fun generateAppLink(applinkTemplate: String, id: String): String {
-        return if (applinkTemplate.contains(APPLINK_SCHEME)){
-            applinkTemplate.replaceFirst(APPLINK_SCHEME, "").replaceFirst("""\{.*?\} ?""".toRegex(), id)
-        } else if (applinkTemplate.contains(DESKTOP_URL_SCHEME)){
-            applinkTemplate.replace(DESKTOP_URL_SCHEME, "")
-        } else if (applinkTemplate.contains(MOBILE_URL_SCHEME)){
-            applinkTemplate.replace(MOBILE_URL_SCHEME, "")
-        } else {
-            applinkTemplate
-        }
+    private fun productDataToLinkerDataMapper(productData: ProductData): LinkerShareData{
+        var linkerData = LinkerData();
+        linkerData.id = productData.productId
+        linkerData.name = productData.productName
+        linkerData.description = productData.productName
+        linkerData.imgUri = productData.productImageUrl
+        linkerData.ogUrl = null
+        linkerData.type = LinkerData.PRODUCT_TYPE
+        linkerData.uri =  productData.renderShareUri
+        var linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
     }
 
 
@@ -146,28 +122,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         private const val DEFAULT_IMAGE_HEIGHT = 2048
 
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
-        private const val CAMPAIGN_NAME = "Product Share"
-        private const val ARG_UTM_SOURCE = "Android"
-        private const val ARG_UTM_MEDIUM = "Share"
-
-        private const val PARAM_OG_URL = "\$og_url"
-        private const val PARAM_OG_TITLE = "\$og_title"
-        private const val PARAM_OG_IMAGE_URL = "\$og_image_url"
-        private const val PARAM_OG_DESCR = "\$og_description"
-
-        private const val BRANCH_DESKTOP_URL_KEY = "\$desktop_url"
-        private const val BRANCH_ANDROID_DESKTOP_URL_KEY = "\$android_url"
-        private const val BRANCH_IOS_DESKTOP_URL_KEY = "\$ios_url"
-        private const val BRANCH_ANDROID_DEEPLINK_PATH_KEY = "\$android_deeplink_path"
-        private const val BRANCH_IOS_DEEPLINK_PATH_KEY = "\$ios_deeplink_path"
-
-        private const val APPLINK_SCHEME = "tokopedia://"
-        private const val DESKTOP_URL_SCHEME = "https://www.tokopedia.com/"
-        private const val MOBILE_URL_SCHEME = "https://m.tokopedia.com/"
-
-        private const val FIREBASE_KEY_INCLUDEMOBILEWEB = "app_branch_include_mobileweb"
 
         const val MODE_TEXT = 0
         const val MODE_IMAGE = 1
+
     }
 }

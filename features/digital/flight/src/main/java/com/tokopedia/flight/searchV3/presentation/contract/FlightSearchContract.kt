@@ -85,7 +85,7 @@ interface FlightSearchContract {
 
     interface Presenter {
 
-        fun initialize()
+        fun initialize(needDeleteData: Boolean = false)
 
         fun setDelayHorizontalProgress()
 

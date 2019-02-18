@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.discovery.autocomplete.adapter.HotlistViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.AutoCompleteViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.CategoryViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.DigitalViewHolder;
@@ -16,6 +17,7 @@ import com.tokopedia.discovery.autocomplete.adapter.TitleViewHolder;
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
@@ -90,6 +92,11 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
     }
 
     @Override
+    public int type(HotlistSearch viewModel) {
+        return HotlistViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if(type == DigitalViewHolder.LAYOUT) {
@@ -110,6 +117,8 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
             viewHolder = new RecentViewHolder(parent, clickListener);
         } else if(type == RecentViewViewHolder.LAYOUT) {
             viewHolder = new RecentViewViewHolder(parent, clickListener);
+        } else if(type == HotlistViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new HotlistViewHolder(parent, clickListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

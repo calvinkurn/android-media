@@ -74,6 +74,10 @@ public interface ApplinkConst {
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
+    String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
+            "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
+            "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
     String REFERRAL = "tokopedia://referral";
@@ -231,17 +235,15 @@ public interface ApplinkConst {
     interface Chat {
         String MESSAGE_ID = "message_id";
         String OPPONENT_ID = "opponent_id";
+        String SHOP_ID = "shop_id";
         String OPPONENT_NAME = "opponent_name";
         String OPPONENT_ROLE = "opponent_role";
         String SOURCE = "source";
-
         String TO_USER_ID = "toUserId";
         String TO_SHOP_ID = "toShopId";
-
         String CUSTOM_MESSAGE = "customMessage";
+        String AVATAR = "avatar";
+
         String PARAM_HEADER = "header";
-
-
-
     }
 }

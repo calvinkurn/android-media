@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.component.ticker.TouchViewPager;
+import com.tokopedia.design.component.ticker.TouchViewPager2;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.applink.LoyaltyAppLink;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
@@ -45,7 +45,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     public static final String DEFAULT_AUTO_SELECTED_CATEGORY_ID = "0";
     public static final String DEFAULT_AUTO_SELECTED_MENU_ID = "0";
 
-    TouchViewPager viewPager;
+    TouchViewPager2 viewPager;
     TabLayout tabLayout;
     View containerError;
     Toolbar toolbar;

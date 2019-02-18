@@ -14,6 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.PreviewItemAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.decoration.ShopListItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.gm.resource.GMConstant;
@@ -29,6 +30,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
 
     private static final String KEY_SHOP_IS_GOLD = "1";
     private static final String KEY_SHOP_IS_INACTIVE = "4";
+    private static final String KEY_SHOP_IS_CLOSED = "2";
 
     private LinearLayout mainContent;
     private SquareImageView itemShopImage;
@@ -42,6 +44,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     private View viewShopInactive;
     private RecyclerView rvItemPreview;
     private Context context;
+    private TextView tv_unavailable_label;
     private final ShopListener itemClickListener;
 
     public GridShopItemViewHolder(View itemView, ShopListener itemClickListener) {
@@ -58,6 +61,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         viewShopInactive = itemView.findViewById(R.id.view_shop_inactive);
         rvItemPreview = itemView.findViewById(R.id.rv_item_preview);
         context = itemView.getContext();
+        tv_unavailable_label = itemView.findViewById(R.id.tv_unavailable_label);
         this.itemClickListener = itemClickListener;
     }
 
@@ -78,6 +82,14 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
 
         if (shopItem.getShopStatus().equals(KEY_SHOP_IS_INACTIVE)) {
             viewShopInactive.setVisibility(View.VISIBLE);
+            tv_unavailable_label.setText(
+                    context.getString(R.string.label_shop_inactive)
+            );
+        } else if (shopItem.getShopStatus().equals(KEY_SHOP_IS_CLOSED)) {
+            viewShopInactive.setVisibility(View.VISIBLE);
+            tv_unavailable_label.setText(
+                    context.getString(R.string.label_shop_close)
+            );
         } else {
             viewShopInactive.setVisibility(View.GONE);
         }
@@ -102,6 +114,9 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
             );
             rvItemPreview.setLayoutManager(linearLayoutManager);
             rvItemPreview.setAdapter(previewItemAdapter);
+            if (rvItemPreview.getItemDecorationCount() == 0) {
+                rvItemPreview.addItemDecoration(getDecoration());
+            }
             previewItemAdapter.setData(shopItem.getProductImages());
         } else {
             hideShopPreviewItems(rvItemPreview);
@@ -117,6 +132,14 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
                 }
             }
         });
+    }
+
+    protected RecyclerView.ItemDecoration getDecoration() {
+        return new ShopListItemDecoration(
+                context.getResources().getDimensionPixelSize(R.dimen.dp_2),
+                context.getResources().getDimensionPixelSize(R.dimen.dp_2),
+                0,
+                0);
     }
 
     protected int getPreviewImageSize(Context context){
