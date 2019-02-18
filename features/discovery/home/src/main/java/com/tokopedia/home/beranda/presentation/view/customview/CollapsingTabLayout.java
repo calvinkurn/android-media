@@ -70,6 +70,7 @@ public class CollapsingTabLayout extends TabLayout {
         initAnimator();
         setSmoothScrollingEnabled(true);
         setupWithViewPager(viewPager);
+        clearOnTabSelectedListeners();
         addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -93,6 +94,7 @@ public class CollapsingTabLayout extends TabLayout {
             tab.setCustomView(getTabView(getContext(), i));
         }
 
+        viewPager.clearOnPageChangeListeners();
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
