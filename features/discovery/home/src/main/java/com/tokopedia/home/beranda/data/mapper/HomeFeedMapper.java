@@ -1,15 +1,11 @@
 package com.tokopedia.home.beranda.data.mapper;
 
-import com.crashlytics.android.Crashlytics;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.home.BuildConfig;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
 import com.tokopedia.home.beranda.domain.gql.feed.Product;
 import com.tokopedia.home.beranda.domain.gql.feed.RecommendationProduct;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +23,6 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
         HomeFeedGqlResponse gqlResponse = graphqlResponse.getData(HomeFeedGqlResponse.class);
         RecommendationProduct recommendationProduct
                 = gqlResponse.getHomeRecommendation().getRecommendationProduct();
-        HomeFeedListModel homeFeedListModel = convertToHomeFeedListModel(recommendationProduct);
-        NullCheckerKt.isContainNull(homeFeedListModel, errorMessage -> {
-            String message = String.format("Found %s in %s",
-                    errorMessage, HomeFeedMapper.class.getSimpleName());
-            ContainNullException exception = new ContainNullException(message);
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception);
-            }
-            throw exception;
-        });
         return convertToHomeFeedListModel(recommendationProduct);
     }
 
