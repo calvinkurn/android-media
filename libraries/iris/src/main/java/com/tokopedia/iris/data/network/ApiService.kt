@@ -28,28 +28,28 @@ class ApiService(private val context: Context) {
 
     private fun createClient(): OkHttpClient {
          val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-                .addInterceptor {
-                    val original = it.request()
-                    val request = original.newBuilder()
-                    request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
-                    if (!session.getUserId().isBlank()) {
-                        request.header(HEADER_USER_ID, session.getUserId())
-                    }
-                    request.header(HEADER_DEVICE, HEADER_ANDROID)
-                    request.method(original.method(), original.body())
-                    val requestBuilder = request.build()
-
-                    it.proceed(requestBuilder)
-                }
-                .connectTimeout(15000, TimeUnit.MILLISECONDS)
-                .writeTimeout(10000, TimeUnit.MILLISECONDS)
-                .readTimeout(10000, TimeUnit.MILLISECONDS)
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
 
         builder.connectionSpecs(listOf(legacyChiper()))
+        builder.addInterceptor {
+            val original = it.request()
+            val request = original.newBuilder()
+            request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
+            if (!session.getUserId().isBlank()) {
+                request.header(HEADER_USER_ID, session.getUserId())
+            }
+            request.header(HEADER_DEVICE, HEADER_ANDROID)
+            request.method(original.method(), original.body())
+            val requestBuilder = request.build()
+
+            it.proceed(requestBuilder)
+        }
+                .connectTimeout(15000, TimeUnit.MILLISECONDS)
+                .writeTimeout(10000, TimeUnit.MILLISECONDS)
+                .readTimeout(10000, TimeUnit.MILLISECONDS)
 
         return builder.build()
     }
