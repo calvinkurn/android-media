@@ -51,7 +51,7 @@ public class AccountModel {
     private TokopointsSumCoupon tokopointsSumCoupon;
     @SerializedName("le_preapprove")
     @Expose
-    private LePreapproveModel lePreapprove;
+    private LePreapproveModel lePreapprove = new LePreapproveModel();
 
     @SerializedName("vcc_user_status")
     private VccUserStatus vccUserStatus;
