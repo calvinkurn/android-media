@@ -875,11 +875,16 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     private boolean isCheckoutProductEligibleForCashOnDelivery(List<CartItemData> cartItemDataList) {
+        double totalAmount = 0;
+        double maximalTotalAmountEligible = 1000000;
         for (CartItemData cartItemData : cartItemDataList) {
+            double itemPriceAmount = cartItemData.getOriginData().getPricePlan()
+                    * cartItemData.getUpdatedData().getQuantity();
+            totalAmount = totalAmount + itemPriceAmount;
             if (!cartItemData.getOriginData().isCod())
                 return false;
         }
-        return true;
+        return totalAmount <= maximalTotalAmountEligible;
     }
 
     private int getChecklistCondition() {
