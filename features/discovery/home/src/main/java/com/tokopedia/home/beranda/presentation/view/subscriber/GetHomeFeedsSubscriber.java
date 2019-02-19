@@ -34,15 +34,6 @@ public class GetHomeFeedsSubscriber extends Subscriber<HomeFeedListModel> {
 
     @Override
     public void onNext(HomeFeedListModel model) {
-        NullCheckerKt.isContainNull(model, errorMessage -> {
-            String message = String.format("Found %s in %s",
-                    errorMessage, GetHomeFeedsSubscriber.class.getSimpleName());
-            ContainNullException exception = new ContainNullException(message);
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception);
-            }
-            throw exception;
-        });
         viewListener.renderList(model.getHomeFeedViewModels(), model.isHasNextPage());
     }
 }

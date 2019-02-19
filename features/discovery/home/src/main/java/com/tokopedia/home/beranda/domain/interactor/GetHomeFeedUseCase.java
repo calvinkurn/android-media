@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.data.mapper.CheckNullMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
@@ -22,13 +23,16 @@ public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
     private Context context;
     private GraphqlUseCase graphqlUseCase;
     private HomeFeedMapper homeFeedMapper;
+    private CheckNullMapper checkNullMapper;
 
     public GetHomeFeedUseCase(Context context,
                               GraphqlUseCase graphqlUseCase,
-                              HomeFeedMapper homeFeedMapper) {
+                              HomeFeedMapper homeFeedMapper,
+                              CheckNullMapper checkNullMapper) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
         this.homeFeedMapper = homeFeedMapper;
+        this.checkNullMapper = checkNullMapper;
     }
 
     @Override
@@ -38,7 +42,9 @@ public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map(homeFeedMapper);
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map(checkNullMapper)
+                .map(homeFeedMapper);
     }
 
     public RequestParams getHomeFeedParam(int recomId, int count, int page) {

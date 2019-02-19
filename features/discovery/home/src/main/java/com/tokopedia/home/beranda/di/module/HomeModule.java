@@ -14,6 +14,7 @@ import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.home.beranda.data.mapper.CheckNullMapper;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
@@ -94,15 +95,22 @@ public class HomeModule {
     @Provides
     protected GetHomeFeedUseCase provideGetHomeFeedUseCase(@ApplicationContext Context context,
                                                            GraphqlUseCase graphqlUseCase,
-                                                           HomeFeedMapper homeFeedMapper){
-        return new GetHomeFeedUseCase(context, graphqlUseCase, homeFeedMapper);
+                                                           HomeFeedMapper homeFeedMapper,
+                                                           CheckNullMapper checkNullMapper){
+        return new GetHomeFeedUseCase(context, graphqlUseCase, homeFeedMapper, checkNullMapper);
     }
 
     @Provides
     protected GetFeedTabUseCase provideGetFeedTabUseCase(@ApplicationContext Context context,
                                                          GraphqlUseCase graphqlUseCase,
-                                                         FeedTabMapper feedTabMapper){
-        return new GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper);
+                                                         FeedTabMapper feedTabMapper,
+                                                         CheckNullMapper checkNullMapper){
+        return new GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper, checkNullMapper);
+    }
+
+    @Provides
+    CheckNullMapper checkNullMapper() {
+        return new CheckNullMapper();
     }
 
     @Provides

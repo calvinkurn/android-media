@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.data.mapper.CheckNullMapper;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
@@ -18,16 +19,19 @@ import rx.Observable;
 
 public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
 
+    private CheckNullMapper checkNullMapper;
     private Context context;
     private GraphqlUseCase graphqlUseCase;
     private FeedTabMapper feedTabMapper;
 
     public GetFeedTabUseCase(Context context,
                              GraphqlUseCase graphqlUseCase,
-                             FeedTabMapper feedTabMapper) {
+                             FeedTabMapper feedTabMapper,
+                             CheckNullMapper checkNullMapper) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
         this.feedTabMapper = feedTabMapper;
+        this.checkNullMapper = new CheckNullMapper();
     }
 
     @Override
@@ -37,6 +41,8 @@ public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map(feedTabMapper);
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map(checkNullMapper)
+                .map(feedTabMapper);
     }
 }
