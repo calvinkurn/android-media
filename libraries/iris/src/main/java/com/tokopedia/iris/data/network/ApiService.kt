@@ -1,7 +1,6 @@
 package com.tokopedia.iris.data.network
 
 import android.content.Context
-import android.os.Build
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.iris.*
@@ -10,11 +9,6 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
-import okhttp3.ConnectionSpec
-import okhttp3.TlsVersion
-import okhttp3.OkHttpClient
-import javax.net.ssl.SSLContext
-
 
 /**
  * Created by meta on 21/11/18.
@@ -34,7 +28,16 @@ class ApiService(private val context: Context) {
 
     private fun createClient(): OkHttpClient {
          val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-                .addInterceptor {
+                .connectTimeout(15000, TimeUnit.MILLISECONDS)
+                .writeTimeout(10000, TimeUnit.MILLISECONDS)
+                .readTimeout(10000, TimeUnit.MILLISECONDS)
+
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(ChuckInterceptor(context))
+        }
+
+        builder.connectionSpecs(listOf(legacyChiper()))
+        builder.addInterceptor {
                     val original = it.request()
                     val request = original.newBuilder()
                     request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
@@ -47,45 +50,22 @@ class ApiService(private val context: Context) {
 
                     it.proceed(requestBuilder)
                 }
-                 .connectTimeout(15000, TimeUnit.MILLISECONDS)
-                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
-                 .readTimeout(10000, TimeUnit.MILLISECONDS)
-                 .followRedirects(true)
-                 .followSslRedirects(true)
-                 .retryOnConnectionFailure(true)
 
-        if (BuildConfig.DEBUG) {
-            builder.addInterceptor(ChuckInterceptor(context))
+        return builder.build()
+    }
+    private fun legacyChiper() : ConnectionSpec {
+        var cipherSuites: MutableList<CipherSuite>? = ConnectionSpec.MODERN_TLS.cipherSuites()
+        if (!cipherSuites!!.contains(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)) {
+            cipherSuites = ArrayList(cipherSuites)
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA)
         }
-
-        return enableTls12OnPreLollipop(builder).build()
+        return ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .cipherSuites(*cipherSuites.toTypedArray())
+                .build()
     }
 
-    fun enableTls12OnPreLollipop(client: OkHttpClient.Builder): OkHttpClient.Builder {
-        if (Build.VERSION.SDK_INT in 16..21) {
-            try {
-                val sc = SSLContext.getInstance("TLSv1.2")
-                sc.init(null, null, null)
-                client.sslSocketFactory(Tls12SocketFactory(sc.getSocketFactory()))
 
-                val cs = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                        .tlsVersions(TlsVersion.TLS_1_2)
-                        .build()
-
-                val specs = ArrayList<ConnectionSpec>()
-                specs.add(cs)
-                specs.add(ConnectionSpec.COMPATIBLE_TLS)
-                specs.add(ConnectionSpec.CLEARTEXT)
-
-                client.connectionSpecs(specs)
-            } catch (exc: Exception) {
-                // Error while setting TLS 1.2
-            }
-
-        }
-
-        return client
-    }
     companion object {
 
         fun parse(data: String) : RequestBody {
