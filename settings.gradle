@@ -15,6 +15,7 @@ buildCache {
     }
 }
 
+include ':libraries:iris_no_op'
 include ':tkpddesign'
 include ':tkpdabstraction'
 include ':features:transaction:transactionanalytics'
