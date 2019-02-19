@@ -64,10 +64,6 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
 
     private int drawerPosition;
     private String stateTxFilterID;
-    private static String filterId = "0";
-    private BroadcastReceiver notifReceiver;
-    private String pushNotiCode = "";
-
     private PurchaseTabAdapter adapter;
 
     public static Intent newInstance(Context context) {
@@ -85,7 +81,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!filterId.equalsIgnoreCase("0")) {
+        if (!openNewBom(context)) {
             return new Intent(context, PurchaseActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_CONFIRMED)
@@ -98,7 +94,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
     public static Intent getProcessedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!filterId.equalsIgnoreCase("0")) {
+        if (!openNewBom(context)) {
             return new Intent(context, PurchaseActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_PROCESSED)
@@ -111,7 +107,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
     public static Intent getShippedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!filterId.equalsIgnoreCase("0")) {
+        if (!openNewBom(context)) {
             return new Intent(context, PurchaseActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_SHIPPED)
@@ -124,7 +120,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
     public static Intent getDeliveredIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!filterId.equalsIgnoreCase("0")) {
+        if (!openNewBom(context)) {
             return new Intent(context, PurchaseActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVERED)
@@ -137,7 +133,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @DeepLink(ApplinkConst.PURCHASE_HISTORY)
     public static Intent getHistoryIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!filterId.equalsIgnoreCase("0")) {
+        if (!openNewBom(context)) {
             return new Intent(context, PurchaseActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER)
@@ -232,67 +228,8 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
             finish();
         }
 
-        if (((ITransactionOrderDetailRouter) this.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_ACCOUNT_AFFILIATE, true)) {
-            if (notifReceiver == null) {
-                notifReceiver = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        if (intent.getExtras() != null) {
-                            pushNotiCode = intent.getExtras().getString("tkp_code", "");
-                            switch (pushNotiCode) {
-                                case "309":
-                                case "305":
-                                    filterId = "14";
-                                    break;
-                                case "307":
-                                    filterId = "13";
-                                    break;
-                                case "310":
-                                    filterId = "5";
-                                    break;
-                                case "311":
-                                case "312":
-                                case "315":
-                                    filterId = "13";
-                                    break;
-                                case "308":
-                                    filterId = "7";
-                                    break;
-                                case "314":
-                                    filterId = "12";
-                                    break;
-                                case "313":
-                                    filterId = "17";
-                                    break;
-                                default:
-                                    filterId = "0";
-                                    break;
-                            }
-
-                        }
-                    }
-
-                };
-            }
-            try {
-                LocalBroadcastManager.getInstance(this).registerReceiver(notifReceiver, new IntentFilter
-                        (com.tokopedia.abstraction.constant.TkpdState.LOYALTY_GROUP_CHAT));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         setDrawerSidePosition(drawerPosition);
         super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (notifReceiver != null) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(notifReceiver);
-        }
     }
 
     @Override
@@ -363,64 +300,14 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
         }
     }
 
-    private void getPushNotiCode() {
-        if (notifReceiver == null) {
-            notifReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getExtras() != null) {
-                        pushNotiCode = intent.getExtras().getString("tkp_code", "");
-                        switch (pushNotiCode) {
-                            case "309":
-                            case "305":
-                                filterId = "14";
-                                break;
-                            case "307":
-                                filterId = "13";
-                                break;
-                            case "310":
-                                filterId = "5";
-                                break;
-                            case "311":
-                            case "312":
-                            case "315":
-                                filterId = "13";
-                                break;
-                            case "308":
-                                filterId = "7";
-                                break;
-                            case "314":
-                                filterId = "12";
-                                break;
-                            case "313":
-                                filterId = "17";
-                                break;
-                            default:
-                                filterId = "0";
-                                break;
-                        }
-
-                    }
-                }
-
-            };
-        }
-    }
-
-    private boolean openNewBom(String pushNotifCode) {
-
-        if (((ITransactionOrderDetailRouter) this.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_ACCOUNT_AFFILIATE, true)) {
-
-            return true;
-        } else {
-            return false;
-        }
+    private static boolean openNewBom(Context context) {
+        return (((ITransactionOrderDetailRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true));
     }
 
     private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         extras.putString("orderCategory", OrderCategory.MARKETPLACE);
-        extras.putString("filter_id", filterId);
+        extras.putString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER, extras.getString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER));
         Intent intent = new Intent(context, OrderListActivity.class);
         intent.setData(uri.build());
         return intent.putExtras(extras);

@@ -359,6 +359,8 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState  {
         public static final int GCM_PURCHASE_FINISH = 308;
         public static final int GCM_PURCHASE_FINISH_REMINDER = 309;
         public static final int GCM_PURCHASE_NEW_ORDER = 310;
+        public static final int GCM_PURCHASE_REPLACEMENT_ORDER = 314;
+        public static final int GCM_PURCHASE_EXPIRED = 315;
         public static final int GCM_PURCHASE_AUTO_CANCEL_2D = 311;
         public static final int GCM_PURCHASE_REJECTED_SHIPPING = 312;
         public static final int GCM_PURCHASE_AUTO_CANCEL_4D = 313;

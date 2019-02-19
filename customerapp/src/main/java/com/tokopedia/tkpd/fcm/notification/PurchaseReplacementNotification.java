@@ -11,12 +11,8 @@ import com.tokopedia.tkpd.R;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
-/**
- * Created by alvarisi on 1/19/17.
- */
-
-public class PurchaseNewOrderNotification extends BaseNotification {
-    public PurchaseNewOrderNotification(Context context) {
+public class PurchaseReplacementNotification extends BaseNotification {
+    public PurchaseReplacementNotification(Context context) {
         super(context);
     }
 
@@ -26,13 +22,11 @@ public class PurchaseNewOrderNotification extends BaseNotification {
                 new Intent(mContext, TransactionPurchaseRouter.getPurchaseActivityClass())
         );
         mNotificationPass.classParentStack = TransactionPurchaseRouter.getPurchaseActivityClass();
-        mNotificationPass.title = mContext.getString(R.string.purchase_confirm);
+        mNotificationPass.title = mContext.getString(R.string.purchase_replacement);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         Bundle bundle = new Bundle();
-        bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
-        bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER, TransactionPurchaseRouter.PURCHASE_NEW_ORDER_FILTER_ID);
+        bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER, TransactionPurchaseRouter.PURCHASE_CANCEL_FILTER_ID);
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
     }

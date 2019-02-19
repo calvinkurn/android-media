@@ -32,6 +32,7 @@ public class PurchaseAutoCancel2DNotification extends BaseNotification {
         Bundle bundle = new Bundle();
         bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER);
+        bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER, TransactionPurchaseRouter.PURCHASE_REJECTED_FILTER_ID);
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
     }

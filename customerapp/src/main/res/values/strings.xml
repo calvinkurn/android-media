@@ -8,6 +8,7 @@
     <string name="purchase_confirm_receiving">Konfirmasikan Penerimaan</string>
     <string name="purchase_shipped">Konfirmasi Pengiriman</string>
     <string name="purchase_canceled">Pesanan Dibatalkan</string>
+    <string name="purchase_replacement">Pesanan Diproses</string>
     <string name="title_home_official_store">Official Store</string>
     <string name="label_gold_merchant">Gold Merchant</string>
     <string name="hint_search_wishlist">Cari produk di wishlist</string>
