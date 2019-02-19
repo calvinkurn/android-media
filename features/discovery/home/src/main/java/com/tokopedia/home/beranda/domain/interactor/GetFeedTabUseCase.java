@@ -2,21 +2,24 @@ package com.tokopedia.home.beranda.domain.interactor;
 
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.home.BuildConfig;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
-import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
-import com.tokopedia.home.beranda.domain.model.feed.FeedResult;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
 
@@ -39,6 +42,22 @@ public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map(feedTabMapper);
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map(feedTabMapper)
+                .map(checkForNull());
+    }
+
+    private Func1<List<FeedTabModel>, List<FeedTabModel>> checkForNull() {
+        return responseMap -> {
+            NullCheckerKt.isContainNull(responseMap, errorMessage -> {
+                String message = String.format("Found %s in %s", errorMessage, GetFeedTabUseCase.class.getSimpleName());
+                ContainNullException exception = new ContainNullException(message);
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.logException(exception);
+                }
+                throw exception;
+            });
+            return responseMap;
+        };
     }
 }

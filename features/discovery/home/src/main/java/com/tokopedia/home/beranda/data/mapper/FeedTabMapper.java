@@ -2,10 +2,8 @@ package com.tokopedia.home.beranda.data.mapper;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
-import com.tokopedia.home.beranda.domain.gql.feed.RecommendationProduct;
 import com.tokopedia.home.beranda.domain.gql.feed.RecommendationTab;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
 
 import java.util.ArrayList;
 import java.util.List;
