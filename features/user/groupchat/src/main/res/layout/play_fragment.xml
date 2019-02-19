@@ -55,8 +55,57 @@
             app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
             app:titleTextAppearance="@style/ToolbarGroupChat"
             tools:layout_height="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
             android:paddingTop="@dimen/dp_24"
-            tools:title="title"/>
+            tools:title="title">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_16"
+                    android:textColor="#ffffff"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:textStyle="bold"
+                    tools:text="Ramadan Ekstra" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/toolbar_title"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/toolbar_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_11"
+                        android:textColor="#ffffff"
+                        android:lineSpacingExtra="3sp"
+                        tools:text="2.546.000 dilihat"
+                        />
+
+                    <android.widget.Space
+                        android:layout_width="@dimen/dp_4"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        layout= "@layout/play_live"
+                        android:id="@+id/toolbar_live"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
 
         <LinearLayout
             android:id="@+id/sponsor_layout"
@@ -248,19 +297,20 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/new_message"
-                android:textColor="@color/medium_green"
+                android:textColor="@color/play_new_chat"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
 
             <Space
-                android:layout_width="wrap_content"
-                android:layout_height="14dp" />
+                android:layout_width="@dimen/dp_4"
+                android:layout_height="@dimen/dp_14" />
 
             <ImageView
                 android:layout_width="@dimen/arrow_size"
                 android:layout_height="@dimen/arrow_size"
                 android:layout_gravity="center_vertical"
                 android:rotation="180"
+                android:tint="@color/play_new_chat"
                 app:srcCompat="@drawable/ic_arrow_up_green" />
 
         </LinearLayout>

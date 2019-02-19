@@ -84,18 +84,19 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
 
-        if (type == ChatViewHolder.LAYOUT) {
-            viewHolder = ChatViewHolder(parent)
-        } else if (type == AdminAnnouncementViewHolder.LAYOUT) {
+//        if (type == ChatViewHolder.LAYOUT) {
+//            viewHolder = ChatViewHolder(parent)
+//        } else
+        if (type == AdminAnnouncementViewHolder.LAYOUT) {
             viewHolder = AdminAnnouncementViewHolder(parent)
         } else if (type == PendingChatViewHolder.LAYOUT) {
             viewHolder = PendingChatViewHolder(parent)
         } else if (type == UserActionViewHolder.LAYOUT) {
             viewHolder = UserActionViewHolder(parent)
-        } else if (type == ImageAnnouncementViewHolder.LAYOUT) {
-            viewHolder = ImageAnnouncementViewHolder(parent, imageListener)
-        } else if (type == VoteAnnouncementViewHolder.LAYOUT) {
-            viewHolder = VoteAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener)
+//        } else if (type == ImageAnnouncementViewHolder.LAYOUT) {
+//            viewHolder = ImageAnnouncementViewHolder(parent, imageListener)
+//        } else if (type == VoteAnnouncementViewHolder.LAYOUT) {
+//            viewHolder = VoteAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener)
         } else if (type == SprintSaleViewHolder.LAYOUT) {
             viewHolder = SprintSaleViewHolder(parent, sprintSaleViewHolderListener)
         } else if (type == GeneratedMessageViewHolder.LAYOUT) {
@@ -104,6 +105,10 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
             viewHolder = GroupChatPointsViewHolder(parent, groupChatPointsViewHolderListener)
         } else if (type == PlayChatViewHolder.LAYOUT){
             viewHolder = PlayChatViewHolder(parent)
+        } else if (type == PlayQuizAnnouncementViewHolder.LAYOUT){
+            viewHolder = PlayQuizAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener)
+        } else if (type == PlayImageAnnouncementViewHolder.LAYOUT){
+            viewHolder = PlayImageAnnouncementViewHolder(parent, imageListener)
         } else {
             viewHolder = super.createViewHolder(parent, type)
         }

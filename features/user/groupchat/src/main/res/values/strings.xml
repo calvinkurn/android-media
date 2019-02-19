@@ -93,7 +93,11 @@
     <string name="default_error_enter_channel">Maaf, Saat Ini Play Sedang Ramai Pengunjung</string>
     <string name="check_next_event_schedule">Cek Jadwal Acara Selanjutnya</string>
 
+    <string name="play_quiz_started">Quiz Telah Dimulai</string>
+    <string name="play_quiz_ended">Quiz Telah Berakhir</string>
+
     <string name="chat_hint">Chat di sini…</string>
     <string name="see">Lihat</string>
+    <string name="live">LIVE</string>
 
 </resources>

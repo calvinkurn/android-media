@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
 import android.view.KeyEvent
@@ -302,6 +303,13 @@ class PlayViewStateImpl(
 
         showLoginButton(!userSession.isLoggedIn)
 
+        it.settingGroupChat?.maxChar?.let {
+            replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
+        }
+    }
+
+    override fun getChannelInfo(): ChannelInfoViewModel? {
+        return viewModel
     }
 
     private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
@@ -479,7 +487,7 @@ class PlayViewStateImpl(
 
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
-        toolbar.title = title
+        toolbar.findViewById<TextView>(R.id.toolbar_title).text = title
 
         loadImageChannelBanner(view.context, bannerUrl, blurredBannerUrl)
 
@@ -501,7 +509,8 @@ class PlayViewStateImpl(
 
     private fun setToolbarParticipantCount(context: Context, totalParticipant: String) {
         val textParticipant = String.format("%s %s", totalParticipant, context.getString(R.string.view))
-        toolbar.subtitle = textParticipant
+//        toolbar.subtitle = textParticipant
+        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).text = textParticipant
     }
 
     override fun getToolbar(): Toolbar? {
@@ -638,7 +647,7 @@ class PlayViewStateImpl(
 
     override fun onTotalViewChanged(channelId: String, totalView: String) {
         if (channelId == viewModel?.channelId) {
-            setToolbarParticipantCount(view.context, totalView)
+            setToolbarParticipantCount(view.context, TextFormatter.format(totalView))
         }
     }
 
@@ -771,11 +780,8 @@ class PlayViewStateImpl(
     }
 
     override fun onBackPressed(): Boolean {
-        return if (::bottomSheetWebviewBehavior.isInitialized
-                && bottomSheetWebviewBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
-            bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            true
-        } else false
+
+        return true
     }
 
     override fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel) {

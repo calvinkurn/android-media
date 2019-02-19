@@ -19,7 +19,6 @@ import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
-import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
@@ -175,8 +174,8 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         val currentFragment = pagerAdapter.getItem(viewPager.currentItem)
-        if (currentFragment is PlayFragment && currentFragment.onBackPressed()) {
-            currentFragment.onBackPressed()
+        if (currentFragment is PlayFragment) {
+            currentFragment.backPress()
         } else {
             super.onBackPressed()
         }

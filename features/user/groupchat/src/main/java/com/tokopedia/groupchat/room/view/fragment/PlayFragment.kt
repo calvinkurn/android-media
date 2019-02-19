@@ -7,21 +7,20 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
-import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
+import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -50,7 +49,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ChatroomContract.ChatItem.SprintSaleViewHolderListener,
         ChatroomContract.ChatItem.GroupChatPointsViewHolderListener {
 
-    private var snackbarWebsocket: Snackbar? = null
+    private var snackBarWebSocket: Snackbar? = null
 
     companion object {
 
@@ -75,10 +74,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     @Inject
     lateinit var analytics : GroupChatAnalytics
 
-    open lateinit var viewState: PlayViewState
-    private lateinit var rootView : View
+    lateinit var viewState: PlayViewState
 
     private lateinit var channelInfoViewModel : ChannelInfoViewModel
+    private var exitDialog : Dialog? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +109,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         item?.let{
             return when {
                 it.itemId == android.R.id.home -> {
-                    onBackPressed()
+                    backPress()
                     true
                 }
                 it.itemId == R.id.action_share -> {
@@ -125,20 +126,20 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun shareChannel() {
         activity?.let{
 
-        val TAG_CHANNEL = "{channel_url}"
+            val TAG_CHANNEL = "{channel_url}"
 
-        analytics.eventClickShare(channelInfoViewModel.channelId)
+            analytics.eventClickShare(channelInfoViewModel.channelId)
 
-        val link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, channelInfoViewModel.channelUrl)
+            val link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, channelInfoViewModel.channelUrl)
 
-        val description = String.format("%s %s",
-                String.format(getString(R.string.lets_join_channel),
-                        channelInfoViewModel.title), "")
+            val description = String.format("%s %s",
+                    String.format(getString(R.string.lets_join_channel),
+                            channelInfoViewModel.title), "")
 
-        var userId = "0"
-        if (userSession.isLoggedIn) {
-            userId = userSession.userId
-        }
+            var userId = "0"
+            if (userSession.isLoggedIn) {
+                userId = userSession.userId
+            }
 
             (it.applicationContext as GroupChatModuleRouter).shareGroupChat(
                     it,
@@ -162,7 +163,34 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return {
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
             saveGCTokenToCache()
+            channelInfoViewModel = it
             presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
+            setExitDialog(it.exitMessage)
+        }
+    }
+
+    private fun setExitDialog(exitMessage: ExitMessage?) {
+        exitMessage?.let {
+            exitDialog = Dialog(this@PlayFragment.activity, Dialog.Type.PROMINANCE)
+            exitDialog?.let { dialog ->
+                dialog.setTitle(exitMessage.title)
+                dialog.setDesc(exitMessage.body)
+                dialog.setBtnOk(activity?.getString(R.string.exit_group_chat_yes))
+                dialog.setOnOkClickListener {
+                    //                    analytics.eventUserExit(getChannelInfoViewModel()!!.getChannelId() + " " + getDurationOnGroupChat())
+//                    if (isTaskRoot()) {
+//                        startActivity((getApplicationContext() as GroupChatModuleRouter).getInboxChannelsIntent(context))
+//                    }
+//                    if (onPlayTime != 0L) {
+//                        analytics.eventWatchVideoDuration(getChannelInfoViewModel()!!.getChannelId(), getDurationWatchVideo())
+//                    }
+                    activity?.finish()
+                    activity?.onBackPressed()
+                }
+
+                dialog.setBtnCancel(activity?.getString(R.string.exit_group_chat_no))
+                dialog.setOnCancelClickListener { dialog.dismiss() }
+            }
         }
     }
 
@@ -176,20 +204,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun setToolbarView(view: View) {
-
-//        if (isLollipopOrNewer()) {
-//            TransparentStatusBarHelper.assistActivity(activity)
-//        }
-//        removePaddingStatusBar()
-
-        var toolbar = viewState.getToolbar()
-
-//        if (isLollipopOrNewer()) {
-//            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-//            toolbar?.setPadding(0, getStatusBarHeight(), 0, 0)
-//        }
+        val toolbar = viewState.getToolbar()
         activity?.let {
             (it as AppCompatActivity).let {
                 it.setSupportActionBar(toolbar)
@@ -198,76 +213,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun removePaddingStatusBar() {
-        val KEYBOARD_THRESHOLD = 100
-
-        view?.let{
-            rootView = it.findViewById<View>(R.id.root_view)
-            rootView.viewTreeObserver?.addOnGlobalLayoutListener {
-                val heightDiff = rootView.rootView.height - rootView.height
-
-                if (heightDiff > KEYBOARD_THRESHOLD) {
-                    removePaddingIfKeyboardIsShowing()
-                } else {
-                    addPaddingIfKeyboardIsClosed()
-                }
-            }
-        }
-
-    }
-
-    private fun addPaddingIfKeyboardIsClosed() {
-        activity?.run{
-            if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-                val container = rootView.findViewById<View>(R.id.container)
-                val params = container
-                        .layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(this))
-                container.layoutParams = params
-            }
-        }
-
-    }
-
-    private fun removePaddingIfKeyboardIsShowing() {
-        activity?.run{
-            if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-                val container = rootView.findViewById<View>(R.id.container)
-                val params = container.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(0, 0, 0, 0)
-                container.layoutParams = params
-            }
-        }
-    }
-
-    fun getSoftButtonsBarSizePort(activity: FragmentActivity): Int {
-        // getRealMetrics is only available with API 17 and +
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val metrics = DisplayMetrics()
-            activity.windowManager.defaultDisplay.getMetrics(metrics)
-            val usableHeight = metrics.heightPixels
-            activity.windowManager.defaultDisplay.getRealMetrics(metrics)
-            val realHeight = metrics.heightPixels
-            return if (realHeight > usableHeight)
-                realHeight - usableHeight
-            else
-                0
-        }
-        return 0
-    }
-
-    fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
-
-    private fun isLollipopOrNewer(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-    }
 
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.chat_list)
@@ -308,13 +253,17 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         userSession.gcToken = "asd"
     }
 
-    override fun onBackPressed(): Boolean {
-        return if (::viewState.isInitialized) {
-            viewState.onBackPressed()
-        } else
-            false
+    fun backPress() {
+//        if (onPlayTime != 0L) {
+//            analytics.eventWatchVideoDuration(getChannelInfoViewModel()!!.getChannelId(), getDurationWatchVideo())
+//        }
+        if(exitDialog != null){
+            exitDialog!!.show()
+        } else {
+            activity?.finish()
+            activity?.onBackPressed()
+        }
     }
-
 
     override fun addQuickReply(text: String?) {
 //        if (activity != null
@@ -352,7 +301,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onOpenWebSocket() {
-        snackbarWebsocket?.dismiss()
+        snackBarWebSocket?.dismiss()
     }
 
     override fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean) {
@@ -423,8 +372,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun setSnackBarConnectingWebSocket() {
         if (userSession.isLoggedIn) {
-            snackbarWebsocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
-            snackbarWebsocket?.let {
+            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
+            snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.show()
             }
@@ -433,11 +382,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun setSnackBarRetryConnectingWebSocket() {
         if (userSession.isLoggedIn) {
-            snackbarWebsocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
-            snackbarWebsocket?.let {
+            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
+            snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry), View.OnClickListener {
-                    setSnackBarConnectingWebSocket()
+                    viewState.getChannelInfo()?.let {
+                        presenter.getPlayInfo(it.channelId, onSuccessGetInfo())
+                        setSnackBarConnectingWebSocket()
+                    }
                 })
                 it.show()
             }
@@ -542,4 +494,5 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         presenter.detachView()
         super.onDestroy()
     }
+
 }

@@ -35,4 +35,5 @@ interface PlayViewState {
     fun afterSendMessage()
     fun onQuickReplyClicked(text: String?)
     fun onKeyboardHidden()
+    fun getChannelInfo(): ChannelInfoViewModel?
 }

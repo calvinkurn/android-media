@@ -40,6 +40,11 @@
     <color name="play_admin">#82ef95</color>
     <color name="play_transparent">#b331353b</color>
     <color name="play_transparent_hint_reply">#aeffffff</color>
+    <color name="play_new_chat">#f531353b</color>
+
+
+    <color name="quiz_start">#82ef95</color>
+    <color name="quiz_end">#ffc400</color>
 
 
 </resources>
