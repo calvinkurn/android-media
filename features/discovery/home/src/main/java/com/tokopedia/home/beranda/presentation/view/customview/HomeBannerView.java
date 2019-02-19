@@ -53,7 +53,7 @@ public class HomeBannerView extends BannerView {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int position = currentPosition > 0 ? currentPosition : 0;
                     String url = promoImageUrls.get(position);
-                    ImageHandler.loadImageBlurWithCrossFade(
+                    ImageHandler.loadImageBlurWithFadeIn(
                             getContext(),
                             img_banner_background,
                             url

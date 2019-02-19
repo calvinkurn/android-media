@@ -77,6 +77,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                     .placeholder(R.drawable.ic_loading_image)
                     .error(R.drawable.ic_loading_image)
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .centerCrop()
                     .into(holder.bannerImage);
         } catch (Exception e) {
             e.printStackTrace();

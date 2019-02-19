@@ -30,6 +30,8 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.util.Base64;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -772,7 +774,7 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageBlurWithCrossFade(final Context context, final ImageView imageView, String imageUrl) {
+    public static void loadImageBlurWithFadeIn(final Context context, final ImageView imageView, String imageUrl) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
@@ -788,12 +790,13 @@ public class ImageHandler {
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
                     .centerCrop()
-                    .animate(android.R.anim.fade_in)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation
                                 glideAnimation) {
                             Bitmap blurredBitmap = blur(context, resource);
+                            Animation fadeInAnimation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+                            imageView.startAnimation(fadeInAnimation);
                             imageView.setImageBitmap(blurredBitmap);
                         }
                     });
