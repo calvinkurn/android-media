@@ -41,6 +41,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core2.R;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.URLDecoder;
 
@@ -62,6 +64,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     private static final int LOGIN_GPLUS = 123453;
+    private static final int REQUEST_CODE_LOGIN = 123321;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
@@ -107,6 +110,21 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = getArguments().getString(EXTRA_URL);
             showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
+
+        if(urlNeedLoginNative(url)){
+            startActivityForResult(((TkpdCoreRouter)getActivity().getApplicationContext()).getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
+        }
+    }
+
+    private boolean urlNeedLoginNative(String url) {
+        UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
+        boolean urlNeedLogin;
+        switch (DeepLinkChecker.getDeepLinkType(url)) {
+            case DeepLinkChecker.PLAY: urlNeedLogin = true;
+            default : urlNeedLogin = false;
+        }
+
+        return !userSession.isLoggedIn() && urlNeedLogin;
     }
 
     private String decode(String url) {
@@ -428,7 +446,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 callbackBeforeL = null;
             }
         }
-        if (requestCode == LOGIN_GPLUS) {
+
+        if (requestCode == LOGIN_GPLUS || requestCode == REQUEST_CODE_LOGIN) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = WebViewGeneral.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
