@@ -6,52 +6,66 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <FrameLayout
+            <include
+                layout="@layout/kyc_selfie_intro"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/selfieid_preview_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#2d263b">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <ImageView
-                    android:id="@+id/selfieid_img"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-            </FrameLayout>
+                    android:background="#2d263b">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_100"
-                android:layout_marginRight="@dimen/dp_30"
-                android:background="@drawable/btn_bg_rounded_corners"
-                android:gravity="center_horizontal"
-                android:text="GUNAKAN"
-                android:textColor="#ffffff"
-                android:textSize="14sp" />
+                    <ImageView
+                        android:id="@+id/selfieid_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </FrameLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_30"
-                android:gravity="center_horizontal"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_10"
-                android:text="ULANGI"
-                android:textColor="#06b3ba"
-                android:textSize="14sp" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/use_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_100"
+                    android:layout_marginRight="@dimen/dp_30"
+                    android:background="@drawable/btn_bg_rounded_corners"
+                    android:text="GUNAKAN"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/retake_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_30"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:text="ULANGI"
+                    android:background="@color/white"
+                    android:textColor="#06b3ba"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </FrameLayout>
     </ScrollView>
 
     <include

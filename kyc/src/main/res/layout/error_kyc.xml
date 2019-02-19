@@ -37,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:textColor="#6b767e"
+                android:id="@+id/error_desc"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_gravity="center"
                 android:textSize="14sp" />
@@ -51,6 +52,7 @@
         android:gravity="center_horizontal"
         android:textColor="#ffffff"
         android:textSize="14sp"
+        android:id="@+id/try_again"
         android:layout_marginLeft="@dimen/dp_30"
         android:layout_marginRight="@dimen/dp_30"
         android:layout_marginBottom="@dimen/dp_32"

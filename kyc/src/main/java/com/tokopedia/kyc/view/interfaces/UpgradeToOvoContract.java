@@ -1,4 +1,4 @@
-package com.tokopedia.kyc;
+package com.tokopedia.kyc.view.interfaces;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;

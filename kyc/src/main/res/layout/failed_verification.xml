@@ -43,6 +43,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/upgrade_now"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
@@ -53,6 +54,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/returnto_main_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"

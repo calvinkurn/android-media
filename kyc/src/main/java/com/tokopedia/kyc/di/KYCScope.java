@@ -1,4 +1,4 @@
-package com.tokopedia.kyc;
+package com.tokopedia.kyc.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,5 +7,5 @@ import javax.inject.Scope;
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface OVOUpgradeScope {
+public @interface KYCScope {
 }

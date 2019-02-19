@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/cardid_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_24">
+
+                <ImageView
+                    android:id="@+id/cardid_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="102dp"
+                    android:background="@drawable/bg_transparent_black_rounded_corners"
+                    android:src="@drawable/ovo_premier_verifikasi_gagal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/transparent"
+                    android:drawableLeft="@drawable/ic_refresh_turqoise"
+                    android:text="Ulangi"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cardid_container"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginTop="@dimen/dp_120"
+                    android:lineSpacingExtra="4sp"
+                    android:text="Foto Kartu Identitas"
+                    android:textColor="#2d263b"
+                    android:textSize="14sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/selfieid_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_toRightOf="@+id/cardid_container">
+
+                <ImageView
+                    android:id="@+id/selfieid_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="102dp"
+                    android:background="@drawable/bg_transparent_black_rounded_corners"
+                    android:src="@drawable/ovo_premier_verifikasi_gagal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@color/transparent"
+                    android:drawableLeft="@drawable/ic_refresh_turqoise"
+                    android:text="Ulangi"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cardid_container"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginTop="@dimen/dp_120"
+                    android:lineSpacingExtra="4sp"
+                    android:text="Selfie dengan Kartu Identitas"
+                    android:textColor="#2d263b"
+                    android:textSize="14sp" />
+            </FrameLayout>
+
+            <CheckBox
+                android:id="@+id/chkbx_tnc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cardid_container"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_200"
+                android:layout_marginRight="@dimen/dp_30"
+                android:text="Saya setuju dengan Syarat dan Ketentuan yang berlaku"
+                android:textColor="#4a4a4a"
+                android:textSize="12sp" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/chkbx_tnc"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_30"
+                android:background="@drawable/btn_bg_rounded_corners"
+                android:gravity="center"
+                android:text="PROSES"
+                android:enabled="false"
+                android:id="@+id/proceed_tnc"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></include>
+</RelativeLayout>

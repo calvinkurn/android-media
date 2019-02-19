@@ -1,18 +1,22 @@
-package com.tokopedia.kyc;
+package com.tokopedia.kyc.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.R;
+import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.view.interfaces.UpgradeToOvoContract;
 
-public class UpgradeToOvoFragment extends BaseDaggerFragment
+public class FragmentUpgradeToOvo extends BaseDaggerFragment
         implements UpgradeToOvoContract.View, View.OnClickListener{
 
     private ActivityListener activityListener;
@@ -22,7 +26,7 @@ public class UpgradeToOvoFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        getComponent(UpgradeOvoComponent.class).inject(this);
+        getComponent(KYCComponent.class).inject(this);
     }
 
     @Override
@@ -40,8 +44,8 @@ public class UpgradeToOvoFragment extends BaseDaggerFragment
         return null;
     }
 
-    public static UpgradeToOvoFragment newInstance() {
-        UpgradeToOvoFragment fragmentUpgradeToOvo = new UpgradeToOvoFragment();
+    public static FragmentUpgradeToOvo newInstance() {
+        FragmentUpgradeToOvo fragmentUpgradeToOvo = new FragmentUpgradeToOvo();
         return fragmentUpgradeToOvo;
     }
 
@@ -72,10 +76,7 @@ public class UpgradeToOvoFragment extends BaseDaggerFragment
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.upgrade_btn) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.parent_view,IntroToOvoUpgradeStepsFragment.newInstance(), TAG_START_UPGRADE);
-            fragmentTransaction.addToBackStack(TAG_START_UPGRADE);
-            fragmentTransaction.commitAllowingStateLoss();
+            activityListener.addReplaceFragment(this, true, TAG_START_UPGRADE);
         } else if (i == R.id.later_btn) {
             getActivity().finish();
         }

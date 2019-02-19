@@ -1,4 +1,4 @@
-package com.tokopedia.kyc;
+package com.tokopedia.kyc.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,14 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.R;
+import com.tokopedia.kyc.di.KYCComponent;
 
-public class IntroToOvoUpgradeStepsFragment extends BaseDaggerFragment implements View.OnClickListener {
+public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implements View.OnClickListener {
     private ActivityListener activityListener;
     private Button startUpgradeProcess;
 
     @Override
     protected void initInjector() {
-        getComponent(UpgradeOvoComponent.class).inject(this);
+        getComponent(KYCComponent.class).inject(this);
     }
 
     @Override
@@ -25,8 +29,8 @@ public class IntroToOvoUpgradeStepsFragment extends BaseDaggerFragment implement
         return Constants.Values.OVOUPGRADE_STEP_2_SCR;
     }
 
-    public static IntroToOvoUpgradeStepsFragment newInstance() {
-        IntroToOvoUpgradeStepsFragment fragmentStartUpgradeToOvo = new IntroToOvoUpgradeStepsFragment();
+    public static FragmentIntroToOvoUpgradeSteps newInstance() {
+        FragmentIntroToOvoUpgradeSteps fragmentStartUpgradeToOvo = new FragmentIntroToOvoUpgradeSteps();
         return fragmentStartUpgradeToOvo;
     }
 
