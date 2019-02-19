@@ -60,7 +60,7 @@ public class AccountModel {
     private VccUserBalance vccUserBalance;
 
     @SerializedName("kycStatus")
-    private KycStatusPojo kycStatusPojo;
+    private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
     private PendingCashbackModel pendingCashbackModel;
 
