@@ -25,31 +25,31 @@ import java.util.List;
 public class AccountModel {
     @SerializedName("isAuthenticated")
     @Expose
-    private Integer isAuthenticated;
+    private Integer isAuthenticated = 0;
     @SerializedName("saldo")
     @Expose
-    private DepositModel deposit;
+    private DepositModel deposit = new DepositModel();
     @SerializedName("wallet")
     @Expose
-    private WalletModel wallet;
+    private WalletModel wallet = new WalletModel();
     @SerializedName("profile")
     @Expose
-    private ProfileModel profile;
+    private ProfileModel profile = new ProfileModel();
     @SerializedName("userShopInfo")
     @Expose
-    private UserShopInfoModel shopInfo;
+    private UserShopInfoModel shopInfo = new UserShopInfoModel();
     @SerializedName("tokopoints")
     @Expose
-    private TokopointsModel tokopoints;
+    private TokopointsModel tokopoints = new TokopointsModel();
     @SerializedName("notifications")
     @Expose
-    private NotificationsModel notifications;
+    private NotificationsModel notifications = new NotificationsModel();
     @SerializedName("reputation_shops")
     @Expose
     private List<ReputationShop> reputationShops = new ArrayList<>();
     @SerializedName("tokopointsSumCoupon")
     @Expose
-    private TokopointsSumCoupon tokopointsSumCoupon;
+    private TokopointsSumCoupon tokopointsSumCoupon = new TokopointsSumCoupon();
     @SerializedName("le_preapprove")
     @Expose
     private LePreapproveModel lePreapprove = new LePreapproveModel();
@@ -63,7 +63,7 @@ public class AccountModel {
     @SerializedName("kycStatus")
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
-    private PendingCashbackModel pendingCashbackModel;
+    private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 
     public Integer getIsAuthenticated() {
         return isAuthenticated;
