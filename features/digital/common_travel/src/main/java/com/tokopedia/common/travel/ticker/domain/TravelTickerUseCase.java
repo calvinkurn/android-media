@@ -3,6 +3,7 @@ package com.tokopedia.common.travel.ticker.domain;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerAttribute;
@@ -34,7 +35,7 @@ public class TravelTickerUseCase extends UseCase<TravelTickerViewModel> {
     private GraphqlUseCase graphqlUseCase;
 
     @Inject
-    public TravelTickerUseCase(Context context, GraphqlUseCase graphqlUseCase) {
+    public TravelTickerUseCase(@ApplicationContext Context context, GraphqlUseCase graphqlUseCase) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
     }
