@@ -4,11 +4,10 @@ import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.iris.*
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
+import okhttp3.*
 import org.json.JSONObject
 import retrofit2.Retrofit
+import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
 /**
@@ -49,8 +48,24 @@ class ApiService(private val context: Context) {
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
+
+        builder.connectionSpecs(listOf(legacyChiper()))
+
         return builder.build()
     }
+
+    private fun legacyChiper() : ConnectionSpec {
+        var cipherSuites: MutableList<CipherSuite>? = ConnectionSpec.MODERN_TLS.cipherSuites()
+        if (!cipherSuites!!.contains(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)) {
+            cipherSuites = ArrayList(cipherSuites)
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA)
+        }
+        return ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .cipherSuites(*cipherSuites.toTypedArray())
+                .build()
+    }
+
 
     companion object {
 
