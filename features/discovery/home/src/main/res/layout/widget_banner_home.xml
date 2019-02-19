@@ -8,6 +8,7 @@
     <ImageView
         android:id="@+id/img_banner_background"
         android:layout_width="match_parent"
+        android:scaleType="centerCrop"
         android:layout_height="@dimen/dp_250"
         tools:background="@color/tkpd_main_green"
         app:layout_constraintEnd_toEndOf="parent"

@@ -13,6 +13,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -37,8 +38,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.DrawableCrossFadeFactory;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
@@ -758,6 +761,43 @@ public class ImageHandler {
                     .load(imageUrl)
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation
+                                glideAnimation) {
+                            Bitmap blurredBitmap = blur(context, resource);
+                            imageView.setImageBitmap(blurredBitmap);
+                        }
+                    });
+        }
+    }
+
+    public static void loadImageBlurWithCrossFade(final Context context, final ImageView imageView, String imageUrl) {
+        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .crossFade()
+                    .override(80, 80)
+                    .centerCrop()
+                    .into(imageView);
+        }
+
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                            return false;
+                        }
+                        @Override public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            ImageViewTarget imTarget = (ImageViewTarget)target;
+                            return new DrawableCrossFadeFactory<Drawable>()
+                                    .build(isFromMemoryCache, isFirstResource)
+                                    .animate(new BitmapDrawable(imTarget.getView().getResources(), resource), imTarget);
+                        }
+                    })
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation

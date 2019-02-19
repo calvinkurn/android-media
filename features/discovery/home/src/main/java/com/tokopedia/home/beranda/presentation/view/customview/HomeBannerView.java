@@ -49,15 +49,16 @@ public class HomeBannerView extends BannerView {
         super.buildView();
         bannerRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int position = currentPosition > 0 ? currentPosition : 0;
-                String url = promoImageUrls.get(position);
-                ImageHandler.loadImageBlur(
-                        getContext(),
-                        img_banner_background,
-                        url
-                );
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    int position = currentPosition > 0 ? currentPosition : 0;
+                    String url = promoImageUrls.get(position);
+                    ImageHandler.loadImageBlurWithCrossFade(
+                            getContext(),
+                            img_banner_background,
+                            url
+                    );
+                }
             }
         });
     }
