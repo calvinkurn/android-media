@@ -118,11 +118,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
-
-        UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
-        if (needLogin && !userSession.isLoggedIn()) {
-            startActivityForResult(((TkpdCoreRouter) getActivity().getApplicationContext()).getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
-        }
     }
 
     private String decode(String url) {
@@ -154,6 +149,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         } else if (!showToolbar && getActivity() != null) {
             getActivity().getActionBar().hide();
+        }
+
+        if(getActivity()!= null) {
+            UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
+            if (needLogin && !userSession.isLoggedIn()) {
+                startActivityForResult(((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
+            }
         }
     }
 
