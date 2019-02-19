@@ -9,34 +9,34 @@ import com.google.gson.annotations.SerializedName
 class TravelTickerAttribute(
         @SerializedName("Title")
         @Expose
-        val title: String,
+        val title: String = "",
         @SerializedName("Message")
         @Expose
-        val message: String,
+        val message: String = "",
         @SerializedName("URL")
         @Expose
-        val url: String,
+        val url: String = "",
         @SerializedName("Type")
         @Expose
-        val type: Int,
+        val type: Int = 0,
         @SerializedName("Status")
         @Expose
-        val status: Int,
+        val status: Int = 0,
         @SerializedName("EndTime")
         @Expose
-        val endTime: String,
+        val endTime: String = "",
         @SerializedName("StartTime")
         @Expose
-        val startTime: String,
+        val startTime: String = "",
         @SerializedName("Instances")
         @Expose
-        val instances: Int,
+        val instances: Int = 0,
         @SerializedName("Device")
         @Expose
-        val device: Int,
+        val device: Int = 0,
         @SerializedName("Page")
         @Expose
-        val page: String,
+        val page: String = "",
         @SerializedName("IsPeriod")
         @Expose
-        val isPeriod: Boolean)
+        val isPeriod: Boolean = false)

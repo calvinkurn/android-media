@@ -296,6 +296,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         presenter.attachView(this);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
+
+        presenter.fetchTickerData();
     }
 
     @Override

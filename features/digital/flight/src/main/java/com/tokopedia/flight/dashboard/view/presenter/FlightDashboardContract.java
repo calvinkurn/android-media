@@ -133,5 +133,7 @@ public interface FlightDashboardContract {
         void onBannerItemClick(int position, BannerDetail bannerDetail);
 
         void actionOnPromoScrolled(int position, BannerDetail bannerData);
+
+        void fetchTickerData();
     }
 }
