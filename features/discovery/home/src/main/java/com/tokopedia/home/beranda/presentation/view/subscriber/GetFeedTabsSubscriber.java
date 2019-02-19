@@ -1,13 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
-import com.crashlytics.android.Crashlytics;
-import com.tokopedia.home.BuildConfig;
-import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
-
 import java.util.List;
 
 import rx.Subscriber;
