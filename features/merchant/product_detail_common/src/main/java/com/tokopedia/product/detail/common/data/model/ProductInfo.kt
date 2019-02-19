@@ -20,10 +20,6 @@ data class ProductInfo(
         @Expose
         val cashback: Cashback = Cashback(),
 
-        @SerializedName("catalog")
-        @Expose
-        val catalog: Catalog = Catalog(),
-
         @SerializedName("category")
         @Expose
         val category: Category = Category(),
@@ -40,10 +36,6 @@ data class ProductInfo(
         @Expose
         val preorder: PreOrder = PreOrder(),
 
-        @SerializedName("returnInfo")
-        @Expose
-        val returnInfo: ReturnInfo = ReturnInfo(),
-
         @SerializedName("stats")
         @Expose
         val stats: Stats = Stats(),
@@ -58,12 +50,20 @@ data class ProductInfo(
 
         @SerializedName("wholesale")
         @Expose
-        val wholesale: List<Wholesale> = listOf()
+        val wholesale: List<Wholesale> = listOf(),
+
+        @SerializedName("variant")
+        @Expose
+        val variant: Variant = Variant(),
+
+        @SerializedName("stock")
+        @Expose
+        val stock: Stock = Stock()
 ) {
         data class Response(
                 @SerializedName("getPDPInfo")
                 @Expose
-                val data: ProductInfo = ProductInfo()
+                val data: ProductInfo? = null
         )
 
         data class WishlistStatus(

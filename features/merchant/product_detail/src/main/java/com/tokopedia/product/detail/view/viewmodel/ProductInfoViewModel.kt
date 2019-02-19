@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
@@ -64,7 +65,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
-                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId,
+                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
                         PARAM_PRODUCT_KEY to productParams.productName)
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
@@ -72,16 +73,31 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
-            productInfoP1.productInfo = data.getSuccessData<ProductInfo.Response>().data
-            productInfoP1Resp.value = Success(productInfoP1)
+
+            // for unsigned in jenkins
+            /*val error = data.getError(ProductInfo.Response::class.java)
+            if (error == null || error.isEmpty()){
+                data.getData<ProductInfo.Response>(ProductInfo.Response::class.java).data?.let {
+                    productInfoP1.productInfo =  it
+                    productInfoP1Resp.value = Success(productInfoP1)
+                }
+            } else {
+                throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            }*/
+
+            // for signed
+            data.getSuccessData<ProductInfo.Response>().data?.let {
+                productInfoP1.productInfo =  it
+                productInfoP1Resp.value = Success(productInfoP1)
+            }
 
             //if fail, will not interrupt the product info
-            val variantJob = async {
+            /*val variantJob = async {
                 val paramsVariant = mapOf(PARAM_PRODUCT_ID to productParams.productId)
                 val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy).getSuccessData<ProductDetailVariantResponse>()
-            }
+            }*/
 
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID, productInfoP1.productInfo.basic.id, resources)
             productInfoP2resp.value = productInfoP2
@@ -89,30 +105,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             ?: return@launchCatchError
             productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, resources)
 
-            try {
+            /*try {
                 productVariantResp.value = Success(variantJob.await().data)
             } catch (e: Exception) {
                 productVariantResp.value = Fail(e)
-            }
+            }*/
         }) {
-            //productInfoP1Resp.value = Fail(it)
+            productInfoP1Resp.value = Fail(it)
             // for testing
-            val gson = Gson()
-            val response = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_info_p1),
-                    ProductInfo.Response::class.java)
-            val productInfoP1 = ProductInfoP1()
-            productInfoP1.productInfo = response.data
-            productInfoP1Resp.value = Success(productInfoP1)
-
-            //FOR Testing only, remove all below code after testing
-            val responseVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
-                    ProductDetailVariantResponse::class.java)
-            productVariantResp.value = Success(responseVariant.data)
-            val productInfoP2 = getProductInfoP2(response.data.basic.shopID, response.data.basic.id, resources)
-            productInfoP2resp.value = productInfoP2
-            val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
-            ?: return@launchCatchError
-            productInfoP3resp.value = getProductInfoP3(response.data, domain, resources)
         }
     }
 

@@ -12,7 +12,6 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             minOrder
             maxOrder
             status
-            stock
             weight
             weightUnit
             condition
@@ -22,25 +21,13 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             isKreasiLokal
             isMustInsurance
             isEligibleCOD
-            isFreeReturn
-            isCatalogID
-        }
-        returnInfo {
-            icon
-            colorHex
-            colorRgb
-            content
+            catalogID
         }
         brand {
             brandID
             isActive
+            brandStatus
             name
-        }
-        catalog {
-            id
-            is_active
-            name
-            url
         }
         menu {
             menuID
@@ -78,22 +65,21 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
         }
         wholesale {
             minQty
-            maxQty
             price
         }
         campaign {
             campaignID
             campaignType
+            campaignTypeName
+            percentageAmount
+            originalPrice
+            discountedPrice
+            stock
             isActive
             isAppsOnly
-            campaignTypeName
-            originalPrice
-            percentageAmount
-            stock
             startDate
             endDate
-            endDateUnix
-            applinks
+            appLinks
         }
         cashback {
             percentage
@@ -108,6 +94,19 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             txSuccess
             txReject
             itemSold
+        }
+        videos {
+            source
+            url
+        }
+        variant {
+          parentID
+          isVariant
+        }
+        stock {
+          useStock
+          value
+          stockWording
         }
     }
 }

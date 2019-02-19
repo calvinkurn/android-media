@@ -554,7 +554,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.showLoading();
         getProductUseCase.execute(response -> {
             viewListener.finishLoading();
-            if (response != null && response.getData().getBasic().getId() > 0){
+            if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0){
                 String productApplink = ApplinkConst.PRODUCT_INFO.replace("{product_id}",
                         response.getData().getBasic().getId()+"");
                 if (RouteManager.isSupportApplink(context, productApplink)){

@@ -32,10 +32,6 @@ data class Basic(
         @Expose
         val isEligibleCod: Boolean = false,
 
-        @SerializedName("isFreeReturn")
-        @Expose
-        val isFreeReturn: Boolean = false,
-
         @SerializedName("isKreasiLokal")
         @Expose
         val isKreasiLokal: Boolean = false,
@@ -62,7 +58,7 @@ data class Basic(
 
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
+        val price: Float = 0f,
 
         @SerializedName("priceCurrency")
         @Expose
@@ -80,19 +76,15 @@ data class Basic(
         @Expose
         val status: Int = 1,
 
-        @SerializedName("stock")
-        @Expose
-        val stock: Int = 0,
-
         @SerializedName("url")
         @Expose
         val url: String = "",
 
         @SerializedName("weight")
         @Expose
-        val weight: Int = 0,
+        val weight: Float = 0f,
 
         @SerializedName("weightUnit")
         @Expose
-        val weightUnit: Int = 0
+        val weightUnit: String = ""
 )

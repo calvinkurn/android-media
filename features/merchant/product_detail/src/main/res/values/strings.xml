@@ -19,10 +19,10 @@
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
-    <string name="template_weight">%1$d %2$s</string>
-    <string name="template_campaign_off">%1$d%% OFF </string>
+    <string name="template_weight">%1$s %2$s</string>
+    <string name="template_campaign_off">%1$s%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
-    <string name="template_success_rate">%1$.2f%% (%2$s produk)</string>
+    <string name="template_success_rate">%1$s%% (%2$s produk)</string>
     <string name="template_talk">%1$d Diskusi</string>
     <string name="template_preorder_time">%1$d Hari</string>
     <string name="template_min_order">%1$d Buah</string>

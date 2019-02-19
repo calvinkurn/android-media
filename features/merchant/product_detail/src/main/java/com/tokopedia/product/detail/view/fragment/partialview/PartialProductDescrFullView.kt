@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.common.data.model.Category
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.Video
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
-import com.tokopedia.product.detail.data.util.successRate
+import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.view.activity.ProductFullDescriptionActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
@@ -54,9 +54,9 @@ class PartialProductDescrFullView private constructor(private val view: View,
                 youtube_scroll.visibility = View.GONE
             }
 
-            txt_weight.text = context.getString(R.string.template_weight, data.basic.weight,
-                    data.basic.weightUnit.toString())
-            txt_success_rate.text = String.format("%.2f%%", data.txStats.successRate)
+            txt_weight.text = context.getString(R.string.template_weight, data.basic.weight.numberFormatted(),
+                    if (data.basic.weightUnit.toLowerCase() == KG) LABEL_KG else LABEL_GRAM )
+            txt_success_rate.text = String.format("%s%%", data.txStats.successRate.numberFormatted())
 
             label_asuransi.visible()
             txt_asuransi.visible()

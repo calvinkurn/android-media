@@ -36,13 +36,13 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
 
         private const val NO_DESCRIPTION = "TIDAK ADA DESKRIPSI"
 
-        fun createInstance(productName: String, productPrice: Int, shopName: String,
+        fun createInstance(productName: String, productPrice: Float, shopName: String,
                            productImage: String, productDescr: String, productVids: List<String>,
                            isOS: Boolean = false) =
                 ProductFullDescriptionFragment().apply {
                     arguments = Bundle().also {
                         it.putString(PARAM_PRODUCT_NAME, productName)
-                        it.putInt(PARAM_PRODUCT_PRICE, productPrice)
+                        it.putFloat(PARAM_PRODUCT_PRICE, productPrice)
                         it.putString(PARAM_PRODUCT_SHOP, shopName)
                         it.putString(PARAM_PRODUCT_IMAGE, productImage)
                         it.putString(PARAM_PRODUCT_DESCR, productDescr)
@@ -70,7 +70,7 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
         arguments?.let {
             ImageHandler.loadImageAndCache(product_image, it.getString(PARAM_PRODUCT_IMAGE))
             product_name.text = MethodChecker.fromHtml(it.getString(PARAM_PRODUCT_NAME))
-            product_price.text = it.getInt(PARAM_PRODUCT_PRICE).getCurrencyFormatted()
+            product_price.text = it.getFloat(PARAM_PRODUCT_PRICE).getCurrencyFormatted()
             product_shop.text = it.getString(PARAM_PRODUCT_SHOP)
             if (it.getBoolean(PARAM_IS_OS, false)) {
                 product_shop.setDrawableLeft(R.drawable.ic_official_store)

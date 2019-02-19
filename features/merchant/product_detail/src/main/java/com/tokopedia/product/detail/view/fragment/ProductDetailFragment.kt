@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
@@ -74,6 +75,8 @@ import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsListener
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
@@ -582,8 +585,19 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
             actionButtonView.renderData(data.basic.status,
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
-                            || shopInfo.isAllowManage == 1) && GlobalConfig.isSellerApp(),
+                            || shopInfo.isAllowManage == 1),
                     data.preorder)
+
+            actionButtonView.promoTopAdsClick = {
+
+                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productInfo?.basic?.id?.toString())
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+
+                context?.let { RouteManager.route(it, applink) }
+            }
             actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: PRD_STATE_ACTIVE)
@@ -643,7 +657,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
-
+        ToasterError.make(coordinator, throwable.localizedMessage).show()
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {

@@ -20,7 +20,7 @@ class ProductFullDescriptionActivity: BaseSimpleActivity() {
         private const val PARAM_PRODUCT_VIDS = "product_vids"
         private const val PARAM_IS_OS = "is_os"
 
-        fun createIntent(context: Context, productName: String, productPrice: Int, shopName: String,
+        fun createIntent(context: Context, productName: String, productPrice: Float, shopName: String,
                          productImage: String, productDescr: String, productVids: List<String>,
                          isOS: Boolean = false): Intent {
 
@@ -43,7 +43,7 @@ class ProductFullDescriptionActivity: BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment = ProductFullDescriptionFragment
             .createInstance(intent.getStringExtra(PARAM_PRODUCT_NAME) ?: "",
-                    intent.getIntExtra(PARAM_PRODUCT_PRICE, 0),
+                    intent.getFloatExtra(PARAM_PRODUCT_PRICE, 0f),
                     intent.getStringExtra(PARAM_PRODUCT_SHOP) ?: "",
                     intent.getStringExtra(PARAM_PRODUCT_IMAGE) ?: "",
                     intent.getStringExtra(PARAM_PRODUCT_DESCR) ?: "",
