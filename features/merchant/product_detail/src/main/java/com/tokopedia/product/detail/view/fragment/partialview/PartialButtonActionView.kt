@@ -13,6 +13,9 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 class PartialButtonActionView private constructor(private val view: View){
     var promoTopAdsClick: (() -> Unit)? = null
+    var buyNowClick: (()-> Unit)? = null
+    var addToChartClick: (()-> Unit)? = null
+    var topchatClick: (() -> Unit)? = null
     var visibility: Boolean = false
     set(value) {
         field = value
@@ -56,6 +59,10 @@ class PartialButtonActionView private constructor(private val view: View){
             } else R.string.buy)
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visibility = View.VISIBLE
+
+            btn_buy_now.setOnClickListener { buyNowClick?.invoke() }
+            btn_add_to_cart.setOnClickListener { addToChartClick?.invoke() }
+            btn_topchat.setOnClickListener { topchatClick?.invoke()  }
         }
     }
 
