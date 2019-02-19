@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.Map;
+
 @RunWith(RobolectricTestRunner.class)
 public class TrackAppTest  {
 
@@ -39,6 +41,11 @@ public class TrackAppTest  {
         @Override
         public void initialize() {
             test1 = 1;
+        }
+
+        @Override
+        public void sendGeneralEvent(Map<String, Object> value) {
+
         }
     }
 }
