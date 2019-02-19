@@ -100,7 +100,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     protected String title() {
-        return getString(R.string.title_bottomsheet_shipment_duration);
+        return getString(R.string.title_bottomsheet_shipment);
     }
 
     @Override
