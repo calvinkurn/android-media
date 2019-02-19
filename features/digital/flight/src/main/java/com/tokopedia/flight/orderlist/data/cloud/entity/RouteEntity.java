@@ -17,15 +17,33 @@ public class RouteEntity {
     @SerializedName("departure_time")
     @Expose
     private String departureTime;
+    @SerializedName("departure_airport_name")
+    @Expose
+    private String departureAirportName;
+    @SerializedName("departure_city_name")
+    @Expose
+    private String departureCityName;
     @SerializedName("arrival_id")
     @Expose
     private String arrivalAirportCode;
     @SerializedName("arrival_time")
     @Expose
     private String arrivalTime;
+    @SerializedName("arrival_airport_name")
+    @Expose
+    private String arrivalAirportName;
+    @SerializedName("arrival_city_name")
+    @Expose
+    private String arrivalCityName;
     @SerializedName("airline_id")
     @Expose
     private String airlineId;
+    @SerializedName("airline_name")
+    @Expose
+    private String airlineName;
+    @SerializedName("airline_logo")
+    @Expose
+    private String airlineLogo;
     @SerializedName("operator_airline_id")
     @Expose
     private String operatorAirlineId;
@@ -129,5 +147,29 @@ public class RouteEntity {
 
     public List<StopDetailEntity> getStopDetailEntities() {
         return stopDetailEntities;
+    }
+
+    public String getDepartureAirportName() {
+        return departureAirportName;
+    }
+
+    public String getDepartureCityName() {
+        return departureCityName;
+    }
+
+    public String getArrivalAirportName() {
+        return arrivalAirportName;
+    }
+
+    public String getArrivalCityName() {
+        return arrivalCityName;
+    }
+
+    public String getAirlineName() {
+        return airlineName;
+    }
+
+    public String getAirlineLogo() {
+        return airlineLogo;
     }
 }

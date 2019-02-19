@@ -26,10 +26,12 @@ public class FlightOrderJourneyMapper {
         if (journeyEntity != null) {
             flightOrderJourney = new FlightOrderJourney();
             flightOrderJourney.setJourneyId(journeyEntity.getId());
-            flightOrderJourney.setArrivalAirportId(journeyEntity.getArrivalAirportId());
             flightOrderJourney.setDepartureAiportId(journeyEntity.getDepartureAirportId());
             flightOrderJourney.setDepartureTime(journeyEntity.getDepartureTime());
+            flightOrderJourney.setDepartureCity(journeyEntity.getDepartureCityName());
             flightOrderJourney.setArrivalTime(journeyEntity.getArrivalTime());
+            flightOrderJourney.setArrivalCity(journeyEntity.getArrivalCityName());
+            flightOrderJourney.setArrivalAirportId(journeyEntity.getArrivalAirportId());
             flightOrderJourney.setRouteViewModels(flightDetailRouteViewModelMapper.transformList(journeyEntity.getRoutes()));
             flightOrderJourney.setStatus(String.valueOf(journeyEntity.getStatus()));
         }

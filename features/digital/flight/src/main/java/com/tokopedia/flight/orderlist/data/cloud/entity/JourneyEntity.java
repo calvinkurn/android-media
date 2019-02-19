@@ -22,12 +22,36 @@ public class JourneyEntity {
     @SerializedName("departure_time")
     @Expose
     private String departureTime;
+    @SerializedName("departure_airport_name")
+    @Expose
+    private String departureAirportName;
+    @SerializedName("departure_terminal")
+    @Expose
+    private String departureTerminal;
+    @SerializedName("departure_city_name")
+    @Expose
+    private String departureCityName;
     @SerializedName("arrival_id")
     @Expose
     private String arrivalAirportId;
     @SerializedName("arrival_time")
     @Expose
     private String arrivalTime;
+    @SerializedName("arrival_airport_name")
+    @Expose
+    private String arrivalAirportName;
+    @SerializedName("arrival_terminal")
+    @Expose
+    private String arrivalTerminal;
+    @SerializedName("arrival_city_name")
+    @Expose
+    private String arrivalCityName;
+    @SerializedName("total_transit")
+    @Expose
+    private int totalTransit;
+    @SerializedName("total_stop")
+    @Expose
+    private int totalStop;
     @SerializedName("routes")
     @Expose
     private List<RouteEntity> routes;
@@ -99,5 +123,37 @@ public class JourneyEntity {
 
     public long getId() {
         return id;
+    }
+
+    public String getDepartureAirportName() {
+        return departureAirportName;
+    }
+
+    public String getDepartureTerminal() {
+        return departureTerminal;
+    }
+
+    public String getDepartureCityName() {
+        return departureCityName;
+    }
+
+    public String getArrivalAirportName() {
+        return arrivalAirportName;
+    }
+
+    public String getArrivalTerminal() {
+        return arrivalTerminal;
+    }
+
+    public String getArrivalCityName() {
+        return arrivalCityName;
+    }
+
+    public int getTotalTransit() {
+        return totalTransit;
+    }
+
+    public int getTotalStop() {
+        return totalStop;
     }
 }
