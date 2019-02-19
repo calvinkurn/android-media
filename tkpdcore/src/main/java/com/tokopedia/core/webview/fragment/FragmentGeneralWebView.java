@@ -57,6 +57,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
     public static final String EXTRA_SHOW_TOOLBAR = "show_toolbar";
+    public static final String EXTRA_NEED_LOGIN = "need_login";
     private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
     private static final String SEAMLESS = "seamless";
     private static final String LOGIN_TYPE = "login_type";
@@ -71,6 +72,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private ProgressBar progressBar;
     private String url;
     private boolean showToolbar;
+    private boolean needLogin;
     private ValueCallback<Uri> callbackBeforeL;
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -84,21 +86,26 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     /**
-     * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean, boolean)} ()}
+     *
+     *
+     *
+     * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean, boolean, boolean)}
+     * ()}
      * instead.
      */
     @Deprecated
     public static FragmentGeneralWebView createInstance(String url) {
-        return createInstance(url, false, true);
+        return createInstance(url, false, true, false);
     }
 
     public static FragmentGeneralWebView createInstance(String url, boolean allowOverride,
-                                                        boolean showToolbar) {
+                                                        boolean showToolbar, boolean needLogin) {
         FragmentGeneralWebView fragment = new FragmentGeneralWebView();
         Bundle args = new Bundle();
         args.putString(EXTRA_URL, url);
         args.putBoolean(EXTRA_OVERRIDE_URL, allowOverride);
         args.putBoolean(EXTRA_SHOW_TOOLBAR, showToolbar);
+        args.putBoolean(EXTRA_NEED_LOGIN, needLogin);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,23 +115,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             url = getArguments().getString(EXTRA_URL);
+            needLogin = getArguments().getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
 
-        if(urlNeedLoginNative(url)){
+        UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
+        if(needLogin && !userSession.isLoggedIn()){
             startActivityForResult(((TkpdCoreRouter)getActivity().getApplicationContext()).getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
         }
-    }
-
-    private boolean urlNeedLoginNative(String url) {
-        UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
-        boolean urlNeedLogin;
-        switch (DeepLinkChecker.getDeepLinkType(url)) {
-            case DeepLinkChecker.PLAY: urlNeedLogin = true;
-            default : urlNeedLogin = false;
-        }
-
-        return !userSession.isLoggedIn() && urlNeedLogin;
     }
 
     private String decode(String url) {
