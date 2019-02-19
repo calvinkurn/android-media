@@ -12,7 +12,7 @@ public class NotificationsModel {
     private NotificationResolutionModel resolution;
     @SerializedName("buyerOrderStatus")
     @Expose
-    private NotificationBuyerOrderModel buyerOrder;
+    private NotificationBuyerOrderModel buyerOrder = new NotificationBuyerOrderModel();
     @SerializedName("sellerOrderStatus")
     @Expose
     private NotificationSellerOrderModel sellerOrder;

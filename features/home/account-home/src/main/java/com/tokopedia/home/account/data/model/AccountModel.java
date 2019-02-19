@@ -69,6 +69,7 @@ public class AccountModel {
     }
 
     public void setIsAuthenticated(Integer isAuthenticated) {
+
         this.isAuthenticated = isAuthenticated;
     }
 
