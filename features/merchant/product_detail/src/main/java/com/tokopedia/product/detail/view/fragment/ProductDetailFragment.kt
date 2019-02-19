@@ -72,6 +72,7 @@ import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -375,19 +376,19 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
         topads_carousel.setAdsItemClickListener(adsItemsClickListener)
         topads_carousel.setAdsListener(adsListener)
-        topads_carousel.setAdsItemImpressionListener { position, product ->
-            product?.let {
-                productDetailTracking.eventTopAdsImpression(position, it)
+        topads_carousel.setAdsItemImpressionListener (object : TopAdsItemImpressionListener(){
+            override fun onImpressionProductAdsItem(position: Int, product: Product?) {
+                product?.let {
+                    productDetailTracking.eventTopAdsImpression(position, it)
+                }
             }
-        }
+        })
     }
 
     private val adsItemsClickListener = object : TopAdsItemClickListener {
         override fun onShopItemClicked(position: Int, shop: Shop?) {}
 
         override fun onAddFavorite(position: Int, data: Data?) {}
-
-        override fun onAddWishList(position: Int, data: Data?) {}
 
         override fun onProductItemClicked(position: Int, product: Product?) {
             if (product == null) return
