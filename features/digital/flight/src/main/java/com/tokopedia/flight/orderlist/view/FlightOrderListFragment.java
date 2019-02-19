@@ -94,15 +94,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         return fragment;
     }
 
-    public static FlightOrderListFragment createInstance(boolean isShouldCheckPreload) {
-        Bundle bundle = new Bundle();
-
-        FlightOrderListFragment fragment = new FlightOrderListFragment();
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
-
     @Override
     protected String getScreenName() {
         return null;
