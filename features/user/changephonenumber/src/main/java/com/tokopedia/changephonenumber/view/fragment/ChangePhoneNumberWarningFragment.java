@@ -133,7 +133,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isSeller = !TextUtils.isEmpty(userSession.getShopId());
+                boolean isSeller = userSession.hasShop() || userSession.isAffiliate();
                 Intent intent = ((ChangePhoneNumberRouter) getActivity().getApplicationContext())
                         .getWithdrawIntent(getActivity(), isSeller);
                 Bundle bundle = new Bundle();
