@@ -582,8 +582,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        url = savedInstanceState.getString(EXTRA_URL);
-        needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
-        showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+        if(savedInstanceState!= null) {
+            url = savedInstanceState.getString(EXTRA_URL);
+            needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
+            showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+        }
     }
 }
