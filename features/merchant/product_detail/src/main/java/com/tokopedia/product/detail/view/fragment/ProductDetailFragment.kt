@@ -584,7 +584,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
             actionButtonView.renderData(data.basic.status,
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
-                            || shopInfo.isAllowManage == 1) && GlobalConfig.isSellerApp(),
+                            || shopInfo.isAllowManage == 1),
                     data.preorder)
 
             actionButtonView.promoTopAdsClick = {
