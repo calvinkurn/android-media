@@ -1,12 +1,16 @@
 package com.tokopedia.iris.data.network
 
+import android.support.annotation.Nullable
 import java.io.IOException
 import java.net.InetAddress
 import java.net.Socket
 import java.net.UnknownHostException
-
-import javax.net.ssl.SSLSocket
-import javax.net.ssl.SSLSocketFactory
+import java.security.KeyManagementException
+import java.security.KeyStore
+import java.security.KeyStoreException
+import java.security.NoSuchAlgorithmException
+import java.util.*
+import javax.net.ssl.*
 
 /**
  * Enables TLS v1.2 when creating SSLSockets.
@@ -17,7 +21,36 @@ import javax.net.ssl.SSLSocketFactory
  * @link https://developer.android.com/reference/javax/net/ssl/SSLSocket.html
  * @see SSLSocketFactory
  */
-class Tls12SocketFactory(internal val delegate: SSLSocketFactory) : SSLSocketFactory() {
+
+open class Tls12SocketFactory @Throws(KeyStoreException::class, KeyManagementException::class, NoSuchAlgorithmException::class)
+constructor() : SSLSocketFactory() {
+
+    private val delegate: SSLSocketFactory
+    private var trustManagers: Array<TrustManager>? = null
+
+    open val trustManager: X509TrustManager
+        @Nullable
+        get() = trustManagers!![0] as X509TrustManager
+
+    init {
+        generateTrustManagers()
+        val context = SSLContext.getInstance("TLS")
+        context.init(null, trustManagers, null)
+        delegate = context.socketFactory
+    }
+
+    @Throws(KeyStoreException::class, NoSuchAlgorithmException::class)
+    private fun generateTrustManagers() {
+        val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+        trustManagerFactory.init(null as KeyStore?)
+        val trustManagers = trustManagerFactory.getTrustManagers()
+
+        if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
+            throw IllegalStateException("Unexpected default trust managers:" + Arrays.toString(trustManagers))
+        }
+
+        this.trustManagers = trustManagers
+    }
 
     override fun getDefaultCipherSuites(): Array<String> {
         return delegate.defaultCipherSuites
@@ -28,38 +61,39 @@ class Tls12SocketFactory(internal val delegate: SSLSocketFactory) : SSLSocketFac
     }
 
     @Throws(IOException::class)
+    override fun createSocket(): Socket? {
+        return enableTLSOnSocket(delegate.createSocket())
+    }
+
+    @Throws(IOException::class)
     override fun createSocket(s: Socket, host: String, port: Int, autoClose: Boolean): Socket? {
-        return patch(delegate.createSocket(s, host, port, autoClose))
+        return enableTLSOnSocket(delegate.createSocket(s, host, port, autoClose))
     }
 
     @Throws(IOException::class, UnknownHostException::class)
     override fun createSocket(host: String, port: Int): Socket? {
-        return patch(delegate.createSocket(host, port))
+        return enableTLSOnSocket(delegate.createSocket(host, port))
     }
 
     @Throws(IOException::class, UnknownHostException::class)
     override fun createSocket(host: String, port: Int, localHost: InetAddress, localPort: Int): Socket? {
-        return patch(delegate.createSocket(host, port, localHost, localPort))
+        return enableTLSOnSocket(delegate.createSocket(host, port, localHost, localPort))
     }
 
     @Throws(IOException::class)
     override fun createSocket(host: InetAddress, port: Int): Socket? {
-        return patch(delegate.createSocket(host, port))
+        return enableTLSOnSocket(delegate.createSocket(host, port))
     }
 
     @Throws(IOException::class)
     override fun createSocket(address: InetAddress, port: Int, localAddress: InetAddress, localPort: Int): Socket? {
-        return patch(delegate.createSocket(address, port, localAddress, localPort))
+        return enableTLSOnSocket(delegate.createSocket(address, port, localAddress, localPort))
     }
 
-    private fun patch(s: Socket): Socket {
-        if (s is SSLSocket) {
-            s.enabledProtocols = TLS_V12_ONLY
+    private fun enableTLSOnSocket(socket: Socket): Socket {
+        if (socket is SSLSocket) {
+            socket.enabledProtocols = arrayOf("TLSv1.1", "TLSv1.2")
         }
-        return s
-    }
-
-    companion object {
-        private val TLS_V12_ONLY = arrayOf("TLSv1.2")
+        return socket
     }
 }

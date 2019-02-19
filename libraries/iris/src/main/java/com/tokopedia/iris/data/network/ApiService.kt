@@ -27,16 +27,18 @@ class ApiService(private val context: Context) {
     }
 
     private fun createClient(): OkHttpClient {
+        val tlsSocketFactory = Tls12SocketFactory()
          val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-                .connectTimeout(15000, TimeUnit.MILLISECONDS)
-                .writeTimeout(10000, TimeUnit.MILLISECONDS)
-                .readTimeout(10000, TimeUnit.MILLISECONDS)
+                 .sslSocketFactory(tlsSocketFactory, tlsSocketFactory.trustManager)
+                 .connectTimeout(15000, TimeUnit.MILLISECONDS)
+                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
+                 .readTimeout(10000, TimeUnit.MILLISECONDS)
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
 
-        builder.connectionSpecs(listOf(legacyChiper()))
+        builder.connectionSpecs(listO˚f(legacyChiper()))
         builder.addInterceptor {
                     val original = it.request()
                     val request = original.newBuilder()
