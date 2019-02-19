@@ -36,15 +36,6 @@ public class GetFeedTabsSubscriber extends Subscriber<List<FeedTabModel>> {
 
     @Override
     public void onNext(List<FeedTabModel> feedTabModelList) {
-        NullCheckerKt.isContainNull(feedTabModelList, errorMessage -> {
-            String message = String.format("Found %s in %s",
-                    errorMessage, GetFeedTabsSubscriber.class.getSimpleName());
-            ContainNullException exception = new ContainNullException(message);
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception);
-            }
-            throw exception;
-        });
         viewListener.onTabFeedLoadSuccess(feedTabModelList);
     }
 }
