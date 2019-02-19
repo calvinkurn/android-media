@@ -174,6 +174,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     @Override
     public void onNotifyBadgeInboxNotification(int number) {
-        mainToolbar.setInboxNumber(number);
+        if (mainToolbar != null) {
+            mainToolbar.setInboxNumber(number);
+        }
     }
 }

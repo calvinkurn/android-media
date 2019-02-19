@@ -575,6 +575,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsRouter,
         CMRouter,
         ReferralRouter,
+        SaldoDetailsRouter,
         ILoyaltyRouter,
         ChatbotRouter,
         TrackingOptimizerRouter,
