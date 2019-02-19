@@ -766,7 +766,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void fetchTickerData() {
-        compositeSubscription.add(travelTickerUseCase.createObservable(travelTickerUseCase.createParams(
+        compositeSubscription.add(travelTickerUseCase.createObservable(travelTickerUseCase.createRequestParams(
                 TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getHOME()))
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
