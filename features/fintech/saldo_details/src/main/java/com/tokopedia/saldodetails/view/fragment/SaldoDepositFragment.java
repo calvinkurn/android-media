@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -48,7 +47,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
-        implements SaldoDetailContract.View/*, RefreshHandler.OnRefreshHandlerListener*/ {
+        implements SaldoDetailContract.View {
 
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
@@ -70,7 +69,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private RelativeLayout holdBalanceLayout;
     private TextView amountBeingReviewed;
     private View saldoFrameLayout;
-    private LinearLayoutManager linearLayoutManager;
     private LinearLayout tickerMessageRL;
     private TextView tickeRMessageTV;
     private ImageView tickerMessageCloseButton;
@@ -103,28 +101,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled);
         saldoDepositFragment.setArguments(bundle);
         return saldoDepositFragment;
-    }
-
-    protected Bundle savedState;
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        saveStateToArguments();
-    }
-
-    private void saveStateToArguments() {
-        if (getView() != null)
-            savedState = saveState();
-        if (savedState != null) {
-            Bundle b = getArguments();
-            if (b == null) b = new Bundle();
-            b.putBundle("internalSavedViewState8954201239547", savedState);
-        }
-    }
-
-    private Bundle saveState() {
-        return new Bundle();
     }
 
     @Nullable
@@ -377,21 +353,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (!restoreStateFromArguments()) {
-            onFirstTimeLaunched();
-        }
+        onFirstTimeLaunched();
     }
 
     private void onFirstTimeLaunched() {
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
-    }
-
-    private boolean restoreStateFromArguments() {
-        Bundle b = getArguments();
-        if (b == null) b = new Bundle();
-        savedState = b.getBundle("internalSavedViewState8954201239547");
-        return savedState != null;
     }
 
     @Override
@@ -570,11 +537,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error,
                 () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
-
-   /* @Override
-    public void onRefresh(View view) {
-        saldoHistoryFragment.onRefresh();
-    }*/
 
     @Override
     public void onDestroy() {

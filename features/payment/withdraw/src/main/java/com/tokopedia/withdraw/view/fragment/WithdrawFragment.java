@@ -75,7 +75,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
@@ -99,18 +98,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private BankAdapter bankAdapter;
     private Snackbar snackBarInfo;
     private Snackbar snackBarError;
-    //    private EditText totalBalance;
     private EditText totalWithdrawal;
     private View loadingLayout;
 
-    //    public static final String BUNDLE_TOTAL_BALANCE = "total_balance";
-//    private static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE = "seller_total_balance";
-//    private static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE = "buyer_total_balance";
     private static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
     private static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int";
-    //    public static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
-//    private static final String DEFAULT_TOTAL_BALANCE = "Rp.0,-";
-    //    private View info;
     private List<BankAccount> listBank;
     private List<String> bankWithMinimumWithdrawal;
 
@@ -166,28 +158,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         View view = inflater.inflate(R.layout.fragment_withdraw_layout, container, false);
 
         wrapperTotalWithdrawal = view.findViewById(R.id.wrapper_total_withdrawal);
-
-        /*infoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        infoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
-
-                if (bottomSheet != null) {
-                    BottomSheetBehavior.from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-            }
-        });
-
-        View infoDialogView = getLayoutInflater().inflate(R.layout.layout_withdrawal_info, null);
-        infoDialog.setContentView(infoDialogView, getActivity().getString(R.string.withdrawal_info));
-        infoDialogView.setOnClickListener(null);*/
-
-
-        //    private CloseableBottomSheetDialog infoDialog;
         CloseableBottomSheetDialog saldoWithdrawInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         saldoWithdrawInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
@@ -210,10 +180,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bankRecyclerView = view.findViewById(R.id.recycler_view_bank);
         withdrawButton = view.findViewById(R.id.withdraw_button);
         withdrawAll = view.findViewById(R.id.withdrawal_all_tv);
-//        totalBalance = view.findViewById(R.id.total_balance);
         totalWithdrawal = view.findViewById(R.id.total_withdrawal);
         loadingLayout = view.findViewById(R.id.loading_layout);
-//        info = view.findViewById(R.id.info_container);
 
         withdrawBuyerSaldoTV = view.findViewById(R.id.withdraw_refund_saldo);
         withdrawSellerSaldoTV = view.findViewById(R.id.withdraw_seller_saldo);
@@ -267,7 +235,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 balance = buyerSaldoBalance;
             }
             presenter.doWithdraw(
-                    String.valueOf((int) balance),//totalBalance.getText().toString(),
+                    String.valueOf((int) balance),
                     totalWithdrawal.getText().toString(),
                     bankAdapter.getSelectedBank()
             );
@@ -372,21 +340,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
         allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton));
-        allField.subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                canProceed((TextView) withdrawButton, aBoolean);
-            }
-        });
-
-
-        /*info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                infoDialog.show();
-                analytics.eventClickInformasiPenarikanSaldo();
-            }
-        });*/
+        allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean));
 
         snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
                 "", BaseToaster.LENGTH_LONG)
@@ -437,7 +391,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @SuppressLint("PrivateResource")
     public ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
-                .customView(R.layout.show_case_saldo)
                 .titleTextColorRes(R.color.white)
                 .spacingRes(R.dimen.dp_12)
                 .arrowWidth(R.dimen.dp_16)
@@ -699,13 +652,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
                     BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    /*BankAccountViewModel model = new BankAccountViewModel();
-                    model.setBankId(Integer.parseInt(parcelable.getBankId()));
-                    model.setBankName(parcelable.getBankName());
-                    model.setBankAccountId(parcelable.getAccountId());
-                    model.setBankAccountName(parcelable.getAccountName());
-                    model.setBankAccountNumber(parcelable.getAccountNumber());*/
-
                     BankAccount bankAccount = new BankAccount();
                     bankAccount.setBankAccountId(parcelable.getAccountId());
                     bankAccount.setBankAccountName(parcelable.getAccountName());

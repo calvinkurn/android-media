@@ -33,7 +33,6 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     private static final int BUYER_SALDO = 0;
     private static final int ALL_SALDO = 2;
     private RecyclerView recyclerView;
-    private LinearLayoutManager linearLayoutManager;
     private SaldoDepositAdapter adapter;
     private SaldoHistoryPresenter presenter;
     private String transactionType;
@@ -67,7 +66,6 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initListeners();
     }
 
     @Override
@@ -84,46 +82,11 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
 
     private void initialVar() {
         transactionType = getArguments().getString(TRANSACTION_TYPE);
-        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
-
-//        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(false);
     }
-
-    private void initListeners() {
-//        recyclerView.addOnScrollListener(onScroll());
-    }
-
-    /*public void loadData(List<DepositHistoryList> list) {
-        adapter.setElement(list);
-    }*/
-
-    /*private RecyclerView.OnScrollListener onScroll() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                int lastItemPosition = linearLayoutManager.findLastVisibleItemPosition();
-                int visibleItem = linearLayoutManager.getItemCount() - 1;
-
-                switch (transactionType) {
-                    case FOR_ALL:
-                        presenter.loadMoreAllTransaction(lastItemPosition, visibleItem);
-                        break;
-                    case FOR_BUYER:
-                        presenter.loadMoreBuyerTransaction(lastItemPosition, visibleItem);
-                        break;
-                    case FOR_SELLER:
-                        presenter.loadMoreSellerTransaction(lastItemPosition, visibleItem);
-                        break;
-                }
-
-            }
-        };
-    }*/
-
 
     @Override
     protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener() {
@@ -145,25 +108,6 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
                 }
             }
         };
-
-
-        /*return new EndlessRecyclerViewScrollListener(recyclerView.getLayoutManager()) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                showLoading();
-                switch (transactionType) {
-                    case FOR_ALL:
-                        presenter.loadMoreAllTransaction(page, ALL_SALDO);
-                        break;
-                    case FOR_BUYER:
-                        presenter.loadMoreBuyerTransaction(page, BUYER_SALDO);
-                        break;
-                    case FOR_SELLER:
-                        presenter.loadMoreSellerTransaction(page, SELLER_SALDO);
-                        break;
-                }
-            }
-        };*/
     }
 
     @Override
