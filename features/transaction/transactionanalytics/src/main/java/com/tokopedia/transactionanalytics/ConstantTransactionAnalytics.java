@@ -239,6 +239,12 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
 
+        String CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD = "success - default - cod";
+        String CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD = "success - check al - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD = "success - partial shop - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD = "success - partial product - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD = "success - partial shop and product - cod";
+
         String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
         String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
 
