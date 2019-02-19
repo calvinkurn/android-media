@@ -787,6 +787,7 @@ public class ImageHandler {
                     .load(imageUrl)
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
+                    .centerCrop()
                     .listener(new RequestListener<String, Bitmap>() {
                         @Override public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
                             return false;

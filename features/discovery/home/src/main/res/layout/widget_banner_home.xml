@@ -8,8 +8,9 @@
     <ImageView
         android:id="@+id/img_banner_background"
         android:layout_width="match_parent"
+        android:src="@drawable/ic_icon_toped_announce"
         android:scaleType="centerCrop"
-        android:layout_height="@dimen/dp_250"
+        android:layout_height="@dimen/dp_300"
         tools:background="@color/tkpd_main_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,6 +20,7 @@
         android:id="@+id/viewpager_banner_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/img_banner_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

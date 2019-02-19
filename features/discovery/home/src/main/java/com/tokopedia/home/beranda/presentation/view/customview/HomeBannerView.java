@@ -50,7 +50,7 @@ public class HomeBannerView extends BannerView {
         bannerRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int position = currentPosition > 0 ? currentPosition : 0;
                     String url = promoImageUrls.get(position);
                     ImageHandler.loadImageBlurWithCrossFade(
