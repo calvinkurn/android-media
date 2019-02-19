@@ -309,9 +309,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 searchProductMapper
         );
         TopAdsSearchProductRepositoryImpl topAdsSeachProductRepository = new TopAdsSearchProductRepositoryImpl(getActivity(), cloudTopAdsSeachProductDataSource);
-        TopAdsProductListUseCase topAdsProductListUseCase = new TopAdsProductListUseCase(
-                new JobExecutor(), new UIThread(), topAdsSeachProductRepository
-        );
+        TopAdsProductListUseCase topAdsProductListUseCase = new TopAdsProductListUseCase(topAdsSeachProductRepository);
 
         topAdsAddProductListPresenter.setSessionHandler(sessionHandler);
         topAdsAddProductListPresenter.setTopAdsProductListUseCase(topAdsProductListUseCase);
