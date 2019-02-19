@@ -185,7 +185,7 @@ public class ProductDetailData implements Parcelable {
     }
 
     public String getCheckoutType() {
-        return "express";
+        return checkoutType;
     }
 
     public void setBigPromo(boolean bigPromo) {
